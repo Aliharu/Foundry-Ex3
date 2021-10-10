@@ -41,10 +41,6 @@
           "total": 5,
           "min": 0
         },
-        "stunt": {
-          "value": 0,
-          "min": 0
-        },
         "essence": {
           "value": 1,
           "min": 0,
@@ -61,16 +57,13 @@
           }
         },
         "evasion": {
-          "value": 0,
-          "min": 0
+          "value": 0
         },
         "parry": {
-          "value": 0,
-          "min": 0
+          "value": 0
         },
         "soak": {
-          "value": 1,
-          "min": 0
+          "value": 1
         },
         "hardness": {
           "value": 0,
@@ -295,7 +288,7 @@
           "value": 0,
           "total": 0
         },
-        "splat": {
+        "exalt": {
           "value": 0,
           "total": 0
         },
@@ -403,7 +396,6 @@
       "weapon",
       "armor",
       "merit",
-      "quality",
       "initiation",
       "charm",
       "spell",

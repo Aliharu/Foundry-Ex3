@@ -19,14 +19,11 @@ export class ExaltedThirdItem extends Item {
     if (createData.type === 'intimacy') {
       this.data.update({ img: "icons/magic/life/heart-glowing-red.webp" });
     }
-    if (createData.type === 'spell' || createData.type === 'ritual') {
+    if (createData.type === 'spell' || createData.type === 'initiation') {
       this.data.update({ img: "icons/svg/book.svg" });
     }
     if (createData.type === 'merit') {
       this.data.update({ img: "icons/svg/coins.svg" });
-    }
-    if (createData.type === 'quality') {
-      this.data.update({ img: "icons/svg/aura.svg" });
     }
     if (createData.type === 'weapon') {
       this.data.update({ img: "icons/svg/sword.svg" });
