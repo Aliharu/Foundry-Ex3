@@ -1,0 +1,54 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            <div class="check-button">
+                <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
+                <input name="data.equiped" type="checkbox" value="data.equiped" {{checked data.data.equiped}}>
+                <label class="resource-label mr-1">{{localize "Ex3.Type"}}: </label>
+                <select name="data.weapontype" data-type="String">
+                    {{#select data.data.weapontype}}
+                    <option value="melee">{{localize "Ex3.Melee"}}</option>
+                    <option value="ranged">{{localize "Ex3.Ranged"}}</option>
+                    <option value="thrown">{{localize "Ex3.Thrown"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+
+        {{!-- Description Tab --}}
+        <div class="tab">
+            <div class="d-flex flex-center resources">
+                <div>
+                    <div>W.{{localize "Ex3.Accuracy"}}</div>
+                    <input type="number" name="data.witheringaccuracy" value="{{data.data.witheringaccuracy}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <div>W.{{localize "Ex3.Damage"}}</div>
+                    <input type="number" name="data.witheringdamage" value="{{data.data.witheringdamage}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <div>D.{{localize "Ex3.Accuracy"}}</div>
+                    <input type="number" name="data.decisiveaccuracy" value="{{data.data.decisiveaccuracy}}" data-dtype="Number" />
+                </div>
+            </div>
+            <div class="d-flex flex-center resources">
+                <div>
+                    <div>{{localize "Ex3.Defence"}}</div>
+                    <input type="number" name="data.defence" value="{{data.data.defence}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <div>{{localize "Ex3.Overwhelming"}}</div>
+                    <input type="number" name="data.overwhelming" value="{{data.data.overwhelming}}" data-dtype="Number" />
+                </div>
+            </div>
+            {{editor content=data.data.description target="data.description" button=true owner=owner editable=true}}
+        </div>
+
+    </section>
+</form>

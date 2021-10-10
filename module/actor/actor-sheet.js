@@ -1,0 +1,741 @@
+// import {
+//   DiceRollerDialogue
+// } from "./dialogue-diceRoller.js";
+import TraitSelector from "../apps/trait-selector.js";
+import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue } from "../apps/dice-roller.js";
+import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
+
+/**
+ * Extend the basic ActorSheet with some very simple modifications
+ * @extends {ActorSheet}
+ */
+export class ExaltedThirdActorSheet extends ActorSheet {
+
+  constructor(...args) {
+    super(...args);
+
+    this._filters = {
+      effects: new Set()
+    }
+  }
+
+  /**
+ * Get the correct HTML template path to use for rendering this particular sheet
+ * @type {String}
+ */
+  get template() {
+    if (this.actor.data.type === "npc") return "systems/exaltedthird/templates/actor/npc-sheet.html";
+    return "systems/exaltedthird/templates/actor/actor-sheet.html";
+  }
+
+  /** @override */
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      classes: ["exaltedthird", "sheet", "actor"],
+      template: "systems/exaltedthird/templates/actor/actor-sheet.html",
+      width: 800,
+      height: 1061,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
+    });
+  }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  getData() {
+    const data = super.getData();
+    data.dtypes = ["String", "Number", "Boolean"];
+
+    // Update traits
+    this._prepareTraits(data.data.data.traits);
+
+    // Prepare items.
+    if (this.actor.data.type === 'character') {
+      for (let attr of Object.values(data.data.data.attributes)) {
+        attr.isCheckbox = attr.dtype === "Boolean";
+      }
+      this._prepareCharacterItems(data);
+    }
+    if (this.actor.data.type === 'npc') {
+      this._prepareCharacterItems(data);
+    }
+
+    data.effects = prepareActiveEffectCategories(this.document.effects);
+
+    return data;
+  }
+
+  async _onUpdate(changed, options, user) {
+    super._onUpdate(changed, options, user);
+  }
+
+  /**
+   * Organize and classify Items for Character sheets.
+   *
+   * @param {Object} actorData The actor to prepare.
+   *
+   * @return {undefined}
+   */
+  _prepareCharacterItems(sheetData) {
+    const actorData = sheetData.actor;
+
+    // Initialize containers.
+    const gear = [];
+    const weapons = [];
+    const armor = [];
+    const merits = [];
+    const intimacies = [];
+    const initiations = [];
+    const martialarts = [];
+    const crafts = [];
+    const specialties = [];
+
+    const charms = {
+      strength: { name: 'Ex3.Strength', visible: false, list: [] },
+      dexterity: { name: 'Ex3.Dexterity', visible: false, list: [] },
+      stamina: { name: 'Ex3.Stamina', visible: false, list: [] },
+      charisma: { name: 'Ex3.Charisma', visible: false, list: [] },
+      manipulation: { name: 'Ex3.Manipulation', visible: false, list: [] },
+      appearance: { name: 'Ex3.Appearance', visible: false, list: [] },
+      perception: { name: 'Ex3.Perception', visible: false, list: [] },
+      intelligence: { name: 'Ex3.Intelligence', visible: false, list: [] },
+      wits: { name: 'Ex3.Wits', visible: false, list: [] },
+      archery: { name: 'Ex3.Archery', visible: false, list: [] },
+      athletics: { name: 'Ex3.Athletics', visible: false, list: [] },
+      awareness: { name: 'Ex3.Awareness', visible: false, list: [] },
+      brawl: { name: 'Ex3.Brawl', visible: false, list: [] },
+      bureaucracy: { name: 'Ex3.Bureaucracy', visible: false, list: [] },
+      craft: { name: 'Ex3.Craft', visible: false, list: [] },
+      dodge: { name: 'Ex3.Dodge', visible: false, list: [] },
+      integrity: { name: 'Ex3.Integrity', visible: false, list: [] },
+      investigation: { name: 'Ex3.Investigation', visible: false, list: [] },
+      larceny: { name: 'Ex3.Larceny', visible: false, list: [] },
+      linguistics: { name: 'Ex3.Linguistics', visible: false, list: [] },
+      lore: { name: 'Ex3.Lore', visible: false, list: [] },
+      martialarts: { name: 'Ex3.MartialArts', visible: false, list: [] },
+      medicine: { name: 'Ex3.Medicine', visible: false, list: [] },
+      melee: { name: 'Ex3.Melee', visible: false, list: [] },
+      occult: { name: 'Ex3.Occult', visible: false, list: [] },
+      performance: { name: 'Ex3.Performance', visible: false, list: [] },
+      presence: { name: 'Ex3.Presence', visible: false, list: [] },
+      resistance: { name: 'Ex3.Resistance', visible: false, list: [] },
+      ride: { name: 'Ex3.Ride', visible: false, list: [] },
+      socialize: { name: 'Ex3.Socialize', visible: false, list: [] },
+      stealth: { name: 'Ex3.Stealth', visible: false, list: [] },
+      survival: { name: 'Ex3.Survival', visible: false, list: [] },
+      thrown: { name: 'Ex3.Thrown', visible: false, list: [] },
+      war: { name: 'Ex3.War', visible: false, list: [] },
+      evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
+      other: { name: 'Ex3.Other', visible: false, list: [] },
+    }
+
+    const spells = {
+      terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
+      celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
+      solar: { name: 'Ex3.Solar', visible: false, list: [] },
+    }
+
+    // Iterate through items, allocating to containers
+    for (let i of sheetData.items) {
+      let item = i.data;
+
+      i.img = i.img || DEFAULT_TOKEN;
+      if (i.type === 'item') {
+        gear.push(i);
+      }
+      else if (i.type === 'weapon') {
+        weapons.push(i);
+      }
+      else if (i.type === 'armor') {
+        armor.push(i);
+      }
+      else if (i.type === 'merit') {
+        merits.push(i);
+      }
+      else if (i.type === 'intimacy') {
+        intimacies.push(i);
+      }
+      else if (i.type === 'martialart') {
+        martialarts.push(i);
+      }
+      else if (i.type === 'craft') {
+        crafts.push(i);
+      }
+      else if (i.type === 'initiation') {
+        initiations.push(i);
+      }
+      else if (i.type === 'specialty') {
+        specialties.push(i);
+      }
+      else if (i.type === 'charm') {
+        if (i.data.ability !== undefined) {
+          charms[i.data.ability].list.push(i);
+          charms[i.data.ability].visible = true;
+        }
+      }
+      else if (i.type === 'spell') {
+        if (i.data.circle !== undefined) {
+          spells[i.data.circle].list.push(i);
+          spells[i.data.circle].visible = true;
+        }
+      }
+    }
+
+    // Assign and return
+    actorData.gear = gear;
+    actorData.weapons = weapons;
+    actorData.armor = armor;
+    actorData.merits = merits;
+    actorData.martialarts = martialarts;
+    actorData.crafts = crafts;
+    actorData.initiations = initiations;
+    actorData.intimacies = intimacies;
+    actorData.specialties = specialties;
+    actorData.charms = charms;
+    actorData.spells = spells;
+  }
+
+  /**
+ * Prepare the data structure for traits data like languages
+ * @param {object} traits   The raw traits data object from the actor data
+ * @private
+ */
+  _prepareTraits(traits) {
+    const map = {
+      "languages": CONFIG.exaltedthird.languages,
+    };
+    for (let [t, choices] of Object.entries(map)) {
+      const trait = traits[t];
+      if (!trait) continue;
+      let values = [];
+      if (trait.value) {
+        values = trait.value instanceof Array ? trait.value : [trait.value];
+      }
+      trait.selected = values.reduce((obj, t) => {
+        obj[t] = choices[t];
+        return obj;
+      }, {});
+
+      // Add custom entry
+      if (trait.custom) {
+        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
+      }
+      trait.cssClass = !isObjectEmpty(trait.selected) ? "" : "inactive";
+    }
+  }
+
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    // Token Configuration
+    const canConfigure = game.user.isGM || this.actor.isOwner;
+    if (this.options.editable && canConfigure) {
+      if (this.actor.type != 'npc') {
+        const colorButton = {
+          label: game.i18n.localize('Ex3.DotColors'),
+          class: 'set-color',
+          icon: 'fas fa-palette',
+          onclick: (ev) => this.pickColor(ev),
+        };
+        buttons = [colorButton, ...buttons];
+      }
+      const rollButton = {
+        label: game.i18n.localize('Ex3.Roll'),
+        class: 'roll-dice',
+        icon: 'fas fa-dice',
+        onclick: () => openRollDialogue(),
+      };
+      buttons = [rollButton, ...buttons];
+    }
+    return buttons;
+  }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  activateListeners(html) {
+    super.activateListeners(html);
+
+    this._setupDotCounters(html)
+    this._setupSquareCounters(html)
+
+    // Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) return;
+
+    html.find('.trait-selector').click(this._onTraitSelector.bind(this));
+
+    // Add Inventory Item
+    html.find('.item-create').click(this._onItemCreate.bind(this));
+
+    html.find('.resource-value > .resource-value-step').click(this._onDotCounterChange.bind(this))
+    html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
+    html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
+
+    html.find('.augment-attribute').click(this._toggleAugment.bind(this));
+
+    // Update Inventory Item
+    html.find('.item-edit').click(ev => {
+      ev.stopPropagation();
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("itemId"));
+      item.sheet.render(true);
+    });
+
+    // Delete Inventory Item
+    html.find('.item-delete').click(ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
+      li.slideUp(200, () => this.render(false));
+    });
+
+    html.find('#calculate-health').mousedown(ev => {
+      this.calculateHealth();
+    });
+
+    html.find('#color-picker').mousedown(ev => {
+      this.pickColor();
+    });
+
+    html.find('#recoveryScene').mousedown(ev => {
+      this.recoverHealth();
+    });
+
+    html.find('#rollDice').mousedown(ev => {
+      openRollDialogue(this.actor);
+    });
+
+    html.find('.rollAbility').mousedown(ev => {
+      openAbilityRollDialogue(this.actor);
+    });
+
+    html.find('.roll-ability').mousedown(ev => {
+      var ability = $(ev.target).attr("data-ability");
+      openAbilityRollDialogue(this.actor, ability);
+    });
+
+    html.find('.roll-pool').mousedown(ev => {
+      var pool = $(ev.target).attr("data-pool");
+      openAbilityRollDialogue(this.actor, pool);
+    });
+
+    html.find('.join-battle').mousedown(ev => {
+      joinBattle(this.actor);
+    });
+
+    html.find('.roll-withering').mousedown(ev => {
+      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), $(ev.target).attr("data-damage"), $(ev.target).attr("data-overwhelming"), false);
+    });
+
+    html.find('.roll-decisive').mousedown(ev => {
+      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), 0, $(ev.target).attr("data-overwhelming"), true);
+    });
+
+    html.find('#anima-up').click(ev => {
+      this._updateAnima("up");
+    });
+
+    html.find('#anima-down').click(ev => {
+      this._updateAnima("down");
+    });
+
+    html.find('.item-chat').click(ev => {
+      this._displayCard(ev);
+    });
+
+    html.find('.item-row').click(ev => {
+      const li = $(ev.currentTarget).next();
+      li.toggle("fast");
+    });
+
+    $(document.getElementById('chat-log')).on('click', '.chat-card', (ev) => {
+      const li = $(ev.currentTarget).next();
+      li.toggle("fast");
+    });
+
+    html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
+
+    html.find('.rollable').click(this._onRoll.bind(this));
+
+    // Drag events for macros.
+    if (this.actor.isOwner) {
+      let handler = ev => this._onDragStart(ev);
+      html.find('li.item').each((i, li) => {
+        if (li.classList.contains("inventory-header")) return;
+        li.setAttribute("draggable", true);
+        li.addEventListener("dragstart", handler, false);
+      });
+    }
+  }
+
+  _updateAnima(direction) {
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+    let newLevel = "Dim";
+    if (direction === "up") {
+      if (data.anima.level === "Dim") {
+        newLevel = "Glowing";
+      }
+      else if (data.anima.level === "Glowing") {
+        newLevel = "Burning";
+      }
+      else {
+        newLevel = "Bonfire";
+      }
+    }
+    else {
+      if (data.anima.level === "Bonfire") {
+        newLevel = "Burning";
+      }
+      else if (data.anima.level === "Burning") {
+        newLevel = "Glowing";
+      }
+      if (data.anima.level === "Glowing") {
+        newLevel = "Dim";
+      }
+    }
+    data.anima.level = newLevel;
+    this.actor.update(actorData);
+  }
+
+  async calculateHealth() {
+    let confirmed = false;
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+    const template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
+    const html = await renderTemplate(template, { 'zero': data.health.levels.zero.value, 'one': data.health.levels.one.value, 'two': data.health.levels.two.value, 'four': data.health.levels.four.value });
+
+    new Dialog({
+      title: `Calculate Health`,
+      content: html,
+      buttons: {
+        roll: { label: "Save", callback: () => confirmed = true },
+        cancel: { label: "Cancel", callback: () => confirmed = false }
+      },
+      close: html => {
+        if (confirmed) {
+          data.health.bashing = 0;
+          data.health.lethal = 0;
+          data.health.aggravated = 0;
+          let zero = parseInt(html.find('#zero').val()) || 0;
+          let one = parseInt(html.find('#one').val()) || 0;
+          let two = parseInt(html.find('#two').val()) || 0;
+          let four = parseInt(html.find('#four').val()) || 0;
+          data.health.levels.zero.value = zero;
+          data.health.levels.one.value = one;
+          data.health.levels.two.value = two;
+          data.health.levels.four.value = four;
+          this.actor.update(actorData);
+        }
+      }
+    }).render(true);
+  }
+
+  async recoverHealth() {
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+    data.health.bashing = 0;
+    data.health.lethal = 0;
+    data.health.aggravated = 0;
+    this.actor.update(actorData);
+  }
+
+  async pickColor() {
+    let confirmed = false;
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+    const template = "systems/exaltedthird/templates/dialogues/color-picker.html"
+    const html = await renderTemplate(template, { 'color': data.details.color });
+    new Dialog({
+      title: `Pick Color`,
+      content: html,
+      buttons: {
+        roll: { label: "Save", callback: () => confirmed = true },
+        cancel: { label: "Cancel", callback: () => confirmed = false }
+      },
+      close: html => {
+        if (confirmed) {
+          let color = html.find('#color').val();
+          if (isColor(color)) {
+            data.details.color = color
+            this.actor.update(actorData)
+          }
+        }
+      }
+    }).render(true);
+  }
+
+  _onSquareCounterChange(event) {
+    event.preventDefault()
+    const element = event.currentTarget
+    const index = Number(element.dataset.index)
+    const oldState = element.dataset.state || ''
+    const parent = $(element.parentNode)
+    const data = parent[0].dataset
+    const states = parseCounterStates(data.states)
+    const fields = data.name.split('.')
+    const steps = parent.find('.resource-counter-step')
+    const fulls = Number(data[states['-']]) || 0
+    const halfs = Number(data[states['/']]) || 0
+    const crosses = Number(data[states['x']]) || 0
+
+    if (index < 0 || index > steps.length) {
+      return
+    }
+
+    const allStates = ['', ...Object.keys(states)]
+    const currentState = allStates.indexOf(oldState)
+    if (currentState < 0) {
+      return
+    }
+
+    const newState = allStates[(currentState + 1) % allStates.length]
+    steps[index].dataset.state = newState
+
+    if ((oldState !== '' && oldState !== '-') || (oldState !== '')) {
+      data[states[oldState]] = Number(data[states[oldState]]) - 1
+    }
+
+    // If the step was removed we also need to subtract from the maximum.
+    if (oldState !== '' && newState === '') {
+      data[states['-']] = Number(data[states['-']]) - 1
+    }
+
+    if (newState !== '') {
+      data[states[newState]] = Number(data[states[newState]]) + Math.max(index + 1 - fulls - halfs - crosses, 1)
+    }
+
+    const newValue = Object.values(states).reduce(function (obj, k) {
+      obj[k] = Number(data[k]) || 0
+      return obj
+    }, {})
+
+    this._assignToActorField(fields, newValue)
+  }
+
+
+  _onDotCounterChange(event) {
+    event.preventDefault()
+    const actorData = duplicate(this.actor)
+    const element = event.currentTarget
+    const dataset = element.dataset
+    const index = Number(dataset.index)
+    const parent = $(element.parentNode)
+    const fieldStrings = parent[0].dataset.name
+    const fields = fieldStrings.split('.')
+    const steps = parent.find('.resource-value-step')
+    if (index < 0 || index > steps.length) {
+      return
+    }
+
+    steps.removeClass('active')
+    steps.each(function (i) {
+      if (i <= index) {
+        // $(this).addClass('active')
+        $(this).css("background-color", actorData.data.details.color);
+      }
+    })
+    this._assignToActorField(fields, index + 1)
+  }
+
+  _assignToActorField(fields, value) {
+    const actorData = duplicate(this.actor)
+    // update actor owned items
+    if (fields.length === 2 && fields[0] === 'items') {
+      for (const i of actorData.items) {
+        if (fields[1] === i._id) {
+          i.data.points = value
+          break
+        }
+      }
+    } else {
+      const lastField = fields.pop()
+      if (fields.reduce((data, field) => data[field], actorData)[lastField] === 1 && value === 1) {
+        fields.reduce((data, field) => data[field], actorData)[lastField] = 0;
+      }
+      else {
+        fields.reduce((data, field) => data[field], actorData)[lastField] = value
+      }
+    }
+    this.actor.update(actorData)
+  }
+
+  _onDotCounterEmpty(event) {
+    event.preventDefault()
+    const actorData = duplicate(this.actor)
+    const element = event.currentTarget
+    const parent = $(element.parentNode)
+    const fieldStrings = parent[0].dataset.name
+    const fields = fieldStrings.split('.')
+    const steps = parent.find('.resource-value-empty')
+
+    steps.removeClass('active')
+    this._assignToActorField(fields, 0)
+  }
+
+  _setupDotCounters(html) {
+    const actorData = duplicate(this.actor)
+    html.find('.resource-value').each(function () {
+      const value = Number(this.dataset.value);
+      $(this).find('.resource-value-step').each(function (i) {
+        if (i + 1 <= value) {
+          $(this).addClass('active')
+          $(this).css("background-color", actorData.data.details.color);
+        }
+      })
+    })
+    html.find('.resource-value-static').each(function () {
+      const value = Number(this.dataset.value)
+      $(this).find('.resource-value-static-step').each(function (i) {
+        if (i + 1 <= value) {
+          $(this).addClass('active')
+          $(this).css("background-color", actorData.data.details.color);
+        }
+      })
+    })
+  }
+
+  _setupSquareCounters(html) {
+    html.find('.resource-counter').each(function () {
+      const data = this.dataset;
+      const states = parseCounterStates(data.states);
+
+      const halfs = Number(data[states['/']]) || 0;
+      const crossed = Number(data[states.x]) || 0;
+      const stars = Number(data[states['*']]) || 0;
+
+      const values = new Array(halfs + crossed + stars);
+
+      values.fill('/', 0, halfs);
+      values.fill('x', halfs, halfs + crossed);
+      values.fill('*', halfs + crossed, halfs + crossed + stars);
+
+      $(this).find('.resource-counter-step').each(function () {
+        this.dataset.state = ''
+        if (this.dataset.index < values.length) {
+          this.dataset.state = values[this.dataset.index];
+        }
+      })
+    })
+  }
+
+  _toggleAugment(event) {
+    event.preventDefault()
+    const element = event.currentTarget
+    const attribute = element.dataset.name
+    const actorData = duplicate(this.actor)
+    var augStatus = actorData.data.attributes[attribute].aug;
+    actorData.data.attributes[attribute].aug = !augStatus;
+    this.actor.update(actorData);
+  }
+
+  /**
+   * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
+   * @param {Event} event   The originating click event
+   * @private
+   */
+  _onItemCreate(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const header = event.currentTarget;
+    // Get the type of item to create.
+    const type = header.dataset.type;
+    // Grab any data associated with this control.
+    const data = duplicate(header.dataset);
+    // Initialize a default name.
+    const name = `New ${type.capitalize()}`;
+    // Prepare the item object.
+    const itemData = {
+      name: name,
+      type: type,
+      data: data
+    };
+    // Remove the type from the dataset since it's in the itemData.type prop.
+    delete itemData.data["type"];
+
+    // Finally, create the item!
+    return this.actor.createEmbeddedDocuments("Item", [itemData])
+  }
+
+  /**
+ * Handle spawning the TraitSelector application which allows a checkbox of multiple trait options
+ * @param {Event} event   The click event which originated the selection
+ * @private
+ */
+  _onTraitSelector(event) {
+    event.preventDefault();
+    const a = event.currentTarget;
+    const label = a.parentElement.querySelector("label");
+    const choices = CONFIG.exaltedthird[a.dataset.options];
+    const options = { name: a.dataset.target, title: label.innerText, choices };
+    return new TraitSelector(this.actor, options).render(true)
+  }
+
+  /**
+   * Handle clickable rolls.
+   * @param {Event} event   The originating click event
+   * @private
+   */
+  _onRoll(event) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    const dataset = element.dataset;
+
+    if (dataset.roll) {
+      let roll = new Roll(dataset.roll, this.actor.data.data);
+      let label = dataset.label ? `Rolling ${dataset.label}` : '';
+      roll.roll().toMessage({
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+        flavor: label
+      });
+    }
+  }
+
+  /**
+* Display the chat card for an Item as a Chat Message
+* @param {object} options          Options which configure the display of the item chat card
+* @param {string} rollMode         The message visibility mode to apply to the created card
+* @param {boolean} createMessage   Whether to automatically create a ChatMessage entity (if true), or only return
+*                                  the prepared message data (if false)
+*/
+  async _displayCard(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    // Render the chat card template
+    let li = $(event.currentTarget).parents(".item");
+    let item = this.actor.items.get(li.data("item-id"));
+    const token = this.actor.token;
+    const templateData = {
+      actor: this.actor,
+      tokenId: token?.uuid || null,
+      item: item.data,
+      labels: this.labels,
+    };
+    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+
+    // Create the ChatMessage data object
+    const chatData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
+    };
+
+
+    // Create the Chat Message or return its data
+    return ChatMessage.create(chatData);
+  }
+}
+
+
+function parseCounterStates(states) {
+  return states.split(',').reduce((obj, state) => {
+    const [k, v] = state.split(':')
+    obj[k] = v
+    return obj
+  }, {})
+}
+
+function isColor(strColor) {
+  const s = new Option().style;
+  s.color = strColor;
+  return s.color !== '';
+}

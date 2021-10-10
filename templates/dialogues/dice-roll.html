@@ -1,0 +1,76 @@
+<form>
+    <p>Enter a number of dice to roll.</p>
+    <div class="sheet-body exaltedthird">
+        <div class="form-group"><input id="num" type="number"></div>
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+                <input id="target-number" type="number" value="7">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.SuccessModifier"}} </label>
+                <input id="success-modifier" type="number">
+            </div>
+        </div>
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
+                <input id="double-success" type="number" value="10">
+            </div>
+            <div class="d-flex flex-center">
+                <label class="resource-label">{{localize "Ex3.RerollFailed"}}: </label>
+                <input type="checkbox" id="reroll-failed" name="data.rollable">
+            </div>
+
+            <!-- <div>
+                <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
+                <input id="reroll-number" type="number">
+            </div> -->
+        </div>
+        <div class="resource flex-center">
+            <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
+        </div>
+        <div class="resource d-flex flex-center">
+            <div>
+                <div>1</div>
+                <input id="reroll-1" name="reroll-1" type="checkbox">
+            </div>
+            <div>
+                <div>2</div>
+                <input id="reroll-2" name="reroll-2" type="checkbox">
+            </div>
+            <div>
+                <div>3</div>
+                <input id="reroll-3" name="reroll-3" type="checkbox">
+            </div>
+            <div>
+                <div>4</div>
+                <input id="reroll-4" name="reroll-4" type="checkbox">
+            </div>
+            <div>
+                <div>5</div>
+                <input id="reroll-5" name="reroll-5" type="checkbox">
+            </div>
+            <div>
+                <div>6</div>
+                <input id="reroll-6" name="reroll-6" type="checkbox">
+            </div>
+            <div>
+                <div>7</div>
+                <input id="reroll-7" name="reroll-7" type="checkbox">
+            </div>
+            <div>
+                <div>8</div>
+                <input id="reroll-8" name="reroll-8" type="checkbox">
+            </div>
+            <div>
+                <div>9</div>
+                <input id="reroll-9" name="reroll-9" type="checkbox">
+            </div>
+            <div>
+                <div>10</div>
+                <input id="reroll-10" name="reroll-10" type="checkbox">
+            </div>
+        </div>
+    </div>
+</form>

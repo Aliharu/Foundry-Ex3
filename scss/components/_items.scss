@@ -1,0 +1,73 @@
+.items-list {
+  list-style: none;
+  margin: 7px 0;
+  padding: 0;
+  overflow-y: auto;
+
+  .item-header {
+    font-weight: bold;
+  }
+
+  .item {
+    height: 30px;
+    line-height: 24px;
+    padding: 3px 0;
+    border-bottom: 1px solid #BBB;
+
+    .item-image {
+      flex: 0 0 24px;
+      margin-right: 5px;
+    }
+
+    img {
+      display: block;
+    }
+  }
+
+  .item-large {
+    height: 40px;
+    text-align: center;
+    align-items: center;
+
+    .item-name {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .item-name {
+    margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .item-controls {
+    flex: 0 0 86px;
+    text-align: right;
+  }
+
+  .items-controls {
+    flex: 0 0 172px;
+    text-align: right;
+  }
+  
+  .merits-controls {
+    flex: 0 0 200px;
+    text-align: right;
+  }
+
+  .qualities-controls {
+    flex: 0 0 97px;
+    text-align: right;
+  }
+
+  .item-description {
+    display: none;
+  }
+
+  .effects-list {
+    padding: 0;
+  }
+}

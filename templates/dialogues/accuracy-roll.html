@@ -1,0 +1,16 @@
+<form>
+    <div class="sheet-body exaltedthird">
+        <div class="flex-center resource-label" style="font-weight: bold;">
+            Accuracy
+        </div>
+        <div>
+            {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
+            <div class="resource flex-center mb-2">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Accuracy"}} </label>
+                    <input type="number" id="accuracy" name="data.rollable" value="{{weapon-accuracy}}">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

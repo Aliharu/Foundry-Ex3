@@ -1,0 +1,503 @@
+{
+  "Actor": {
+    "types": [
+      "character",
+      "npc"
+    ],
+    "templates": {
+      "base": {
+        "health": {
+          "levels": {
+            "zero": {
+              "value": 1,
+              "penalty": 0
+            },
+            "one": {
+              "value": 2,
+              "penalty": 1
+            },
+            "two": {
+              "value": 2,
+              "penalty": 2
+            },
+            "four": {
+              "value": 1,
+              "penalty": 4
+            },
+            "inc": {
+              "value": 1,
+              "penalty": "inc"
+            }
+          },
+          "bashing": 0,
+          "lethal": 0,
+          "aggravated": 0
+        },
+        "initiative": {
+          "value": 0
+        },
+        "willpower": {
+          "value": 0,
+          "total": 5,
+          "min": 0
+        },
+        "stunt": {
+          "value": 0,
+          "min": 0
+        },
+        "essence": {
+          "value": 1,
+          "min": 0,
+          "max": 10
+        },
+        "motes": {
+          "personal": {
+            "value": 0,
+            "total": 0
+          },
+          "peripheral": {
+            "value": 0,
+            "total": 0
+          }
+        },
+        "evasion": {
+          "value": 0,
+          "min": 0
+        },
+        "parry": {
+          "value": 0,
+          "min": 0
+        },
+        "soak": {
+          "value": 1,
+          "min": 0
+        },
+        "hardness": {
+          "value": 0,
+          "min": 0
+        },
+        "resolve": {
+          "value": 0
+        },
+        "guile": {
+          "value": 0
+        },
+        "anima": {
+          "level": "Dim",
+          "passive": "",
+          "active": "",
+          "iconic": ""
+        },
+        "traits": {
+          "languages": {
+            "value": [],
+            "custom": ""
+          }
+        },
+        "details": {
+          "exalt": "solar",
+          "caste": "",
+          "color": "#FFFFFF",
+          "tell": "",
+          "aura": ""
+        }
+      }
+    },
+    "character": {
+      "templates": [
+        "base"
+      ],
+      "biography": "",
+      "attributes": {
+        "strength": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Strength"
+        },
+        "dexterity": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Dexterity"
+        },
+        "stamina": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Stamina"
+        },
+        "charisma": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Charisma"
+        },
+        "manipulation": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Manipulation"
+        },
+        "appearance": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Appearance"
+        },
+        "perception": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Perception"
+        },
+        "intelligence": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Intelligence"
+        },
+        "wits": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Wits"
+        }
+      },
+      "abilities": {
+        "archery": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Archery"
+        },
+        "athletics": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Athletics"
+        },
+        "awareness": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Awareness"
+        },
+        "brawl": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Brawl"
+        },
+        "bureaucracy": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Bureaucracy"
+        },
+        "craft": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Craft"
+        },
+        "dodge": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Dodge"
+        },
+        "integrity": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Integrity"
+        },
+        "investigation": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Investigation"
+        },
+        "larceny": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Larceny"
+        },
+        "linguistics": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Linguistics"
+        },
+        "lore": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Lore"
+        },
+        "martialarts": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.MartialArts"
+        },
+        "medicine": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Medicine"
+        },
+        "melee": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Melee"
+        },
+        "occult": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Occult"
+        },
+        "performance": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Performance"
+        },
+        "presence": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Presence"
+        },
+        "resistance": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Resistance"
+        },
+        "ride": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Ride"
+        },
+        "socialize": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Socialize"
+        },
+        "stealth": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Stealth"
+        },
+        "survival": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Survival"
+        },
+        "thrown": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Thrown"
+        },
+        "war": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.War"
+        }
+      },
+      "limit": {
+        "value": 0,
+        "min": 0,
+        "trigger": ""
+      },
+      "advantages": {
+        "resonance": ""
+      },
+      "experience": {
+        "standard": {
+          "value": 0,
+          "total": 0
+        },
+        "splat": {
+          "value": 0,
+          "total": 0
+        },
+        "trigger": ""
+      }
+    },
+    "npc": {
+      "templates": [
+        "base"
+      ],
+      "creaturetype": "mortal",
+      "pools": {
+        "administration": {
+          "name": "Ex3.Administration",
+          "value": 0
+        },
+        "command": {
+          "name": "Ex3.Command",
+          "value": 0
+        },
+        "craft": {
+          "name": "Ex3.Craft",
+          "value": 0
+        },
+        "investigation": {
+          "name": "Ex3.Investigation",
+          "value": 0
+        },
+        "joinbattle": {
+          "name": "Ex3.JoinBattle",
+          "value": 0
+        },
+        "larceny": {
+          "name": "Ex3.Larceny",
+          "value": 0
+        },
+        "medicine": {
+          "name": "Ex3.Medicine",
+          "value": 0
+        },
+        "movement": {
+          "name": "Ex3.Movement",
+          "value": 0
+        },
+        "readintentions": {
+          "name": "Ex3.ReadIntentions",
+          "value": 0
+        },
+        "resistpoison": {
+          "name": "Ex3.ResistPoison",
+          "value": 0
+        },
+        "senses": {
+          "name": "Ex3.Senses",
+          "value": 0
+        },
+        "social": {
+          "name": "Ex3.Social",
+          "value": 0
+        },
+        "sorcery": {
+          "name": "Ex3.Sorcery",
+          "value": 0
+        },
+        "strength": {
+          "name": "Ex3.Strength",
+          "value": 0
+        },
+        "strategy": {
+          "name": "Ex3.Strategy",
+          "value": 0
+        },
+        "stealth": {
+          "name": "Ex3.Stealth",
+          "value": 0
+        },
+        "tracking": {
+          "name": "Ex3.Tracking",
+          "value": 0
+        },
+        "other": {
+          "name": "Ex3.Other",
+          "value": 0
+        }
+      },
+      "battlegroup": false,
+      "size": {
+        "value": 0,
+        "min": 0
+      },
+      "drill": {
+        "value": 0,
+        "min": 0
+      },
+      "might": {
+        "value": 0,
+        "min": 0
+      },
+      "qualities": ""
+    }
+  },
+  "Item": {
+    "types": [
+      "item",
+      "weapon",
+      "armor",
+      "merit",
+      "quality",
+      "initiation",
+      "charm",
+      "spell",
+      "intimacy",
+      "specialty",
+      "martialart",
+      "craft"
+    ],
+    "templates": {
+      "base": {
+        "description": "",
+        "pagenum": ""
+      }
+    },
+    "item": {
+      "templates": [
+        "base"
+      ],
+      "quantity": 1
+    },
+    "weapon": {
+      "templates": [
+        "base"
+      ],
+      "witheringaccuracy": 0,
+      "decisiveaccuracy": 0,
+      "witheringdamage": 0,
+      "defence": 0,
+      "overwhelming": 0,
+      "tags": "",
+      "equiped": true,
+      "weapontype": "melee"
+    },
+    "armor": {
+      "templates": [
+        "base"
+      ],
+      "soak": 0,
+      "penalty": 0,
+      "hardness": 0,
+      "tags": "",
+      "equiped": true
+    },
+    "charm": {
+      "templates": [
+        "base"
+      ],
+      "ability": "athletics",
+      "requirement": 0,
+      "essence": 0
+    },
+    "merit": {
+      "templates": [
+        "base"
+      ],
+      "merittype": "story",
+      "points": 0
+    },
+    "initiation": {
+      "templates": [
+        "base"
+      ]
+    },
+    "spell": {
+      "templates": [
+        "base"
+      ],
+      "circle": "terrestrial",
+      "cost": 0
+    },
+    "intimacy": {
+      "templates": [
+        "base"
+      ],
+      "strength": "minor",
+      "intimacytype": "tie"
+    },
+    "martialart": {
+      "templates": [
+        "base"
+      ],
+      "points": 0
+    },
+    "craft": {
+      "templates": [
+        "base"
+      ],
+      "points": 0
+    },
+    "specialty": {
+      "templates": [
+        "base"
+      ],
+      "ability": "athletics"
+    }
+  }
+}

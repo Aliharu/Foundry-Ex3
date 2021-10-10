@@ -1,0 +1,20 @@
+.resource-label {
+  font-weight: bold;
+}
+
+.resource-calculated-value {
+  font-size: 35px;
+}
+
+.resource-calculated-value-small {
+  font-size: 19px;
+}
+
+
+.resource-label::first-letter {
+  text-transform: uppercase;
+}
+
+.resource-table-value::first-letter {
+  text-transform: uppercase;
+}

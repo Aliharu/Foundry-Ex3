@@ -1,0 +1,36 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            <div class="check-button">
+                <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
+                <input name="data.equiped" type="checkbox" value="data.equiped" {{checked data.data.equiped}}>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+
+        {{!-- Description Tab --}}
+        <div class="tab">
+            <div class="d-flex flex-center resources">
+                <div>
+                    <div>{{localize "Ex3.Soak"}}</div>
+                    <input type="number" name="data.soak" value="{{data.data.soak}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <div>{{localize "Ex3.Penalty"}}</div>
+                    <input type="number" name="data.penalty" value="{{data.data.penalty}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <div>{{localize "Ex3.Hardness"}}</div>
+                    <input type="number" name="data.hardness" value="{{data.data.hardness}}" data-dtype="Number" />
+                </div>
+            </div>
+            {{editor content=data.data.description target="data.description" button=true owner=owner editable=true}}
+        </div>
+
+    </section>
+</form>

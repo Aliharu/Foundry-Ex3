@@ -1,0 +1,68 @@
+<div class="grid grid-2col flex-group-center">
+    <div>
+        <label class="resource-label">{{localize "Ex3.RollAbility"}}</label>
+        <button class="roll-button rollAbility"><i class="fas fa-dice"></i>{{localize "Ex3.Roll"}}</button>
+    </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.JoinBattle"}}</label>
+        <button class="roll-button join-battle"><i class="fas fa-bolt"></i>{{localize "Ex3.Roll"}}</button>
+    </div>
+</div>
+<div>
+    <div id="character-combat-tab">
+        <div class="grid grid-3col flex-group-center">
+            <div class="resource-content flexrow flex-center flex-between">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Parry"}}</label>
+                    <input type="number" name="data.parry.value" value="{{data.data.parry.value}}"
+                        data-dtype="Number" />
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Evasion"}}</label>
+                    <input type="number" name="data.evasion.value" value="{{data.data.evasion.value}}"
+                        data-dtype="Number" />
+                </div>
+            </div>
+            <div class="resource-content flexrow flex-center flex-between">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Soak"}}</label>
+                    <input type="number" name="data.soak.value" value="{{data.data.soak.value}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
+                    <input type="number" name="data.hardness.value" value="{{data.data.hardness.value}}"
+                        data-dtype="Number" />
+                </div>
+            </div>
+            <div class="resource-content flexrow flex-center flex-between">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                    <input type="number" name="data.resolve.value" value="{{data.data.resolve.value}}"
+                        data-dtype="Number" />
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Guile"}}</label>
+                    <input type="number" name="data.guile.value" value="{{data.data.guile.value}}"
+                        data-dtype="Number" />
+                </div>
+            </div>
+        </div>
+        {{#if data.data.battlegroup}}
+        <div class="grid grid-3col flex-group-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Size"}}</label>
+                <input type="number" name="data.size.value" value="{{data.data.size.value}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Drill"}}</label>
+                <input type="number" name="data.drill.value" value="{{data.data.drill.value}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Might"}}</label>
+                <input type="number" name="data.might.value" value="{{data.data.might.value}}" data-dtype="Number" />
+            </div>
+        </div>
+        {{/if}}
+        {{> systems/exaltedthird/templates/actor/equipment-list.html}}
+    </div>
+</div>

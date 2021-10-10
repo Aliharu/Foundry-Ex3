@@ -1,0 +1,63 @@
+<form>
+    <div class="sheet-body exaltedthird">
+        <div class="resource flex-center {{#if decisive}} grid-2col {{/if}} mb-2">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Successes"}} </label>
+                <input id="successes" type="number" value="{{successes}}">
+            </div>
+            {{#if decisive}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.Power"}} </label>
+                <input id="power" type="number" value="{{power}}">
+            </div>
+            {{/if}}
+        </div>
+        {{#if decisive}}
+            <div class="flex-center resource-label" style="font-weight: bold;">
+                Damage
+            </div>
+            <div>
+                <div class="resource grid grid-2col flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
+                        <input id="damage-dice" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
+                        <input id="damage-successes" type="number">
+                    </div>
+                </div>
+                <div class="resource grid grid-4col flex-center">
+                    <label class="check-button" style="align-items:center;display:flex;">
+                        <input id="double-damage-sevens" name="double-damage-sevens" type="checkbox">
+                        <span>Db 7+s</span>
+                    </label>
+                    <label class="check-button" style="align-items:center;display:flex;">
+                        <input id="double-damage-eights" name="double-damage-eights" type="checkbox">
+                        <span>Db 8+s</span>
+                    </label>
+                    <label class="check-button" style="align-items:center;display:flex;">
+                        <input id="double-damage-nines" name="double-damage-nines" type="checkbox">
+                        <span>Db 9+s</span>
+                    </label>
+                    <label class="check-button" style="align-items:center;display:flex;">
+                        <input id="double-damage-tens" name="double-damage-tens" type="checkbox" checked>
+                        <span>Db 10s</span>
+                    </label>
+                    <label class="resource-label">{{localize "Ex3.RerollFailed"}}: </label>
+                    <input type="checkbox" id="reroll-damage-failed" name="data.rollable">
+                </div>
+            </div>
+        {{/if}}
+
+        <div class="flex-center resource-label" style="font-weight: bold;">
+            Defender
+        </div>
+        <div class="resource {{#if decisive}} grid-2col {{/if}} flex-center mb-2">
+            <input placeholder="Defence" id="defence" type="number">
+            {{#if decisive}}
+            <input placeholder="Soak" id="soak" type="number">
+            {{/if}}
+        </div>
+    </div>
+</form>

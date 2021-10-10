@@ -1,0 +1,28 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Cost"}}: </label>
+                <input type="text" name="data.cost" value="{{data.data.cost}}" style="width:55px;" />
+                <label class="resource-label">{{localize "Ex3.Circle"}}: </label>
+                <select name="data.circle" data-type="String">
+                    {{#select data.data.circle}}
+                        <option value="terrestrial">{{localize "Ex3.Terrestrial"}} {{localize "Ex3.Circle"}}</option>
+                        <option value="celestial">{{localize "Ex3.Celestial"}} {{localize "Ex3.Circle"}}</option>
+                        <option value="solar">{{localize "Ex3.Solar"}} {{localize "Ex3.Circle"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        {{!-- Description Tab --}}
+        <div class="tab">
+            {{editor content=data.data.description target="data.description" button=true owner=owner editable=true}}
+        </div>
+    </section>
+</form>
