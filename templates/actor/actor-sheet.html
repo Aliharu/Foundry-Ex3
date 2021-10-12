@@ -293,24 +293,74 @@
         <div class="grid grid-2col flex-group-center">
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Personal"}} XP</label>
+              <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{data.data.experience.standard.spent}} Spent)</label>
               <div class="resource-content flexrow flex-center flex-between">
                 <input name="data.experience.standard.value" value="{{data.data.experience.standard.value}}" type="text"
                   placeholder="Remaining" />
                 /
                 <input name="data.experience.standard.total" value="{{data.data.experience.standard.total}}" type="text"
-                  placeholder="Total" />
+                  placeholder="Earned" />
               </div>
             </div>
           </div>
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Exalt"}} XP</label>
+              <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{data.data.experience.exalt.spent}} Spent)</label>
               <div class="resource-content flexrow flex-center flex-between">
                 <input name="data.experience.exalt.value" value="{{data.data.experience.exalt.value}}" type="text"
                   placeholder="Remaining" />
                 /
                 <input name="data.experience.exalt.total" value="{{data.data.experience.exalt.total}}" type="text"
+                  placeholder="Earned" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-center">
+          <label class="resource-label">{{localize "Ex3.Craft"}}</label>
+          <div class="grid grid-3col flex-group-center">
+            <div>
+              <label class="resource-label">{{localize "Ex3.SilverXP"}}</label>
+              <input type="number" name="data.craft.experience.silver.value"
+                value="{{data.data.craft.experience.silver.value}}" data-dtype="Number" />
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.GoldXP"}}</label>
+              <input type="number" name="data.craft.experience.gold.value"
+                value="{{data.data.craft.experience.gold.value}}" data-dtype="Number" />
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.WhiteXP"}}</label>
+              <input type="number" name="data.craft.experience.white.value"
+                value="{{data.data.craft.experience.white.value}}" data-dtype="Number" />
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.Major"}}</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input name="data.craft.slots.major.value" value="{{data.data.craft.slots.major.value}}" type="text"
+                  placeholder="Available" />
+                /
+                <input name="data.craft.slots.major.total" value="{{data.data.craft.slots.major.total}}" type="text"
+                  placeholder="Total" />
+              </div>
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.Superior"}}</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input name="data.craft.slots.superior.value" value="{{data.data.craft.slots.superior.value}}" type="text"
+                  placeholder="Available" />
+                /
+                <input name="data.craft.slots.superior.total" value="{{data.data.craft.slots.superior.total}}" type="text"
+                  placeholder="Total" />
+              </div>
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.Legendary"}}</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input name="data.craft.slots.legendary.value" value="{{data.data.craft.slots.legendary.value}}" type="text"
+                  placeholder="Available" />
+                /
+                <input name="data.craft.slots.legendary.total" value="{{data.data.craft.slots.legendary.total}}" type="text"
                   placeholder="Total" />
               </div>
             </div>
@@ -358,8 +408,8 @@
           <div>
             {{localize "Ex3.Merits"}}
           </div>
-          <a class="item-control item-create" title="Create merit" data-type="merit"><i
-              class="fas fa-plus"></i>Add Merit</a>
+          <a class="item-control item-create" title="Create merit" data-type="merit"><i class="fas fa-plus"></i>Add
+            Merit</a>
         </div>
         {{#each actor.merits as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">

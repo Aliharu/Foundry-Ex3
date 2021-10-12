@@ -213,6 +213,13 @@
 
     "Ex3.Experience": "Experience",
 
+    "Ex3.SilverXP": "Silver",
+    "Ex3.GoldXP": "Gold",
+    "Ex3.WhiteXP": "White",
+    "Ex3.Superior": "Superior",
+    "Ex3.Legendary": "Legendary",
+
+
     "Ex3.Personal": "Personal",
     "Ex3.Peripheral": "Peripheral",
 

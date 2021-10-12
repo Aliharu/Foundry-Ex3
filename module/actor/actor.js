@@ -43,6 +43,9 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     data.health.penalty = currentPenalty;
+
+    data.experience.standard.spent = data.experience.standard.total - data.experience.standard.value;
+    data.experience.exalt.spent = data.experience.exalt.total - data.experience.exalt.value;
   }
 
   // _prepareBaseActorData(data) {

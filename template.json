@@ -293,6 +293,33 @@
           "total": 0
         },
         "trigger": ""
+      },
+      "craft": {
+        "experience": {
+          "silver": {
+            "value": 0
+          },
+          "gold": {
+            "value": 0
+          },
+          "white": {
+            "value": 0
+          }
+        },
+        "slots": {
+          "major": {
+            "value": 0,
+            "total": 0
+          },
+          "superior": {
+            "value": 0,
+            "total": 0
+          },
+          "legendary": {
+            "value": 0,
+            "total": 0
+          }
+        }
       }
     },
     "npc": {
