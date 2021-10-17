@@ -111,6 +111,42 @@ $(document).ready(() => {
   });
 });
 
+Hooks.on('updateCombat', (async (combat, update) => {
+  // Handle non-gm users.
+
+  if (combat.current === undefined) {
+    combat = game.combat;
+  }
+
+  if (update && update.round) {
+    for(var combatant of combat.data.combatants) {
+      const actorData = duplicate(combatant.actor)
+      var missingPersonal = actorData.data.motes.personal.total - actorData.data.motes.personal.value;
+      var missingPeripheral = actorData.data.motes.peripheral.total - actorData.data.motes.peripheral.value;
+      var restorePersonal = 0;
+      var restorePeripheral = 0;
+      if(missingPeripheral >= 5) {
+        restorePeripheral = 5;
+      }
+      else {
+        if(missingPeripheral > 0) {
+          restorePeripheral = missingPeripheral;
+        }
+        var maxPersonalRestore = 5 - restorePeripheral;
+        if(missingPersonal > maxPersonalRestore) {
+          restorePersonal = maxPersonalRestore;
+        }
+        else {
+          restorePersonal = missingPersonal;
+        }
+      }
+      actorData.data.motes.personal.value += restorePersonal;
+      actorData.data.motes.peripheral.value += restorePeripheral;
+      combatant.actor.update(actorData);
+    }
+  }
+}));
+
 Hooks.once("ready", async function() {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createexaltedthirdMacro(data, slot));
