@@ -2,7 +2,7 @@
 //   DiceRollerDialogue
 // } from "./dialogue-diceRoller.js";
 import TraitSelector from "../apps/trait-selector.js";
-import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue } from "../apps/dice-roller.js";
+import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue, shapeSorcery } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 
 /**
@@ -120,6 +120,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       presence: { name: 'Ex3.Presence', visible: false, list: [] },
       resistance: { name: 'Ex3.Resistance', visible: false, list: [] },
       ride: { name: 'Ex3.Ride', visible: false, list: [] },
+      sail: { name: 'Ex3.Sail', visible: false, list: [] },
       socialize: { name: 'Ex3.Socialize', visible: false, list: [] },
       stealth: { name: 'Ex3.Stealth', visible: false, list: [] },
       survival: { name: 'Ex3.Survival', visible: false, list: [] },
@@ -319,6 +320,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.join-battle').mousedown(ev => {
       joinBattle(this.actor);
+    });
+
+    html.find('.shape-sorcery').mousedown(ev => {
+      shapeSorcery(this.actor);
     });
 
     html.find('.roll-withering').mousedown(ev => {

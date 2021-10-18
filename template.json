@@ -81,6 +81,9 @@
           "active": "",
           "iconic": ""
         },
+        "sorcery": {
+          "motes": 0
+        },
         "traits": {
           "languages": {
             "value": [],
@@ -248,6 +251,11 @@
           "favored": false,
           "value": 0,
           "name": "Ex3.Ride"
+        },
+        "sail": {
+          "favored": false,
+          "value": 0,
+          "name": "Ex3.Sail"
         },
         "socialize": {
           "favored": false,

@@ -1,7 +1,7 @@
 {
   "name": "exaltedthird",
   "title": "Exalted Third Edition",
-  "description": "Unofficial Exalted third edition system module for FoundryVTT!",
+  "description": "Unofficial Exalted third edition system module for FoundryVTT!  Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.",
   "author": "Aliharu",
   "authors": [],
   "url": "https://github.com/Aliharu/Foundry-Ex3",
@@ -29,7 +29,7 @@
   "dependencies": [],
   "socket": false,
   "manifest": "https://raw.githubusercontent.com/Aliharu/Foundry-Ex3/master/system.json",
-  "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v0.5.2/release0.5.2.zip",
+  "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v0.5.3/release0.5.3.zip",
   "protected": false,
   "gridDistance": 5,
   "gridUnits": "ft",

@@ -76,7 +76,7 @@ export async function openRollDialogue(actor) {
 
 function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability') {
     const data = actor.data.data;
-    const actorData = duplicate(actor)
+    const actorData = duplicate(actor);
     let dice = 0;
 
     if (rollType === 'attack') {
@@ -157,7 +157,7 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
         actorData.data.willpower.value--;
     }
 
-    actor.update(actorData)
+    actor.update(actorData);
 
     let roll = new Roll(`${dice}d10${rerollString}${rerollFailed ? "r<7" : ""}cs>=${targetNumber}`).evaluate({ async: false });
     let diceRoll = roll.dice[0].results;
@@ -183,62 +183,26 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
 }
 
 export async function joinBattle(actor) {
-    const data = actor.data.data;
     const characterType = actor.data.type;
-    let confirmed = false;
-    let ability = 'awareness';
-    if (characterType === "npc") {
-        ability = 'joinbattle';
+    if(characterType === "npc") {
+        openAbilityRollDialogue(actor, 'joinbattle', null, "joinBattle");
     }
-    const template = "systems/exaltedthird/templates/dialogues/ability-roll.html"
-    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': 'wits', ability: ability });
-    new Dialog({
-        title: `Die Roller`,
-        content: html,
-        buttons: {
-            roll: { label: "Roll it!", callback: () => confirmed = true },
-            cancel: { label: "Cancel", callback: () => confirmed = false }
-        },
-        close: html => {
-            if (confirmed) {
-                var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'ability');
-                let the_content = `
-          <div class="chat-card">
-              <div class="card-content">Dice Roll</div>
-              <div class="card-buttons">
-                  <div class="flexrow 1">
-                      <div>Dice Roller - Number of Successes<div class="dice-roll">
-                              <div class="dice-result">
-                                  <h4 class="dice-formula">${rollResults.dice} Dice + ${rollResults.bonusSuccesses} successes</h4>
-                                  <div class="dice-tooltip">
-                                      <div class="dice">
-                                          <ol class="dice-rolls">${rollResults.getDice}</ol>
-                                      </div>
-                                  </div>
-                                  <h4 class="dice-total">${rollResults.total} Succeses</h4>
-                                  <h4 class="dice-total">${rollResults.total + 3} Initiative</h4>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          `
-                ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ token: actor }), content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
-                let initativeDice = 0;
-                let combat = game.combat;
-                if (combat) {
-                    let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
-                    if (combatant) {
-                        combat.setInitiative(combatant.id, rollResults.total + 3);
-                    }
-                }
-            }
-        }
-    }).render(true);
+    else {
+        openAbilityRollDialogue(actor, 'awareness', 'wits', "joinBattle");
+    }
 }
 
-export async function openAbilityRollDialogue(actor, ability = "archery") {
+export async function shapeSorcery(actor) {
+    const characterType = actor.data.type;
+    if(characterType === "npc") {
+        openAbilityRollDialogue(actor, 'sorcery', null, "sorcery");
+    }
+    else {
+        openAbilityRollDialogue(actor, 'occult', 'intelligence', "sorcery");
+    }
+}
+
+export async function openAbilityRollDialogue(actor, ability = "archery", attribute, type = "roll") {
     const data = actor.data.data;
     const characterType = actor.data.type;
     let confirmed = false;
@@ -249,9 +213,11 @@ export async function openAbilityRollDialogue(actor, ability = "archery") {
             ability = "primary";
         }
     }
-    const template = "systems/exaltedthird/templates/dialogues/ability-roll.html"
-    const highestAttribute = characterType === "npc" ? null : _getHighestAttribute(data);
-    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': highestAttribute, ability: ability, 'stunt': stunt });
+    const template = "systems/exaltedthird/templates/dialogues/ability-roll.html";
+    if(attribute == null) {
+         attribute = characterType === "npc" ? null : _getHighestAttribute(data);
+    }
+    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt });
     new Dialog({
         title: `Die Roller`,
         content: html,
@@ -262,6 +228,10 @@ export async function openAbilityRollDialogue(actor, ability = "archery") {
         close: html => {
             if (confirmed) {
                 var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'ability');
+                var initiative = ``;
+                if(type === "joinBattle") {
+                    initiative = `<h4 class="dice-total">${rollResults.total + 3} Initiative</h4>`;
+                }
                 let the_content = `
           <div class="chat-card">
               <div class="card-content">Dice Roll</div>
@@ -276,6 +246,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery") {
                                       </div>
                                   </div>
                                   <h4 class="dice-total">${rollResults.total} Succeses</h4>
+                                  ${initiative}
                               </div>
                           </div>
                       </div>
@@ -284,6 +255,20 @@ export async function openAbilityRollDialogue(actor, ability = "archery") {
           </div>
           `
                 ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ token: actor }), content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
+                if(type === "joinBattle") {
+                    let combat = game.combat;
+                    if (combat) {
+                        let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
+                        if (combatant) {
+                            combat.setInitiative(combatant.id, rollResults.total + 3);
+                        }
+                    }
+                }
+                if(type === "sorcery") {
+                    const actorData = duplicate(actor);
+                    actorData.data.sorcery.motes += rollResults.total;
+                    actor.update(actorData);
+                }
             }
         }
     }).render(true);

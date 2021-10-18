@@ -23,3 +23,9 @@ Languages dialog code and effects code taken from the Foundry dnd5e system.
 ## Die Roller
 
 Join Battle and attacking targets support modifying foundries initiative tracker.
+
+# Copyright
+Exalted character sheets and dice rollers are covered under the Paradox Dark Pack licence.
+"Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com."
+
+https://s3-eu-north-1.amazonaws.com/pdx-campaign-wp-data/uploads/sites/10/2021/10/05102936/darkpack_logo2-300x300.png

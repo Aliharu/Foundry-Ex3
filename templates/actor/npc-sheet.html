@@ -194,8 +194,7 @@
                     <label for="data.pools.{{key}}.value" class="resource-label vrollable roll-pool"
                         data-roll="{{pool.value}}" data-pool="{{key}}" data-label="{{pool.name}}">{{localize
                         pool.name}}</label>
-                    <input type="number" name="data.pools.{{key}}.value" value="{{pool.value}}"
-                    data-dtype="Number" />
+                    <input type="number" name="data.pools.{{key}}.value" value="{{pool.value}}" data-dtype="Number" />
                 </div>
                 {{/each}}
             </div>
@@ -212,6 +211,30 @@
         <div class="tab items" data-group="primary" data-tab="charms">
             <ol class="items-list">
                 {{> systems/exaltedthird/templates/actor/charm-list.html}}
+                <div class="resource-label list-section-header d-flex flex-between">
+                    <div>
+                        {{localize "Ex3.Initiations"}}
+                    </div>
+                    <a class="item-control item-create" title="Create initiation" data-type="initiation"><i
+                            class="fas fa-plus"></i>Add Initiation</a>
+                </div>
+                {{#each actor.initiations as |item id|}}
+                <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                    </div>
+                    <h4 class="item-name">{{item.name}}</h4>
+                    <div class="item-controls">
+                        <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        {{{item.data.description}}}
+                    </div>
+                </li>
+                {{/each}}
             </ol>
         </div>
 
