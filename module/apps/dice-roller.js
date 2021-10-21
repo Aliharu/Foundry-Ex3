@@ -132,11 +132,11 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
     if (stunt !== 'none') {
         dice += 2;
     }
-    if(stunt === 'two') {
+    if (stunt === 'two') {
         actorData.data.willpower.value++;
         successModifier++;
     }
-    if(stunt === 'three') {
+    if (stunt === 'three') {
         actorData.data.willpower.value += 2;
         successModifier += 2;
     }
@@ -184,7 +184,7 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
 
 export async function joinBattle(actor) {
     const characterType = actor.data.type;
-    if(characterType === "npc") {
+    if (characterType === "npc") {
         openAbilityRollDialogue(actor, 'joinbattle', null, "joinBattle");
     }
     else {
@@ -194,7 +194,7 @@ export async function joinBattle(actor) {
 
 export async function shapeSorcery(actor) {
     const characterType = actor.data.type;
-    if(characterType === "npc") {
+    if (characterType === "npc") {
         openAbilityRollDialogue(actor, 'sorcery', null, "sorcery");
     }
     else {
@@ -209,13 +209,13 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
     let stunt = 'one';
     if (characterType === "npc") {
         stunt = 'none';
-        if(ability === "archery") {
+        if (ability === "archery") {
             ability = "primary";
         }
     }
     const template = "systems/exaltedthird/templates/dialogues/ability-roll.html";
-    if(attribute == null) {
-         attribute = characterType === "npc" ? null : _getHighestAttribute(data);
+    if (attribute == null) {
+        attribute = characterType === "npc" ? null : _getHighestAttribute(data);
     }
     const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt });
     new Dialog({
@@ -229,7 +229,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
             if (confirmed) {
                 var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'ability');
                 var initiative = ``;
-                if(type === "joinBattle") {
+                if (type === "joinBattle") {
                     initiative = `<h4 class="dice-total">${rollResults.total + 3} Initiative</h4>`;
                 }
                 let the_content = `
@@ -255,7 +255,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
           </div>
           `
                 ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ token: actor }), content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
-                if(type === "joinBattle") {
+                if (type === "joinBattle") {
                     let combat = game.combat;
                     if (combat) {
                         let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
@@ -264,7 +264,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
                         }
                     }
                 }
-                if(type === "sorcery") {
+                if (type === "sorcery") {
                     const actorData = duplicate(actor);
                     actorData.data.sorcery.motes += rollResults.total;
                     actor.update(actorData);
@@ -332,11 +332,10 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                     let defense = parseInt(html.find('#defense').val()) || 0;
                     let thereshholdSuccesses = rollResults.total - defense;
                     let damageResults = ``;
-                    let postSoakDamage = 0;
 
                     if (thereshholdSuccesses < 0) {
                         damageResults = `<h4 class="dice-total">Attack Missed!</h4>`;
-                        if(decisive) {
+                        if (decisive) {
                             if (characterInitiative < 11) {
                                 characterInitiative = characterInitiative - 2;
                             }
@@ -353,9 +352,28 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                         let targetNumber = parseInt(html.find('#damage-target-number').val()) || 7;
 
                         let dice = damage + diceModifier;
+                        let baseDamage = dice;
 
-                        if(!decisive) {
+                        if(decisive) {
+                            if (target && game.combat) {
+                                let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == target.actor.id);
+                                if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
+                                    dice += Math.floor(dice / 4);
+                                    baseDamage = dice;
+                                }
+                            }
+                        }
+                        else {
                             dice += thereshholdSuccesses;
+                            baseDamage = dice;
+                            soak = parseInt(html.find('#soak').val()) || 0;
+                            dice -= soak;
+                            if (dice < overwhelming) {
+                                dice = Math.max(dice, overwhelming);
+                            }
+                            if (dice < 0) {
+                                dice = 0;
+                            }
                         }
 
                         let rerollString = '';
@@ -370,10 +388,11 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                         let roll = new Roll(`${dice}d10${rerollString}cs>=${targetNumber}`).evaluate({ async: false });
                         let diceRoll = roll.dice[0].results;
                         let getDice = "";
+                        let soakResult = ``;
                         let bonus = 0;
 
                         for (let dice of diceRoll) {
-                            if (dice.result >= doubleSuccess) {
+                            if (dice.result >= doubleSuccess && (actor.data.type !== 'npc' || actor.data.data.battlegroup === false)) {
                                 bonus++;
                                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
                             }
@@ -383,26 +402,18 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                         }
 
                         let total = roll.total;
-                        if (bonus) total += bonus;
+                        if (bonus && (actor.data.type !== 'npc' || actor.data.data.battlegroup === false)) {
+                            total += bonus;
+                        }
                         if (successModifier) total += successModifier;
 
                         let typeSpecificResults = ``;
-
 
                         if (decisive) {
                             typeSpecificResults = `<h4 class="dice-total">${total} Damage!</h4>`;
                             characterInitiative = 3;
                         }
                         else {
-                            let soak = parseInt(html.find('#soak').val()) || 0;
-                            postSoakDamage = total - soak;
-                            if (postSoakDamage < overwhelming) {
-                                // postSoakDamage = overwhelming;
-                                postSoakDamage = Math.min(total, overwhelming);
-                            }
-                            if (postSoakDamage < 0) {
-                                postSoakDamage = 0;
-                            }
                             let targetResults = ``;
                             if (target && game.combat) {
                                 let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == target.actor.id);
@@ -410,9 +421,8 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                                     characterInitiative++;
                                     if (targetCombatant.actor.data.type !== 'npc' || targetCombatant.actor.data.data.battlegroup === false) {
                                         let newInitative = targetCombatant.initiative;
-                                        newInitative -= postSoakDamage;
-                                        characterInitiative += postSoakDamage;
-
+                                        newInitative -= total;
+                                        characterInitiative += total;
                                         if (newInitative <= 0 && targetCombatant.initiative > 0) {
                                             characterInitiative += 5;
                                             targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
@@ -421,18 +431,18 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                                     }
                                 }
                             }
+                            soakResult = `<h4 class="dice-formula">${soak} Soak!</h4><h4 class="dice-formula">${overwhelming} Overwhelming!</h4>`;
                             typeSpecificResults = `
                             <h4 class="dice-formula">${total} Damage!</h4>
-                            <h4 class="dice-formula">${soak} Soak!</h4>
-                            <h4 class="dice-formula">${overwhelming} Overwhelming!</h4>
-                            <h4 class="dice-total">${postSoakDamage} Total Damage!</h4>
+                            <h4 class="dice-total">${total} Total Damage!</h4>
                             ${targetResults}
                             `;
 
                         }
                         damageResults = `
                         <h4 class="dice-total">Damage</h4>
-                        <h4 class="dice-formula">${dice} Dice + ${successModifier} successes</h4>
+                        <h4 class="dice-formula">${baseDamage} Dice + ${successModifier} successes</h4>
+                        ${soakResult}
                         <div class="dice-tooltip">
                                             <div class="dice">
                                                 <ol class="dice-rolls">${getDice}</ol>
@@ -464,14 +474,15 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
             `;
                     ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ token: actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
 
-                    let combat = game.combat;
-                    if (target && combat) {
-                        let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
-                        if (combatant && combatant.initiative != null) {
-                            combat.setInitiative(combatant.id, characterInitiative);
+                    if (actor.data.type !== 'npc' || actor.data.data.battlegroup === false) {
+                        let combat = game.combat;
+                        if (target && combat) {
+                            let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
+                            if (combatant && combatant.initiative != null) {
+                                combat.setInitiative(combatant.id, characterInitiative);
+                            }
                         }
                     }
-                    
                 }
             }
         }).render(true);

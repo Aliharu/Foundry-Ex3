@@ -140,8 +140,13 @@
                         <div class="flexrow">
                             <label for="data.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
                                     id="calculate-health" style="margin-right:3px;"
-                                    title="Calculate Health"></i>{{localize
-                                "Ex3.Health"}}<i id="recoveryScene" title="Heal Damage"
+                                    title="Calculate Health"></i>
+                                    {{#if data.data.battlegroup}}
+                                    {{localize "Ex3.Magnitude"}}
+                                    {{else}}
+                                    {{localize "Ex3.Health"}}
+                                    {{/if}}
+                                    <i id="recoveryScene" title="Heal Damage"
                                     class="fas fa-plus-square cursor-pointer" style="margin-left:3px;"></i></label>
                         </div>
                         <div class="resource-content flexrow flex-center flex-between">
