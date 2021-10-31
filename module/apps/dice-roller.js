@@ -291,6 +291,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
     let confirmed = false;
     accuracy = accuracy || 0;
     damage = damage || 0;
+    damage = overwhelming || 0;
     overwhelming = overwhelming || 0;
     let soak = 0;
     let defense = 0;
@@ -316,7 +317,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
         soak = target.actor.data.data.soak.value;
     }
     const template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
-    const html = await renderTemplate(template, { "accuracy": accuracy, "damage": damage, 'defense': defense, 'soak': soak, 'withering': !decisive });
+    const html = await renderTemplate(template, { "accuracy": accuracy, "damage": damage, 'defense': defense, 'overwhelming': overwhelming, 'soak': soak, 'withering': !decisive });
     await new Promise((resolve, reject) => {
         return new Dialog({
             title: target ? `Attacking: ${target.name}` : `Attack`,
@@ -367,6 +368,9 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                             dice += thereshholdSuccesses;
                             baseDamage = dice;
                             soak = parseInt(html.find('#soak').val()) || 0;
+                            overwhelming = parseInt(html.find('#overwhelming').val()) || 0;
+                            let postSoakDamage = parseInt(html.find('#postSoakDamage').val()) || 0;
+
                             dice -= soak;
                             if (dice < overwhelming) {
                                 dice = Math.max(dice, overwhelming);
@@ -374,6 +378,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                             if (dice < 0) {
                                 dice = 0;
                             }
+                            dice += postSoakDamage;
                         }
 
                         let rerollString = '';

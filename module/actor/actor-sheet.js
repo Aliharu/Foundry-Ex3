@@ -65,9 +65,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     return data;
   }
 
-  async _onUpdate(changed, options, user) {
-    super._onUpdate(changed, options, user);
-  }
 
   /**
    * Organize and classify Items for Character sheets.
