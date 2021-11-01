@@ -13,6 +13,7 @@
                     <label class="resource-label">{{localize "Ex3.Defense"}} </label>
                     <input id="defense" type="number" value="{{defense}}">
                 </div>
+                {{#if withering}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
                     <input id="overwhelming" type="number" value="{{overwhelming}}">
@@ -21,6 +22,7 @@
                     <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
                     <input id="postSoakDamage" type="number">
                 </div>
+                {{/if}}
             </div>
             {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
         </div>
