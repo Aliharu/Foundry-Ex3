@@ -8,8 +8,11 @@ import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
 
 import { openRollDialogue } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
+import { registerSettings } from "./settings.js";
 
 Hooks.once('init', async function() {
+
+  registerSettings();
 
   game.exaltedthird = {
     applications: {
@@ -111,7 +114,7 @@ $(document).ready(() => {
   });
 });
 
-Hooks.on('updateCombat', (async (combat, update) => {
+Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   // Handle non-gm users.
 
   if (combat.current === undefined) {
@@ -143,6 +146,15 @@ Hooks.on('updateCombat', (async (combat, update) => {
       actorData.data.motes.personal.value += restorePersonal;
       actorData.data.motes.peripheral.value += restorePeripheral;
       combatant.actor.update(actorData);
+    }
+  }
+  if(update && (update.round || update.turn)) {
+    if(combat.current.combatantId) {
+      var currentCombatant = combat.data.combatants.get(combat.current.combatantId);
+      const onslaught = currentCombatant.actor.effects.find(i => i.data.label == "Onslaught");
+      if(onslaught) {
+          onslaught.delete();
+      }
     }
   }
 }));

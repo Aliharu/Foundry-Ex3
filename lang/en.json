@@ -282,5 +282,8 @@
     "Ex3.Duration": "Duration",
     "Ex3.Source": "Source",
 
-    "Ex3.Standard": "Standard"
+    "Ex3.Standard": "Standard",
+
+    "ExEss.Onslaught": "Onslaught",
+    "ExEss.ShowOnslaughtDescription": "Targets that are attacked will suffer a -1 penalty to parry and evasion until their next turn."
 }

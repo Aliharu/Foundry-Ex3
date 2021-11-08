@@ -355,7 +355,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                         let dice = damage + diceModifier;
                         let baseDamage = dice;
 
-                        if(decisive) {
+                        if (decisive) {
                             if (target && game.combat) {
                                 let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == target.actor.id);
                                 if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
@@ -487,6 +487,42 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                                 combat.setInitiative(combatant.id, characterInitiative);
                             }
                         }
+                    }
+                    if (target && game.settings.get("exaltedthird", "calculateOnslaught")) {
+                        const onslaught = target.actor.effects.find(i => i.data.label == "Onslaught");
+                        if (onslaught) {
+                            let changes = duplicate(onslaught.data.changes);
+                            if (target.actor.data.data.hardness.value > 0) {
+                                if (target.actor.data.data.evasion.value > 0) {
+                                    changes[0].value = changes[0].value - 1;
+                                }
+                                if (target.actor.data.data.parry.value > 0) {
+                                    changes[1].value = changes[1].value - 1;
+                                }
+                                onslaught.update({ changes });
+                            }
+                        }
+                        else {
+                            target.actor.createEmbeddedDocuments('ActiveEffect', [{
+                                label: 'Onslaught',
+                                icon: 'icons/svg/aura.svg',
+                                origin: target.actor.uuid,
+                                disabled: false,
+                                "changes": [
+                                    {
+                                        "key": "data.evasion.value",
+                                        "value": -1,
+                                        "mode": 2
+                                    },
+                                    {
+                                        "key": "data.parry.value",
+                                        "value": -1,
+                                        "mode": 2
+                                    }
+                                ]
+                            }]);
+                        }
+
                     }
                 }
             }
