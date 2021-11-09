@@ -33,9 +33,6 @@
           "lethal": 0,
           "aggravated": 0
         },
-        "initiative": {
-          "value": 0
-        },
         "willpower": {
           "value": 0,
           "total": 5,
@@ -478,9 +475,24 @@
       "templates": [
         "base"
       ],
+      "type": "supplemental",
+      "duration": "instant",
+      "keywords": "",
       "ability": "athletics",
       "requirement": 0,
-      "essence": 0
+      "essence": 0,
+      "cost": {
+        "mote": 0,
+        "initiative": 0,
+        "anima": 0,
+        "willpower": 0,
+        "aura": "",
+        "health": 0,
+        "healthtype": "bashing",
+        "silverxp": 0,
+        "goldxp": 0,
+        "whitexp": 0
+      }
     },
     "merit": {
       "templates": [

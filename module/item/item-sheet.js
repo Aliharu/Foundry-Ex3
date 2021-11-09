@@ -4,6 +4,14 @@
  */
 export class ExaltedThirdItemSheet extends ItemSheet {
 
+  constructor(...args) {
+    super(...args);
+    if (this.object.data.type === "charm") {
+      this.options.width = this.position.width = 614;
+      this.options.height = this.position.height = 850;
+    };
+  }
+
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {

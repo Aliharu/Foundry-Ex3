@@ -12,8 +12,13 @@
     "Ex3.BuildPower": "Build Power",
     "Ex3.FocusWill": "Focus Will",
     "Ex3.Willpower": "Willpower",
+    "Ex3.Initiative": "Initiative",
     "Ex3.Limit": "Limit",
     "Ex3.Health": "Health",
+    "Ex3.Bashing": "Bashing",
+    "Ex3.Lethal": "Lethal",
+    "Ex3.Aggravated": "Aggravated",
+    "Ex3.HealthType": "Health Type",
     "Ex3.Magnitude": "Magnitude",
     "Ex3.HealthLevels": "Health Levels",
 
@@ -284,6 +289,20 @@
 
     "Ex3.Standard": "Standard",
 
-    "ExEss.Onslaught": "Onslaught",
-    "ExEss.ShowOnslaughtDescription": "Targets that are attacked will suffer a -1 penalty to parry and evasion until their next turn."
+    "Ex3.Onslaught": "Onslaught",
+    "Ex3.ShowOnslaughtDescription": "Targets that are attacked will suffer a -1 penalty to parry and evasion until their next turn.",
+
+
+    "Ex3.Any": "Any",
+    "Ex3.Air": "Air",
+    "Ex3.Earth": "Earth",
+    "Ex3.Fire": "Fire",
+    "Ex3.Water": "Water",
+    "Ex3.Wood": "Wood",
+
+    "Ex3.Silver": "Silver",
+    "Ex3.Gold": "Gold",
+    "Ex3.White": "White",
+
+    "Ex3.Keywords": "Keywords"
 }
