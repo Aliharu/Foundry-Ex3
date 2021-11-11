@@ -21,7 +21,27 @@
                 <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize "Ex3.Roll"}}</button>
             </div>
         </div>
-        <div class="grid grid-3col flex-group-center">
+        <div class="grid grid-4col flex-group-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                <input type="number" name="data.resolve.value" value="{{data.data.resolve.value}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Guile"}}</label>
+                <input type="number" name="data.guile.value" value="{{data.data.guile.value}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.ReadIntentions"}}</label>
+                <button class="roll-button read-intentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.SocialInfluence"}}</label>
+                <button class="roll-button social-influence"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
+            </div>
+        </div>
+        <div class="grid grid-2col flex-group-center">
             <div class="resource-content flexrow flex-center flex-between">
                 <div>
                     <label class="resource-label">{{localize "Ex3.Parry"}}</label>
@@ -42,18 +62,6 @@
                 <div>
                     <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
                     <input type="number" name="data.hardness.value" value="{{data.data.hardness.value}}"
-                        data-dtype="Number" />
-                </div>
-            </div>
-            <div class="resource-content flexrow flex-center flex-between">
-                <div>
-                    <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
-                    <input type="number" name="data.resolve.value" value="{{data.data.resolve.value}}"
-                        data-dtype="Number" />
-                </div>
-                <div>
-                    <label class="resource-label">{{localize "Ex3.Guile"}}</label>
-                    <input type="number" name="data.guile.value" value="{{data.data.guile.value}}"
                         data-dtype="Number" />
                 </div>
             </div>

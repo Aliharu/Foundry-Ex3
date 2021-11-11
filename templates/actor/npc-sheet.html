@@ -215,6 +215,30 @@
         {{!-- Charms Tab --}}
         <div class="tab items" data-group="primary" data-tab="charms">
             <ol class="items-list">
+                <div class="resource-label list-section-header d-flex flex-between">
+                    <div>
+                        {{localize "Ex3.SpecialAbilities"}}
+                    </div>
+                    <a class="item-control item-create" title="Create specialability" data-type="specialability"><i
+                            class="fas fa-plus"></i>Add S-Ability</a>
+                </div>
+                {{#each actor.specialabilities as |item id|}}
+                <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                    </div>
+                    <h4 class="item-name">{{item.name}}</h4>
+                    <div class="item-controls">
+                        <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        {{{item.data.description}}}
+                    </div>
+                </li>
+                {{/each}}
                 {{> systems/exaltedthird/templates/actor/charm-list.html}}
                 <div class="resource-label list-section-header d-flex flex-between">
                     <div>

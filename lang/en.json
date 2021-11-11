@@ -106,6 +106,7 @@
     "Ex3.Command": "Command",
     "Ex3.Movement": "Movement",
     "Ex3.ReadIntentions": "Read Intentions",
+    "Ex3.SocialInfluence": "Social Influence",
     "Ex3.ResistPoison": "Resist Poison",
     "Ex3.Senses": "Senses",
     "Ex3.Social": "Social",
@@ -304,5 +305,11 @@
     "Ex3.Gold": "Gold",
     "Ex3.White": "White",
 
-    "Ex3.Keywords": "Keywords"
+    "Ex3.Keywords": "Keywords",
+    "Ex3.Warstrider": "Warstrider",
+
+    "Ex3.Speed": "Speed",
+
+    "Ex3.SpecialAbilities": "Special Abilities",
+    "Ex3.Difficulty": "Difficulty"
 }

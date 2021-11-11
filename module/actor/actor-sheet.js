@@ -2,7 +2,7 @@
 //   DiceRollerDialogue
 // } from "./dialogue-diceRoller.js";
 import TraitSelector from "../apps/trait-selector.js";
-import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue, shapeSorcery } from "../apps/dice-roller.js";
+import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue, shapeSorcery, socialInfluence } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 
 /**
@@ -86,6 +86,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const martialarts = [];
     const crafts = [];
     const specialties = [];
+    const specialAbilities = [];
+
 
     const charms = {
       strength: { name: 'Ex3.Strength', visible: false, list: [] },
@@ -165,6 +167,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'specialty') {
         specialties.push(i);
       }
+      else if (i.type === 'specialability') {
+        specialAbilities.push(i);
+      }
       else if (i.type === 'charm') {
         if (i.data.ability !== undefined) {
           charms[i.data.ability].list.push(i);
@@ -191,6 +196,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.specialties = specialties;
     actorData.charms = charms;
     actorData.spells = spells;
+    actorData.specialabilities = specialAbilities;
   }
 
   /**
@@ -289,12 +295,20 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateHealth();
     });
 
+    html.find('#calculate-warstrider-health').mousedown(ev => {
+      this.calculateHealth(true);
+    });
+
     html.find('#color-picker').mousedown(ev => {
       this.pickColor();
     });
 
     html.find('#recoveryScene').mousedown(ev => {
       this.recoverHealth();
+    });
+
+    html.find('#recoverySceneWarstrider').mousedown(ev => {
+      this.recoverHealth(true);
     });
 
     html.find('#rollDice').mousedown(ev => {
@@ -321,6 +335,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.shape-sorcery').mousedown(ev => {
       shapeSorcery(this.actor);
+    });
+
+    html.find('.read-intentions').mousedown(ev => {
+      socialInfluence(this.actor, 'readIntentions');
+    });
+
+    html.find('.social-influence').mousedown(ev => {
+      socialInfluence(this.actor, 'socialInfluence');
     });
 
     html.find('.roll-withering').mousedown(ev => {
@@ -398,12 +420,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this.actor.update(actorData);
   }
 
-  async calculateHealth() {
+  async calculateHealth(warstrider=false) {
     let confirmed = false;
     const actorData = duplicate(this.actor);
     const data = actorData.data;
-    const template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
-    const html = await renderTemplate(template, { 'zero': data.health.levels.zero.value, 'one': data.health.levels.one.value, 'two': data.health.levels.two.value, 'four': data.health.levels.four.value });
+
+    var template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
+    if(data.battlegroup && !warstrider) {
+      template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
+    }
+    const html = await renderTemplate(template, { 'zero': warstrider ? data.warstrider.health.levels.zero.value : data.health.levels.zero.value, 'one':  warstrider ? data.warstrider.health.levels.one.value : data.health.levels.one.value, 'two':  warstrider ? data.warstrider.health.levels.two.value : data.health.levels.two.value, 'four':  warstrider ? data.warstrider.health.levels.four.value : data.health.levels.four.value });
 
     new Dialog({
       title: `Calculate Health`,
@@ -414,29 +440,48 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       },
       close: html => {
         if (confirmed) {
-          data.health.bashing = 0;
-          data.health.lethal = 0;
-          data.health.aggravated = 0;
           let zero = parseInt(html.find('#zero').val()) || 0;
           let one = parseInt(html.find('#one').val()) || 0;
           let two = parseInt(html.find('#two').val()) || 0;
           let four = parseInt(html.find('#four').val()) || 0;
-          data.health.levels.zero.value = zero;
-          data.health.levels.one.value = one;
-          data.health.levels.two.value = two;
-          data.health.levels.four.value = four;
+          if(warstrider) {
+            data.warstrider.health.bashing = 0;
+            data.warstrider.health.lethal = 0;
+            data.warstrider.health.aggravated = 0;
+            data.warstrider.health.levels.zero.value = zero;
+            data.warstrider.health.levels.one.value = one;
+            data.warstrider.health.levels.two.value = two;
+            data.warstrider.health.levels.four.value = four;
+          }
+          else {
+            data.health.bashing = 0;
+            data.health.lethal = 0;
+            data.health.aggravated = 0;
+            data.health.levels.zero.value = zero;
+            data.health.levels.one.value = one;
+            data.health.levels.two.value = two;
+            data.health.levels.four.value = four;
+          }
           this.actor.update(actorData);
         }
       }
     }).render(true);
   }
 
-  async recoverHealth() {
+  async recoverHealth(warstrider=false) {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
-    data.health.bashing = 0;
-    data.health.lethal = 0;
-    data.health.aggravated = 0;
+    if(warstrider) {
+      data.warstrider.health.bashing = 0;
+      data.warstrider.health.lethal = 0;
+      data.warstrider.health.aggravated = 0;
+    }
+    else {
+      data.health.bashing = 0;
+      data.health.lethal = 0;
+      data.health.aggravated = 0;
+    }
+
     this.actor.update(actorData);
   }
 

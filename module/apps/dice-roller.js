@@ -141,7 +141,12 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
         successModifier += 2;
     }
     if (woundPenalty && data.health.penalty !== 'inc') {
-        dice -= data.health.penalty;
+        if(data.warstrider.equipped) {
+            dice -= data.warstrider.health.penalty;
+        }
+        else {
+            dice -= data.health.penalty;
+        }
     }
     if (flurry) {
         dice -= 3;
@@ -202,11 +207,40 @@ export async function shapeSorcery(actor) {
     }
 }
 
+export async function socialInfluence(actor, influenceType) {
+    const characterType = actor.data.type;
+    if(influenceType === 'socialInfluence') {
+        if (characterType === "npc") {
+            openAbilityRollDialogue(actor, 'social', null, "readIntentions");
+        }
+        else {
+            openAbilityRollDialogue(actor, 'socialize', 'charisma', "readIntentions");
+        }
+    }
+    else {
+        if (characterType === "npc") {
+            openAbilityRollDialogue(actor, 'readintentions', null, "social");
+        }
+        else {
+            openAbilityRollDialogue(actor, 'socialize', 'perception', "social");
+        }
+    }
+}
+
 export async function openAbilityRollDialogue(actor, ability = "archery", attribute, type = "roll") {
     const data = actor.data.data;
     const characterType = actor.data.type;
     let confirmed = false;
     let stunt = 'one';
+    let difficultyString = 'Ex3.Difficulty';
+    if(type === 'readIntentions') {
+        difficultyString = 'Ex3.Guile';
+    }
+    if(type === 'social') {
+        difficultyString = 'Ex3.Resolve';
+    }
+    const hasDifficulty = type === 'roll' || type === 'readIntentions' || type === 'social';
+    var difficulty = 0;
     if (characterType === "npc") {
         stunt = 'none';
         if (ability === "archery") {
@@ -217,7 +251,19 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
     if (attribute == null) {
         attribute = characterType === "npc" ? null : _getHighestAttribute(data);
     }
-    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt });
+    if(type === 'social' || type === 'readIntentions') {
+        let target = Array.from(game.user.targets)[0] || null;
+        if (target) {
+            if(type === 'readIntentions') {
+                difficulty = target.actor.data.data.guile.value;
+            }
+            if(type === 'social') {
+                difficulty = target.actor.data.data.resolve.value;
+            }
+        }
+    }
+
+    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt, 'difficulty': difficulty, 'hasDifficulty': hasDifficulty, 'difficultyString': difficultyString });
     new Dialog({
         title: `Die Roller`,
         content: html,
@@ -228,9 +274,24 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
         close: html => {
             if (confirmed) {
                 var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'ability');
-                var initiative = ``;
+                let resultString = ``;
+                let difficulty = parseInt(html.find('#difficulty').val()) || 0;
                 if (type === "joinBattle") {
-                    initiative = `<h4 class="dice-total">${rollResults.total + 3} Initiative</h4>`;
+                    resultString = `<h4 class="dice-total">${rollResults.total + 3} Initiative</h4>`;
+                }
+                if(hasDifficulty) {
+                    if(rollResults.total < difficulty) {
+                        resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
+                        for(let dice of rollResults.roll.dice[0].results) {
+                            if(dice.result === 1 && rollResults.total === 0) {
+                                resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Botch</h4>`;
+                            }
+                        }
+                    }
+                    else {
+                        const threshholdSucceses = rollResults.total - difficulty;
+                        resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>`;
+                    }
                 }
                 let the_content = `
           <div class="chat-card">
@@ -246,7 +307,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
                                       </div>
                                   </div>
                                   <h4 class="dice-total">${rollResults.total} Succeses</h4>
-                                  ${initiative}
+                                  ${resultString}
                               </div>
                           </div>
                       </div>
@@ -314,7 +375,12 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
         else {
             defense = target.actor.data.data.evasion.value;
         }
-        soak = target.actor.data.data.soak.value;
+        if(target.actor.data.data.warstrider.equipped) {
+            soak = target.actor.data.data.warstrider.soak.value;
+        }
+        else {
+            soak = target.actor.data.data.soak.value;
+        }
     }
     const template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
     const html = await renderTemplate(template, { "accuracy": accuracy, "damage": damage, 'defense': defense, 'overwhelming': overwhelming, 'soak': soak, 'withering': !decisive });
@@ -492,15 +558,13 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                         const onslaught = target.actor.effects.find(i => i.data.label == "Onslaught");
                         if (onslaught) {
                             let changes = duplicate(onslaught.data.changes);
-                            if (target.actor.data.data.hardness.value > 0) {
-                                if (target.actor.data.data.evasion.value > 0) {
-                                    changes[0].value = changes[0].value - 1;
-                                }
-                                if (target.actor.data.data.parry.value > 0) {
-                                    changes[1].value = changes[1].value - 1;
-                                }
-                                onslaught.update({ changes });
+                            if (target.actor.data.data.evasion.value > 0) {
+                                changes[0].value = changes[0].value - 1;
                             }
+                            if (target.actor.data.data.parry.value > 0) {
+                                changes[1].value = changes[1].value - 1;
+                            }
+                            onslaught.update({ changes });
                         }
                         else {
                             target.actor.createEmbeddedDocuments('ActiveEffect', [{

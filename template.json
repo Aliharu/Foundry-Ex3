@@ -93,6 +93,50 @@
           "color": "#FFFFFF",
           "tell": "",
           "aura": ""
+        },
+        "warstrider": {
+          "active": false,
+          "equipped": false,
+          "health": {
+            "levels": {
+              "zero": {
+                "value": 5,
+                "penalty": 0
+              },
+              "one": {
+                "value": 5,
+                "penalty": 1
+              },
+              "two": {
+                "value": 10,
+                "penalty": 2
+              },
+              "four": {
+                "value": 10,
+                "penalty": 4
+              },
+              "inc": {
+                "value": 1,
+                "penalty": "inc"
+              }
+            },
+            "bashing": 0,
+            "lethal": 0,
+            "aggravated": 0
+          },
+          "soak": {
+            "value": 1
+          },
+          "hardness": {
+            "value": 0,
+            "min": 0
+          },
+          "strength": {
+            "value": 0
+          },
+          "speed": {
+            "value": 0
+          }
         }
       }
     },
@@ -434,7 +478,8 @@
       "intimacy",
       "specialty",
       "martialart",
-      "craft"
+      "craft",
+      "specialability"
     ],
     "templates": {
       "base": {
@@ -537,6 +582,11 @@
         "base"
       ],
       "ability": "athletics"
+    },
+    "specialability": {
+      "templates": [
+        "base"
+      ]
     }
   }
 }

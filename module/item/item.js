@@ -34,6 +34,12 @@ export class ExaltedThirdItem extends Item {
     if (createData.type === 'charm') {
       this.data.update({ img: "icons/svg/explosion.svg" });
     }
+    if (createData.type === 'charm') {
+      this.data.update({ img: "icons/svg/explosion.svg" });
+    }
+    if (createData.type === 'specialability') {
+      this.data.update({ img: "icons/svg/aura.svg" });
+    }
   }
 
   /**
