@@ -233,6 +233,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Token Configuration
     const canConfigure = game.user.isGM || this.actor.isOwner;
     if (this.options.editable && canConfigure) {
+      const helpButton = {
+        label: game.i18n.localize('Ex3.Help'),
+        class: 'help-dialogue',
+        icon: 'fas fa-question',
+        onclick: () => this.helpDialogue(this.actor.type),
+      };
+      buttons = [helpButton, ...buttons];
       if (this.actor.type != 'npc') {
         const colorButton = {
           label: game.i18n.localize('Ex3.DotColors'),
@@ -506,6 +513,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             this.actor.update(actorData)
           }
         }
+      }
+    }).render(true);
+  }
+
+  async helpDialogue(type) {
+    let confirmed = false;
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+    const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
+    const html = await renderTemplate(template, { 'type': type });
+    new Dialog({
+      title: `ReadMe`,
+      content: html,
+      buttons: {
+        cancel: { label: "Close", callback: () => confirmed = false }
       }
     }).render(true);
   }

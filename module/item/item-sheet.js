@@ -1,3 +1,5 @@
+import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
@@ -38,6 +40,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   /** @override */
   getData() {
     const data = super.getData();
+
+    data.effects = prepareActiveEffectCategories(this.item.effects);
+
     return data;
   }
 
@@ -60,6 +65,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
+
+    html.find(".effect-control").click(ev => {
+      if ( this.item.isOwned ) return ui.notifications.warn("Managing Active Effects within an Owned Item is not currently supported and will be added in a subsequent update.");
+      onManageActiveEffect(ev, this.item);
+    });
 
     // Roll handlers, click handlers, etc. would go here.
   }
