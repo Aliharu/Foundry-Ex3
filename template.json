@@ -92,7 +92,7 @@
           "caste": "",
           "color": "#FFFFFF",
           "tell": "",
-          "aura": ""
+          "aura": "none"
         },
         "warstrider": {
           "active": false,

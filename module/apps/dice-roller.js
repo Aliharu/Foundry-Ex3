@@ -68,7 +68,7 @@ export async function openRollDialogue(actor) {
                                     </div>
                                 </div>
                             </div>`;
-                ChatMessage.create({ user: game.user.id, speaker: actor != null ? ChatMessage.getSpeaker({ token: actor }) : null, content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll });
+                ChatMessage.create({ user: game.user.id, speaker: actor != null ? ChatMessage.getSpeaker({ actor: actor }) : null, content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll });
             }
         }
     }).render(true);
@@ -315,7 +315,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
               </div>
           </div>
           `
-                ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ token: actor }), content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
+                ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: actor }), content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
                 if (type === "joinBattle") {
                     let combat = game.combat;
                     if (combat) {
@@ -543,7 +543,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                   </div>
               </div>
             `;
-                    ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ token: actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
+                    ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
 
                     if (actor.data.type !== 'npc' || actor.data.data.battlegroup === false) {
                         let combat = game.combat;

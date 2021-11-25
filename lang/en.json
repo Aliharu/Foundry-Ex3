@@ -293,7 +293,7 @@
     "Ex3.Onslaught": "Onslaught",
     "Ex3.ShowOnslaughtDescription": "Targets that are attacked will suffer a -1 penalty to parry and evasion until their next turn.",
 
-
+    "Ex3.None": "None",
     "Ex3.Any": "Any",
     "Ex3.Air": "Air",
     "Ex3.Earth": "Earth",

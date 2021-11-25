@@ -372,6 +372,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this._displayCard(ev);
     });
 
+    html.find('.item-spend').click(ev => {
+      this._spendItem(ev);
+    });
+
     html.find('.item-row').click(ev => {
       const li = $(ev.currentTarget).next();
       li.toggle("fast");
@@ -791,6 +795,81 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     // Create the Chat Message or return its data
     return ChatMessage.create(chatData);
+  }
+
+  _spendItem(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const actorData = duplicate(this.actor);
+
+    let li = $(event.currentTarget).parents(".item");
+    let item = this.actor.items.get(li.data("item-id"));
+
+    if(item.type === 'charm') {
+      if(item.data.data.cost.motes > 0) {
+        if(actorData.data.motes.peripheral.value > 0) {
+          actorData.data.motes.peripheral.value = Math.max(0, actorData.data.motes.peripheral.value - item.data.data.cost.motes);
+        }
+        else {
+          actorData.data.motes.personal.value = Math.max(0, actorData.data.motes.personal.value - item.data.data.cost.motes);
+        }
+      }
+      actorData.data.willpower.value = Math.max(0, actorData.data.willpower.value - item.data.data.cost.willpower);
+      actorData.data.craft.experience.silver.value = Math.max(0, actorData.data.craft.experience.silver.value - item.data.data.cost.silverxp);
+      actorData.data.craft.experience.gold.value = Math.max(0, actorData.data.craft.experience.gold.value - item.data.data.cost.goldxp);
+      actorData.data.craft.experience.white.value = Math.max(0, actorData.data.craft.experience.white.value - item.data.data.cost.whitexp);
+      if(actorData.data.details.aura === item.data.data.cost.aura || item.data.data.cost.aura === 'any') {
+        actorData.data.details.aura = "none";
+      }
+      if(item.data.data.cost.initiative > 0) {
+        let combat = game.combat;
+        if (combat) {
+            let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+            if (combatant) {
+                var newInitiative = combatant.initiative - item.data.data.cost.initiative;
+                if(combatant.initiative > 0 && newInitiative <= 0) {
+                  newInitiative -= 5;
+                }
+                combat.setInitiative(combatant.id, newInitiative);
+            }
+        }
+      }
+      if(item.data.data.cost.anima > 0) {
+        var newLevel = actorData.data.anima.level;
+        for(var i = 0; i < item.data.data.cost.anima; i++) {
+          if (newLevel === "Bonfire") {
+            newLevel = "Burning";
+          }
+          else if (newLevel === "Burning") {
+            newLevel = "Glowing";
+          }
+          if (newLevel === "Glowing") {
+            newLevel = "Dim";
+          }
+        }
+        actorData.data.anima.level = newLevel;
+      }
+      if(item.data.data.cost.health > 0) {
+        let totalHealth = 0;
+        for (let [key, health_level] of Object.entries(actorData.data.health.levels)) {
+          totalHealth += health_level.value;
+        }
+        if(item.data.data.cost.healthtype === 'bashing') {
+          actorData.data.health.bashing = Math.min(totalHealth - actorData.data.health.aggravated - actorData.data.health.lethal, actorData.data.health.bashing + item.data.data.cost.health);
+        }
+        else if(item.data.data.cost.healthtype === 'lethal') {
+          actorData.data.health.lethal = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.aggravated, actorData.data.health.lethal + item.data.data.cost.health);
+        }
+        else {
+          actorData.data.health.aggravated = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.lethal, actorData.data.health.aggravated + item.data.data.cost.health);
+        }
+      }
+    }
+    if(item.type === 'spell') {
+      actorData.data.sorcery.motes = Math.max(0, actorData.data.sorcery.motes - item.data.data.cost);
+    }
+    this.actor.update(actorData);
   }
 }
 
