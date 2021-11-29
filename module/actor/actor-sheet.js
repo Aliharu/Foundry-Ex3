@@ -353,11 +353,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.roll-withering').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), $(ev.target).attr("data-damage"), $(ev.target).attr("data-overwhelming"), false);
+      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), $(ev.target).attr("data-damage"), $(ev.target).attr("data-overwhelming"), 'withering');
     });
 
     html.find('.roll-decisive').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), 0, $(ev.target).attr("data-overwhelming"), true);
+      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), 0, $(ev.target).attr("data-overwhelming"), 'decisive');
+    });
+
+    html.find('.roll-gambit').mousedown(ev => {
+      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), 0, $(ev.target).attr("data-overwhelming"), 'gambit');
     });
 
     html.find('#anima-up').click(ev => {

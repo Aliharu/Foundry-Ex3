@@ -34,6 +34,7 @@
     "Ex3.Anima": "Anima",
     "Ex3.Passive": "Passive",
     "Ex3.Active": "Active",
+    "Ex3.ActiveEffects": "Active Effects",
     "Ex3.Iconic": "Iconic",
 
     "Ex3.Animal": "Animal",
@@ -313,5 +314,13 @@
     "Ex3.SpecialAbilities": "Special Abilities",
     "Ex3.Difficulty": "Difficulty",
 
-    "Ex3.Help": "Help"
+    "Ex3.Help": "Help",
+
+    "Ex3.Traits": "Traits",
+
+    "Ex3.LegendarySize": "Legendary Size",
+
+    "Ex3.Gambit": "Gambit",
+    "Ex3.PowerSpent": "Power Spent",
+    "Ex3.GambitDifficulty": "Gambit Difficulty"
 }

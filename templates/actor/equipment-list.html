@@ -1,6 +1,6 @@
 <div>
   <label class="resource-label">{{localize "Ex3.Weapons"}}</label>
-  <ol class="items-list">
+  <ol class="items-list" style="overflow-y: inherit;">
     <li class="item flexrow item-header">
       <div class="item-image"></div>
       <div class="item-name">Name</div>
@@ -8,15 +8,13 @@
       <div class="item-name">{{localize "Ex3.Damage"}}</div>
       <div class="item-name">{{localize "Ex3.Defence"}}</div>
       <div class="item-name">Ov</div>
-      <div></div>
-      <div></div>
       <div class="item-controls">
         <a class="item-control item-create" title="Create weapon" data-type="weapon"><i class="fas fa-plus"></i>
           Add</a>
       </div>
     </li>
     {{#each actor.weapons as |item id|}}
-    <li class="item item-large flexrow" data-item-id="{{item._id}}">
+    <li class="item item-large flexrow item-row" data-item-id="{{item._id}}">
       <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
@@ -31,21 +29,33 @@
       <div class="resource-value-static">
         {{item.data.overwhelming}}
       </div>
-      <div>
-        <button class="roll-button roll-withering" data-accuracy="{{item.data.witheringaccuracy}}"
-          data-damage="{{item.data.witheringdamage}}" data-overwhelming="{{item.data.overwhelming}}"
-          data-weapontype="{{item.data.weapontype}}">{{localize
-          "Ex3.Withering"}}</button>
-      </div>
-      <div>
-        <button class="roll-button roll-decisive" data-accuracy="{{item.data.decisiveaccuracy}}"
-          data-overwhelming="{{item.data.overwhelming}}" data-weapontype="{{item.data.weapontype}}">{{localize
-          "Ex3.Decisive"}}</button>
-      </div>
       <div class="item-controls">
         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    <li class="item-description">
+        <div>
+            {{{item.data.description}}}
+        </div>
+    </li>
+    <li class="item item-large flexrow">
+      <div>
+        <button class="roll-button roll-withering" data-accuracy="{{item.data.witheringaccuracy}}"
+          data-damage="{{item.data.witheringdamage}}" data-overwhelming="{{item.data.overwhelming}}"
+          data-weapontype="{{item.data.weapontype}}"><i class="fas fa-bolt"></i>{{localize
+          "Ex3.Withering"}}</button>
+      </div>
+      <div>
+        <button class="roll-button roll-decisive" data-accuracy="{{item.data.decisiveaccuracy}}"
+          data-overwhelming="{{item.data.overwhelming}}" data-weapontype="{{item.data.weapontype}}"><i class="fas fa-skull"></i>{{localize
+          "Ex3.Decisive"}}</button>
+      </div>
+      <div>
+        <button class="roll-button roll-gambit" data-accuracy="{{item.data.decisiveaccuracy}}"
+          data-overwhelming="{{item.data.overwhelming}}" data-weapontype="{{item.data.weapontype}}"><i class="fas fa-fist-raised"></i>{{localize
+          "Ex3.Gambit"}}</button>
       </div>
     </li>
     {{/each}}
@@ -66,7 +76,7 @@
       </div>
     </li>
     {{#each actor.armor as |item id|}}
-    <li class="item item-large flexrow" data-item-id="{{item._id}}">
+    <li class="item item-large flexrow item-row" data-item-id="{{item._id}}">
       <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
@@ -83,6 +93,11 @@
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>
+    </li>
+    <li class="item-description">
+        <div>
+            {{{item.data.description}}}
+        </div>
     </li>
     {{/each}}
   </ol>

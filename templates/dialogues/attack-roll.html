@@ -13,7 +13,7 @@
                     <label class="resource-label">{{localize "Ex3.Defense"}} </label>
                     <input id="defense" type="number" value="{{defense}}">
                 </div>
-                {{#if withering}}
+                {{#ifEquals attackType 'withering'}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
                     <input id="overwhelming" type="number" value="{{overwhelming}}">
@@ -22,7 +22,7 @@
                     <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
                     <input id="postSoakDamage" type="number">
                 </div>
-                {{/if}}
+                {{/ifEquals}}
             </div>
             {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
         </div>
@@ -43,11 +43,11 @@
             <div class="resource grid grid-2col flex-center">
                 <div>
                     <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                    {{#if withering}} 
+                    {{#ifEquals attackType 'withering'}}
                     <input id="damage-double-success" type="number" value="10">
                     {{else}}
                     <input id="damage-double-success" type="number" value="11">
-                    {{/if}}
+                    {{/ifEquals}}
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
@@ -101,14 +101,24 @@
             </div>
         </div>
 
-        {{#if withering}}
+        {{#ifEquals attackType 'withering'}}
 
         <div class="flex-center resource-label" style="font-weight: bold;">
-            Soak
+            {{localize "Ex3.Soak"}}
         </div>
         <div class="resource flex-center mb-2">
             <input placeholder="Soak" id="soak" type="number" value="{{soak}}">
         </div>
-        {{/if}}
+        {{/ifEquals}}
+
+        {{#ifEquals attackType 'gambit'}}
+        <div class="flex-center resource-label" style="font-weight: bold;">
+            {{localize "Ex3.GambitDifficulty"}}
+        </div>
+        <div class="resource flex-center mb-2">
+            <input id="gambit-difficulty" type="number" value="0">
+        </div>
+        {{/ifEquals}}
+
     </div>
 </form>
