@@ -498,13 +498,15 @@
         "base"
       ],
       "witheringaccuracy": 0,
-      "decisiveaccuracy": 0,
       "witheringdamage": 0,
       "defence": 0,
       "overwhelming": 0,
       "tags": "",
       "equiped": true,
-      "weapontype": "melee"
+      "weapontype": "melee",
+      "ability": "melee",
+      "attribute": "dexterity",
+      "range": "short"
     },
     "armor": {
       "templates": [

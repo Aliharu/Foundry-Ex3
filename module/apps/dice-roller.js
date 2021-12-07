@@ -101,22 +101,21 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
     const actorData = duplicate(actor);
     let dice = 0;
 
-    if (rollType === 'attack') {
-        dice = parseInt(html.find('#accuracy').val()) || 0;
+    if (characterType === 'character') {
+        let attribute = html.find('#attribute').val();
+        let ability = html.find('#ability').val();
+        let attributeDice = data.attributes[attribute].value;
+        let abilityDice = data.abilities[ability].value;
+        dice = attributeDice + abilityDice;
     }
-    else {
-        if (characterType === 'character') {
-            let attribute = html.find('#attribute').val();
-            let ability = html.find('#ability').val();
-            let attributeDice = data.attributes[attribute].value;
-            let abilityDice = data.abilities[ability].value;
-            dice = attributeDice + abilityDice;
-        }
-        else if (characterType === 'npc') {
-            let pool = html.find('#pool').val();
-            let poolDice = data.pools[pool].value;
-            dice = poolDice;
-        }
+    else if (characterType === 'npc' && rollType !== 'attack') {
+        let pool = html.find('#pool').val();
+        let poolDice = data.pools[pool].value;
+        dice = poolDice;
+    }
+
+    if (rollType === 'attack') {
+        dice += parseInt(html.find('#accuracy').val()) || 0;
     }
 
     let stunt = html.find('#stunt').val();
@@ -245,18 +244,18 @@ export async function socialInfluence(actor, influenceType) {
     const characterType = actor.data.type;
     if (influenceType === 'socialInfluence') {
         if (characterType === "npc") {
-            openAbilityRollDialogue(actor, 'social', null, "readIntentions");
+            openAbilityRollDialogue(actor, 'social', null, "social");
         }
         else {
-            openAbilityRollDialogue(actor, 'socialize', 'charisma', "readIntentions");
+            openAbilityRollDialogue(actor, 'socialize', 'charisma', "social");
         }
     }
     else {
         if (characterType === "npc") {
-            openAbilityRollDialogue(actor, 'readintentions', null, "social");
+            openAbilityRollDialogue(actor, 'readintentions', null, "readIntentions");
         }
         else {
-            openAbilityRollDialogue(actor, 'socialize', 'perception', "social");
+            openAbilityRollDialogue(actor, 'socialize', 'perception', "readIntentions");
         }
     }
 }
@@ -297,7 +296,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
         }
     }
 
-    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt, 'difficulty': difficulty, 'hasDifficulty': hasDifficulty, 'difficultyString': difficultyString });
+    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt, 'difficulty': difficulty, 'hasDifficulty': hasDifficulty, 'difficultyString': difficultyString, "showPool": true });
     // @ts-ignore
     new diceDialog({
         title: `Die Roller`,
@@ -382,7 +381,7 @@ function _getHighestAttribute(data) {
     return highestAttribute;
 }
 
-export async function openAttackDialogue(actor, accuracy, damage, overwhelming, attackType = 'decisive') {
+export async function openAttackDialogue(actor, attribute = "dexterity", ability = "melee", accuracy, damage, overwhelming, attackType = 'decisive') {
     const characterType = actor.data.type;
     let confirmed = false;
     accuracy = accuracy || 0;
@@ -417,7 +416,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
         }
     }
     const template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
-    const html = await renderTemplate(template, { "accuracy": accuracy, "damage": damage, 'defense': defense, 'overwhelming': overwhelming, 'soak': soak, 'attackType': attackType });
+    const html = await renderTemplate(template, { 'character-type': characterType, "attribute": attribute, "ability": ability, "stunt": characterType === "npc" ? "none" : "one" , "accuracy": accuracy, "damage": damage, 'defense': defense, 'overwhelming': overwhelming, 'soak': soak, 'attackType': attackType });
     await new Promise((resolve, reject) => {
         // @ts-ignore
         return new diceDialog({
@@ -526,8 +525,7 @@ export async function openAttackDialogue(actor, accuracy, damage, overwhelming, 
                             }
                             characterInitiative = characterInitiative - gambitDifficulty - 1;
                             var resultsText = `<h4 class="dice-total">Gambit Success</h4>`;
-                            if(gambitDifficulty > total)
-                            {
+                            if (gambitDifficulty > total) {
                                 resultsText = `<h4 class="dice-total">Gambit Failed</h4>`
                             }
                             typeSpecificResults = `<h4 class="dice-formula">${total} Successes vs ${gambitDifficulty} Difficulty!</h4>${resultsText}`;

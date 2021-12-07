@@ -353,15 +353,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.roll-withering').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), $(ev.target).attr("data-damage"), $(ev.target).attr("data-overwhelming"), 'withering');
+      openAttackDialogue(this.actor, $(ev.target).attr("data-attribute"), $(ev.target).attr("data-ability"), $(ev.target).attr("data-accuracy"), $(ev.target).attr("data-damage"), $(ev.target).attr("data-overwhelming"), 'withering');
     });
 
     html.find('.roll-decisive').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), 0, $(ev.target).attr("data-overwhelming"), 'decisive');
+      openAttackDialogue(this.actor, $(ev.target).attr("data-attribute"), $(ev.target).attr("data-ability"), 0, 0, $(ev.target).attr("data-overwhelming"), 'decisive');
     });
 
     html.find('.roll-gambit').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-accuracy"), 0, $(ev.target).attr("data-overwhelming"), 'gambit');
+      openAttackDialogue(this.actor, $(ev.target).attr("data-attribute"), $(ev.target).attr("data-ability"), 0, 0, $(ev.target).attr("data-overwhelming"), 'gambit');
     });
 
     html.find('#anima-up').click(ev => {
