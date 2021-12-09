@@ -1,91 +1,3 @@
-export async function openRollDialogue(actor) {
-    let confirmed = false;
-    const template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
-    const html = await renderTemplate(template, {});
-    new Dialog({
-        title: `Die 10 Roller`,
-        content: html,
-        buttons: {
-            roll: { label: "Roll it!", callback: () => confirmed = true },
-            cancel: { label: "Cancel", callback: () => confirmed = false }
-        },
-        close: html => {
-            if (confirmed) {
-                let doubleSuccess = parseInt(html.find('#double-success').val()) || 10;
-                let dice = parseInt(html.find('#num').val()) || 0;
-                let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
-                let targetNumber = parseInt(html.find('#target-number').val()) || 7;
-                let rerollFailed = html.find('#reroll-failed').is(':checked');
-                let rerollNumber = parseInt(html.find('#reroll-number').val()) || 0;
-                let rerollString = '';
-                let rerolls = [];
-
-                for (let i = 1; i <= 10; i++) {
-                    if (html.find(`#reroll-${i}`).is(':checked')) {
-                        rerollString += `x${i}`;
-                        rerolls.push(i);
-                    }
-                }
-
-                let rerolledDice = 0;
-                let bonus = 0;
-                let total = 0;
-                let get_dice = "";
-
-                let roll = new Roll(`${dice}d10${rerollString}${rerollFailed ? "r<7" : ""}cs>=${targetNumber}`).evaluate({ async: false });
-                let dice_roll = roll.dice[0].results;
-
-                var failedDice = Math.min(dice - roll.total, rerollNumber);
-
-                while (failedDice != 0 && (rerolledDice < rerollNumber)) {
-                    rerolledDice += failedDice;
-                    var failedDiceRoll = new Roll(`${failedDice}d10cs>=${targetNumber}`).evaluate({ async: false });
-                    failedDice = Math.min(failedDice - failedDiceRoll.total, (rerollNumber - rerolledDice));
-                    dice_roll = dice_roll.concat(failedDiceRoll.dice[0].results);
-                    total += failedDiceRoll.total;
-                }
-
-                for (let dice of dice_roll) {
-                    if (dice.result >= doubleSuccess) {
-                        bonus++;
-                        get_dice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
-                    }
-                    else if (dice.result >= targetNumber) { get_dice += `<li class="roll die d10 success">${dice.result}</li>`; }
-                    else if (rerolls.includes(dice.result)) { get_dice += `<li class="roll die d10 discarded">${dice.result}</li>`; }
-                    else if (dice.result == 1) { get_dice += `<li class="roll die d10 failure">${dice.result}</li>`; }
-                    else { get_dice += `<li class="roll die d10">${dice.result}</li>`; }
-                }
-                total += roll.total;
-
-
-                if (bonus) total += bonus;
-                if (successModifier) total += successModifier;
-
-                let the_content = `<div class="chat-card">
-                                <div class="card-content">Dice Roll</div>
-                                <div class="card-buttons">
-                                    <div class="flexrow 1">
-                                        <div>Dice Roller - Number of Successes<div class="dice-roll">
-                                                <div class="dice-result">
-                                                    <h4 class="dice-formula">${dice} Dice + ${successModifier} successes</h4>
-                                                    <div class="dice-tooltip">
-                                                        <div class="dice">
-                                                            <ol class="dice-rolls">${get_dice}</ol>
-                                                        </div>
-                                                    </div>
-                                                    <h4 class="dice-total">${total} Succeses</h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>`;
-                ChatMessage.create({ user: game.user.id, speaker: actor != null ? ChatMessage.getSpeaker({ actor: actor }) : null, content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll });
-            }
-        }
-    }).render(true);
-}
-
 const diceDialog = class extends Dialog {
     activateListeners(html) {
         super.activateListeners(html);
@@ -95,41 +7,213 @@ const diceDialog = class extends Dialog {
         });
     }
 }
+export async function openRollDialogue(actor) {
+    let confirmed = false;
+    const template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
+    const html = await renderTemplate(template, {'baseRoll': true});
+    // @ts-ignore
+    new diceDialog({
+        title: `Die 10 Roller`,
+        content: html,
+        buttons: {
+            roll: { label: "Roll it!", callback: () => confirmed = true },
+            cancel: { label: "Cancel", callback: () => confirmed = false }
+        },
+        close: html => {
+            if (confirmed) {
+                var rollResults = _baseAbilityDieRoll(html, actor, 'character', 'baseRoll');
+                let messageContent = `<div class="chat-card">
+                                <div class="card-content">Dice Roll</div>
+                                <div class="card-buttons">
+                                    <div class="flexrow 1">
+                                        <div>Dice Roller - Number of Successes<div class="dice-roll">
+                                                <div class="dice-result">
+                                                    <h4 class="dice-formula">${rollResults.dice} Dice + ${rollResults.bonusSuccesses} successes</h4>
+                                                    <div class="dice-tooltip">
+                                                        <div class="dice">
+                                                            <ol class="dice-rolls">${rollResults.getDice}</ol>
+                                                        </div>
+                                                    </div>
+                                                    <h4 class="dice-total">${rollResults.total} Succeses</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                ChatMessage.create({ user: game.user.id, speaker: actor != null ? ChatMessage.getSpeaker({ actor: actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
+            }
+        }
+    }).render(true);
+}
+
+// export async function openRollDialogue(actor) {
+//     let confirmed = false;
+//     const template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
+//     const html = await renderTemplate(template, {});
+//     new Dialog({
+//         title: `Die 10 Roller`,
+//         content: html,
+//         buttons: {
+//             roll: { label: "Roll it!", callback: () => confirmed = true },
+//             cancel: { label: "Cancel", callback: () => confirmed = false }
+//         },
+//         close: html => {
+//             if (confirmed) {
+//                 let doubleSuccess = parseInt(html.find('#double-success').val()) || 10;
+//                 let dice = parseInt(html.find('#num').val()) || 0;
+//                 let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
+//                 let targetNumber = parseInt(html.find('#target-number').val()) || 7;
+//                 let rerollFailed = html.find('#reroll-failed').is(':checked');
+//                 let rerollNumber = parseInt(html.find('#reroll-number').val()) || 0;
+//                 let rerollString = '';
+//                 let rerolls = [];
+
+//                 for (let i = 1; i <= 10; i++) {
+//                     if (html.find(`#reroll-${i}`).is(':checked')) {
+//                         rerollString += `x${i}`;
+//                         rerolls.push(i);
+//                     }
+//                 }
+
+//                 let rerolledDice = 0;
+//                 let bonus = 0;
+//                 let total = 0;
+//                 let get_dice = "";
+
+//                 let roll = new Roll(`${dice}d10${rerollString}${rerollFailed ? "r<7" : ""}cs>=${targetNumber}`).evaluate({ async: false });
+//                 let dice_roll = roll.dice[0].results;
+
+//                 var failedDice = Math.min(dice - roll.total, rerollNumber);
+
+//                 while (failedDice != 0 && (rerolledDice < rerollNumber)) {
+//                     rerolledDice += failedDice;
+//                     var failedDiceRoll = new Roll(`${failedDice}d10cs>=${targetNumber}`).evaluate({ async: false });
+//                     failedDice = Math.min(failedDice - failedDiceRoll.total, (rerollNumber - rerolledDice));
+//                     dice_roll = dice_roll.concat(failedDiceRoll.dice[0].results);
+//                     total += failedDiceRoll.total;
+//                 }
+
+//                 for (let dice of dice_roll) {
+//                     if (dice.result >= doubleSuccess) {
+//                         bonus++;
+//                         get_dice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
+//                     }
+//                     else if (dice.result >= targetNumber) { get_dice += `<li class="roll die d10 success">${dice.result}</li>`; }
+//                     else if (rerolls.includes(dice.result)) { get_dice += `<li class="roll die d10 discarded">${dice.result}</li>`; }
+//                     else if (dice.result == 1) { get_dice += `<li class="roll die d10 failure">${dice.result}</li>`; }
+//                     else { get_dice += `<li class="roll die d10">${dice.result}</li>`; }
+//                 }
+//                 total += roll.total;
+
+
+//                 if (bonus) total += bonus;
+//                 if (successModifier) total += successModifier;
+
+//                 let the_content = `<div class="chat-card">
+//                                 <div class="card-content">Dice Roll</div>
+//                                 <div class="card-buttons">
+//                                     <div class="flexrow 1">
+//                                         <div>Dice Roller - Number of Successes<div class="dice-roll">
+//                                                 <div class="dice-result">
+//                                                     <h4 class="dice-formula">${dice} Dice + ${successModifier} successes</h4>
+//                                                     <div class="dice-tooltip">
+//                                                         <div class="dice">
+//                                                             <ol class="dice-rolls">${get_dice}</ol>
+//                                                         </div>
+//                                                     </div>
+//                                                     <h4 class="dice-total">${total} Succeses</h4>
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>`;
+//                 ChatMessage.create({ user: game.user.id, speaker: actor != null ? ChatMessage.getSpeaker({ actor: actor }) : null, content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll });
+//             }
+//         }
+//     }).render(true);
+// }
 
 function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability') {
-    const data = actor.data.data;
-    const actorData = duplicate(actor);
     let dice = 0;
+    let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
 
-    if (characterType === 'character') {
-        let attribute = html.find('#attribute').val();
-        let ability = html.find('#ability').val();
-        let attributeDice = data.attributes[attribute].value;
-        let abilityDice = data.abilities[ability].value;
-        dice = attributeDice + abilityDice;
+    if(rollType === 'baseRoll') {
+        dice = parseInt(html.find('#dice').val()) || 0;
     }
-    else if (characterType === 'npc' && rollType !== 'attack') {
-        let pool = html.find('#pool').val();
-        let poolDice = data.pools[pool].value;
-        dice = poolDice;
+    else {
+        const data = actor.data.data;
+        const actorData = duplicate(actor);
+        if (characterType === 'character') {
+            let attribute = html.find('#attribute').val();
+            let ability = html.find('#ability').val();
+            let attributeDice = data.attributes[attribute].value;
+            let abilityDice = data.abilities[ability].value;
+            dice = attributeDice + abilityDice;
+        }
+        else if (characterType === 'npc' && rollType !== 'attack') {
+            let pool = html.find('#pool').val();
+            let poolDice = data.pools[pool].value;
+            dice = poolDice;
+        }
+        let diceModifier = parseInt(html.find('#dice-modifier').val()) || 0;
+        let stunt = html.find('#stunt').val();
+        let woundPenalty = html.find('#wound-penalty').is(':checked');
+        let flurry = html.find('#flurry').is(':checked');
+        let armorPenalty = html.find('#armor-penalty').is(':checked');
+        let specialty = html.find('#specialty').is(':checked');
+        let willpower = html.find('#willpower').is(':checked');
+
+        if (armorPenalty) {
+            for (let armor of actor.armor) {
+                if (armor.data.equiped) {
+                    dice = dice - Math.abs(armor.data.penalty);
+                }
+            }
+        }
+        if (stunt !== 'none') {
+            dice += 2;
+        }
+        if (stunt === 'two') {
+            actorData.data.willpower.value++;
+            successModifier++;
+        }
+        if (stunt === 'three') {
+            actorData.data.willpower.value += 2;
+            successModifier += 2;
+        }
+        if (woundPenalty && data.health.penalty !== 'inc') {
+            if (data.warstrider.equipped) {
+                dice -= data.warstrider.health.penalty;
+            }
+            else {
+                dice -= data.health.penalty;
+            }
+        }
+        if (flurry) {
+            dice -= 3;
+        }
+        if (diceModifier) {
+            dice += diceModifier;
+        }
+        if (specialty) {
+            dice++;
+        }
+        if (willpower) {
+            successModifier++;
+            actorData.data.willpower.value--;
+        }
+    
+        actor.update(actorData);
+    
     }
 
     if (rollType === 'attack') {
         dice += parseInt(html.find('#accuracy').val()) || 0;
     }
 
-    let stunt = html.find('#stunt').val();
-    let woundPenalty = html.find('#wound-penalty').is(':checked');
-    let flurry = html.find('#flurry').is(':checked');
-    let armorPenalty = html.find('#armor-penalty').is(':checked');
-    let specialty = html.find('#specialty').is(':checked');
-    let willpower = html.find('#willpower').is(':checked');
-
-    let diceModifier = parseInt(html.find('#dice-modifier').val()) || 0;
-    let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
-
     let doubleSuccess = parseInt(html.find('#double-success').val()) || 11;
-
     let rerollFailed = html.find('#reroll-failed').is(':checked');
     let targetNumber = parseInt(html.find('#target-number').val()) || 7;
     let rerollNumber = parseInt(html.find('#reroll-number').val()) || 0;
@@ -143,48 +227,6 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
             rerolls.push(i);
         }
     }
-
-    if (armorPenalty) {
-        for (let armor of actor.armor) {
-            if (armor.data.equiped) {
-                dice = dice - Math.abs(armor.data.penalty);
-            }
-        }
-    }
-    if (stunt !== 'none') {
-        dice += 2;
-    }
-    if (stunt === 'two') {
-        actorData.data.willpower.value++;
-        successModifier++;
-    }
-    if (stunt === 'three') {
-        actorData.data.willpower.value += 2;
-        successModifier += 2;
-    }
-    if (woundPenalty && data.health.penalty !== 'inc') {
-        if (data.warstrider.equipped) {
-            dice -= data.warstrider.health.penalty;
-        }
-        else {
-            dice -= data.health.penalty;
-        }
-    }
-    if (flurry) {
-        dice -= 3;
-    }
-    if (diceModifier) {
-        dice += diceModifier;
-    }
-    if (specialty) {
-        dice++;
-    }
-    if (willpower) {
-        successModifier++;
-        actorData.data.willpower.value--;
-    }
-
-    actor.update(actorData);
 
     let roll = new Roll(`${dice}d10${rerollString}${rerollFailed ? "r<7" : ""}cs>=${targetNumber}`).evaluate({ async: false });
     let diceRoll = roll.dice[0].results;
