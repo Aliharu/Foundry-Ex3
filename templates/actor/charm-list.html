@@ -22,6 +22,24 @@
 </li>
 <li class="item-description">
     <div>
+        <b>Cost</b>: {{ item.data.cost.mote }}m, {{ item.data.cost.willpower }}wp, {{ item.data.cost.anima }}a, {{ item.data.cost.anima }}a, {{ item.data.cost.initiative }}i, {{ item.data.cost.silverxp }}sxp, {{ item.data.cost.goldxp }}gxp, {{ item.data.cost.whitexp }}wxp;
+    </div>
+    <div>
+        <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
+    </div>
+    <div>
+        <b>Mins</b>: {{item.data.ability}} {{item.data.requirement}}, Essence {{item.data.essence}}
+    </div>
+    <div>
+        <b>Type</b>: {{item.data.type}}
+    </div>
+    <div>
+        <b>Keywords</b>: {{item.data.keywords}}
+    </div>
+    <div>
+        <b>Duration</b>: {{item.data.duration}}
+    </div>
+    <div>
         {{{item.data.description}}}
     </div>
 </li>

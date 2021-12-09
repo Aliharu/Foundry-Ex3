@@ -4,7 +4,28 @@
         <img src="{{item.img}}" title="{{item.name}}" width="36" height="36"/>
         <h3 class="item-name">{{item.name}}</h3>
     </header>
+
     <div class="card-content item-description">
+        {{#ifEquals item.type 'charm'}}
+            <div>
+                <b>Cost</b>: {{ item.data.cost.mote }}m, {{ item.data.cost.willpower }}wp, {{ item.data.cost.anima }}a, {{ item.data.cost.anima }}a, {{ item.data.cost.initiative }}i, {{ item.data.cost.silverxp }}sxp, {{ item.data.cost.goldxp }}gxp, {{ item.data.cost.whitexp }}wxp;
+            </div>
+            <div>
+                <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
+            </div>
+            <div>
+                <b>Mins</b>: {{item.data.ability}} {{item.data.requirement}}, Essence {{item.data.essence}}
+            </div>
+            <div>
+                <b>Type</b>: {{item.data.type}}
+            </div>
+            <div>
+                <b>Keywords</b>: {{item.data.keywords}}
+            </div>
+            <div>
+                <b>Duration</b>: {{item.data.duration}}
+            </div>
+        {{/ifEquals}}
         {{{item.data.description}}}
     </div>
 </div>
