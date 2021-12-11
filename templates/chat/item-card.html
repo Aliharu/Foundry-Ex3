@@ -1,30 +1,34 @@
-<div class="exaltedthird chat-card item-card" data-actor-id="{{actor.id}}" data-item-id="{{item.id}}"
-     {{#if tokenId}}data-token-id="{{tokenId}}"{{/if}}>
+<div class="exaltedthird chat-card item-card" data-actor-id="{{actor.id}}" data-item-id="{{item.id}}" {{#if
+    tokenId}}data-token-id="{{tokenId}}" {{/if}}>
     <header class="card-header flexrow item-row">
-        <img src="{{item.img}}" title="{{item.name}}" width="36" height="36"/>
+        <img src="{{item.img}}" title="{{item.name}}" width="36" height="36" />
         <h3 class="item-name">{{item.name}}</h3>
     </header>
 
     <div class="card-content item-description">
         {{#ifEquals item.type 'charm'}}
-            <div>
-                <b>Cost</b>: {{ item.data.cost.mote }}m, {{ item.data.cost.willpower }}wp, {{ item.data.cost.anima }}a, {{ item.data.cost.anima }}a, {{ item.data.cost.initiative }}i, {{ item.data.cost.silverxp }}sxp, {{ item.data.cost.goldxp }}gxp, {{ item.data.cost.whitexp }}wxp;
-            </div>
-            <div>
-                <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
-            </div>
-            <div>
-                <b>Mins</b>: {{item.data.ability}} {{item.data.requirement}}, Essence {{item.data.essence}}
-            </div>
-            <div>
-                <b>Type</b>: {{item.data.type}}
-            </div>
-            <div>
-                <b>Keywords</b>: {{item.data.keywords}}
-            </div>
-            <div>
-                <b>Duration</b>: {{item.data.duration}}
-            </div>
+        <div>
+            <b>Cost</b>: {{#ifGreater item.data.cost.motes 0}}{{ item.data.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.data.cost.willpower 0}} {{ item.data.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.data.cost.anima 0}}{{ item.data.cost.anima }}a, {{/ifGreater}}
+            {{#ifGreater item.data.cost.initiative 0}}{{ item.data.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.data.cost.silverxp 0}}{{ item.data.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.data.cost.goldxp 0}} {{
+            item.data.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.data.cost.whitexp 0}}{{ item.data.cost.whitexp }}wxp; {{/ifGreater}}
+        </div>
+        {{#ifGreater item.data.cost.health 0}}
+        <div>
+            <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
+        </div>
+        {{/ifGreater}}
+        <div>
+            <b>Mins</b>: {{item.data.ability}} {{item.data.requirement}}, Essence {{item.data.essence}}
+        </div>
+        <div>
+            <b>Type</b>: {{item.data.type}}
+        </div>
+        <div>
+            <b>Keywords</b>: {{item.data.keywords}}
+        </div>
+        <div>
+            <b>Duration</b>: {{item.data.duration}}
+        </div>
         {{/ifEquals}}
         {{{item.data.description}}}
     </div>

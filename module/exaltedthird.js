@@ -105,6 +105,10 @@ Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
+Handlebars.registerHelper('ifGreater', function(arg1, arg2, options) {
+  return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
+});
+
 $(document).ready(() => {
   const diceIconSelector = '#chat-controls .chat-control-icon .fa-dice-d20';
 

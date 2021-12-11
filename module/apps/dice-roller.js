@@ -400,13 +400,11 @@ export async function openAttackDialogue(actor, attribute = "dexterity", ability
                         }
                     }
                     else {
-                        let damage = parseInt(html.find('#damage').val()) || 0;
-                        let diceModifier = parseInt(html.find('#dice-modifier').val()) || 0;
+                        let dice = parseInt(html.find('#damage').val()) || 0;
                         let successModifier = parseInt(html.find('#damage-successes').val()) || 0;
                         let doubleSuccess = parseInt(html.find('#damage-double-success').val()) || 11;
                         let targetNumber = parseInt(html.find('#damage-target-number').val()) || 7;
 
-                        let dice = damage + diceModifier;
                         let baseDamage = dice;
 
                         if (attackType === 'decisive') {
