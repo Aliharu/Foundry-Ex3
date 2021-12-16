@@ -49,7 +49,7 @@ export async function openRollDialogue(actor) {
     }).render(true);
 }
 
-function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability', weaponType = 'melee') {
+function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability', weaponType = 'melee', attackType='withering') {
     let dice = 0;
     let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
 
@@ -125,7 +125,7 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
 
     if (rollType === 'attack') {
         dice += parseInt(html.find('#accuracy').val()) || 0;
-        if(weaponType !== 'melee') {
+        if(weaponType !== 'melee' && (characterType === 'npc' || attackType === 'withering')) {
             var range = html.find('#range').val();
             if(range !== 'short') {
                 dice += _getRangedAccuracy(weaponType, range);
@@ -419,7 +419,7 @@ export async function openAttackDialogue(actor, attribute = "dexterity", ability
             close: html => {
                 if (confirmed) {
                     // Accuracy
-                    var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'attack', weaponType);
+                    var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'attack', weaponType, attackType);
                     let defense = parseInt(html.find('#defense').val()) || 0;
                     let thereshholdSuccesses = rollResults.total - defense;
                     let damageResults = ``;

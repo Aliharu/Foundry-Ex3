@@ -362,17 +362,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, item.data.data.witheringaccuracy, item.data.data.witheringdamage, item.data.data.overwhelming, 'withering', item.data.data.weapontype, item.data.data.artifact);
+      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, item.data.data.witheringaccuracy, item.data.data.witheringdamage, item.data.data.overwhelming, 'withering', item.data.data.weapontype);
     });
 
     html.find('.roll-decisive').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, 0, 0, item.data.data.overwhelming, 'decisive', item.data.data.weapontype, item.data.data.artifact);
+      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, 0, item.data.data.overwhelming, 'decisive', item.data.data.weapontype);
     });
 
     html.find('.roll-gambit').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, 0, 0, item.data.data.overwhelming, 'gambit', item.data.data.weapontype, item.data.data.artifact);
+      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, 0, item.data.data.overwhelming, 'gambit', item.data.data.weapontype);
     });
 
     html.find('#anima-up').click(ev => {
