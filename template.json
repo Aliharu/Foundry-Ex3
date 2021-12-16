@@ -506,7 +506,8 @@
       "weapontype": "melee",
       "ability": "melee",
       "attribute": "dexterity",
-      "range": "short"
+      "range": "short",
+      "artifact": false
     },
     "armor": {
       "templates": [

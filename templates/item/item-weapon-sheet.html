@@ -10,7 +10,9 @@
                 <select name="data.weapontype" data-type="String">
                     {{#select data.data.weapontype}}
                     <option value="melee">{{localize "Ex3.Melee"}}</option>
+                    <option value="bolt">{{localize "Ex3.Bolt"}}</option>
                     <option value="ranged">{{localize "Ex3.Ranged"}}</option>
+                    <option value="siege">{{localize "Ex3.Siege"}}</option>
                     <option value="thrown">{{localize "Ex3.Thrown"}}</option>
                     {{/select}}
                 </select>
@@ -79,21 +81,24 @@
             </div>
             <div class="d-flex flex-center resources">
                 <div>
-                    <div>{{localize "Ex3.Accuracy"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Accuracy"}} </div>
                     <input type="number" name="data.witheringaccuracy" value="{{data.data.witheringaccuracy}}" data-dtype="Number" />
                 </div>
                 <div>
-                    <div>{{localize "Ex3.Damage"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Damage"}}</div>
                     <input type="number" name="data.witheringdamage" value="{{data.data.witheringdamage}}" data-dtype="Number" />
                 </div>
             </div>
+            <div class="d-flex flex-center mt-1 mb-1">
+                Use short range for ranged weapon accuracy.
+            </div>
             <div class="d-flex flex-center resources">
                 <div>
-                    <div>{{localize "Ex3.Defence"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Defence"}}</div>
                     <input type="number" name="data.defence" value="{{data.data.defence}}" data-dtype="Number" />
                 </div>
                 <div>
-                    <div>{{localize "Ex3.Overwhelming"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Overwhelming"}}</div>
                     <input type="number" name="data.overwhelming" value="{{data.data.overwhelming}}" data-dtype="Number" />
                 </div>
             </div>

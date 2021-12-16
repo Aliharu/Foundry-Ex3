@@ -7,10 +7,12 @@ const diceDialog = class extends Dialog {
         });
     }
 }
+
+
 export async function openRollDialogue(actor) {
     let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
-    const html = await renderTemplate(template, {'baseRoll': true});
+    const html = await renderTemplate(template, { 'baseRoll': true });
     // @ts-ignore
     new diceDialog({
         title: `Die 10 Roller`,
@@ -47,11 +49,11 @@ export async function openRollDialogue(actor) {
     }).render(true);
 }
 
-function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability') {
+function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability', weaponType = 'melee') {
     let dice = 0;
     let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
 
-    if(rollType === 'baseRoll') {
+    if (rollType === 'baseRoll') {
         dice = parseInt(html.find('#dice').val()) || 0;
     }
     else {
@@ -116,13 +118,19 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
             successModifier++;
             actorData.data.willpower.value--;
         }
-    
+
         actor.update(actorData);
-    
+
     }
 
     if (rollType === 'attack') {
         dice += parseInt(html.find('#accuracy').val()) || 0;
+        if(weaponType !== 'melee') {
+            var range = html.find('#range').val();
+            if(range !== 'short') {
+                dice += _getRangedAccuracy(weaponType, range);
+            }
+        }
     }
 
     let doubleSuccess = parseInt(html.find('#double-success').val()) || 11;
@@ -323,6 +331,34 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
     }).render(true);
 }
 
+function _getRangedAccuracy(weaponType, range) {
+    var ranges = {
+        "bolt-close": 1,
+        "bolt-medium": -1,
+        "bolt-long": -4,
+        "bolt-extreme": -6,
+
+        "ranged-close": -6,
+        "ranged-medium": -2,
+        "ranged-long": -4,
+        "ranged-extreme": -6,
+
+        "thrown-close": 1,
+        "thrown-medium": -1,
+        "thrown-long": -4,
+        "thrown-extreme": -6,
+
+        "siege-close": -2,
+        "siege-medium": 7, 
+        "siege-long": 5,
+        "siege-extreme": 3,
+    };
+
+    var key = `${weaponType}-${range}`;
+    var accuracyModifier = ranges[key];
+    return accuracyModifier;
+}
+
 function _getHighestAttribute(data) {
     var highestAttributeNumber = 0;
     var highestAttribute = "strength";
@@ -335,7 +371,7 @@ function _getHighestAttribute(data) {
     return highestAttribute;
 }
 
-export async function openAttackDialogue(actor, attribute = "dexterity", ability = "melee", accuracy, damage, overwhelming, attackType = 'decisive') {
+export async function openAttackDialogue(actor, attribute = "dexterity", ability = "melee", accuracy, damage, overwhelming, attackType = 'decisive', weaponType = 'melee') {
     const characterType = actor.data.type;
     let confirmed = false;
     accuracy = accuracy || 0;
@@ -370,7 +406,7 @@ export async function openAttackDialogue(actor, attribute = "dexterity", ability
         }
     }
     const template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
-    const html = await renderTemplate(template, { 'character-type': characterType, "attribute": attribute, "ability": ability, "stunt": characterType === "npc" ? "none" : "one" , "accuracy": accuracy, "damage": damage, 'defense': defense, 'overwhelming': overwhelming, 'soak': soak, 'attackType': attackType });
+    const html = await renderTemplate(template, { 'character-type': characterType, "attribute": attribute, "ability": ability, "stunt": characterType === "npc" ? "none" : "one", "accuracy": accuracy, "damage": damage, 'defense': defense, 'overwhelming': overwhelming, 'soak': soak, 'attackType': attackType, "range": weaponType === 'melee' ? 'close' : 'short' });
     await new Promise((resolve, reject) => {
         // @ts-ignore
         return new diceDialog({
@@ -383,7 +419,7 @@ export async function openAttackDialogue(actor, attribute = "dexterity", ability
             close: html => {
                 if (confirmed) {
                     // Accuracy
-                    var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'attack');
+                    var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'attack', weaponType);
                     let defense = parseInt(html.find('#defense').val()) || 0;
                     let thereshholdSuccesses = rollResults.total - defense;
                     let damageResults = ``;

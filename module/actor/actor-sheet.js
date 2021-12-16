@@ -361,15 +361,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.roll-withering').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-attribute"), $(ev.target).attr("data-ability"), $(ev.target).attr("data-accuracy"), $(ev.target).attr("data-damage"), $(ev.target).attr("data-overwhelming"), 'withering');
+      let item = this.actor.items.get($(ev.target).attr("data-item-id"));
+      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, item.data.data.witheringaccuracy, item.data.data.witheringdamage, item.data.data.overwhelming, 'withering', item.data.data.weapontype, item.data.data.artifact);
     });
 
     html.find('.roll-decisive').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-attribute"), $(ev.target).attr("data-ability"), 0, 0, $(ev.target).attr("data-overwhelming"), 'decisive');
+      let item = this.actor.items.get($(ev.target).attr("data-item-id"));
+      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, 0, 0, item.data.data.overwhelming, 'decisive', item.data.data.weapontype, item.data.data.artifact);
     });
 
     html.find('.roll-gambit').mousedown(ev => {
-      openAttackDialogue(this.actor, $(ev.target).attr("data-attribute"), $(ev.target).attr("data-ability"), 0, 0, $(ev.target).attr("data-overwhelming"), 'gambit');
+      let item = this.actor.items.get($(ev.target).attr("data-item-id"));
+      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, 0, 0, item.data.data.overwhelming, 'gambit', item.data.data.weapontype, item.data.data.artifact);
     });
 
     html.find('#anima-up').click(ev => {

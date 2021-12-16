@@ -320,6 +320,11 @@
 
     "Ex3.LegendarySize": "Legendary Size",
 
+    "Ex3.Siege": "Siege",
+    "Ex3.Artifact": "Artifact",
+    "Ex3.Range": "Range",
+    "Ex3.Bolt": "Bolt",
+
     "Ex3.Gambit": "Gambit",
     "Ex3.PowerSpent": "Power Spent",
     "Ex3.GambitDifficulty": "Gambit Difficulty"
