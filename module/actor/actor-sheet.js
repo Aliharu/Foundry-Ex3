@@ -360,6 +360,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       socialInfluence(this.actor, 'socialInfluence');
     });
 
+    html.find('.show-craft').mousedown(ev => {
+      this.showCraft();
+    });
+
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
       openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, item.data.data.witheringaccuracy, item.data.data.witheringdamage, item.data.data.overwhelming, 'withering', item.data.data.weapontype);
@@ -516,6 +520,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const html = await renderTemplate(template);
     new Dialog({
       title: `Tags`,
+      content: html,
+      buttons: {
+        cancel: { label: "Close"}
+      }
+    }).render(true);
+  }
+
+  async showCraft() {
+    const template = "systems/exaltedthird/templates/dialogues/craft-cheatsheet.html";
+    const html = await renderTemplate(template);
+    new Dialog({
+      title: `Craft`,
       content: html,
       buttons: {
         cancel: { label: "Close"}
