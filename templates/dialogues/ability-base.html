@@ -193,16 +193,20 @@
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
         <input id="reroll-number" type="number">
-        <label class="resource-label">{{localize "Ex3.RerollFailed"}}: </label>
+        <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
         <input type="checkbox" id="reroll-failed" name="data.rollable">
     </div>
 </div>
 
 {{#if hasDifficulty}}
-<div class="resource flex-center">
-    <label class="resource-label">{{localize difficultyString}}</label>
-</div>
-<div class="resource d-flex flex-center mb-1">
-    <input id="difficulty" type="number" value="{{difficulty}}">
+<div class="resource grid grid-2col flex-center">
+    <div>
+        <label class="resource-label">{{localize difficultyString}}</label>
+        <input id="difficulty" type="number" value="{{difficulty}}">
+    </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.GoalNumber"}} </label>
+        <input id="goal-number" type="number" value="{{goalNumber}}">
+    </div>
 </div>
 {{/if}}

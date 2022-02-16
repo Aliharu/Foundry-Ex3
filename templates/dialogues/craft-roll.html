@@ -1,0 +1,21 @@
+<form>
+    <div class="sheet-body exaltedthird">        
+        {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                Craft Modifiers
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <div class="resource grid grid-2col flex-center">
+                <label class="resource-label">{{localize "Ex3.AddInterval"}} </label>
+                <input type="checkbox" id="add-interval">
+                <label class="resource-label">{{localize "Ex3.ObjectivesCompleted"}} </label>
+                <input id="objectives-completed" type="number" value="{{objectivesCompleted}}">
+            </div>
+        </div>
+    </div>
+</form>

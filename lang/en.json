@@ -231,7 +231,10 @@
     "Ex3.Legendary": "Legendary",
 
     "Ex3.ProjectType": "Project Type",
+    "Ex3.CraftProjects": "Craft Projects",
     "Ex3.Basic": "Basic",
+    "Ex3.Rating": "Rating",
+
 
     "Ex3.Personal": "Personal",
     "Ex3.Peripheral": "Peripheral",
@@ -315,6 +318,9 @@
 
     "Ex3.SpecialAbilities": "Special Abilities",
     "Ex3.Difficulty": "Difficulty",
+    "Ex3.GoalNumber": "Goal Number",
+    "Ex3.AddInterval": "Add Interval",
+    "Ex3.ObjectivesCompleted": "Objectives Completed",
 
     "Ex3.Help": "Help",
 

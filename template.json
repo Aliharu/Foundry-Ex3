@@ -479,7 +479,8 @@
       "specialty",
       "martialart",
       "craft",
-      "specialability"
+      "specialability",
+      "craftproject"
     ],
     "templates": {
       "base": {
@@ -590,6 +591,13 @@
       "templates": [
         "base"
       ]
+    },
+    "craftproject": {
+      "templates": [
+        "base"
+      ],
+      "type": "basic",
+      "rating": 0
     }
   }
 }

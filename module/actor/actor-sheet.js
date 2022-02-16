@@ -2,7 +2,7 @@
 //   DiceRollerDialogue
 // } from "./dialogue-diceRoller.js";
 import TraitSelector from "../apps/trait-selector.js";
-import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue, shapeSorcery, socialInfluence } from "../apps/dice-roller.js";
+import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue, shapeSorcery, socialInfluence, completeCraftProject } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 
 /**
@@ -87,6 +87,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const crafts = [];
     const specialties = [];
     const specialAbilities = [];
+    const craftProjects = [];
 
 
     const charms = {
@@ -170,6 +171,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'specialability') {
         specialAbilities.push(i);
       }
+      else if (i.type === 'craftproject') {
+        craftProjects.push(i);
+      }
       else if (i.type === 'charm') {
         if (i.data.ability !== undefined) {
           charms[i.data.ability].list.push(i);
@@ -197,6 +201,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.charms = charms;
     actorData.spells = spells;
     actorData.specialabilities = specialAbilities;
+    actorData.projects = craftProjects;
   }
 
   /**
@@ -389,6 +394,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.item-chat').click(ev => {
       this._displayCard(ev);
+    });
+
+    html.find('.craft-project').click(ev => {
+      var type = $(ev.target).attr("data-type");
+      completeCraftProject(this.actor, type, 2);
+    });
+
+    html.find('.item-complete').click(ev => {
+      this._completeCraft(ev);
     });
 
     html.find('.item-spend').click(ev => {
@@ -805,6 +819,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
   }
 
+  async _completeCraft(ev){
+    let li = $(event.currentTarget).parents(".item");
+    let item = this.actor.items.get(li.data("item-id"));
+    completeCraftProject(this.actor, item.data.data.type, item.data.data.rating);
+  }
+  
   /**
 * Display the chat card for an Item as a Chat Message
 * @param {object} options          Options which configure the display of the item chat card

@@ -49,7 +49,7 @@ export async function openRollDialogue(actor) {
     }).render(true);
 }
 
-function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability', weaponType = 'melee', attackType='withering') {
+function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType = 'ability', weaponType = 'melee', attackType = 'withering') {
     let dice = 0;
     let successModifier = parseInt(html.find('#success-modifier').val()) || 0;
 
@@ -125,9 +125,9 @@ function _baseAbilityDieRoll(html, actor, characterType = 'character', rollType 
 
     if (rollType === 'attack') {
         dice += parseInt(html.find('#accuracy').val()) || 0;
-        if(weaponType !== 'melee' && (characterType === 'npc' || attackType === 'withering')) {
+        if (weaponType !== 'melee' && (characterType === 'npc' || attackType === 'withering')) {
             var range = html.find('#range').val();
-            if(range !== 'short') {
+            if (range !== 'short') {
                 dice += _getRangedAccuracy(weaponType, range);
             }
         }
@@ -222,7 +222,7 @@ export async function socialInfluence(actor, influenceType) {
     }
 }
 
-export async function openAbilityRollDialogue(actor, ability = "archery", attribute, type = "roll") {
+export async function openAbilityRollDialogue(actor, ability = "archery", attribute, type = "roll", difficulty = 0, goalNumber = 0) {
     const data = actor.data.data;
     const characterType = actor.data.type;
     let confirmed = false;
@@ -235,7 +235,6 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
         difficultyString = 'Ex3.Resolve';
     }
     const hasDifficulty = type === 'roll' || type === 'readIntentions' || type === 'social';
-    var difficulty = 0;
     if (characterType === "npc") {
         stunt = 'none';
         if (ability === "archery") {
@@ -258,7 +257,7 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
         }
     }
 
-    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt, 'difficulty': difficulty, 'hasDifficulty': hasDifficulty, 'difficultyString': difficultyString, "showPool": true });
+    const html = await renderTemplate(template, { 'character-type': characterType, 'attribute': attribute, ability: ability, 'stunt': stunt, 'difficulty': difficulty, 'goalNumber': goalNumber, 'hasDifficulty': hasDifficulty, 'difficultyString': difficultyString, "showPool": true });
     // @ts-ignore
     new diceDialog({
         title: `Die Roller`,
@@ -269,24 +268,31 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
         },
         close: html => {
             if (confirmed) {
+                let goalNumberLeft = 0;
                 var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'ability');
                 let resultString = ``;
                 let difficulty = parseInt(html.find('#difficulty').val()) || 0;
+                let goalNumber = parseInt(html.find('#goal-number').val()) || 0;
                 if (type === "joinBattle") {
                     resultString = `<h4 class="dice-total">${rollResults.total + 3} Initiative</h4>`;
                 }
                 if (hasDifficulty) {
+                    let extendedTest = ``;
+                    const threshholdSucceses = rollResults.total - difficulty;
+                    goalNumberLeft = Math.max(goalNumber - threshholdSucceses - 1, 0);
+                    if (goalNumber > 0) {
+                        extendedTest = `<h4 class="dice-total">Goal Number: ${goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
+                    }
                     if (rollResults.total < difficulty) {
-                        resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
+                        resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Check Failed</h4>${extendedTest}`;
                         for (let dice of rollResults.roll.dice[0].results) {
                             if (dice.result === 1 && rollResults.total === 0) {
-                                resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Botch</h4>`;
+                                resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Botch</h4>${extendedTest}`;
                             }
                         }
                     }
                     else {
-                        const threshholdSucceses = rollResults.total - difficulty;
-                        resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>`;
+                        resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>${extendedTest}`;
                     }
                 }
                 let the_content = `
@@ -326,6 +332,8 @@ export async function openAbilityRollDialogue(actor, ability = "archery", attrib
                     actorData.data.sorcery.motes += rollResults.total;
                     actor.update(actorData);
                 }
+                return ({ 'goalNumberLeft': goalNumberLeft });
+
             }
         }
     }).render(true);
@@ -349,7 +357,7 @@ function _getRangedAccuracy(weaponType, range) {
         "thrown-extreme": -6,
 
         "siege-close": -2,
-        "siege-medium": 7, 
+        "siege-medium": 7,
         "siege-long": 5,
         "siege-extreme": 3,
     };
@@ -369,6 +377,188 @@ function _getHighestAttribute(data) {
         }
     }
     return highestAttribute;
+}
+
+export async function completeCraftProject(actor, type, rating) {
+    const data = actor.data.data;
+    let difficultyString = 'Ex3.Difficulty';
+    const characterType = actor.data.type;
+    const attribute = _getHighestAttribute(data);
+    var goalNumber = 0;
+    var interval = 1;
+    var difficulty = 0;
+    var finished = false;
+    let objectivesCompleted = 0;
+
+    if (type === 'superior') {
+        interval = 6;
+        difficulty = 5;
+        if(rating === 2) {
+            goalNumber = 30;
+        }
+        if(rating === 3) {
+            goalNumber = 50;
+        }
+        if(rating === 4) {
+            goalNumber = 75;
+        }
+        if(rating === 5) {
+            goalNumber = 100;
+        }
+    }
+    else if (type === 'legendary') {
+        interval = 6;
+        difficulty = 5;
+        goalNumber = 200;
+    }
+
+    var confirmed = false;
+    const template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
+
+    while(interval > 0 && (goalNumber > 0 || type === 'basic' || type === 'major') && !finished) {
+        const html = await renderTemplate(template, {'character-type': characterType, 'attribute': attribute, ability: 'craft', 'stunt': 'one', 'difficulty': difficulty, 'goalNumber': goalNumber, 'hasDifficulty': true, 'difficultyString': difficultyString, "showPool": true, "objectivesCompleted": objectivesCompleted });
+        var rollResults = await new Promise((resolve, reject) => {
+            // @ts-ignore
+            return new diceDialog({
+                title: `Craft Intervals Left: ${interval}`,
+                content: html,
+                buttons: {
+                    roll: { label: "Roll it!", callback: () => confirmed = true },
+                    cancel: { label: "Cancel", callback: () => confirmed = false }
+                },
+                close: html => {
+                    if (confirmed) {
+                        var rollResults = _baseAbilityDieRoll(html, actor, characterType, 'ability');
+                        let resultString = ``;
+                        let projectStatus = ``;
+                        let craftFailed = false;
+                        let craftSuccess = false;
+                        let difficulty = parseInt(html.find('#difficulty').val()) || 0;
+                        let goalNumber = parseInt(html.find('#goal-number').val()) || 0;
+                        objectivesCompleted = parseInt(html.find('#objectives-completed').val()) || 0;
+                        if(html.find('#add-interval').is(':checked')) {
+                            interval++;
+                        }
+                        let goalNumberLeft = goalNumber;
+                        let extendedTest = ``;
+                        const threshholdSucceses = rollResults.total - difficulty;
+                        if (goalNumber > 0) {
+                            extendedTest = `<h4 class="dice-total">Goal Number: ${goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
+                        }
+                        if (rollResults.total < difficulty) {
+                            resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Check Failed</h4>${extendedTest}`;
+                            if(interval === 1) {
+                                craftFailed = true;
+                            }
+                            for (let dice of rollResults.roll.dice[0].results) {
+                                if (dice.result === 1 && rollResults.total === 0) {
+                                    finished = true;
+                                    resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Botch</h4>`;
+                                    craftFailed = true;
+                                }
+                            }
+                        }
+                        else {
+                            if(goalNumber > 0) {
+                                goalNumberLeft = Math.max(goalNumber - threshholdSucceses - 1, 0);
+                                extendedTest = `<h4 class="dice-total">Goal Number: ${goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
+                                if(goalNumberLeft > 0 && interval === 1) {
+                                    craftFailed = true;
+                                }
+                                else if (goalNumberLeft === 0) {
+                                    craftSuccess = true;
+                                }
+                            }
+                            else {
+                                craftSuccess = true;
+                            }
+                            resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>${extendedTest}`;
+                        }
+
+                        if(craftFailed) {
+                            projectStatus = `<h4 class="dice-total">Craft Project Failed</h4>`;
+                        }
+                        if(craftSuccess) {
+                            const actorData = duplicate(actor);
+                            var silverXPGained = 0;
+                            var goldXPGained = 0;
+                            var whiteXPGained = 0;
+                            if(type === 'basic') {
+                                if(threshholdSucceses >= 3) {
+                                    silverXPGained = 3 * objectivesCompleted;
+                                }
+                                else {
+                                    silverXPGained = 2 * objectivesCompleted;
+                                }
+                                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
+                            }
+                            else if(type === "major") {
+                                if(threshholdSucceses >= 3) {
+                                    silverXPGained = objectivesCompleted;
+                                    goldXPGained = 3 * objectivesCompleted;
+                                }
+                                else {
+                                    silverXPGained = objectivesCompleted;
+                                    goldXPGained = 2 * objectivesCompleted;
+                                }
+                                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
+                            }
+                            else if (type === "superior") {
+                                if(objectivesCompleted > 0) {
+                                    whiteXPGained = (rating - 1) + rating;
+                                    goldXPGained = (rating * 2) * interval;
+                                }
+                                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                            }
+                            else if (type === "legendary") {
+                                if(objectivesCompleted > 0) {
+                                    whiteXPGained = 10;
+                                }
+                                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                            }
+                            else {
+                                projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
+                            }
+                            actorData.data.craft.experience.silver.value += silverXPGained;
+                            actorData.data.craft.experience.gold.value += goldXPGained;
+                            actorData.data.craft.experience.white.value += whiteXPGained;
+                            actor.update(actorData);
+                        }
+
+                        let the_content = `
+                <div class="chat-card">
+                    <div class="card-content">Dice Roll</div>
+                    <div class="card-buttons">
+                        <div class="flexrow 1">
+                            <div>Dice Roller - Number of Successes<div class="dice-roll">
+                                    <div class="dice-result">
+                                        <h4 class="dice-formula">${rollResults.dice} Dice + ${rollResults.bonusSuccesses} successes</h4>
+                                        <div class="dice-tooltip">
+                                            <div class="dice">
+                                                <ol class="dice-rolls">${rollResults.getDice}</ol>
+                                            </div>
+                                        </div>
+                                        <h4 class="dice-total">${rollResults.total} Succeses</h4>
+                                        ${resultString}
+                                        ${projectStatus}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `
+                        ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: actor }), content: the_content, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: rollResults.roll });
+                        return resolve({ 'goalNumberLeft': goalNumberLeft });
+
+                    }
+                }
+            }).render(true);
+        });
+
+        goalNumber = rollResults.goalNumberLeft;
+        interval--;
+    }
 }
 
 export async function openAttackDialogue(actor, attribute = "dexterity", ability = "melee", accuracy, damage, overwhelming, attackType = 'decisive', weaponType = 'melee') {
