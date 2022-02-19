@@ -2,8 +2,6 @@
 
 Foundry system module for playing exalted third edition.
 
-Currently a work in progress
-
 ## Current system features
 
 Player Character sheet

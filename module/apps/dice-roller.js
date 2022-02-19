@@ -416,7 +416,7 @@ export async function completeCraftProject(actor, type, rating) {
     const template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
 
     while(interval > 0 && (goalNumber > 0 || type === 'basic' || type === 'major') && !finished) {
-        const html = await renderTemplate(template, {'character-type': characterType, 'attribute': attribute, ability: 'craft', 'stunt': 'one', 'difficulty': difficulty, 'goalNumber': goalNumber, 'hasDifficulty': true, 'difficultyString': difficultyString, "showPool": true, "objectivesCompleted": objectivesCompleted });
+        const html = await renderTemplate(template, {'character-type': characterType, "exalt": data.details.exalt, 'attribute': attribute, ability: 'craft', 'stunt': 'one', 'difficulty': difficulty, 'goalNumber': goalNumber, 'hasDifficulty': true, 'difficultyString': difficultyString, "showPool": true, "objectivesCompleted": objectivesCompleted });
         var rollResults = await new Promise((resolve, reject) => {
             // @ts-ignore
             return new diceDialog({
