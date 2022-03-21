@@ -48,11 +48,13 @@ Hooks.once('init', async function() {
   // Pre-load templates
   loadTemplates([
     "systems/exaltedthird/templates/dialogues/ability-base.html",
+    "systems/exaltedthird/templates/dialogues/accuracy-roll.html",
+    "systems/exaltedthird/templates/dialogues/damage-roll.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",
     "systems/exaltedthird/templates/actor/combat-tab.html",
     "systems/exaltedthird/templates/actor/charm-list.html",
-    "systems/exaltedthird/templates/actor/intimacies-list.html",
+    "systems/exaltedthird/templates/actor/social-tab.html",
   ]);
 
   Combatant.prototype._getInitiativeFormula = function() {

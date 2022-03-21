@@ -353,6 +353,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       joinBattle(this.actor);
     });
 
+    // html.find('.accuracy').mousedown(ev => {
+    //   accuracy(this.actor);
+    // });
+
+    // html.find('.damage').mousedown(ev => {
+    //   damage(this.actor);
+    // });
+
     html.find('.shape-sorcery').mousedown(ev => {
       shapeSorcery(this.actor);
     });

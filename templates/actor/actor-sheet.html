@@ -137,9 +137,9 @@
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="stats">{{localize "Ex3.Stats"}}</a>
     <a class="item" data-tab="combat">{{localize "Ex3.Combat"}}</a>
+    <a class="item" data-tab="social">{{localize "Ex3.Social"}}</a>
     <a class="item" data-tab="charms">{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</a>
     <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
-    <a class="item" data-tab="intimacies">{{localize "Ex3.Intimacies"}}</a>
     <a class="item" data-tab="character">{{localize "Ex3.Character"}}</a>
     <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
   </nav>
@@ -292,8 +292,8 @@
     </div>
 
     {{!-- Intimacy Tab --}}
-    <div class="tab intimacies" data-group="primary" data-tab="intimacies">
-      {{> systems/exaltedthird/templates/actor/intimacies-list.html}}
+    <div class="tab social" data-group="primary" data-tab="social">
+      {{> systems/exaltedthird/templates/actor/social-tab.html}}
     </div>
 
     {{!-- Character Tab --}}

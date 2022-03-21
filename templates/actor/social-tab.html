@@ -1,18 +1,31 @@
+<div class="grid grid-4col flex-group-center">
+  <div>
+      <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+      <input type="number" name="data.resolve.value" value="{{data.data.resolve.value}}"
+          data-dtype="Number" />
+  </div>
+  <div>
+      <label class="resource-label">{{localize "Ex3.Guile"}}</label>
+      <input type="number" name="data.guile.value" value="{{data.data.guile.value}}"
+          data-dtype="Number" />
+  </div>
+  <div>
+      <label class="resource-label">{{localize "Ex3.ReadIntentions"}}</label>
+      <button class="roll-button read-intentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
+  </div>
+  <div>
+      <label class="resource-label">{{localize "Ex3.SocialInfluence"}}</label>
+      <button class="roll-button social-influence"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
+  </div>
+</div>
 <ol class="items-list">
-  <li>
-    <div class="resource-label flex-center list-section-header">
+  <div class="resource-label list-section-header d-flex flex-between">
+    <div>
       {{localize "Ex3.Intimacies"}}
     </div>
-  </li>
-  <li class="item flexrow item-header">
-    <div class="item-image"></div>
-    <div class="item-name">Name</div>
-    <div class="item-name">Strength</div>
-    <div class="item-controls">
-      <a class="item-control item-create" title="Create intimacy" data-type="intimacy"><i class="fas fa-plus"></i>
-        Add</a>
-    </div>
-  </li>
+    <a class="item-control item-create" title="Create intimacy" data-type="intimacy"><i
+        class="fas fa-plus"></i>Add Intimacy</a>
+  </div>
   {{#each actor.intimacies as |item id|}}
   <li class="item flexrow item-row" data-item-id="{{item._id}}">
     <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>

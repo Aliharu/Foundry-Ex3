@@ -1,63 +1,121 @@
 <form>
     <div class="sheet-body exaltedthird">
-        <div class="resource flex-center {{#if decisive}} grid-2col {{/if}} mb-2">
-            <div>
-                <label class="resource-label">{{localize "Ex3.Successes"}} </label>
-                <input id="successes" type="number" value="{{successes}}">
-            </div>
-            {{#if decisive}}
-            <div>
-                <label class="resource-label">{{localize "Ex3.Power"}} </label>
-                <input id="power" type="number" value="{{power}}">
-            </div>
-            {{/if}}
+        <div class="flex-center resource-label" style="font-weight: bold;">
+            Damage
         </div>
-        {{#if decisive}}
-            <div class="flex-center resource-label" style="font-weight: bold;">
-                Damage
-            </div>
-            <div>
-                <div class="resource grid grid-2col flex-center">
-                    <div>
-                        <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
-                        <input id="damage-dice" type="number">
-                    </div>
-                    <div>
-                        <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
-                        <input id="damage-successes" type="number">
-                    </div>
+        <div>
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
+                    <input id="damage" type="number" value="{{damage}}">
                 </div>
-                <div class="resource grid grid-4col flex-center">
-                    <label class="check-button" style="align-items:center;display:flex;">
-                        <input id="double-damage-sevens" name="double-damage-sevens" type="checkbox">
-                        <span>Db 7+s</span>
-                    </label>
-                    <label class="check-button" style="align-items:center;display:flex;">
-                        <input id="double-damage-eights" name="double-damage-eights" type="checkbox">
-                        <span>Db 8+s</span>
-                    </label>
-                    <label class="check-button" style="align-items:center;display:flex;">
-                        <input id="double-damage-nines" name="double-damage-nines" type="checkbox">
-                        <span>Db 9+s</span>
-                    </label>
-                    <label class="check-button" style="align-items:center;display:flex;">
-                        <input id="double-damage-tens" name="double-damage-tens" type="checkbox" checked>
-                        <span>Db 10s</span>
-                    </label>
-                    <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
-                    <input type="checkbox" id="reroll-damage-failed" name="data.rollable">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
+                    <input id="damage-successes" type="number">
                 </div>
             </div>
-        {{/if}}
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
+                    {{#ifEquals attackType 'withering'}}
+                    <input id="damage-double-success" type="number" value="10">
+                    {{else}}
+                    <input id="damage-double-success" type="number" value="11">
+                    {{/ifEquals}}
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+                    <input id="damage-target-number" type="number" value="7">
+                </div>
+            </div>
+            <div class="resource flex-center">
+                <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
+            </div>
+            <div class="resource d-flex flex-center">
+                <div>
+                    <div>1</div>
+                    <input id="damage-reroll-1" name="reroll-1" type="checkbox">
+                </div>
+                <div>
+                    <div>2</div>
+                    <input id="damage-reroll-2" name="reroll-2" type="checkbox">
+                </div>
+                <div>
+                    <div>3</div>
+                    <input id="damage-reroll-3" name="reroll-3" type="checkbox">
+                </div>
+                <div>
+                    <div>4</div>
+                    <input id="damage-reroll-4" name="reroll-4" type="checkbox">
+                </div>
+                <div>
+                    <div>5</div>
+                    <input id="damage-reroll-5" name="reroll-5" type="checkbox">
+                </div>
+                <div>
+                    <div>6</div>
+                    <input id="damage-reroll-6" name="reroll-6" type="checkbox">
+                </div>
+                <div>
+                    <div>7</div>
+                    <input id="damage-reroll-7" name="reroll-7" type="checkbox">
+                </div>
+                <div>
+                    <div>8</div>
+                    <input id="damage-reroll-8" name="reroll-8" type="checkbox">
+                </div>
+                <div>
+                    <div>9</div>
+                    <input id="damage-reroll-9" name="reroll-9" type="checkbox">
+                </div>
+                <div>
+                    <div>10</div>
+                    <input id="damage-reroll-10" name="reroll-10" type="checkbox">
+                </div>
+            </div>
+        </div>
+
+        {{#ifEquals attackType 'withering'}}
 
         <div class="flex-center resource-label" style="font-weight: bold;">
-            Defender
+            {{localize "Ex3.Soak"}}
         </div>
-        <div class="resource {{#if decisive}} grid-2col {{/if}} flex-center mb-2">
-            <input placeholder="Defence" id="defence" type="number">
-            {{#if decisive}}
-            <input placeholder="Soak" id="soak" type="number">
-            {{/if}}
+        <div class="resource flex-center mb-2">
+            <input placeholder="Soak" id="soak" type="number" value="{{soak}}">
         </div>
+        {{/ifEquals}}
+
+        {{#ifEquals attackType 'gambit'}}
+        <div class="flex-center resource-label" style="font-weight: bold;">
+            {{localize "Ex3.GambitDifficulty"}}
+        </div>
+        <div class="resource flex-center mb-2">
+            <input id="gambit-difficulty" type="number" value="0">
+        </div>
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                Gambits (Difficulty)
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <p>
+                <b>Disarm (3)</b>: Knock away opponents weapon to short range.  The weapon requires a draw/ready action to retrieve.
+            </p>
+            <p>
+                <b>Unhorse (4)</b>: Knock opponent off his mount, Target suffers 1 point of bashing damage and is knocked prone.
+            </p>
+            <p>
+                <b>Distract (3-5)</b>: Declare an ally (who is not crashed), Tranfer the difficulty of this gambit to the ally, this initiative must be used to attack the gambits target on the next turn or it is lost.
+            </p>
+            <p>
+                <b>Grapple (2)</b>: If this gambit succeeds makle a contested control roll (Stength + Brawl/Martial Arts) with the opponent to gain rounds of control.  See page 200 of Ex3 Core for the full grapple effects.
+            </p>
+
+        </div>
+        {{/ifEquals}}
+
     </div>
 </form>

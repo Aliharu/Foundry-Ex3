@@ -1,0 +1,41 @@
+<form>
+    <div class="sheet-body exaltedthird">
+        <div class="flex-center resource-label" style="font-weight: bold;">
+            Accuracy
+        </div>
+        <div>
+            {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
+            <div class="resource grid grid-2col flex-center">
+                <label class="resource-label">{{localize "Ex3.Range"}}</label>
+                <select id="range" name="range" data-type="String">
+                    {{#select range}}
+                    <option value="close">Close</option>
+                    <option value="short">Short</option>
+                    <option value="medium">Medium</option>
+                    <option value="long">Long</option>
+                    <option value="extreme">Extreme</option>
+                    {{/select}}
+                </select>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Accuracy"}}</label>
+                    <input id="accuracy" type="number" value="{{accuracy}}">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Defense"}} </label>
+                    <input id="defense" type="number" value="{{defense}}">
+                </div>
+                {{#ifEquals attackType 'withering'}}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
+                    <input id="overwhelming" type="number" value="{{overwhelming}}">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
+                    <input id="postSoakDamage" type="number">
+                </div>
+                {{/ifEquals}}
+            </div>
+        </div>
+        </div>
+    </div>
+</form>
