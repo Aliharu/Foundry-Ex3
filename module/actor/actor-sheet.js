@@ -2,7 +2,7 @@
 //   DiceRollerDialogue
 // } from "./dialogue-diceRoller.js";
 import TraitSelector from "../apps/trait-selector.js";
-import { joinBattle, openAbilityRollDialogue, openAttackDialogue, openRollDialogue, shapeSorcery, socialInfluence, completeCraftProject } from "../apps/dice-roller.js";
+import { RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 
 /**
@@ -258,7 +258,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         label: game.i18n.localize('Ex3.Roll'),
         class: 'roll-dice',
         icon: 'fas fa-dice',
-        onclick: () => openRollDialogue(),
+        onclick: (ev) => new RollForm(this.actor, {event:ev}, {}, {rollType: 'base'}).render(true),
       };
       buttons = [rollButton, ...buttons];
     }
@@ -332,45 +332,66 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('#rollDice').mousedown(ev => {
-      openRollDialogue(this.actor);
+      // openRollDialogue(this.actor);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'base'}).render(true);
     });
 
     html.find('.rollAbility').mousedown(ev => {
-      openAbilityRollDialogue(this.actor);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'ability'}).render(true);
     });
 
     html.find('.roll-ability').mousedown(ev => {
       var ability = $(ev.target).attr("data-ability");
-      openAbilityRollDialogue(this.actor, ability);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'ability', ability: ability}).render(true);
     });
 
     html.find('.roll-pool').mousedown(ev => {
       var pool = $(ev.target).attr("data-pool");
-      openAbilityRollDialogue(this.actor, pool);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'ability', pool: pool}).render(true);
     });
 
     html.find('.join-battle').mousedown(ev => {
-      joinBattle(this.actor);
+      if (this.actor.data.type=== "npc") {
+          new RollForm(this.actor, {event:ev}, {}, {rollType: 'joinBattle', pool: 'joinbattle'}).render(true);
+      }
+      else {
+          new RollForm(this.actor, {event:ev}, {}, {rollType: 'joinBattle', ability: 'awareness', attribute: 'wits'}).render(true);
+      }
     });
 
-    // html.find('.accuracy').mousedown(ev => {
-    //   accuracy(this.actor);
-    // });
+    html.find('.accuracy').mousedown(ev => {
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'accuracy'}).render(true);
+    });
 
-    // html.find('.damage').mousedown(ev => {
-    //   damage(this.actor);
-    // });
+    html.find('.damage').mousedown(ev => {
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'damage'}).render(true);
+    });
 
     html.find('.shape-sorcery').mousedown(ev => {
-      shapeSorcery(this.actor);
+      if (this.actor.data.type === "npc") {
+          new RollForm(this.actor, {event:ev}, {}, {rollType: 'sorcery', pool: 'sorcery'}).render(true);
+      }
+      else {
+        new RollForm(this.actor, {event:ev}, {}, {rollType: 'sorcery', ability: 'occult', attribute: 'intelligence'}).render(true);
+      }
     });
 
     html.find('.read-intentions').mousedown(ev => {
-      socialInfluence(this.actor, 'readIntentions');
+      if (this.actor.data.type === "npc") {
+        new RollForm(this.actor, {event:ev}, {}, {rollType: 'readIntentions', pool: 'readintentions'}).render(true);
+      }
+      else {
+        new RollForm(this.actor, {event:ev}, {}, {rollType: 'readIntentions', ability: 'socialize', attribute: 'perception'}).render(true);
+      }
     });
 
     html.find('.social-influence').mousedown(ev => {
-      socialInfluence(this.actor, 'socialInfluence');
+      if (this.actor.data.type === "npc") {
+        new RollForm(this.actor, {event:ev}, {}, {rollType: 'social', pool: 'social'}).render(true);
+      }
+      else {
+        new RollForm(this.actor, {event:ev}, {}, {rollType: 'social', ability: 'socialize', attribute: 'charisma'}).render(true);
+      }
     });
 
     html.find('.show-craft').mousedown(ev => {
@@ -379,17 +400,20 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, item.data.data.witheringaccuracy, item.data.data.witheringdamage, item.data.data.overwhelming, 'withering', item.data.data.weapontype);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'withering', attribute: item.data.data.attribute, ability: item.data.data.ability, accuracy: item.data.data.witheringaccuracy, damage: item.data.data.witheringdamage, overwhelming: item.data.data.overwhelming, weaponType: item.data.data.weapontype}).render(true);
     });
 
     html.find('.roll-decisive').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, 0, item.data.data.overwhelming, 'decisive', item.data.data.weapontype);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'decisive', attribute: item.data.data.attribute, ability: item.data.data.ability, accuracy: this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, damage: 0, overwhelming: item.data.data.overwhelming, weaponType: item.data.data.weapontype}).render(true);
+
+      // openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, 0, item.data.data.overwhelming, 'decisive', item.data.data.weapontype);
     });
 
     html.find('.roll-gambit').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, 0, item.data.data.overwhelming, 'gambit', item.data.data.weapontype);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'gambit', attribute: item.data.data.attribute, ability: item.data.data.ability, accuracy: this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, damage: 0, overwhelming: item.data.data.overwhelming, weaponType: item.data.data.weapontype}).render(true);
+      // openAttackDialogue(this.actor, item.data.data.attribute, item.data.data.ability, this.actor.type === 'npc' ? item.data.data.witheringaccuracy : 0, 0, item.data.data.overwhelming, 'gambit', item.data.data.weapontype);
     });
 
     html.find('#anima-up').click(ev => {
@@ -406,7 +430,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.craft-project').click(ev => {
       var type = $(ev.target).attr("data-type");
-      completeCraftProject(this.actor, type, 2);
+      // completeCraftProject(this.actor, type, 2);
+      new RollForm(this.actor, {event:ev}, {}, {rollType: 'craft', ability: "craft", craftType : type, craftRating: 2}).render(true);
     });
 
     html.find('.item-complete').click(ev => {
@@ -830,7 +855,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async _completeCraft(ev){
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
-    completeCraftProject(this.actor, item.data.data.type, item.data.data.rating);
+    new RollForm(this.actor, {event:ev}, {}, {rollType: 'craft', ability: "craft", craftType : item.data.data.type, craftRating: item.data.data.rating}).render(true);
   }
   
   /**

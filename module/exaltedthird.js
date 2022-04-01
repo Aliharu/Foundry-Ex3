@@ -6,7 +6,7 @@ import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
 import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
 
-import { openRollDialogue } from "./apps/dice-roller.js";
+import { RollForm } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 
@@ -116,7 +116,7 @@ $(document).ready(() => {
 
   $(document).on('click', diceIconSelector, ev => {
     ev.preventDefault();
-    openRollDialogue();
+    new RollForm(null, {event:ev}, {}, {rollType: 'base'}).render(true);
   });
 });
 

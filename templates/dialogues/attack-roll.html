@@ -1,4 +1,10 @@
 <form>
-    {{> systems/exaltedthird/templates/dialogues/accuracy-roll.html}}
-    {{> systems/exaltedthird/templates/dialogues/damage-roll.html}}
+    <div class="sheet-body exaltedthird">
+        {{> systems/exaltedthird/templates/dialogues/accuracy-roll.html}}
+        {{> systems/exaltedthird/templates/dialogues/damage-roll.html}}
+        <div class="d-flex">
+            <button type="button" id="roll-button">Roll</button>
+            <button type="button" id="cancel">Cancel</button>
+        </div>
+    </div>
 </form>

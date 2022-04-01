@@ -322,6 +322,7 @@
     "Ex3.Difficulty": "Difficulty",
     "Ex3.GoalNumber": "Goal Number",
     "Ex3.AddInterval": "Add Interval",
+    "Ex3.Intervals": "Intervals",
     "Ex3.ObjectivesCompleted": "Objectives Completed",
 
     "Ex3.Help": "Help",
@@ -333,6 +334,7 @@
     "Ex3.Siege": "Siege",
     "Ex3.Artifact": "Artifact",
     "Ex3.Range": "Range",
+    "Ex3.WeaponType": "Weapon Type",
     "Ex3.Bolt": "Bolt",
 
     "Ex3.Gambit": "Gambit",

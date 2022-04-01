@@ -1,13 +1,13 @@
-{{#if baseRoll}}
+{{#ifEquals data.rollType 'base'}}
 <label class="resource-label">{{localize "Ex3.Dice"}}</label>
-<div class="form-group"><input id="dice" type="number"></div>
+<div class="form-group"><input name="object.dice" value="{{data.dice}}" type="number"></div>
 {{else}}
 <div class="resource grid grid-2col flex-center">
-    {{#ifEquals character-type 'character'}}
+    {{#ifEquals data.characterType 'character'}}
 
     <label class="resource-label">{{localize "Ex3.Attribute"}}: </label>
-    <select id="attribute" name="attribute" data-type="String">
-        {{#select attribute}}
+    <select name="object.attribute" value="{{data.attribute}}" data-type="String">
+        {{#select data.attribute}}
         <option value="strength">{{localize "Ex3.Strength"}}</option>
         <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
         <option value="stamina">{{localize "Ex3.Stamina"}}</option>
@@ -21,8 +21,8 @@
     </select>
 
     <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
-    <select id="ability" name="ability" data-type="String">
-        {{#select ability}}
+    <select name="object.ability" value="{{data.ability}}" data-type="String">
+        {{#select data.ability}}
         <option value="archery">{{localize "Ex3.Archery"}}</option>
         <option value="athletics">{{localize "Ex3.Athletics"}}</option>
         <option value="awareness">{{localize "Ex3.Awareness"}}</option>
@@ -55,12 +55,12 @@
     {{/ifEquals}}
 
 
-    {{#if showPool}}
-        {{#ifEquals character-type 'npc'}}
+    {{#if data.showPool}}
+        {{#ifEquals data.characterType 'npc'}}
 
         <label class="resource-label">{{localize "Ex3.Pool"}}: </label>
-        <select id="pool" name="pool" data-type="String">
-            {{#select ability}}
+        <select name="object.pool" value="{{data.pool}}" data-type="String">
+            {{#select data.pool}}
             <option value="administration">{{localize "Ex3.Administration"}}</option>
             <option value="command">{{localize "Ex3.Command"}}</option>
             <option value="craft">{{localize "Ex3.Craft"}}</option>
@@ -86,8 +86,8 @@
 
 
     <label class="resource-label">{{localize "Ex3.StuntLevel"}}:</label>
-    <select id="stunt" name="stunt" data-type="String">
-        {{#select stunt}}
+    <select name="object.stunt" value="{{data.stunt}}" data-type="String">
+        {{#select data.stunt}}
         <option value="none">None</option>
         <option value="one">One</option>
         <option value="two">Two</option>
@@ -95,25 +95,30 @@
         {{/select}}
     </select>
 </div>
-{{/if}}
+{{/ifEquals}}
 
 <div class="resource grid grid-2col flex-center">
     <div>
         <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-        <input id="target-number" type="number" value="7">
+        <input name="object.targetNumber" value="{{data.targetNumber}}" type="number">
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.SuccessModifier"}} </label>
-        <input id="success-modifier" type="number">
+        <input name="object.successModifier" value="{{data.successModifier}}" type="number">
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-        <input id="double-success" type="number" value="10">
+        <input name="object.doubleSuccess" value="{{data.doubleSuccess}}" type="number">
     </div>
+
+    {{#ifEquals data.rollType 'base'}}
+    {{else}}
     <div>
         <label class="resource-label">{{localize "Ex3.DiceModifier"}} </label>
-        <input id="dice-modifier" type="number">
+        <input name="object.diceModifier" value="{{data.diceModifier}}" type="number">
     </div>
+    {{/ifEquals}}
+
 </div>
 <div class="resource flex-center">
     <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
@@ -121,65 +126,70 @@
 <div class="resource d-flex flex-center">
     <div>
         <div>1</div>
-        <input id="reroll-1" name="reroll-1" type="checkbox">
+        <input name="object.reroll.one.status" type="checkbox">
     </div>
     <div>
         <div>2</div>
-        <input id="reroll-2" name="reroll-2" type="checkbox">
+        <input name="object.reroll.two.status" type="checkbox">
     </div>
     <div>
         <div>3</div>
-        <input id="reroll-3" name="reroll-3" type="checkbox">
+        <input name="object.reroll.three.status" type="checkbox">
     </div>
     <div>
         <div>4</div>
-        <input id="reroll-4" name="reroll-4" type="checkbox">
+        <input name="object.reroll.four.status" type="checkbox">
     </div>
     <div>
         <div>5</div>
-        <input id="reroll-5" name="reroll-5" type="checkbox">
+        <input name="object.reroll.five.status" type="checkbox">
     </div>
     <div>
         <div>6</div>
-        <input id="reroll-6" name="reroll-6" type="checkbox">
+        <input name="object.reroll.six.status" type="checkbox">
     </div>
     <div>
         <div>7</div>
-        <input id="reroll-7" name="reroll-7" type="checkbox">
+        <input name="object.reroll.seven.status" type="checkbox">
     </div>
     <div>
         <div>8</div>
-        <input id="reroll-8" name="reroll-8" type="checkbox">
+        <input name="object.reroll.eight.status" type="checkbox">
     </div>
     <div>
         <div>9</div>
-        <input id="reroll-9" name="reroll-9" type="checkbox">
+        <input name="object.reroll.nine.status" type="checkbox">
     </div>
     <div>
         <div>10</div>
-        <input id="reroll-10" name="reroll-10" type="checkbox">
+        <input name="object.reroll.ten.status" type="checkbox">
     </div>
 </div>
 
-{{#if baseRoll}}
+{{#ifEquals data.rollType 'base'}}
 {{else}}
 <div class="resource grid grid-4col flex-center">
     <label class="resource-label">{{localize "Ex3.WoundPenalty"}}: </label>
-    <input checked type="checkbox" id="wound-penalty" name="data.rollable">
+    <input type="checkbox" name="object.woundPenalty" value="{{data.woundPenalty}}">
 
     <label class="resource-label">{{localize "Ex3.Flurry"}}: </label>
-    <input type="checkbox" id="flurry" name="data.rollable">
+    <input type="checkbox" name="object.isFlurry" value="{{data.isFlurry}}">
 
     <label class="resource-label">{{localize "Ex3.ArmorPenalty"}}: </label>
-    <input type="checkbox" id="armor-penalty" name="data.rollable">
+    <input type="checkbox" name="object.armorPenalty" value="{{data.armorPenalty}}">
 
     <label class="resource-label">{{localize "Ex3.Specialty"}}: </label>
-    <input type="checkbox" id="specialty" name="data.rollable">
+    <input type="checkbox" name="object.hasSpecialty" value="{{data.hasSpecialty}}">
 
     <label class="resource-label">{{localize "Ex3.Willpower"}}: </label>
-    <input type="checkbox" id="willpower" name="data.rollable">
+    <input type="checkbox" name="object.willpower" value="{{data.willpower}}">
+
+    {{#ifEquals data.rollType 'accuracy'}}
+        <label class="resource-label">{{localize "Ex3.Withering"}}: </label>
+        <input type="checkbox" name="object.isWithering" value="{{data.isWithering}}">
+    {{/ifEquals}}
 </div>
-{{/if}}
+{{/ifEquals}}
 
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
@@ -192,21 +202,21 @@
 <div style="display:none;">
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
-        <input id="reroll-number" type="number">
+        <input name="object.rerollNumber" value="{{data.rerollNumber}}" type="number">
         <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
-        <input type="checkbox" id="reroll-failed" name="data.rollable">
+        <input type="checkbox" name="object.rerollFailed" value="{{data.rerollFailed}}">
     </div>
 </div>
 
-{{#if hasDifficulty}}
+{{#if data.hasDifficulty}}
 <div class="resource grid grid-2col flex-center">
     <div>
-        <label class="resource-label">{{localize difficultyString}}</label>
-        <input id="difficulty" type="number" value="{{difficulty}}">
+        <label class="resource-label">{{localize data.difficultyString}}</label>
+        <input type="number" name="object.difficulty" value="{{data.difficulty}}">
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.GoalNumber"}} </label>
-        <input id="goal-number" type="number" value="{{goalNumber}}">
+        <input type="number" name="object.goalNumber" value="{{data.goalNumber}}">
     </div>
 </div>
 {{/if}}

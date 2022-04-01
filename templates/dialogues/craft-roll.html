@@ -1,27 +1,19 @@
 <form>
     <div class="sheet-body exaltedthird">        
         {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
-        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
-            <div class="resource-label">
-                Craft Modifiers
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Intervals"}}</label>
+                <input type="number" name="object.intervals" value="{{data.intervals}}" >
             </div>
             <div>
-                <i class="fas fa-caret-down"></i>
+                <label class="resource-label">{{localize "Ex3.ObjectivesCompleted"}} </label>
+                <input type="number" name="object.objectivesCompleted" value="{{data.objectivesCompleted}}" >
             </div>
         </div>
-        <div style="display:none;">
-            <div class="resource grid grid-2col flex-center">
-                <label class="resource-label">{{localize "Ex3.AddInterval"}} </label>
-                <input type="checkbox" id="add-interval">
-                <label class="resource-label">{{localize "Ex3.ObjectivesCompleted"}} </label>
-                <input id="objectives-completed" type="number" value="{{objectivesCompleted}}">
-                <!-- {{#ifEquals exalt 'solar'}}
-                <label class="resource-label">{{localize "Ex3.DivineInspirationTechnique"}} </label>
-                <input id="divine-inspiration-technique" type="checkbox">
-                <label class="resource-label">{{localize "Ex3.HolisticMiracleUnderstanding"}} </label>
-                <input id="holistic-miracle-understanding" type="checkbox">
-                {{/ifEquals}} -->
-            </div>
+        <div class="d-flex">
+            <button type="button" id="roll-button">Roll</button>
+            <button type="button" id="cancel">Cancel</button>
         </div>
     </div>
 </form>

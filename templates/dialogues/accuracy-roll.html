@@ -7,8 +7,8 @@
             {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
             <div class="resource grid grid-2col flex-center">
                 <label class="resource-label">{{localize "Ex3.Range"}}</label>
-                <select id="range" name="range" data-type="String">
-                    {{#select range}}
+                <select name="object.range" value="{{data.range}}" data-type="String">
+                    {{#select data.range}}
                     <option value="close">Close</option>
                     <option value="short">Short</option>
                     <option value="medium">Medium</option>
@@ -16,26 +16,43 @@
                     <option value="extreme">Extreme</option>
                     {{/select}}
                 </select>
+                <label class="resource-label">{{localize "Ex3.WeaponType"}}</label>
+                <select name="object.weaponType" value="{{data.weaponType}}" data-type="String">
+                    {{#select data.weaponType}}
+                    <option value="melee">{{localize "Ex3.Melee"}}</option>
+                    <option value="bolt">{{localize "Ex3.Bolt"}}</option>
+                    <option value="ranged">{{localize "Ex3.Ranged"}}</option>
+                    <option value="siege">{{localize "Ex3.Siege"}}</option>
+                    <option value="thrown">{{localize "Ex3.Thrown"}}</option>
+                    {{/select}}
+                </select>
                 <div>
                     <label class="resource-label">{{localize "Ex3.Accuracy"}}</label>
-                    <input id="accuracy" type="number" value="{{accuracy}}">
+                    <input type="number" name="object.accuracy" value="{{data.accuracy}}">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.Defense"}} </label>
-                    <input id="defense" type="number" value="{{defense}}">
+                    <input type="number" name="object.defense" value="{{data.defense}}">
                 </div>
-                {{#ifEquals attackType 'withering'}}
+                {{#ifEquals data.rollType 'withering'}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
-                    <input id="overwhelming" type="number" value="{{overwhelming}}">
+                    <input type="number" name="object.overwhelming" value="{{data.overwhelming}}">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
-                    <input id="postSoakDamage" type="number">
+                    <input type="number" name="object.damage.postSoakDamage" value="{{data.damage.postSoakDamage}}">
                 </div>
                 {{/ifEquals}}
             </div>
         </div>
+        {{#ifEquals data.rollType 'accuracy'}}
+        <div class="d-flex">
+            <button type="button" id="roll-button">Roll</button>
+            <button type="button" id="cancel">Cancel</button>
         </div>
+        {{/ifEquals}}
+
+    </div>
     </div>
 </form>
