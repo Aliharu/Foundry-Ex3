@@ -7,6 +7,7 @@ export class RollForm extends FormApplication {
 
         this.object.rollType = data.rollType;
         this.object.showPool = !this._isAttackRoll();
+        this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
         this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft';
         this.object.stunt = "none";
         this.object.goalNumber = 0;
@@ -90,7 +91,7 @@ export class RollForm extends FormApplication {
 
             this.object.damage = {
                 damageDice: data.damage || 0,
-                successModifier: data.damageSuccessModifier || 0,
+                damageSuccessModifier: data.damageSuccessModifier || 0,
                 doubleSuccess: data.doubleSuccess || (this.object.rollType === 'decisive' ? 11 : 10),
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
@@ -174,12 +175,12 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'base') {
             template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
         }
-        else if(this.object.rollType === 'accuracy') {
-            template = "systems/exaltedthird/templates/dialogues/accuracy-roll.html";
-        }
-        else if(this.object.rollType === 'damage') {
-            template = "systems/exaltedthird/templates/dialogues/damage-roll.html";
-        }
+        // else if(this.object.rollType === 'accuracy') {
+        //     template = "systems/exaltedthird/templates/dialogues/accuracy-roll.html";
+        // }
+        // else if(this.object.rollType === 'damage') {
+        //     template = "systems/exaltedthird/templates/dialogues/damage-roll.html";
+        // }
         else if(this.object.rollType === 'craft') {
             template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
         }
@@ -484,8 +485,13 @@ export class RollForm extends FormApplication {
 
     _attackRoll() {
         // Accuracy
-        this._accuracyRoll();
-        if(this.object.thereshholdSuccesses >= 0) {
+        if(this.object.rollType !== 'damage') {
+            this._accuracyRoll();
+        }
+        else {
+            this.object.thereshholdSuccesses = 0;
+        }
+        if((this.object.thereshholdSuccesses >= 0 && this.object.rollType !== 'accuracy' ) || this.object.rollType === 'damage') {
             this._damageRoll();
         }
     }
@@ -566,7 +572,7 @@ export class RollForm extends FormApplication {
         if (bonus && (this.actor.data.type !== 'npc' || this.actor.data.data.battlegroup === false)) {
             total += bonus;
         }
-        total += this.object.damage.successModifier;
+        total += this.object.damage.damageSuccessModifier;
 
         let typeSpecificResults = ``;
 
@@ -614,7 +620,7 @@ export class RollForm extends FormApplication {
         }
         damageResults = `
                                 <h4 class="dice-total">${this.object.rollType === 'gambit' ? 'Gambit' : 'Damage'}</h4>
-                                <h4 class="dice-formula">${baseDamage} Dice + ${this.object.damage.successModifier} successes</h4>
+                                <h4 class="dice-formula">${baseDamage} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
                                 ${soakResult}
                                 <div class="dice-tooltip">
                                                     <div class="dice">
@@ -644,6 +650,7 @@ export class RollForm extends FormApplication {
                                                   </div>
                                               </div>
                                               <h4 class="dice-formula">${this.object.total} Succeses vs ${this.object.defense} Defense</h4>
+                                              <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Succeses</h4>
                                               ${damageResults}
                                           </div>
                                       </div>
