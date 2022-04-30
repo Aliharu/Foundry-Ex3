@@ -14,7 +14,7 @@ export class RollForm extends FormApplication {
         this.object.woundPenalty = true;
         this.object.intervals = 0;
         this.object.difficulty = data.difficulty || 0;
-
+        this.object.actionRoll = false;
 
         if (data.rollType === 'base') {
             this.object.dice = data.dice || 0;
@@ -29,7 +29,14 @@ export class RollForm extends FormApplication {
             }
 
             if (this.actor.data.type === "npc") {
-                this.object.pool = data.pool || "primary";
+                if(this.object.rollType === 'action') {
+                    this.object.actionId = data.actionId;
+                    this.object.actionRoll = true;
+                    this.object.actions = this.actor.actions;
+                }
+                else {
+                    this.object.pool = data.pool || "administration";
+                }
             }
             if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
                 let target = Array.from(game.user.targets)[0] || null;
@@ -269,8 +276,13 @@ export class RollForm extends FormApplication {
                 dice = attributeDice + abilityDice;
             }
             else if (this.actor.data.type === 'npc' && !this._isAttackRoll()) {
-                let poolDice = data.pools[this.object.pool].value;
-                dice = poolDice;
+                if(this.object.rollType === 'action') {
+                    dice = this.actor.actions.find(x => x._id === this.object.actionId).data.value;
+                }
+                else {
+                    let poolDice = data.pools[this.object.pool].value;
+                    dice = poolDice;
+                }
             }
 
             if (this.object.armorPenalty) {

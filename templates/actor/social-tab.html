@@ -1,4 +1,11 @@
-<div class="grid grid-4col flex-group-center">
+<div class="grid {{#ifEquals actor.type 'npc'}} grid-5col {{else}} grid-4col {{/ifEquals}} flex-group-center">
+  {{#ifEquals actor.type 'npc'}}
+  <div>
+      <label class="resource-label">{{localize "Ex3.Appearance"}}</label>
+      <input type="number" name="data.appearance.value" value="{{data.data.appearance.value}}"
+          data-dtype="Number" />
+  </div>
+  {{/ifEquals}}
   <div>
       <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
       <input type="number" name="data.resolve.value" value="{{data.data.resolve.value}}"

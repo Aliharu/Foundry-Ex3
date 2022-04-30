@@ -11,9 +11,6 @@ export class ExaltedThirdActor extends Actor {
     super.prepareData();
 
     const actorData = this.data;
-    const data = actorData.data;
-    const flags = actorData.flags;
-
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
     this._prepareCharacterData(actorData);
@@ -30,7 +27,7 @@ export class ExaltedThirdActor extends Actor {
     let currentPenalty = 0;
     let totalWarstriderHealth = 0;
     let currentWarstriderPenalty = 0;
-    if(data.battlegroup) {
+    if (data.battlegroup) {
       totalHealth = data.health.levels.zero.value + data.size.value;
       data.health.total = totalHealth;
       if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.total) {

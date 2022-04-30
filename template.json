@@ -451,6 +451,9 @@
         }
       },
       "battlegroup": false,
+      "appearance": {
+        "value": 0
+      },
       "size": {
         "value": 0,
         "min": 0
@@ -480,7 +483,8 @@
       "martialart",
       "craft",
       "specialability",
-      "craftproject"
+      "craftproject",
+      "action"
     ],
     "templates": {
       "base": {
@@ -598,6 +602,12 @@
       ],
       "type": "basic",
       "rating": 0
+    },
+    "action": {
+      "templates": [
+        "base"
+      ],
+      "value": 0
     }
   }
 }
