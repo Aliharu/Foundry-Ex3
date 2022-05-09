@@ -22,7 +22,8 @@ export class RollForm extends FormApplication {
         }
         else {
             this.object.characterType = this.actor.data.type;
-            this.object.conditions = this.actor.token.data.actorData.effects;
+
+            this.object.conditions = this.actor.token ? this.actor.token.data.actorData.effects : [];
             if (this.actor.data.type === 'character') {
                 this.object.stunt = "one";
                 this.object.attribute = data.attribute || this._getHighestAttribute();
@@ -140,7 +141,6 @@ export class RollForm extends FormApplication {
             }
             var target = Array.from(game.user.targets)[0] || null;
             if (target) {
-                // this.actor.token.data.actorData.effects
                 if (target.actor.data.data.parry.value >= target.actor.data.data.evasion.value) {
                     this.object.defense = target.actor.data.data.parry.value;
                     if (target.data.actorData.effects.some(e => e.name === 'prone')) {
