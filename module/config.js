@@ -60,4 +60,9 @@ exaltedthird.statusEffects = [
         label: 'Ex3.Grappling',
         name: 'grappling'
     },
+    {
+        icon: 'icons/skills/melee/sword-twirl-orange.webp',
+        id: 'disarmed',
+        label: 'Ex3.Disarmed',
+    },
 ]
