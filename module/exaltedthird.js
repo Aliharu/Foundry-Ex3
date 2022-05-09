@@ -36,6 +36,8 @@ Hooks.once('init', async function() {
 
   // Define custom Entity classes
   CONFIG.exaltedthird = exaltedthird;
+  CONFIG.statusEffects = exaltedthird.statusEffects;
+
   CONFIG.Actor.documentClass = ExaltedThirdActor;
   CONFIG.Item.documentClass = ExaltedThirdItem;
 

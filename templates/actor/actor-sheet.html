@@ -417,6 +417,12 @@
           <label class="resource-label">{{localize "Ex3.Resonance"}}</label>
           <input type="text" name="data.advantages.resonance" value="{{data.data.advantages.resonance}}" />
         </li>
+        <div>
+          <div class="check-button">
+              <label class="resource-label">{{localize "Ex3.LegendarySize"}}:</label>
+              <input data-dtype="Boolean" name="data.legendarysize" type="checkbox" {{checked data.data.legendarysize}}>
+          </div>
+        </div>
         <div class="mt-1">
           <label class="resource-label">{{localize "Ex3.Languages"}}</label>
           <a class="trait-selector" data-options="languages" data-target="data.traits.languages">

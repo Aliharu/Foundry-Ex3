@@ -81,6 +81,7 @@
         "sorcery": {
           "motes": 0
         },
+        "legendarysize": false,
         "traits": {
           "languages": {
             "value": [],
@@ -512,7 +513,8 @@
       "ability": "melee",
       "attribute": "dexterity",
       "range": "short",
-      "artifact": false
+      "artifact": false,
+      "magic": false
     },
     "armor": {
       "templates": [

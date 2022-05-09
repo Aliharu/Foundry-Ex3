@@ -343,5 +343,17 @@
 
     "Ex3.Action": "Action",
     "Ex3.Actions": "Actions",
-    "Ex3.Value": "Value"
+    "Ex3.Value": "Value",
+    "Ex3.Magic": "Magic",
+
+    "Ex3.Prone": "Prone",
+    "Ex3.LightCover": "Light Cover",
+    "Ex3.HeavyCover": "Heavy Cover",
+    "Ex3.FullCover": "Full Cover",
+
+    "Ex3.Grappling": "Grappling",
+    "Ex3.Grappled": "Grappled",
+
+    "Ex3.OtherModifiers": "Other Modifiers",
+    "Ex3.Conditions": "Conditions"
 }
