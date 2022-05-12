@@ -303,9 +303,30 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     // Delete Inventory Item
     html.find('.item-delete').click(ev => {
-      const li = $(ev.currentTarget).parents(".item");
-      this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
-      li.slideUp(200, () => this.render(false));
+      let applyChanges = false;
+      new Dialog({
+        title: 'Delete?',
+        content: 'Are you sure you want to delete this item?',
+        buttons: {
+          delete: {
+            icon: '<i class="fas fa-check"></i>',
+            label: 'Delete',
+            callback: () => applyChanges = true
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: 'Cancel'
+          },
+        },
+        default: "delete",
+        close: html => {
+          if (applyChanges) {
+            const li = $(ev.currentTarget).parents(".item");
+            this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
+            li.slideUp(200, () => this.render(false));
+          }
+        }
+      }).render(true);
     });
 
     html.find('.show-weapon-tags').mousedown(ev => {
