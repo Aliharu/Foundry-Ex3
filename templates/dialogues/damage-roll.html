@@ -1,127 +1,149 @@
-<div class="sheet-body exaltedthird">
-    <div class="flex-center resource-label" style="font-weight: bold;">
-        Damage
-    </div>
-    <div>
-        <div class="resource grid grid-2col flex-center">
-            <div>
-                <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
-                <input type="number" name="object.damage.damageDice" value="{{data.damage.damageDice}}">
-            </div>
-            <div>
-                <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
-                <input type="number" name="object.damage.damageSuccessModifier"
-                    value="{{data.damage.damageSuccessModifier}}">
-            </div>
-        </div>
-        <div class="resource grid grid-2col flex-center">
-            <div>
-                <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                <input type="number" name="object.damage.doubleSuccess" value="{{data.damage.doubleSuccess}}">
-            </div>
-            <div>
-                <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-                <input type="number" name="object.damage.targetNumber" value="{{data.damage.targetNumber}}">
-            </div>
-        </div>
-        <div class="resource flex-center">
-            <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
-        </div>
-        <div class="resource d-flex flex-center">
-            <div>
-                <div>1</div>
-                <input name="object.damage.reroll.one.status" type="checkbox">
-            </div>
-            <div>
-                <div>2</div>
-                <input name="object.damage.reroll.two.status" type="checkbox">
-            </div>
-            <div>
-                <div>3</div>
-                <input name="object.damage.reroll.three.status" type="checkbox">
-            </div>
-            <div>
-                <div>4</div>
-                <input name="object.damage.reroll.four.status" type="checkbox">
-            </div>
-            <div>
-                <div>5</div>
-                <input name="object.damage.reroll.five.status" type="checkbox">
-            </div>
-            <div>
-                <div>6</div>
-                <input name="object.damage.reroll.six.status" type="checkbox">
-            </div>
-            <div>
-                <div>7</div>
-                <input name="object.damage.reroll.seven.status" type="checkbox">
-            </div>
-            <div>
-                <div>8</div>
-                <input name="object.damage.reroll.eight.status" type="checkbox">
-            </div>
-            <div>
-                <div>9</div>
-                <input name="object.damage.reroll.nine.status" type="checkbox">
-            </div>
-            <div>
-                <div>10</div>
-                <input name="object.damage.reroll.ten.status" type="checkbox">
-            </div>
-        </div>
-
-        {{#if data.showWithering}}
+<form>
+    <div class="sheet-body exaltedthird">
         <div class="flex-center resource-label" style="font-weight: bold;">
-            {{localize "Ex3.Soak"}}
+            Damage
         </div>
-        <div class="resource flex-center mb-2">
-            <input placeholder="Soak" type="number" name="object.soak" value="{{data.soak}}">
-        </div>
-        {{/if}}
-
-        {{#ifEquals data.rollType 'gambit'}}
-        <div class="flex-center resource-label" style="font-weight: bold;">
-            {{localize "Ex3.GambitDifficulty"}}
-        </div>
-        <div class="resource flex-center mb-2">
-            <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
-        </div>
-        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
-            <div class="resource-label">
-                Gambits (Difficulty)
+        <div>
+            <div class="resource grid grid-2col flex-center">
+                {{#ifEquals data.rollType 'damage'}}
+                <label class="resource-label">{{localize "Ex3.AttackType"}}</label>
+                <select name="object.attackType" value="{{data.attackType}}" data-type="String">
+                    {{#select data.attackType}}
+                    <option value="decisive">{{localize "Ex3.Decisive"}}</option>
+                    <option value="withering">{{localize "Ex3.Withering"}}</option>
+                    {{/select}}
+                </select>
+                {{/ifEquals}}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
+                    <input type="number" name="object.damage.damageDice" value="{{data.damage.damageDice}}">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
+                    <input type="number" name="object.damage.damageSuccessModifier"
+                        value="{{data.damage.damageSuccessModifier}}">
+                </div>
             </div>
-            <div>
-                <i class="fas fa-caret-down"></i>
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
+                    <input type="number" name="object.damage.doubleSuccess" value="{{data.damage.doubleSuccess}}">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+                    <input type="number" name="object.damage.targetNumber" value="{{data.damage.targetNumber}}">
+                </div>
+                {{#if data.showWithering }}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
+                    <input type="number" name="object.overwhelming" value="{{data.overwhelming}}">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
+                    <input type="number" name="object.damage.postSoakDamage" value="{{data.damage.postSoakDamage}}">
+                </div>
+                {{/if}}
             </div>
-        </div>
-        <div style="display:none;">
-            <p>
-                <b>Disarm (3)</b>: Knock away opponents weapon to short range. The weapon requires a draw/ready
-                action to retrieve.
-            </p>
-            <p>
-                <b>Unhorse (4)</b>: Knock opponent off his mount, Target suffers 1 point of bashing damage and is
-                knocked prone.
-            </p>
-            <p>
-                <b>Distract (3-5)</b>: Declare an ally (who is not crashed), Tranfer the difficulty of this gambit
-                to the ally, this initiative must be used to attack the gambits target on the next turn or it is
-                lost.
-            </p>
-            <p>
-                <b>Grapple (2)</b>: If this gambit succeeds makle a contested control roll (Stength + Brawl/Martial
-                Arts) with the opponent to gain rounds of control. See page 200 of Ex3 Core for the full grapple
-                effects.
-            </p>
+            <div class="resource flex-center">
+                <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
+            </div>
+            <div class="resource d-flex flex-center">
+                <div>
+                    <div>1</div>
+                    <input name="object.damage.reroll.one.status" type="checkbox">
+                </div>
+                <div>
+                    <div>2</div>
+                    <input name="object.damage.reroll.two.status" type="checkbox">
+                </div>
+                <div>
+                    <div>3</div>
+                    <input name="object.damage.reroll.three.status" type="checkbox">
+                </div>
+                <div>
+                    <div>4</div>
+                    <input name="object.damage.reroll.four.status" type="checkbox">
+                </div>
+                <div>
+                    <div>5</div>
+                    <input name="object.damage.reroll.five.status" type="checkbox">
+                </div>
+                <div>
+                    <div>6</div>
+                    <input name="object.damage.reroll.six.status" type="checkbox">
+                </div>
+                <div>
+                    <div>7</div>
+                    <input name="object.damage.reroll.seven.status" type="checkbox">
+                </div>
+                <div>
+                    <div>8</div>
+                    <input name="object.damage.reroll.eight.status" type="checkbox">
+                </div>
+                <div>
+                    <div>9</div>
+                    <input name="object.damage.reroll.nine.status" type="checkbox">
+                </div>
+                <div>
+                    <div>10</div>
+                    <input name="object.damage.reroll.ten.status" type="checkbox">
+                </div>
+            </div>
+
+            {{#if data.showWithering}}
+            <div class="flex-center resource-label" style="font-weight: bold;">
+                {{localize "Ex3.Soak"}}
+            </div>
+            <div class="resource flex-center mb-2">
+                <input placeholder="Soak" type="number" name="object.soak" value="{{data.soak}}">
+            </div>
+            {{/if}}
+
+            {{#ifEquals data.rollType 'gambit'}}
+            <div class="flex-center resource-label" style="font-weight: bold;">
+                {{localize "Ex3.GambitDifficulty"}}
+            </div>
+            <div class="resource flex-center mb-2">
+                <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
+            </div>
+            <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+                <div class="resource-label">
+                    Gambits (Difficulty)
+                </div>
+                <div>
+                    <i class="fas fa-caret-down"></i>
+                </div>
+            </div>
+            <div style="display:none;">
+                <p>
+                    <b>Disarm (3)</b>: Knock away opponents weapon to short range. The weapon requires a draw/ready
+                    action to retrieve.
+                </p>
+                <p>
+                    <b>Unhorse (4)</b>: Knock opponent off his mount, Target suffers 1 point of bashing damage and is
+                    knocked prone.
+                </p>
+                <p>
+                    <b>Distract (3-5)</b>: Declare an ally (who is not crashed), Tranfer the difficulty of this gambit
+                    to the ally, this initiative must be used to attack the gambits target on the next turn or it is
+                    lost.
+                </p>
+                <p>
+                    <b>Grapple (2)</b>: If this gambit succeeds makle a contested control roll (Stength + Brawl/Martial
+                    Arts) with the opponent to gain rounds of control. See page 200 of Ex3 Core for the full grapple
+                    effects.
+                </p>
+
+            </div>
+            {{/ifEquals}}
+
+            {{#ifEquals data.rollType 'damage'}}
+            <div class="d-flex">
+                <button type="button" id="roll-button">Roll</button>
+                <button type="button" id="cancel">Cancel</button>
+            </div>
+            {{/ifEquals}}
 
         </div>
-        {{/ifEquals}}
-
-        {{#ifEquals data.rollType 'damage'}}
-        <div class="d-flex">
-            <button type="button" id="roll-button">Roll</button>
-            <button type="button" id="cancel">Cancel</button>
-        </div>
-        {{/ifEquals}}
-
     </div>
+</form>
