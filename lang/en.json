@@ -357,5 +357,9 @@
 
     "Ex3.OtherModifiers": "Other Modifiers",
     "Ex3.Conditions": "Conditions",
-    "Ex3.Disarmed": "Disarmed"
+    "Ex3.Disarmed": "Disarmed",
+    "Ex3.Save": "Save",
+    "Ex3.Update": "Update",
+    "Ex3.EnterNewRollName": "Enter New Roll Name",
+    "Ex3.SavedRolls": "Saved Rolls"
 }

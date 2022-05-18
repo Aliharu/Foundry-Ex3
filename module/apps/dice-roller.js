@@ -2,111 +2,61 @@ export class RollForm extends FormApplication {
     constructor(actor, options, object, data) {
         super(object, options);
         this.actor = actor;
-        this.object.successModifier = 0;
-        this.object.target = Array.from(game.user.targets)[0] || null;
-        this.object.rollType = data.rollType;
-        this.object.attackType = 'withering';
-        this.object.showPool = !this._isAttackRoll();
-        this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-        this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft';
-        this.object.stunt = "none";
-        this.object.goalNumber = 0;
-        this.object.woundPenalty = true;
-        this.object.intervals = 0;
-        this.object.difficulty = data.difficulty || 0;
-        this.object.isMagic = data.isMagic || false;
-        this.object.diceModifier = 0;
 
-        if (data.rollType === 'base') {
-            this.object.dice = data.dice || 0;
-            this.object.woundPenalty = false;
+        if (data.rollId) {
+            this.object = this.actor.data.data.savedRolls[data.rollId];
         }
         else {
-            this.object.characterType = this.actor.data.type;
-
-            this.object.conditions = (this.actor.token && this.actor.token.data.actorData.effects) ? this.actor.token.data.actorData.effects : [];
-            if (this.actor.data.type === 'character') {
-                this.object.stunt = "one";
-                this.object.attribute = data.attribute || this._getHighestAttribute();
-                this.object.ability = data.ability || "archery";
-                this.object.appearance = this.actor.data.data.attributes.appearance.value;
-            }
-
-            if (this.actor.data.type === "npc") {
-                if (this.object.rollType === 'action') {
-                    this.object.actionRoll = true;
-                    this.object.actionId = data.actionId;
-                    this.object.actions = this.actor.actions;
-                }
-                else {
-                    this.object.pool = data.pool || "administration";
-                }
-                this.object.appearance = this.actor.data.data.appearance.value;
-            }
-            if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
-                let target = Array.from(game.user.targets)[0] || null;
-                if (target) {
-                    if (this.object.rollType === 'readIntentions') {
-                        this.object.difficulty = target.actor.data.data.guile.value;
-                    }
-                    if (this.object.rollType === 'social') {
-                        this.object.difficulty = target.actor.data.data.resolve.value;
-                    }
-                }
-            }
-            this.object.difficultyString = 'Ex3.Difficulty';
-            if (this.object.rollType === 'readIntentions') {
-                this.object.difficultyString = 'Ex3.Guile';
-            }
-            if (this.object.rollType === 'social') {
-                this.object.difficultyString = 'Ex3.Resolve';
-            }
-
-            if (this.object.rollType === 'craft') {
-                this.object.intervals = 1;
-                this.object.finished = false;
-                this.object.objectivesCompleted = 0;
-                this.object.craftType = data.craftType;
-                this.object.craftRating = data.craftRating;
-
-
-                if (data.craftType === 'superior') {
-                    this.object.intervals = 6;
-                    this.object.difficulty = 5;
-                    if (this.object.craftRating === 2) {
-                        this.object.goalNumber = 30;
-                    }
-                    if (this.object.craftRating === 3) {
-                        this.object.goalNumber = 50;
-                    }
-                    if (this.object.craftRating === 4) {
-                        this.object.goalNumber = 75;
-                    }
-                    if (this.object.craftRating === 5) {
-                        this.object.goalNumber = 100;
-                    }
-                }
-                else if (data.craftType === 'legendary') {
-                    this.object.intervals = 6;
-                    this.object.difficulty = 5;
-                    this.object.goalNumber = 200;
-                }
-            }
-
+            this.object.dice = data.dice || 0;
+            this.object.successModifier = 0;
+            this.object.rollType = data.rollType;
+            this.object.craftType = data.craftType || 0;
+            this.object.craftRating = data.craftRating || 0;
+            this.object.attackType = 'withering';
+            this.object.showPool = !this._isAttackRoll();
+            this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
+            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft';
+            this.object.stunt = "none";
+            this.object.goalNumber = 0;
+            this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
+            this.object.intervals = 0;
+            this.object.difficulty = data.difficulty || 0;
+            this.object.isMagic = data.isMagic || false;
+            this.object.diceModifier = 0;
             this.object.accuracy = data.accuracy || 0;
-            if (this._isAttackRoll()) {
-                if (this.object.conditions.some(e => e.name === 'prone')) {
-                    this.object.diceModifier -= 3;
-                }
-                if (this.object.conditions.some(e => e.name === 'grappled')) {
-                    this.object.diceModifier -= 1;
-                }
-            }
+
             this.object.overwhelming = data.overwhelming || 0;
             this.object.soak = 0;
             this.object.defense = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
+
+            this.object.weaponType = data.weaponType || 'melee';
+            this.object.attackType = data.attackType || 'withering';
+            this.object.range = 'close';
+
+            this.object.isFlurry = false;
+            this.object.armorPenalty = false;
+            this.object.hasSpecialty = false;
+            this.object.willpower = false;
+
+            this.object.doubleSuccess = 10;
+            this.object.rerollFailed = false;
+            this.object.targetNumber = 7;
+            this.object.rerollNumber = 0;
+
+            this.object.reroll = {
+                one: { status: false, number: 1 },
+                two: { status: false, number: 2 },
+                three: { status: false, number: 3 },
+                four: { status: false, number: 4 },
+                five: { status: false, number: 5 },
+                six: { status: false, number: 6 },
+                seven: { status: false, number: 7 },
+                eight: { status: false, number: 8 },
+                nine: { status: false, number: 9 },
+                ten: { status: false, number: 10 },
+            }
 
             this.object.damage = {
                 damageDice: data.damage || 0,
@@ -128,6 +78,86 @@ export class RollForm extends FormApplication {
                 }
             };
 
+            if (this.object.rollType !== 'base') {
+                this.object.characterType = this.actor.data.type;
+
+                this.object.conditions = (this.actor.token && this.actor.token.data.actorData.effects) ? this.actor.token.data.actorData.effects : [];
+                if (this.actor.data.type === 'character') {
+                    this.object.stunt = "one";
+                    this.object.attribute = data.attribute || this._getHighestAttribute();
+                    this.object.ability = data.ability || "archery";
+                    this.object.appearance = this.actor.data.data.attributes.appearance.value;
+                }
+
+                if (this.actor.data.type === "npc") {
+                    if (this.object.rollType === 'action') {
+                        this.object.actionRoll = true;
+                        this.object.actionId = data.actionId;
+                        this.object.actions = this.actor.actions;
+                    }
+                    else {
+                        this.object.pool = data.pool || "administration";
+                    }
+                    this.object.appearance = this.actor.data.data.appearance.value;
+                }
+                if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
+                    if (this.object.target) {
+                        if (this.object.rollType === 'readIntentions') {
+                            this.object.difficulty = this.object.target.actor.data.data.guile.value;
+                        }
+                        if (this.object.rollType === 'social') {
+                            this.object.difficulty = this.object.target.actor.data.data.resolve.value;
+                        }
+                    }
+                }
+                this.object.difficultyString = 'Ex3.Difficulty';
+                if (this.object.rollType === 'readIntentions') {
+                    this.object.difficultyString = 'Ex3.Guile';
+                }
+                if (this.object.rollType === 'social') {
+                    this.object.difficultyString = 'Ex3.Resolve';
+                }
+
+                if (this.object.rollType === 'craft') {
+                    this.object.intervals = 1;
+                    this.object.finished = false;
+                    this.object.objectivesCompleted = 0;
+
+                    if (this.object.craftType === 'superior') {
+                        this.object.intervals = 6;
+                        this.object.difficulty = 5;
+                        if (this.object.craftRating === 2) {
+                            this.object.goalNumber = 30;
+                        }
+                        if (this.object.craftRating === 3) {
+                            this.object.goalNumber = 50;
+                        }
+                        if (this.object.craftRating === 4) {
+                            this.object.goalNumber = 75;
+                        }
+                        if (this.object.craftRating === 5) {
+                            this.object.goalNumber = 100;
+                        }
+                    }
+                    else if (this.object.craftType === 'legendary') {
+                        this.object.intervals = 6;
+                        this.object.difficulty = 5;
+                        this.object.goalNumber = 200;
+                    }
+                }
+
+                if (this._isAttackRoll()) {
+                    if (this.object.conditions.some(e => e.name === 'prone')) {
+                        this.object.diceModifier -= 3;
+                    }
+                    if (this.object.conditions.some(e => e.name === 'grappled')) {
+                        this.object.diceModifier -= 1;
+                    }
+                }
+            }
+        }
+        if (this.object.rollType !== 'base') {
+            this.object.target = Array.from(game.user.targets)[0] || null;
 
             let combat = game.combat;
             if (combat) {
@@ -139,65 +169,37 @@ export class RollForm extends FormApplication {
                     this.object.characterInitiative = combatant.initiative;
                 }
             }
-            var target = Array.from(game.user.targets)[0] || null;
-            if (target) {
-                if (target.actor.data.data.parry.value >= target.actor.data.data.evasion.value) {
-                    this.object.defense = target.actor.data.data.parry.value;
-                    if (target.data.actorData.effects && target.data.actorData.effects.some(e => e.name === 'prone')) {
+            if (this.object.target) {
+                if (this.object.target.actor.data.data.parry.value >= this.object.target.actor.data.data.evasion.value) {
+                    this.object.defense = this.object.target.actor.data.data.parry.value;
+                    if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
                 else {
-                    this.object.defense = target.actor.data.data.evasion.value;
-                    if (target.data.actorData.effects && target.data.actorData.effects.some(e => e.name === 'prone')) {
+                    this.object.defense = this.object.target.actor.data.data.evasion.value;
+                    if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
                         this.object.defense -= 2;
                     }
                 }
-                if (target.actor.data.data.warstrider.equipped) {
-                    this.object.soak = target.actor.data.data.warstrider.soak.value;
+                if (this.object.target.actor.data.data.warstrider.equipped) {
+                    this.object.soak = this.object.target.actor.data.data.warstrider.soak.value;
                 }
                 else {
-                    this.object.soak = target.actor.data.data.soak.value;
+                    this.object.soak = this.object.target.actor.data.data.soak.value;
                 }
-                if(target.data.actorData.effects) {
-                    if (target.data.actorData.effects.some(e => e.name === 'lightcover')) {
+                if (this.object.target.data.actorData.effects) {
+                    if (this.object.target.data.actorData.effects.some(e => e.name === 'lightcover')) {
                         this.object.defense += 1;
                     }
-                    if (target.data.actorData.effects.some(e => e.name === 'heavycover')) {
+                    if (this.object.target.data.actorData.effects.some(e => e.name === 'heavycover')) {
                         this.object.defense += 2;
                     }
-                    if (target.data.actorData.effects.some(e => e.name === 'grappled') || target.data.actorData.effects.some(e => e.name === 'grappling')) {
+                    if (this.object.target.data.actorData.effects.some(e => e.name === 'grappled') || this.object.target.data.actorData.effects.some(e => e.name === 'grappling')) {
                         this.object.defense -= 2;
                     }
                 }
             }
-        }
-
-        this.object.weaponType = data.weaponType || 'melee';
-        this.object.attackType = data.attackType || 'withering';
-        this.object.range = 'close';
-
-        this.object.isFlurry = false;
-        this.object.armorPenalty = false;
-        this.object.hasSpecialty = false;
-        this.object.willpower = false;
-
-        this.object.doubleSuccess = 10;
-        this.object.rerollFailed = false;
-        this.object.targetNumber = 7;
-        this.object.rerollNumber = 0;
-
-        this.object.reroll = {
-            one: { status: false, number: 1 },
-            two: { status: false, number: 2 },
-            three: { status: false, number: 3 },
-            four: { status: false, number: 4 },
-            five: { status: false, number: 5 },
-            six: { status: false, number: 6 },
-            seven: { status: false, number: 7 },
-            eight: { status: false, number: 8 },
-            nine: { status: false, number: 9 },
-            ten: { status: false, number: 10 },
         }
     }
 
@@ -210,12 +212,12 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'base') {
             template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
         }
-        else if (this.object.rollType === 'accuracy') {
-            template = "systems/exaltedthird/templates/dialogues/accuracy-roll.html";
-        }
-        else if (this.object.rollType === 'damage') {
-            template = "systems/exaltedthird/templates/dialogues/damage-roll.html";
-        }
+        // else if (this.object.rollType === 'accuracy') {
+        //     template = "systems/exaltedthird/templates/dialogues/accuracy-roll.html";
+        // }
+        // else if (this.object.rollType === 'damage') {
+        //     template = "systems/exaltedthird/templates/dialogues/damage-roll.html";
+        // }
         else if (this.object.rollType === 'craft') {
             template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
         }
@@ -226,6 +228,24 @@ export class RollForm extends FormApplication {
             template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
         }
         return template;
+    }
+
+    _getHeaderButtons() {
+        let buttons = super._getHeaderButtons();
+        // Token Configuration
+        if (this.object.rollType !== 'base') {
+            const rollButton = {
+                label: this.object.id ? game.i18n.localize('Ex3.Update') : game.i18n.localize('Ex3.Save'),
+                class: 'roll-dice',
+                icon: 'fas fa-dice-d6',
+                onclick: (ev) => { 
+                    this._saveRoll(this.object);
+                },
+            };
+            buttons = [rollButton, ...buttons];
+        }
+
+        return buttons;
     }
 
     static get defaultOptions() {
@@ -239,6 +259,39 @@ export class RollForm extends FormApplication {
             submitOnChange: true,
             closeOnSubmit: false
         });
+    }
+
+    async _saveRoll(rollData) {
+        let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", {'name': this.object.name || 'New Roll'});
+        new Dialog({
+            title: "Save Roll",
+            content: html,
+            default: 'save',
+            buttons: {
+                save: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: 'Save',
+                    default: true,
+                    callback: html => {
+                        let results = document.getElementById('name').value;
+                        let uniqueId = this.object.id || randomID(16);
+                        rollData.name = results;
+                        rollData.id = uniqueId;
+                        rollData.target = null;
+
+                        let updates = {
+                            "data.savedRolls": {
+                                [uniqueId]: rollData
+                            }
+                        };
+                        this.actor.update(updates);
+                        this.saved = true;
+                        ui.notifications.notify(`Saved Roll`);
+                        return;
+                    },
+                }
+            }
+        }).render(true);
     }
 
     getData() {

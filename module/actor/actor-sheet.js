@@ -475,6 +475,38 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       li.toggle("fast");
     });
 
+    html.find('.saved-roll').click(ev => {
+      let li = $(event.currentTarget).parents(".item");
+      new RollForm(this.actor, {event:ev}, {}, {rollId: li.data("item-id")}).render(true);
+    });
+
+    html.find('.delete-saved-roll').click(ev => {
+      let li = $(event.currentTarget).parents(".item");
+      var key = li.data("item-id");
+      const rollDeleteString = "data.savedRolls.-=" + key;
+
+      let deleteConfirm = new Dialog({
+        title: "Delete",
+        content: "Delete Saved Roll?",
+        buttons: {
+          Yes: {
+            icon: '<i class="fa fa-check"></i>',
+            label: "Delete",
+            callback: dlg => {
+              this.actor.update({[rollDeleteString]: null});
+              ui.notifications.notify(`Saved Roll Deleted`);
+            }
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel"
+          },
+        },
+        default: 'Yes'
+      });
+      deleteConfirm.render(true);
+    });
+
     $(document.getElementById('chat-log')).on('click', '.chat-card', (ev) => {
       const li = $(ev.currentTarget).next();
       li.toggle("fast");
