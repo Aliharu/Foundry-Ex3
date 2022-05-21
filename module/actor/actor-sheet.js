@@ -577,11 +577,50 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
 
+    var oxBodyText = '';
+
+    if(actorData.type !== 'npc') {
+      if(data.details.exalt === 'solar') {
+        if(data.attributes.stamina.value > 3) {
+          oxBodyText = 'Ox Body: One -1 and one -2 level.';
+        }
+        else if(data.attributes.stamina.value > 5) {
+          oxBodyText = 'Ox Body: One -1 and two -2 levels.';
+        }
+        else {
+          oxBodyText = 'Ox Body: One -0, one -1, and one -2 level';
+        }
+      }
+      if(data.details.exalt === 'dragonblooded') {
+        if(data.attributes.stamina.value > 3) {
+          oxBodyText = 'Ox Body: Two −2 levels';
+        }
+        else if(data.attributes.stamina.value > 5) {
+          oxBodyText = 'Ox Body: One −1 and one −2 level';
+        }
+        else {
+          oxBodyText = 'Ox Body: One −1 and two −2 levels';
+        }
+      }
+      if(data.details.exalt === 'lunar') {
+        if(data.attributes.stamina.value > 3) {
+          oxBodyText = 'Ox Body: Two −2 levels.';
+        }
+        else if(data.attributes.stamina.value > 5) {
+          oxBodyText = 'Ox Body: Two −2 levels and one −4 level';
+        }
+        else {
+          oxBodyText = 'Ox Body: Two −2 levels and two −4 levels';
+        }
+      }
+    }
+
+
     var template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
     if(data.battlegroup && !warstrider) {
       template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
     }
-    const html = await renderTemplate(template, { 'zero': warstrider ? data.warstrider.health.levels.zero.value : data.health.levels.zero.value, 'one':  warstrider ? data.warstrider.health.levels.one.value : data.health.levels.one.value, 'two':  warstrider ? data.warstrider.health.levels.two.value : data.health.levels.two.value, 'four':  warstrider ? data.warstrider.health.levels.four.value : data.health.levels.four.value });
+    const html = await renderTemplate(template, { 'oxBodyText': oxBodyText, 'zero': warstrider ? data.warstrider.health.levels.zero.value : data.health.levels.zero.value, 'one':  warstrider ? data.warstrider.health.levels.one.value : data.health.levels.one.value, 'two':  warstrider ? data.warstrider.health.levels.two.value : data.health.levels.two.value, 'four':  warstrider ? data.warstrider.health.levels.four.value : data.health.levels.four.value});
 
     new Dialog({
       title: `Calculate Health`,
