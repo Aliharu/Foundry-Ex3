@@ -585,6 +585,43 @@ export class RollForm extends FormApplication {
         if ((this.object.thereshholdSuccesses >= 0 && this.object.rollType !== 'accuracy') || this.object.rollType === 'damage') {
             this._damageRoll();
         }
+        else {
+            if (this.object.thereshholdSuccesses < 0) {
+                if (this.object.rollType !== 'withering') {
+                    if (this.object.characterInitiative < 11) {
+                        this.object.characterInitiative = this.object.characterInitiative - 2;
+                    }
+                    else {
+                        this.object.characterInitiative = this.object.characterInitiative - 3;
+                    }
+                }
+                var messageContent = `
+                <div class="chat-card">
+                    <div class="card-content">Attack Roll</div>
+                    <div class="card-buttons">
+                        <div class="flexrow 1">
+                            <div>
+                                <div class="dice-roll">
+                                    <div class="dice-result">
+                                        <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                                        <div class="dice-tooltip">
+                                            <div class="dice">
+                                                <ol class="dice-rolls">${this.object.getDice}</ol>
+                                            </div>
+                                        </div>
+                                        <h4 class="dice-formula">${this.object.total} Succeses vs ${this.object.defense} Defense</h4>
+                                        <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Succeses</h4>
+                                        <h4 class="dice-total">Attack Missed!</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              `;
+                ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+            }
+        }
         if (this.object.rollType === 'accuracy') {
             var messageContent = `
             <div class="chat-card">
@@ -602,6 +639,7 @@ export class RollForm extends FormApplication {
                                     </div>
                                     <h4 class="dice-formula">${this.object.total} Succeses vs ${this.object.defense} Defense</h4>
                                     <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Succeses</h4>
+                                    ${this.object.thereshholdSuccesses < 0 ? '<h4 class="dice-total">Attack Missed!</h4>' : ''}
                                 </div>
                             </div>
                         </div>
@@ -618,18 +656,6 @@ export class RollForm extends FormApplication {
         this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
         let damageResults = ``;
-
-        if (this.object.thereshholdSuccesses < 0) {
-            damageResults = `<h4 class="dice-total">Attack Missed!</h4>`;
-            if (this.object.rollType !== 'withering') {
-                if (this.object.characterInitiative < 11) {
-                    this.object.characterInitiative = this.object.characterInitiative - 2;
-                }
-                else {
-                    this.object.characterInitiative = this.object.characterInitiative - 3;
-                }
-            }
-        }
     }
 
     _damageRoll() {
