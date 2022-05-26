@@ -138,8 +138,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   if (update && update.round) {
     for(var combatant of combat.data.combatants) {
       const actorData = duplicate(combatant.actor)
-      var missingPersonal = actorData.data.motes.personal.total - actorData.data.motes.personal.value;
-      var missingPeripheral = actorData.data.motes.peripheral.total - actorData.data.motes.peripheral.value;
+      var missingPersonal = actorData.data.motes.personal.max - actorData.data.motes.personal.value;
+      var missingPeripheral = actorData.data.motes.peripheral.max - actorData.data.motes.peripheral.value;
       var restorePersonal = 0;
       var restorePeripheral = 0;
       if(missingPeripheral >= 5) {
