@@ -666,9 +666,11 @@ export class RollForm extends FormApplication {
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
                 let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
-                if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
-                    dice += Math.floor(dice / 4);
-                    baseDamage = dice;
+                if(targetCombatant != null ) {
+                    if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
+                        dice += Math.floor(dice / 4);
+                        baseDamage = dice;
+                    }
                 }
             }
         }
