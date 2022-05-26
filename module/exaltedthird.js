@@ -16,14 +16,16 @@ Hooks.once('init', async function() {
 
   game.exaltedthird = {
     applications: {
-      TraitSelector,
+      TraitSelector
     },
     entities: {
       ExaltedThirdActor,
-      ExaltedThirdItem,
+      ExaltedThirdItem
     },
     config: exaltedthird,
-    rollItemMacro: rollItemMacro
+    rollItemMacro: rollItemMacro,
+    roll: roll,
+    RollForm
   };
 
   /**
@@ -230,4 +232,15 @@ function rollItemMacro(itemName) {
 
   // Trigger the item roll
   return item.roll();
+}
+
+/**
+ * 
+ * @param {ExaltedThirdActor} actor 
+ * @param {object} object 
+ * @param {object} data 
+ * @returns {Promise}
+ */
+function roll(actor,object,data){
+  return new RollForm(actor,object,{},data).render(true);
 }
