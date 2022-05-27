@@ -672,7 +672,7 @@ export class RollForm extends FormApplication {
                             successModifier : this.object.successModifier,
                             total : this.object.total,
                             defense : this.object.defense,
-                            threshholdSucceses : this.object.thereshholdSuccesses
+                            threshholdSuccesses : this.object.thereshholdSuccesses
                         }
                     } 
                 });
@@ -715,7 +715,7 @@ export class RollForm extends FormApplication {
                         successModifier : this.object.successModifier,
                         total : this.object.total,
                         defense : this.object.defense,
-                        threshholdSucceses : this.object.thereshholdSuccesses
+                        threshholdSuccesses : this.object.thereshholdSuccesses
                     }
                 } 
             });
@@ -920,7 +920,7 @@ export class RollForm extends FormApplication {
                     successModifier : this.object.successModifier,
                     total : this.object.total,
                     defense : this.object.defense,
-                    threshholdSucceses : this.object.thereshholdSuccesses,
+                    threshholdSuccesses : this.object.thereshholdSuccesses,
                     damage : {
                         dice : baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
