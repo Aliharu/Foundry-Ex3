@@ -242,5 +242,5 @@ function rollItemMacro(itemName) {
  * @returns {Promise}
  */
 function roll(actor,object,data){
-  return new RollForm(actor,object,{},data).render(true);
+  return new RollForm(actor,object,{},data).roll();
 }

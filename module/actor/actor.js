@@ -16,6 +16,114 @@ export class ExaltedThirdActor extends Actor {
     this._prepareCharacterData(actorData);
   }
 
+  async displayEmbeddedItem(itemId) {
+    // Render the chat card template
+    let item = this.items.find(x=> x.id === itemId);
+    if(!item){
+      return ui.notifications.error(`${this.name} does not have an embedded item id ${itemId}!`);
+    }
+    const token = this.token;
+    const templateData = {
+      actor: this,
+      tokenId: token?.uuid || null,
+      item: item.data
+    };
+    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+
+    // Create the ChatMessage data object
+    const chatData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: ChatMessage.getSpeaker({ actor: this, token }),
+    };
+
+
+    // Create the Chat Message or return its data
+    return ChatMessage.create(chatData);
+  }
+
+  async rollEmbeddedItem(itemId, personal = false) {
+
+    const actorData = duplicate(this);
+
+    let item = this.items.find(x=> x.id == itemId);
+
+    if(!item){
+      return ui.notifications.error(`${this.name} does not have an embedded item id ${itemId}!`);
+    }
+
+    if(item.type === 'charm') {
+      if(item.data.data.cost.motes > 0) {
+        if(actorData.data.motes.peripheral.value > 0 && !personal) {
+          actorData.data.motes.peripheral.value = Math.max(0, actorData.data.motes.peripheral.value - item.data.data.cost.motes);
+        }
+        else {
+          actorData.data.motes.personal.value = Math.max(0, actorData.data.motes.personal.value - item.data.data.cost.motes);
+        }
+      }
+      actorData.data.willpower.value = Math.max(0, actorData.data.willpower.value - item.data.data.cost.willpower);
+      if(this.type === 'character') {
+        actorData.data.craft.experience.silver.value = Math.max(0, actorData.data.craft.experience.silver.value - item.data.data.cost.silverxp);
+        actorData.data.craft.experience.gold.value = Math.max(0, actorData.data.craft.experience.gold.value - item.data.data.cost.goldxp);
+        actorData.data.craft.experience.white.value = Math.max(0, actorData.data.craft.experience.white.value - item.data.data.cost.whitexp);
+      }
+      if(actorData.data.details.aura === item.data.data.cost.aura || item.data.data.cost.aura === 'any') {
+        actorData.data.details.aura = "none";
+      }
+      if(item.data.data.cost.initiative > 0) {
+        let combat = game.combat;
+        if (combat) {
+            let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.id);
+            if (combatant) {
+                var newInitiative = combatant.initiative - item.data.data.cost.initiative;
+                if(combatant.initiative > 0 && newInitiative <= 0) {
+                  newInitiative -= 5;
+                }
+                combat.setInitiative(combatant.id, newInitiative);
+            }
+        }
+      }
+      if(item.data.data.cost.anima > 0) {
+        var newLevel = actorData.data.anima.level;
+        for(var i = 0; i < item.data.data.cost.anima; i++) {
+          if (newLevel === "Bonfire") {
+            newLevel = "Burning";
+          }
+          else if (newLevel === "Burning") {
+            newLevel = "Glowing";
+          }
+          if (newLevel === "Glowing") {
+            newLevel = "Dim";
+          }
+        }
+        actorData.data.anima.level = newLevel;
+      }
+      if(item.data.data.cost.health > 0) {
+        let totalHealth = 0;
+        for (let [key, health_level] of Object.entries(actorData.data.health.levels)) {
+          totalHealth += health_level.value;
+        }
+        if(item.data.data.cost.healthtype === 'bashing') {
+          actorData.data.health.bashing = Math.min(totalHealth - actorData.data.health.aggravated - actorData.data.health.lethal, actorData.data.health.bashing + item.data.data.cost.health);
+        }
+        else if(item.data.data.cost.healthtype === 'lethal') {
+          actorData.data.health.lethal = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.aggravated, actorData.data.health.lethal + item.data.data.cost.health);
+        }
+        else {
+          actorData.data.health.aggravated = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.lethal, actorData.data.health.aggravated + item.data.data.cost.health);
+        }
+      }
+    }
+    if(item.type === 'spell') {
+      actorData.data.sorcery.motes = 0;
+    }
+
+    this.displayEmbeddedItem(itemId);
+
+    this.update(actorData);
+  }
+
   /**
    * Prepare Character type specific data
    */
