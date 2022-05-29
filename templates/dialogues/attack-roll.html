@@ -1,9 +1,9 @@
 <form>
     <div class="sheet-body exaltedthird">
-        {{#ifNotEquals item.type 'damage'}}
+        {{#ifNotEquals data.rollType 'damage'}}
         {{> systems/exaltedthird/templates/dialogues/accuracy-roll.html}}
         {{/ifNotEquals}}
-        {{#ifNotEquals item.type 'accuracy'}}
+        {{#ifNotEquals data.rollType 'accuracy'}}
         {{> systems/exaltedthird/templates/dialogues/damage-roll.html}}
         {{/ifNotEquals}}
         <div class="d-flex">
