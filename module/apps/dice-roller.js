@@ -101,16 +101,6 @@ export class RollForm extends FormApplication {
                     }
                     this.object.appearance = this.actor.data.data.appearance.value;
                 }
-                if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
-                    if (this.object.target) {
-                        if (this.object.rollType === 'readIntentions') {
-                            this.object.difficulty = this.object.target.actor.data.data.guile.value;
-                        }
-                        if (this.object.rollType === 'social') {
-                            this.object.difficulty = this.object.target.actor.data.data.resolve.value;
-                        }
-                    }
-                }
                 this.object.difficultyString = 'Ex3.Difficulty';
                 if (this.object.rollType === 'readIntentions') {
                     this.object.difficultyString = 'Ex3.Guile';
@@ -171,6 +161,14 @@ export class RollForm extends FormApplication {
                 }
             }
             if (this.object.target) {
+                if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
+                    if (this.object.rollType === 'readIntentions') {
+                        this.object.difficulty = this.object.target.actor.data.data.guile.value;
+                    }
+                    if (this.object.rollType === 'social') {
+                        this.object.difficulty = this.object.target.actor.data.data.resolve.value;
+                    }
+                }
                 if (this.object.target.actor.data.data.parry.value >= this.object.target.actor.data.data.evasion.value) {
                     this.object.defense = this.object.target.actor.data.data.parry.value;
                     if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
@@ -204,7 +202,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    
+
 
     /**
    * Get the correct HTML template path to use for rendering this particular sheet
@@ -241,7 +239,7 @@ export class RollForm extends FormApplication {
                 label: this.object.id ? game.i18n.localize('Ex3.Update') : game.i18n.localize('Ex3.Save'),
                 class: 'roll-dice',
                 icon: 'fas fa-dice-d6',
-                onclick: (ev) => { 
+                onclick: (ev) => {
                     this._saveRoll(this.object);
                 },
             };
@@ -265,13 +263,13 @@ export class RollForm extends FormApplication {
     }
 
 
-    resolve = function(value){ return value };
+    resolve = function (value) { return value };
 
-    get resolve(){
+    get resolve() {
         return this.resolve
     }
 
-    set resolve(value){
+    set resolve(value) {
         this.resolve = value;
     }
 
@@ -284,12 +282,12 @@ export class RollForm extends FormApplication {
         this.promise = new Promise(function (promiseResolve) {
             _promiseResolve = promiseResolve
         });
-        this.resolve = _promiseResolve; 
-        this.render(true); 
+        this.resolve = _promiseResolve;
+        this.render(true);
         return this.promise;
     }
     async _saveRoll(rollData) {
-        let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", {'name': this.object.name || 'New Roll'});
+        let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
         new Dialog({
             title: "Save Roll",
             content: html,
@@ -463,7 +461,7 @@ export class RollForm extends FormApplication {
         let rerolledDice = 0;
         var failedDice = Math.min(dice - roll.total, this.object.rerollNumber);
 
-        while (failedDice != 0 && (rerolledDice < this.object.rerollNumber)) {
+        while (failedDice !== 0 && (rerolledDice < this.object.rerollNumber)) {
             rerolledDice += failedDice;
             var failedDiceRoll = new Roll(`${failedDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
             failedDice = Math.min(failedDice - failedDiceRoll.total, (this.object.rerollNumber - rerolledDice));
@@ -512,7 +510,7 @@ export class RollForm extends FormApplication {
                             </div>
                         </div>
                     </div>`;
-        ChatMessage.create({ user: game.user.id, speaker: this.actor != null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+        ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
     }
 
     _abilityRoll() {
@@ -586,20 +584,20 @@ export class RollForm extends FormApplication {
       </div>
   </div>
   `
-        ChatMessage.create({ 
-            user: game.user.id, 
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
-            content: theContent, 
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: theContent,
             type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-             roll: this.object.roll,
-             flags: {
-                 "exaltedthird": {
-                     dice : this.object.dice,
-                     successModifier : this.object.successModifier,
-                     total : this.object.total
-                 }
-             } 
-            });
+            roll: this.object.roll,
+            flags: {
+                "exaltedthird": {
+                    dice: this.object.dice,
+                    successModifier: this.object.successModifier,
+                    total: this.object.total
+                }
+            }
+        });
         if (this.object.rollType === "joinBattle") {
             let combat = game.combat;
             if (combat) {
@@ -661,20 +659,20 @@ export class RollForm extends FormApplication {
                     </div>
                 </div>
               `;
-                ChatMessage.create({ 
-                    user: game.user.id, 
-                    speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
-                    content: messageContent, 
+                ChatMessage.create({
+                    user: game.user.id,
+                    speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                    content: messageContent,
                     type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll,
                     flags: {
                         "exaltedthird": {
-                            dice : this.object.dice,
-                            successModifier : this.object.successModifier,
-                            total : this.object.total,
-                            defense : this.object.defense,
-                            threshholdSuccesses : this.object.thereshholdSuccesses
+                            dice: this.object.dice,
+                            successModifier: this.object.successModifier,
+                            total: this.object.total,
+                            defense: this.object.defense,
+                            threshholdSuccesses: this.object.thereshholdSuccesses
                         }
-                    } 
+                    }
                 });
             }
         }
@@ -703,21 +701,21 @@ export class RollForm extends FormApplication {
                 </div>
             </div>
           `;
-            ChatMessage.create({ 
-                user: game.user.id, 
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
-                content: messageContent, 
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+            ChatMessage.create({
+                user: game.user.id,
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                content: messageContent,
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
                 roll: this.object.roll,
                 flags: {
                     "exaltedthird": {
-                        dice : this.object.dice,
-                        successModifier : this.object.successModifier,
-                        total : this.object.total,
-                        defense : this.object.defense,
-                        threshholdSuccesses : this.object.thereshholdSuccesses
+                        dice: this.object.dice,
+                        successModifier: this.object.successModifier,
+                        total: this.object.total,
+                        defense: this.object.defense,
+                        threshholdSuccesses: this.object.thereshholdSuccesses
                     }
-                } 
+                }
             });
 
         }
@@ -737,7 +735,7 @@ export class RollForm extends FormApplication {
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
                 let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
-                if(targetCombatant != null ) {
+                if (targetCombatant !== null) {
                     if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
                         dice += Math.floor(dice / 4);
                         baseDamage = dice;
@@ -908,24 +906,24 @@ export class RollForm extends FormApplication {
           `;
         }
 
-        ChatMessage.create({ 
-            user: game.user.id, 
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
-            content: messageContent, 
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
             roll: this.object.roll || roll,
             flags: {
                 "exaltedthird": {
-                    dice : this.object.dice,
-                    successModifier : this.object.successModifier,
-                    total : this.object.total,
-                    defense : this.object.defense,
-                    threshholdSuccesses : this.object.thereshholdSuccesses,
-                    damage : {
-                        dice : baseDamage,
+                    dice: this.object.dice,
+                    successModifier: this.object.successModifier,
+                    total: this.object.total,
+                    defense: this.object.defense,
+                    threshholdSuccesses: this.object.thereshholdSuccesses,
+                    damage: {
+                        dice: baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
-                        soak : this.object.soak,
-                        totalDamage : total,
+                        soak: this.object.soak,
+                        totalDamage: total,
                         crashed: this.object.crashed
                     }
                 }
@@ -1094,19 +1092,19 @@ export class RollForm extends FormApplication {
     </div>
 </div>
 `
-        ChatMessage.create({ 
-            user: game.user.id, 
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
-            content: messageContent, 
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
             roll: this.object.roll,
             flags: {
                 "exaltedthird": {
-                    dice : this.object.dice,
-                    successModifier : this.object.successModifier,
-                    total : this.object.total
+                    dice: this.object.dice,
+                    successModifier: this.object.successModifier,
+                    total: this.object.total
                 }
-            } 
+            }
         });
         this.object.goalNumber = goalNumberLeft;
         this.object.intervals--;
