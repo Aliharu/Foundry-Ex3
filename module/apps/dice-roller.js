@@ -7,6 +7,7 @@ export class RollForm extends FormApplication {
             this.object = this.actor.data.data.savedRolls[data.rollId];
         }
         else {
+            this.object.crashed = false;
             this.object.dice = data.dice || 0;
             this.object.successModifier = 0;
             this.object.rollType = data.rollType;
@@ -203,6 +204,8 @@ export class RollForm extends FormApplication {
         }
     }
 
+    
+
     /**
    * Get the correct HTML template path to use for rendering this particular sheet
    * @type {String}
@@ -261,6 +264,30 @@ export class RollForm extends FormApplication {
         });
     }
 
+
+    resolve = function(value){ return value };
+
+    get resolve(){
+        return this.resolve
+    }
+
+    set resolve(value){
+        this.resolve = value;
+    }
+
+    /**
+     * Renders out the Roll form.
+     * @returns {Promise} Returns True or False once the Roll or Cancel buttons are pressed.
+     */
+    async roll() {
+        var _promiseResolve;
+        this.promise = new Promise(function (promiseResolve) {
+            _promiseResolve = promiseResolve
+        });
+        this.resolve = _promiseResolve; 
+        this.render(true); 
+        return this.promise;
+    }
     async _saveRoll(rollData) {
         let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", {'name': this.object.name || 'New Roll'});
         new Dialog({
@@ -311,11 +338,13 @@ export class RollForm extends FormApplication {
         html.find('#roll-button').click((event) => {
             this._roll();
             if (this.object.intervals <= 0) {
+                this.resolve(true);
                 this.close();
             }
         });
 
         html.find('#cancel').click((event) => {
+            this.resolve(false);
             this.close();
         });
 
@@ -557,7 +586,20 @@ export class RollForm extends FormApplication {
       </div>
   </div>
   `
-        ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: theContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+        ChatMessage.create({ 
+            user: game.user.id, 
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
+            content: theContent, 
+            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+             roll: this.object.roll,
+             flags: {
+                 "exaltedthird": {
+                     dice : this.object.dice,
+                     successModifier : this.object.successModifier,
+                     total : this.object.total
+                 }
+             } 
+            });
         if (this.object.rollType === "joinBattle") {
             let combat = game.combat;
             if (combat) {
@@ -619,7 +661,21 @@ export class RollForm extends FormApplication {
                     </div>
                 </div>
               `;
-                ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+                ChatMessage.create({ 
+                    user: game.user.id, 
+                    speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
+                    content: messageContent, 
+                    type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll,
+                    flags: {
+                        "exaltedthird": {
+                            dice : this.object.dice,
+                            successModifier : this.object.successModifier,
+                            total : this.object.total,
+                            defense : this.object.defense,
+                            threshholdSuccesses : this.object.thereshholdSuccesses
+                        }
+                    } 
+                });
             }
         }
         if (this.object.rollType === 'accuracy') {
@@ -647,7 +703,22 @@ export class RollForm extends FormApplication {
                 </div>
             </div>
           `;
-            ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+            ChatMessage.create({ 
+                user: game.user.id, 
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
+                content: messageContent, 
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+                roll: this.object.roll,
+                flags: {
+                    "exaltedthird": {
+                        dice : this.object.dice,
+                        successModifier : this.object.successModifier,
+                        total : this.object.total,
+                        defense : this.object.defense,
+                        threshholdSuccesses : this.object.thereshholdSuccesses
+                    }
+                } 
+            });
 
         }
     }
@@ -666,9 +737,11 @@ export class RollForm extends FormApplication {
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
                 let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
-                if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
-                    dice += Math.floor(dice / 4);
-                    baseDamage = dice;
+                if(targetCombatant != null ) {
+                    if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
+                        dice += Math.floor(dice / 4);
+                        baseDamage = dice;
+                    }
                 }
             }
         }
@@ -755,6 +828,7 @@ export class RollForm extends FormApplication {
                                 newInitative = 1;
                             }
                             else {
+                                this.object.crashed = true;
                                 this.object.characterInitiative += 5;
                                 targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
                             }
@@ -834,7 +908,29 @@ export class RollForm extends FormApplication {
           `;
         }
 
-        ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll || roll });
+        ChatMessage.create({ 
+            user: game.user.id, 
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
+            content: messageContent, 
+            type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+            roll: this.object.roll || roll,
+            flags: {
+                "exaltedthird": {
+                    dice : this.object.dice,
+                    successModifier : this.object.successModifier,
+                    total : this.object.total,
+                    defense : this.object.defense,
+                    threshholdSuccesses : this.object.thereshholdSuccesses,
+                    damage : {
+                        dice : baseDamage,
+                        successModifier: this.object.damage.damageSuccessModifier,
+                        soak : this.object.soak,
+                        totalDamage : total,
+                        crashed: this.object.crashed
+                    }
+                }
+            }
+        });
 
         if (this.actor.data.type !== 'npc' || this.actor.data.data.battlegroup === false) {
             let combat = game.combat;
@@ -998,7 +1094,20 @@ export class RollForm extends FormApplication {
     </div>
 </div>
 `
-        ChatMessage.create({ user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+        ChatMessage.create({ 
+            user: game.user.id, 
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }), 
+            content: messageContent, 
+            type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+            roll: this.object.roll,
+            flags: {
+                "exaltedthird": {
+                    dice : this.object.dice,
+                    successModifier : this.object.successModifier,
+                    total : this.object.total
+                }
+            } 
+        });
         this.object.goalNumber = goalNumberLeft;
         this.object.intervals--;
         if (this.object.intervals > 0) {

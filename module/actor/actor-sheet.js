@@ -1079,8 +1079,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
     if(item.type === 'spell') {
-      actorData.data.sorcery.motes = Math.max(0, actorData.data.sorcery.motes - item.data.data.cost);
+      actorData.data.sorcery.motes = 0;
     }
+    this._displayCard(event);
     this.actor.update(actorData);
   }
 }

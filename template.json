@@ -46,11 +46,13 @@
         "motes": {
           "personal": {
             "value": 0,
-            "total": 0
+            "total": 0,
+            "max": 0
           },
           "peripheral": {
             "value": 0,
-            "total": 0
+            "total": 0,
+            "max":0
           }
         },
         "evasion": {

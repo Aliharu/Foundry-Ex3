@@ -16,14 +16,16 @@ Hooks.once('init', async function() {
 
   game.exaltedthird = {
     applications: {
-      TraitSelector,
+      TraitSelector
     },
     entities: {
       ExaltedThirdActor,
-      ExaltedThirdItem,
+      ExaltedThirdItem
     },
     config: exaltedthird,
-    rollItemMacro: rollItemMacro
+    rollItemMacro: rollItemMacro,
+    roll: roll,
+    RollForm
   };
 
   /**
@@ -136,8 +138,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   if (update && update.round) {
     for(var combatant of combat.data.combatants) {
       const actorData = duplicate(combatant.actor)
-      var missingPersonal = actorData.data.motes.personal.total - actorData.data.motes.personal.value;
-      var missingPeripheral = actorData.data.motes.peripheral.total - actorData.data.motes.peripheral.value;
+      var missingPersonal = actorData.data.motes.personal.max - actorData.data.motes.personal.value;
+      var missingPeripheral = actorData.data.motes.peripheral.max - actorData.data.motes.peripheral.value;
       var restorePersonal = 0;
       var restorePeripheral = 0;
       if(missingPeripheral >= 5) {
@@ -230,4 +232,15 @@ function rollItemMacro(itemName) {
 
   // Trigger the item roll
   return item.roll();
+}
+
+/**
+ * 
+ * @param {ExaltedThirdActor} actor 
+ * @param {object} object 
+ * @param {object} data 
+ * @returns {Promise}
+ */
+function roll(actor,object,data){
+  return new RollForm(actor,object,{},data).roll();
 }
