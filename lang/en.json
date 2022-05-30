@@ -361,5 +361,8 @@
     "Ex3.Save": "Save",
     "Ex3.Update": "Update",
     "Ex3.EnterNewRollName": "Enter New Roll Name",
-    "Ex3.SavedRolls": "Saved Rolls"
+    "Ex3.SavedRolls": "Saved Rolls",
+    "Ex3.AttackSuccesses": "Attack Successes",
+    "Ex3.DefenseOnDamage": "Defense on Damage",
+    "Ex3.DefenseOnDamageDescription": "Use Defense values and attack success values on damage rolls, use this when you need abilities to alter defense after accuracy is rolled.  To use set defense to 0 on accuracy roll then input success result and defense value into damage roll."
 }

@@ -45,6 +45,7 @@ export class RollForm extends FormApplication {
             this.object.rerollFailed = false;
             this.object.targetNumber = 7;
             this.object.rerollNumber = 0;
+            this.object.attackSuccesses = 0;
 
             this.object.reroll = {
                 one: { status: false, number: 1 },
@@ -149,6 +150,7 @@ export class RollForm extends FormApplication {
         }
         if (this.object.rollType !== 'base') {
             this.object.target = Array.from(game.user.targets)[0] || null;
+            this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
             let combat = game.combat;
             if (combat) {
@@ -730,6 +732,10 @@ export class RollForm extends FormApplication {
     _damageRoll() {
         let baseDamage = this.object.damage.damageDice;
         let dice = this.object.damage.damageDice;
+        if(this.object.rollType === 'damage' && game.settings.get("exaltedthird", "defenseOnDamage")) {
+            dice += this.object.attackSuccesses;
+            dice -= this.object.defense;
+        }
         var damageResults = ``;
 
         if (this._damageRollType('decisive')) {

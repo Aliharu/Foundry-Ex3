@@ -12,6 +12,16 @@
                 <option value="withering">{{localize "Ex3.Withering"}}</option>
                 {{/select}}
             </select>
+            {{#if data.showDefenseOnDamage}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
+                <input type="number" name="object.attackSuccesses" value="{{data.attackSuccesses}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Defense"}} </label>
+                <input type="number" name="object.defense" value="{{data.defense}}">
+            </div>
+            {{/if}}
             {{/ifEquals}}
             <div>
                 <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
