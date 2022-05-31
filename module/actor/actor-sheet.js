@@ -341,6 +341,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateHealth();
     });
 
+    html.find('.calculate-peripheral-motes').mousedown(ev => {
+      this.calculateMotes('peripheral');
+    });
+
+    html.find('.calculate-personal-motes').mousedown(ev => {
+      this.calculateMotes('personal');
+    });
+
     html.find('#calculate-warstrider-health').mousedown(ev => {
       this.calculateHealth(true);
     });
@@ -569,6 +577,54 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
     data.anima.level = newLevel;
+    this.actor.update(actorData);
+  }
+
+  async calculateMotes(type) {
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+
+    if(type === 'personal') {
+      if(data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
+        data.motes.personal.max = 10 + (data.essence.value * 3);
+      }
+      if(data.details.exalt === 'dragonblood') {
+        data.motes.personal.max = 11 + data.essence.value;
+      }
+      if(data.details.exalt === 'lunar') {
+        data.motes.personal.max = 15 + data.essence.value;
+      }
+      if(data.details.exalt === 'exigent') {
+        data.motes.personal.max = 11 + data.essence.value;
+      }
+      if(data.details.exalt === 'sidereal') {
+        data.motes.personal.max = 9 + (data.essence.value * 2);
+      }
+      if(data.details.exalt === 'liminal') {
+        data.motes.personal.max = 10 + (data.essence.value * 3);
+      }
+    }
+    else {
+      if(data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
+        data.motes.peripheral.max = 27 + (data.essence.value * 7);
+      }
+      if(data.details.exalt === 'dragonblood') {
+        data.motes.peripheral.max = 23 +(data.essence.value * 4);
+      }
+      if(data.details.exalt === 'lunar') {
+        data.motes.peripheral.max = 34 + ( data.essence.value * 4);
+      }
+      if(data.details.exalt === 'exigent') {
+        data.motes.peripheral.max = 23 + (data.essence.value * 4);
+      }
+      if(data.details.exalt === 'sidereal') {
+        data.motes.peripheral.max = 25 + (data.essence.value * 6);
+      }
+      if(data.details.exalt === 'liminal') {
+        data.motes.peripheral.max = 23 + (data.essence.value * 4);
+      }
+    }
+
     this.actor.update(actorData);
   }
 
