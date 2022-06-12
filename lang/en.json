@@ -51,13 +51,16 @@
     "Ex3.Abyssal": "Abyssal",
     "Ex3.Alchemical": "Alchemical",
     "Ex3.Dragonblooded": "Dragonblooded",
+    "Ex3.DreamSouled": "Dream-Souled",
     "Ex3.Exigent": "Exigent",
     "Ex3.Getimian": "Getimian",
+    "Ex3.Hearteater": "Hearteater",
     "Ex3.Infernal": "Infernal",
     "Ex3.Liminal": "Liminal",
     "Ex3.Lunar": "Lunar",
     "Ex3.Sidereal": "Sidereal",
     "Ex3.Solar": "Solar",
+    "Ex3.Umbral": "Umbral",
     "Ex3.Other": "Other",
 
     "Ex3.Attribute": "Attribute",
@@ -314,7 +317,12 @@
     "Ex3.White": "White",
 
     "Ex3.Keywords": "Keywords",
+    "Ex3.Prerequisites": "Prerequisites",
     "Ex3.Warstrider": "Warstrider",
+    "Ex3.Ship": "Ship",
+    "Ex3.Hull": "Hull",
+    "Ex3.Cargo": "Cargo",
+    "Ex3.Maneuverability": "Maneuverability",
 
     "Ex3.Speed": "Speed",
 

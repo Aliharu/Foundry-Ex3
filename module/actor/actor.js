@@ -134,7 +134,10 @@ export class ExaltedThirdActor extends Actor {
     let totalHealth = 0;
     let currentPenalty = 0;
     let totalWarstriderHealth = 0;
+    let totalShipHealth = 0;
     let currentWarstriderPenalty = 0;
+    let currentShipPenalty = 0;
+
     if (data.battlegroup) {
       totalHealth = data.health.levels.zero.value + data.size.value;
       data.health.total = totalHealth;
@@ -158,8 +161,8 @@ export class ExaltedThirdActor extends Actor {
       if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.total) {
         data.health.aggravated = data.health.total - data.health.lethal;
         if (data.health.aggravated <= 0) {
-          data.health.aggravated = 0
-          data.health.lethal = data.health.total
+          data.health.aggravated = 0;
+          data.health.lethal = data.health.total;
         }
       }
       data.health.penalty = currentPenalty;
@@ -176,11 +179,28 @@ export class ExaltedThirdActor extends Actor {
     if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > data.warstrider.health.total) {
       data.warstrider.health.aggravated = data.warstrider.health.total - data.warstrider.health.lethal;
       if (data.warstrider.health.aggravated <= 0) {
-        data.warstrider.health.aggravated = 0
-        data.warstrider.health.lethal = data.health.total
+        data.warstrider.health.aggravated = 0;
+        data.warstrider.health.lethal = data.health.total;
       }
     }
     data.warstrider.health.penalty = currentWarstriderPenalty;
+
+    
+    for (let [key, health_level] of Object.entries(data.ship.health.levels)) {
+      if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > totalShipHealth) {
+        currentShipPenalty = health_level.penalty;
+      }
+      totalShipHealth += health_level.value;
+    }
+    data.ship.health.total = totalShipHealth;
+    if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > data.ship.health.total) {
+      data.ship.health.aggravated = data.ship.health.total - data.ship.health.lethal;
+      if (data.ship.health.aggravated <= 0) {
+        data.ship.health.aggravated = 0;
+        data.ship.health.lethal = data.health.total;
+      }
+    }
+    data.ship.health.penalty = currentShipPenalty;
 
     if (actorData.type !== "npc") {
       data.experience.standard.spent = data.experience.standard.total - data.experience.standard.value;

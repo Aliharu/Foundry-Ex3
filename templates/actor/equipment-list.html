@@ -149,3 +149,46 @@
     </div>
   </div>
 </div>
+<div>
+  <label class="resource-label">{{localize "Ex3.Ship"}}</label>
+    <div class="resource flex-group-center d-flex">
+      <div style="margin-right:20px;">
+        <div class="flexrow">
+          <label for="data.ship.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
+              id="calculate-ship-health" style="margin-right:3px;" title="Calculate Health"></i>{{localize
+            "Ex3.Hull"}}<i id="recoverySceneShip" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+            style="margin-left:3px;"></i></label>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between">
+          <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
+            data-max="{{data.data.ship.health.total}}" data-bashing="{{data.data.ship.health.bashing}}"
+            data-lethal="{{data.data.ship.health.lethal}}" data-aggravated="{{data.data.ship.health.aggravated}}"
+            data-name="data.ship.health">
+            {{#numLoop data.data.ship.health.total}}
+            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+            {{/numLoop}}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="flex-center">
+          <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
+          <div>-{{data.data.ship.health.penalty}}</div>
+        </div>
+      </div>
+    </div>
+  <div class="grid grid-2col flex-group-center">
+    <div>
+      <label class="resource-label">{{localize "Ex3.Speed"}}</label>
+      <input type="number" name="data.ship.speed.value" value="{{data.data.ship.speed.value}}" data-dtype="Number" />
+    </div>
+    <div>
+      <label class="resource-label">{{localize "Ex3.Maneuverability"}}</label>
+      <input type="number" name="data.ship.maneuverability.value" value="{{data.data.ship.maneuverability.value}}" data-dtype="Number" />
+    </div>
+  </div>
+  <div>
+  <label class="resource-label">{{localize "Ex3.Cargo"}}</label>
+    <textarea type="text" name="data.ship.cargo" rows="2">{{data.data.ship.cargo}}</textarea>
+  </div>
+</div>

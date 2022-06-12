@@ -98,6 +98,43 @@
           "tell": "",
           "aura": "none"
         },
+        "ship": {
+          "name": "",
+          "health": {
+            "levels": {
+              "zero": {
+                "value": 0,
+                "penalty": 0
+              },
+              "one": {
+                "value": 1,
+                "penalty": 1
+              },
+              "two": {
+                "value": 1,
+                "penalty": 2
+              },
+              "four": {
+                "value": 1,
+                "penalty": 4
+              },
+              "inc": {
+                "value": 1,
+                "penalty": "inc"
+              }
+            },
+            "bashing": 0,
+            "lethal": 0,
+            "aggravated": 0
+          },
+          "speed": {
+            "value": 0
+          },
+          "maneuverability": {
+            "value": 0
+          },
+          "cargo": ""
+        },
         "warstrider": {
           "active": false,
           "equipped": false,
@@ -533,6 +570,7 @@
       "templates": [
         "base"
       ],
+      "prerequisites": "",
       "type": "supplemental",
       "duration": "instant",
       "keywords": "",

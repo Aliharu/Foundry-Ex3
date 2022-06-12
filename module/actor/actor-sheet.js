@@ -350,7 +350,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('#calculate-warstrider-health').mousedown(ev => {
-      this.calculateHealth(true);
+      this.calculateHealth('warstrider');
+    });
+
+    html.find('#calculate-ship-health').mousedown(ev => {
+      this.calculateHealth('ship');
     });
 
     html.find('#color-picker').mousedown(ev => {
@@ -362,7 +366,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('#recoverySceneWarstrider').mousedown(ev => {
-      this.recoverHealth(true);
+      this.recoverHealth('warstrider');
+    });
+
+    html.find('#recoverySceneShip').mousedown(ev => {
+      this.recoverHealth('ship');
     });
 
     html.find('#rollDice').mousedown(ev => {
@@ -628,7 +636,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this.actor.update(actorData);
   }
 
-  async calculateHealth(warstrider=false) {
+  async calculateHealth(healthType='person') {
     let confirmed = false;
     const actorData = duplicate(this.actor);
     const data = actorData.data;
@@ -673,10 +681,33 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
 
     var template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
-    if(data.battlegroup && !warstrider) {
+    if(data.battlegroup && healthType === 'person') {
       template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
     }
-    const html = await renderTemplate(template, { 'oxBodyText': oxBodyText, 'zero': warstrider ? data.warstrider.health.levels.zero.value : data.health.levels.zero.value, 'one':  warstrider ? data.warstrider.health.levels.one.value : data.health.levels.one.value, 'two':  warstrider ? data.warstrider.health.levels.two.value : data.health.levels.two.value, 'four':  warstrider ? data.warstrider.health.levels.four.value : data.health.levels.four.value});
+
+    var templateData = {
+      'oxBodyText': oxBodyText,
+    }
+    if(healthType === 'warstrider') {
+      templateData.zero = data.warstrider.health.levels.zero.value;
+      templateData.one = data.warstrider.health.levels.one.value;
+      templateData.two = data.warstrider.health.levels.two.value;
+      templateData.four = data.warstrider.health.levels.four.value;
+    }
+    else if(healthType === 'ship') {
+      templateData.zero = data.ship.health.levels.zero.value;
+      templateData.one = data.ship.health.levels.one.value;
+      templateData.two = data.ship.health.levels.two.value;
+      templateData.four = data.ship.health.levels.four.value;
+    }
+    else {
+      templateData.zero = data.health.levels.zero.value;
+      templateData.one = data.health.levels.one.value;
+      templateData.two = data.health.levels.two.value;
+      templateData.four = data.health.levels.four.value;
+    }
+
+    const html = await renderTemplate(template, templateData);
 
     new Dialog({
       title: `Calculate Health`,
@@ -691,7 +722,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           let one = parseInt(html.find('#one').val()) || 0;
           let two = parseInt(html.find('#two').val()) || 0;
           let four = parseInt(html.find('#four').val()) || 0;
-          if(warstrider) {
+          if(healthType === 'warstrider') {
             data.warstrider.health.bashing = 0;
             data.warstrider.health.lethal = 0;
             data.warstrider.health.aggravated = 0;
@@ -699,6 +730,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             data.warstrider.health.levels.one.value = one;
             data.warstrider.health.levels.two.value = two;
             data.warstrider.health.levels.four.value = four;
+          }
+          else if(healthType === 'ship') {
+            data.ship.health.bashing = 0;
+            data.ship.health.lethal = 0;
+            data.ship.health.aggravated = 0;
+            data.ship.health.levels.zero.value = zero;
+            data.ship.health.levels.one.value = one;
+            data.ship.health.levels.two.value = two;
+            data.ship.health.levels.four.value = four;
           }
           else {
             data.health.bashing = 0;
@@ -715,20 +755,24 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }).render(true);
   }
 
-  async recoverHealth(warstrider=false) {
+  async recoverHealth(healthType = 'person') {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
-    if(warstrider) {
+    if(healthType === 'warstrider') {
       data.warstrider.health.bashing = 0;
       data.warstrider.health.lethal = 0;
       data.warstrider.health.aggravated = 0;
+    }
+    else if (healthType === 'ship') {
+      data.ship.health.bashing = 0;
+      data.ship.health.lethal = 0;
+      data.ship.health.aggravated = 0;
     }
     else {
       data.health.bashing = 0;
       data.health.lethal = 0;
       data.health.aggravated = 0;
     }
-
     this.actor.update(actorData);
   }
 

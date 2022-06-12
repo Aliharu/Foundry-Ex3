@@ -1,25 +1,5 @@
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
-        {{localize "Ex3.SavedRolls"}}
-    </div>
-</div>
-
-<ol class="items-list">
-    {{#each data.data.savedRolls as |item id|}}
-    <li class="item flexrow" data-item-id="{{id}}">
-        <h4 class="item-name">{{item.name}}</h4>
-        <div class="resource-table-value resource-value-static">
-            {{item.rollType}}
-        </div>
-        <div class="item-controls">
-            <a class="item-control saved-roll" title="Roll"><i class="fas fa-dice"></i></a>
-            <a class="item-control delete-saved-roll" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-    </li>
-    {{/each}}
-</ol>
-<div class="resource-label list-section-header d-flex flex-between">
-    <div>
         {{localize "Ex3.ActiveEffects"}}
     </div>
 </div>

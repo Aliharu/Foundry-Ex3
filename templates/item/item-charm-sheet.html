@@ -83,6 +83,10 @@
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
             <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.Prerequisites"}} (Comma Separated)</div>
+            </div>
+            <input type="text" name="data.prerequisites" value="{{data.data.prerequisites}}" />
+            <div class="flex-center mt-1">
                 <div class="resource-label">{{localize "Ex3.Keywords"}}</div>
             </div>
             <textarea type="text" name="data.keywords" rows="2">{{data.data.keywords}}</textarea>
