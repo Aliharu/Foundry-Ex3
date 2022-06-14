@@ -1,8 +1,8 @@
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="data.ability" data-type="String">
@@ -43,6 +43,7 @@
                     <option value="thrown">{{localize "Ex3.Thrown"}}</option>
                     <option value="war">{{localize "Ex3.War"}}</option>
                     <option value="evocation">{{localize "Ex3.Evocation"}}</option>
+                    <option value="universal">{{localize "Ex3.Universal"}}</option>
                     <option value="other">{{localize "Ex3.Other"}}</option>
                     {{/select}}
                 </select>
@@ -97,7 +98,7 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Duration"}}</div>
-                    <input type="text" name="data.duration" value="{{data.data.duration}}"/>
+                    <input type="text" name="data.duration" value="{{data.data.duration}}" />
                 </div>
             </div>
             <div class="flex-center">
@@ -123,7 +124,7 @@
                         data-dtype="Number" />
                 </div>
             </div>
-            <div class="grid grid-3col flex-group-center">
+            <div class="grid grid-4col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Health"}}</div>
                     <input type="number" name="data.cost.health" value="{{data.data.cost.health}}"
@@ -152,6 +153,10 @@
                         <option value="wood">{{localize "Ex3.Wood"}}</option>
                         {{/select}}
                     </select>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.XP"}}</div>
+                    <input type="number" name="data.cost.xp" value="{{data.data.cost.xp}}" data-dtype="Number" />
                 </div>
             </div>
             <div class="flex-center">

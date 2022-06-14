@@ -179,6 +179,7 @@
     "Ex3.Specialty": "Specialty",
     "Ex3.Specialties": "Specialties",
     "Ex3.Resonance": "Resonance",
+    "Ex3.Dissonance": "Dissonance",
     "Ex3.Merits": "Merits",
     "Ex3.Rituals": "Rituals",
     "Ex3.Initiations": "Initiations",
@@ -226,6 +227,7 @@
     "Ex3.FullRest": "Full Rest",
 
     "Ex3.Experience": "Experience",
+    "Ex3.XP": "XP",
 
     "Ex3.SilverXP": "Silver",
     "Ex3.GoldXP": "Gold",
@@ -243,6 +245,7 @@
 
     "Ex3.Personal": "Personal",
     "Ex3.Peripheral": "Peripheral",
+    "Ex3.Committed": "Committed",
 
     "Ex3.Minor": "Minor",
     "Ex3.Major": "Major",

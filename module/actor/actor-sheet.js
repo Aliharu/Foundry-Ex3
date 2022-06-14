@@ -4,6 +4,7 @@
 import TraitSelector from "../apps/trait-selector.js";
 import { RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
+import Importer from "../apps/importer.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -445,6 +446,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.showCraft();
     });
 
+    html.find('#import-stuff').mousedown(ev => {
+      new Importer().render(true);
+    });
+
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
       new RollForm(this.actor, {event:ev}, {}, {rollType: 'withering', attribute: item.data.data.attribute, ability: item.data.data.ability, accuracy: item.data.data.witheringaccuracy, damage: item.data.data.witheringdamage, overwhelming: item.data.data.overwhelming, weaponType: item.data.data.weapontype, isMagic: item.data.data.magic}).render(true);
@@ -561,26 +566,34 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   _updateAnima(direction) {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
-    let newLevel = "Dim";
+    let newLevel = data.anima.level;
     if (direction === "up") {
-      if (data.anima.level === "Dim") {
-        newLevel = "Glowing";
+      if(data.anima.level !== "Transcendent") {
+        if (data.anima.level === "Dim") {
+          newLevel = "Glowing";
+        }
+        else if (data.anima.level === "Glowing") {
+          newLevel = "Burning";
+        }
+        else {
+          newLevel = "Bonfire";
+        }
       }
-      else if (data.anima.level === "Glowing") {
-        newLevel = "Burning";
-      }
-      else {
-        newLevel = "Bonfire";
+      if(data.anima.level === 'Bonfire' && data.details.caste.toLowerCase() === 'sovereign') {
+        newLevel = "Transcendent";
       }
     }
     else {
-      if (data.anima.level === "Bonfire") {
+      if (data.anima.level === "Transcendent") {
+        newLevel = "Bonfire";
+      }
+      else if (data.anima.level === "Bonfire") {
         newLevel = "Burning";
       }
       else if (data.anima.level === "Burning") {
         newLevel = "Glowing";
       }
-      if (data.anima.level === "Glowing") {
+      else if (data.anima.level === "Glowing") {
         newLevel = "Dim";
       }
     }
@@ -596,7 +609,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if(data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
         data.motes.personal.max = 10 + (data.essence.value * 3);
       }
-      if(data.details.exalt === 'dragonblood') {
+      if(data.details.exalt === 'dragonblooded') {
         data.motes.personal.max = 11 + data.essence.value;
       }
       if(data.details.exalt === 'lunar') {
@@ -616,7 +629,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if(data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
         data.motes.peripheral.max = 27 + (data.essence.value * 7);
       }
-      if(data.details.exalt === 'dragonblood') {
+      if(data.details.exalt === 'dragonblooded') {
         data.motes.peripheral.max = 23 +(data.essence.value * 4);
       }
       if(data.details.exalt === 'lunar') {
@@ -1150,7 +1163,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if(item.data.data.cost.anima > 0) {
         var newLevel = actorData.data.anima.level;
         for(var i = 0; i < item.data.data.cost.anima; i++) {
-          if (newLevel === "Bonfire") {
+          if (newLevel === "Transcendent") {
+            newLevel = "Bonfire";
+          }
+          else if (newLevel === "Bonfire") {
             newLevel = "Burning";
           }
           else if (newLevel === "Burning") {

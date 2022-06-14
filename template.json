@@ -47,12 +47,14 @@
           "personal": {
             "value": 0,
             "total": 0,
-            "max": 0
+            "max": 0,
+            "committed": 0
           },
           "peripheral": {
             "value": 0,
             "total": 0,
-            "max":0
+            "max":0,
+            "committed": 0
           }
         },
         "evasion": {
@@ -371,7 +373,8 @@
         "trigger": ""
       },
       "advantages": {
-        "resonance": ""
+        "resonance": "",
+        "disonance": ""
       },
       "experience": {
         "standard": {
@@ -585,6 +588,7 @@
         "aura": "",
         "health": 0,
         "healthtype": "bashing",
+        "xp": 0,
         "silverxp": 0,
         "goldxp": 0,
         "whitexp": 0
@@ -607,7 +611,9 @@
         "base"
       ],
       "circle": "terrestrial",
-      "cost": 0
+      "cost": 0,
+      "willpower": 1,
+      "duration": ""
     },
     "intimacy": {
       "templates": [

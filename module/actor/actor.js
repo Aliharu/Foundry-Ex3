@@ -87,7 +87,10 @@ export class ExaltedThirdActor extends Actor {
       if(item.data.data.cost.anima > 0) {
         var newLevel = actorData.data.anima.level;
         for(var i = 0; i < item.data.data.cost.anima; i++) {
-          if (newLevel === "Bonfire") {
+          if (newLevel === "Transcendent") {
+            newLevel = "Bonfire";
+          }
+          else if (newLevel === "Bonfire") {
             newLevel = "Burning";
           }
           else if (newLevel === "Burning") {
