@@ -24,7 +24,7 @@
     <div>
         <b>Cost</b>: {{#ifGreater item.data.cost.motes 0}}{{ item.data.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.data.cost.willpower 0}} {{ item.data.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.data.cost.anima 0}}{{ item.data.cost.anima }}a, {{/ifGreater}}
         {{#ifGreater item.data.cost.initiative 0}}{{ item.data.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.data.cost.silverxp 0}}{{ item.data.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.data.cost.goldxp 0}} {{
-        item.data.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.data.cost.whitexp 0}}{{ item.data.cost.whitexp }}wxp; {{/ifGreater}}    
+        item.data.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.data.cost.whitexp 0}}{{ item.data.cost.whitexp }}wxp; {{/ifGreater}} {{#ifGreater item.data.cost.xp 0}}{{ item.data.cost.xp }}xp; {{/ifGreater}}    
     </div>
     {{#ifGreater item.data.cost.health 0}}
     <div>

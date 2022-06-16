@@ -429,15 +429,15 @@ export default class Importer extends FormApplication {
                             var miscCostArray = charmRow[8].split(',');
                             for (var miscCost of miscCostArray) {
                                 miscCost = miscCost.trim();
-                                if (miscCost.includes('ahl')) {
+                                if(miscCost.includes('hl')) {
                                     var num = miscCost.replace(/[^0-9]/g,'');
                                     charmData.data.cost.health = parseInt(num);
-                                    charmData.data.cost.healthtype = 'aggravated';
-                                }
-                                if (miscCost.includes('lhl')) {
-                                    var num = miscCost.replace(/[^0-9]/g,'');
-                                    charmData.data.cost.health = parseInt(num);
-                                    charmData.data.cost.healthtype = 'lethal';
+                                    if (miscCost.includes('ahl')) {
+                                        charmData.data.cost.healthtype = 'aggravated';
+                                    }
+                                    if (miscCost.includes('lhl')) {
+                                        charmData.data.cost.healthtype = 'lethal';
+                                    }
                                 }
                                 if (miscCost.includes('Fire')) {
                                     charmData.data.cost.aura = 'fire';

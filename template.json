@@ -100,6 +100,9 @@
           "tell": "",
           "aura": "none"
         },
+        "settings": {
+          "charmmotepool": "peripheral"
+        },
         "ship": {
           "name": "",
           "health": {
@@ -459,6 +462,10 @@
         },
         "resistpoison": {
           "name": "Ex3.ResistPoison",
+          "value": 0
+        },
+        "sail": {
+          "name": "Ex3.Sail",
           "value": 0
         },
         "senses": {
