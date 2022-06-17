@@ -429,8 +429,8 @@ export default class Importer extends FormApplication {
                             var miscCostArray = charmRow[8].split(',');
                             for (var miscCost of miscCostArray) {
                                 miscCost = miscCost.trim();
-                                if(miscCost.includes('hl')) {
-                                    var num = miscCost.replace(/[^0-9]/g,'');
+                                if (miscCost.includes('hl')) {
+                                    var num = miscCost.replace(/[^0-9]/g, '');
                                     charmData.data.cost.health = parseInt(num);
                                     if (miscCost.includes('ahl')) {
                                         charmData.data.cost.healthtype = 'aggravated';
@@ -455,19 +455,19 @@ export default class Importer extends FormApplication {
                                     charmData.data.cost.aura = 'wood';
                                 }
                                 if (miscCost.includes('gxp')) {
-                                    var num = miscCost.replace(/[^0-9]/g,'');
+                                    var num = miscCost.replace(/[^0-9]/g, '');
                                     charmData.data.cost.goldxp = parseInt(num);
                                 }
                                 else if (miscCost.includes('sxp')) {
-                                    var num = miscCost.replace(/[^0-9]/g,'');
+                                    var num = miscCost.replace(/[^0-9]/g, '');
                                     charmData.data.cost.silverxp = parseInt(num);
                                 }
                                 else if (miscCost.includes('wxp')) {
-                                    var num = miscCost.replace(/[^0-9]/g,'');
+                                    var num = miscCost.replace(/[^0-9]/g, '');
                                     charmData.data.cost.whitexp = parseInt(num);
                                 }
                                 else if (miscCost.includes('xp')) {
-                                    var num = miscCost.replace(/[^0-9]/g,'');
+                                    var num = miscCost.replace(/[^0-9]/g, '');
                                     charmData.data.cost.xp = parseInt(num);
                                 }
                             }
