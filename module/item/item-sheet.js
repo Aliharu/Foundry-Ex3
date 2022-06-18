@@ -40,9 +40,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   /** @override */
   getData() {
     const data = super.getData();
-
     data.effects = prepareActiveEffectCategories(this.item.effects);
-
     return data;
   }
 
@@ -67,10 +65,19 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     if (!this.options.editable) return;
 
     html.find(".effect-control").click(ev => {
-      if ( this.item.isOwned ) return ui.notifications.warn("Managing Active Effects within an Owned Item is not currently supported and will be added in a subsequent update.");
+      if (this.item.isOwned) return ui.notifications.warn("Managing Active Effects within an Owned Item is not currently supported and will be added in a subsequent update.");
       onManageActiveEffect(ev, this.item);
     });
 
-    // Roll handlers, click handlers, etc. would go here.
+    html.find(".show-keywords").click(async ev => {
+      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/keywords.html");
+      new Dialog({
+        title: `Keywords`,
+        content: html,
+        buttons: {
+          cancel: { label: "Close" }
+        }
+      }, { height: 650, width: 1000 }).render(true);
+    });
   }
 }
