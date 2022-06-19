@@ -58,6 +58,11 @@
     "Ex3.Infernal": "Infernal",
     "Ex3.Liminal": "Liminal",
     "Ex3.Lunar": "Lunar",
+    "Ex3.Janest": "Janest",
+    "Ex3.Puppeteer": "Puppeteer",
+    "Ex3.Architect": "Architect",
+    "Ex3.Sovereign": "Sovereign",
+
     "Ex3.Sidereal": "Sidereal",
     "Ex3.Solar": "Solar",
     "Ex3.Umbral": "Umbral",
@@ -174,6 +179,7 @@
     "Ex3.Stats": "Stats",
     "Ex3.Qualities": "Qualities",
     "Ex3.Charms": "Charms",
+    "Ex3.CharmType": "Charm Type",
     "Ex3.Advantages": "Advantages",
     "Ex3.Character": "Character",
     "Ex3.Specialty": "Specialty",
@@ -366,6 +372,12 @@
 
     "Ex3.Grappling": "Grappling",
     "Ex3.Grappled": "Grappled",
+
+    "Ex3.ItemSearch": "Item Search",
+    "Ex3.Types": "Types",
+    "Ex3.Filter": "Filter",
+    "Ex3.ItemList": "Item List",
+    "Ex3.IncludeWorld": "Include World",
 
     "Ex3.OtherModifiers": "Other Modifiers",
     "Ex3.Conditions": "Conditions",

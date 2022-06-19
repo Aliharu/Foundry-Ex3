@@ -386,6 +386,12 @@ export default class Importer extends FormApplication {
                         }
                     }
                     else {
+                        if(charmRow[1] === 'Artifact') {
+                            charmData.data.charmtype = 'evocation';
+                        }
+                        else {
+                            charmData.data.charmtype = charmRow[1].replace(' ', '').replace('-', '').toLowerCase();
+                        }
                         if (charmRow[1] === 'Solar') {
                             charmData.folder = solarFolderMap[charmRow[2]];
                             charmData.data.ability = charmRow[2].toLowerCase();
