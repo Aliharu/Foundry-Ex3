@@ -17,7 +17,7 @@ export class ExaltedThirdItem extends Item {
 
   async _preCreate(createData, options, userId) {
     if (createData.type === 'intimacy') {
-      this.data.update({ img: "icons/magic/life/heart-glowing-red.webp" });
+      this.data.update({ img: "systems/exaltedthird/assets/icons/hearts.svg" });
     }
     if (createData.type === 'spell' || createData.type === 'initiation') {
       this.data.update({ img: "icons/svg/book.svg" });
@@ -29,7 +29,7 @@ export class ExaltedThirdItem extends Item {
       this.data.update({ img: "icons/svg/sword.svg" });
     }
     if (createData.type === 'armor') {
-      this.data.update({ img: "icons/svg/shield.svg" });
+      this.data.update({ img: "systems/exaltedthird/assets/icons/breastplate.svg" });
     }
     if (createData.type === 'charm') {
       this.data.update({ img: "icons/svg/explosion.svg" });
@@ -39,6 +39,9 @@ export class ExaltedThirdItem extends Item {
     }
     if (createData.type === 'specialability') {
       this.data.update({ img: "icons/svg/aura.svg" });
+    }
+    if (createData.type === 'craftproject') {
+      this.data.update({ img: "systems/exaltedthird/assets/icons/anvil-impact.svg" });
     }
   }
 }

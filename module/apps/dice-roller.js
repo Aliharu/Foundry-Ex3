@@ -204,6 +204,9 @@ export class RollForm extends FormApplication {
         }
     }
 
+    // async _render(force = false, options = {}) {
+    // }
+
 
 
     /**
@@ -732,7 +735,7 @@ export class RollForm extends FormApplication {
     _damageRoll() {
         let baseDamage = this.object.damage.damageDice;
         let dice = this.object.damage.damageDice;
-        if(this.object.rollType === 'damage' && game.settings.get("exaltedthird", "defenseOnDamage")) {
+        if (this.object.rollType === 'damage' && game.settings.get("exaltedthird", "defenseOnDamage")) {
             dice += this.object.attackSuccesses;
             dice -= this.object.defense;
         }
