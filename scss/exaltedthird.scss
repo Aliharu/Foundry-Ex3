@@ -37,7 +37,7 @@
   border-radius: 50%;
   cursor: pointer;
 }
-  
+
 .exaltedthird .resource-value-static .resource-value-static-step {
   height: 14px;
   width: 14px;
@@ -79,24 +79,20 @@
   border-radius: 50%;
   cursor: pointer;
   background:
-    linear-gradient(
-      45deg,
+    linear-gradient(45deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    ),
-    linear-gradient(
-      135deg,
+      transparent 100%),
+    linear-gradient(135deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    );
+      transparent 100%);
 }
 
 .exaltedthird .resource-counter .resource-counter-step {
@@ -113,77 +109,76 @@
 
 .exaltedthird .resource-counter .resource-counter-step[data-state="/"] {
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    );
+      transparent 100%);
 }
 
 .exaltedthird .resource-counter .resource-counter-step[data-state="x"] {
   background:
-    linear-gradient(
-      45deg,
+    linear-gradient(45deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    ),
-    linear-gradient(
-      135deg,
+      transparent 100%),
+    linear-gradient(135deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    );
+      transparent 100%);
+}
+
+.exaltedthird .query-results {
+  height: 66%;
+  overflow: scroll;
+
+  .search-item-row {
+    display: flex;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid black;
+    align-items:center;
+  }
 }
 
 .exaltedthird .resource-counter .resource-counter-step[data-state="*"] {
   background:
-    linear-gradient(
-      45deg,
+    linear-gradient(45deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    ),
-    linear-gradient(
-      90deg,
+      transparent 100%),
+    linear-gradient(90deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    ),
-    linear-gradient(
-      180deg,
+      transparent 100%),
+    linear-gradient(180deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    ),
-    linear-gradient(
-      135deg,
+      transparent 100%),
+    linear-gradient(135deg,
       transparent 0%,
       transparent 43%,
       black 45%,
       black 55%,
       transparent 57%,
-      transparent 100%
-    );
+      transparent 100%);
 }
 
 .exaltedthird .flex-group-center:not(.flexrow) .resource-value,
@@ -204,7 +199,7 @@
   cursor: pointer;
 }
 
-.dice-tooltip { 
+.dice-tooltip {
   display: block !important;
 }
 
@@ -214,7 +209,7 @@
 }
 
 .roll-ability {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .roll-ability:hover {
@@ -222,7 +217,7 @@
 }
 
 .roll-pool {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .roll-pool:hover {
@@ -230,7 +225,7 @@
 }
 
 .roll-action {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .roll-action:hover {
@@ -261,7 +256,7 @@
       font-weight: bold;
     }
 
-    > * {
+    >* {
       -webkit-user-select: text;
       -moz-user-select: text;
       -ms-user-select: text;
@@ -270,7 +265,7 @@
   }
 
   .item-description {
-    display:none;
+    display: none;
   }
 
   .item-name {

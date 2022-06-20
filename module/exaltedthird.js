@@ -9,6 +9,7 @@ import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
 import { RollForm } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
+import ItemSearch from "./apps/item-search.js";
 
 Hooks.once('init', async function() {
 
@@ -16,7 +17,8 @@ Hooks.once('init', async function() {
 
   game.exaltedthird = {
     applications: {
-      TraitSelector
+      TraitSelector,
+      ItemSearch,
     },
     entities: {
       ExaltedThirdActor,

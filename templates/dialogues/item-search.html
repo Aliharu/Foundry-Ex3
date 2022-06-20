@@ -1,0 +1,141 @@
+<div class="exaltedthird" style="overflow:hidden">
+  <div class="item-filter">
+    <div class="check-button">
+      <label class="resource-label">{{localize "Ex3.IncludeWorldItems"}}: </label>
+      <input class="world-filter" type="checkbox" data-filter="worldItems" {{checked filters.attribute.worldItems}} />
+    </div>
+    <h2>{{localize "Ex3.Types"}}</h2>
+    <div class="check-button">
+      {{#each filters.type as |value filter|}}
+      <label class="resource-label">{{localize value.display}}:</label>
+      <input class="filter" type="checkbox" data-filter="{{filter}}" {{checked value.value}} />
+      {{/each}}
+    </div>
+
+    <h2>{{localize "Ex3.Filter"}}</h2>
+
+    <div class="name filter-top">
+      <label class="resource-label">{{localize "Name"}}</label>
+      <input class="name-filter" type="text" data-filter="name" value="{{filters.attribute.name}}" />
+    </div>
+    <div class="description filter-top">
+      <label class="resource-label">{{localize "Description"}}</label>
+      <input class="description-filter" type="text" data-filter="description"
+        value="{{filters.attribute.description}}" />
+    </div>
+    <h2>{{localize "Ex3.CharmFilters"}}</h2>
+    <div>
+      <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+      <select class="charm-filter" name="filters.attribute.charmFilters.ability" data-type="String"
+        data-filter="ability">
+        {{#select filters.attribute.charmFilters.ability}}
+        <option value=""></option>
+        <option value="strength">{{localize "Ex3.Strength"}}</option>
+        <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
+        <option value="stamina">{{localize "Ex3.Stamina"}}</option>
+        <option value="charisma">{{localize "Ex3.Charisma"}}</option>
+        <option value="manipulation">{{localize "Ex3.Manipulation"}}</option>
+        <option value="appearance">{{localize "Ex3.Appearance"}}</option>
+        <option value="perception">{{localize "Ex3.Perception"}}</option>
+        <option value="intelligence">{{localize "Ex3.Intelligence"}}</option>
+        <option value="wits">{{localize "Ex3.Wits"}}</option>
+        <option value="archery">{{localize "Ex3.Archery"}}</option>
+        <option value="athletics">{{localize "Ex3.Athletics"}}</option>
+        <option value="awareness">{{localize "Ex3.Awareness"}}</option>
+        <option value="brawl">{{localize "Ex3.Brawl"}}</option>
+        <option value="bureaucracy">{{localize "Ex3.Bureaucracy"}}</option>
+        <option value="craft">{{localize "Ex3.Craft"}}</option>
+        <option value="dodge">{{localize "Ex3.Dodge"}}</option>
+        <option value="integrity">{{localize "Ex3.Integrity"}}</option>
+        <option value="investigation">{{localize "Ex3.Investigation"}}</option>
+        <option value="larceny">{{localize "Ex3.Larceny"}}</option>
+        <option value="linguistics">{{localize "Ex3.Linguistics"}}</option>
+        <option value="lore">{{localize "Ex3.Lore"}}</option>
+        <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
+        <option value="medicine">{{localize "Ex3.Medicine"}}</option>
+        <option value="melee">{{localize "Ex3.Melee"}}</option>
+        <option value="occult">{{localize "Ex3.Occult"}}</option>
+        <option value="performance">{{localize "Ex3.Performance"}}</option>
+        <option value="presence">{{localize "Ex3.Presence"}}</option>
+        <option value="resistance">{{localize "Ex3.Resistance"}}</option>
+        <option value="ride">{{localize "Ex3.Ride"}}</option>
+        <option value="sail">{{localize "Ex3.Sail"}}</option>
+        <option value="socialize">{{localize "Ex3.Socialize"}}</option>
+        <option value="stealth">{{localize "Ex3.Stealth"}}</option>
+        <option value="survival">{{localize "Ex3.Survival"}}</option>
+        <option value="thrown">{{localize "Ex3.Thrown"}}</option>
+        <option value="war">{{localize "Ex3.War"}}</option>
+        <option value="evocation">{{localize "Ex3.Evocation"}}</option>
+        <option value="universal">{{localize "Ex3.Universal"}}</option>
+        <option value="other">{{localize "Ex3.Other"}}</option>
+        {{/select}}
+      </select>
+      <label class="resource-label">{{localize "Ex3.Requirement"}}: </label>
+      <select class="charm-filter" name="filters.attribute.charmFilters.requirement" data-type="String"
+        data-filter="requirement">
+        {{#select filters.attribute.charmFilters.requirement}}
+        <option value=""></option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        {{/select}}
+      </select>
+      <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
+      <select class="charm-filter" name="filters.attribute.charmFilters.essence" data-type="String"
+        data-filter="essence">
+        {{#select filters.attribute.charmFilters.essence}}
+        <option value=""></option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        {{/select}}
+      </select>
+      <label class="resource-label">{{localize "Ex3.CharmType"}}</label>
+      <select class="charm-filter" name="filters.attribute.charmFilters.charmtype" data-type="String"
+        data-filter="charmtype">
+        {{#select filters.attribute.charmFilters.charmtype}}
+        <option value=""></option>
+        <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
+        <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
+        <option value="architect">{{localize "Ex3.Architect"}}</option>
+        <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
+        <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
+        <option value="evocation">{{localize "Ex3.Evocation"}}</option>
+        <option value="exigent">{{localize "Ex3.Exigent"}}</option>
+        <option value="getimian">{{localize "Ex3.Getimian"}}</option>
+        <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
+        <option value="infernal">{{localize "Ex3.Infernal"}}</option>
+        <option value="janest">{{localize "Ex3.Janest"}}</option>
+        <option value="liminal">{{localize "Ex3.Liminal"}}</option>
+        <option value="lunar">{{localize "Ex3.Lunar"}}</option>
+        <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
+        <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
+        <option value="solar">{{localize "Ex3.Solar"}}</option>
+        <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
+        <option value="umbral">{{localize "Ex3.Umbral"}}</option>
+        <option value="other">{{localize "Ex3.Other"}}</option>
+        {{/select}}
+      </select>
+    </div>
+  </div>
+  <h2 class="mb-1">{{localize "Ex3.ItemList"}}</h2>
+  <div class="query-results">
+    {{#each items as |item|}}
+    <div class="search-item-row item-row cursor-pointer" data-item-id={{item.id}} data-filter-id={{item.filterId}}>
+      <div class="item-image mr-1"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+      <div class="item-name">{{item.name}}</div>
+    </div>
+    {{/each}}
+  </div>
+</div>
