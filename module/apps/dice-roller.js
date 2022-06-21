@@ -7,6 +7,7 @@ export class RollForm extends FormApplication {
             this.object = this.actor.data.data.savedRolls[data.rollId];
         }
         else {
+            this.object.skipDialog = data.skipDialog || false;
             this.object.crashed = false;
             this.object.dice = data.dice || 0;
             this.object.successModifier = 0;
@@ -283,13 +284,20 @@ export class RollForm extends FormApplication {
      * @returns {Promise} Returns True or False once the Roll or Cancel buttons are pressed.
      */
     async roll() {
-        var _promiseResolve;
-        this.promise = new Promise(function (promiseResolve) {
-            _promiseResolve = promiseResolve
-        });
-        this.resolve = _promiseResolve;
-        this.render(true);
-        return this.promise;
+
+        if(this.object.skipDialog){
+            await this._roll();
+            return true;
+        }else{
+            var _promiseResolve;
+            this.promise = new Promise(function (promiseResolve) {
+                _promiseResolve = promiseResolve
+            });
+            this.resolve = _promiseResolve;
+            this.render(true);
+            return this.promise;
+        }
+        
     }
     async _saveRoll(rollData) {
         let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
@@ -357,22 +365,22 @@ export class RollForm extends FormApplication {
         });
     }
 
-    _roll() {
+    async _roll() {
         if (this._isAttackRoll()) {
-            this._attackRoll();
+            await this._attackRoll();
         }
         else if (this.object.rollType === 'base') {
-            this._diceRoll();
+            await this._diceRoll();
         }
         else if (this.object.rollType === 'craft') {
-            this._completeCraftProject();
+            await this._completeCraftProject();
         }
         else {
-            this._abilityRoll();
+            await this._abilityRoll();
         }
     }
 
-    _baseAbilityDieRoll() {
+    async _baseAbilityDieRoll() {
         let dice = 0;
 
         if (this.object.rollType === 'base') {
@@ -494,7 +502,7 @@ export class RollForm extends FormApplication {
         this.object.total = total;
     }
 
-    _diceRoll() {
+    async _diceRoll() {
         this._baseAbilityDieRoll();
         let messageContent = `<div class="chat-card">
                         <div class="card-content">Dice Roll</div>
@@ -518,7 +526,7 @@ export class RollForm extends FormApplication {
         ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
     }
 
-    _abilityRoll() {
+    async _abilityRoll() {
         if (this.actor.data.type === "npc") {
             this.object.stunt = 'none';
             if (this.object.ability === "archery") {
@@ -619,7 +627,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _attackRoll() {
+    async _attackRoll() {
         // Accuracy
         if (this.object.rollType !== 'damage') {
             this._accuracyRoll();
@@ -726,13 +734,13 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _accuracyRoll() {
+    async _accuracyRoll() {
         this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
         let damageResults = ``;
     }
 
-    _damageRoll() {
+    async _damageRoll() {
         let baseDamage = this.object.damage.damageDice;
         let dice = this.object.damage.damageDice;
         if (this.object.rollType === 'damage' && game.settings.get("exaltedthird", "defenseOnDamage")) {
@@ -986,7 +994,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _completeCraftProject() {
+    async _completeCraftProject() {
         this._baseAbilityDieRoll();
         let resultString = ``;
         let projectStatus = ``;
