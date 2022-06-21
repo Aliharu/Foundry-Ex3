@@ -98,7 +98,8 @@
           "caste": "",
           "color": "#FFFFFF",
           "tell": "",
-          "aura": "none"
+          "aura": "none",
+          "ideal": ""
         },
         "settings": {
           "charmmotepool": "peripheral"

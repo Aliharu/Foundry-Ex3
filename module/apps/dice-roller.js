@@ -7,7 +7,7 @@ export class RollForm extends FormApplication {
             this.object = this.actor.data.data.savedRolls[data.rollId];
         }
         else {
-            this.object.skipDialog = data.skipDialog || false;
+            this.object.skipDialog = data.skipDialog || true;
             this.object.crashed = false;
             this.object.dice = data.dice || 0;
             this.object.successModifier = 0;

@@ -464,6 +464,12 @@
           <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
           <input type="text" name="data.advantages.dissonance" value="{{data.data.advantages.dissonance}}" />
         </li>
+        {{#ifEquals data.data.details.exalt 'dreamsouled'}}
+        <li>
+          <label class="resource-label">{{localize "Ex3.Ideal"}}</label>
+          <input type="text" name="data.details.ideal" value="{{data.data.details.ideal}}" />
+        </li>
+        {{/ifEquals}}
         <div>
           <div class="check-button">
             <label class="resource-label">{{localize "Ex3.LegendarySize"}}:</label>
