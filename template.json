@@ -203,40 +203,40 @@
           "value": 1,
           "name": "Ex3.Strength"
         },
-        "dexterity": {
-          "favored": false,
-          "value": 1,
-          "name": "Ex3.Dexterity"
-        },
-        "stamina": {
-          "favored": false,
-          "value": 1,
-          "name": "Ex3.Stamina"
-        },
         "charisma": {
           "favored": false,
           "value": 1,
           "name": "Ex3.Charisma"
-        },
-        "manipulation": {
-          "favored": false,
-          "value": 1,
-          "name": "Ex3.Manipulation"
-        },
-        "appearance": {
-          "favored": false,
-          "value": 1,
-          "name": "Ex3.Appearance"
         },
         "perception": {
           "favored": false,
           "value": 1,
           "name": "Ex3.Perception"
         },
+        "dexterity": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Dexterity"
+        },
+        "manipulation": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Manipulation"
+        },
         "intelligence": {
           "favored": false,
           "value": 1,
           "name": "Ex3.Intelligence"
+        },
+        "stamina": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Stamina"
+        },
+        "appearance": {
+          "favored": false,
+          "value": 1,
+          "name": "Ex3.Appearance"
         },
         "wits": {
           "favored": false,
