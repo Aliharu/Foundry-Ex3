@@ -10,6 +10,7 @@ import { RollForm } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
+import Importer from "./apps/importer.js";
 
 Hooks.once('init', async function() {
 
@@ -19,6 +20,7 @@ Hooks.once('init', async function() {
     applications: {
       TraitSelector,
       ItemSearch,
+      Importer,
     },
     entities: {
       ExaltedThirdActor,
