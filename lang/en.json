@@ -32,6 +32,7 @@
     "Ex3.Tell": "Tell",
     "Ex3.Ideal": "Ideal",
     "Ex3.Penumbra": "Penumbra",
+    "Ex3.Supernal": "Supernal",
 
     "Ex3.Anima": "Anima",
     "Ex3.Passive": "Passive",
@@ -130,6 +131,10 @@
     "Ex3.Parry": "Parry",
     "Ex3.Evasion": "Evasion",
     "Ex3.Soak": "Soak",
+    "Ex3.TotalSoak": "Total Soak",
+    "Ex3.ArmoredSoak": "Armored Soak",
+    "Ex3.NaturalSoak": "Natural Soak",
+
     "Ex3.Hardness": "Hardness",
     "Ex3.Resolve": "Resolve",
     "Ex3.Guile": "Guile",
@@ -177,6 +182,8 @@
     "Ex3.Virtue": "Virtue",
     "Ex3.Virtues": "Virtues",
     "Ex3.Intimacy": "Intimacy",
+    "Ex3.SupportingIntimacy": "Supporting Intimacy",
+    "Ex3.OpposedIntimacy": "Opposed Intimacy",
     "Ex3.Intimacies": "Intimacies",
     "Ex3.Stats": "Stats",
     "Ex3.Qualities": "Qualities",

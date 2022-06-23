@@ -66,6 +66,12 @@
         "soak": {
           "value": 1
         },
+        "armoredsoak": {
+          "value": 0
+        },
+        "naturalsoak": {
+          "value": 1
+        },
         "hardness": {
           "value": 0,
           "min": 0
@@ -100,6 +106,7 @@
           "tell": "",
           "aura": "none",
           "ideal": "",
+          "supernal": "",
           "penumbra": {
             "value": 0,
             "max": 10,

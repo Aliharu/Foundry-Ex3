@@ -149,6 +149,12 @@
                         </div>
                     </div>
                     {{/ifEquals}}
+                    {{#ifEquals data.data.details.exalt 'solar'}}
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
+                        <input type="text" name="data.details.supernal" value="{{data.data.details.supernal}}" />
+                    </div>
+                    {{/ifEquals}}
                     {{#ifEquals data.data.details.exalt 'lunar'}}
                     <div>
                         <label class="resource-label">{{localize "Ex3.Tell"}}</label>

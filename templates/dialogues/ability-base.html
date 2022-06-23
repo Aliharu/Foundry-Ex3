@@ -230,6 +230,33 @@
     {{/each}}
 </div>
 
+{{#ifEquals data.rollType 'social'}}
+<div class="resource grid grid-2col flex-center">
+    <div>
+        <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
+        <select name="object.supportedIntimacy" value="{{data.supportedIntimacy}}" data-type="String">
+            {{#select data.supportedIntimacy}}
+            <option value="0">{{localize "Ex3.None"}}</option>
+            <option value="1">{{localize "Ex3.Minor"}}</option>
+            <option value="2">{{localize "Ex3.Major"}}</option>
+            <option value="3">{{localize "Ex3.Defining"}}</option>
+            {{/select}}
+        </select>
+    </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
+        <select name="object.opposedIntimacy" value="{{data.opposedIntimacy}}" data-type="String">
+            {{#select data.opposedIntimacy}}
+            <option value="0">{{localize "Ex3.None"}}</option>
+            <option value="2">{{localize "Ex3.Minor"}}</option>
+            <option value="3">{{localize "Ex3.Major"}}</option>
+            <option value="4">{{localize "Ex3.Defining"}}</option>
+            {{/select}}
+        </select>
+    </div>
+</div>
+{{/ifEquals}}
+
 {{#if data.hasDifficulty}}
 <div class="resource grid grid-2col flex-center">
     <div>

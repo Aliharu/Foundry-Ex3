@@ -42,6 +42,9 @@ export class RollForm extends FormApplication {
             this.object.hasSpecialty = false;
             this.object.willpower = false;
 
+            this.object.supportedIntimacy = 0;
+            this.object.opposedIntimacy = 0;
+
             this.object.doubleSuccess = 10;
             this.object.rerollFailed = false;
             this.object.targetNumber = 7;
@@ -536,18 +539,9 @@ export class RollForm extends FormApplication {
         if (this.object.attribute == null) {
             this.object.attribute = this.actor.data.type === "npc" ? null : this._getHighestAttribute();
         }
-        if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
-            let target = Array.from(game.user.targets)[0] || null;
-            if (target) {
-                if (this.object.rollType === 'readIntentions') {
-                    this.object.difficulty = target.actor.data.data.guile.value;
-                }
-                if (this.object.rollType === 'social') {
-                    this.object.difficulty = target.actor.data.data.resolve.value;
-                }
-            }
+        if (this.object.rollType === 'social') {
+            this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
         }
-
         let goalNumberLeft = 0;
         this._baseAbilityDieRoll();
         let resultString = ``;
