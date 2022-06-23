@@ -49,7 +49,7 @@ exaltedthird.statusEffects = [
         name: 'heavycover'
     },
     {
-        icon: 'icons/environment/traps/trap-jaw-tan.webp',
+        icon: 'systems/exaltedthird/assets/icons/grab.svg',
         id: 'grappled',
         label: 'Ex3.Grappled',
         name: 'grappled'
@@ -61,7 +61,7 @@ exaltedthird.statusEffects = [
         name: 'grappling'
     },
     {
-        icon: 'icons/skills/melee/sword-twirl-orange.webp',
+        icon: 'systems/exaltedthird/assets/icons/drop-weapon.svg',
         id: 'disarmed',
         label: 'Ex3.Disarmed',
     },
