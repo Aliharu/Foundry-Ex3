@@ -107,7 +107,7 @@
 
         {{#if data.showWithering}}
         <div class="flex-center resource-label" style="font-weight: bold;">
-            {{localize "Ex3.Soak"}}
+            {{localize "Ex3.Soak"}} ({{localize "Ex3.ArmoredSoak"}}: {{data.armoredSoak}} {{localize "Ex3.NaturalSoak"}}: {{data.naturalSoak}})
         </div>
         <div class="resource flex-center mb-2">
             <input placeholder="Soak" type="number" name="object.soak" value="{{data.soak}}">

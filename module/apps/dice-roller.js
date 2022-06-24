@@ -29,6 +29,8 @@ export class RollForm extends FormApplication {
 
             this.object.overwhelming = data.overwhelming || 0;
             this.object.soak = 0;
+            this.object.armoredSoak = 0;
+            this.object.naturalSoak = 0;
             this.object.defense = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
@@ -192,6 +194,8 @@ export class RollForm extends FormApplication {
                 }
                 else {
                     this.object.soak = this.object.target.actor.data.data.soak.value;
+                    this.object.armoredSoak = this.object.target.actor.data.data.armoredsoak.value;
+                    this.object.naturalSoak = this.object.target.actor.data.data.naturalsoak.value;
                 }
                 if (this.object.target.data.actorData.effects) {
                     if (this.object.target.data.actorData.effects.some(e => e.name === 'lightcover')) {
