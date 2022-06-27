@@ -155,8 +155,8 @@ export class RollForm extends FormApplication {
         this.object.addingCharms = false;
         if (this.object.cost === undefined) {
             this.object.cost = {
-                personal: 0,
-                peripheral: 0,
+                motes: 0,
+                muteMotes: 0,
                 willpower: 0,
                 initiative: 0,
                 anima: 0,
@@ -403,11 +403,11 @@ export class RollForm extends FormApplication {
                     }
                 }
             }
-            if (this.actor.data.data.settings.charmmotepool === 'personal') {
-                this.object.cost.personal += item.data.data.cost.motes;
+            if (item.data.data.keywords.toLowerCase().includes('mute')) {
+                this.object.cost.muteMotes += item.data.data.cost.motes;
             }
             else {
-                this.object.cost.peripheral += item.data.data.cost.motes;
+                this.object.cost.motes += item.data.data.cost.motes;
             }
             this.object.cost.anima += item.data.data.cost.anima;
             this.object.cost.willpower += item.data.data.cost.willpower;
@@ -483,11 +483,11 @@ export class RollForm extends FormApplication {
                 }
                 this.object.addedCharms.splice(index, 1);
 
-                if (this.actor.data.data.settings.charmmotepool === 'personal') {
-                    this.object.cost.personal -= item.data.data.cost.motes;
+                if (item.data.data.keywords.toLowerCase().includes('mute')) {
+                    this.object.cost.muteMotes -= item.data.data.cost.motes;
                 }
                 else {
-                    this.object.cost.peripheral -= item.data.data.cost.motes;
+                    this.object.cost.motes -= item.data.data.cost.motes;
                 }
                 this.object.cost.anima -= item.data.data.cost.anima;
                 this.object.cost.willpower -= item.data.data.cost.willpower;
@@ -1441,27 +1441,32 @@ export class RollForm extends FormApplication {
         }
         var spentPersonal = 0;
         var spentPeripheral = 0;
-        var remainingPersonal = actorData.data.motes.personal.value - this.object.cost.personal;
-        if (remainingPersonal < 0) {
-            spentPersonal = this.object.cost.personal - actorData.data.motes.personal.value;
-            spentPeripheral = Math.abs(remainingPersonal);
+        var totalMotes = this.object.cost.motes + this.object.cost.muteMotes;
+        if (actorData.data.settings.charmmotepool === 'personal') {
+            var remainingPersonal = actorData.data.motes.personal.value - totalMotes;
+            if (remainingPersonal < 0) {
+                spentPersonal = totalMotes - actorData.data.motes.personal.value;
+                spentPeripheral = Math.abs(remainingPersonal);
+            }
+            else {
+                spentPersonal = totalMotes;
+            }
         }
         else {
-            spentPersonal = this.object.cost.personal;
-        }
-        var remainingPeripheral = actorData.data.motes.peripheral.value - this.object.cost.peripheral;
-        if (remainingPeripheral < 0) {
-            spentPeripheral = this.object.cost.peripheral - actorData.data.motes.peripheral.value;
-            spentPersonal = Math.abs(remainingPeripheral);
-        }
-        else {
-            spentPeripheral = this.object.cost.peripheral;
+            var remainingPeripheral = actorData.data.motes.peripheral.value - totalMotes;
+            if (remainingPeripheral < 0) {
+                spentPeripheral = totalMotes - actorData.data.motes.peripheral.value;
+                spentPersonal = Math.abs(remainingPeripheral);
+            }
+            else {
+                spentPeripheral = totalMotes;
+            }
         }
         actorData.data.motes.peripheral.value = Math.max(0 + actorData.data.motes.peripheral.committed, actorData.data.motes.peripheral.value - spentPeripheral);
         actorData.data.motes.personal.value = Math.max(0 + actorData.data.motes.personal.committed, actorData.data.motes.personal.value - spentPersonal);
 
-        if (spentPeripheral > 4) {
-            for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+        if ((spentPeripheral - this.object.cost.muteMotes) > 4) {
+            for (var i = 0; i < Math.floor((spentPeripheral- this.object.cost.muteMotes) / 5); i++) {
                 if (newLevel === "Dim") {
                     newLevel = "Glowing";
                 }
