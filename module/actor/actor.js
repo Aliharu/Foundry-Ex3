@@ -12,9 +12,10 @@ export class ExaltedThirdActor extends Actor {
   prepareData() {
     super.prepareData();
 
+    const actorData = this;
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
-    this._prepareCharacterData();
+    this._prepareCharacterData(actorData);
   }
 
   async displayEmbeddedItem(itemId) {
@@ -56,21 +57,21 @@ export class ExaltedThirdActor extends Actor {
 
     if(item.type === 'charm') {
       if(item.data.data.cost.motes > 0) {
-        if(actorData.data.motes.peripheral.value > 0 && !personal) {
-          actorData.data.motes.peripheral.value = Math.max(0, actorData.data.motes.peripheral.value - item.data.data.cost.motes);
+        if(data.data.motes.peripheral.value > 0 && !personal) {
+          data.data.motes.peripheral.value = Math.max(0, data.data.motes.peripheral.value - item.data.data.cost.motes);
         }
         else {
-          actorData.data.motes.personal.value = Math.max(0, actorData.data.motes.personal.value - item.data.data.cost.motes);
+          data.data.motes.personal.value = Math.max(0, data.data.motes.personal.value - item.data.data.cost.motes);
         }
       }
-      actorData.data.willpower.value = Math.max(0, actorData.data.willpower.value - item.data.data.cost.willpower);
+      data.data.willpower.value = Math.max(0, data.data.willpower.value - item.data.data.cost.willpower);
       if(this.type === 'character') {
-        actorData.data.craft.experience.silver.value = Math.max(0, actorData.data.craft.experience.silver.value - item.data.data.cost.silverxp);
-        actorData.data.craft.experience.gold.value = Math.max(0, actorData.data.craft.experience.gold.value - item.data.data.cost.goldxp);
-        actorData.data.craft.experience.white.value = Math.max(0, actorData.data.craft.experience.white.value - item.data.data.cost.whitexp);
+        data.data.craft.experience.silver.value = Math.max(0, data.data.craft.experience.silver.value - item.data.data.cost.silverxp);
+        data.data.craft.experience.gold.value = Math.max(0, data.data.craft.experience.gold.value - item.data.data.cost.goldxp);
+        data.data.craft.experience.white.value = Math.max(0, data.data.craft.experience.white.value - item.data.data.cost.whitexp);
       }
-      if(actorData.data.details.aura === item.data.data.cost.aura || item.data.data.cost.aura === 'any') {
-        actorData.data.details.aura = "none";
+      if(data.data.details.aura === item.data.data.cost.aura || item.data.data.cost.aura === 'any') {
+        data.data.details.aura = "none";
       }
       if(item.data.data.cost.initiative > 0) {
         let combat = game.combat;
@@ -86,7 +87,7 @@ export class ExaltedThirdActor extends Actor {
         }
       }
       if(item.data.data.cost.anima > 0) {
-        var newLevel = actorData.data.anima.level;
+        var newLevel = data.data.anima.level;
         for(var i = 0; i < item.data.data.cost.anima; i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
@@ -101,26 +102,26 @@ export class ExaltedThirdActor extends Actor {
             newLevel = "Dim";
           }
         }
-        actorData.data.anima.level = newLevel;
+        data.data.anima.level = newLevel;
       }
       if(item.data.data.cost.health > 0) {
         let totalHealth = 0;
-        for (let [key, health_level] of Object.entries(actorData.data.health.levels)) {
+        for (let [key, health_level] of Object.entries(data.data.health.levels)) {
           totalHealth += health_level.value;
         }
         if(item.data.data.cost.healthtype === 'bashing') {
-          actorData.data.health.bashing = Math.min(totalHealth - actorData.data.health.aggravated - actorData.data.health.lethal, actorData.data.health.bashing + item.data.data.cost.health);
+          data.data.health.bashing = Math.min(totalHealth - data.data.health.aggravated - data.data.health.lethal, data.data.health.bashing + item.data.data.cost.health);
         }
         else if(item.data.data.cost.healthtype === 'lethal') {
-          actorData.data.health.lethal = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.aggravated, actorData.data.health.lethal + item.data.data.cost.health);
+          data.data.health.lethal = Math.min(totalHealth - data.data.health.bashing - data.data.health.aggravated, data.data.health.lethal + item.data.data.cost.health);
         }
         else {
-          actorData.data.health.aggravated = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.lethal, actorData.data.health.aggravated + item.data.data.cost.health);
+          data.data.health.aggravated = Math.min(totalHealth - data.data.health.bashing - data.data.health.lethal, data.data.health.aggravated + item.data.data.cost.health);
         }
       }
     }
     if(item.type === 'spell') {
-      actorData.data.sorcery.motes = 0;
+      data.data.sorcery.motes = 0;
     }
 
     this.displayEmbeddedItem(itemId);
@@ -152,10 +153,11 @@ export class ExaltedThirdActor extends Actor {
   /**
    * Prepare Character type specific data
    */
-  _prepareCharacterData() {
+  _prepareCharacterData(actorData) {
     // Make modifications to data here. For example:
 
-    const actorData = this;
+    const data = actorData.data.data;
+
     // this._prepareBaseActorData(data);
     let totalHealth = 0;
     let currentPenalty = 0;
@@ -164,73 +166,73 @@ export class ExaltedThirdActor extends Actor {
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
 
-    if (actorData.data.data.battlegroup) {
-      totalHealth = actorData.data.data.health.levels.zero.value + actorData.data.data.size.value;
-      actorData.data.data.health.total = totalHealth;
-      if ((actorData.data.data.health.bashing + actorData.data.data.health.lethal + actorData.data.data.health.aggravated) > actorData.data.data.health.total) {
-        actorData.data.data.health.aggravated = actorData.data.data.health.total - actorData.data.data.health.lethal;
-        if (actorData.data.data.health.aggravated <= 0) {
-          actorData.data.data.health.aggravated = 0
-          actorData.data.data.health.lethal = actorData.data.data.health.total
+    if (data.battlegroup) {
+      totalHealth = data.health.levels.zero.value + data.size.value;
+      data.health.total = totalHealth;
+      if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.total) {
+        data.health.aggravated = data.health.total - data.health.lethal;
+        if (data.health.aggravated <= 0) {
+          data.health.aggravated = 0
+          data.health.lethal = data.health.total
         }
       }
-      actorData.data.data.health.penalty = 0;
+      data.health.penalty = 0;
     }
     else {
-      for (let [key, health_level] of Object.entries(actorData.data.data.health.levels)) {
-        if ((actorData.data.data.health.bashing + actorData.data.data.health.lethal + actorData.data.data.health.aggravated) > totalHealth) {
+      for (let [key, health_level] of Object.entries(data.health.levels)) {
+        if ((data.health.bashing + data.health.lethal + data.health.aggravated) > totalHealth) {
           currentPenalty = health_level.penalty;
         }
         totalHealth += health_level.value;
       }
-      actorData.data.data.health.total = totalHealth;
-      if ((actorData.data.data.health.bashing + actorData.data.data.health.lethal + actorData.data.data.health.aggravated) > actorData.data.data.health.total) {
-        actorData.data.data.health.aggravated = actorData.data.data.health.total - actorData.data.data.health.lethal;
-        if (actorData.data.data.health.aggravated <= 0) {
-          actorData.data.data.health.aggravated = 0;
-          actorData.data.data.health.lethal = actorData.data.data.health.total;
+      data.health.total = totalHealth;
+      if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.total) {
+        data.health.aggravated = data.health.total - data.health.lethal;
+        if (data.health.aggravated <= 0) {
+          data.health.aggravated = 0;
+          data.health.lethal = data.health.total;
         }
       }
-      actorData.data.data.health.penalty = currentPenalty;
+      data.health.penalty = currentPenalty;
     }
 
 
-    for (let [key, health_level] of Object.entries(actorData.data.data.warstrider.health.levels)) {
-      if ((actorData.data.data.warstrider.health.bashing + actorData.data.data.warstrider.health.lethal + actorData.data.data.warstrider.health.aggravated) > totalWarstriderHealth) {
+    for (let [key, health_level] of Object.entries(data.warstrider.health.levels)) {
+      if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > totalWarstriderHealth) {
         currentWarstriderPenalty = health_level.penalty;
       }
       totalWarstriderHealth += health_level.value;
     }
-    actorData.data.data.warstrider.health.total = totalWarstriderHealth;
-    if ((actorData.data.data.warstrider.health.bashing + actorData.data.data.warstrider.health.lethal + actorData.data.data.warstrider.health.aggravated) > actorData.data.data.warstrider.health.total) {
-      actorData.data.warstrider.health.aggravated = actorData.data.warstrider.health.total - actorData.data.warstrider.health.lethal;
-      if (actorData.data.data.warstrider.health.aggravated <= 0) {
-        actorData.data.data.warstrider.health.aggravated = 0;
-        actorData.data.data.warstrider.health.lethal = actorData.data.data.health.total;
+    data.warstrider.health.total = totalWarstriderHealth;
+    if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > data.warstrider.health.total) {
+      data.warstrider.health.aggravated = data.warstrider.health.total - data.warstrider.health.lethal;
+      if (data.warstrider.health.aggravated <= 0) {
+        data.warstrider.health.aggravated = 0;
+        data.warstrider.health.lethal = data.health.total;
       }
     }
-    actorData.data.data.warstrider.health.penalty = currentWarstriderPenalty;
+    data.warstrider.health.penalty = currentWarstriderPenalty;
 
     
-    for (let [key, health_level] of Object.entries(actorData.data.data.ship.health.levels)) {
-      if ((actorData.data.data.ship.health.bashing + actorData.data.data.ship.health.lethal + actorData.data.data.ship.health.aggravated) > totalShipHealth) {
+    for (let [key, health_level] of Object.entries(data.ship.health.levels)) {
+      if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > totalShipHealth) {
         currentShipPenalty = health_level.penalty;
       }
       totalShipHealth += health_level.value;
     }
-    actorData.data.data.ship.health.total = totalShipHealth;
-    if ((actorData.data.data.ship.health.bashing + actorData.data.data.ship.health.lethal + actorData.data.data.ship.health.aggravated) > actorData.data.data.ship.health.total) {
-      actorData.data.data.ship.health.aggravated = actorData.data.data.ship.health.total - actorData.data.data.ship.health.lethal;
-      if (actorData.data.data.ship.health.aggravated <= 0) {
-        actorData.data.data.ship.health.aggravated = 0;
-        actorData.data.data.ship.health.lethal = actorData.data.data.health.total;
+    data.ship.health.total = totalShipHealth;
+    if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > data.ship.health.total) {
+      data.ship.health.aggravated = data.ship.health.total - data.ship.health.lethal;
+      if (data.ship.health.aggravated <= 0) {
+        data.ship.health.aggravated = 0;
+        data.ship.health.lethal = data.health.total;
       }
     }
-    actorData.data.data.ship.health.penalty = currentShipPenalty;
+    data.ship.health.penalty = currentShipPenalty;
 
     if (actorData.type !== "npc") {
-      actorData.data.data.experience.standard.spent = actorData.data.data.experience.standard.total - actorData.data.data.experience.standard.value;
-      actorData.data.data.experience.exalt.spent = actorData.data.data.experience.exalt.total - actorData.data.data.experience.exalt.value;
+      data.experience.standard.spent = data.experience.standard.total - data.experience.standard.value;
+      data.experience.exalt.spent = data.experience.exalt.total - data.experience.exalt.value;
     }
 
     // Initialize containers.
@@ -365,7 +367,5 @@ export class ExaltedThirdActor extends Actor {
     actorData.specialabilities = specialAbilities;
     actorData.projects = craftProjects;
     actorData.actions = actions;
-
-    console.log(actorData);
   }
 }
