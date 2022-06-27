@@ -5,12 +5,15 @@ export class RollForm extends FormApplication {
 
         if (data.rollId) {
             this.object = duplicate(this.actor.data.data.savedRolls[data.rollId]);
+            this.object.skipDialog = data.skipDialog || true;
+            this.object.isSavedRoll = true;
         }
         else {
+            this.object.isSavedRoll = false;
             this.object.skipDialog = data.skipDialog || true;
             this.object.crashed = false;
             this.object.dice = data.dice || 0;
-            this.object.successModifier = 0;
+            this.object.successModifier = data.successModifier || 0;
             this.object.rollType = data.rollType;
             this.object.craftType = data.craftType || 0;
             this.object.craftRating = data.craftRating || 0;
@@ -387,6 +390,13 @@ export class RollForm extends FormApplication {
             this._roll();
             if (this.object.intervals <= 0) {
                 this.resolve(true);
+                this.close();
+            }
+        });
+
+        html.find('#save-button').click((event) => {
+            this._saveRoll(this.object);
+            if (this.object.intervals <= 0) {
                 this.close();
             }
         });

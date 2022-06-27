@@ -503,6 +503,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       li.toggle("fast");
     });
 
+    html.find('.quick-roll').click(ev => {
+      let li = $(event.currentTarget).parents(".item");
+      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("item-id"), skipDialog: true }).roll();
+    });
+
     html.find('.saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
       new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("item-id") }).render(true);
