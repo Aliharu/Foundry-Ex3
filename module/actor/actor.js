@@ -128,7 +128,7 @@ export class ExaltedThirdActor extends Actor {
     this.update(actorData);
   }
 
-  async rollSaved(name){
+  async savedRoll(name){
 
     const roll = Object.values(this.data.data.savedRolls).find(x=>x. name === name);
 
