@@ -4,7 +4,7 @@ export class RollForm extends FormApplication {
         this.actor = actor;
 
         if (data.rollId) {
-            this.object = this.actor.data.data.savedRolls[data.rollId];
+            this.object = duplicate(this.actor.data.data.savedRolls[data.rollId]);
         }
         else {
             this.object.skipDialog = data.skipDialog || true;
@@ -176,7 +176,7 @@ export class RollForm extends FormApplication {
             this.object.diceCap = this._getDiceCap();
         }
         if (this.object.rollType !== 'base') {
-            this.object.specialtyList = this.actor.specialties;
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.data.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
@@ -234,11 +234,6 @@ export class RollForm extends FormApplication {
         }
     }
 
-    // async _render(force = false, options = {}) {
-    // }
-
-
-
     /**
    * Get the correct HTML template path to use for rendering this particular sheet
    * @type {String}
@@ -267,7 +262,7 @@ export class RollForm extends FormApplication {
                     this.object.charmList = this.actor.charms;
                     for(var charmlist of Object.values(this.object.charmList)) {
                         for(const charm of charmlist.list) {
-                            if(this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                            if(this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
                                 charm.charmAdded = true;
                             }
                         }
@@ -400,10 +395,10 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            this.object.addedCharms.push(item);
+            this.object.addedCharms.push(item.data);
             for(var charmlist of Object.values(this.object.charmList)) {
                 for(const charm of charmlist.list) {
-                    if(this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                    if(this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
                         charm.charmAdded = true;
                     }
                 }
@@ -477,7 +472,7 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            const index = this.object.addedCharms.indexOf(item);
+            const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem._id);
             if (index > -1) {
                 for(var charmlist of Object.values(this.object.charmList)) {
                     for(const charm of charmlist.list) {
@@ -550,8 +545,12 @@ export class RollForm extends FormApplication {
         html.on("change", ".update-roller", ev => {
             this.object.diceCap = this._getDiceCap();
             this.render();
-        })
+        });
 
+        html.on("change", ".update-specialties", ev => {
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.data.ability === this.object.ability);
+            this.render();
+        });
 
         html.find('#cancel').click((event) => {
             this.resolve(false);

@@ -21,7 +21,7 @@
     </select>
 
     <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
-    <select class="update-roller" name="object.ability" value="{{data.ability}}" data-type="String">
+    <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
         {{#select data.ability}}
         <option value="archery">{{localize "Ex3.Archery"}}</option>
         <option value="athletics">{{localize "Ex3.Athletics"}}</option>
@@ -215,7 +215,7 @@
 <div style="display:none;">
     <ol class="items-list">
         {{#each data.addedCharms as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item.id}}">
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
             <div class="item-controls">
