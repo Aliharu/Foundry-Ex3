@@ -169,6 +169,9 @@
     "Ex3.ArmorPenalty": "Armor Penalty",
     "Ex3.CurrentWoundPenalty": "Current Wound Penalty",
 
+    "Ex3.DiceRollModifiers": "Dice Roll Modifiers",
+    "Ex3.DiceBonus": "Dice Bonus",
+    "Ex3.SuccessBonus": "Success Bonus",
     "Ex3.TargetNumber": "Target Number",
     "Ex3.Reroll": "Reroll",
     "Ex3.RerollFailed": "Reroll Failed",
@@ -178,6 +181,7 @@
     "Ex3.Stunt": "Stunt",
     "Ex3.StuntLevel": "Stunt Level",
     "Ex3.Dice": "Dice",
+    "Ex3.DiceCap": "Dice Cap",
 
     "Ex3.Virtue": "Virtue",
     "Ex3.Virtues": "Virtues",
@@ -392,6 +396,8 @@
     "Ex3.OtherModifiers": "Other Modifiers",
     "Ex3.Conditions": "Conditions",
     "Ex3.Disarmed": "Disarmed",
+    "Ex3.AddCharm": "Add Charm",
+    "Ex3.Done": "Done",
     "Ex3.Save": "Save",
     "Ex3.Update": "Update",
     "Ex3.EnterNewRollName": "Enter New Roll Name",

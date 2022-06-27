@@ -41,7 +41,6 @@ export class RollForm extends FormApplication {
 
             this.object.isFlurry = false;
             this.object.armorPenalty = false;
-            this.object.hasSpecialty = false;
             this.object.willpower = false;
 
             this.object.supportedIntimacy = 0;
@@ -85,7 +84,6 @@ export class RollForm extends FormApplication {
                     ten: { status: false, number: 10 },
                 }
             };
-
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.data.type;
 
@@ -154,7 +152,31 @@ export class RollForm extends FormApplication {
                 }
             }
         }
+        this.object.addingCharms = false;
+        if (this.object.cost === undefined) {
+            this.object.cost = {
+                personal: 0,
+                peripheral: 0,
+                willpower: 0,
+                initiative: 0,
+                anima: 0,
+                healthbashing: 0,
+                healthlethal: 0,
+                healthaggravated: 0,
+                silverxp: 0,
+                goldxp: 0,
+                whitexp: 0,
+                aura: "",
+            }
+        }
+        if (this.object.addedCharms === undefined) {
+            this.object.addedCharms = [];
+        }
+        if (this.object.diceCap === undefined) {
+            this.object.diceCap = this._getDiceCap();
+        }
         if (this.object.rollType !== 'base') {
+            this.object.specialtyList = this.actor.specialties;
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
@@ -226,20 +248,8 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'base') {
             template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
         }
-        // else if (this.object.rollType === 'accuracy') {
-        //     template = "systems/exaltedthird/templates/dialogues/accuracy-roll.html";
-        // }
-        // else if (this.object.rollType === 'damage') {
-        //     template = "systems/exaltedthird/templates/dialogues/damage-roll.html";
-        // }
-        else if (this.object.rollType === 'craft') {
-            template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
-        }
         else if (this._isAttackRoll()) {
             template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
-        }
-        else if (this.object.rollType === 'craft') {
-            template = "systems/exaltedthird/templates/dialogues/craft-roll.html";
         }
         return template;
     }
@@ -248,6 +258,31 @@ export class RollForm extends FormApplication {
         let buttons = super._getHeaderButtons();
         // Token Configuration
         if (this.object.rollType !== 'base') {
+            const charmsButton = {
+                label: game.i18n.localize('Ex3.AddCharm'),
+                class: 'add-charm',
+                id: "add-charm",
+                icon: 'fas fa-bolt',
+                onclick: (ev) => {
+                    this.object.charmList = this.actor.charms;
+                    for(var charmlist of Object.values(this.object.charmList)) {
+                        for(const charm of charmlist.list) {
+                            if(this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                                charm.charmAdded = true;
+                            }
+                        }
+                    }
+                    if(this.object.addingCharms) {
+                        ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.AddCharm')}`;
+                    }
+                    else {
+                        ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.Done')}`;
+                    }
+                    this.object.addingCharms = !this.object.addingCharms;
+                    this.render();
+                },
+            };
+            buttons = [charmsButton, ...buttons];
             const rollButton = {
                 label: this.object.id ? game.i18n.localize('Ex3.Update') : game.i18n.localize('Ex3.Save'),
                 class: 'roll-dice',
@@ -270,6 +305,7 @@ export class RollForm extends FormApplication {
             id: "roll-form",
             title: `Roll`,
             width: 350,
+            resizable: true,
             submitOnChange: true,
             closeOnSubmit: false
         });
@@ -291,11 +327,10 @@ export class RollForm extends FormApplication {
      * @returns {Promise} Returns True or False once the Roll or Cancel buttons are pressed.
      */
     async roll() {
-
-        if(this.object.skipDialog){
+        if (this.object.skipDialog) {
             await this._roll();
             return true;
-        }else{
+        } else {
             var _promiseResolve;
             this.promise = new Promise(function (promiseResolve) {
                 _promiseResolve = promiseResolve
@@ -304,8 +339,8 @@ export class RollForm extends FormApplication {
             this.render(true);
             return this.promise;
         }
-        
     }
+
     async _saveRoll(rollData) {
         let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
         new Dialog({
@@ -360,6 +395,163 @@ export class RollForm extends FormApplication {
                 this.close();
             }
         });
+
+        html.find('.add-charm').click(ev => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let item = this.actor.items.get(li.data("item-id"));
+            this.object.addedCharms.push(item);
+            for(var charmlist of Object.values(this.object.charmList)) {
+                for(const charm of charmlist.list) {
+                    if(this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                        charm.charmAdded = true;
+                    }
+                }
+            }
+            if (this.actor.data.data.settings.charmmotepool === 'personal') {
+                this.object.cost.personal += item.data.data.cost.motes;
+            }
+            else {
+                this.object.cost.peripheral += item.data.data.cost.motes;
+            }
+            this.object.cost.anima += item.data.data.cost.anima;
+            this.object.cost.willpower += item.data.data.cost.willpower;
+            this.object.cost.silverxp += item.data.data.cost.silverxp;
+            this.object.cost.goldxp += item.data.data.cost.goldxp;
+            this.object.cost.whitexp += item.data.data.cost.whitexp;
+            this.object.cost.initiative += item.data.data.cost.initiative;
+
+            if (item.data.data.cost.aura) {
+                this.object.cost.aura = item.data.data.cost.aura;
+            }
+
+            if (item.data.data.cost.health > 0) {
+                if (item.data.data.cost.healthtype === 'bashing') {
+                    this.object.cost.healthbashing += item.data.data.cost.health;
+                }
+                else if (item.data.data.cost.healthtype === 'lethal') {
+                    this.object.cost.healthlethal += item.data.data.cost.health;
+                }
+                else {
+                    this.object.cost.healthaggravated += item.data.data.cost.health;
+                }
+            }
+            this.object.diceModifier += item.data.data.diceroller.bonusdice;
+            this.object.successModifier += item.data.data.diceroller.bonussuccesses;
+            if (item.data.data.diceroller.doublesuccess < this.object.doubleSuccess) {
+                this.object.doubleSuccess = item.data.data.diceroller.doublesuccess;
+            }
+            if (item.data.data.diceroller.targetnumber < this.object.damage.targetNumber) {
+                this.object.targetNumber = item.data.data.diceroller.targetnumber;
+            }
+            for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.reroll)) {
+                if (rerollValue) {
+                    this.object.reroll[rerollKey].status = true;
+                }
+            }
+            if (item.data.data.diceroller.rerollfailed) {
+                this.object.rerollFailed = item.data.data.diceroller.rerollfailed;
+            }
+            this.object.rerollNumber += item.data.data.diceroller.rerolldice;
+
+            this.object.damage.damageDice += item.data.data.diceroller.damage.bonusdice;
+            this.object.damage.damageSuccessModifier += item.data.data.diceroller.damage.bonussuccesses;
+            if (item.data.data.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
+                this.object.damage.doubleSuccess = item.data.data.diceroller.damage.doublesuccess;
+            }
+            if (item.data.data.diceroller.damage.targetnumber < this.object.damage.targetNumber) {
+                this.object.damage.targetNumber = item.data.data.diceroller.damage.targetnumber;
+            }
+            this.object.overwhelming += item.data.data.diceroller.damage.overwhelming;
+            this.object.damage.postSoakDamage += item.data.data.diceroller.damage.postsoakdamage;
+            for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.damage.reroll)) {
+                if (rerollValue) {
+                    this.object.damage.reroll[rerollKey].status = true;
+                }
+            }
+
+            this.render();
+        });
+
+        html.find('.remove-charm').click(ev => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let item = this.actor.items.get(li.data("item-id"));
+            const index = this.object.addedCharms.indexOf(item);
+            if (index > -1) {
+                for(var charmlist of Object.values(this.object.charmList)) {
+                    for(const charm of charmlist.list) {
+                        if(charm._id === item.id) {
+                            charm.charmAdded = false;
+                        }
+                    }
+                }
+                this.object.addedCharms.splice(index, 1);
+
+                if (this.actor.data.data.settings.charmmotepool === 'personal') {
+                    this.object.cost.personal -= item.data.data.cost.motes;
+                }
+                else {
+                    this.object.cost.peripheral -= item.data.data.cost.motes;
+                }
+                this.object.cost.anima -= item.data.data.cost.anima;
+                this.object.cost.willpower -= item.data.data.cost.willpower;
+                this.object.cost.silverxp -= item.data.data.cost.silverxp;
+                this.object.cost.goldxp -= item.data.data.cost.goldxp;
+                this.object.cost.whitexp -= item.data.data.cost.whitexp;
+                this.object.cost.initiative -= item.data.data.cost.initiative;
+
+                if (item.data.data.cost.aura === this.object.cost.aura) {
+                    this.object.cost.aura = "";
+                }
+
+                if (item.data.data.cost.health > 0) {
+                    if (item.data.data.cost.healthtype === 'bashing') {
+                        this.object.cost.healthbashing -= item.data.data.cost.health;
+                    }
+                    else if (item.data.data.cost.healthtype === 'lethal') {
+                        this.object.cost.healthlethal -= item.data.data.cost.health;
+                    }
+                    else {
+                        this.object.cost.healthaggravated -= item.data.data.cost.health;
+                    }
+                }
+                this.object.diceModifier -= item.data.data.diceroller.bonusdice;
+                this.object.successModifier -= item.data.data.diceroller.bonussuccesses;
+                for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.reroll)) {
+                    if (rerollValue) {
+                        this.object.reroll[rerollKey].status = false;
+                    }
+                }
+                if (item.data.data.diceroller.rerollfailed) {
+                    this.object.rerollFailed = false;
+                }
+                this.object.rerollNumber -= item.data.data.diceroller.rerolldice;
+    
+                this.object.damage.damageDice -= item.data.data.diceroller.damage.bonusdice;
+                this.object.damage.damageSuccessModifier -= item.data.data.diceroller.damage.bonussuccesses;
+                this.object.overwhelming -= item.data.data.diceroller.damage.overwhelming;
+                this.object.damage.postSoakDamage -= item.data.data.diceroller.damage.postsoakdamage;
+                for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.damage.reroll)) {
+                    if (rerollValue) {
+                        this.object.damage.reroll[rerollKey].status = false;
+                    }
+                }
+    
+            }
+            this.render();
+        });
+
+        html.find('#done-adding-charms').click(ev => {
+            this.object.addingCharms = false;
+            this.render();
+        });
+
+        html.on("change", ".update-roller", ev => {
+            this.object.diceCap = this._getDiceCap();
+            this.render();
+        })
+
 
         html.find('#cancel').click((event) => {
             this.resolve(false);
@@ -443,7 +635,7 @@ export class RollForm extends FormApplication {
             if (this.object.diceModifier) {
                 dice += this.object.diceModifier;
             }
-            if (this.object.hasSpecialty) {
+            if (this.object.specialty) {
                 dice++;
             }
             if (this.object.willpower) {
@@ -507,6 +699,7 @@ export class RollForm extends FormApplication {
         this.object.roll = roll;
         this.object.getDice = getDice;
         this.object.total = total;
+        this._spendMotes();
     }
 
     async _diceRoll() {
@@ -735,7 +928,6 @@ export class RollForm extends FormApplication {
     async _accuracyRoll() {
         this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
-        let damageResults = ``;
     }
 
     async _damageRoll() {
@@ -1179,6 +1371,42 @@ export class RollForm extends FormApplication {
         return false;
     }
 
+    _getDiceCap() {
+        var animaBonus = {
+            Dim: 0,
+            Glowing: 1,
+            Burning: 2,
+            Bonfire: 3,
+            Transcendent: 4
+        }
+        if(this.actor.type === "character") {
+            if (this.actor.data.data.details.exalt === "solar") {
+                return this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.attributes[this.object.attribute].value;
+            }
+            if (this.actor.data.data.details.exalt === "dragonblooded") {
+                return this.actor.data.data.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
+            }
+            if (this.actor.data.data.details.exalt === "lunar") {
+                return `${this.actor.data.data.attributes[this.object.attribute].value} - ${this.actor.data.data.attributes[this.object.attribute].value + 5}`;
+            }
+            if (this.actor.data.data.details.exalt === "dreamsouled") {
+                return `${this.actor.data.data.abilities[this.object.ability].value} or ${Math.min(10, this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.essence.value)} when upholding ideal`;
+            }
+            if (this.actor.data.data.details.exalt === "umbral") {
+                return `${Math.min(10, this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.details.penumbra.value)}`;
+            }
+            if (this.actor.data.data.details.caste.toLowerCase() === "architect") {
+                return `${this.actor.data.data.attributes[this.object.attribute].value} or ${this.actor.data.data.attributes[this.object.attribute].value + this.actor.data.data.essence.value} in cities`;
+            }
+            if (this.actor.data.data.details.caste.toLowerCase() === "janest" || this.actor.data.data.details.caste.toLowerCase() === 'strawmaiden') {
+                return `${this.actor.data.data.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+            } 
+            if (this.actor.data.data.details.caste.toLowerCase() === "sovereign") {
+                return Math.min(Math.max(this.actor.data.data.essence.value, 3) + animaBonus[this.actor.data.data.anima.level], 10) ;
+            }
+        }
+        return "";
+    }
 
     _getHighestAttribute() {
         var highestAttributeNumber = 0;
@@ -1190,5 +1418,116 @@ export class RollForm extends FormApplication {
             }
         }
         return highestAttribute;
+    }
+
+    _spendMotes() {
+        const actorData = duplicate(this.actor);
+
+        var newLevel = actorData.data.anima.level;
+        if (this.object.cost.anima > 0) {
+            for (var i = 0; i < this.object.cost.anima; i++) {
+                if (newLevel === "Transcendent") {
+                    newLevel = "Bonfire";
+                }
+                else if (newLevel === "Bonfire") {
+                    newLevel = "Burning";
+                }
+                else if (newLevel === "Burning") {
+                    newLevel = "Glowing";
+                }
+                if (newLevel === "Glowing") {
+                    newLevel = "Dim";
+                }
+            }
+        }
+        var spentPersonal = 0;
+        var spentPeripheral = 0;
+        var remainingPersonal = actorData.data.motes.personal.value - this.object.cost.personal;
+        if (remainingPersonal < 0) {
+            spentPersonal = this.object.cost.personal - actorData.data.motes.personal.value;
+            spentPeripheral = Math.abs(remainingPersonal);
+        }
+        else {
+            spentPersonal = this.object.cost.personal;
+        }
+        var remainingPeripheral = actorData.data.motes.peripheral.value - this.object.cost.peripheral;
+        if (remainingPeripheral < 0) {
+            spentPeripheral = this.object.cost.peripheral - actorData.data.motes.peripheral.value;
+            spentPersonal = Math.abs(remainingPeripheral);
+        }
+        else {
+            spentPeripheral = this.object.cost.peripheral;
+        }
+        actorData.data.motes.peripheral.value = Math.max(0 + actorData.data.motes.peripheral.committed, actorData.data.motes.peripheral.value - spentPeripheral);
+        actorData.data.motes.personal.value = Math.max(0 + actorData.data.motes.personal.committed, actorData.data.motes.personal.value - spentPersonal);
+
+        if (spentPeripheral > 4) {
+            for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+                if (newLevel === "Dim") {
+                    newLevel = "Glowing";
+                }
+                else if (newLevel === "Glowing") {
+                    newLevel = "Burning";
+                }
+                else if (newLevel === "Burning") {
+                    newLevel = "Bonfire";
+                }
+                else if (actorData.data.details.caste.toLowerCase() === 'sovereign') {
+                    newLevel = "Transcendent";
+                }
+            }
+        }
+
+        actorData.data.anima.level = newLevel;
+        actorData.data.willpower.value = Math.max(0, actorData.data.willpower.value - this.object.cost.willpower);
+        if (this.object.cost.initiative > 0) {
+            let combat = game.combat;
+            if (combat) {
+                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                if (combatant) {
+                    var newInitiative = combatant.initiative - this.object.cost.initiative;
+                    if (combatant.initiative > 0 && newInitiative <= 0) {
+                        newInitiative -= 5;
+                    }
+                    combat.setInitiative(combatant.id, newInitiative);
+                }
+            }
+        }
+        if (this.actor.type === 'character') {
+            actorData.data.craft.experience.silver.value = Math.max(0, actorData.data.craft.experience.silver.value - this.object.cost.silverxp);
+            actorData.data.craft.experience.gold.value = Math.max(0, actorData.data.craft.experience.gold.value - this.object.cost.goldxp);
+            actorData.data.craft.experience.white.value = Math.max(0, actorData.data.craft.experience.white.value - this.object.cost.whitexp);
+        }
+        if (actorData.data.details.aura === this.object.cost.aura || this.object.cost.aura === 'any') {
+            actorData.data.details.aura = "none";
+        }
+        if (this.object.cost.initiative > 0) {
+            let combat = game.combat;
+            if (combat) {
+                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                if (combatant) {
+                    var newInitiative = combatant.initiative - this.object.cost.initiative;
+                    if (combatant.initiative > 0 && newInitiative <= 0) {
+                        newInitiative -= 5;
+                    }
+                    combat.setInitiative(combatant.id, newInitiative);
+                }
+            }
+        }
+        let totalHealth = 0;
+        for (let [key, health_level] of Object.entries(actorData.data.health.levels)) {
+            totalHealth += health_level.value;
+        }
+        if (this.object.cost.healthbashing > 0) {
+            actorData.data.health.bashing = Math.min(totalHealth - actorData.data.health.aggravated - actorData.data.health.lethal, actorData.data.health.bashing + this.object.cost.healthbashing);
+        }
+        if (this.object.cost.healthlethal > 0) {
+            actorData.data.health.lethal = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.aggravated, actorData.data.health.lethal + this.object.cost.healthlethal);
+        }
+        if (this.object.cost.healthaggravated > 0) {
+            actorData.data.health.aggravated = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.lethal, actorData.data.health.aggravated + this.object.cost.healthaggravated);
+        }
+
+        this.actor.update(actorData);
     }
 }

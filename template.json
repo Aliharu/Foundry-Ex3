@@ -613,6 +613,46 @@
         "silverxp": 0,
         "goldxp": 0,
         "whitexp": 0
+      },
+      "diceroller": {
+        "bonusdice": 0,
+        "bonussuccesses": 0,
+        "doublesuccess": 11,
+        "targetnumber": 7,
+        "rerolldice": 0,
+        "rerollfailed": false,
+        "reroll": {
+          "one": false,
+          "two": false,
+          "three": false,
+          "four": false,
+          "five": false,
+          "six": false,
+          "seven": false,
+          "eight": false,
+          "nine": false,
+          "ten": false
+        },
+        "damage": {
+          "bonusdice": 0,
+          "bonussuccesses": 0,
+          "doublesuccess": 11,
+          "targetnumber": 7,
+          "overwhelming": 0,
+          "postsoakdamage": 0,
+          "reroll": {
+            "one": false,
+            "two": false,
+            "three": false,
+            "four": false,
+            "five": false,
+            "six": false,
+            "seven": false,
+            "eight": false,
+            "nine": false,
+            "ten": false
+          }
+        }
       }
     },
     "merit": {

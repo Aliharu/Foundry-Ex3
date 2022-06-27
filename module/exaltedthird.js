@@ -56,6 +56,7 @@ Hooks.once('init', async function() {
   // Pre-load templates
   loadTemplates([
     "systems/exaltedthird/templates/dialogues/ability-base.html",
+    "systems/exaltedthird/templates/dialogues/add-roll-charm.html",
     "systems/exaltedthird/templates/dialogues/accuracy-roll.html",
     "systems/exaltedthird/templates/dialogues/damage-roll.html",
     "systems/exaltedthird/templates/actor/active-effects.html",

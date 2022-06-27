@@ -130,6 +130,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       war: { name: 'Ex3.War', visible: false, list: [] },
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
+      universal: { name: 'Ex3.Universal', visible: false, list: [] },
     }
 
     const spells = {
@@ -630,6 +631,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.exalt === 'liminal') {
         data.motes.personal.max = 10 + (data.essence.value * 3);
       }
+      if(data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect'|| data.details.caste.toLowerCase() === 'puppeteer') {
+        data.motes.personal.max = 11 + data.essence.value;
+      }
+      if(data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+        data.motes.personal.max = 11 + (data.essence.value * 2);
+      }
     }
     else {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
@@ -649,6 +656,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       if (data.details.exalt === 'liminal') {
         data.motes.peripheral.max = 23 + (data.essence.value * 4);
+      }
+      if(data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect'|| data.details.caste.toLowerCase() === 'puppeteer') {
+        data.motes.peripheral.max = 23 + (data.essence.value * 4);
+      }
+      if(data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+        data.motes.peripheral.max = 27 + (data.essence.value * 6);
       }
     }
 

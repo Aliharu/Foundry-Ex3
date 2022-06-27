@@ -1,0 +1,54 @@
+<ol class="items-list">
+    {{#each data.charmList as |charm ability|}}
+    {{#if charm.visible}}
+    <li class="item flexrow item-header flex-center">
+        <div class="item-name">{{localize charm.name}}</div>
+    </li>
+    {{#each charm.list as |item id|}}
+    <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+        <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+        <h4 class="item-name">{{item.name}}</h4>
+        <div class="item-controls">
+            {{#if item.charmAdded}} <a class="item-control remove-charm" title="Remove Charm"><i
+                    class="fas fa-trash"></i></a> {{else}} <a class="item-control add-charm" title="Add Charm"><i
+                    class="fas fa-plus"></i></a> {{/if}}
+    </li>
+    <li class="item-description">
+        <div>
+            <b>Cost</b>: {{#ifGreater item.data.cost.motes 0}}{{ item.data.cost.motes }}m,{{/ifGreater}}
+            {{#ifGreater
+            item.data.cost.willpower 0}} {{ item.data.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater
+            item.data.cost.anima 0}}{{ item.data.cost.anima }}a, {{/ifGreater}}
+            {{#ifGreater item.data.cost.initiative 0}}{{ item.data.cost.initiative }}i, {{/ifGreater}}
+            {{#ifGreater
+            item.data.cost.silverxp 0}}{{ item.data.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater
+            item.data.cost.goldxp 0}} {{
+            item.data.cost.goldxp }}gxp, {{/ifGreater}} {{#ifGreater item.data.cost.whitexp 0}}{{
+            item.data.cost.whitexp
+            }}wxp; {{/ifGreater}} {{#ifGreater item.data.cost.xp 0}}{{ item.data.cost.xp }}xp; {{/ifGreater}}
+        </div>
+        {{#ifGreater item.data.cost.health 0}}
+        <div>
+            <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
+        </div>
+        {{/ifGreater}}
+        <div>
+            <b>Mins</b>: {{item.data.ability}} {{item.data.requirement}}, Essence {{item.data.essence}}
+        </div>
+        <div>
+            <b>Type</b>: {{item.data.type}}
+        </div>
+        <div>
+            <b>Keywords</b>: {{item.data.keywords}}
+        </div>
+        <div>
+            <b>Duration</b>: {{item.data.duration}}
+        </div>
+        <div>
+            {{{item.data.description}}}
+        </div>
+    </li>
+    {{/each}}
+    {{/if}}
+    {{/each}}
+</ol>

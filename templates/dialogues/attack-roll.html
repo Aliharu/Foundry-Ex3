@@ -1,5 +1,8 @@
 <form>
     <div class="sheet-body exaltedthird">
+        {{#if data.addingCharms }}
+        {{> systems/exaltedthird/templates/dialogues/add-roll-charm.html}}
+        {{else}}
         {{#ifNotEquals data.rollType 'damage'}}
         {{> systems/exaltedthird/templates/dialogues/accuracy-roll.html}}
         {{/ifNotEquals}}
@@ -10,5 +13,6 @@
             <button type="button" id="roll-button">Roll</button>
             <button type="button" id="cancel">Cancel</button>
         </div>
+        {{/if}}
     </div>
 </form>
