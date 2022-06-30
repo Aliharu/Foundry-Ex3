@@ -131,6 +131,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offsensive', visible: false, list: [] },
+      defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
+      social: { name: 'Ex3.Social', visible: false, list: [] },
     }
 
     const spells = {
@@ -867,7 +870,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool });
+    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -878,6 +881,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       close: html => {
         if (confirmed) {
           data.settings.charmmotepool = html.find('#charmMotePool').val();
+          data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
+          data.settings.showship = html.find('#showShip').is(":checked");
           this.actor.update(actorData);
         }
       }

@@ -204,6 +204,7 @@
 </div>
 {{/ifEquals}}
 
+{{#ifNotEquals data.rollType 'base'}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.Charms"}} {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}}
@@ -288,7 +289,7 @@
         </div>
     </div>
 </div>
-
+{{/ifNotEquals}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.OtherModifiers"}}
@@ -305,7 +306,7 @@
         <input type="checkbox" name="object.rerollFailed" value="{{data.rerollFailed}}" {{checked data.rerollFailed}}>
     </div>
 </div>
-
+{{#ifNotEquals data.rollType 'base'}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.Conditions"}}
@@ -321,6 +322,7 @@
     </div>
     {{/each}}
 </div>
+{{/ifNotEquals}}
 
 {{#ifEquals data.rollType 'social'}}
 <div class="resource grid grid-2col flex-center">

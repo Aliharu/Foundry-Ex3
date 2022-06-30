@@ -114,7 +114,9 @@
           }
         },
         "settings": {
-          "charmmotepool": "peripheral"
+          "charmmotepool": "peripheral",
+          "showwarstrider": true,
+          "showship": true
         },
         "ship": {
           "name": "",

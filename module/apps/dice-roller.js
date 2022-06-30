@@ -71,7 +71,7 @@ export class RollForm extends FormApplication {
             this.object.damage = {
                 damageDice: data.damage || 0,
                 damageSuccessModifier: data.damageSuccessModifier || 0,
-                doubleSuccess: data.doubleSuccess || (this.object.rollType === 'decisive' ? 11 : 10),
+                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor.data.data.battlegroup) ? 11 : 10),
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
                 reroll: {
@@ -85,7 +85,8 @@ export class RollForm extends FormApplication {
                     eight: { status: false, number: 8 },
                     nine: { status: false, number: 9 },
                     ten: { status: false, number: 10 },
-                }
+                },
+                type: 'lethal',
             };
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.data.type;
@@ -171,6 +172,9 @@ export class RollForm extends FormApplication {
                 whitexp: 0,
                 aura: "",
             }
+        }
+        if (this.object.damage.type === undefined) {
+            this.object.damage.type = 'lethal';
         }
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
@@ -267,6 +271,9 @@ export class RollForm extends FormApplication {
                         for(const charm of charmlist.list) {
                             if(this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
                                 charm.charmAdded = true;
+                            }
+                            else {
+                                charm.charmAdded = false;
                             }
                         }
                     }
@@ -930,7 +937,7 @@ export class RollForm extends FormApplication {
                     }
                 }
             });
-
+            this._addOnslaught();
         }
     }
 
@@ -991,7 +998,7 @@ export class RollForm extends FormApplication {
         this.object.finalDamageDice = dice;
 
         for (let dice of diceRoll) {
-            if (dice.result >= this.object.damage.doubleSuccess && (this.actor.data.type !== 'npc' || this.actor.data.data.battlegroup === false)) {
+            if (dice.result >= this.object.damage.doubleSuccess) {
                 bonus++;
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
@@ -1001,19 +1008,22 @@ export class RollForm extends FormApplication {
         }
 
         let total = roll.total;
-        if (bonus && (this.actor.data.type !== 'npc' || this.actor.data.data.battlegroup === false)) {
+        if (bonus) {
             total += bonus;
         }
         total += this.object.damage.damageSuccessModifier;
+        var characterDamage = total;
 
         let typeSpecificResults = ``;
 
         if (this._damageRollType('decisive')) {
-            typeSpecificResults = `<h4 class="dice-total">${total} Damage!</h4>`;
+            typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             this.object.characterInitiative = 3;
             if (this._useLegendarySize('decisive')) {
-                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.data.data.attributes.strength.value} + Charm damage levels</h4>`
+                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.data.data.attributes.strength.value} + Charm damage levels</h4>`;
+                characterDamage = Math.min(characterDamage, 3 + this.actor.data.data.attributes.strength.value);
             }
+            this.dealHealthDamage(characterDamage);
         }
         else if (this.object.rollType === 'gambit') {
             if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
@@ -1025,7 +1035,6 @@ export class RollForm extends FormApplication {
                 resultsText = `<h4 class="dice-total">Gambit Failed</h4>`
             }
             typeSpecificResults = `<h4 class="dice-formula">${total} Successes vs ${this.object.gambitDifficulty} Difficulty!</h4>${resultsText}`;
-
         }
         else {
             let targetResults = ``;
@@ -1048,6 +1057,9 @@ export class RollForm extends FormApplication {
                             }
                         }
                         game.combat.setInitiative(targetCombatant.id, newInitative);
+                    }
+                    else if(targetCombatant.actor.data.data.battlegroup) {
+                        this.dealHealthDamage(total);
                     }
                 }
             }
@@ -1155,8 +1167,21 @@ export class RollForm extends FormApplication {
                 }
             }
         }
+        else if (this.actor.data.data.battlegroup) {
+            let combat = game.combat;
+            if (this.object.target) {
+                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
+                if (combatant && combatant.initiative != null && combatant.initiative <= 0) {
+                    this.dealHealthDamage(total);
+                }
+            }
+        }
+        this._addOnslaught();
+    }
+
+    async _addOnslaught() {
         if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
-            if (this._useLegendarySize('onslaught')) {
+            if (!this._useLegendarySize('onslaught')) {
                 const onslaught = this.object.target.actor.effects.find(i => i.data.label == "Onslaught");
                 if (onslaught) {
                     let changes = duplicate(onslaught.data.changes);
@@ -1189,7 +1214,26 @@ export class RollForm extends FormApplication {
                     }]);
                 }
             }
+        }
+    }
 
+    async dealHealthDamage(characterDamage) {
+        if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
+            let totalHealth = 0;
+            const targetActorData = duplicate(this.object.target.actor);
+            for (let [key, health_level] of Object.entries(targetActorData.data.health.levels)) {
+                totalHealth += health_level.value;
+            }
+            if (this.object.damage.type === 'bashing') {
+                targetActorData.data.health.bashing = Math.min(totalHealth - targetActorData.data.health.aggravated - targetActorData.data.health.lethal, targetActorData.data.health.bashing + characterDamage);
+            }
+            if (this.object.damage.type === 'lethal') {
+                targetActorData.data.health.lethal = Math.min(totalHealth - targetActorData.data.health.bashing - targetActorData.data.health.aggravated, targetActorData.data.health.lethal + characterDamage);
+            }
+            if (this.object.damage.type === 'aggravated') {
+                targetActorData.data.health.aggravated = Math.min(totalHealth - targetActorData.data.health.bashing - targetActorData.data.health.lethal, targetActorData.data.health.aggravated + characterDamage);
+            }
+            this.object.target.actor.update(targetActorData);
         }
     }
 
@@ -1388,7 +1432,7 @@ export class RollForm extends FormApplication {
             Bonfire: 3,
             Transcendent: 4
         }
-        if(this.actor.type === "character") {
+        if(this.object.rollType !== "base" && this.actor.type === "character") {
             if (this.actor.data.data.details.exalt === "solar") {
                 return this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.attributes[this.object.attribute].value;
             }

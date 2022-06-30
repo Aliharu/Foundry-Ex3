@@ -4,27 +4,39 @@
     </div>
     <div>
         {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.AccuracyModifiers"}}
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <div class="resource grid grid-2col flex-center">
+                <label class="resource-label">{{localize "Ex3.Range"}}</label>
+                <select name="object.range" value="{{data.range}}" data-type="String">
+                    {{#select data.range}}
+                    <option value="close">Close</option>
+                    <option value="short">Short</option>
+                    <option value="medium">Medium</option>
+                    <option value="long">Long</option>
+                    <option value="extreme">Extreme</option>
+                    {{/select}}
+                </select>
+                <label class="resource-label">{{localize "Ex3.WeaponType"}}</label>
+                <select name="object.weaponType" value="{{data.weaponType}}" data-type="String">
+                    {{#select data.weaponType}}
+                    <option value="melee">{{localize "Ex3.Melee"}}</option>
+                    <option value="bolt">{{localize "Ex3.Bolt"}}</option>
+                    <option value="ranged">{{localize "Ex3.Ranged"}}</option>
+                    <option value="siege">{{localize "Ex3.Siege"}}</option>
+                    <option value="thrown">{{localize "Ex3.Thrown"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
         <div class="resource grid grid-2col flex-center">
-            <label class="resource-label">{{localize "Ex3.Range"}}</label>
-            <select name="object.range" value="{{data.range}}" data-type="String">
-                {{#select data.range}}
-                <option value="close">Close</option>
-                <option value="short">Short</option>
-                <option value="medium">Medium</option>
-                <option value="long">Long</option>
-                <option value="extreme">Extreme</option>
-                {{/select}}
-            </select>
-            <label class="resource-label">{{localize "Ex3.WeaponType"}}</label>
-            <select name="object.weaponType" value="{{data.weaponType}}" data-type="String">
-                {{#select data.weaponType}}
-                <option value="melee">{{localize "Ex3.Melee"}}</option>
-                <option value="bolt">{{localize "Ex3.Bolt"}}</option>
-                <option value="ranged">{{localize "Ex3.Ranged"}}</option>
-                <option value="siege">{{localize "Ex3.Siege"}}</option>
-                <option value="thrown">{{localize "Ex3.Thrown"}}</option>
-                {{/select}}
-            </select>
             <div>
                 <label class="resource-label">{{localize "Ex3.Accuracy"}}</label>
                 <input type="number" name="object.accuracy" value="{{data.accuracy}}">

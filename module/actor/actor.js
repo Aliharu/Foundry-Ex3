@@ -289,6 +289,9 @@ export class ExaltedThirdActor extends Actor {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offsensive', visible: false, list: [] },
+      defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
+      social: { name: 'Ex3.Social', visible: false, list: [] },
     }
 
     const spells = {
@@ -336,15 +339,15 @@ export class ExaltedThirdActor extends Actor {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if (i.data.ability !== undefined) {
-          charms[i.data.ability].list.push(i);
-          charms[i.data.ability].visible = true;
+        if (i.data.data.ability !== undefined) {
+          charms[i.data.data.ability].list.push(i);
+          charms[i.data.data.ability].visible = true;
         }
       }
       else if (i.type === 'spell') {
-        if (i.data.circle !== undefined) {
-          spells[i.data.circle].list.push(i);
-          spells[i.data.circle].visible = true;
+        if (i.data.data.circle !== undefined) {
+          spells[i.data.data.circle].list.push(i);
+          spells[i.data.data.circle].visible = true;
         }
       }
       else if (i.type === 'action') {

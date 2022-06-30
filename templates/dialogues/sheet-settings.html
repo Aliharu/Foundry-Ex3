@@ -1,11 +1,21 @@
 <form>
     <div class="sheet-body exaltedthird">
-        <label className="resource-label">Choose pool used for charm spending:</label>
-        <select id="charmMotePool" name="charmmotepool" data-type="String">
-            {{#select charmmotepool}}
-            <option value="personal">{{localize "Ex3.Personal"}}</option>
-            <option value="peripheral">{{localize "Ex3.Peripheral"}}</option>
-            {{/select}}
-        </select>
+        <div class="mb-1">
+            <label className="resource-label">Choose pool used for charm spending:</label>
+            <select id="charmMotePool" name="charmmotepool" data-type="String">
+                {{#select charmmotepool}}
+                <option value="personal">{{localize "Ex3.Personal"}}</option>
+                <option value="peripheral">{{localize "Ex3.Peripheral"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        <div class="mb-1">
+            <label className="resource-label">Show Warstrider:</label>
+            <input id="showWarstrider" name="showWarstrider" type="checkbox" {{checked showWarstrider}}>
+        </div>
+        <div class="mb-1">
+            <label className="resource-label">Show Ship:</label>
+            <input id="showShip" name="showShip" type="checkbox" {{checked showShip}}>
+        </div>
     </div>
 </form>

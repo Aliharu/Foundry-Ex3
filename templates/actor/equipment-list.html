@@ -98,6 +98,7 @@
     {{/each}}
   </ol>
 </div>
+{{#if data.data.settings.showwarstrider}}
 <div>
   <label class="resource-label">{{localize "Ex3.Warstrider"}}</label>
     <div class="resource flex-group-center d-flex">
@@ -149,6 +150,8 @@
     </div>
   </div>
 </div>
+{{/if}}
+{{#if data.data.settings.showship}}
 <div>
   <label class="resource-label">{{localize "Ex3.Ship"}}</label>
     <div class="resource flex-group-center d-flex">
@@ -192,3 +195,4 @@
     <textarea type="text" name="data.ship.cargo" rows="2">{{data.data.ship.cargo}}</textarea>
   </div>
 </div>
+{{/if}}
