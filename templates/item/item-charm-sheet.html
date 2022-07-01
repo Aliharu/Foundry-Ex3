@@ -228,71 +228,101 @@
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.SuccessBonus"}} </label>
-                    <input name="data.diceroller.bonussuccesses" value="{{data.data.diceroller.bonussuccesses}}" type="number">
+                    <input name="data.diceroller.bonussuccesses" value="{{data.data.diceroller.bonussuccesses}}"
+                        type="number">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-                    <input name="data.diceroller.targetnumber" value="{{data.data.diceroller.targetnumber}}" type="number">
+                    <input name="data.diceroller.targetnumber" value="{{data.data.diceroller.targetnumber}}"
+                        type="number">
                 </div>
 
                 <div>
                     <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                    <input name="data.diceroller.doublesuccess" value="{{data.data.diceroller.doublesuccess}}" type="number">
+                    <input name="data.diceroller.doublesuccess" value="{{data.data.diceroller.doublesuccess}}"
+                        type="number">
+                </div>
+            </div>
+
+            <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+                <div class="resource-label">
+                    {{localize "Ex3.OtherModifiers"}}
                 </div>
                 <div>
-                    <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
-                    <input name="data.diceroller.rerolldice" value="{{data.data.diceroller.rerolldice}}" type="number">
+                    <i class="fas fa-caret-down"></i>
                 </div>
-                <div>
-                    <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
+            </div>
+            <div style="display:none;">
+                <div class="resource grid grid-2col flex-center">
                     <div>
-                        <input type="checkbox" name="data.diceroller.rerollfailed" value="{{data.data.diceroller.rerollfailed}}" {{checked data.data.diceroller.rerollfailed}}>
+                        <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
+                        <input name="data.diceroller.rerolldice" value="{{data.data.diceroller.rerolldice}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
+                        <div>
+                            <input type="checkbox" name="data.diceroller.rerollfailed"
+                                value="{{data.data.diceroller.rerollfailed}}" {{checked
+                                data.data.diceroller.rerollfailed}}>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="resource flex-center">
                 <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
             </div>
             <div class="resource d-flex flex-center">
                 <div>
                     <div>1</div>
-                    <input name="data.diceroller.reroll.one" value="data.diceroller.reroll.one" type="checkbox" {{checked data.data.diceroller.reroll.one}}>
+                    <input name="data.diceroller.reroll.one" value="data.diceroller.reroll.one" type="checkbox"
+                        {{checked data.data.diceroller.reroll.one}}>
                 </div>
                 <div>
                     <div>2</div>
-                    <input name="data.diceroller.reroll.two" value="data.diceroller.reroll.two" type="checkbox" {{checked data.data.diceroller.reroll.two}}>
+                    <input name="data.diceroller.reroll.two" value="data.diceroller.reroll.two" type="checkbox"
+                        {{checked data.data.diceroller.reroll.two}}>
                 </div>
                 <div>
                     <div>3</div>
-                    <input name="data.diceroller.reroll.three" value="data.diceroller.reroll.three" type="checkbox" {{checked data.data.diceroller.reroll.three}}>
+                    <input name="data.diceroller.reroll.three" value="data.diceroller.reroll.three" type="checkbox"
+                        {{checked data.data.diceroller.reroll.three}}>
                 </div>
                 <div>
                     <div>4</div>
-                    <input name="data.diceroller.reroll.four" value="data.diceroller.reroll.four" type="checkbox" {{checked data.data.diceroller.reroll.four}}>
+                    <input name="data.diceroller.reroll.four" value="data.diceroller.reroll.four" type="checkbox"
+                        {{checked data.data.diceroller.reroll.four}}>
                 </div>
                 <div>
                     <div>5</div>
-                    <input name="data.diceroller.reroll.five" value="data.diceroller.reroll.five" type="checkbox" {{checked data.data.diceroller.reroll.five}}>
+                    <input name="data.diceroller.reroll.five" value="data.diceroller.reroll.five" type="checkbox"
+                        {{checked data.data.diceroller.reroll.five}}>
                 </div>
                 <div>
                     <div>6</div>
-                    <input name="data.diceroller.reroll.six" value="data.diceroller.reroll.six" type="checkbox" {{checked data.data.diceroller.reroll.six}}>
+                    <input name="data.diceroller.reroll.six" value="data.diceroller.reroll.six" type="checkbox"
+                        {{checked data.data.diceroller.reroll.six}}>
                 </div>
                 <div>
                     <div>7</div>
-                    <input name="data.diceroller.reroll.seven" value="data.diceroller.reroll.seven" type="checkbox" {{checked data.data.diceroller.reroll.seven}}>
+                    <input name="data.diceroller.reroll.seven" value="data.diceroller.reroll.seven" type="checkbox"
+                        {{checked data.data.diceroller.reroll.seven}}>
                 </div>
                 <div>
                     <div>8</div>
-                    <input name="data.diceroller.reroll.eight" value="data.diceroller.reroll.eight" type="checkbox" {{checked data.data.diceroller.reroll.eight}}>
+                    <input name="data.diceroller.reroll.eight" value="data.diceroller.reroll.eight" type="checkbox"
+                        {{checked data.data.diceroller.reroll.eight}}>
                 </div>
                 <div>
                     <div>9</div>
-                    <input name="data.diceroller.reroll.nine" value="data.diceroller.reroll.nine" type="checkbox" {{checked data.data.diceroller.reroll.nine}}>
+                    <input name="data.diceroller.reroll.nine" value="data.diceroller.reroll.nine" type="checkbox"
+                        {{checked data.data.diceroller.reroll.nine}}>
                 </div>
                 <div>
                     <div>10</div>
-                    <input name="data.diceroller.reroll.ten" value="data.diceroller.reroll.ten" type="checkbox" {{checked data.data.diceroller.reroll.ten}}>
+                    <input name="data.diceroller.reroll.ten" value="data.diceroller.reroll.ten" type="checkbox"
+                        {{checked data.data.diceroller.reroll.ten}}>
                 </div>
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;">
@@ -302,7 +332,8 @@
                 <div class="resource grid grid-2col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
-                        <input type="number" name="data.diceroller.damage.bonusdice" value="{{data.data.diceroller.damage.bonusdice}}">
+                        <input type="number" name="data.diceroller.damage.bonusdice"
+                            value="{{data.data.diceroller.damage.bonusdice}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
@@ -313,19 +344,23 @@
                 <div class="resource grid grid-2col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                        <input type="number" name="data.diceroller.damage.doublesuccess" value="{{data.data.diceroller.damage.doublesuccess}}">
+                        <input type="number" name="data.diceroller.damage.doublesuccess"
+                            value="{{data.data.diceroller.damage.doublesuccess}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-                        <input type="number" name="data.diceroller.damage.targetnumber" value="{{data.data.diceroller.damage.targetnumber}}">
+                        <input type="number" name="data.diceroller.damage.targetnumber"
+                            value="{{data.data.diceroller.damage.targetnumber}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
-                        <input type="number" name="data.diceroller.damage.overwhelming" value="{{data.data.diceroller.damage.overwhelming}}">
+                        <input type="number" name="data.diceroller.damage.overwhelming"
+                            value="{{data.data.diceroller.damage.overwhelming}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
-                        <input type="number" name="data.diceroller.damage.postsoakdamage" value="{{data.data.diceroller.damage.postsoakdamage}}">
+                        <input type="number" name="data.diceroller.damage.postsoakdamage"
+                            value="{{data.data.diceroller.damage.postsoakdamage}}">
                     </div>
                 </div>
                 <div class="resource flex-center">
@@ -334,49 +369,53 @@
                 <div class="resource d-flex flex-center">
                     <div>
                         <div>1</div>
-                        <input name="data.diceroller.damage.reroll.one" value="data.diceroller.damage.reroll.one" type="checkbox" {{checked data.data.diceroller.damage.reroll.one}}>
+                        <input name="data.diceroller.damage.reroll.one" value="data.diceroller.damage.reroll.one"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.one}}>
                     </div>
                     <div>
                         <div>2</div>
-                        <input name="data.diceroller.damage.reroll.two" value="data.diceroller.damage.reroll.two" type="checkbox" {{checked data.data.diceroller.damage.reroll.two}}>
+                        <input name="data.diceroller.damage.reroll.two" value="data.diceroller.damage.reroll.two"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.two}}>
                     </div>
                     <div>
                         <div>3</div>
-                        <input name="data.diceroller.damage.reroll.three" value="data.diceroller.damage.reroll.three" type="checkbox" {{checked
-                            data.data.diceroller.damage.reroll.three}}>
+                        <input name="data.diceroller.damage.reroll.three" value="data.diceroller.damage.reroll.three"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.three}}>
                     </div>
                     <div>
                         <div>4</div>
-                        <input name="data.diceroller.damage.reroll.four" value="data.diceroller.damage.reroll.four" type="checkbox" {{checked
-                            data.data.diceroller.damage.reroll.four}}>
+                        <input name="data.diceroller.damage.reroll.four" value="data.diceroller.damage.reroll.four"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.four}}>
                     </div>
                     <div>
                         <div>5</div>
-                        <input name="data.diceroller.damage.reroll.five" value="data.diceroller.damage.reroll.five" type="checkbox" {{checked
-                            data.data.diceroller.damage.reroll.five}}>
+                        <input name="data.diceroller.damage.reroll.five" value="data.diceroller.damage.reroll.five"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.five}}>
                     </div>
                     <div>
                         <div>6</div>
-                        <input name="data.diceroller.damage.reroll.six" value="data.diceroller.damage.reroll.six" type="checkbox" {{checked data.damage.reroll.six}}>
+                        <input name="data.diceroller.damage.reroll.six" value="data.diceroller.damage.reroll.six"
+                            type="checkbox" {{checked data.damage.reroll.six}}>
                     </div>
                     <div>
                         <div>7</div>
-                        <input name="data.diceroller.damage.reroll.seven" value="data.diceroller.damage.reroll.seven" type="checkbox" {{checked
-                            data.data.diceroller.damage.reroll.seven}}>
+                        <input name="data.diceroller.damage.reroll.seven" value="data.diceroller.damage.reroll.seven"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.seven}}>
                     </div>
                     <div>
                         <div>8</div>
-                        <input name="data.diceroller.damage.reroll.eight" value="data.diceroller.damage.reroll.eight" type="checkbox" {{checked
-                            data.data.diceroller.damage.reroll.eight}}>
+                        <input name="data.diceroller.damage.reroll.eight" value="data.diceroller.damage.reroll.eight"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.eight}}>
                     </div>
                     <div>
                         <div>9</div>
-                        <input name="data.diceroller.damage.reroll.nine" value="data.diceroller.damage.reroll.nine" type="checkbox" {{checked
-                            data.data.diceroller.damage.reroll.nine}}>
+                        <input name="data.diceroller.damage.reroll.nine" value="data.diceroller.damage.reroll.nine"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.nine}}>
                     </div>
                     <div>
                         <div>10</div>
-                        <input name="data.diceroller.damage.reroll.ten" value="data.diceroller.damage.reroll.ten" type="checkbox" {{checked data.data.diceroller.damage.reroll.ten}}>
+                        <input name="data.diceroller.damage.reroll.ten" value="data.diceroller.damage.reroll.ten"
+                            type="checkbox" {{checked data.data.diceroller.damage.reroll.ten}}>
                     </div>
                 </div>
             </div>

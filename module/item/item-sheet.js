@@ -69,6 +69,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       onManageActiveEffect(ev, this.item);
     });
 
+    html.find('.collapsable').click(ev => {
+      const li = $(ev.currentTarget).next();
+      li.toggle("fast");
+    });
+
     html.find(".show-keywords").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/keywords.html");
       new Dialog({

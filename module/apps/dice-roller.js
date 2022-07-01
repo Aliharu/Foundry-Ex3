@@ -71,7 +71,7 @@ export class RollForm extends FormApplication {
             this.object.damage = {
                 damageDice: data.damage || 0,
                 damageSuccessModifier: data.damageSuccessModifier || 0,
-                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor.data.data.battlegroup) ? 11 : 10),
+                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor?.data?.data?.battlegroup) ? 11 : 10),
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
                 reroll: {
@@ -620,7 +620,7 @@ export class RollForm extends FormApplication {
             }
 
             if (this.object.armorPenalty) {
-                for (let armor of actor.armor) {
+                for (let armor of this.actor.armor) {
                     if (armor.data.equiped) {
                         dice = dice - Math.abs(armor.data.penalty);
                     }
@@ -715,7 +715,9 @@ export class RollForm extends FormApplication {
         this.object.roll = roll;
         this.object.getDice = getDice;
         this.object.total = total;
-        this._spendMotes();
+        if(this.object.rollType !== 'base') {
+            this._spendMotes();
+        }
     }
 
     async _diceRoll() {

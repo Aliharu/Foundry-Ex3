@@ -1,3 +1,4 @@
+// new game.exaltedthird.applications.Importer().render(true);
 export default class Importer extends FormApplication {
     /** @override */
     static get defaultOptions() {

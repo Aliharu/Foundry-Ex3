@@ -8,23 +8,27 @@
     <div id="character-combat-tab">
         <div class="grid grid-4col flex-group-center">
             <div>
-                <label class="resource-label">{{localize "Ex3.Parry"}}</label>
-                <input type="number" name="data.parry.value" value="{{data.data.parry.value}}"
-                    data-dtype="Number" />
+                <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}<i
+                        class="fas fa-calculator calculate-parry cursor-pointer"
+                        title="Auto Set Parry" style="margin-left:3px;"></i>{{/ifEquals}}</label>
+                <input type="number" name="data.parry.value" value="{{data.data.parry.value}}" data-dtype="Number" />
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.Evasion"}}</label>
+                <label class="resource-label">{{localize "Ex3.Evasion"}}{{#ifEquals data.type 'character'}}<i
+                    class="fas fa-calculator calculate-evasion cursor-pointer"
+                    title="Auto Set Parry" style="margin-left:3px;"></i>{{/ifEquals}}</label>
                 <input type="number" name="data.evasion.value" value="{{data.data.evasion.value}}"
                     data-dtype="Number" />
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.SorcerousMotes"}}</label>
+                <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
                 <input type="number" name="data.sorcery.motes" value="{{data.data.sorcery.motes}}"
                     data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
-                <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize "Ex3.Roll"}}</button>
+                <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize
+                    "Ex3.Roll"}}</button>
             </div>
         </div>
         <div class="grid grid-2col flex-group-center">
@@ -32,7 +36,8 @@
                 <div class="resource-content flexrow flex-center flex-between">
                     <div>
                         <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}</label>
-                        <input type="number" name="data.armoredsoak.value" value="{{data.data.armoredsoak.value}}" data-dtype="Number" />
+                        <input type="number" name="data.armoredsoak.value" value="{{data.data.armoredsoak.value}}"
+                            data-dtype="Number" />
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.NaturalSoak"}}</label>

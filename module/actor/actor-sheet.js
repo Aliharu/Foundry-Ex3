@@ -360,6 +360,22 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateMotes('personal');
     });
 
+    html.find('.calculate-parry').mousedown(ev => {
+      this.calculateDerivedStats('parry');
+    });
+
+    html.find('.calculate-evasion').mousedown(ev => {
+      this.calculateDerivedStats('evasion');
+    });
+
+    html.find('.calculate-resolve').mousedown(ev => {
+      this.calculateDerivedStats('resolve');
+    });
+
+    html.find('.calculate-guile').mousedown(ev => {
+      this.calculateDerivedStats('guile');
+    });
+
     html.find('#calculate-warstrider-health').mousedown(ev => {
       this.calculateHealth('warstrider');
     });
@@ -623,6 +639,31 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     data.anima.level = newLevel;
     data.anima.value = newValue;
+    this.actor.update(actorData);
+  }
+
+  async calculateDerivedStats(type) {
+    const actorData = duplicate(this.actor);
+    const data = actorData.data;
+    if(type === 'parry') {
+      var highestAbility = Math.max(data.abilities.melee.value, data.abilities.brawl.value, data.abilities.martialarts.value);
+      data.parry.value = Math.ceil((data.attributes.dexterity.value + highestAbility) / 2);
+    }
+    if(type === 'evasion') {
+      var newEvasionValue = Math.ceil((data.attributes.dexterity.value + data.abilities.dodge.value) / 2);
+      for (let armor of this.actor.armor) {
+        if (armor.data.equiped) {
+          newEvasionValue = newEvasionValue - Math.abs(armor.data.penalty);
+        }
+    }
+      data.evasion.value = newEvasionValue;
+    }
+    if(type === 'resolve') {
+      data.resolve.value = Math.ceil((data.attributes.wits.value + data.abilities.integrity.value) / 2);
+    }
+    if(type === 'guile') {
+      data.guile.value = Math.ceil((data.attributes.manipulation.value + data.abilities.socialize.value) / 2);
+    }
     this.actor.update(actorData);
   }
 
