@@ -582,37 +582,47 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
     let newLevel = data.anima.level;
+    let newValue = data.anima.value;
     if (direction === "up") {
       if (data.anima.level !== "Transcendent") {
         if (data.anima.level === "Dim") {
           newLevel = "Glowing";
+          newValue = 1;
         }
         else if (data.anima.level === "Glowing") {
           newLevel = "Burning";
+          newValue = 2;
         }
         else {
           newLevel = "Bonfire";
+          newValue = 3;
         }
       }
-      if (data.anima.level === 'Bonfire' && data.details.caste.toLowerCase() === 'sovereign') {
+      if (data.anima.level === 'Bonfire' && data.anima.max === 4) {
         newLevel = "Transcendent";
+        newValue = 4;
       }
     }
     else {
       if (data.anima.level === "Transcendent") {
         newLevel = "Bonfire";
+        newValue = 3;
       }
       else if (data.anima.level === "Bonfire") {
         newLevel = "Burning";
+        newValue = 2;
       }
       else if (data.anima.level === "Burning") {
         newLevel = "Glowing";
+        newValue = 1;
       }
       else if (data.anima.level === "Glowing") {
         newLevel = "Dim";
+        newValue = 0;
       }
     }
     data.anima.level = newLevel;
+    data.anima.value = newValue;
     this.actor.update(actorData);
   }
 
@@ -870,7 +880,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.data;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship });
+    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'maxAnima': data.anima.max });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -883,6 +893,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.charmmotepool = html.find('#charmMotePool').val();
           data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
           data.settings.showship = html.find('#showShip').is(":checked");
+          data.anima.max = parseInt(html.find('#maxAnima').val());
           this.actor.update(actorData);
         }
       }
@@ -1182,19 +1193,24 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     if (item.type === 'charm') {
       var newLevel = actorData.data.anima.level;
+      var newValue = actorData.data.anima.value;
       if (item.data.data.cost.anima > 0) {
         for (var i = 0; i < item.data.data.cost.anima; i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
+            newValue = 3;
           }
           else if (newLevel === "Bonfire") {
             newLevel = "Burning";
+            newValue = 2;
           }
           else if (newLevel === "Burning") {
             newLevel = "Glowing";
+            newValue = 1;
           }
           if (newLevel === "Glowing") {
             newLevel = "Dim";
+            newValue = 0;
           }
         }
       }
@@ -1228,20 +1244,25 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           for(var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
             if (newLevel === "Dim") {
               newLevel = "Glowing";
+              newValue = 1;
             }
             else if (newLevel === "Glowing") {
               newLevel = "Burning";
+              newValue = 2;
             }
             else if(newLevel === "Burning") {
               newLevel = "Bonfire";
+              newValue = 3;
             }
-            else if (actorData.data.details.caste.toLowerCase() === 'sovereign') {
+            else if (actorData.data.anima.max === 4) {
               newLevel = "Transcendent";
+              newValue = 4;
             }
           }
         }
       }
       actorData.data.anima.level = newLevel;
+      actorData.data.anima.value = newValue;
       actorData.data.willpower.value = Math.max(0, actorData.data.willpower.value - item.data.data.cost.willpower);
       if (this.actor.type === 'character') {
         actorData.data.craft.experience.silver.value = Math.max(0, actorData.data.craft.experience.silver.value - item.data.data.cost.silverxp);

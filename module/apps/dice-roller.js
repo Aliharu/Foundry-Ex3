@@ -1477,19 +1477,24 @@ export class RollForm extends FormApplication {
         const actorData = duplicate(this.actor);
 
         var newLevel = actorData.data.anima.level;
+        var newValue = actorData.data.anima.value;
         if (this.object.cost.anima > 0) {
             for (var i = 0; i < this.object.cost.anima; i++) {
                 if (newLevel === "Transcendent") {
                     newLevel = "Bonfire";
+                    newValue = 3;
                 }
                 else if (newLevel === "Bonfire") {
                     newLevel = "Burning";
+                    newValue = 2;
                 }
                 else if (newLevel === "Burning") {
                     newLevel = "Glowing";
+                    newValue = 1;
                 }
                 if (newLevel === "Glowing") {
                     newLevel = "Dim";
+                    newValue = 0;
                 }
             }
         }
@@ -1523,15 +1528,19 @@ export class RollForm extends FormApplication {
             for (var i = 0; i < Math.floor((spentPeripheral- this.object.cost.muteMotes) / 5); i++) {
                 if (newLevel === "Dim") {
                     newLevel = "Glowing";
+                    newValue = 1;
                 }
                 else if (newLevel === "Glowing") {
                     newLevel = "Burning";
+                    newValue = 2;
                 }
                 else if (newLevel === "Burning") {
                     newLevel = "Bonfire";
+                    newValue = 3;
                 }
-                else if (actorData.data.details.caste.toLowerCase() === 'sovereign') {
+                else if (actorData.data.anima.max === 4) {
                     newLevel = "Transcendent";
+                    newValue = 4;
                 }
             }
         }

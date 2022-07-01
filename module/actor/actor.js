@@ -88,21 +88,27 @@ export class ExaltedThirdActor extends Actor {
       }
       if(item.data.data.cost.anima > 0) {
         var newLevel = data.data.anima.level;
+        var newValue = data.data.anima.value;
         for(var i = 0; i < item.data.data.cost.anima; i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
+            newValue = 3;
           }
           else if (newLevel === "Bonfire") {
             newLevel = "Burning";
+            newValue = 2;
           }
           else if (newLevel === "Burning") {
             newLevel = "Glowing";
+            newValue = 1;
           }
           if (newLevel === "Glowing") {
             newLevel = "Dim";
+            newValue = 0;
           }
         }
         data.data.anima.level = newLevel;
+        data.data.anima.value = newValue;
       }
       if(item.data.data.cost.health > 0) {
         let totalHealth = 0;
