@@ -896,6 +896,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                 });
+                this._addOnslaught();
             }
         }
         if (this.object.rollType === 'accuracy') {
@@ -939,7 +940,9 @@ export class RollForm extends FormApplication {
                     }
                 }
             });
-            this._addOnslaught();
+            if(this.object.thereshholdSuccesses < 0) {
+                this._addOnslaught();
+            }
         }
     }
 
