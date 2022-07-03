@@ -174,14 +174,15 @@ export class ExaltedThirdActor extends Actor {
 
     if (data.battlegroup) {
       totalHealth = data.health.levels.zero.value + data.size.value;
-      data.health.total = totalHealth;
-      if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.total) {
-        data.health.aggravated = data.health.total - data.health.lethal;
+      data.health.max = totalHealth;
+      if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.max) {
+        data.health.aggravated = data.health.max - data.health.lethal;
         if (data.health.aggravated <= 0) {
           data.health.aggravated = 0
-          data.health.lethal = data.health.total
+          data.health.lethal = data.health.max
         }
       }
+      data.health.value = data.health.max - data.health.aggravated - data.health.lethal - data.health.bashing;
       data.health.penalty = 0;
     }
     else {
@@ -191,14 +192,15 @@ export class ExaltedThirdActor extends Actor {
         }
         totalHealth += health_level.value;
       }
-      data.health.total = totalHealth;
-      if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.total) {
-        data.health.aggravated = data.health.total - data.health.lethal;
+      data.health.max = totalHealth;
+      if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.max) {
+        data.health.aggravated = data.health.max - data.health.lethal;
         if (data.health.aggravated <= 0) {
           data.health.aggravated = 0;
-          data.health.lethal = data.health.total;
+          data.health.lethal = data.health.max;
         }
       }
+      data.health.value = data.health.max - data.health.aggravated - data.health.lethal - data.health.bashing;
       data.health.penalty = currentPenalty;
     }
 
@@ -209,14 +211,15 @@ export class ExaltedThirdActor extends Actor {
       }
       totalWarstriderHealth += health_level.value;
     }
-    data.warstrider.health.total = totalWarstriderHealth;
-    if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > data.warstrider.health.total) {
-      data.warstrider.health.aggravated = data.warstrider.health.total - data.warstrider.health.lethal;
+    data.warstrider.health.max = totalWarstriderHealth;
+    if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > data.warstrider.health.max) {
+      data.warstrider.health.aggravated = data.warstrider.health.max - data.warstrider.health.lethal;
       if (data.warstrider.health.aggravated <= 0) {
         data.warstrider.health.aggravated = 0;
-        data.warstrider.health.lethal = data.health.total;
+        data.warstrider.health.lethal = data.health.max;
       }
     }
+    data.warstrider.health.value = data.warstrider.health.max - data.warstrider.health.aggravated - data.warstrider.health.lethal - data.warstrider.health.bashing;
     data.warstrider.health.penalty = currentWarstriderPenalty;
 
     
@@ -226,14 +229,15 @@ export class ExaltedThirdActor extends Actor {
       }
       totalShipHealth += health_level.value;
     }
-    data.ship.health.total = totalShipHealth;
-    if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > data.ship.health.total) {
-      data.ship.health.aggravated = data.ship.health.total - data.ship.health.lethal;
+    data.ship.health.max = totalShipHealth;
+    if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > data.ship.health.max) {
+      data.ship.health.aggravated = data.ship.health.max - data.ship.health.lethal;
       if (data.ship.health.aggravated <= 0) {
         data.ship.health.aggravated = 0;
-        data.ship.health.lethal = data.health.total;
+        data.ship.health.lethal = data.health.max;
       }
     }
+    data.ship.health.value = data.ship.health.max - data.ship.health.aggravated - data.ship.health.lethal - data.ship.health.bashing;
     data.ship.health.penalty = currentShipPenalty;
 
     if (actorData.type !== "npc") {
