@@ -1341,7 +1341,7 @@ export class RollForm extends FormApplication {
         <div class="flexrow 1">
             <div>Dice Roller - Number of Successes<div class="dice-roll">
                     <div class="dice-result">
-                        <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.bonusSuccesses} successes</h4>
+                        <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
                         <div class="dice-tooltip">
                             <div class="dice">
                                 <ol class="dice-rolls">${this.object.getDice}</ol>
