@@ -56,29 +56,29 @@ export class ExaltedThirdActor extends Actor {
     }
 
     if(item.type === 'charm') {
-      if(item.data.data.cost.motes > 0) {
+      if(item.system.cost.motes > 0) {
         if(data.data.motes.peripheral.value > 0 && !personal) {
-          data.data.motes.peripheral.value = Math.max(0, data.data.motes.peripheral.value - item.data.data.cost.motes);
+          data.data.motes.peripheral.value = Math.max(0, data.data.motes.peripheral.value - item.system.cost.motes);
         }
         else {
-          data.data.motes.personal.value = Math.max(0, data.data.motes.personal.value - item.data.data.cost.motes);
+          data.data.motes.personal.value = Math.max(0, data.data.motes.personal.value - item.system.cost.motes);
         }
       }
-      data.data.willpower.value = Math.max(0, data.data.willpower.value - item.data.data.cost.willpower);
+      data.data.willpower.value = Math.max(0, data.data.willpower.value - item.system.cost.willpower);
       if(this.type === 'character') {
-        data.data.craft.experience.silver.value = Math.max(0, data.data.craft.experience.silver.value - item.data.data.cost.silverxp);
-        data.data.craft.experience.gold.value = Math.max(0, data.data.craft.experience.gold.value - item.data.data.cost.goldxp);
-        data.data.craft.experience.white.value = Math.max(0, data.data.craft.experience.white.value - item.data.data.cost.whitexp);
+        data.data.craft.experience.silver.value = Math.max(0, data.data.craft.experience.silver.value - item.system.cost.silverxp);
+        data.data.craft.experience.gold.value = Math.max(0, data.data.craft.experience.gold.value - item.system.cost.goldxp);
+        data.data.craft.experience.white.value = Math.max(0, data.data.craft.experience.white.value - item.system.cost.whitexp);
       }
-      if(data.data.details.aura === item.data.data.cost.aura || item.data.data.cost.aura === 'any') {
+      if(data.data.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
         data.data.details.aura = "none";
       }
-      if(item.data.data.cost.initiative > 0) {
+      if(item.system.cost.initiative > 0) {
         let combat = game.combat;
         if (combat) {
             let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.id);
             if (combatant) {
-                var newInitiative = combatant.initiative - item.data.data.cost.initiative;
+                var newInitiative = combatant.initiative - item.system.cost.initiative;
                 if(combatant.initiative > 0 && newInitiative <= 0) {
                   newInitiative -= 5;
                 }
@@ -86,10 +86,10 @@ export class ExaltedThirdActor extends Actor {
             }
         }
       }
-      if(item.data.data.cost.anima > 0) {
+      if(item.system.cost.anima > 0) {
         var newLevel = data.data.anima.level;
         var newValue = data.data.anima.value;
-        for(var i = 0; i < item.data.data.cost.anima; i++) {
+        for(var i = 0; i < item.system.cost.anima; i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
             newValue = 3;
@@ -110,19 +110,19 @@ export class ExaltedThirdActor extends Actor {
         data.data.anima.level = newLevel;
         data.data.anima.value = newValue;
       }
-      if(item.data.data.cost.health > 0) {
+      if(item.system.cost.health > 0) {
         let totalHealth = 0;
         for (let [key, health_level] of Object.entries(data.data.health.levels)) {
           totalHealth += health_level.value;
         }
-        if(item.data.data.cost.healthtype === 'bashing') {
-          data.data.health.bashing = Math.min(totalHealth - data.data.health.aggravated - data.data.health.lethal, data.data.health.bashing + item.data.data.cost.health);
+        if(item.system.cost.healthtype === 'bashing') {
+          data.data.health.bashing = Math.min(totalHealth - data.data.health.aggravated - data.data.health.lethal, data.data.health.bashing + item.system.cost.health);
         }
-        else if(item.data.data.cost.healthtype === 'lethal') {
-          data.data.health.lethal = Math.min(totalHealth - data.data.health.bashing - data.data.health.aggravated, data.data.health.lethal + item.data.data.cost.health);
+        else if(item.system.cost.healthtype === 'lethal') {
+          data.data.health.lethal = Math.min(totalHealth - data.data.health.bashing - data.data.health.aggravated, data.data.health.lethal + item.system.cost.health);
         }
         else {
-          data.data.health.aggravated = Math.min(totalHealth - data.data.health.bashing - data.data.health.lethal, data.data.health.aggravated + item.data.data.cost.health);
+          data.data.health.aggravated = Math.min(totalHealth - data.data.health.bashing - data.data.health.lethal, data.data.health.aggravated + item.system.cost.health);
         }
       }
     }
@@ -137,7 +137,7 @@ export class ExaltedThirdActor extends Actor {
 
   async savedRoll(name){
 
-    const roll = Object.values(this.data.data.savedRolls).find(x=>x. name === name);
+    const roll = Object.values(this.system.savedRolls).find(x=>x. name === name);
 
     if(!roll){
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
@@ -148,7 +148,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   getSavedRoll(name){
-    const roll = Object.values(this.data.data.savedRolls).find(x=>x. name === name);
+    const roll = Object.values(this.system.savedRolls).find(x=>x. name === name);
 
     if(!roll){
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);

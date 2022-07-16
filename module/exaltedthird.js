@@ -70,10 +70,10 @@ Hooks.once('init', async function() {
     const actor = this.actor;
     var initDice = 0;
     if (this.actor.type != 'npc') {
-      initDice = actor.data.system.attributes.wits.value + actor.data.system.abilities.awareness.value + 2;
+      initDice = actor.system.attributes.wits.value + actor.system.abilities.awareness.value + 2;
     }
     else {
-      initDice = actor.data.system.pools.joinbattle.value;
+      initDice = actor.system.pools.joinbattle.value;
     }
     let roll = new Roll(`${initDice}d10cs>=7 + 3`).evaluate({ async: false });
     let diceRoll = roll.total;

@@ -420,63 +420,63 @@ export class RollForm extends FormApplication {
                     }
                 }
             }
-            if (item.data.data.keywords.toLowerCase().includes('mute')) {
-                this.object.cost.muteMotes += item.data.data.cost.motes;
+            if (item.system.keywords.toLowerCase().includes('mute')) {
+                this.object.cost.muteMotes += item.system.cost.motes;
             }
             else {
-                this.object.cost.motes += item.data.data.cost.motes;
+                this.object.cost.motes += item.system.cost.motes;
             }
-            this.object.cost.anima += item.data.data.cost.anima;
-            this.object.cost.willpower += item.data.data.cost.willpower;
-            this.object.cost.silverxp += item.data.data.cost.silverxp;
-            this.object.cost.goldxp += item.data.data.cost.goldxp;
-            this.object.cost.whitexp += item.data.data.cost.whitexp;
-            this.object.cost.initiative += item.data.data.cost.initiative;
+            this.object.cost.anima += item.system.cost.anima;
+            this.object.cost.willpower += item.system.cost.willpower;
+            this.object.cost.silverxp += item.system.cost.silverxp;
+            this.object.cost.goldxp += item.system.cost.goldxp;
+            this.object.cost.whitexp += item.system.cost.whitexp;
+            this.object.cost.initiative += item.system.cost.initiative;
 
-            if (item.data.data.cost.aura) {
-                this.object.cost.aura = item.data.data.cost.aura;
+            if (item.system.cost.aura) {
+                this.object.cost.aura = item.system.cost.aura;
             }
 
-            if (item.data.data.cost.health > 0) {
-                if (item.data.data.cost.healthtype === 'bashing') {
-                    this.object.cost.healthbashing += item.data.data.cost.health;
+            if (item.system.cost.health > 0) {
+                if (item.system.cost.healthtype === 'bashing') {
+                    this.object.cost.healthbashing += item.system.cost.health;
                 }
-                else if (item.data.data.cost.healthtype === 'lethal') {
-                    this.object.cost.healthlethal += item.data.data.cost.health;
+                else if (item.system.cost.healthtype === 'lethal') {
+                    this.object.cost.healthlethal += item.system.cost.health;
                 }
                 else {
-                    this.object.cost.healthaggravated += item.data.data.cost.health;
+                    this.object.cost.healthaggravated += item.system.cost.health;
                 }
             }
-            this.object.diceModifier += item.data.data.diceroller.bonusdice;
-            this.object.successModifier += item.data.data.diceroller.bonussuccesses;
-            if (item.data.data.diceroller.doublesuccess < this.object.doubleSuccess) {
-                this.object.doubleSuccess = item.data.data.diceroller.doublesuccess;
+            this.object.diceModifier += item.system.diceroller.bonusdice;
+            this.object.successModifier += item.system.diceroller.bonussuccesses;
+            if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
+                this.object.doubleSuccess = item.system.diceroller.doublesuccess;
             }
-            if (item.data.data.diceroller.targetnumber < this.object.damage.targetNumber) {
-                this.object.targetNumber = item.data.data.diceroller.targetnumber;
+            if (item.system.diceroller.targetnumber < this.object.damage.targetNumber) {
+                this.object.targetNumber = item.system.diceroller.targetnumber;
             }
-            for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.reroll)) {
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                 if (rerollValue) {
                     this.object.reroll[rerollKey].status = true;
                 }
             }
-            if (item.data.data.diceroller.rerollfailed) {
-                this.object.rerollFailed = item.data.data.diceroller.rerollfailed;
+            if (item.system.diceroller.rerollfailed) {
+                this.object.rerollFailed = item.system.diceroller.rerollfailed;
             }
-            this.object.rerollNumber += item.data.data.diceroller.rerolldice;
+            this.object.rerollNumber += item.system.diceroller.rerolldice;
 
-            this.object.damage.damageDice += item.data.data.diceroller.damage.bonusdice;
-            this.object.damage.damageSuccessModifier += item.data.data.diceroller.damage.bonussuccesses;
-            if (item.data.data.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
-                this.object.damage.doubleSuccess = item.data.data.diceroller.damage.doublesuccess;
+            this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
+            this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
+            if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
+                this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
             }
-            if (item.data.data.diceroller.damage.targetnumber < this.object.damage.targetNumber) {
-                this.object.damage.targetNumber = item.data.data.diceroller.damage.targetnumber;
+            if (item.system.diceroller.damage.targetnumber < this.object.damage.targetNumber) {
+                this.object.damage.targetNumber = item.system.diceroller.damage.targetnumber;
             }
-            this.object.overwhelming += item.data.data.diceroller.damage.overwhelming;
-            this.object.damage.postSoakDamage += item.data.data.diceroller.damage.postsoakdamage;
-            for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.damage.reroll)) {
+            this.object.overwhelming += item.system.diceroller.damage.overwhelming;
+            this.object.damage.postSoakDamage += item.system.diceroller.damage.postsoakdamage;
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                 if (rerollValue) {
                     this.object.damage.reroll[rerollKey].status = true;
                 }
@@ -500,51 +500,51 @@ export class RollForm extends FormApplication {
                 }
                 this.object.addedCharms.splice(index, 1);
 
-                if (item.data.data.keywords.toLowerCase().includes('mute')) {
-                    this.object.cost.muteMotes -= item.data.data.cost.motes;
+                if (item.system.keywords.toLowerCase().includes('mute')) {
+                    this.object.cost.muteMotes -= item.system.cost.motes;
                 }
                 else {
-                    this.object.cost.motes -= item.data.data.cost.motes;
+                    this.object.cost.motes -= item.system.cost.motes;
                 }
-                this.object.cost.anima -= item.data.data.cost.anima;
-                this.object.cost.willpower -= item.data.data.cost.willpower;
-                this.object.cost.silverxp -= item.data.data.cost.silverxp;
-                this.object.cost.goldxp -= item.data.data.cost.goldxp;
-                this.object.cost.whitexp -= item.data.data.cost.whitexp;
-                this.object.cost.initiative -= item.data.data.cost.initiative;
+                this.object.cost.anima -= item.system.cost.anima;
+                this.object.cost.willpower -= item.system.cost.willpower;
+                this.object.cost.silverxp -= item.system.cost.silverxp;
+                this.object.cost.goldxp -= item.system.cost.goldxp;
+                this.object.cost.whitexp -= item.system.cost.whitexp;
+                this.object.cost.initiative -= item.system.cost.initiative;
 
-                if (item.data.data.cost.aura === this.object.cost.aura) {
+                if (item.system.cost.aura === this.object.cost.aura) {
                     this.object.cost.aura = "";
                 }
 
-                if (item.data.data.cost.health > 0) {
-                    if (item.data.data.cost.healthtype === 'bashing') {
-                        this.object.cost.healthbashing -= item.data.data.cost.health;
+                if (item.system.cost.health > 0) {
+                    if (item.system.cost.healthtype === 'bashing') {
+                        this.object.cost.healthbashing -= item.system.cost.health;
                     }
-                    else if (item.data.data.cost.healthtype === 'lethal') {
-                        this.object.cost.healthlethal -= item.data.data.cost.health;
+                    else if (item.system.cost.healthtype === 'lethal') {
+                        this.object.cost.healthlethal -= item.system.cost.health;
                     }
                     else {
-                        this.object.cost.healthaggravated -= item.data.data.cost.health;
+                        this.object.cost.healthaggravated -= item.system.cost.health;
                     }
                 }
-                this.object.diceModifier -= item.data.data.diceroller.bonusdice;
-                this.object.successModifier -= item.data.data.diceroller.bonussuccesses;
-                for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.reroll)) {
+                this.object.diceModifier -= item.system.diceroller.bonusdice;
+                this.object.successModifier -= item.system.diceroller.bonussuccesses;
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                     if (rerollValue) {
                         this.object.reroll[rerollKey].status = false;
                     }
                 }
-                if (item.data.data.diceroller.rerollfailed) {
+                if (item.system.diceroller.rerollfailed) {
                     this.object.rerollFailed = false;
                 }
-                this.object.rerollNumber -= item.data.data.diceroller.rerolldice;
+                this.object.rerollNumber -= item.system.diceroller.rerolldice;
     
-                this.object.damage.damageDice -= item.data.data.diceroller.damage.bonusdice;
-                this.object.damage.damageSuccessModifier -= item.data.data.diceroller.damage.bonussuccesses;
-                this.object.overwhelming -= item.data.data.diceroller.damage.overwhelming;
-                this.object.damage.postSoakDamage -= item.data.data.diceroller.damage.postsoakdamage;
-                for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.damage.reroll)) {
+                this.object.damage.damageDice -= item.system.diceroller.damage.bonusdice;
+                this.object.damage.damageSuccessModifier -= item.system.diceroller.damage.bonussuccesses;
+                this.object.overwhelming -= item.system.diceroller.damage.overwhelming;
+                this.object.damage.postSoakDamage -= item.system.diceroller.damage.postsoakdamage;
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                     if (rerollValue) {
                         this.object.damage.reroll[rerollKey].status = false;
                     }

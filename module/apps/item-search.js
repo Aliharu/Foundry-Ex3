@@ -90,23 +90,23 @@ export default class ItemSearch extends Application {
             filteredItems = filteredItems.filter(i => i.name.toLowerCase().includes(this.filters.attribute.name.toLowerCase()))
             break;
           case "description":
-            filteredItems = filteredItems.filter(i => i.data.data.description.value && i.data.data.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
+            filteredItems = filteredItems.filter(i => i.system.description.value && i.system.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
             break;
           case "worldItems":
             filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.compendium)
             break;
           case "charmFilters":
             if(this.filters.attribute[filter].ability) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.data.data.ability === this.filters.attribute[filter].ability)
+              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.ability === this.filters.attribute[filter].ability)
             }
             if(this.filters.attribute[filter].requirement) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.data.data.requirement || '').toString() === this.filters.attribute[filter].requirement)
+              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || '').toString() === this.filters.attribute[filter].requirement)
             }
             if(this.filters.attribute[filter].essence) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.data.data.essence || '').toString() === this.filters.attribute[filter].essence)
+              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || '').toString() === this.filters.attribute[filter].essence)
             }
             if(this.filters.attribute[filter].charmtype) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.data.data.charmtype === this.filters.attribute[filter].charmtype)
+              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.charmtype === this.filters.attribute[filter].charmtype)
             }
             break;
         }
