@@ -42,7 +42,7 @@
     <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="resource-table-value resource-value-static">
-      {{item.data.strength}}
+      {{item.system.strength}}
     </div>
     <div class="item-controls">
       <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
@@ -57,12 +57,12 @@
           Type
         </div>
         <div class="resource-table-value">
-          {{item.data.intimacytype}}
+          {{item.system.intimacytype}}
         </div>
       </div>
     </div>
     <div>
-      {{{item.data.description}}}
+      {{{item.system.description}}}
     </div>
   </li>
   {{/each}}

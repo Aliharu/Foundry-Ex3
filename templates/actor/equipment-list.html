@@ -18,16 +18,16 @@
       <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
-        {{item.data.witheringaccuracy}}
+        {{item.system.witheringaccuracy}}
       </div>
       <div class="resource-value-static">
-        {{item.data.witheringdamage}}
+        {{item.system.witheringdamage}}
       </div>
       <div class="resource-value-static">
-        {{item.data.defence}}
+        {{item.system.defence}}
       </div>
       <div class="resource-value-static">
-        {{item.data.overwhelming}}
+        {{item.system.overwhelming}}
       </div>
       <div class="item-controls">
         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
@@ -37,7 +37,7 @@
     </li>
     <li class="item-description">
         <div>
-            {{{item.data.description}}}
+            {{{item.system.description}}}
         </div>
     </li>
     <li class="item item-large flexrow">
@@ -76,13 +76,13 @@
       <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
-        {{item.data.soak}}
+        {{item.system.soak}}
       </div>
       <div class="resource-value-static">
-        {{item.data.penalty}}
+        {{item.system.penalty}}
       </div>
       <div class="resource-value-static">
-        {{item.data.hardness}}
+        {{item.system.hardness}}
       </div>
       <div class="item-controls">
         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
@@ -92,7 +92,7 @@
     </li>
     <li class="item-description">
         <div>
-            {{{item.data.description}}}
+            {{{item.system.description}}}
         </div>
     </li>
     {{/each}}

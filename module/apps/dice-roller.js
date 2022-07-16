@@ -189,7 +189,7 @@ export class RollForm extends FormApplication {
 
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
+                let combatant = combat.data.combatants.find(c => c.actorId == actor.id);
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
                         this.object.damage.damageDice = combatant.initiative;
@@ -412,7 +412,7 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            this.object.addedCharms.push(item.data);
+            this.object.addedCharms.push(item.system);
             for(var charmlist of Object.values(this.object.charmList)) {
                 for(const charm of charmlist.list) {
                     if(this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
@@ -823,7 +823,7 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === "joinBattle") {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant) {
                     combat.setInitiative(combatant.id, this.object.total + 3);
                 }
@@ -962,7 +962,7 @@ export class RollForm extends FormApplication {
 
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
-                let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
+                let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (targetCombatant !== null) {
                     if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.system.battlegroup) {
                         dice += Math.floor(dice / 4);
@@ -1044,7 +1044,7 @@ export class RollForm extends FormApplication {
         else {
             let targetResults = ``;
             if (this.object.target && game.combat) {
-                let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
+                let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (targetCombatant && targetCombatant.initiative !== null) {
                     this.object.characterInitiative++;
                     if (targetCombatant.actor.data.type !== 'npc' || targetCombatant.actor.data.system.battlegroup === false) {
@@ -1166,7 +1166,7 @@ export class RollForm extends FormApplication {
         if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
             let combat = game.combat;
             if (this.object.target && combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant && combatant.initiative != null) {
                     combat.setInitiative(combatant.id, this.object.characterInitiative);
                 }
@@ -1175,7 +1175,7 @@ export class RollForm extends FormApplication {
         else if (this.actor.system.battlegroup) {
             let combat = game.combat;
             if (this.object.target) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (combatant && combatant.initiative != null && combatant.initiative <= 0) {
                     this.dealHealthDamage(total);
                 }
@@ -1555,7 +1555,7 @@ export class RollForm extends FormApplication {
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c?.actor?.data?._id == this.actor.id);
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {
@@ -1576,7 +1576,7 @@ export class RollForm extends FormApplication {
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {
