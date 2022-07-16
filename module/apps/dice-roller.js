@@ -71,7 +71,7 @@ export class RollForm extends FormApplication {
             this.object.damage = {
                 damageDice: data.damage || 0,
                 damageSuccessModifier: data.damageSuccessModifier || 0,
-                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor?.data?.data?.battlegroup) ? 11 : 10),
+                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor?.system?.battlegroup) ? 11 : 10),
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
                 reroll: {
@@ -91,7 +91,7 @@ export class RollForm extends FormApplication {
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
-                this.object.conditions = (this.actor.token && this.actor.token.data.actorData.effects) ? this.actor.token.data.actorData.effects : [];
+                this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
                 if (this.actor.type === 'character') {
                     this.object.stunt = "one";
                     this.object.attribute = data.attribute || this._getHighestAttribute();
@@ -183,13 +183,13 @@ export class RollForm extends FormApplication {
             this.object.diceCap = this._getDiceCap();
         }
         if (this.object.rollType !== 'base') {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.data.ability === this.object.ability);
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c.actorId == actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == actor.id);
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
                         this.object.damage.damageDice = combatant.initiative;
@@ -200,40 +200,40 @@ export class RollForm extends FormApplication {
             if (this.object.target) {
                 if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
                     if (this.object.rollType === 'readIntentions') {
-                        this.object.difficulty = this.object.target.actor.data.system.guile.value;
+                        this.object.difficulty = this.object.target.actor.system.guile.value;
                     }
                     if (this.object.rollType === 'social') {
-                        this.object.difficulty = this.object.target.actor.data.system.resolve.value;
+                        this.object.difficulty = this.object.target.actor.system.resolve.value;
                     }
                 }
-                if (this.object.target.actor.data.system.parry.value >= this.object.target.actor.data.system.evasion.value) {
-                    this.object.defense = this.object.target.actor.data.system.parry.value;
-                    if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
+                if (this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value) {
+                    this.object.defense = this.object.target.actor.system.parry.value;
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.name === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
                 else {
-                    this.object.defense = this.object.target.actor.data.system.evasion.value;
-                    if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
+                    this.object.defense = this.object.target.actor.system.evasion.value;
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.name === 'prone')) {
                         this.object.defense -= 2;
                     }
                 }
-                if (this.object.target.actor.data.system.warstrider.equipped) {
-                    this.object.soak = this.object.target.actor.data.system.warstrider.soak.value;
+                if (this.object.target.actor.system.warstrider.equipped) {
+                    this.object.soak = this.object.target.actor.system.warstrider.soak.value;
                 }
                 else {
-                    this.object.soak = this.object.target.actor.data.system.soak.value;
-                    this.object.armoredSoak = this.object.target.actor.data.system.armoredsoak.value;
-                    this.object.naturalSoak = this.object.target.actor.data.system.naturalsoak.value;
+                    this.object.soak = this.object.target.actor.system.soak.value;
+                    this.object.armoredSoak = this.object.target.actor.system.armoredsoak.value;
+                    this.object.naturalSoak = this.object.target.actor.system.naturalsoak.value;
                 }
-                if (this.object.target.data.actorData.effects) {
-                    if (this.object.target.data.actorData.effects.some(e => e.name === 'lightcover')) {
+                if (this.object.target.actor.effects) {
+                    if (this.object.target.actor.effects.some(e => e.name === 'lightcover')) {
                         this.object.defense += 1;
                     }
-                    if (this.object.target.data.actorData.effects.some(e => e.name === 'heavycover')) {
+                    if (this.object.target.actor.effects.some(e => e.name === 'heavycover')) {
                         this.object.defense += 2;
                     }
-                    if (this.object.target.data.actorData.effects.some(e => e.name === 'grappled') || this.object.target.data.actorData.effects.some(e => e.name === 'grappling')) {
+                    if (this.object.target.actor.effects.some(e => e.name === 'grappled') || this.object.target.actor.effects.some(e => e.name === 'grappling')) {
                         this.object.defense -= 2;
                     }
                 }
@@ -964,7 +964,7 @@ export class RollForm extends FormApplication {
             if (this.object.target && game.combat) {
                 let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (targetCombatant !== null) {
-                    if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.system.battlegroup) {
+                    if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.system.battlegroup) {
                         dice += Math.floor(dice / 4);
                         baseDamage = dice;
                     }
@@ -1047,7 +1047,7 @@ export class RollForm extends FormApplication {
                 let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (targetCombatant && targetCombatant.initiative !== null) {
                     this.object.characterInitiative++;
-                    if (targetCombatant.actor.data.type !== 'npc' || targetCombatant.actor.data.system.battlegroup === false) {
+                    if (targetCombatant.actor.data.type !== 'npc' || targetCombatant.actor.system.battlegroup === false) {
                         let newInitative = targetCombatant.initiative;
                         newInitative -= total;
                         this.object.characterInitiative += total;
@@ -1063,7 +1063,7 @@ export class RollForm extends FormApplication {
                         }
                         game.combat.setInitiative(targetCombatant.id, newInitative);
                     }
-                    else if(targetCombatant.actor.data.system.battlegroup) {
+                    else if(targetCombatant.actor.system.battlegroup) {
                         this.dealHealthDamage(total);
                     }
                 }
@@ -1190,10 +1190,10 @@ export class RollForm extends FormApplication {
                 const onslaught = this.object.target.actor.effects.find(i => i.data.label == "Onslaught");
                 if (onslaught) {
                     let changes = duplicate(onslaught.data.changes);
-                    if (this.object.target.actor.data.system.evasion.value > 0) {
+                    if (this.object.target.actor.system.evasion.value > 0) {
                         changes[0].value = changes[0].value - 1;
                     }
-                    if (this.object.target.actor.data.system.parry.value > 0) {
+                    if (this.object.target.actor.system.parry.value > 0) {
                         changes[1].value = changes[1].value - 1;
                     }
                     onslaught.update({ changes });
@@ -1417,13 +1417,13 @@ export class RollForm extends FormApplication {
     _useLegendarySize(effectType) {
         if (this.object.target) {
             if (effectType === 'onslaught') {
-                return (this.object.target.actor.data.system.legendarysize && this.object.target.actor.data.system.warstrider.equipped) && !this.object.isMagic && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
+                return (this.object.target.actor.system.legendarysize && this.object.target.actor.system.warstrider.equipped) && !this.object.isMagic && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
             }
             if (effectType === 'withering') {
-                return (this.object.target.actor.data.system.legendarysize || this.object.target.actor.data.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
+                return (this.object.target.actor.system.legendarysize || this.object.target.actor.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
             }
             if (effectType === 'decisive') {
-                return (this.object.target.actor.data.system.legendarysize || this.object.target.actor.data.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
+                return (this.object.target.actor.system.legendarysize || this.object.target.actor.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
             }
         }
         return false;
@@ -1555,7 +1555,7 @@ export class RollForm extends FormApplication {
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {
