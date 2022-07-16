@@ -5,10 +5,10 @@
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
             <div>
                 <label class="resource-label">{{localize "Ex3.Cost"}}: </label>
-                <input type="text" name="system.cost" value="{{data.system.cost}}" style="width:55px;" />
+                <input type="text" name="system.cost" value="{{system.cost}}" style="width:55px;" />
                 <label class="resource-label">{{localize "Ex3.Circle"}}: </label>
                 <select name="system.circle" data-type="String">
-                    {{#select data.system.circle}}
+                    {{#select system.circle}}
                         <option value="terrestrial">{{localize "Ex3.Terrestrial"}} {{localize "Ex3.Circle"}}</option>
                         <option value="celestial">{{localize "Ex3.Celestial"}} {{localize "Ex3.Circle"}}</option>
                         <option value="solar">{{localize "Ex3.Solar"}} {{localize "Ex3.Circle"}}</option>
@@ -30,14 +30,14 @@
             <div class="grid grid-2col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
-                    <input type="text" name="system.willpower" value="{{data.system.willpower}}" />
+                    <input type="text" name="system.willpower" value="{{system.willpower}}" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Duration"}}</div>
-                    <input type="text" name="system.duration" value="{{data.system.duration}}"/>
+                    <input type="text" name="system.duration" value="{{system.duration}}"/>
                 </div>
             </div>
-            {{editor data.system.description target="system.description" button=true owner=owner editable=true}}
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">

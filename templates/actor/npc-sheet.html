@@ -5,17 +5,17 @@
                 width="100" />
             <div class="flex-center">
                 <label class="resource-label">{{localize "Ex3.Essence"}}</label>
-                <input type="number" name="system.essence.value" value="{{data.system.essence.value}}"
+                <input type="number" name="system.essence.value" value="{{system.essence.value}}"
                     data-dtype="Number" />
             </div>
             <div class="check-button">
                 <label class="resource-label">{{localize "Ex3.Battlegroup"}}:</label>
-                <input data-dtype="Boolean" name="system.battlegroup" type="checkbox" {{checked data.system.battlegroup}}>
+                <input data-dtype="Boolean" name="system.battlegroup" type="checkbox" {{checked system.battlegroup}}>
             </div>
             <div class="check-button">
                 <label class="resource-label">{{localize "Ex3.LegendarySize"}}:</label>
                 <input data-dtype="Boolean" name="system.legendarysize" type="checkbox" {{checked
-                    data.system.legendarysize}}>
+                    system.legendarysize}}>
             </div>
         </div>
         <div class="header-fields">
@@ -25,7 +25,7 @@
             </div>
             <div class="grid grid-3col flexrow">
                 <h1 class="charname"> <select name="system.creaturetype" data-type="String">
-                        {{#select data.system.creaturetype}}
+                        {{#select system.creaturetype}}
                         <option value="animal">{{localize "Ex3.Animal"}}</option>
                         <option value="demon">{{localize "Ex3.Demon"}}</option>
                         <option value="elemental">{{localize "Ex3.Elemental"}}</option>
@@ -37,9 +37,9 @@
                         <option value="other">{{localize "Ex3.Other"}}</option>
                         {{/select}}
                     </select></h1>
-                {{#ifEquals data.system.creaturetype 'demon'}}
+                {{#ifEquals system.creaturetype 'demon'}}
                 <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                        {{#select data.system.details.exalt}}
+                        {{#select system.details.exalt}}
                         <option value="first">{{localize "Ex3.First"}} {{localize "Ex3.Circle"}}</option>
                         <option value="second">{{localize "Ex3.Second"}} {{localize "Ex3.Circle"}}</option>
                         <option value="third">{{localize "Ex3.Third"}} {{localize "Ex3.Circle"}}</option>
@@ -47,9 +47,9 @@
                     </select></h1>
                 {{/ifEquals}}
 
-                {{#ifEquals data.system.creaturetype 'exalt'}}
+                {{#ifEquals system.creaturetype 'exalt'}}
                 <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                        {{#select data.system.details.exalt}}
+                        {{#select system.details.exalt}}
                         <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
                         <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
                         <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
@@ -66,13 +66,13 @@
                         <option value="other">{{localize "Ex3.Other"}}</option>
                         {{/select}}
                     </select></h1>
-                <h1 class="charname"><input name="system.details.caste" type="text" value="{{data.system.details.caste}}"
+                <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
                         placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
                 {{/ifEquals}}
 
-                {{#ifEquals data.system.creaturetype 'fae'}}
+                {{#ifEquals system.creaturetype 'fae'}}
                 <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                        {{#select data.system.details.exalt}}
+                        {{#select system.details.exalt}}
                         <option value="creature">{{localize "Ex3.Creature"}}</option>
                         <option value="raksha">{{localize "Ex3.Raksha"}}</option>
                         {{/select}}
@@ -82,39 +82,39 @@
             <div class="resources grid grid-4col">
                 <div class="flex-center">
                     <div style="margin-bottom:3px;">
-                        <label class="resource-label">{{localize "Ex3.Personal"}} {{#ifEquals data.system.creaturetype
+                        <label class="resource-label">{{localize "Ex3.Personal"}} {{#ifEquals system.creaturetype
                             'exalt'}} <i class="fas fa-calculator calculate-personal-motes cursor-pointer"
                                 title="Auto Set Motes"></i> {{/ifEquals}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
                             <input type="number" name="system.motes.personal.value"
-                                value="{{data.system.motes.personal.value}}" data-dtype="Number" />
+                                value="{{system.motes.personal.value}}" data-dtype="Number" />
                             /
-                            <input type="number" name="system.motes.personal.max" value="{{data.system.motes.personal.max}}"
+                            <input type="number" name="system.motes.personal.max" value="{{system.motes.personal.max}}"
                                 data-dtype="Number" />
                         </div>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-                        <input type="number" name="system.motes.personal.committed" value="{{data.system.motes.personal.committed}}"
+                        <input type="number" name="system.motes.personal.committed" value="{{system.motes.personal.committed}}"
                         data-dtype="Number" />
                     </div>
                 </div>
                 <div class="flex-center">
                     <div style="margin-bottom:3px;">
-                        <label class="resource-label">{{localize "Ex3.Peripheral"}} {{#ifEquals data.system.creaturetype
+                        <label class="resource-label">{{localize "Ex3.Peripheral"}} {{#ifEquals system.creaturetype
                             'exalt'}} <i class="fas fa-calculator calculate-peripheral-motes cursor-pointer"
                                 title="Auto Set Motes"></i> {{/ifEquals}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
                             <input type="number" name="system.motes.peripheral.value"
-                                value="{{data.system.motes.peripheral.value}}" data-dtype="Number" />
+                                value="{{system.motes.peripheral.value}}" data-dtype="Number" />
                             /
                             <input type="number" name="system.motes.peripheral.max"
-                                value="{{data.system.motes.peripheral.max}}" data-dtype="Number" />
+                                value="{{system.motes.peripheral.max}}" data-dtype="Number" />
                         </div>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-                        <input type="number" name="system.motes.peripheral.committed" value="{{data.system.motes.peripheral.committed}}"
+                        <input type="number" name="system.motes.peripheral.committed" value="{{system.motes.peripheral.committed}}"
                         data-dtype="Number" />
                     </div>
                 </div>
@@ -123,49 +123,49 @@
                         <i id="anima-down" class="fas fa-caret-down cursor-pointer"></i><label
                             class="resource-label">{{localize
                             "Ex3.Anima"}}</label><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i>
-                        <div>{{data.system.anima.level}}</div>
+                        <div>{{system.anima.level}}</div>
                     </div>
                 </div>
                 <div class="resource-content flexrow flex-center flex-between">
-                    {{#ifEquals data.system.details.exalt 'getimian'}}
+                    {{#ifEquals system.details.exalt 'getimian'}}
                     <div>
                         <label class="resource-label">{{localize "Ex3.Flowing"}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
-                            <input type="number" name="system.flowing.value" value="{{data.system.flowing.value}}"
+                            <input type="number" name="system.flowing.value" value="{{system.flowing.value}}"
                                 data-dtype="Number" />
                             /
-                            <input type="number" name="system.flowing.total" value="{{data.system.flowing.total}}"
+                            <input type="number" name="system.flowing.total" value="{{system.flowing.total}}"
                                 data-dtype="Number" />
                         </div>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Still"}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
-                            <input type="number" name="system.still.value" value="{{data.system.still.value}}"
+                            <input type="number" name="system.still.value" value="{{system.still.value}}"
                                 data-dtype="Number" />
                             /
-                            <input type="number" name="system.still.total" value="{{data.system.still.total}}"
+                            <input type="number" name="system.still.total" value="{{system.still.total}}"
                                 data-dtype="Number" />
                         </div>
                     </div>
                     {{/ifEquals}}
-                    {{#ifEquals data.system.details.exalt 'solar'}}
+                    {{#ifEquals system.details.exalt 'solar'}}
                     <div>
                         <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
-                        <input type="text" name="system.details.supernal" value="{{data.system.details.supernal}}" />
+                        <input type="text" name="system.details.supernal" value="{{system.details.supernal}}" />
                     </div>
                     {{/ifEquals}}
-                    {{#ifEquals data.system.details.exalt 'lunar'}}
+                    {{#ifEquals system.details.exalt 'lunar'}}
                     <div>
                         <label class="resource-label">{{localize "Ex3.Tell"}}</label>
-                        <input type="text" name="system.details.tell" value="{{data.system.details.tell}}" />
+                        <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
                     </div>
                     {{/ifEquals}}
-                    {{#ifEquals data.system.details.exalt 'dragonblooded'}}
+                    {{#ifEquals system.details.exalt 'dragonblooded'}}
                     <div>
                       <div class="resource-label">{{localize "Ex3.Aura"}}</div>
                       <select name="system.details.aura" data-type="String">
-                        {{#select data.system.details.aura}}
+                        {{#select system.details.aura}}
                         <option value="none">{{localize "Ex3.None"}}</option>
                         <option value="air">{{localize "Ex3.Air"}}</option>
                         <option value="earth">{{localize "Ex3.Earth"}}</option>
@@ -176,10 +176,10 @@
                       </select>
                     </div>
                     {{/ifEquals}}
-                    {{#ifEquals data.system.details.exalt 'umbral'}}
+                    {{#ifEquals system.details.exalt 'umbral'}}
                     <div>
                       <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-                      <input type="number" name="system.details.penumbra.value" value="{{data.system.details.penumbra.value}}" />
+                      <input type="number" name="system.details.penumbra.value" value="{{system.details.penumbra.value}}" />
                     </div>
                     {{/ifEquals}}
                 </div>
@@ -190,7 +190,7 @@
                         <div class="flexrow">
                             <label for="system.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
                                     id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i>
-                                {{#if data.system.battlegroup}}
+                                {{#if system.battlegroup}}
                                 {{localize "Ex3.Magnitude"}}
                                 {{else}}
                                 {{localize "Ex3.Health"}}
@@ -200,10 +200,10 @@
                         </div>
                         <div class="resource-content flexrow flex-center flex-between">
                             <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-                                data-max="{{data.system.health.max}}" data-bashing="{{data.system.health.bashing}}"
-                                data-lethal="{{data.system.health.lethal}}"
-                                data-aggravated="{{data.system.health.aggravated}}" data-name="system.health">
-                                {{#numLoop data.system.health.max}}
+                                data-max="{{system.health.max}}" data-bashing="{{system.health.bashing}}"
+                                data-lethal="{{system.health.lethal}}"
+                                data-aggravated="{{system.health.aggravated}}" data-name="system.health">
+                                {{#numLoop system.health.max}}
                                 <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
                                 {{/numLoop}}
                             </div>
@@ -212,7 +212,7 @@
                     <div>
                         <div class="flex-center">
                             <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-                            <div>-{{data.system.health.penalty}}</div>
+                            <div>-{{system.health.penalty}}</div>
                         </div>
                     </div>
                 </div>
@@ -220,9 +220,9 @@
                     <div>
                         <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
-                            <input type="number" name="system.willpower.value" value="{{data.system.willpower.value}}"
+                            <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
                                 data-dtype="Number" />/
-                            <input type="number" name="system.willpower.total" value="{{data.system.willpower.total}}"
+                            <input type="number" name="system.willpower.total" value="{{system.willpower.total}}"
                                 data-dtype="Number" />
                         </div>
                     </div>
@@ -248,7 +248,7 @@
                         class="fas fa-plus"></i></a>
             </div>
             <div class="attributes grid grid-3col flex-group-center">
-                {{#each data.system.pools as |pool key|}}
+                {{#each system.pools as |pool key|}}
                 <div class="pool flex-center">
                     <label for="system.pools.{{key}}.value" class="resource-label vrollable roll-pool"
                         data-roll="{{pool.value}}" data-pool="{{key}}" data-label="{{pool.name}}">{{localize
@@ -267,7 +267,7 @@
                 {{/each}}
             </div>
             <div>
-                <textarea type="text" name="system.qualities" rows="12">{{data.system.qualities}}</textarea>
+                <textarea type="text" name="system.qualities" rows="12">{{system.qualities}}</textarea>
             </div>
         </div>
 
@@ -361,7 +361,7 @@
                 </div>
             </div>
             <ol class="items-list">
-                {{#each data.system.savedRolls as |item id|}}
+                {{#each system.savedRolls as |item id|}}
                 <li class="item flexrow" data-item-id="{{id}}">
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="resource-table-value resource-value-static">
@@ -385,7 +385,7 @@
 
         {{!-- Biography Tab --}}
         <div class="tab biography" data-group="primary" data-tab="description">
-            {{editor data.system.biography target="system.biography" button=true owner=owner editable=true}}
+            {{editor system.biography target="system.biography" button=true owner=owner editable=true}}
         </div>
     </section>
 </form>

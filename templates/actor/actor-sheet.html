@@ -6,7 +6,7 @@
       <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
       <div class="flex-center">
         <label class="resource-label">{{localize "Ex3.Essence"}}</label>
-        <input type="number" name="system.essence.value" value="{{data.system.essence.value}}" data-dtype="Number" />
+        <input type="number" name="system.essence.value" value="{{system.essence.value}}" data-dtype="Number" />
       </div>
     </div>
     <div class="header-fields">
@@ -33,7 +33,7 @@
             <option value="other">{{localize "Ex3.Other"}}</option>
             {{/select}}
           </select></h1>
-        <h1 class="charname"><input name="system.details.caste" type="text" value="{{data.system.details.caste}}"
+        <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
             placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
       </div>
       <div class="resources grid grid-4col">
@@ -42,16 +42,16 @@
             <label class="resource-label">{{localize "Ex3.Personal"}} <i
                 class="fas fa-calculator calculate-personal-motes cursor-pointer" title="Auto Set Motes"></i> </label>
             <div class="resource-content flexrow flex-center flex-between">
-              <input type="number" name="system.motes.personal.value" value="{{data.system.motes.personal.value}}"
+              <input type="number" name="system.motes.personal.value" value="{{system.motes.personal.value}}"
                 data-dtype="Number" />
               /
-              <input type="number" name="system.motes.personal.max" value="{{data.system.motes.personal.max}}"
+              <input type="number" name="system.motes.personal.max" value="{{system.motes.personal.max}}"
                 data-dtype="Number" />
             </div>
           </div>
           <div>
             <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-            <input type="number" name="system.motes.personal.committed" value="{{data.system.motes.personal.committed}}"
+            <input type="number" name="system.motes.personal.committed" value="{{system.motes.personal.committed}}"
               data-dtype="Number" />
           </div>
         </div>
@@ -60,16 +60,16 @@
             <label class="resource-label">{{localize "Ex3.Peripheral"}} <i
                 class="fas fa-calculator calculate-peripheral-motes cursor-pointer" title="Auto Set Motes"></i></label>
             <div class="resource-content flexrow flex-center flex-between">
-              <input type="number" name="system.motes.peripheral.value" value="{{data.system.motes.peripheral.value}}"
+              <input type="number" name="system.motes.peripheral.value" value="{{system.motes.peripheral.value}}"
                 data-dtype="Number" />
               /
-              <input type="number" name="system.motes.peripheral.max" value="{{data.system.motes.peripheral.max}}"
+              <input type="number" name="system.motes.peripheral.max" value="{{system.motes.peripheral.max}}"
                 data-dtype="Number" />
             </div>
           </div>
           <div>
             <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-            <input type="number" name="system.motes.peripheral.committed" value="{{data.system.motes.peripheral.committed}}"
+            <input type="number" name="system.motes.peripheral.committed" value="{{system.motes.peripheral.committed}}"
               data-dtype="Number" />
           </div>
         </div>
@@ -77,27 +77,27 @@
           <div>
             <i id="anima-down" class="fas fa-caret-down cursor-pointer"></i><label class="resource-label">{{localize
               "Ex3.Anima"}}</label><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i>
-            <div>{{data.system.anima.level}}</div>
+            <div>{{system.anima.level}}</div>
           </div>
         </div>
         <div class="resource-content flexrow flex-center flex-between">
-          {{#ifEquals data.system.details.exalt 'solar'}}
+          {{#ifEquals system.details.exalt 'solar'}}
           <div>
             <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
-            <input type="text" name="system.details.supernal" value="{{data.system.details.supernal}}" />
+            <input type="text" name="system.details.supernal" value="{{system.details.supernal}}" />
           </div>
           {{/ifEquals}}
-          {{#ifEquals data.system.details.exalt 'lunar'}}
+          {{#ifEquals system.details.exalt 'lunar'}}
           <div>
             <label class="resource-label">{{localize "Ex3.Tell"}}</label>
-            <input type="text" name="system.details.tell" value="{{data.system.details.tell}}" />
+            <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
           </div>
           {{/ifEquals}}
-          {{#ifEquals data.system.details.exalt 'dragonblooded'}}
+          {{#ifEquals system.details.exalt 'dragonblooded'}}
           <div>
             <div class="resource-label">{{localize "Ex3.Aura"}}</div>
             <select name="system.details.aura" data-type="String">
-              {{#select data.system.details.aura}}
+              {{#select system.details.aura}}
               <option value="none">{{localize "Ex3.None"}}</option>
               <option value="air">{{localize "Ex3.Air"}}</option>
               <option value="earth">{{localize "Ex3.Earth"}}</option>
@@ -108,10 +108,10 @@
             </select>
           </div>
           {{/ifEquals}}
-          {{#ifEquals data.system.details.exalt 'umbral'}}
+          {{#ifEquals system.details.exalt 'umbral'}}
           <div>
             <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-            <input type="number" name="system.details.penumbra.value" value="{{data.system.details.penumbra.value}}" />
+            <input type="number" name="system.details.penumbra.value" value="{{system.details.penumbra.value}}" />
           </div>
           {{/ifEquals}}
         </div>
@@ -127,10 +127,10 @@
             </div>
             <div class="resource-content flexrow flex-center flex-between">
               <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-                data-max="{{data.system.health.max}}" data-bashing="{{data.system.health.bashing}}"
-                data-lethal="{{data.system.health.lethal}}" data-aggravated="{{data.system.health.aggravated}}"
+                data-max="{{system.health.max}}" data-bashing="{{system.health.bashing}}"
+                data-lethal="{{system.health.lethal}}" data-aggravated="{{system.health.aggravated}}"
                 data-name="system.health">
-                {{#numLoop data.system.health.max}}
+                {{#numLoop system.health.max}}
                 <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
                 {{/numLoop}}
               </div>
@@ -139,7 +139,7 @@
           <div>
             <div class="flex-center">
               <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-              <div>-{{data.system.health.penalty}}</div>
+              <div>-{{system.health.penalty}}</div>
             </div>
           </div>
         </div>
@@ -147,15 +147,15 @@
           <div>
             <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
             <div class="resource-content flexrow flex-center flex-between">
-              <input type="number" name="system.willpower.value" value="{{data.system.willpower.value}}"
+              <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
                 data-dtype="Number" />/
-              <input type="number" name="system.willpower.total" value="{{data.system.willpower.total}}"
+              <input type="number" name="system.willpower.total" value="{{system.willpower.total}}"
                 data-dtype="Number" />
             </div>
           </div>
           <div>
             <label class="resource-label">{{localize "Ex3.Limit"}}</label>
-            <input type="number" name="system.limit.value" value="{{data.system.limit.value}}" data-dtype="Number" />
+            <input type="number" name="system.limit.value" value="{{system.limit.value}}" data-dtype="Number" />
           </div>
         </div>
       </div>
@@ -206,7 +206,7 @@
         <label class="resource-label">{{localize "Ex3.Attributes"}}</label>
       </div>
       <div class="attributes grid grid-3col flex-group-center">
-        {{#each data.system.attributes as |attribute key|}}
+        {{#each system.attributes as |attribute key|}}
         <div class="attribute flexrow flex-center">
           <input class="attribute-checkbox" name="system.attributes.{{key}}.favored" type="checkbox" {{checked
             attribute.favored}}>
@@ -223,7 +223,7 @@
       <label class="resource-label">{{localize "Ex3.Abilities"}}<i id="rollAbility"
           class="fas fa-dice cursor-pointer rollAbility" style="margin-left:5px;"></i></label>
       <div class="attributes grid grid-3col flex-group-center">
-        {{#each data.system.abilities as |ability key|}}
+        {{#each system.abilities as |ability key|}}
         <div class="ability flexrow flex-center">
           <input class="ability-checkbox" name="system.abilities.{{key}}.favored" type="checkbox" {{checked
             ability.favored}}>
@@ -304,13 +304,13 @@
           </div>
         </li>
         <li>
-          <textarea type="text" name="system.anima.passive" rows="4">{{data.system.anima.passive}}</textarea>
+          <textarea type="text" name="system.anima.passive" rows="4">{{system.anima.passive}}</textarea>
         </li>
         <li>
-          <textarea type="text" name="system.anima.active" rows="4">{{data.system.anima.active}}</textarea>
+          <textarea type="text" name="system.anima.active" rows="4">{{system.anima.active}}</textarea>
         </li>
         <li>
-          <textarea type="text" name="system.anima.iconic" rows="4">{{data.system.anima.iconic}}</textarea>
+          <textarea type="text" name="system.anima.iconic" rows="4">{{system.anima.iconic}}</textarea>
         </li>
         {{> systems/exaltedthird/templates/actor/charm-list.html}}
       </ol>
@@ -323,7 +323,7 @@
         </div>
       </div>
       <ol class="items-list">
-        {{#each data.system.savedRolls as |item id|}}
+        {{#each system.savedRolls as |item id|}}
         <li class="item flexrow" data-item-id="{{id}}">
           <h4 class="item-name">{{item.name}}</h4>
           <div class="resource-table-value resource-value-static">
@@ -351,26 +351,26 @@
         <div class="grid grid-2col flex-group-center">
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{data.system.experience.standard.spent}}
+              <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.spent}}
                 Spent)</label>
               <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.experience.standard.value" value="{{data.system.experience.standard.value}}" type="text"
+                <input name="system.experience.standard.value" value="{{system.experience.standard.value}}" type="text"
                   placeholder="Remaining" />
                 /
-                <input name="system.experience.standard.total" value="{{data.system.experience.standard.total}}" type="text"
+                <input name="system.experience.standard.total" value="{{system.experience.standard.total}}" type="text"
                   placeholder="Earned" />
               </div>
             </div>
           </div>
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{data.system.experience.exalt.spent}}
+              <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.spent}}
                 Spent)</label>
               <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.experience.exalt.value" value="{{data.system.experience.exalt.value}}" type="text"
+                <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
                   placeholder="Remaining" />
                 /
-                <input name="system.experience.exalt.total" value="{{data.system.experience.exalt.total}}" type="text"
+                <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}" type="text"
                   placeholder="Earned" />
               </div>
             </div>
@@ -401,45 +401,45 @@
             <div>
               <label class="resource-label">{{localize "Ex3.SilverXP"}}</label>
               <input type="number" name="system.craft.experience.silver.value"
-                value="{{data.system.craft.experience.silver.value}}" data-dtype="Number" />
+                value="{{system.craft.experience.silver.value}}" data-dtype="Number" />
             </div>
             <div>
               <label class="resource-label">{{localize "Ex3.GoldXP"}}</label>
               <input type="number" name="system.craft.experience.gold.value"
-                value="{{data.system.craft.experience.gold.value}}" data-dtype="Number" />
+                value="{{system.craft.experience.gold.value}}" data-dtype="Number" />
             </div>
             <div>
               <label class="resource-label">{{localize "Ex3.WhiteXP"}}</label>
               <input type="number" name="system.craft.experience.white.value"
-                value="{{data.system.craft.experience.white.value}}" data-dtype="Number" />
+                value="{{system.craft.experience.white.value}}" data-dtype="Number" />
             </div>
             <div>
               <label class="resource-label">{{localize "Ex3.Major"}}</label>
               <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.craft.slots.major.value" value="{{data.system.craft.slots.major.value}}" type="text"
+                <input name="system.craft.slots.major.value" value="{{system.craft.slots.major.value}}" type="text"
                   placeholder="Available" />
                 /
-                <input name="system.craft.slots.major.total" value="{{data.system.craft.slots.major.total}}" type="text"
+                <input name="system.craft.slots.major.total" value="{{system.craft.slots.major.total}}" type="text"
                   placeholder="Total" />
               </div>
             </div>
             <div>
               <label class="resource-label">{{localize "Ex3.Superior"}}</label>
               <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.craft.slots.superior.value" value="{{data.system.craft.slots.superior.value}}"
+                <input name="system.craft.slots.superior.value" value="{{system.craft.slots.superior.value}}"
                   type="text" placeholder="Available" />
                 /
-                <input name="system.craft.slots.superior.total" value="{{data.system.craft.slots.superior.total}}"
+                <input name="system.craft.slots.superior.total" value="{{system.craft.slots.superior.total}}"
                   type="text" placeholder="Total" />
               </div>
             </div>
             <div>
               <label class="resource-label">{{localize "Ex3.Legendary"}}</label>
               <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.craft.slots.legendary.value" value="{{data.system.craft.slots.legendary.value}}"
+                <input name="system.craft.slots.legendary.value" value="{{system.craft.slots.legendary.value}}"
                   type="text" placeholder="Available" />
                 /
-                <input name="system.craft.slots.legendary.total" value="{{data.system.craft.slots.legendary.total}}"
+                <input name="system.craft.slots.legendary.total" value="{{system.craft.slots.legendary.total}}"
                   type="text" placeholder="Total" />
               </div>
             </div>
@@ -471,22 +471,22 @@
         {{/each}}
         <li>
           <label class="resource-label">{{localize "Ex3.Resonance"}}</label>
-          <input type="text" name="system.advantages.resonance" value="{{data.system.advantages.resonance}}" />
+          <input type="text" name="system.advantages.resonance" value="{{system.advantages.resonance}}" />
         </li>
         <li>
           <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
-          <input type="text" name="system.advantages.dissonance" value="{{data.system.advantages.dissonance}}" />
+          <input type="text" name="system.advantages.dissonance" value="{{system.advantages.dissonance}}" />
         </li>
-        {{#ifEquals data.system.details.exalt 'dreamsouled'}}
+        {{#ifEquals system.details.exalt 'dreamsouled'}}
         <li>
           <label class="resource-label">{{localize "Ex3.Ideal"}}</label>
-          <input type="text" name="system.details.ideal" value="{{data.system.details.ideal}}" />
+          <input type="text" name="system.details.ideal" value="{{system.details.ideal}}" />
         </li>
         {{/ifEquals}}
         <div>
           <div class="check-button">
             <label class="resource-label">{{localize "Ex3.LegendarySize"}}:</label>
-            <input data-dtype="Boolean" name="system.legendarysize" type="checkbox" {{checked data.system.legendarysize}}>
+            <input data-dtype="Boolean" name="system.legendarysize" type="checkbox" {{checked system.legendarysize}}>
           </div>
         </div>
         <!-- <div class="grid flex-group-center">
@@ -498,7 +498,7 @@
             <i class="fas fa-edit"></i>
           </a>
           <div class="mt-1">
-            {{#each data.system.traits.languages.selected as |v k|}}
+            {{#each system.traits.languages.selected as |v k|}}
             <li class="tag {{k}}">{{v}}</li>
             {{/each}}
           </div>
@@ -559,7 +559,7 @@
 
     {{!-- Biography Tab --}}
     <div class="tab biography" data-group="primary" data-tab="description">
-      {{editor data.system.biography target="system.biography" button=true owner=owner editable=true}}
+      {{editor system.biography target="system.biography" button=true owner=owner editable=true}}
     </div>
 
   </section>

@@ -98,7 +98,7 @@
     {{/each}}
   </ol>
 </div>
-{{#if data.system.settings.showwarstrider}}
+{{#if system.settings.showwarstrider}}
 <div>
   <label class="resource-label">{{localize "Ex3.Warstrider"}}</label>
     <div class="resource flex-group-center d-flex">
@@ -111,10 +111,10 @@
         </div>
         <div class="resource-content flexrow flex-center flex-between">
           <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-            data-max="{{data.system.warstrider.health.max}}" data-bashing="{{data.system.warstrider.health.bashing}}"
-            data-lethal="{{data.system.warstrider.health.lethal}}" data-aggravated="{{data.system.warstrider.health.aggravated}}"
+            data-max="{{system.warstrider.health.max}}" data-bashing="{{system.warstrider.health.bashing}}"
+            data-lethal="{{system.warstrider.health.lethal}}" data-aggravated="{{system.warstrider.health.aggravated}}"
             data-name="system.warstrider.health">
-            {{#numLoop data.system.warstrider.health.max}}
+            {{#numLoop system.warstrider.health.max}}
             <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
             {{/numLoop}}
           </div>
@@ -123,35 +123,35 @@
       <div>
         <div class="flex-center">
           <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-          <div>-{{data.system.warstrider.health.penalty}}</div>
+          <div>-{{system.warstrider.health.penalty}}</div>
         </div>
       </div>
     </div>
   <div class="grid grid-5col flex-group-center">
     <div class="d-flex" style="align-items: center; justify-content: center;">
       <label class="resource-label">{{localize "Ex3.Equipped"}}</label>
-      <input name="system.warstrider.equipped" type="checkbox" {{checked data.system.warstrider.equipped}}>
+      <input name="system.warstrider.equipped" type="checkbox" {{checked system.warstrider.equipped}}>
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Soak"}}</label>
-      <input type="number" name="system.warstrider.soak.value" value="{{data.system.warstrider.soak.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.soak.value" value="{{system.warstrider.soak.value}}" data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
-      <input type="number" name="system.warstrider.hardness.value" value="{{data.system.warstrider.hardness.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.hardness.value" value="{{system.warstrider.hardness.value}}" data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Strength"}}</label>
-      <input type="number" name="system.warstrider.strength.value" value="{{data.system.warstrider.strength.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.strength.value" value="{{system.warstrider.strength.value}}" data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Speed"}}</label>
-      <input type="number" name="system.warstrider.speed.value" value="{{data.system.warstrider.speed.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.speed.value" value="{{system.warstrider.speed.value}}" data-dtype="Number" />
     </div>
   </div>
 </div>
 {{/if}}
-{{#if data.system.settings.showship}}
+{{#if system.settings.showship}}
 <div>
   <label class="resource-label">{{localize "Ex3.Ship"}}</label>
     <div class="resource flex-group-center d-flex">
@@ -164,10 +164,10 @@
         </div>
         <div class="resource-content flexrow flex-center flex-between">
           <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-            data-max="{{data.system.ship.health.max}}" data-bashing="{{data.system.ship.health.bashing}}"
-            data-lethal="{{data.system.ship.health.lethal}}" data-aggravated="{{data.system.ship.health.aggravated}}"
+            data-max="{{system.ship.health.max}}" data-bashing="{{system.ship.health.bashing}}"
+            data-lethal="{{system.ship.health.lethal}}" data-aggravated="{{system.ship.health.aggravated}}"
             data-name="system.ship.health">
-            {{#numLoop data.system.ship.health.max}}
+            {{#numLoop system.ship.health.max}}
             <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
             {{/numLoop}}
           </div>
@@ -176,23 +176,23 @@
       <div>
         <div class="flex-center">
           <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-          <div>-{{data.system.ship.health.penalty}}</div>
+          <div>-{{system.ship.health.penalty}}</div>
         </div>
       </div>
     </div>
   <div class="grid grid-2col flex-group-center">
     <div>
       <label class="resource-label">{{localize "Ex3.Speed"}}</label>
-      <input type="number" name="system.ship.speed.value" value="{{data.system.ship.speed.value}}" data-dtype="Number" />
+      <input type="number" name="system.ship.speed.value" value="{{system.ship.speed.value}}" data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Maneuverability"}}</label>
-      <input type="number" name="system.ship.maneuverability.value" value="{{data.system.ship.maneuverability.value}}" data-dtype="Number" />
+      <input type="number" name="system.ship.maneuverability.value" value="{{system.ship.maneuverability.value}}" data-dtype="Number" />
     </div>
   </div>
   <div>
   <label class="resource-label">{{localize "Ex3.Cargo"}}</label>
-    <textarea type="text" name="system.ship.cargo" rows="2">{{data.system.ship.cargo}}</textarea>
+    <textarea type="text" name="system.ship.cargo" rows="2">{{system.ship.cargo}}</textarea>
   </div>
 </div>
 {{/if}}

@@ -5,7 +5,7 @@
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
             <div class="check-button">
                 <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
-                <input name="system.equiped" type="checkbox" value="system.equiped" {{checked data.system.equiped}}>
+                <input name="system.equiped" type="checkbox" value="system.equiped" {{checked system.equiped}}>
             </div>
         </div>
     </header>
@@ -23,18 +23,18 @@
             <div class="d-flex flex-center resources">
                 <div>
                     <div>{{localize "Ex3.Soak"}}</div>
-                    <input type="number" name="system.soak" value="{{data.system.soak}}" data-dtype="Number" />
+                    <input type="number" name="system.soak" value="{{system.soak}}" data-dtype="Number" />
                 </div>
                 <div>
                     <div>{{localize "Ex3.Penalty"}}</div>
-                    <input type="number" name="system.penalty" value="{{data.system.penalty}}" data-dtype="Number" />
+                    <input type="number" name="system.penalty" value="{{system.penalty}}" data-dtype="Number" />
                 </div>
                 <div>
                     <div>{{localize "Ex3.Hardness"}}</div>
-                    <input type="number" name="system.hardness" value="{{data.system.hardness}}" data-dtype="Number" />
+                    <input type="number" name="system.hardness" value="{{system.hardness}}" data-dtype="Number" />
                 </div>
             </div>
-            {{editor data.system.description target="system.description" button=true owner=owner editable=true}}
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">

@@ -6,7 +6,7 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Type"}}: </label>
                 <select name="system.type" data-type="String">
-                    {{#select data.system.type}}
+                    {{#select system.type}}
                     <option value="basic">{{localize "Ex3.Basic"}}</option>
                     <option value="major">{{localize "Ex3.Major"}}</option>
                     <option value="superior">{{localize "Ex3.Superior"}}</option>
@@ -14,7 +14,7 @@
                     {{/select}}
                 </select>
                 <label class="resource-label">{{localize "Ex3.Rating"}}: </label>
-                <input type="number" name="system.rating" value="{{data.system.rating}}" style="width:55px;" />
+                <input type="number" name="system.rating" value="{{system.rating}}" style="width:55px;" />
             </div>
         </div>
     </header>
@@ -28,7 +28,7 @@
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            {{editor data.system.description target="system.description" button=true owner=owner editable=true}}
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">

@@ -6,7 +6,7 @@
             <div class="d-flex flex-center">
                 <label class="resource-label">{{localize "Ex3.Strength"}}: </label>
                 <select name="system.strength" data-type="String">
-                    {{#select data.system.strength}}
+                    {{#select system.strength}}
                     <option value="minor">{{localize "Ex3.Minor"}}</option>
                     <option value="major">{{localize "Ex3.Major"}}</option>
                     <option value="defining">{{localize "Ex3.Defining"}}</option>
@@ -14,7 +14,7 @@
                 </select>
                 <label class="resource-label">{{localize "Ex3.Type"}}: </label>
                 <select name="system.intimacytype" data-type="String">
-                    {{#select data.system.intimacytype}}
+                    {{#select system.intimacytype}}
                     <option value="tie">{{localize "Ex3.Tie"}}</option>
                     <option value="principle">{{localize "Ex3.Principle"}}</option>
                     {{/select}}
@@ -32,7 +32,7 @@
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            {{editor data.system.description target="system.description" button=true owner=owner editable=true}}
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
