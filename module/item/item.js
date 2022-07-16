@@ -10,9 +10,7 @@ export class ExaltedThirdItem extends Item {
     super.prepareData();
 
     // Get the Item's data
-    const itemData = this.data;
-    const actorData = this.actor ? this.actor.data : {};
-    const data = itemData.data;
+    const itemData = this.system;
   }
 
   async _preCreate(createData, options, userId) {

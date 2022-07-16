@@ -4,7 +4,7 @@
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
             <label class="resource-label">{{localize "Ex3.Value"}}: </label>
-            <input type="number" name="data.value" value="{{data.data.value}}" />
+            <input type="number" name="system.value" value="{{data.system.value}}" />
         </div>
     </header>
 
@@ -17,7 +17,7 @@
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            {{editor content=data.data.description target="data.description" button=true owner=owner editable=true}}
+            {{editor content=data.system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">

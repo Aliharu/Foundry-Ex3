@@ -162,7 +162,7 @@ export class ExaltedThirdActor extends Actor {
   _prepareCharacterData(actorData) {
     // Make modifications to data here. For example:
 
-    const data = actorData.data.data;
+    const data = actorData.system;
 
     // this._prepareBaseActorData(data);
     let totalHealth = 0;
@@ -312,9 +312,8 @@ export class ExaltedThirdActor extends Actor {
 
     // Iterate through items, allocating to containers
     for (let i of actorData.items) {
-      let item = i.data;
 
-      item.img = i.img || DEFAULT_TOKEN;
+      i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);
       }
@@ -349,15 +348,15 @@ export class ExaltedThirdActor extends Actor {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if (i.data.data.ability !== undefined) {
-          charms[i.data.data.ability].list.push(i);
-          charms[i.data.data.ability].visible = true;
+        if (i.system.ability !== undefined) {
+          charms[i.system.ability].list.push(i);
+          charms[i.system.ability].visible = true;
         }
       }
       else if (i.type === 'spell') {
-        if (i.data.data.circle !== undefined) {
-          spells[i.data.data.circle].list.push(i);
-          spells[i.data.data.circle].visible = true;
+        if (i.system.circle !== undefined) {
+          spells[i.system.circle].list.push(i);
+          spells[i.system.circle].visible = true;
         }
       }
       else if (i.type === 'action') {

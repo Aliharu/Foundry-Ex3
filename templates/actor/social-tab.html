@@ -2,7 +2,7 @@
   {{#ifEquals actor.type 'npc'}}
   <div>
       <label class="resource-label">{{localize "Ex3.Appearance"}}</label>
-      <input type="number" name="data.appearance.value" value="{{data.data.appearance.value}}"
+      <input type="number" name="system.appearance.value" value="{{data.system.appearance.value}}"
           data-dtype="Number" />
   </div>
   {{/ifEquals}}
@@ -10,14 +10,14 @@
       <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}<i
         class="fas fa-calculator calculate-resolve cursor-pointer"
         title="Auto Set Resolve" style="margin-left:3px;"></i>{{/ifEquals}}</label>
-      <input type="number" name="data.resolve.value" value="{{data.data.resolve.value}}"
+      <input type="number" name="system.resolve.value" value="{{data.system.resolve.value}}"
           data-dtype="Number" />
   </div>
   <div>
       <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}<i
         class="fas fa-calculator calculate-guile cursor-pointer"
         title="Auto Set Guile" style="margin-left:3px;"></i>{{/ifEquals}}</label>
-      <input type="number" name="data.guile.value" value="{{data.data.guile.value}}"
+      <input type="number" name="system.guile.value" value="{{data.system.guile.value}}"
           data-dtype="Number" />
   </div>
   <div>
