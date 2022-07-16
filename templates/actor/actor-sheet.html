@@ -16,7 +16,7 @@
       </div>
       <div class="grid grid-2col flexrow">
         <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-            {{#select data.system.details.exalt}}
+            {{#select system.details.exalt}}
             <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
             <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
             <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
@@ -559,7 +559,7 @@
 
     {{!-- Biography Tab --}}
     <div class="tab biography" data-group="primary" data-tab="description">
-      {{editor content=data.system.biography target="system.biography" button=true owner=owner editable=true}}
+      {{editor data.system.biography target="system.biography" button=true owner=owner editable=true}}
     </div>
 
   </section>

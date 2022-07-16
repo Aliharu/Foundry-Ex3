@@ -4,7 +4,7 @@ export class RollForm extends FormApplication {
         this.actor = actor;
 
         if (data.rollId) {
-            this.object = duplicate(this.actor.data.system.savedRolls[data.rollId]);
+            this.object = duplicate(this.actor.system.savedRolls[data.rollId]);
             this.object.skipDialog = data.skipDialog || true;
             this.object.isSavedRoll = true;
         }
@@ -96,7 +96,7 @@ export class RollForm extends FormApplication {
                     this.object.stunt = "one";
                     this.object.attribute = data.attribute || this._getHighestAttribute();
                     this.object.ability = data.ability || "archery";
-                    this.object.appearance = this.actor.data.system.attributes.appearance.value;
+                    this.object.appearance = this.actor.system.attributes.appearance.value;
                 }
 
                 if (this.actor.type === "npc") {
@@ -108,7 +108,7 @@ export class RollForm extends FormApplication {
                     else {
                         this.object.pool = data.pool || "administration";
                     }
-                    this.object.appearance = this.actor.data.system.appearance.value;
+                    this.object.appearance = this.actor.system.appearance.value;
                 }
                 this.object.difficultyString = 'Ex3.Difficulty';
                 if (this.object.rollType === 'readIntentions') {
@@ -602,7 +602,7 @@ export class RollForm extends FormApplication {
             dice = this.object.dice;
         }
         else {
-            const data = this.actor.data.system;
+            const data = this.actor.system;
             const actorData = duplicate(this.actor);
             if (this.actor.type === 'character') {
                 let attributeDice = data.attributes[this.object.attribute].value;
@@ -1025,8 +1025,8 @@ export class RollForm extends FormApplication {
             typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             this.object.characterInitiative = 3;
             if (this._useLegendarySize('decisive')) {
-                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.data.system.attributes.strength.value} + Charm damage levels</h4>`;
-                characterDamage = Math.min(characterDamage, 3 + this.actor.data.system.attributes.strength.value);
+                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value} + Charm damage levels</h4>`;
+                characterDamage = Math.min(characterDamage, 3 + this.actor.system.attributes.strength.value);
             }
             this.dealHealthDamage(characterDamage);
         }
@@ -1163,7 +1163,7 @@ export class RollForm extends FormApplication {
             }
         });
 
-        if (this.actor.type !== 'npc' || this.actor.data.system.battlegroup === false) {
+        if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
             let combat = game.combat;
             if (this.object.target && combat) {
                 let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
@@ -1172,7 +1172,7 @@ export class RollForm extends FormApplication {
                 }
             }
         }
-        else if (this.actor.data.system.battlegroup) {
+        else if (this.actor.system.battlegroup) {
             let combat = game.combat;
             if (this.object.target) {
                 let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
@@ -1417,13 +1417,13 @@ export class RollForm extends FormApplication {
     _useLegendarySize(effectType) {
         if (this.object.target) {
             if (effectType === 'onslaught') {
-                return (this.object.target.actor.data.system.legendarysize && this.object.target.actor.data.system.warstrider.equipped) && !this.object.isMagic && !this.actor.data.system.legendarysize && !this.actor.data.system.warstrider.equipped;
+                return (this.object.target.actor.data.system.legendarysize && this.object.target.actor.data.system.warstrider.equipped) && !this.object.isMagic && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
             }
             if (effectType === 'withering') {
-                return (this.object.target.actor.data.system.legendarysize || this.object.target.actor.data.system.warstrider.equipped) && !this.actor.data.system.legendarysize && !this.actor.data.system.warstrider.equipped && this.object.finalDamageDice < 10;
+                return (this.object.target.actor.data.system.legendarysize || this.object.target.actor.data.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
             }
             if (effectType === 'decisive') {
-                return (this.object.target.actor.data.system.legendarysize || this.object.target.actor.data.system.warstrider.equipped) && !this.actor.data.system.legendarysize && !this.actor.data.system.warstrider.equipped;
+                return (this.object.target.actor.data.system.legendarysize || this.object.target.actor.data.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
             }
         }
         return false;
@@ -1438,29 +1438,29 @@ export class RollForm extends FormApplication {
             Transcendent: 4
         }
         if(this.object.rollType !== "base" && this.actor.type === "character") {
-            if (this.actor.data.system.details.exalt === "solar") {
-                return this.actor.data.system.abilities[this.object.ability].value + this.actor.data.system.attributes[this.object.attribute].value;
+            if (this.actor.system.details.exalt === "solar") {
+                return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
             }
-            if (this.actor.data.system.details.exalt === "dragonblooded") {
-                return this.actor.data.system.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
+            if (this.actor.system.details.exalt === "dragonblooded") {
+                return this.actor.system.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
             }
-            if (this.actor.data.system.details.exalt === "lunar") {
-                return `${this.actor.data.system.attributes[this.object.attribute].value} - ${this.actor.data.system.attributes[this.object.attribute].value + 5}`;
+            if (this.actor.system.details.exalt === "lunar") {
+                return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
             }
-            if (this.actor.data.system.details.exalt === "dreamsouled") {
-                return `${this.actor.data.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.data.system.abilities[this.object.ability].value + this.actor.data.system.essence.value)} when upholding ideal`;
+            if (this.actor.system.details.exalt === "dreamsouled") {
+                return `${this.actor.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.essence.value)} when upholding ideal`;
             }
-            if (this.actor.data.system.details.exalt === "umbral") {
-                return `${Math.min(10, this.actor.data.system.abilities[this.object.ability].value + this.actor.data.system.details.penumbra.value)}`;
+            if (this.actor.system.details.exalt === "umbral") {
+                return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
             }
-            if (this.actor.data.system.details.caste.toLowerCase() === "architect") {
-                return `${this.actor.data.system.attributes[this.object.attribute].value} or ${this.actor.data.system.attributes[this.object.attribute].value + this.actor.data.system.essence.value} in cities`;
+            if (this.actor.system.details.caste.toLowerCase() === "architect") {
+                return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
             }
-            if (this.actor.data.system.details.caste.toLowerCase() === "janest" || this.actor.data.system.details.caste.toLowerCase() === 'strawmaiden') {
-                return `${this.actor.data.system.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+            if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+                return `${this.actor.system.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
             } 
-            if (this.actor.data.system.details.caste.toLowerCase() === "sovereign") {
-                return Math.min(Math.max(this.actor.data.system.essence.value, 3) + animaBonus[this.actor.data.system.anima.level], 10) ;
+            if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
+                return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10) ;
             }
         }
         return "";
@@ -1469,7 +1469,7 @@ export class RollForm extends FormApplication {
     _getHighestAttribute() {
         var highestAttributeNumber = 0;
         var highestAttribute = "strength";
-        for (let [name, attribute] of Object.entries(this.actor.data.system.attributes)) {
+        for (let [name, attribute] of Object.entries(this.actor.system.attributes)) {
             if (attribute.value > highestAttributeNumber) {
                 highestAttributeNumber = attribute.value;
                 highestAttribute = name;

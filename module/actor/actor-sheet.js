@@ -44,26 +44,30 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   /** @override */
   getData() {
-    const data = super.getData();
-    data.dtypes = ["String", "Number", "Boolean"];
+    const context = super.getData();
+    context.dtypes = ["String", "Number", "Boolean"];
+
+    const actorData = this.actor.toObject(false);
+    context.system = actorData.system;
+    context.flags = actorData.flags;
 
     // Update traits
-    this._prepareTraits(data.data.system.traits);
+    this._prepareTraits(context.system.traits);
 
     // Prepare items.
     if (this.actor.type === 'character') {
-      for (let attr of Object.values(data.data.system.attributes)) {
+      for (let attr of Object.values(context.system.attributes)) {
         attr.isCheckbox = attr.dtype === "Boolean";
       }
-      this._prepareCharacterItems(data);
+      this._prepareCharacterItems(context);
     }
     if (this.actor.type === 'npc') {
-      this._prepareCharacterItems(data);
+      this._prepareCharacterItems(context);
     }
 
-    data.effects = prepareActiveEffectCategories(this.document.effects);
+    context.effects = prepareActiveEffectCategories(this.document.effects);
 
-    return data;
+    return context;
   }
 
 
@@ -1138,10 +1142,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const itemData = {
       name: name,
       type: type,
-      data: data
+      system: data
     };
     // Remove the type from the dataset since it's in the itemData.type prop.
-    delete itemData.data["type"];
+    delete itemData.system["type"];
 
     // Finally, create the item!
     return this.actor.createEmbeddedDocuments("Item", [itemData])
@@ -1172,7 +1176,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const dataset = element.dataset;
 
     if (dataset.roll) {
-      let roll = new Roll(dataset.roll, this.actor.data.system);
+      let roll = new Roll(dataset.roll, this.actor.system);
       let label = dataset.label ? `Rolling ${dataset.label}` : '';
       roll.roll().toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
