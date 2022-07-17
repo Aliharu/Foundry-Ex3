@@ -164,6 +164,7 @@
 }
 
 .exaltedthird .sheet-header .profile-img {
+  background: black;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 100px;
   flex: 0 0 100px;
@@ -351,6 +352,10 @@
   margin-right: 5px;
 }
 
+.exaltedthird .items-list .item .list-item-image {
+  background: black;
+}
+
 .exaltedthird .items-list .item img {
   display: block;
 }
@@ -412,6 +417,29 @@
 
 .exaltedthird .items-list .effects-list {
   padding: 0;
+}
+
+@font-face {
+  font-family: "EnvisionRoman";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/envision_roman.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "MinionPro";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MinionPro.otf") format("truetype");
+}
+
+.exaltedthird .window-content {
+  background: url("../assets/backgrounds/solar-background.jpg");
+}
+
+.solar-background .window-content {
+  background: url("../assets/backgrounds/solar-background.jpg");
+  background-size: cover;
 }
 
 .exaltedthird .window-content .abilities,

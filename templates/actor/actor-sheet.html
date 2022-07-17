@@ -454,7 +454,7 @@
         </div>
         {{#each actor.projects as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
-          <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+          <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
           <h4 class="item-name">{{item.name}}</h4>
           <div class="item-controls">
             <a class="item-control item-complete" title="Complete Item"><i class="fas fa-hammer"></i></a>
@@ -512,7 +512,7 @@
         </div>
         {{#each actor.initiations as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
-          <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+          <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
           <h4 class="item-name">{{item.name}}</h4>
           <div class="item-controls">
             <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
@@ -535,7 +535,7 @@
         </div>
         {{#each actor.merits as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
-          <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+          <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
           <h4 class="item-name">{{item.name}}</h4>
           <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
             {{#numLoop 5}}

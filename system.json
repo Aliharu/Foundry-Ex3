@@ -7,9 +7,9 @@
   "url": "https://github.com/Aliharu/Foundry-Ex3",
   "license": "LICENSE.txt",
   "flags": {},
-  "version": "0.10.3",
-  "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "9",
+  "version": "0.10.4",
+  "minimumCoreVersion": "10",
+  "compatibleCoreVersion": "10",
   "scripts": [],
   "esmodules": [
     "module/exaltedthird.js"

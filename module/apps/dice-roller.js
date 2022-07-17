@@ -185,6 +185,7 @@ export class RollForm extends FormApplication {
         if (this.object.rollType !== 'base') {
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
+            this.object.targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
             let combat = game.combat;
@@ -304,7 +305,7 @@ export class RollForm extends FormApplication {
 
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            classes: ["dialog"],
+            classes: ["dialog", `solar-background`],
             popOut: true,
             template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
             id: "roll-form",
@@ -962,9 +963,8 @@ export class RollForm extends FormApplication {
 
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
-                let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
-                if (targetCombatant !== null) {
-                    if (targetCombatant.actor.type === 'npc' || targetCombatant.actor.system.battlegroup) {
+                if (this.object.targetCombatant !== null) {
+                    if (this.object.targetCombatant.actor.type === 'npc' || this.object.targetCombatant.actor.system.battlegroup) {
                         dice += Math.floor(dice / 4);
                         baseDamage = dice;
                     }
@@ -1044,14 +1044,13 @@ export class RollForm extends FormApplication {
         else {
             let targetResults = ``;
             if (this.object.target && game.combat) {
-                let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
-                if (targetCombatant && targetCombatant.initiative !== null) {
+                if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
                     this.object.characterInitiative++;
-                    if (targetCombatant.actor.type !== 'npc' || targetCombatant.actor.system.battlegroup === false) {
-                        let newInitative = targetCombatant.initiative;
+                    if (this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) {
+                        let newInitative = this.object.targetCombatant.initiative;
                         newInitative -= total;
                         this.object.characterInitiative += total;
-                        if ((newInitative <= 0 && targetCombatant.initiative > 0)) {
+                        if ((newInitative <= 0 && this.object.targetCombatant.initiative > 0)) {
                             if (this._useLegendarySize('withering')) {
                                 newInitative = 1;
                             }
@@ -1061,10 +1060,14 @@ export class RollForm extends FormApplication {
                                 targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
                             }
                         }
-                        game.combat.setInitiative(targetCombatant.id, newInitative);
+                        game.combat.setInitiative(this.object.targetCombatant.id, newInitative);
                     }
-                    else if(targetCombatant.system.battlegroup) {
-                        this.dealHealthDamage(total);
+                    else if(this.object.targetCombatant.actor.system.battlegroup) {
+                        var sizeDamaged = this.dealHealthDamage(total, true);
+                        if(sizeDamaged) {
+                            targetResults = `<h4 class="dice-total">Magnitude Filled!</h4>`;
+                            this.object.characterInitiative += 5;
+                        }
                     }
                 }
             }
@@ -1222,7 +1225,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    async dealHealthDamage(characterDamage) {
+    dealHealthDamage(characterDamage, targetBattlegroup=false) {
         if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
             let totalHealth = 0;
             const targetActorData = duplicate(this.object.target.actor);
@@ -1239,7 +1242,11 @@ export class RollForm extends FormApplication {
                 targetActorData.system.health.aggravated = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal, targetActorData.system.health.aggravated + characterDamage);
             }
             this.object.target.actor.update(targetActorData);
+            if(this._damageRollType('withering') && targetBattlegroup && (totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated) <= 0) {
+                return true;
+            }
         }
+        return false;
     }
 
     async _completeCraftProject() {
@@ -1261,8 +1268,8 @@ export class RollForm extends FormApplication {
             }
             for (let dice of this.object.roll.dice[0].results) {
                 if (dice.result === 1 && this.object.total === 0) {
-                    finished = true;
-                    resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Botch</h4>`;
+                    this.object.finished = true;
+                    resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
                     craftFailed = true;
                 }
             }

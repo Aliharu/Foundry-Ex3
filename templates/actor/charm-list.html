@@ -11,7 +11,7 @@
 </li>
 {{#each charm.list as |item id|}}
 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
         <a class="item-control item-spend" title="Spend Charm"><i class="fas fa-burn"></i></a>
@@ -64,7 +64,7 @@
 </li>
 {{#each spell.list as |item id|}}
 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
         <a class="item-control item-spend" title="Spend Spell"><i class="fas fa-burn"></i></a>

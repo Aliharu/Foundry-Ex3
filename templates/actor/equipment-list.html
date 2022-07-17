@@ -15,7 +15,7 @@
     </li>
     {{#each actor.weapons as |item id|}}
     <li class="item item-large flexrow item-row" data-item-id="{{item._id}}">
-      <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
         {{item.system.witheringaccuracy}}
@@ -73,7 +73,7 @@
     </li>
     {{#each actor.armor as |item id|}}
     <li class="item item-large flexrow item-row" data-item-id="{{item._id}}">
-      <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
         {{item.system.soak}}

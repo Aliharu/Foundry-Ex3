@@ -17,9 +17,30 @@
   @import 'components/items';
 }
 
-// .exaltedthird .window-content {
-//   background: url('../assets/background.png');
-// }
+@font-face {
+  font-family: "EnvisionRoman";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/envision_roman.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "MinionPro";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MinionPro.otf") format("truetype");
+}
+
+.exaltedthird .window-content {
+  background: url('../assets/backgrounds/solar-background.jpg');
+}
+
+.solar-background {
+  .window-content {
+    background: url('../assets/backgrounds/solar-background.jpg');
+    background-size: cover;
+  }
+}
 
 .exaltedthird .window-content .abilities,
 .exaltedthird.sheet.actor .window-content .abilities {
