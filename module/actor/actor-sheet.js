@@ -655,8 +655,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     if(type === 'evasion') {
       var newEvasionValue = Math.ceil((data.attributes.dexterity.value + data.abilities.dodge.value) / 2);
       for (let armor of this.actor.armor) {
-        if (armor.data.equiped) {
-          newEvasionValue = newEvasionValue - Math.abs(armor.data.penalty);
+        if (armor.system.equiped) {
+          newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
         }
     }
       data.evasion.value = newEvasionValue;
