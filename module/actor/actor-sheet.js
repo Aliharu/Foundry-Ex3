@@ -1208,7 +1208,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const templateData = {
       actor: this.actor,
       tokenId: token?.uuid || null,
-      item: item.data,
+      item: item,
       labels: this.labels,
     };
     const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
