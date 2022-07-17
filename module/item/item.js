@@ -14,28 +14,28 @@ export class ExaltedThirdItem extends Item {
 
   async _preCreate(createData, options, userId) {
     if (createData.type === 'intimacy') {
-      createData.img = "systems/exaltedthird/assets/icons/hearts.svg";
+      this.updateSource({ img: "systems/exaltedthird/assets/icons/hearts.svg"});
     }
     if (createData.type === 'spell' || createData.type === 'initiation') {
-      createData.img = "icons/svg/book.svg";
+      this.updateSource({ img: "icons/svg/book.svg"});
     }
     if (createData.type === 'merit') {
-      createData.img = "icons/svg/coins.svg";
-    }
+      this.updateSource({ img: "icons/svg/coins.svg"});
+          }
     if (createData.type === 'weapon') {
-      createData.img = "icons/svg/sword.svg";
+      this.updateSource({ img: "icons/svg/sword.svg"});
     }
     if (createData.type === 'armor') {
-      createData.img = "systems/exaltedthird/assets/icons/breastplate.svg";
+      this.updateSource({ img: "systems/exaltedthird/assets/icons/breastplate.svg"});
     }
     if (createData.type === 'charm') {
-      createData.img = "icons/svg/explosion.svg";
+      this.updateSource({ img: "icons/svg/explosion.svg"});
     }
     if (createData.type === 'specialability') {
-      createData.img = "icons/svg/aura.svg";
+      this.updateSource({ img: "icons/svg/aura.svg"});
     }
     if (createData.type === 'craftproject') {
-      createData.img = "systems/exaltedthird/assets/icons/anvil-impact.svg";
+      this.updateSource({ img: "systems/exaltedthird/assets/icons/anvil-impact.svg"});
     }
   }
 }
