@@ -565,7 +565,7 @@ export class RollForm extends FormApplication {
         });
 
         html.on("change", ".update-specialties", ev => {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.data.ability === this.object.ability);
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.render();
         });
 
@@ -611,7 +611,7 @@ export class RollForm extends FormApplication {
             }
             else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
                 if (this.object.rollType === 'action') {
-                    dice = this.actor.actions.find(x => x._id === this.object.actionId).data.value;
+                    dice = this.actor.actions.find(x => x._id === this.object.actionId).system.value;
                 }
                 else {
                     let poolDice = data.pools[this.object.pool].value;
@@ -621,8 +621,8 @@ export class RollForm extends FormApplication {
 
             if (this.object.armorPenalty) {
                 for (let armor of this.actor.armor) {
-                    if (armor.data.equiped) {
-                        dice = dice - Math.abs(armor.data.penalty);
+                    if (armor.system.equiped) {
+                        dice = dice - Math.abs(armor.system.penalty);
                     }
                 }
             }
@@ -964,7 +964,7 @@ export class RollForm extends FormApplication {
             if (this.object.target && game.combat) {
                 let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (targetCombatant !== null) {
-                    if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.system.battlegroup) {
+                    if (targetCombatant.actor.type === 'npc' || targetCombatant.actor.system.battlegroup) {
                         dice += Math.floor(dice / 4);
                         baseDamage = dice;
                     }
@@ -1047,7 +1047,7 @@ export class RollForm extends FormApplication {
                 let targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (targetCombatant && targetCombatant.initiative !== null) {
                     this.object.characterInitiative++;
-                    if (targetCombatant.actor.data.type !== 'npc' || targetCombatant.actor.system.battlegroup === false) {
+                    if (targetCombatant.actor.type !== 'npc' || targetCombatant.actor.system.battlegroup === false) {
                         let newInitative = targetCombatant.initiative;
                         newInitative -= total;
                         this.object.characterInitiative += total;
@@ -1063,7 +1063,7 @@ export class RollForm extends FormApplication {
                         }
                         game.combat.setInitiative(targetCombatant.id, newInitative);
                     }
-                    else if(targetCombatant.actor.system.battlegroup) {
+                    else if(targetCombatant.system.battlegroup) {
                         this.dealHealthDamage(total);
                     }
                 }
@@ -1187,9 +1187,9 @@ export class RollForm extends FormApplication {
     async _addOnslaught() {
         if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
             if (!this._useLegendarySize('onslaught')) {
-                const onslaught = this.object.target.actor.effects.find(i => i.data.label == "Onslaught");
+                const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
                 if (onslaught) {
-                    let changes = duplicate(onslaught.data.changes);
+                    let changes = duplicate(onslaught.changes);
                     if (this.object.target.actor.system.evasion.value > 0) {
                         changes[0].value = changes[0].value - 1;
                     }
@@ -1226,17 +1226,17 @@ export class RollForm extends FormApplication {
         if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
             let totalHealth = 0;
             const targetActorData = duplicate(this.object.target.actor);
-            for (let [key, health_level] of Object.entries(targetactorData.system.health.levels)) {
+            for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
                 totalHealth += health_level.value;
             }
             if (this.object.damage.type === 'bashing') {
-                targetactorData.system.health.bashing = Math.min(totalHealth - targetactorData.system.health.aggravated - targetactorData.system.health.lethal, targetactorData.system.health.bashing + characterDamage);
+                targetActorData.system.health.bashing = Math.min(totalHealth - targetActorData.system.health.aggravated - targetActorData.system.health.lethal, targetActorData.system.health.bashing + characterDamage);
             }
             if (this.object.damage.type === 'lethal') {
-                targetactorData.system.health.lethal = Math.min(totalHealth - targetactorData.system.health.bashing - targetactorData.system.health.aggravated, targetactorData.system.health.lethal + characterDamage);
+                targetActorData.system.health.lethal = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.aggravated, targetActorData.system.health.lethal + characterDamage);
             }
             if (this.object.damage.type === 'aggravated') {
-                targetactorData.system.health.aggravated = Math.min(totalHealth - targetactorData.system.health.bashing - targetactorData.system.health.lethal, targetactorData.system.health.aggravated + characterDamage);
+                targetActorData.system.health.aggravated = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal, targetActorData.system.health.aggravated + characterDamage);
             }
             this.object.target.actor.update(targetActorData);
         }
