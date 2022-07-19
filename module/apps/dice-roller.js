@@ -185,7 +185,7 @@ export class RollForm extends FormApplication {
         if (this.object.rollType !== 'base') {
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
-            this.object.targetCombatant = game.combat.combatants.find(c => c.actorId == this.object.target.actor.id);
+            this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
             let combat = game.combat;
