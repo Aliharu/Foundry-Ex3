@@ -593,6 +593,11 @@
   text-shadow: 0 0 black;
 }
 
+.chat-message {
+  background: url("../assets/backgrounds/chat-background.jpg");
+  background-size: cover;
+}
+
 .chat-card {
   font-style: normal;
   font-size: 12px;
@@ -605,6 +610,7 @@
 }
 
 .chat-card .card-header img {
+  background: black;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 36px;
   flex: 0 0 36px;

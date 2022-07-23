@@ -251,6 +251,11 @@
   text-shadow: 0 0 black;
 }
 
+.chat-message {
+  background: url('../assets/backgrounds/chat-background.jpg');
+  background-size: cover;
+}
+
 .chat-card {
   font-style: normal;
   font-size: 12px;
@@ -261,6 +266,7 @@
     border-bottom: 2px groove #FFF;
 
     img {
+      background: black;
       flex: 0 0 36px;
       margin-right: 5px;
     }

@@ -1204,7 +1204,7 @@ export class RollForm extends FormApplication {
                 else {
                     this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
                         label: 'Onslaught',
-                        icon: 'icons/svg/aura.svg',
+                        icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                         origin: this.object.target.actor.uuid,
                         disabled: false,
                         "changes": [
