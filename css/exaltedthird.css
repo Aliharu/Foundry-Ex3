@@ -420,13 +420,6 @@
 }
 
 @font-face {
-  font-family: "EnvisionRoman";
-  font-style: normal;
-  font-weight: 400;
-  src: url("../fonts/envision_roman.ttf") format("truetype");
-}
-
-@font-face {
   font-family: "MinionPro";
   font-style: normal;
   font-weight: 400;

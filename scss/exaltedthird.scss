@@ -18,18 +18,16 @@
 }
 
 @font-face {
-  font-family: "EnvisionRoman";
-  font-style: normal;
-  font-weight: 400;
-  src: url("../fonts/envision_roman.ttf") format("truetype");
-}
-
-@font-face {
   font-family: "MinionPro";
   font-style: normal;
   font-weight: 400;
   src: url("../fonts/MinionPro.otf") format("truetype");
 }
+
+
+// * {
+//   font-family: "MinionPro";
+// }
 
 .exaltedthird .window-content {
   background: url('../assets/backgrounds/solar-background.jpg');
