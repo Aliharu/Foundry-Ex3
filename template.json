@@ -630,6 +630,7 @@
         "doublesuccess": 11,
         "targetnumber": 7,
         "rerolldice": 0,
+        "diceToSuccesses": 0,
         "rerollfailed": false,
         "reroll": {
           "one": false,

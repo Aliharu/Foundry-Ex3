@@ -182,6 +182,9 @@ export class RollForm extends FormApplication {
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();
         }
+        if(this.object.diceToSuccesses === undefined) {
+            this.object.diceToSuccesses = 0;
+        }
         if (this.object.rollType !== 'base') {
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
@@ -413,7 +416,7 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            this.object.addedCharms.push(item.system);
+            this.object.addedCharms.push(item);
             for(var charmlist of Object.values(this.object.charmList)) {
                 for(const charm of charmlist.list) {
                     if(this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
@@ -466,6 +469,7 @@ export class RollForm extends FormApplication {
                 this.object.rerollFailed = item.system.diceroller.rerollfailed;
             }
             this.object.rerollNumber += item.system.diceroller.rerolldice;
+            this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
 
             this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
             this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
@@ -540,6 +544,7 @@ export class RollForm extends FormApplication {
                     this.object.rerollFailed = false;
                 }
                 this.object.rerollNumber -= item.system.diceroller.rerolldice;
+                this.object.diceToSuccesses -= item.system.diceroller.diceToSuccesses;
     
                 this.object.damage.damageDice -= item.system.diceroller.damage.bonusdice;
                 this.object.damage.damageSuccessModifier -= item.system.diceroller.damage.bonussuccesses;
@@ -637,6 +642,10 @@ export class RollForm extends FormApplication {
             if (this.object.stunt === 'three') {
                 actorData.system.willpower.value += 2;
                 this.object.successModifier += 2;
+            }
+            if(this.object.diceToSuccesses > 0) {
+                this.object.successModifier += Math.min(dice, this.object.diceToSuccesses);
+                dice = Math.max(0, dice - this.object.diceToSuccesses);
             }
             if (this.object.woundPenalty && data.health.penalty !== 'inc') {
                 if (data.warstrider.equipped) {

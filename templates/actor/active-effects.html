@@ -5,8 +5,8 @@
 </div>
 <ol class="items-list effects-list">
     {{#each effects as |section sid|}}
-    <li class="items-header flexrow" data-effect-type="{{section.type}}">
-        <h3 class="item-name effect-name flexrow">{{localize section.label}}</h3>
+    <li class="item items-header flexrow" data-effect-type="{{section.type}}">
+        <div class="item-name effect-name flexrow">{{localize section.label}}</div>
         <div class="effect-source">{{localize "Ex3.Source"}}</div>
         <div class="effect-source">{{localize "Ex3.Duration"}}</div>
         <div class="item-controls effect-controls flexrow">
