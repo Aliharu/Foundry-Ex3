@@ -19,6 +19,29 @@ export default class TemplateImporter extends Application {
     return options;
   }
 
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    const helpButton = {
+      label: game.i18n.localize('Ex3.Help'),
+      class: 'help-dialogue',
+      icon: 'fas fa-question',
+      onclick: async () => {
+        let confirmed = false;
+        const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
+        const html = await renderTemplate(template);
+        new Dialog({
+          title: `ReadMe`,
+          content: html,
+          buttons: {
+            cancel: { label: "Close", callback: () => confirmed = false }
+          }
+        }).render(true);
+      },
+    };
+    buttons = [helpButton, ...buttons];
+    return buttons;
+  }
+
   getData() {
     let data = super.getData();
     data.type = this.type;
@@ -31,9 +54,9 @@ export default class TemplateImporter extends Application {
     if (this.type === 'spell') {
       data.templateHint = game.i18n.localize("Ex3.SpellImportHint");
     }
-    if (this.type === 'character') {
-      data.templateHint = game.i18n.localize("Ex3.CharacterImportHint");
-    }
+    // if (this.type === 'character') {
+    //   data.templateHint = game.i18n.localize("Ex3.CharacterImportHint");
+    // }
     if (this.type === 'qc') {
       data.templateHint = game.i18n.localize("Ex3.QCImportHint");
     }
@@ -200,6 +223,10 @@ export default class TemplateImporter extends Application {
             "name": "Ex3.FeatsofStrength",
             "value": 0
           },
+          "grapple": {
+            "name": "Ex3.GrappleControl",
+            "value": 0
+          },
           "investigation": {
             "name": "Ex3.Investigation",
             "value": 0
@@ -294,6 +321,10 @@ export default class TemplateImporter extends Application {
           "value": 0,
           "total": 5,
           "max": 5,
+          "min": 0
+        },
+        "speed": {
+          "value": 0,
           "min": 0
         },
         "essence": {
@@ -392,11 +423,22 @@ export default class TemplateImporter extends Application {
     let index = 1;
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     try {
-
       actorData.name = textArray[0].trim();
       if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
         actorData.system.creaturetype = 'exalt';
         actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').trim();
+        if(['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'dragonblooded';
+        }
+        if(['no mood', 'full moon', 'changing moon', 'casteless'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'lunar';
+        }
+        if(['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'solar';
+        }
+        if(['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'sidereal';
+        }
         index++;
       }
       if (textArray[index].includes('Spirit Shape')) {
@@ -417,13 +459,16 @@ export default class TemplateImporter extends Application {
         var healthArray = textArray[index].replace('Health Levels: ', '').replace('/incap.', '').split('/');
         for (const health of healthArray) {
           if (health.includes('0x')) {
-            actorData.system.health.levels.zero.value = parseInt(health[0].replace('0x', '').replace(/[^0-9]/g, ''));
+            actorData.system.health.levels.zero.value = parseInt(health.replace('0x', '').replace(/[^0-9]/g, ''));
           }
           if (health.includes('1x')) {
-            actorData.system.health.levels.one.value = parseInt(health[0].replace('1x', '').replace(/[^0-9]/g, ''));
+            actorData.system.health.levels.one.value = parseInt(health.replace('1x', '').replace(/[^0-9]/g, ''));
           }
           if (health.includes('2x')) {
-            actorData.system.health.levels.two.value = parseInt(health[0].replace('2x', '').replace(/[^0-9]/g, ''));
+            actorData.system.health.levels.two.value = parseInt(health.replace('2x', '').replace(/[^0-9]/g, ''));
+          }
+          if (health.includes('4x')) {
+            actorData.system.health.levels.four.value = parseInt(health.replace('4x', '').replace(/[^0-9]/g, ''));
           }
         }
         index++;
@@ -455,6 +500,40 @@ export default class TemplateImporter extends Application {
         }
         index++;
       }
+      var intimacyString = '';
+      var intimacyArray = [];
+      if (textArray[index].includes('Intimacies')) {
+        while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index])) {
+          intimacyString += textArray[index];
+          index++;
+        }
+        var intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
+        for (const intimacy of intimaciesArray) {
+          intimacyArray = intimacy.split(':');
+          var intimacyType = 'tie';
+          if (intimacyArray[0].includes('Principle')) {
+            intimacyType = 'principle';
+          }
+          else if (intimacyArray[0].includes('Tie')) {
+            intimacyType = 'tie';
+          }
+          itemData.push(
+            {
+              type: 'intimacy',
+              img: this.getImageUrl('intimacy'),
+              name: intimacyArray[1].trim(),
+              system: {
+                intimacytype: intimacyType,
+                strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
+              }
+            }
+          );
+        }
+      }
+      if (textArray[index].includes('Speed Bonus')) {
+        actorData.system.speed.value = parseInt(textArray[index].replace(/[^0-9]/g, ''));
+        index++;
+      }
       var actionsString = '';
       while (!textArray[index].includes('Guile')) {
         actionsString += textArray[index];
@@ -464,7 +543,7 @@ export default class TemplateImporter extends Application {
       for (const action of actionsArray) {
         var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
         var name = actionSplit[0].replace(" ", "");
-        if (name.toLocaleLowerCase().includes('resistpoison')) {
+        if (name.toLocaleLowerCase().includes('resistpoison') || name.toLocaleLowerCase().includes('resistdiseasepoison') ) {
           actorData.system.pools.resistpoison.value = parseInt(actionSplit[1].trim());
         }
         else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
@@ -480,6 +559,7 @@ export default class TemplateImporter extends Application {
           itemData.push(
             {
               type: 'action',
+              img: this.getImageUrl('action'),
               name: name,
               system: {
                 value: parseInt(actionSplit[1].trim())
@@ -489,22 +569,34 @@ export default class TemplateImporter extends Application {
         }
       }
       var socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
-      actorData.system.appearance.value = parseInt(socialArray[0].trim().split(" ")[1]);
-      actorData.system.resolve.value = parseInt(socialArray[1].trim().split(" ")[1]);
-      actorData.system.guile.value = parseInt(socialArray[2].trim().split(" ")[1]);
+      if (textArray[index].toLowerCase().includes('appearance')) {
+        actorData.system.appearance.value = parseInt(socialArray[0].trim().split(" ")[1]);
+        actorData.system.resolve.value = parseInt(socialArray[1].trim().split(" ")[1]);
+        actorData.system.guile.value = parseInt(socialArray[2].trim().split(" ")[1]);
+      }
+      else {
+        actorData.system.resolve.value = parseInt(socialArray[0].trim().split(" ")[1]);
+        actorData.system.guile.value = parseInt(socialArray[1].trim().split(" ")[1]);
+      }
       index++
       if (textArray[index].trim().toLowerCase() === 'combat') {
         index++;
       }
       while (textArray[index].includes('Attack')) {
-        var attackArray = textArray[index].replace('Attack ', '').split(':');
+        var attackString = textArray[index];
+        if(!textArray[index+1].includes('Attack') && !textArray[index+1].includes('Combat Movement')) {
+          attackString += textArray[index+1];
+          index++;
+        }
+        var attackArray = attackString.replace('Attack ', '').split(':');
         var attackName = attackArray[0].replace('(', '').replace(')', '');
         var damage = 1;
         var overwhelming = 1;
         var accuracy = 0;
+        var weaponDescription = ''
         var accuracySplit = attackArray[1].trim().replace(')', '').split('(');
         accuracy = parseInt(accuracySplit[0].replace(/[^0-9]/g, ''));
-        if (!textArray[index].includes('Grapple')) {
+        if (!attackString.includes('Grapple')) {
           var damageSplit = accuracySplit[1].split('Damage');
           if (damageSplit[1].includes('/')) {
             var damageSubSplit = damageSplit[1].split('/');
@@ -518,16 +610,27 @@ export default class TemplateImporter extends Application {
               overwhelming = parseInt(damageSubSplit[1].replace(/[^0-9]/g, ''));
             }
           }
+          else if(damageSplit[1].includes(';')) {
+            damage = parseInt(damageSplit[1].split(';')[0].replace(/[^0-9]/g, ''))
+            weaponDescription = damageSplit[1].split(';')[1];
+          }
           else {
-            damage = parseInt(damageSplit[1].replace(/[^0-9]/g, ''))
+            damage = parseInt(damageSplit[1].replace(/[^0-9]/g, ''));
           }
         }
+        // else {
+        //   // Doesn't work
+        //   var grappleValue = parseInt(damageSplit[1].replace(/[^0-9]/g, ''));
+        //   actorData.system.pools.grapple.value = grappleValue;
+        // }
         index++;
         itemData.push(
           {
             type: 'weapon',
+            img: this.getImageUrl('weapon'),
             name: attackName.trim(),
             system: {
+              description: weaponDescription,
               witheringaccuracy: accuracy,
               witheringdamage: damage,
               overwhelming: overwhelming,
@@ -562,6 +665,7 @@ export default class TemplateImporter extends Application {
         itemData.push(
           {
             type: 'armor',
+            img: this.getImageUrl('armor'),
             name: hardnessArray[1].trim(),
           }
         );
@@ -570,6 +674,9 @@ export default class TemplateImporter extends Application {
         actorData.system.hardness.value = parseInt(soakArray[1].replace(/[^0-9]/g, ''));
       }
       index++;
+      if (textArray[index] === '') {
+        index++;
+      }
       var itemType = 'charm';
       var newItem = true;
       var itemName = '';
@@ -642,7 +749,7 @@ export default class TemplateImporter extends Application {
             newItem = true;
             charmSystemData.ability = 'occult';
           }
-          if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms') {
+          if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
             itemType = 'charm';
             index++;
             newItem = true;
@@ -679,7 +786,7 @@ export default class TemplateImporter extends Application {
           }
           if (newItem) {
             if (itemType === 'intimacy') {
-              var intimacyArray = textArray[index].split(':');
+              intimacyArray = textArray[index].split(':');
               var intimacyType = 'tie';
               if (intimacyArray[0].includes('Principle')) {
                 intimacyType = 'principle';
@@ -690,6 +797,7 @@ export default class TemplateImporter extends Application {
               itemData.push(
                 {
                   type: itemType,
+                  img: this.getImageUrl(itemType),
                   name: intimacyArray[1].trim(),
                   system: {
                     intimacytype: intimacyType,
@@ -705,7 +813,7 @@ export default class TemplateImporter extends Application {
               if (titleArray.length === 2) {
                 itemDescription += titleArray[1].trim();
               }
-              if(itemType === 'merit' && itemName === 'Legendary Size') {
+              if (itemType === 'merit' && itemName === 'Legendary Size') {
                 actorData.system.legendarysize = true;
               }
               newItem = false;
@@ -728,10 +836,12 @@ export default class TemplateImporter extends Application {
               }
               else {
                 itemType = 'spell';
-                var contentArray = textArray[index].split('(');
-                itemName = contentArray[0].trim();
-                var spellDataArray = contentArray[1].replace(')', '').replace(':', '').trim().split(';');
-                var costArray = spellDataArray[0].split(',');
+                var titleArray = (textArray[index] + textArray[index + 1]).split('(');
+                itemName = titleArray[0].trim();
+                var contentArray = titleArray[1].split('):');
+                var spellDataArray = contentArray[0].trim().split(';');
+                itemDescription += contentArray[1].trim();
+                var costArray = spellDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
                 for (let costString of costArray) {
                   costString = costString.trim();
                   if (costString.includes('sm')) {
@@ -743,16 +853,18 @@ export default class TemplateImporter extends Application {
                     spellSystemData.willpower = parseInt(num);
                   }
                 }
-
+                index++;
                 spellSystemData.duration = spellDataArray[1]?.trim() || '';
                 spellSystemData.keywords = spellDataArray[2]?.trim() || '';
               }
               newItem = false;
             }
             if (itemType === 'charm') {
-              var contentArray = textArray[index].split('(');
-              itemName = contentArray[0].trim();
-              var charmDataArray = contentArray[1].replace(')', '').replace(':', '').split(';');
+              var titleArray = (textArray[index] + textArray[index + 1]).split('(');
+              itemName = titleArray[0].trim();
+              var contentArray = titleArray[1].split('):');
+              var charmDataArray = contentArray[0].trim().split(';');
+              itemDescription += contentArray[1].trim();
               var costArray = charmDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
               for (var i = 0; i < costArray.length; i++) {
                 var costString = costArray[i].trim();
@@ -823,7 +935,7 @@ export default class TemplateImporter extends Application {
                 charmSystemData.duration = charmDataArray[2]?.trim() || '';
               }
               charmSystemData.keywords = charmDataArray[3]?.trim() || '';
-
+              index++;
               newItem = false;
             }
           }
@@ -838,6 +950,7 @@ export default class TemplateImporter extends Application {
             itemData.push(
               {
                 type: itemType,
+                img: this.getImageUrl(itemType),
                 name: itemName,
                 system: {
                   description: itemDescription.trim(),
@@ -853,6 +966,7 @@ export default class TemplateImporter extends Application {
             itemData.push(
               {
                 type: itemType,
+                img: this.getImageUrl(itemType),
                 name: itemName,
                 system: charmSystemData,
               }
@@ -866,6 +980,7 @@ export default class TemplateImporter extends Application {
             itemData.push(
               {
                 type: itemType,
+                img: this.getImageUrl(itemType),
                 name: itemName,
                 system: spellSystemData,
               }
@@ -905,16 +1020,42 @@ export default class TemplateImporter extends Application {
       //Combat
       actorData.items = itemData;
       console.log(actorData);
-      // await Actor.create(actorData);
+      await Actor.create(actorData);
     }
     catch (error) {
-      console.log(textArray[index]);
+      console.log(textArray);
+      console.log(index);
       this.error = textArray[index];
       this.showError = true;
-      this.render();
     }
   }
 
+  getImageUrl(type) {
+    if (type === 'intimacy') {
+      return "systems/exaltedthird/assets/icons/hearts.svg";
+    }
+    if (type === 'spell' || type === 'initiation') {
+      return "icons/svg/book.svg";
+    }
+    if (type === 'merit') {
+      return "icons/svg/coins.svg"
+    }
+    if (type === 'weapon') {
+      return "icons/svg/sword.svg";
+    }
+    if (type === 'armor') {
+      return "systems/exaltedthird/assets/icons/breastplate.svg";
+    }
+    if (type === 'charm') {
+      return "icons/svg/explosion.svg";
+    }
+    if (type === 'specialability') {
+      return "icons/svg/aura.svg";
+    }
+    if (type === 'craftproject') {
+      return "systems/exaltedthird/assets/icons/anvil-impact.svg";
+    }
+  }
 
   activateListeners(html) {
     html.on("change", ".radio", ev => {
@@ -938,6 +1079,7 @@ export default class TemplateImporter extends Application {
       } else if (this.type === 'qc') {
         this.createQuickCharacter(html);
       }
+      this.render();
     });
   }
 }

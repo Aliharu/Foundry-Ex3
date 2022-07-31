@@ -465,6 +465,10 @@
           "name": "Ex3.FeatsofStrength",
           "value": 0
         },
+        "grapple": {
+          "name": "Ex3.GrappleControl",
+          "value": 0
+        },
         "investigation": {
           "name": "Ex3.Investigation",
           "value": 0
@@ -539,6 +543,10 @@
         "min": 0
       },
       "might": {
+        "value": 0,
+        "min": 0
+      },
+      "speed": {
         "value": 0,
         "min": 0
       },
