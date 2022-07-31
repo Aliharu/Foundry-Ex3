@@ -172,6 +172,10 @@ export class ExaltedThirdActor extends Actor {
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
 
+    if(data.willpower.total !== 5 && data.willpower.max === 5) {
+      data.willpower.max = data.willpower.total;
+    }
+
     if (data.battlegroup) {
       totalHealth = data.health.levels.zero.value + data.size.value;
       data.health.max = totalHealth;
@@ -299,7 +303,8 @@ export class ExaltedThirdActor extends Actor {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
-      offsensive: { name: 'Ex3.Offsensive', visible: false, list: [] },
+      offensive: { name: 'Ex3.Offensive', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
       defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
       social: { name: 'Ex3.Social', visible: false, list: [] },
     }

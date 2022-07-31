@@ -350,7 +350,7 @@ export default class Importer extends FormApplication {
             charmArray.slice(1).forEach(async (charmRow, i) => {
                 charmData = {
                     type: 'charm',
-                    data: {
+                    system: {
                         cost: {
                             "motes": 0,
                             "initiative": 0,
@@ -364,7 +364,6 @@ export default class Importer extends FormApplication {
                             "whitexp": 0
                         }
                     }
-
                 };
                 if (charmRow[1] === 'Dragon-Blooded' || charmRow[1] === 'Lunar' || charmRow[1] === 'Solar' || charmRow[1] === 'Martial Arts' || charmRow[1] === 'Evocation' || charmRow[1] === 'Spell') {
                     if (charmRow[0]) {
@@ -387,7 +386,7 @@ export default class Importer extends FormApplication {
                         }
                     }
                     else {
-                        if(charmRow[1] === 'Artifact') {
+                        if (charmRow[1] === 'Artifact') {
                             charmData.system.charmtype = 'evocation';
                         }
                         else {

@@ -1,0 +1,27 @@
+<div class="exaltedthird">
+  <form>
+    <div class="mb-2 mt-2">
+      <input class="radio" id="charm-radio" type="radio" name="type" value="charm" data-dtype="String" value="{{type}}"
+        {{#ifEquals type 'charm' }} checked {{/ifEquals}} />
+      {{ localize "Ex3.Charm"}}
+      <input class="radio" id="spell-radio" type="radio" name="type" value="spell" data-dtype="String" value="{{type}}"
+        {{#ifEquals type 'spell' }} checked {{/ifEquals}} />
+      {{ localize "Ex3.Spell"}}
+      <!-- <input class="radio" id="character-radio" type="radio" name="type" value="character" data-dtype="String"
+        value="{{type}}" {{#ifEquals type 'character' }} checked {{/ifEquals}} />
+      {{ localize "Ex3.FullCharacter"}} -->
+      <input class="radio" id="qc-radio" type="radio" name="type" value="qc" data-dtype="String" value="{{type}}"
+        {{#ifEquals type 'qc' }} checked {{/ifEquals}} />
+      {{ localize "Ex3.QuickCharacter"}}
+    </div>
+    {{#if showError}}
+    <div class="mb-2" style="color:red;">
+      Failed on line text: {{error}} 
+    </div>
+    {{/if}}
+
+    <label class="resource-label">{{ localize "Ex3.Template"}}</label>
+    <textarea name="textBox" type="text" id="template-text" rows="40" placeholder='{{templateHint}}'>{{textBox}}</textarea>
+    <button type="button" id="import-template">Import</button>
+  </form>
+</div>

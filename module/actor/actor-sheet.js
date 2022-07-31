@@ -135,7 +135,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
-      offsensive: { name: 'Ex3.Offsensive', visible: false, list: [] },
+      offensive: { name: 'Ex3.Offensive', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
       defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
       social: { name: 'Ex3.Social', visible: false, list: [] },
     }
@@ -276,7 +277,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const rollButton = {
         label: game.i18n.localize('Ex3.Roll'),
         class: 'roll-dice',
-        icon: 'fas fa-dice',
+        icon: 'fas fa-dice-d10',
         onclick: (ev) => new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true),
       };
       buttons = [rollButton, ...buttons];
@@ -924,7 +925,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'maxAnima': data.anima.max });
+    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showescort': data.settings.showescort, 'maxAnima': data.anima.max });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -937,6 +938,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.charmmotepool = html.find('#charmMotePool').val();
           data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
           data.settings.showship = html.find('#showShip').is(":checked");
+          data.settings.showescort = html.find('#showEscort').is(":checked");
           data.anima.max = parseInt(html.find('#maxAnima').val());
           this.actor.update(actorData);
         }

@@ -167,7 +167,7 @@ export default class ItemSearch extends Application {
     html.on("change", ".charm-filter", ev => {
       this.filters.attribute.charmFilters[$(ev.currentTarget).attr("data-filter")] = $(ev.currentTarget).val();
       this.applyFilter(html);
-    })
+    });
   }
 }
 

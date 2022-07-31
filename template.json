@@ -38,6 +38,7 @@
         "willpower": {
           "value": 0,
           "total": 5,
+          "max": 5,
           "min": 0
         },
         "essence": {
@@ -119,8 +120,9 @@
         },
         "settings": {
           "charmmotepool": "peripheral",
-          "showwarstrider": true,
-          "showship": true
+          "showwarstrider": false,
+          "showship": false,
+          "showescort": false
         },
         "ship": {
           "name": "",
@@ -459,6 +461,10 @@
           "name": "Ex3.Craft",
           "value": 0
         },
+        "strength": {
+          "name": "Ex3.FeatsofStrength",
+          "value": 0
+        },
         "investigation": {
           "name": "Ex3.Investigation",
           "value": 0
@@ -503,10 +509,6 @@
           "name": "Ex3.Sorcery",
           "value": 0
         },
-        "strength": {
-          "name": "Ex3.Strength",
-          "value": 0
-        },
         "strategy": {
           "name": "Ex3.Strategy",
           "value": 0
@@ -540,7 +542,8 @@
         "value": 0,
         "min": 0
       },
-      "qualities": ""
+      "qualities": "",
+      "escort": ""
     }
   },
   "Item": {
@@ -579,7 +582,7 @@
       "witheringaccuracy": 0,
       "witheringdamage": 0,
       "defence": 0,
-      "overwhelming": 0,
+      "overwhelming": 1,
       "tags": "",
       "equiped": true,
       "weapontype": "melee",

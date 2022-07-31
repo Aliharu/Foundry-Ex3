@@ -11,6 +11,7 @@ import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
 import Importer from "./apps/importer.js";
+import TemplateImporter from "./apps/template-importer.js";
 
 Hooks.once('init', async function() {
 
@@ -20,6 +21,7 @@ Hooks.once('init', async function() {
     applications: {
       TraitSelector,
       ItemSearch,
+      TemplateImporter,
       Importer,
     },
     entities: {
