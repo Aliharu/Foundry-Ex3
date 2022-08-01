@@ -269,6 +269,7 @@ export class ExaltedThirdActor extends Actor {
       offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
       defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
       social: { name: 'Ex3.Social', visible: false, list: [] },
+      mobility: { name: 'Ex3.Mobility', visible: false, list: [] },
       strength: { name: 'Ex3.Strength', visible: false, list: [] },
       dexterity: { name: 'Ex3.Dexterity', visible: false, list: [] },
       stamina: { name: 'Ex3.Stamina', visible: false, list: [] },

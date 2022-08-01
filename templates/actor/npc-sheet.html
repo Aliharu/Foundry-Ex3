@@ -5,8 +5,7 @@
                 width="100" />
             <div class="flex-center">
                 <label class="resource-label">{{localize "Ex3.Essence"}}</label>
-                <input type="number" name="system.essence.value" value="{{system.essence.value}}"
-                    data-dtype="Number" />
+                <input type="number" name="system.essence.value" value="{{system.essence.value}}" data-dtype="Number" />
             </div>
             <div class="check-button">
                 <label class="resource-label">{{localize "Ex3.Battlegroup"}}:</label>
@@ -27,13 +26,17 @@
                 <h1 class="charname"> <select name="system.creaturetype" data-type="String">
                         {{#select system.creaturetype}}
                         <option value="animal">{{localize "Ex3.Animal"}}</option>
+                        <option value="behemoth">{{localize "Ex3.Behemoth"}}</option>
+                        <option value="construct">{{localize "Ex3.Construct"}}</option>
                         <option value="demon">{{localize "Ex3.Demon"}}</option>
                         <option value="elemental">{{localize "Ex3.Elemental"}}</option>
                         <option value="exalt">{{localize "Ex3.Exalt"}}</option>
                         <option value="fae">{{localize "Ex3.Fae"}}</option>
                         <option value="god">{{localize "Ex3.God"}}</option>
+                        <option value="magiccreature">{{localize "Ex3.MagicCreature"}}</option>
                         <option value="mortal">{{localize "Ex3.Mortal"}}</option>
                         <option value="undead">{{localize "Ex3.Undead"}}</option>
+                        <option value="wyldmonster">{{localize "Ex3.WyldMonster"}}</option>
                         <option value="other">{{localize "Ex3.Other"}}</option>
                         {{/select}}
                     </select></h1>
@@ -95,8 +98,8 @@
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-                        <input type="number" name="system.motes.personal.committed" value="{{system.motes.personal.committed}}"
-                        data-dtype="Number" />
+                        <input type="number" name="system.motes.personal.committed"
+                            value="{{system.motes.personal.committed}}" data-dtype="Number" />
                     </div>
                 </div>
                 <div class="flex-center">
@@ -114,8 +117,8 @@
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-                        <input type="number" name="system.motes.peripheral.committed" value="{{system.motes.peripheral.committed}}"
-                        data-dtype="Number" />
+                        <input type="number" name="system.motes.peripheral.committed"
+                            value="{{system.motes.peripheral.committed}}" data-dtype="Number" />
                     </div>
                 </div>
                 <div class="resource-content flexrow flex-center flex-between">
@@ -163,76 +166,41 @@
                     {{/ifEquals}}
                     {{#ifEquals system.details.exalt 'dragonblooded'}}
                     <div>
-                      <div class="resource-label">{{localize "Ex3.Aura"}}</div>
-                      <select name="system.details.aura" data-type="String">
-                        {{#select system.details.aura}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        <option value="air">{{localize "Ex3.Air"}}</option>
-                        <option value="earth">{{localize "Ex3.Earth"}}</option>
-                        <option value="fire">{{localize "Ex3.Fire"}}</option>
-                        <option value="water">{{localize "Ex3.Water"}}</option>
-                        <option value="wood">{{localize "Ex3.Wood"}}</option>
-                        {{/select}}
-                      </select>
+                        <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+                        <select name="system.details.aura" data-type="String">
+                            {{#select system.details.aura}}
+                            <option value="none">{{localize "Ex3.None"}}</option>
+                            <option value="air">{{localize "Ex3.Air"}}</option>
+                            <option value="earth">{{localize "Ex3.Earth"}}</option>
+                            <option value="fire">{{localize "Ex3.Fire"}}</option>
+                            <option value="water">{{localize "Ex3.Water"}}</option>
+                            <option value="wood">{{localize "Ex3.Wood"}}</option>
+                            {{/select}}
+                        </select>
                     </div>
                     {{/ifEquals}}
                     {{#ifEquals system.details.exalt 'umbral'}}
                     <div>
-                      <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-                      <input type="number" name="system.details.penumbra.value" value="{{system.details.penumbra.value}}" />
+                        <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
+                        <input type="number" name="system.details.penumbra.value"
+                            value="{{system.details.penumbra.value}}" />
                     </div>
                     {{/ifEquals}}
                 </div>
             </div>
-            <div class="resources grid grid-2col">
-                <div class="resource flex-group-center d-flex">
-                    <div style="margin-right:20px;">
-                        <div class="flexrow">
-                            <label for="system.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
-                                    id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i>
-                                {{#if system.battlegroup}}
-                                {{localize "Ex3.Magnitude"}}
-                                {{else}}
-                                {{localize "Ex3.Health"}}
-                                {{/if}}
-                                <i id="recoveryScene" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
-                                    style="margin-left:3px;"></i></label>
-                        </div>
-                        <div class="resource-content flexrow flex-center flex-between">
-                            <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-                                data-max="{{system.health.max}}" data-bashing="{{system.health.bashing}}"
-                                data-lethal="{{system.health.lethal}}"
-                                data-aggravated="{{system.health.aggravated}}" data-name="system.health">
-                                {{#numLoop system.health.max}}
-                                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
-                                {{/numLoop}}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex-center">
-                            <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-                            <div>-{{system.health.penalty}}</div>
-                        </div>
+            <div class="resources flex-center grid grid-2col">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
+                            data-dtype="Number" />/
+                        <input type="number" name="system.willpower.max" value="{{system.willpower.max}}"
+                            data-dtype="Number" />
                     </div>
                 </div>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <div class="resources grid grid-2col">
-                        <div>
-                            <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
-                            <div class="resource-content flexrow flex-center flex-between">
-                                <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
-                                    data-dtype="Number" />/
-                                <input type="number" name="system.willpower.max" value="{{system.willpower.max}}"
-                                    data-dtype="Number" />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="resource-label">{{localize "Ex3.Speed"}}</label>
-                            <input type="number" name="system.speed.value" value="{{system.speed.value}}"
-                            data-dtype="Number" />
-                        </div>
-                    </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Limit"}}</label>
+                    <input type="number" name="system.limit.value" value="{{system.limit.value}}" data-dtype="Number" />
                 </div>
             </div>
         </div>
@@ -301,7 +269,8 @@
                 </div>
                 {{#each actor.specialabilities as |item id|}}
                 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
+                            width="24" height="24" />
                     </div>
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">
@@ -350,7 +319,8 @@
                 </div>
                 {{#each actor.merits as |item id|}}
                 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
+                            width="24" height="24" />
                     </div>
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">

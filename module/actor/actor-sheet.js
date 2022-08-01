@@ -97,6 +97,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
 
     const charms = {
+      offensive: { name: 'Ex3.Offensive', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
+      defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
+      social: { name: 'Ex3.Social', visible: false, list: [] },
+      mobility: { name: 'Ex3.Mobility', visible: false, list: [] },
       strength: { name: 'Ex3.Strength', visible: false, list: [] },
       dexterity: { name: 'Ex3.Dexterity', visible: false, list: [] },
       stamina: { name: 'Ex3.Stamina', visible: false, list: [] },
@@ -135,10 +140,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
-      offensive: { name: 'Ex3.Offensive', visible: false, list: [] },
-      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
-      defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
-      social: { name: 'Ex3.Social', visible: false, list: [] },
     }
 
     const spells = {

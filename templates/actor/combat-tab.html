@@ -1,3 +1,32 @@
+<div class="resource flex-group-center d-flex">
+    <div style="margin-right:20px;">
+        <div class="flexrow">
+            <label for="system.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
+                    id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i> {{#if
+                system.battlegroup}}
+                {{localize "Ex3.Magnitude"}}
+                {{else}}
+                {{localize "Ex3.Health"}}
+                {{/if}}<i id="recoveryScene" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+                    style="margin-left:3px;"></i></label>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between">
+            <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated" data-max="{{system.health.max}}"
+                data-bashing="{{system.health.bashing}}" data-lethal="{{system.health.lethal}}"
+                data-aggravated="{{system.health.aggravated}}" data-name="system.health">
+                {{#numLoop system.health.max}}
+                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+                {{/numLoop}}
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
+            <div>-{{system.health.penalty}}</div>
+        </div>
+    </div>
+</div>
 <div class="grid grid-2col flex-group-center">
     <button class="roll-button rollAbility"><i class="fas fa-dice-d10"></i>{{localize "Ex3.Ability"}}</button>
     <button class="roll-button join-battle"><i class="fas fa-bolt"></i>{{localize "Ex3.JoinBattle"}}</button>
@@ -9,21 +38,19 @@
         <div class="grid grid-4col flex-group-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}<i
-                        class="fas fa-calculator calculate-parry cursor-pointer"
-                        title="Auto Set Parry" style="margin-left:3px;"></i>{{/ifEquals}}</label>
+                        class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
+                        style="margin-left:3px;"></i>{{/ifEquals}}</label>
                 <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Evasion"}}{{#ifEquals data.type 'character'}}<i
-                    class="fas fa-calculator calculate-evasion cursor-pointer"
-                    title="Auto Set Evasion" style="margin-left:3px;"></i>{{/ifEquals}}</label>
-                <input type="number" name="system.evasion.value" value="{{system.evasion.value}}"
-                    data-dtype="Number" />
+                        class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
+                        style="margin-left:3px;"></i>{{/ifEquals}}</label>
+                <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
-                <input type="number" name="system.sorcery.motes" value="{{system.sorcery.motes}}"
-                    data-dtype="Number" />
+                <input type="number" name="system.sorcery.motes" value="{{system.sorcery.motes}}" data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>

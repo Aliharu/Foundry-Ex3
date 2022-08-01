@@ -427,17 +427,32 @@ export default class TemplateImporter extends Application {
       if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
         actorData.system.creaturetype = 'exalt';
         actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').trim();
-        if(['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+        if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
           actorData.system.details.exalt = 'dragonblooded';
         }
-        if(['no mood', 'full moon', 'changing moon', 'casteless'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+        if (['no mood', 'full moon', 'changing moon', 'casteless'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
           actorData.system.details.exalt = 'lunar';
         }
-        if(['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+        if (['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
           actorData.system.details.exalt = 'solar';
         }
-        if(['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+        if (['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
           actorData.system.details.exalt = 'sidereal';
+        }
+        if (['dusk', 'midnight', 'daybreak', 'moonshadow', 'day'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'abyssal';
+        }
+        if (['adamant', 'jade', 'moonsilver', 'orichalcum', 'starmetal', 'soulsteel'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'alchemical';
+        }
+        if (['spring', 'summer', 'fall', 'winter'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'getimian';
+        }
+        if (['azimuth', 'ascendant', 'horizon', 'nadir', 'penumbra'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'infernal';
+        }
+        if (['blood', 'breath', 'flesh', 'marrow', 'soil'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+          actorData.system.details.exalt = 'liminal';
         }
         index++;
       }
@@ -497,6 +512,9 @@ export default class TemplateImporter extends Application {
           if (health.includes('2x')) {
             actorData.system.health.levels.two.value = parseInt(health.replace('2x', '').replace(/[^0-9]/g, ''));
           }
+          if (health.includes('4x')) {
+            actorData.system.health.levels.four.value = parseInt(health.replace('4x', '').replace(/[^0-9]/g, ''));
+          }
         }
         index++;
       }
@@ -543,7 +561,7 @@ export default class TemplateImporter extends Application {
       for (const action of actionsArray) {
         var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
         var name = actionSplit[0].replace(" ", "");
-        if (name.toLocaleLowerCase().includes('resistpoison') || name.toLocaleLowerCase().includes('resistdiseasepoison') ) {
+        if (name.toLocaleLowerCase().includes('resistpoison') || name.toLocaleLowerCase().includes('resistdiseasepoison')) {
           actorData.system.pools.resistpoison.value = parseInt(actionSplit[1].trim());
         }
         else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
@@ -584,8 +602,8 @@ export default class TemplateImporter extends Application {
       }
       while (textArray[index].includes('Attack')) {
         var attackString = textArray[index];
-        if(!textArray[index+1].includes('Attack') && !textArray[index+1].includes('Combat Movement')) {
-          attackString += textArray[index+1];
+        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement')) {
+          attackString += textArray[index + 1];
           index++;
         }
         var attackArray = attackString.replace('Attack ', '').split(':');
@@ -610,7 +628,7 @@ export default class TemplateImporter extends Application {
               overwhelming = parseInt(damageSubSplit[1].replace(/[^0-9]/g, ''));
             }
           }
-          else if(damageSplit[1].includes(';')) {
+          else if (damageSplit[1].includes(';')) {
             damage = parseInt(damageSplit[1].split(';')[0].replace(/[^0-9]/g, ''))
             weaponDescription = damageSplit[1].split(';')[1];
           }
@@ -713,47 +731,37 @@ export default class TemplateImporter extends Application {
             index++;
             newItem = true;
           }
-          if (textArray[index].trim().toLowerCase() === 'offensive charms') {
+          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war'  || textArray[index].trim().toLowerCase() === 'evocations') {
+            if (textArray[index].trim().toLowerCase().includes('offensive charms')) {
+              charmSystemData.ability = 'offensive';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'defensive charms') {
+              charmSystemData.ability = 'defensive';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'social charms') {
+              charmSystemData.ability = 'social';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'mobility charms') {
+              charmSystemData.ability = 'mobility';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'evocations') {
+              charmSystemData.ability = 'evocation';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
+              charmSystemData.ability = 'war';
+            }
+            else {
+              charmSystemData.ability = 'other';
+            }
             itemType = 'charm';
             index++;
             newItem = true;
-            charmSystemData.ability = 'offensive';
-          }
-          if (textArray[index].trim().toLowerCase() === 'defensive charms') {
-            itemType = 'charm';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'defensive';
-          }
-          if (textArray[index].trim().toLowerCase() === 'social charms') {
-            itemType = 'charm';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'social';
-          }
-          if (textArray[index].trim().toLowerCase() === 'evocations') {
-            itemType = 'charm';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'evocation';
-          }
-          if (textArray[index].trim().toLowerCase() === 'miscellaneous charms') {
-            itemType = 'charm';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'other';
           }
           if (textArray[index].trim().toLowerCase() === 'sorcery') {
             itemType = 'spell';
             index++;
             newItem = true;
             charmSystemData.ability = 'occult';
-          }
-          if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
-            itemType = 'charm';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'war';
           }
           if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
             itemType = 'quality';
@@ -1085,7 +1093,7 @@ export default class TemplateImporter extends Application {
 }
 
 Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.CharmImport")}</button>`);
+  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.CharmImport")}(BETA)</button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
@@ -1095,7 +1103,7 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 })
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.NPCImport")}</button>`);
+  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.NPCImport")}(BETA)</button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
