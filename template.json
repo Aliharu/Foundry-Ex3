@@ -93,6 +93,11 @@
           "active": "",
           "iconic": ""
         },
+        "limit": {
+          "value": 0,
+          "min": 0,
+          "trigger": ""
+        },
         "sorcery": {
           "motes": 0
         },
@@ -394,11 +399,6 @@
           "value": 0,
           "name": "Ex3.War"
         }
-      },
-      "limit": {
-        "value": 0,
-        "min": 0,
-        "trigger": ""
       },
       "advantages": {
         "resonance": "",
