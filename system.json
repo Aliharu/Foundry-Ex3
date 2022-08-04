@@ -7,7 +7,7 @@
   "url": "https://github.com/Aliharu/Foundry-Ex3",
   "license": "LICENSE.txt",
   "flags": {},
-  "version": "0.10.4",
+  "version": "1.0.0",
   "compatibility": {
     "minimum": 10,
     "verified": "10"
@@ -31,10 +31,10 @@
   "relationships": [],
   "socket": false,
   "manifest": "https://raw.githubusercontent.com/Aliharu/Foundry-Ex3/master/system.json",
-  "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v0.10.3/release0.10.3.zip",
+  "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v1.0.0/release1.0.0.zip",
   "protected": false,
   "gridDistance": 5,
   "gridUnits": "ft",
-  "primaryTokenAttribute": "power",
+  "primaryTokenAttribute": "health",
   "secondaryTokenAttribute": "damage"
 }
