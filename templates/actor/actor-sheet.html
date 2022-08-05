@@ -116,29 +116,14 @@
           {{/ifEquals}}
         </div>
       </div>
-      <div class="resources flex-center grid grid-2col">
+      <div class="resource-content flexrow flex-center flex-between">
         <div>
           <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
-          <div class="resource-content">
+          <div class="resource-content flexrow flex-center flex-between">
             <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
               data-dtype="Number" />/
             <input type="number" name="system.willpower.max" value="{{system.willpower.max}}"
               data-dtype="Number" />
-            <!-- <div>
-              <div class="resource-value" data-value="{{system.willpower.value}}" data-name="system.willpower.value">
-                {{#numLoop 10}}
-                <span class="resource-value-step" data-index="{{this}}"></span>
-                {{/numLoop}}
-              </div>
-            </div>
-            <div>
-              <div class="resource-counter" data-states="x:max" data-value="{{system.willpower.max}}" data-max="10"
-                data-name="system.willpower.max">
-                {{#numLoop 10}}
-                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
-                {{/numLoop}}
-              </div>
-            </div> -->
           </div>
         </div>
         <div>
