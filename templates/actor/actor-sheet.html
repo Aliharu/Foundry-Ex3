@@ -128,7 +128,11 @@
         </div>
         <div>
           <label class="resource-label">{{localize "Ex3.Limit"}}</label>
-          <input type="number" name="system.limit.value" value="{{system.limit.value}}" data-dtype="Number" />
+          <div class="resource-value" data-value="{{system.limit.value}}" data-name="system.limit.value">
+            {{#numLoop 10}}
+            <span class="resource-value-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+          </div>
         </div>
       </div>
     </div>
