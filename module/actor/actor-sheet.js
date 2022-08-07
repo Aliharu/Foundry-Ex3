@@ -528,8 +528,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.craft-project').click(ev => {
       var type = $(ev.target).attr("data-type");
-      // completeCraftProject(this.actor, type, 2);
       new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: type, craftRating: 2 }).render(true);
+    });
+
+    html.find('.sorcerous-working').click(ev => {
+      if (this.actor.type === "npc") {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'working', pool: "sorcery" }).render(true);
+      }
+      else {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'working', ability: "occult", attribute: 'intelligence' }).render(true);
+      }
     });
 
     html.find('.item-complete').click(ev => {

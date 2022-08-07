@@ -20,7 +20,7 @@ export class RollForm extends FormApplication {
             this.object.attackType = 'withering';
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft';
+            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working';
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -144,6 +144,14 @@ export class RollForm extends FormApplication {
                         this.object.difficulty = 5;
                         this.object.goalNumber = 200;
                     }
+                }
+                this.object.finesse = 1;
+                this.object.ambition = 5;
+
+                if (this.object.rollType === 'working') {
+                    this.object.difficulty = 1;
+                    this.object.intervals = 5;
+                    this.object.goalNumber = 5;
                 }
 
                 if (this._isAttackRoll()) {
@@ -397,6 +405,16 @@ export class RollForm extends FormApplication {
     activateListeners(html) {
         super.activateListeners(html);
 
+        html.on("change", "#working-finesse", ev => {
+            this.object.difficulty = parseInt(this.object.finesse);
+            this.render();
+        });
+
+        html.on("change", "#working-ambition", ev => {
+            this.object.goalNumber = parseInt(this.object.ambition);
+            this.render();
+        });
+
         html.find('#roll-button').click((event) => {
             this._roll();
             if (this.object.intervals <= 0) {
@@ -593,7 +611,7 @@ export class RollForm extends FormApplication {
         else if (this.object.rollType === 'base') {
             await this._diceRoll();
         }
-        else if (this.object.rollType === 'craft') {
+        else if (this.object.rollType === 'craft' || this.object.rollType === 'working') {
             await this._completeCraftProject();
         }
         else {
@@ -1299,56 +1317,66 @@ export class RollForm extends FormApplication {
             }
             resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>${extendedTest}`;
         }
+        if(this.object.rollType === 'craft') {
+            if (craftFailed) {
+                projectStatus = `<h4 class="dice-total">Craft Project Failed</h4>`;
+            }
+            if (craftSuccess) {
+                const actorData = duplicate(this.actor);
+                var silverXPGained = 0;
+                var goldXPGained = 0;
+                var whiteXPGained = 0;
+                if (this.object.craftType === 'basic') {
+                    if (threshholdSucceses >= 3) {
+                        silverXPGained = 3 * this.object.objectivesCompleted;
+                    }
+                    else {
+                        silverXPGained = 2 * this.object.objectivesCompleted;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
+                }
+                else if (this.object.craftType === "major") {
+                    if (threshholdSucceses >= 3) {
+                        silverXPGained = this.object.objectivesCompleted;
+                        goldXPGained = 3 * this.object.objectivesCompleted;
+                    }
+                    else {
+                        silverXPGained = this.object.objectivesCompleted;
+                        goldXPGained = 2 * this.object.objectivesCompleted;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
+                }
+                else if (this.object.craftType === "superior") {
+                    if (this.object.objectivesCompleted > 0) {
+                        whiteXPGained = (this.object.craftRating - 1) + this.object.craftRating;
+                        goldXPGained = (this.object.craftRating * 2) * this.object.intervals;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                }
+                else if (this.object.craftType === "legendary") {
+                    if (this.object.objectivesCompleted > 0) {
+                        whiteXPGained = 10;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                }
+                else {
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
+                }
+                actorData.system.craft.experience.silver.value += silverXPGained;
+                actorData.system.craft.experience.gold.value += goldXPGained;
+                actorData.system.craft.experience.white.value += whiteXPGained;
+                this.actor.update(actorData);
+            }
+        }
+        if(this.object.rollType === 'working') {
+            if (craftFailed) {
+                projectStatus = `<h4 class="dice-total">Working Failed</h4>`;
+            }
+            if (craftSuccess) {
+                projectStatus = `<h4 class="dice-total">Working Success</h4>`;
+            }
+        }
 
-        if (craftFailed) {
-            projectStatus = `<h4 class="dice-total">Craft Project Failed</h4>`;
-        }
-        if (craftSuccess) {
-            const actorData = duplicate(this.actor);
-            var silverXPGained = 0;
-            var goldXPGained = 0;
-            var whiteXPGained = 0;
-            if (this.object.craftType === 'basic') {
-                if (threshholdSucceses >= 3) {
-                    silverXPGained = 3 * this.object.objectivesCompleted;
-                }
-                else {
-                    silverXPGained = 2 * this.object.objectivesCompleted;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
-            }
-            else if (this.object.craftType === "major") {
-                if (threshholdSucceses >= 3) {
-                    silverXPGained = this.object.objectivesCompleted;
-                    goldXPGained = 3 * this.object.objectivesCompleted;
-                }
-                else {
-                    silverXPGained = this.object.objectivesCompleted;
-                    goldXPGained = 2 * this.object.objectivesCompleted;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
-            }
-            else if (this.object.craftType === "superior") {
-                if (this.object.objectivesCompleted > 0) {
-                    whiteXPGained = (this.object.craftRating - 1) + this.object.craftRating;
-                    goldXPGained = (this.object.craftRating * 2) * this.object.intervals;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
-            }
-            else if (this.object.craftType === "legendary") {
-                if (this.object.objectivesCompleted > 0) {
-                    whiteXPGained = 10;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
-            }
-            else {
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
-            }
-            actorData.system.craft.experience.silver.value += silverXPGained;
-            actorData.system.craft.experience.gold.value += goldXPGained;
-            actorData.system.craft.experience.white.value += whiteXPGained;
-            this.actor.update(actorData);
-        }
 
         let messageContent = `
 <div class="chat-card">

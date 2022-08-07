@@ -16,6 +16,14 @@
             </div>
         </div>
         {{/ifEquals}}
+        {{#ifEquals data.rollType 'working'}}
+        <div class="resource flex-center mb-2">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Intervals"}}</label>
+                <input type="number" name="object.intervals" value="{{data.intervals}}" >
+            </div>
+        </div>
+        {{/ifEquals}}
         <div class="d-flex">
             <button type="button" id="roll-button">Roll</button>
             <button type="button" id="cancel">Cancel</button>
