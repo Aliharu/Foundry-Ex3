@@ -54,9 +54,9 @@ export default class TemplateImporter extends Application {
     if (this.type === 'spell') {
       data.templateHint = game.i18n.localize("Ex3.SpellImportHint");
     }
-    // if (this.type === 'character') {
-    //   data.templateHint = game.i18n.localize("Ex3.CharacterImportHint");
-    // }
+    if (this.type === 'adversary') {
+      data.templateHint = game.i18n.localize("Ex3.AdversaryImportHint");
+    }
     if (this.type === 'qc') {
       data.templateHint = game.i18n.localize("Ex3.QCImportHint");
     }
@@ -165,7 +165,6 @@ export default class TemplateImporter extends Application {
     }
     charmData.system.description = description;
     await Item.create(charmData);
-
   }
 
   async createSpell(html) {
@@ -200,6 +199,10 @@ export default class TemplateImporter extends Application {
     }
     spellData.system.description = description;
     await Item.create(spellData);
+  }
+
+  async createAdversary(html) {
+
   }
 
   async createQuickCharacter(html) {
@@ -1074,6 +1077,9 @@ export default class TemplateImporter extends Application {
       } else if (document.getElementById("qc-radio").checked) {
         this.type = "qc";
       }
+      else if (document.getElementById("qc-adversary").checked) {
+        this.type = "adversary";
+      }
       this.render();
     });
 
@@ -1086,6 +1092,9 @@ export default class TemplateImporter extends Application {
         this.createSpell(html);
       } else if (this.type === 'qc') {
         this.createQuickCharacter(html);
+      }
+      else if (this.type === 'adversary') {
+        this.createAdversary(html);
       }
       this.render();
     });

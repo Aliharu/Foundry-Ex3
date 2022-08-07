@@ -446,6 +446,24 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new RollForm(this.actor, { event: ev }, {}, { rollType: 'damage' }).render(true);
     });
 
+    html.find('.rush').mousedown(ev => {
+      if (this.actor.type === "npc") {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'movement' }).render(true);
+      }
+      else {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'athletics', attribute: 'dexterity' }).render(true);
+      }
+    });
+
+    html.find('.disengage').mousedown(ev => {
+      if (this.actor.type === "npc") {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: 'movement' }).render(true);
+      }
+      else {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'dodge', attribute: 'dexterity' }).render(true);
+      }
+    });
+
     html.find('.shape-sorcery').mousedown(ev => {
       if (this.actor.type === "npc") {
         new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);

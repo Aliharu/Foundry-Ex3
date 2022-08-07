@@ -49,12 +49,13 @@
                 <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
-                <input type="number" name="system.sorcery.motes" value="{{system.sorcery.motes}}" data-dtype="Number" />
+                <label class="resource-label">{{localize "Ex3.Rush"}}</label>
+                <button class="roll-button rush"><i class="fas fa-person-running"></i>{{localize
+                    "Ex3.Roll"}}</button>
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
-                <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize
+                <label class="resource-label">{{localize "Ex3.Disengage"}}</label>
+                <button class="roll-button disengage"><i class="fas fa-person-running"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
         </div>
@@ -83,6 +84,17 @@
                     <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
                         data-dtype="Number" />
                 </div>
+            </div>
+        </div>
+        <div class="grid grid-2col flex-group-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
+                <input type="number" name="system.sorcery.motes" value="{{system.sorcery.motes}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
+                <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize
+                    "Ex3.Roll"}}</button>
             </div>
         </div>
         {{#if system.battlegroup}}
