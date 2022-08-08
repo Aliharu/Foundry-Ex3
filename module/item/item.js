@@ -13,14 +13,17 @@ export class ExaltedThirdItem extends Item {
   }
 
   async _preCreate(createData, options, userId) {
-    this.updateSource({ img: this.getImageUrl(createData.type ) });
+    this.updateSource({ img: this.getImageUrl(createData.type) });
   }
 
   getImageUrl(type) {
     if (type === 'intimacy') {
       return "systems/exaltedthird/assets/icons/hearts.svg";
     }
-    if (type === 'spell' || type === 'initiation') {
+    if (type === 'spell') {
+      return "systems/exaltedthird/assets/icons/magic-swirl.svg";
+    }
+    if (type === 'initiation') {
       return "icons/svg/book.svg";
     }
     if (type === 'merit') {

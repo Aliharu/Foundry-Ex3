@@ -1045,7 +1045,10 @@ export default class TemplateImporter extends Application {
     if (type === 'intimacy') {
       return "systems/exaltedthird/assets/icons/hearts.svg";
     }
-    if (type === 'spell' || type === 'initiation') {
+    if (type === 'spell') {
+      return "systems/exaltedthird/assets/icons/magic-swirl.svg";
+    }
+    if (type === 'initiation') {
       return "icons/svg/book.svg";
     }
     if (type === 'merit') {
