@@ -201,12 +201,322 @@ export default class TemplateImporter extends Application {
     await Item.create(spellData);
   }
 
-  async createAdversary(html) {
-
-  }
-
-  async createQuickCharacter(html) {
-    var actorData = {
+  _getStatBlock(adversary = false) {
+    if (adversary) {
+      return {
+        type: 'npc',
+        system: {
+          "attributes": {
+            "strength": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Strength"
+            },
+            "charisma": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Charisma"
+            },
+            "perception": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Perception"
+            },
+            "dexterity": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Dexterity"
+            },
+            "manipulation": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Manipulation"
+            },
+            "intelligence": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Intelligence"
+            },
+            "stamina": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Stamina"
+            },
+            "appearance": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Appearance"
+            },
+            "wits": {
+              "favored": false,
+              "value": 1,
+              "name": "Ex3.Wits"
+            }
+          },
+          "abilities": {
+            "archery": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Archery"
+            },
+            "athletics": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Athletics"
+            },
+            "awareness": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Awareness"
+            },
+            "brawl": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Brawl"
+            },
+            "bureaucracy": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Bureaucracy"
+            },
+            "craft": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Craft"
+            },
+            "dodge": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Dodge"
+            },
+            "integrity": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Integrity"
+            },
+            "investigation": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Investigation"
+            },
+            "larceny": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Larceny"
+            },
+            "linguistics": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Linguistics"
+            },
+            "lore": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Lore"
+            },
+            "martialarts": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.MartialArts"
+            },
+            "medicine": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Medicine"
+            },
+            "melee": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Melee"
+            },
+            "occult": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Occult"
+            },
+            "performance": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Performance"
+            },
+            "presence": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Presence"
+            },
+            "resistance": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Resistance"
+            },
+            "ride": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Ride"
+            },
+            "sail": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Sail"
+            },
+            "socialize": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Socialize"
+            },
+            "stealth": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Stealth"
+            },
+            "survival": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Survival"
+            },
+            "thrown": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.Thrown"
+            },
+            "war": {
+              "favored": false,
+              "value": 0,
+              "name": "Ex3.War"
+            }
+          },
+          "health": {
+            "levels": {
+              "zero": {
+                "value": 1,
+                "penalty": 0
+              },
+              "one": {
+                "value": 2,
+                "penalty": 1
+              },
+              "two": {
+                "value": 2,
+                "penalty": 2
+              },
+              "four": {
+                "value": 1,
+                "penalty": 4
+              },
+              "inc": {
+                "value": 1,
+                "penalty": "inc"
+              }
+            },
+            "bashing": 0,
+            "lethal": 0,
+            "aggravated": 0,
+            "value": 0,
+            "max": 0
+          },
+          "willpower": {
+            "value": 0,
+            "total": 5,
+            "max": 5,
+            "min": 0
+          },
+          "speed": {
+            "value": 0,
+            "min": 0
+          },
+          "essence": {
+            "value": 1,
+            "min": 0,
+            "max": 10
+          },
+          "motes": {
+            "personal": {
+              "value": 0,
+              "total": 0,
+              "max": 0,
+              "committed": 0
+            },
+            "peripheral": {
+              "value": 0,
+              "total": 0,
+              "max": 0,
+              "committed": 0
+            }
+          },
+          "evasion": {
+            "value": 0
+          },
+          "parry": {
+            "value": 0
+          },
+          "soak": {
+            "value": 1
+          },
+          "armoredsoak": {
+            "value": 0
+          },
+          "naturalsoak": {
+            "value": 1
+          },
+          "hardness": {
+            "value": 0,
+            "min": 0
+          },
+          "resolve": {
+            "value": 0
+          },
+          "guile": {
+            "value": 0
+          },
+          "appearance": {
+            "value": 0
+          },
+          "anima": {
+            "value": 0,
+            "max": 3,
+            "level": "Dim",
+            "passive": "",
+            "active": "",
+            "iconic": ""
+          },
+          "sorcery": {
+            "motes": 0
+          },
+          "savedRolls": {},
+          "legendarysize": false,
+          "traits": {
+            "languages": {
+              "value": [],
+              "custom": ""
+            }
+          },
+          "details": {
+            "exalt": "solar",
+            "caste": "",
+            "color": "#000000",
+            "tell": "",
+            "aura": "none",
+            "ideal": "",
+            "supernal": "",
+            "penumbra": {
+              "value": 0,
+              "max": 10,
+              "min": 0
+            }
+          },
+          "creaturetype": "mortal",
+          "qualities": '',
+          "escort": '',
+          "settings": {
+            "charmmotepool": "peripheral",
+            "showwarstrider": false,
+            "showship": false,
+            "showescort": false
+          },
+        }
+      };
+    };
+    return {
       type: 'npc',
       system: {
         "pools": {
@@ -421,6 +731,10 @@ export default class TemplateImporter extends Application {
         },
       }
     };
+  }
+
+  async createQuickCharacter(html, adversary = false) {
+    var actorData = this._getStatBlock(adversary);
     const itemData = [
     ];
     let index = 1;
@@ -467,12 +781,29 @@ export default class TemplateImporter extends Application {
         actorData.system.details.tell = tellArray[1].trim();
         index++;
       }
-      var statArray = textArray[index].replace(/ *\([^)]*\) */g, "").replace('Cost: ', '').split(';');
-      actorData.system.essence.value = parseInt(statArray[0].replace(/[^0-9]/g, ''));
-      actorData.system.willpower.value = parseInt(statArray[1].replace(/[^0-9]/g, ''));
-      actorData.system.willpower.max = parseInt(statArray[1].replace(/[^0-9]/g, ''));
-      actorData.system.pools.joinbattle.value = parseInt(statArray[2].replace(/[^0-9]/g, ''));
-      index++;
+      if (adversary) {
+        var attributeString = textArray[index].replace('Attributes:');
+        index++
+        while(!textArray[index].includes("Essence")) {
+          attributeString += textArray[index];
+          index++
+        }
+        var attributeArray = attributeString.split(/,|;/);
+        for(const attribute of attributeArray) {
+          var attributeSpecificArray = attribute.split();
+          var trimmedName = attributeSpecificArray[0].trim().toLowerCase();
+          var value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
+          actorData.attributes[trimmedName].value = value;
+        }
+      }
+      else {
+        var statArray = textArray[index].replace(/ *\([^)]*\) */g, "").replace('Cost: ', '').split(';');
+        actorData.system.essence.value = parseInt(statArray[0].replace(/[^0-9]/g, ''));
+        actorData.system.willpower.value = parseInt(statArray[1].replace(/[^0-9]/g, ''));
+        actorData.system.willpower.max = parseInt(statArray[1].replace(/[^0-9]/g, ''));
+        actorData.system.pools.joinbattle.value = parseInt(statArray[2].replace(/[^0-9]/g, ''));
+        index++;
+      }
       if (textArray[index].includes('Health Levels')) {
         var healthArray = textArray[index].replace('Health Levels: ', '').replace('/incap.', '').split('/');
         for (const health of healthArray) {
@@ -734,7 +1065,7 @@ export default class TemplateImporter extends Application {
             index++;
             newItem = true;
           }
-          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war'  || textArray[index].trim().toLowerCase() === 'evocations') {
+          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'evocations') {
             if (textArray[index].trim().toLowerCase().includes('offensive charms')) {
               charmSystemData.ability = 'offensive';
             }
