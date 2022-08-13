@@ -126,6 +126,11 @@ Handlebars.registerHelper('ifGreater', function(arg1, arg2, options) {
   return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
 });
 
+Handlebars.registerHelper('le', function( a, b ){
+  var next =  arguments[arguments.length-1];
+  return (a <= b) ? next.fn(this) : next.inverse(this);
+});
+
 $(document).ready(() => {
   const diceIconSelector = '#chat-controls .chat-control-icon .fa-dice-d20';
 

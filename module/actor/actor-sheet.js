@@ -676,23 +676,23 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateDerivedStats(type) {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
-    if(type === 'parry') {
+    if (type === 'parry') {
       var highestAbility = Math.max(data.abilities.melee.value, data.abilities.brawl.value, data.abilities.martialarts.value);
       data.parry.value = Math.ceil((data.attributes.dexterity.value + highestAbility) / 2);
     }
-    if(type === 'evasion') {
+    if (type === 'evasion') {
       var newEvasionValue = Math.ceil((data.attributes.dexterity.value + data.abilities.dodge.value) / 2);
       for (let armor of this.actor.armor) {
         if (armor.system.equiped) {
           newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
         }
-    }
+      }
       data.evasion.value = newEvasionValue;
     }
-    if(type === 'resolve') {
+    if (type === 'resolve') {
       data.resolve.value = Math.ceil((data.attributes.wits.value + data.abilities.integrity.value) / 2);
     }
-    if(type === 'guile') {
+    if (type === 'guile') {
       data.guile.value = Math.ceil((data.attributes.manipulation.value + data.abilities.socialize.value) / 2);
     }
     this.actor.update(actorData);
@@ -721,10 +721,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.exalt === 'liminal') {
         data.motes.personal.max = 10 + (data.essence.value * 3);
       }
-      if(data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect'|| data.details.caste.toLowerCase() === 'puppeteer') {
+      if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
         data.motes.personal.max = 11 + data.essence.value;
       }
-      if(data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+      if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
         data.motes.personal.max = 11 + (data.essence.value * 2);
       }
     }
@@ -747,10 +747,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.exalt === 'liminal') {
         data.motes.peripheral.max = 23 + (data.essence.value * 4);
       }
-      if(data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect'|| data.details.caste.toLowerCase() === 'puppeteer') {
+      if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
         data.motes.peripheral.max = 23 + (data.essence.value * 4);
       }
-      if(data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+      if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
         data.motes.peripheral.max = 27 + (data.essence.value * 6);
       }
     }
@@ -1138,8 +1138,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (this.dataset.index < values.length) {
           this.dataset.state = values[this.dataset.index];
         }
-      })
-    })
+      });
+    });
   }
 
   _toggleAugment(event) {
@@ -1313,8 +1313,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         actorData.system.motes.peripheral.value = Math.max(0 + actorData.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
         actorData.system.motes.personal.value = Math.max(0 + actorData.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
 
-        if(spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
-          for(var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+        if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
+          for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
             if (newLevel === "Dim") {
               newLevel = "Glowing";
               newValue = 1;
@@ -1323,7 +1323,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               newLevel = "Burning";
               newValue = 2;
             }
-            else if(newLevel === "Burning") {
+            else if (newLevel === "Burning") {
               newLevel = "Bonfire";
               newValue = 3;
             }

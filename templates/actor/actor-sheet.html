@@ -119,6 +119,16 @@
       <div class="resource-content flexrow flex-center flex-between">
         <div>
           <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
+          <!-- <div class="resource-value" data-value="{{system.willpower.value}}" data-name="system.willpower.value">
+            {{#numLoop 10}}
+            <span class="resource-value-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+          </div> -->
+          <!-- <div class="resource-counter" data-states="x:max" data-max="{{system.willpower.max}}" data-name="system.willpower">
+            {{#numLoop 10}}
+            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+            {{/numLoop}}
+          </div> -->
           <div class="resource-content flexrow flex-center flex-between">
             <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
               data-dtype="Number" />/
