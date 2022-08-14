@@ -219,6 +219,7 @@
                         class="fas fa-plus"></i></a>
             </div>
             <div class="attributes grid grid-3col flex-group-center">
+                {{#if system.settings.showzerovalues}}
                 {{#each system.pools as |pool key|}}
                 <div class="pool flex-center">
                     <label for="system.pools.{{key}}.value" class="resource-label vrollable roll-pool"
@@ -227,6 +228,18 @@
                     <input type="number" name="system.pools.{{key}}.value" value="{{pool.value}}" data-dtype="Number" />
                 </div>
                 {{/each}}
+                {{else}}
+                {{#each system.pools as |pool key|}}
+                {{#ifGreater pool.value 0}}
+                <div class="pool flex-center">
+                    <label for="system.pools.{{key}}.value" class="resource-label vrollable roll-pool"
+                        data-roll="{{pool.value}}" data-pool="{{key}}" data-label="{{pool.name}}">{{localize
+                        pool.name}}</label>
+                    <input type="number" name="system.pools.{{key}}.value" value="{{pool.value}}" data-dtype="Number" />
+                </div>
+                {{/ifGreater}}
+                {{/each}}
+                {{/if}}
                 {{#each actor.actions as |action key|}}
                 <div class="item flex-center" data-item-id="{{action._id}}">
                     <label class="resource-label roll-action">{{action.name}}</label>
@@ -291,7 +304,8 @@
                 </div>
                 {{#each actor.initiations as |item id|}}
                 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
+                            width="24" height="24" />
                     </div>
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">

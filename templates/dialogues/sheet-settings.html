@@ -22,6 +22,10 @@
             <input id="showEscort" name="showEscort" type="checkbox" {{checked showEscort}}>
         </div>
         <div class="mb-1">
+            <label className="resource-label">{{localize "Ex3.ShowZeroValues"}}(NPC only):</label>
+            <input id="showZeroValues" name="showZeroValues" type="checkbox" {{checked showZeroValues}}>
+        </div>
+        <div class="mb-1">
             <label className="resource-label">{{localize "Ex3.MaxAnima"}}:</label>
             <select id="maxAnima" name="maxAnima" data-type="String">
                 {{#select maxAnima}}

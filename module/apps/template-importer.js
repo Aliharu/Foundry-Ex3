@@ -511,7 +511,8 @@ export default class TemplateImporter extends Application {
             "charmmotepool": "peripheral",
             "showwarstrider": false,
             "showship": false,
-            "showescort": false
+            "showescort": false,
+            "showzerovalues": false,
           },
         }
       };
@@ -727,7 +728,8 @@ export default class TemplateImporter extends Application {
           "charmmotepool": "peripheral",
           "showwarstrider": false,
           "showship": false,
-          "showescort": false
+          "showescort": false,
+          "showzerovalues": false,
         },
       }
     };

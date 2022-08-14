@@ -952,7 +952,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showescort': data.settings.showescort, 'maxAnima': data.anima.max });
+    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -966,6 +966,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
           data.settings.showship = html.find('#showShip').is(":checked");
           data.settings.showescort = html.find('#showEscort').is(":checked");
+          data.settings.showzerovalues = html.find('#showZeroValues').is(":checked");
           data.anima.max = parseInt(html.find('#maxAnima').val());
           this.actor.update(actorData);
         }

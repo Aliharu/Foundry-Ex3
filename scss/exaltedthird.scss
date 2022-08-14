@@ -337,6 +337,10 @@
   }
 }
 
+.chat-control-icon .fa-dice-d20:before {
+  content: "\f6cd" !important;
+}
+
 .chat-control-icon .fas.fa-dice-d20:hover:before {
   cursor: pointer;
 }

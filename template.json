@@ -128,7 +128,8 @@
           "charmmotepool": "peripheral",
           "showwarstrider": false,
           "showship": false,
-          "showescort": false
+          "showescort": false,
+          "showzerovalues": true
         },
         "ship": {
           "name": "",
