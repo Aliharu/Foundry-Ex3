@@ -491,7 +491,7 @@ export default class TemplateImporter extends Application {
             }
           },
           "details": {
-            "exalt": "solar",
+            "exalt": "abyssal",
             "caste": "",
             "color": "#000000",
             "tell": "",
@@ -708,7 +708,7 @@ export default class TemplateImporter extends Application {
           }
         },
         "details": {
-          "exalt": "solar",
+          "exalt": "abyssal",
           "caste": "",
           "color": "#000000",
           "tell": "",
@@ -857,31 +857,34 @@ export default class TemplateImporter extends Application {
       var intimacyString = '';
       var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
+        index++;
         while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index])) {
           intimacyString += textArray[index];
           index++;
         }
         var intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
         for (const intimacy of intimaciesArray) {
-          intimacyArray = intimacy.split(':');
-          var intimacyType = 'tie';
-          if (intimacyArray[0].includes('Principle')) {
-            intimacyType = 'principle';
-          }
-          else if (intimacyArray[0].includes('Tie')) {
-            intimacyType = 'tie';
-          }
-          itemData.push(
-            {
-              type: 'intimacy',
-              img: this.getImageUrl('intimacy'),
-              name: intimacyArray[1].trim(),
-              system: {
-                intimacytype: intimacyType,
-                strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
-              }
+          if(intimacy) {
+            intimacyArray = intimacy.split(':');
+            var intimacyType = 'tie';
+            if (intimacyArray[0].includes('Principle')) {
+              intimacyType = 'principle';
             }
-          );
+            else if (intimacyArray[0].includes('Tie')) {
+              intimacyType = 'tie';
+            }
+            itemData.push(
+              {
+                type: 'intimacy',
+                img: this.getImageUrl('intimacy'),
+                name: intimacyArray[1].trim(),
+                system: {
+                  intimacytype: intimacyType,
+                  strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
+                }
+              }
+            );
+          }
         }
       }
       if (textArray[index].includes('Speed Bonus')) {
@@ -905,6 +908,12 @@ export default class TemplateImporter extends Application {
         }
         else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'featsofstrength') {
           actorData.system.pools.strength.value = parseInt(actionSplit[1].trim());
+        }
+        else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
+          actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
+        }
+        else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'readmotives') {
+          actorData.system.pools.readintentions.value = parseInt(actionSplit[1].trim());
         }
         else if (actorData.system.pools[name.toLocaleLowerCase()]) {
           actorData.system.pools[name.toLocaleLowerCase()].value = parseInt(actionSplit[1].trim());
@@ -1057,67 +1066,69 @@ export default class TemplateImporter extends Application {
       };
       while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
         if (textArray[index]) {
-          if (textArray[index].trim().toLowerCase() === 'merits') {
-            itemType = 'merit';
-            index++;
-            newItem = true;
-          }
-          if (textArray[index].trim().toLowerCase() === 'intimacies') {
-            itemType = 'intimacy';
-            index++;
-            newItem = true;
-          }
-          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'evocations') {
-            if (textArray[index].trim().toLowerCase().includes('offensive charms')) {
-              charmSystemData.ability = 'offensive';
+          if(newItem) {
+            if (textArray[index].trim().toLowerCase() === 'merits') {
+              itemType = 'merit';
+              index++;
+              newItem = true;
             }
-            else if (textArray[index].trim().toLowerCase() === 'defensive charms') {
-              charmSystemData.ability = 'defensive';
+            if (textArray[index].trim().toLowerCase() === 'intimacies') {
+              itemType = 'intimacy';
+              index++;
+              newItem = true;
             }
-            else if (textArray[index].trim().toLowerCase() === 'social charms') {
-              charmSystemData.ability = 'social';
+            if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'evocations') {
+              if (textArray[index].trim().toLowerCase().includes('offensive charms')) {
+                charmSystemData.ability = 'offensive';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'defensive charms') {
+                charmSystemData.ability = 'defensive';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'social charms') {
+                charmSystemData.ability = 'social';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'mobility charms') {
+                charmSystemData.ability = 'mobility';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'evocations') {
+                charmSystemData.ability = 'evocation';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
+                charmSystemData.ability = 'war';
+              }
+              else {
+                charmSystemData.ability = 'other';
+              }
+              itemType = 'charm';
+              index++;
+              newItem = true;
             }
-            else if (textArray[index].trim().toLowerCase() === 'mobility charms') {
-              charmSystemData.ability = 'mobility';
+            if (textArray[index].trim().toLowerCase() === 'sorcery') {
+              itemType = 'spell';
+              index++;
+              newItem = true;
+              charmSystemData.ability = 'occult';
             }
-            else if (textArray[index].trim().toLowerCase() === 'evocations') {
-              charmSystemData.ability = 'evocation';
+            if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
+              itemType = 'quality';
+              index++;
+              newItem = true;
+              itemDescription += textArray[index].trim();
+              itemDescription += '\n';
             }
-            else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
-              charmSystemData.ability = 'war';
+            if (textArray[index].trim().toLowerCase() === 'escort') {
+              itemType = 'escort';
+              index++;
+              newItem = true;
+              actorData.system.settings.showescort = true;
+              itemDescription += textArray[index].trim();
+              itemDescription += '\n';
             }
-            else {
-              charmSystemData.ability = 'other';
+            if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks') {
+              itemType = 'specialability';
+              index++;
+              newItem = true;
             }
-            itemType = 'charm';
-            index++;
-            newItem = true;
-          }
-          if (textArray[index].trim().toLowerCase() === 'sorcery') {
-            itemType = 'spell';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'occult';
-          }
-          if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
-            itemType = 'quality';
-            index++;
-            newItem = true;
-            itemDescription += textArray[index].trim();
-            itemDescription += '\n';
-          }
-          if (textArray[index].trim().toLowerCase() === 'escort') {
-            itemType = 'escort';
-            index++;
-            newItem = true;
-            actorData.system.settings.showescort = true;
-            itemDescription += textArray[index].trim();
-            itemDescription += '\n';
-          }
-          if (textArray[index].trim().toLowerCase() === 'special abilities') {
-            itemType = 'specialability';
-            index++;
-            newItem = true;
           }
           if (index > textArray.length - 1) {
             break;
@@ -1367,6 +1378,7 @@ export default class TemplateImporter extends Application {
       await Actor.create(actorData);
     }
     catch (error) {
+      console.log(error);
       console.log(textArray);
       console.log(index);
       this.error = textArray[index];
