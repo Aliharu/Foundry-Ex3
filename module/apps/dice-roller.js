@@ -1481,31 +1481,98 @@ export class RollForm extends FormApplication {
             Bonfire: 3,
             Transcendent: 4
         }
-        if(this.object.rollType !== "base" && this.actor.type === "character") {
-            if (this.actor.system.details.exalt === "solar") {
-                return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
+        if(this.object.rollType !== "base") {
+            if(this.actor.type === "character") {
+                if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                    return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
+                }
+                if (this.actor.system.details.exalt === "dragonblooded") {
+                    return this.actor.system.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
+                }
+                if (this.actor.system.details.exalt === "lunar") {
+                    return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
+                }
+                if (this.actor.system.details.exalt === "dreamsouled") {
+                    return `${this.actor.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.essence.value)} when upholding ideal`;
+                }
+                if (this.actor.system.details.exalt === "umbral") {
+                    return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
+                }
+                if (this.actor.system.details.caste.toLowerCase() === "architect") {
+                    return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
+                }
+                if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+                    return `${this.actor.system.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+                } 
+                if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
+                    return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10);
+                }
             }
-            if (this.actor.system.details.exalt === "dragonblooded") {
-                return this.actor.system.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
+            else if(this.actor.system.creaturetype === 'exalt') {
+                var dicePool = this.actor.system.pools[this.object.pool].value;
+                var diceTier = "zero";
+                var diceMap = {
+                    'zero': 0,
+                    'two': 2,
+                    'three': 3,
+                    'seven': 7,
+                    'eleven': 11,
+                };
+                if(dicePool <= 2) {
+                    diceTier = "two";
+                }
+                else if(dicePool <= 6) {
+                    diceTier = "three";
+                }
+                else if(dicePool <= 10) {
+                    diceTier = "seven";
+                }
+                else {
+                    diceTier = "eleven";
+                }
+                if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 2,
+                        'three': 5,
+                        'seven': 7,
+                        'eleven': 10,
+                    };
+                }
+                if (this.actor.system.details.exalt === "dragonblooded") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 0,
+                        'three': 2,
+                        'seven': 4,
+                        'eleven': 6,
+                    };
+                }
+                if (this.actor.system.details.exalt === "lunar") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 1,
+                        'three': 2,
+                        'seven': 4,
+                        'eleven': 5,
+                    };
+                    if(diceTier === 'two') {
+                        return 1;
+                    }
+                    return `${diceMap[diceTier]}, ${diceTier === 'seven' ? (diceMap[diceTier] * 2) - 1 : diceMap[diceTier] * 2}`;
+                }
+                if (this.actor.system.details.exalt === "liminal") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 1,
+                        'three': 2,
+                        'seven': 4,
+                        'eleven': 5,
+                    };
+                }
+                return diceMap[diceTier];
             }
-            if (this.actor.system.details.exalt === "lunar") {
-                return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
-            }
-            if (this.actor.system.details.exalt === "dreamsouled") {
-                return `${this.actor.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.essence.value)} when upholding ideal`;
-            }
-            if (this.actor.system.details.exalt === "umbral") {
-                return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
-            }
-            if (this.actor.system.details.caste.toLowerCase() === "architect") {
-                return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
-            }
-            if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
-                return `${this.actor.system.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
-            } 
-            if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
-                return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10) ;
-            }
+
         }
         return "";
     }
