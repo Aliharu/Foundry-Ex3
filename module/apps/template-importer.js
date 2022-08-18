@@ -743,6 +743,12 @@ export default class TemplateImporter extends Application {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     try {
       actorData.name = textArray[0].trim();
+      var actorDescription = '';
+      while(!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:') ) {
+        actorDescription += textArray[index];
+        index++;
+      }
+      actorData.system.biography = actorDescription;
       if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
         actorData.system.creaturetype = 'exalt';
         actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').trim();
@@ -898,37 +904,39 @@ export default class TemplateImporter extends Application {
       }
       var actionsArray = actionsString.replace('Actions:', '').replace('/', '').replace(/ *\([^)]*\) */g, "").split(';');
       for (const action of actionsArray) {
-        var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
-        var name = actionSplit[0].replace(" ", "");
-        if (name.toLocaleLowerCase().includes('resistpoison') || name.toLocaleLowerCase().includes('resistdiseasepoison')) {
-          actorData.system.pools.resistpoison.value = parseInt(actionSplit[1].trim());
-        }
-        else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
-          actorData.system.pools.social.value = parseInt(actionSplit[1].trim());
-        }
-        else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'featsofstrength') {
-          actorData.system.pools.strength.value = parseInt(actionSplit[1].trim());
-        }
-        else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
-          actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
-        }
-        else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'readmotives') {
-          actorData.system.pools.readintentions.value = parseInt(actionSplit[1].trim());
-        }
-        else if (actorData.system.pools[name.toLocaleLowerCase()]) {
-          actorData.system.pools[name.toLocaleLowerCase()].value = parseInt(actionSplit[1].trim());
-        }
-        else {
-          itemData.push(
-            {
-              type: 'action',
-              img: this.getImageUrl('action'),
-              name: name,
-              system: {
-                value: parseInt(actionSplit[1].trim())
+        if(!/^\s*$/.test(action)) {
+          var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
+          var name = actionSplit[0].replace(" ", "");
+          if (name.toLocaleLowerCase().includes('resistpoison') || name.toLocaleLowerCase().includes('resistdiseasepoison')) {
+            actorData.system.pools.resistpoison.value = parseInt(actionSplit[1].trim());
+          }
+          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
+            actorData.system.pools.social.value = parseInt(actionSplit[1].trim());
+          }
+          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'featsofstrength') {
+            actorData.system.pools.strength.value = parseInt(actionSplit[1].trim());
+          }
+          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
+            actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
+          }
+          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'readmotives') {
+            actorData.system.pools.readintentions.value = parseInt(actionSplit[1].trim());
+          }
+          else if (actorData.system.pools[name.toLocaleLowerCase()]) {
+            actorData.system.pools[name.toLocaleLowerCase()].value = parseInt(actionSplit[1].trim());
+          }
+          else {
+            itemData.push(
+              {
+                type: 'action',
+                img: this.getImageUrl('action'),
+                name: name,
+                system: {
+                  value: parseInt(actionSplit[1].trim())
+                }
               }
-            }
-          )
+            )
+          }
         }
       }
       var socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
