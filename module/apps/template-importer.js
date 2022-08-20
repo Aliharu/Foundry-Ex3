@@ -885,6 +885,7 @@ export default class TemplateImporter extends Application {
                 img: this.getImageUrl('intimacy'),
                 name: intimacyArray[1].trim(),
                 system: {
+                  description: intimacyArray[1].trim(),
                   intimacytype: intimacyType,
                   strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
                 }
@@ -1163,6 +1164,7 @@ export default class TemplateImporter extends Application {
                   img: this.getImageUrl(itemType),
                   name: intimacyArray[1].trim(),
                   system: {
+                    description: intimacyArray[1].trim(),
                     intimacytype: intimacyType,
                     strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
                   }
