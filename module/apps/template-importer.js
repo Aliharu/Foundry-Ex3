@@ -1074,7 +1074,7 @@ export default class TemplateImporter extends Application {
         description: '',
       };
       while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
-        if (textArray[index]) {
+        if (textArray[index] && index !== (textArray.length - 1)) {
           if(newItem) {
             if (textArray[index].trim().toLowerCase() === 'merits') {
               itemType = 'merit';
@@ -1133,7 +1133,7 @@ export default class TemplateImporter extends Application {
               itemDescription += textArray[index].trim();
               itemDescription += '\n';
             }
-            if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks') {
+            if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' ||  textArray[index].trim().toLowerCase() === 'traits' ) {
               itemType = 'specialability';
               index++;
               newItem = true;
@@ -1309,6 +1309,9 @@ export default class TemplateImporter extends Application {
           }
         }
         else {
+          if(index === textArray.length - 1) {
+            itemDescription += ` ${textArray[index].trim()}`;
+          }
           newItem = true;
           // Create Items
           if (itemType === 'specialability' || itemType === 'merit' || itemType === 'initiation') {
