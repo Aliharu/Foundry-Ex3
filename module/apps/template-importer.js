@@ -864,7 +864,7 @@ export default class TemplateImporter extends Application {
       var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
         index++;
-        while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index])) {
+        while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index]) && !textArray[index].includes('Guile:')) {
           intimacyString += textArray[index];
           index++;
         }
@@ -1010,9 +1010,12 @@ export default class TemplateImporter extends Application {
           }
         );
       }
-      var combatMovementArray = textArray[index].split(':');
-      actorData.system.pools.movement.value = parseInt(combatMovementArray[1].replace(/ *\([^)]*\) */g, "").replace(/[^0-9]/g, ''));
-      index++;
+      if(textArray[index].includes('Combat Movement:')) {
+        var combatMovementArray = textArray[index].split(':');
+        actorData.system.pools.movement.value = parseInt(combatMovementArray[1].replace(/ *\([^)]*\) */g, "").replace(/[^0-9]/g, ''));
+        index++;
+      }
+
 
       var defenseLine = textArray[index].replace(/ *\([^)]*\) */g, "");
       if (defenseLine.includes(',')) {
