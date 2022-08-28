@@ -863,7 +863,6 @@ export default class TemplateImporter extends Application {
       var intimacyString = '';
       var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
-        index++;
         while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index]) && !textArray[index].includes('Guile:')) {
           intimacyString += textArray[index];
           index++;
@@ -899,7 +898,7 @@ export default class TemplateImporter extends Application {
         index++;
       }
       var actionsString = '';
-      while (!textArray[index].includes('Guile')) {
+      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat') {
         actionsString += textArray[index];
         index++;
       }
@@ -940,17 +939,20 @@ export default class TemplateImporter extends Application {
           }
         }
       }
-      var socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
-      if (textArray[index].toLowerCase().includes('appearance')) {
-        actorData.system.appearance.value = parseInt(socialArray[0].trim().split(" ")[1]);
-        actorData.system.resolve.value = parseInt(socialArray[1].trim().split(" ")[1]);
-        actorData.system.guile.value = parseInt(socialArray[2].trim().split(" ")[1]);
+      if(textArray[index].toLowerCase().includes('resolve')) {
+        var socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
+        if (textArray[index].toLowerCase().includes('appearance')) {
+          actorData.system.appearance.value = parseInt(socialArray[0].trim().split(" ")[1]);
+          actorData.system.resolve.value = parseInt(socialArray[1].trim().split(" ")[1]);
+          actorData.system.guile.value = parseInt(socialArray[2].trim().split(" ")[1]);
+        }
+        else {
+          actorData.system.resolve.value = parseInt(socialArray[0].trim().split(" ")[1]);
+          actorData.system.guile.value = parseInt(socialArray[1].trim().split(" ")[1]);
+        }
+        index++
       }
-      else {
-        actorData.system.resolve.value = parseInt(socialArray[0].trim().split(" ")[1]);
-        actorData.system.guile.value = parseInt(socialArray[1].trim().split(" ")[1]);
-      }
-      index++
+
       if (textArray[index].trim().toLowerCase() === 'combat') {
         index++;
       }
@@ -968,7 +970,7 @@ export default class TemplateImporter extends Application {
         var weaponDescription = ''
         var accuracySplit = attackArray[1].trim().replace(')', '').split('(');
         accuracy = parseInt(accuracySplit[0].replace(/[^0-9]/g, ''));
-        if (!attackString.includes('Grapple')) {
+        if (!attackString.toLowerCase().includes('grapple')) {
           var damageSplit = accuracySplit[1].split('Damage');
           if (damageSplit[1].includes('/')) {
             var damageSubSplit = damageSplit[1].split('/');
