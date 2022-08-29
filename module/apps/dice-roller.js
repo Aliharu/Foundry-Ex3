@@ -539,7 +539,7 @@ export class RollForm extends FormApplication {
                     this.object.rerollFailed = false;
                 }
                 this.object.rerollNumber -= item.data.data.diceroller.rerolldice;
-    
+
                 this.object.damage.damageDice -= item.data.data.diceroller.damage.bonusdice;
                 this.object.damage.damageSuccessModifier -= item.data.data.diceroller.damage.bonussuccesses;
                 this.object.overwhelming -= item.data.data.diceroller.damage.overwhelming;
@@ -549,7 +549,7 @@ export class RollForm extends FormApplication {
                         this.object.damage.reroll[rerollKey].status = false;
                     }
                 }
-    
+
             }
             this.render();
         });
@@ -734,7 +734,7 @@ export class RollForm extends FormApplication {
                                                     <ol class="dice-rolls">${this.object.getDice}</ol>
                                                 </div>
                                             </div>
-                                            <h4 class="dice-total">${this.object.total} Succeses</h4>
+                                            <h4 class="dice-total">${this.object.total} Successes</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -766,8 +766,8 @@ export class RollForm extends FormApplication {
         }
         if (this.object.hasDifficulty) {
             let extendedTest = ``;
-            const threshholdSucceses = this.object.total - this.object.difficulty;
-            goalNumberLeft = Math.max(this.object.goalNumber - threshholdSucceses - 1, 0);
+            const threshholdSuccesses = this.object.total - this.object.difficulty;
+            goalNumberLeft = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
             if (this.object.goalNumber > 0) {
                 extendedTest = `<h4 class="dice-total">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
             }
@@ -780,9 +780,9 @@ export class RollForm extends FormApplication {
                 }
             }
             else {
-                resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>${extendedTest}`;
+                resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
             }
-            this.object.goalNumber = Math.max(this.object.goalNumber - threshholdSucceses - 1, 0);
+            this.object.goalNumber = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
         }
         let theContent = `
   <div class="chat-card">
@@ -797,7 +797,7 @@ export class RollForm extends FormApplication {
                                   <ol class="dice-rolls">${this.object.getDice}</ol>
                               </div>
                           </div>
-                          <h4 class="dice-total">${this.object.total} Succeses</h4>
+                          <h4 class="dice-total">${this.object.total} Successes</h4>
                           ${resultString}
                       </div>
                   </div>
@@ -871,8 +871,8 @@ export class RollForm extends FormApplication {
                                                 <ol class="dice-rolls">${this.object.getDice}</ol>
                                             </div>
                                         </div>
-                                        <h4 class="dice-formula">${this.object.total} Succeses vs ${this.object.defense} Defense</h4>
-                                        <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Succeses</h4>
+                                        <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                                        <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
                                         <h4 class="dice-total">Attack Missed!</h4>
                                     </div>
                                 </div>
@@ -914,8 +914,8 @@ export class RollForm extends FormApplication {
                                             <ol class="dice-rolls">${this.object.getDice}</ol>
                                         </div>
                                     </div>
-                                    <h4 class="dice-formula">${this.object.total} Succeses vs ${this.object.defense} Defense</h4>
-                                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Succeses</h4>
+                                    <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
                                     ${this.object.thereshholdSuccesses < 0 ? '<h4 class="dice-total">Attack Missed!</h4>' : ''}
                                 </div>
                             </div>
@@ -1127,8 +1127,8 @@ export class RollForm extends FormApplication {
                                             <ol class="dice-rolls">${this.object.getDice}</ol>
                                         </div>
                                     </div>
-                                    <h4 class="dice-formula">${this.object.total} Succeses vs ${this.object.defense} Defense</h4>
-                                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Succeses</h4>
+                                    <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
                                     ${damageResults}
                                 </div>
                             </div>
@@ -1250,7 +1250,7 @@ export class RollForm extends FormApplication {
         let craftSuccess = false;
         let goalNumberLeft = this.object.goalNumber;
         let extendedTest = ``;
-        const threshholdSucceses = this.object.total - this.object.difficulty;
+        const threshholdSuccesses = this.object.total - this.object.difficulty;
         if (this.object.goalNumber > 0) {
             extendedTest = `<h4 class="dice-total">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
         }
@@ -1269,7 +1269,7 @@ export class RollForm extends FormApplication {
         }
         else {
             if (this.object.goalNumber > 0) {
-                goalNumberLeft = Math.max(this.object.goalNumber - threshholdSucceses - 1, 0);
+                goalNumberLeft = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
                 extendedTest = `<h4 class="dice-total">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
                 if (goalNumberLeft > 0 && this.object.intervals === 1) {
                     craftFailed = true;
@@ -1281,7 +1281,7 @@ export class RollForm extends FormApplication {
             else {
                 craftSuccess = true;
             }
-            resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSucceses} Threshhold Succeses</h4>${extendedTest}`;
+            resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
         }
 
         if (craftFailed) {
@@ -1293,7 +1293,7 @@ export class RollForm extends FormApplication {
             var goldXPGained = 0;
             var whiteXPGained = 0;
             if (this.object.craftType === 'basic') {
-                if (threshholdSucceses >= 3) {
+                if (threshholdSuccesses >= 3) {
                     silverXPGained = 3 * this.object.objectivesCompleted;
                 }
                 else {
@@ -1302,7 +1302,7 @@ export class RollForm extends FormApplication {
                 projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
             }
             else if (this.object.craftType === "major") {
-                if (threshholdSucceses >= 3) {
+                if (threshholdSuccesses >= 3) {
                     silverXPGained = this.object.objectivesCompleted;
                     goldXPGained = 3 * this.object.objectivesCompleted;
                 }
@@ -1347,7 +1347,7 @@ export class RollForm extends FormApplication {
                                 <ol class="dice-rolls">${this.object.getDice}</ol>
                             </div>
                         </div>
-                        <h4 class="dice-total">${this.object.total} Succeses</h4>
+                        <h4 class="dice-total">${this.object.total} Successes</h4>
                         ${resultString}
                         ${projectStatus}
                     </div>
@@ -1458,7 +1458,7 @@ export class RollForm extends FormApplication {
             }
             if (this.actor.data.data.details.caste.toLowerCase() === "janest" || this.actor.data.data.details.caste.toLowerCase() === 'strawmaiden') {
                 return `${this.actor.data.data.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
-            } 
+            }
             if (this.actor.data.data.details.caste.toLowerCase() === "sovereign") {
                 return Math.min(Math.max(this.actor.data.data.essence.value, 3) + animaBonus[this.actor.data.data.anima.level], 10) ;
             }
