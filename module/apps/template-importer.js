@@ -1489,7 +1489,6 @@ export default class TemplateImporter extends Application {
         var value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
         actorData.system.attributes[trimmedName].value = value;
       }
-      console.log(actorData.system.attributes);
       actorData.system.essence.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
       index++;
       actorData.system.willpower.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
@@ -1525,8 +1524,6 @@ export default class TemplateImporter extends Application {
       }
       this._getHealthLevels(textArray, index, actorData);
       index++;
-      console.log(actorData.system.motes);
-      console.log(actorData.system.health.levels);
       var abilityString = textArray[index].replace('Abilities:', '');
       index++;
       while (!textArray[index].includes("Merits") && !textArray[index].includes("Attack")) {
@@ -1559,30 +1556,32 @@ export default class TemplateImporter extends Application {
           );
         }
       }
-      var meritString = textArray[index].replace('Merits:', '');
-      index++;
-      while (!textArray[index].includes("Attack")) {
-        meritString += textArray[index];
+      if(!textArray[index].includes("Attack")) {
+        var meritString = textArray[index].replace('Merits:', '');
         index++;
-      }
-      var meritArray = meritString.split(',');
-      for (let merit of meritArray) {
-        var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
-        var meritName = merit.match(/[^0-9+]+/g)[0];
-        itemData.push(
-          {
-            type: 'merit',
-            img: this.getImageUrl('merit'),
-            name: meritName.trim(),
-            system: {
-              points: meritValue ? meritValue : 0,
+        while (!textArray[index].includes("Attack")) {
+          meritString += textArray[index];
+          index++;
+        }
+        var meritArray = meritString.split(',');
+        for (let merit of meritArray) {
+          var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
+          var meritName = merit.match(/[^0-9+]+/g)[0];
+          itemData.push(
+            {
+              type: 'merit',
+              img: this.getImageUrl('merit'),
+              name: meritName.trim(),
+              system: {
+                points: meritValue ? meritValue : 0,
+              }
             }
-          }
-        );
+          );
+        }
       }
       while (textArray[index].includes('Attack')) {
         var attackString = textArray[index];
-        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement')) {
+        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat')) {
           attackString += textArray[index + 1];
           index++;
         }
