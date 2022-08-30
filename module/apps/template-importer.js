@@ -65,140 +65,157 @@ export default class TemplateImporter extends Application {
 
   async createCharm(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
-    var charmData = {
-      type: 'charm',
-      system: {
-        cost: {
-          "motes": 0,
-          "initiative": 0,
-          "anima": 0,
-          "willpower": 0,
-          "aura": "",
-          "health": 0,
-          "healthtype": "bashing",
-          "silverxp": 0,
-          "goldxp": 0,
-          "whitexp": 0
+    var index = 0;
+    while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
+      var charmData = {
+        type: 'charm',
+        system: {
+          cost: {
+            "motes": 0,
+            "initiative": 0,
+            "anima": 0,
+            "willpower": 0,
+            "aura": "",
+            "health": 0,
+            "healthtype": "bashing",
+            "silverxp": 0,
+            "goldxp": 0,
+            "whitexp": 0
+          }
+        }
+      };
+      charmData.name = textArray[index];
+      index++;
+      var costAndRequirement = textArray[index].replace('Cost: ', '').replace('Mins: ', '').split(';');
+      index++;
+      var costArray = costAndRequirement[0].split(',');
+      for (let costString of costArray) {
+        costString = costString.trim();
+        if (costString.includes('m')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.motes = parseInt(num);
+        }
+        if (costString.includes('i')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.initiative = parseInt(num);
+        }
+        if (costString.includes('a')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.anima = parseInt(num);
+        }
+        if (costString.includes('wp')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.willpower = parseInt(num);
+        }
+        if (costString.includes('hl')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.health = parseInt(num);
+          if (costString.includes('ahl')) {
+            charmData.system.cost.healthtype = 'aggravated';
+          }
+          if (costString.includes('lhl')) {
+            charmData.system.cost.healthtype = 'lethal';
+          }
+        }
+        if (costString.includes('Fire')) {
+          charmData.system.cost.aura = 'fire';
+        }
+        if (costString.includes('Earth')) {
+          charmData.system.cost.aura = 'earth';
+        }
+        if (costString.includes('Air')) {
+          charmData.system.cost.aura = 'air';
+        }
+        if (costString.includes('Water')) {
+          charmData.system.cost.aura = 'water';
+        }
+        if (costString.includes('Wood')) {
+          charmData.system.cost.aura = 'wood';
+        }
+        if (costString.includes('gxp')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.goldxp = parseInt(num);
+        }
+        else if (costString.includes('sxp')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.silverxp = parseInt(num);
+        }
+        else if (costString.includes('wxp')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.whitexp = parseInt(num);
+        }
+        else if (costString.includes('xp')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          charmData.system.cost.xp = parseInt(num);
         }
       }
-    };
-    charmData.name = textArray[0];
-    var costAndRequirement = textArray[1].replace('Cost: ', '').replace('Mins: ', '').split(';');
-    var costArray = costAndRequirement[0].split(',');
-    for (let costString of costArray) {
-      costString = costString.trim();
-      if (costString.includes('m')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.motes = parseInt(num);
+      var requirementArray = costAndRequirement[1].toLowerCase().split(',');
+      var abilityRequirement = requirementArray[0].trim().split(' ');
+      var essenceRequirement = requirementArray[1].trim().split(' ');
+
+      charmData.system.ability = abilityRequirement[0].replace(' ', '');
+      charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
+      charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
+
+      charmData.system.type = textArray[index].replace('Type: ', '');
+      index++;
+      charmData.system.keywords = textArray[index].replace('Keywords: ', '');
+      index++;
+      charmData.system.duration = textArray[index].replace('Duration: ', '');
+      index++;
+      charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
+      index++;
+      var description = '';
+      while(textArray[index] && index !== textArray.length) {
+        description += textArray[index];
+        description += " ";
+        index++;
       }
-      if (costString.includes('i')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.initiative = parseInt(num);
-      }
-      if (costString.includes('a')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.anima = parseInt(num);
-      }
-      if (costString.includes('wp')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.willpower = parseInt(num);
-      }
-      if (costString.includes('hl')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.health = parseInt(num);
-        if (costString.includes('ahl')) {
-          charmData.system.cost.healthtype = 'aggravated';
-        }
-        if (costString.includes('lhl')) {
-          charmData.system.cost.healthtype = 'lethal';
-        }
-      }
-      if (costString.includes('Fire')) {
-        charmData.system.cost.aura = 'fire';
-      }
-      if (costString.includes('Earth')) {
-        charmData.system.cost.aura = 'earth';
-      }
-      if (costString.includes('Air')) {
-        charmData.system.cost.aura = 'air';
-      }
-      if (costString.includes('Water')) {
-        charmData.system.cost.aura = 'water';
-      }
-      if (costString.includes('Wood')) {
-        charmData.system.cost.aura = 'wood';
-      }
-      if (costString.includes('gxp')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.goldxp = parseInt(num);
-      }
-      else if (costString.includes('sxp')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.silverxp = parseInt(num);
-      }
-      else if (costString.includes('wxp')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.whitexp = parseInt(num);
-      }
-      else if (costString.includes('xp')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.xp = parseInt(num);
-      }
+      charmData.system.description = description;
+      await Item.create(charmData);
+      index++;
     }
-    var requirementArray = costAndRequirement[1].toLowerCase().split(',');
-    var abilityRequirement = requirementArray[0].trim().split(' ');
-    var essenceRequirement = requirementArray[1].trim().split(' ');
-
-    charmData.system.ability = abilityRequirement[0].replace(' ', '');
-    charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
-    charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
-
-    charmData.system.type = textArray[2].replace('Type: ', '');
-    charmData.system.keywords = textArray[3].replace('Keywords: ', '');
-    charmData.system.duration = textArray[4].replace('Duration: ', '');
-    charmData.system.prerequisites = textArray[5].replace('Prerequisite Charms: ', '');
-
-    var description = '';
-    for (let i = 6; i < textArray.length; i++) {
-      description += textArray[i];
-      description += " ";
-    }
-    charmData.system.description = description;
-    await Item.create(charmData);
   }
 
   async createSpell(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
-    var spellData = {
-      type: 'spell',
-      system: {
-
+    var index = 0;
+    while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
+      var spellData = {
+        type: 'spell',
+        system: {
+        }
+      };
+      spellData.name = textArray[index];
+      index++;
+      var costArray = textArray[index].replace('Cost: ', '').split(',');
+      index++;
+      for (let costString of costArray) {
+        costString = costString.trim();
+        if (costString.includes('sm')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          spellData.system.cost = parseInt(num);
+        }
+        if (costString.includes('wp')) {
+          var num = costString.replace(/[^0-9]/g, '');
+          spellData.system.willpower = parseInt(num);
+        }
       }
-    };
-    spellData.name = textArray[0];
-    var costArray = textArray[1].replace('Cost: ', '').split(',');
-    for (let costString of costArray) {
-      costString = costString.trim();
-      if (costString.includes('sm')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        spellData.system.cost = parseInt(num);
+  
+      spellData.system.keywords = textArray[index].replace('Keywords: ', '');
+      index++;
+      spellData.system.duration = textArray[index].replace('Duration: ', '');
+      index++;
+      var description = '';
+      while(textArray[index] && index !== textArray.length) {
+        description += textArray[index];
+        description += " ";
+        index++;
       }
-      if (costString.includes('wp')) {
-        var num = costString.replace(/[^0-9]/g, '');
-        spellData.system.willpower = parseInt(num);
-      }
+      spellData.system.description = description;
+      await Item.create(spellData);
+      index++;
     }
-
-    spellData.system.keywords = textArray[2].replace('Keywords: ', '');
-    spellData.system.duration = textArray[3].replace('Duration: ', '');
-
-    var description = '';
-    for (let i = 4; i < textArray.length; i++) {
-      description += textArray[i];
-      description += " ";
-    }
-    spellData.system.description = description;
-    await Item.create(spellData);
   }
 
   _getStatBlock(adversary = false) {
@@ -749,42 +766,10 @@ export default class TemplateImporter extends Application {
         index++;
       }
       actorData.system.biography = actorDescription;
-      if(textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
+      if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
         this._getExaltSpecificData(textArray, index, actorData, false);
         index++;
       }
-      // if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
-      //   actorData.system.creaturetype = 'exalt';
-      //   actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').trim();
-      //   if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'dragonblooded';
-      //   }
-      //   if (['no mood', 'full moon', 'changing moon', 'casteless'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'lunar';
-      //   }
-      //   if (['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'solar';
-      //   }
-      //   if (['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'sidereal';
-      //   }
-      //   if (['dusk', 'midnight', 'daybreak', 'moonshadow', 'day'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'abyssal';
-      //   }
-      //   if (['adamant', 'jade', 'moonsilver', 'orichalcum', 'starmetal', 'soulsteel'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'alchemical';
-      //   }
-      //   if (['spring', 'summer', 'fall', 'winter'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'getimian';
-      //   }
-      //   if (['azimuth', 'ascendant', 'horizon', 'nadir', 'penumbra'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'infernal';
-      //   }
-      //   if (['blood', 'breath', 'flesh', 'marrow', 'soil'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
-      //     actorData.system.details.exalt = 'liminal';
-      //   }
-      //   index++;
-      // }
       if (textArray[index].includes('Spirit Shape')) {
         var lunarArray = textArray[index].split(';');
         actorData.system.qualities += `${lunarArray[0].trim()} \n`;
@@ -1430,23 +1415,23 @@ export default class TemplateImporter extends Application {
       var addingIntimacies = false;
       var intimacyString = '';
       while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect') && !textArray[index].includes('Attributes:')) {
-        if(textArray[index].includes('Intimacies:')) {
+        if (textArray[index].includes('Intimacies:')) {
           addingIntimacies = true;
         }
-        if(textArray[index].includes('Secrets:')) {
+        if (textArray[index].includes('Secrets:')) {
           addingIntimacies = false;
           var intimacyArray = intimacyString.split(';');
           var intimacyStrength = 'minor';
           for (let intimacy of intimacyArray) {
-            if(intimacy.includes('Defining:')) {
+            if (intimacy.includes('Defining:')) {
               intimacyStrength = 'defining';
               intimacy = intimacy.replace('Defining:', '');
             }
-            if(intimacy.includes('Major:')) {
+            if (intimacy.includes('Major:')) {
               intimacyStrength = 'major';
               intimacy = intimacy.replace('Major:', '');
             }
-            if(intimacy.includes('Minor:')) {
+            if (intimacy.includes('Minor:')) {
               intimacyStrength = 'minor';
               intimacy = intimacy.replace('Minor:', '');
             }
@@ -1463,7 +1448,7 @@ export default class TemplateImporter extends Application {
             );
           }
         }
-        if(addingIntimacies) {
+        if (addingIntimacies) {
           intimacyString += textArray[index].replace('Intimacies:', '');
         }
         else {
@@ -1472,7 +1457,7 @@ export default class TemplateImporter extends Application {
         index++;
       }
       actorData.system.biography = actorDescription;
-      if(textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
+      if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
         this._getExaltSpecificData(textArray, index, actorData, false);
         index++;
       }
@@ -1497,7 +1482,7 @@ export default class TemplateImporter extends Application {
       //Join Battle dice should be auto calculated so itsn ot needed
       index++;
       var personalMotesValue = textArray[index].split(':')[1];
-      if(personalMotesValue.toLowerCase().includes('committed')) {
+      if (personalMotesValue.toLowerCase().includes('committed')) {
         var personalSplitArray = personalMotesValue.split('(');
         actorData.system.motes.personal.value = parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
         actorData.system.motes.personal.max = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
@@ -1508,9 +1493,9 @@ export default class TemplateImporter extends Application {
         actorData.system.motes.personal.max = parseInt(personalMotesValue.replace(/[^0-9]/g, ''));
       }
       index++;
-      if(textArray[index].toLowerCase().includes('peripheral')) {
+      if (textArray[index].toLowerCase().includes('peripheral')) {
         var peripheralMotesValue = textArray[index].split(':')[1];
-        if(peripheralMotesValue.toLowerCase().includes('committed')) {
+        if (peripheralMotesValue.toLowerCase().includes('committed')) {
           var peripheralSplitArray = peripheralMotesValue.split('(');
           actorData.system.motes.peripheral.value = parseInt(peripheralSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
           actorData.system.motes.peripheral.max = parseInt(peripheralSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
@@ -1534,7 +1519,7 @@ export default class TemplateImporter extends Application {
       for (let ability of abilityArray) {
         var createSpecialty = false;
         var specialtyText = ''
-        if(ability.includes('(')) {
+        if (ability.includes('(')) {
           createSpecialty = true;
           specialtyText = ability.match(/\(([^)]+)\)/)[1];
           ability = ability.replace(/\([^()]*\)/g, "").replace("  ", " ");
@@ -1543,7 +1528,7 @@ export default class TemplateImporter extends Application {
         var trimmedName = abilitySpecificArray[0].trim().toLowerCase();
         var value = parseInt(abilitySpecificArray[1].replace(/[^0-9]/g, ''));
         actorData.system.abilities[trimmedName].value = value;
-        if(createSpecialty) {
+        if (createSpecialty) {
           itemData.push(
             {
               type: 'specialty',
@@ -1556,7 +1541,7 @@ export default class TemplateImporter extends Application {
           );
         }
       }
-      if(!textArray[index].includes("Attack")) {
+      if (!textArray[index].includes("Attack")) {
         var meritString = textArray[index].replace('Merits:', '');
         index++;
         while (!textArray[index].includes("Attack")) {
@@ -1587,7 +1572,7 @@ export default class TemplateImporter extends Application {
         }
         var weaponDescription = ''
         var tagSplit = attackString.replace('Attack ', '').split(';');
-        if(tagSplit[1]) {
+        if (tagSplit[1]) {
           weaponDescription = tagSplit[1].trim();
         }
         var attackArray = tagSplit[0].split(':');
@@ -1649,10 +1634,10 @@ export default class TemplateImporter extends Application {
       for (let combatStat of combatArray) {
         var armorStat = 0;
         var combatName = combatStat.match(/[^0-9+]+/g)[0];
-        if(combatStat.includes('(')) {
+        if (combatStat.includes('(')) {
           var armor = combatStat.match(/\(([^)]+)\)/)[1];
           armorStat = parseInt(armor.replace(/[^0-9]/g, ''));
-          if(combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness' || combatName.toLowerCase().trim() === 'evasion') {
+          if (combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness' || combatName.toLowerCase().trim() === 'evasion') {
             createArmor = true;
             armorName = armor;
           }
@@ -1661,30 +1646,30 @@ export default class TemplateImporter extends Application {
           combatStat = combatStat.replace(/\([^()]*\)/g, "").replace("  ", " ");
         }
         var combatValue = parseInt(combatStat.replace(/[^0-9]/g, ''));
-        if(combatName.toLowerCase().trim() === 'soak') {
+        if (combatName.toLowerCase().trim() === 'soak') {
           actorData.system.soak.value = combatValue;
           actorData.system.naturalsoak.value = combatValue;
-          if(armorStat) {
+          if (armorStat) {
             armorValue = armorStat;
           }
         }
-        if(combatName.toLowerCase().trim() === 'hardness') {
+        if (combatName.toLowerCase().trim() === 'hardness') {
           actorData.system.hardness.value = combatValue;
-          if(armorStat) {
+          if (armorStat) {
             armorHardness = armorStat;
           }
         }
-        if(combatName.toLowerCase().trim() === 'evasion') {
+        if (combatName.toLowerCase().trim() === 'evasion') {
           actorData.system.evasion.value = combatValue;
-          if(armorStat) {
+          if (armorStat) {
             armorPenalty = armorStat;
           }
         }
-        if(combatName.toLowerCase().trim() === 'parry') {
+        if (combatName.toLowerCase().trim() === 'parry') {
           actorData.system.parry.value = combatValue;
         }
       }
-      if(createArmor) {
+      if (createArmor) {
         itemData.push(
           {
             type: 'armor',
@@ -1698,14 +1683,14 @@ export default class TemplateImporter extends Application {
           }
         );
       }
-      if(textArray[index].includes('Social')) {
+      if (textArray[index].includes('Social')) {
         var socialArray = textArray[index].replace('Social:', '').split(',');
-        for(var socialAbility of socialArray) {
+        for (var socialAbility of socialArray) {
           var attributeSpecificArray = socialAbility.trim().split(' ');
-          if(attributeSpecificArray[0].toLocaleLowerCase().includes('resolve')) {
+          if (attributeSpecificArray[0].toLocaleLowerCase().includes('resolve')) {
             actorData.system.resolve.value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
           }
-          if(attributeSpecificArray[0].toLocaleLowerCase().includes('guile')) {
+          if (attributeSpecificArray[0].toLocaleLowerCase().includes('guile')) {
             actorData.system.guile.value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
           }
         }
@@ -1716,7 +1701,7 @@ export default class TemplateImporter extends Application {
       console.log(actorData);
       await Actor.create(actorData);
     }
-    catch(error) {
+    catch (error) {
       console.log(error);
       console.log(textArray);
       console.log(index);
@@ -1803,7 +1788,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
-    game.templateImporter.type = "adversary";
+    game.templateImporter.type = "qc";
     game.templateImporter.render(true);
   })
 })
