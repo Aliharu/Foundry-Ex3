@@ -1502,7 +1502,7 @@ export class RollForm extends FormApplication {
                     return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
                 }
                 if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
-                    return `${this.actor.system.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+                    return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
                 } 
                 if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
                     return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10);
