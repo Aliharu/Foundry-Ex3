@@ -38,6 +38,7 @@
         "willpower": {
           "value": 0,
           "total": 5,
+          "max": 5,
           "min": 0
         },
         "essence": {
@@ -92,6 +93,12 @@
           "active": "",
           "iconic": ""
         },
+        "limit": {
+          "value": 0,
+          "min": 0,
+          "max": 10,
+          "trigger": ""
+        },
         "sorcery": {
           "motes": 0
         },
@@ -104,9 +111,9 @@
           }
         },
         "details": {
-          "exalt": "solar",
+          "exalt": "abyssal",
           "caste": "",
-          "color": "#FFFFFF",
+          "color": "#000000",
           "tell": "",
           "aura": "none",
           "ideal": "",
@@ -119,8 +126,10 @@
         },
         "settings": {
           "charmmotepool": "peripheral",
-          "showwarstrider": true,
-          "showship": true
+          "showwarstrider": false,
+          "showship": false,
+          "showescort": false,
+          "showzerovalues": true
         },
         "ship": {
           "name": "",
@@ -393,11 +402,6 @@
           "name": "Ex3.War"
         }
       },
-      "limit": {
-        "value": 0,
-        "min": 0,
-        "trigger": ""
-      },
       "advantages": {
         "resonance": "",
         "disonance": ""
@@ -459,6 +463,14 @@
           "name": "Ex3.Craft",
           "value": 0
         },
+        "strength": {
+          "name": "Ex3.FeatsofStrength",
+          "value": 0
+        },
+        "grapple": {
+          "name": "Ex3.GrappleControl",
+          "value": 0
+        },
         "investigation": {
           "name": "Ex3.Investigation",
           "value": 0
@@ -503,10 +515,6 @@
           "name": "Ex3.Sorcery",
           "value": 0
         },
-        "strength": {
-          "name": "Ex3.Strength",
-          "value": 0
-        },
         "strategy": {
           "name": "Ex3.Strategy",
           "value": 0
@@ -540,7 +548,12 @@
         "value": 0,
         "min": 0
       },
-      "qualities": ""
+      "speed": {
+        "value": 0,
+        "min": 0
+      },
+      "qualities": "",
+      "escort": ""
     }
   },
   "Item": {
@@ -579,7 +592,7 @@
       "witheringaccuracy": 0,
       "witheringdamage": 0,
       "defence": 0,
-      "overwhelming": 0,
+      "overwhelming": 1,
       "tags": "",
       "equiped": true,
       "weapontype": "melee",
@@ -630,6 +643,7 @@
         "doublesuccess": 11,
         "targetnumber": 7,
         "rerolldice": 0,
+        "diceToSuccesses": 0,
         "rerollfailed": false,
         "reroll": {
           "one": false,

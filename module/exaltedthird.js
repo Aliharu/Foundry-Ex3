@@ -11,6 +11,7 @@ import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
 import Importer from "./apps/importer.js";
+import TemplateImporter from "./apps/template-importer.js";
 
 Hooks.once('init', async function() {
 
@@ -20,6 +21,7 @@ Hooks.once('init', async function() {
     applications: {
       TraitSelector,
       ItemSearch,
+      TemplateImporter,
       Importer,
     },
     entities: {
@@ -70,10 +72,10 @@ Hooks.once('init', async function() {
     const actor = this.actor;
     var initDice = 0;
     if (this.actor.type != 'npc') {
-      initDice = actor.data.data.attributes.wits.value + actor.data.data.abilities.awareness.value + 2;
+      initDice = actor.system.attributes.wits.value + actor.system.abilities.awareness.value + 2;
     }
     else {
-      initDice = actor.data.data.pools.joinbattle.value;
+      initDice = actor.system.pools.joinbattle.value;
     }
     let roll = new Roll(`${initDice}d10cs>=7 + 3`).evaluate({ async: false });
     let diceRoll = roll.total;
@@ -124,6 +126,11 @@ Handlebars.registerHelper('ifGreater', function(arg1, arg2, options) {
   return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
 });
 
+Handlebars.registerHelper('le', function( a, b ){
+  var next =  arguments[arguments.length-1];
+  return (a <= b) ? next.fn(this) : next.inverse(this);
+});
+
 $(document).ready(() => {
   const diceIconSelector = '#chat-controls .chat-control-icon .fa-dice-d20';
 
@@ -143,8 +150,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   if (update && update.round) {
     for(var combatant of combat.data.combatants) {
       const actorData = duplicate(combatant.actor)
-      var missingPersonal = (actorData.data.motes.personal.max - actorData.data.motes.personal.committed) - actorData.data.motes.personal.value;
-      var missingPeripheral = (actorData.data.motes.peripheral.max - actorData.data.motes.peripheral.committed) - actorData.data.motes.peripheral.value;
+      var missingPersonal = (actorData.system.motes.personal.max - actorData.system.motes.personal.committed) - actorData.system.motes.personal.value;
+      var missingPeripheral = (actorData.system.motes.peripheral.max - actorData.system.motes.peripheral.committed) - actorData.system.motes.peripheral.value;
       var restorePersonal = 0;
       var restorePeripheral = 0;
       if(missingPeripheral >= 5) {
@@ -162,8 +169,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           restorePersonal = missingPersonal;
         }
       }
-      actorData.data.motes.personal.value += restorePersonal;
-      actorData.data.motes.peripheral.value += restorePeripheral;
+      actorData.system.motes.personal.value += restorePersonal;
+      actorData.system.motes.peripheral.value += restorePeripheral;
       combatant.actor.update(actorData);
     }
   }

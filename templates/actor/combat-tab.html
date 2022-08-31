@@ -1,5 +1,34 @@
+<div class="resource flex-group-center d-flex">
+    <div style="margin-right:20px;">
+        <div class="flexrow">
+            <label for="system.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
+                    id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i> {{#if
+                system.battlegroup}}
+                {{localize "Ex3.Magnitude"}}
+                {{else}}
+                {{localize "Ex3.Health"}}
+                {{/if}}<i id="recoveryScene" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+                    style="margin-left:3px;"></i></label>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between">
+            <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated" data-max="{{system.health.max}}"
+                data-bashing="{{system.health.bashing}}" data-lethal="{{system.health.lethal}}"
+                data-aggravated="{{system.health.aggravated}}" data-name="system.health">
+                {{#numLoop system.health.max}}
+                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+                {{/numLoop}}
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
+            <div>-{{system.health.penalty}}</div>
+        </div>
+    </div>
+</div>
 <div class="grid grid-2col flex-group-center">
-    <button class="roll-button rollAbility"><i class="fas fa-dice"></i>{{localize "Ex3.Ability"}}</button>
+    <button class="roll-button rollAbility"><i class="fas fa-dice-d10"></i>{{localize "Ex3.Ability"}}</button>
     <button class="roll-button join-battle"><i class="fas fa-bolt"></i>{{localize "Ex3.JoinBattle"}}</button>
     <button class="roll-button accuracy"><i class="fas fa-crosshairs"></i>{{localize "Ex3.Accuracy"}}</button>
     <button class="roll-button damage"><i class="fas fa-skull"></i>{{localize "Ex3.Damage"}}</button>
@@ -9,25 +38,24 @@
         <div class="grid grid-4col flex-group-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}<i
-                        class="fas fa-calculator calculate-parry cursor-pointer"
-                        title="Auto Set Parry" style="margin-left:3px;"></i>{{/ifEquals}}</label>
-                <input type="number" name="data.parry.value" value="{{data.data.parry.value}}" data-dtype="Number" />
+                        class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
+                        style="margin-left:3px;"></i>{{/ifEquals}}</label>
+                <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Evasion"}}{{#ifEquals data.type 'character'}}<i
-                    class="fas fa-calculator calculate-evasion cursor-pointer"
-                    title="Auto Set Evasion" style="margin-left:3px;"></i>{{/ifEquals}}</label>
-                <input type="number" name="data.evasion.value" value="{{data.data.evasion.value}}"
-                    data-dtype="Number" />
+                        class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
+                        style="margin-left:3px;"></i>{{/ifEquals}}</label>
+                <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
-                <input type="number" name="data.sorcery.motes" value="{{data.data.sorcery.motes}}"
-                    data-dtype="Number" />
+                <label class="resource-label">{{localize "Ex3.Rush"}}</label>
+                <button class="roll-button rush"><i class="fas fa-person-running"></i>{{localize
+                    "Ex3.Roll"}}</button>
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
-                <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize
+                <label class="resource-label">{{localize "Ex3.Disengage"}}</label>
+                <button class="roll-button disengage"><i class="fas fa-person-running"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
         </div>
@@ -36,12 +64,12 @@
                 <div class="resource-content flexrow flex-center flex-between">
                     <div>
                         <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}</label>
-                        <input type="number" name="data.armoredsoak.value" value="{{data.data.armoredsoak.value}}"
+                        <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
                             data-dtype="Number" />
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.NaturalSoak"}}</label>
-                        <input type="number" name="data.naturalsoak.value" value="{{data.data.naturalsoak.value}}"
+                        <input type="number" name="system.naturalsoak.value" value="{{system.naturalsoak.value}}"
                             data-dtype="Number" />
                     </div>
                 </div>
@@ -49,28 +77,44 @@
             <div class="resource-content flexrow flex-center flex-between">
                 <div>
                     <label class="resource-label">{{localize "Ex3.TotalSoak"}}</label>
-                    <input type="number" name="data.soak.value" value="{{data.data.soak.value}}" data-dtype="Number" />
+                    <input type="number" name="system.soak.value" value="{{system.soak.value}}" data-dtype="Number" />
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
-                    <input type="number" name="data.hardness.value" value="{{data.data.hardness.value}}"
+                    <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
                         data-dtype="Number" />
                 </div>
             </div>
         </div>
-        {{#if data.data.battlegroup}}
+        <div class="grid grid-3col flex-group-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
+                <input type="number" name="system.sorcery.motes" value="{{system.sorcery.motes}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
+                <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize
+                    "Ex3.Roll"}}</button>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.SorcerousWorking"}}</label>
+                <button class="roll-button sorcerous-working"><i class="fas fa-cauldron"></i>{{localize
+                    "Ex3.Roll"}}</button>
+            </div>
+        </div>
+        {{#if system.battlegroup}}
         <div class="grid grid-3col flex-group-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Size"}}</label>
-                <input type="number" name="data.size.value" value="{{data.data.size.value}}" data-dtype="Number" />
+                <input type="number" name="system.size.value" value="{{system.size.value}}" data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Drill"}}</label>
-                <input type="number" name="data.drill.value" value="{{data.data.drill.value}}" data-dtype="Number" />
+                <input type="number" name="system.drill.value" value="{{system.drill.value}}" data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Might"}}</label>
-                <input type="number" name="data.might.value" value="{{data.data.might.value}}" data-dtype="Number" />
+                <input type="number" name="system.might.value" value="{{system.might.value}}" data-dtype="Number" />
             </div>
         </div>
         {{/if}}

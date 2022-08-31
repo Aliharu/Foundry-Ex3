@@ -127,8 +127,8 @@
 
 .exaltedthird .sheet-header {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 305px;
-  flex: 0 0 305px;
+  -ms-flex: 0 0 277px;
+  flex: 0 0 277px;
   overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -164,6 +164,7 @@
 }
 
 .exaltedthird .sheet-header .profile-img {
+  background: black;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 100px;
   flex: 0 0 100px;
@@ -351,6 +352,10 @@
   margin-right: 5px;
 }
 
+.exaltedthird .items-list .item .list-item-image {
+  background: black;
+}
+
 .exaltedthird .items-list .item img {
   display: block;
 }
@@ -412,6 +417,22 @@
 
 .exaltedthird .items-list .effects-list {
   padding: 0;
+}
+
+@font-face {
+  font-family: "MinionPro";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MinionPro.otf") format("truetype");
+}
+
+.exaltedthird .window-content {
+  background: url("../assets/backgrounds/solar-background.jpg");
+}
+
+.solar-background .window-content {
+  background: url("../assets/backgrounds/solar-background.jpg");
+  background-size: cover;
 }
 
 .exaltedthird .window-content .abilities,
@@ -572,6 +593,11 @@
   text-shadow: 0 0 black;
 }
 
+.chat-message {
+  background: url("../assets/backgrounds/chat-background.jpg");
+  background-size: cover;
+}
+
 .chat-card {
   font-style: normal;
   font-size: 12px;
@@ -584,6 +610,7 @@
 }
 
 .chat-card .card-header img {
+  background: black;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 36px;
   flex: 0 0 36px;
@@ -654,6 +681,10 @@
 .chat-card .card-footer span:last-child {
   border-right: none;
   padding-right: 0;
+}
+
+.chat-control-icon .fa-dice-d20:before {
+  content: "\f6cd" !important;
 }
 
 .chat-control-icon .fas.fa-dice-d20:hover:before {

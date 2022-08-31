@@ -5,8 +5,8 @@
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
-                <select name="data.ability" data-type="String">
-                    {{#select data.data.ability}}
+                <select name="system.ability" data-type="String">
+                    {{#select system.ability}}
                         <option value="archery">{{localize "Ex3.Archery"}}</option>
                         <option value="athletics">{{localize "Ex3.Athletics"}}</option>
                         <option value="awareness">{{localize "Ex3.Awareness"}}</option>
@@ -50,7 +50,7 @@
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            {{editor content=data.data.description target="data.description" button=true owner=owner editable=true}}
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">

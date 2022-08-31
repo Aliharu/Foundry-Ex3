@@ -8,28 +8,28 @@
     <div class="card-content item-description">
         {{#ifEquals item.type 'charm'}}
         <div>
-            <b>Cost</b>: {{#ifGreater item.data.cost.motes 0}}{{ item.data.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.data.cost.willpower 0}} {{ item.data.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.data.cost.anima 0}}{{ item.data.cost.anima }}a, {{/ifGreater}}
-            {{#ifGreater item.data.cost.initiative 0}}{{ item.data.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.data.cost.silverxp 0}}{{ item.data.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.data.cost.goldxp 0}} {{
-            item.data.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.data.cost.whitexp 0}}{{ item.data.cost.whitexp }}wxp; {{/ifGreater}}
+            <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}
+            {{#ifGreater item.system.cost.initiative 0}}{{ item.system.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.system.cost.silverxp 0}}{{ item.system.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.system.cost.goldxp 0}} {{
+            item.system.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.system.cost.whitexp 0}}{{ item.system.cost.whitexp }}wxp; {{/ifGreater}}
         </div>
-        {{#ifGreater item.data.cost.health 0}}
+        {{#ifGreater item.system.cost.health 0}}
         <div>
-            <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
+            <b>Health cost</b>: {{ item.system.cost.health }} {{ item.system.cost.healthtype }}
         </div>
         {{/ifGreater}}
         <div>
-            <b>Mins</b>: {{item.data.ability}} {{item.data.requirement}}, Essence {{item.data.essence}}
+            <b>Mins</b>: {{item.system.ability}} {{item.system.requirement}}, Essence {{item.system.essence}}
         </div>
         <div>
-            <b>Type</b>: {{item.data.type}}
+            <b>Type</b>: {{item.system.type}}
         </div>
         <div>
-            <b>Keywords</b>: {{item.data.keywords}}
+            <b>Keywords</b>: {{item.system.keywords}}
         </div>
         <div>
-            <b>Duration</b>: {{item.data.duration}}
+            <b>Duration</b>: {{item.system.duration}}
         </div>
         {{/ifEquals}}
-        {{{item.data.description}}}
+        {{{item.system.description}}}
     </div>
 </div>

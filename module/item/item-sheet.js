@@ -8,7 +8,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
   constructor(...args) {
     super(...args);
-    if (this.object.data.type === "charm") {
+    if (this.object.type === "charm") {
       this.options.width = this.position.width = 614;
       this.options.height = this.position.height = 850;
     };
@@ -32,16 +32,18 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
     // Alternatively, you could use the following return statement to do a
     // unique item sheet by type, like `weapon-sheet.html`.
-    return `${path}/item-${this.item.data.type}-sheet.html`;
+    return `${path}/item-${this.item.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
 
   /** @override */
   getData() {
-    const data = super.getData();
-    data.effects = prepareActiveEffectCategories(this.item.effects);
-    return data;
+    const context = super.getData();
+    const itemData = this.item.toObject(false);
+    context.system = itemData.system;
+    context.effects = prepareActiveEffectCategories(this.item.effects);
+    return context;
   }
 
   /* -------------------------------------------- */

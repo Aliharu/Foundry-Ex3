@@ -5,8 +5,8 @@
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
-                <select name="data.ability" data-type="String">
-                    {{#select data.data.ability}}
+                <select name="system.ability" data-type="String">
+                    {{#select system.ability}}
                     <option value="strength">{{localize "Ex3.Strength"}}</option>
                     <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
                     <option value="stamina">{{localize "Ex3.Stamina"}}</option>
@@ -44,15 +44,16 @@
                     <option value="war">{{localize "Ex3.War"}}</option>
                     <option value="evocation">{{localize "Ex3.Evocation"}}</option>
                     <option value="universal">{{localize "Ex3.Universal"}}</option>
-                    <option value="offsensive">{{localize "Ex3.Offensive"}}</option>
+                    <option value="offensive">{{localize "Ex3.Offensive"}}</option>
                     <option value="defensive">{{localize "Ex3.Defensive"}}</option>
                     <option value="social">{{localize "Ex3.Social"}}</option>
+                    <option value="mobility">{{localize "Ex3.Mobility"}}</option>
                     <option value="other">{{localize "Ex3.Other"}}</option>
                     {{/select}}
                 </select>
                 <label class="resource-label">{{localize "Ex3.Requirement"}}: </label>
-                <select name="data.requirement" data-type="String">
-                    {{#select data.data.requirement}}
+                <select name="system.requirement" data-type="String">
+                    {{#select system.requirement}}
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -62,8 +63,8 @@
                     {{/select}}
                 </select>
                 <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
-                <select name="data.essence" data-type="String">
-                    {{#select data.data.essence}}
+                <select name="system.essence" data-type="String">
+                    {{#select system.essence}}
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -94,17 +95,17 @@
             <div class="flex-center">
                 <div class="resource-label">{{localize "Ex3.Prerequisites"}} (Comma Separated)</div>
             </div>
-            <input type="text" name="data.prerequisites" value="{{data.data.prerequisites}}" />
+            <input type="text" name="system.prerequisites" value="{{system.prerequisites}}" />
             <div class="flex-center mt-1">
                 <div class="resource-label">{{localize "Ex3.Keywords"}} <i
                         class="fas fa-info-circle show-keywords cursor-pointer"></i></div>
             </div>
-            <textarea type="text" name="data.keywords" rows="2">{{data.data.keywords}}</textarea>
+            <textarea type="text" name="system.keywords" rows="2">{{system.keywords}}</textarea>
             <div class="grid grid-3col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
-                    <select name="data.charmtype" data-type="String">
-                        {{#select data.data.charmtype}}
+                    <select name="system.charmtype" data-type="String">
+                        {{#select system.charmtype}}
                         <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
                         <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
                         <option value="architect">{{localize "Ex3.Architect"}}</option>
@@ -129,11 +130,11 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
-                    <input type="text" name="data.type" value="{{data.data.type}}" />
+                    <input type="text" name="system.type" value="{{system.type}}" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Duration"}}</div>
-                    <input type="text" name="data.duration" value="{{data.data.duration}}" />
+                    <input type="text" name="system.duration" value="{{system.duration}}" />
                 </div>
             </div>
             <div class="flex-center">
@@ -142,33 +143,33 @@
             <div class="d-flex flex-center resources">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Motes"}}</div>
-                    <input type="number" name="data.cost.motes" value="{{data.data.cost.motes}}" data-dtype="Number" />
+                    <input type="number" name="system.cost.motes" value="{{system.cost.motes}}" data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Initiative"}}</div>
-                    <input type="number" name="data.cost.initiative" value="{{data.data.cost.initiative}}"
+                    <input type="number" name="system.cost.initiative" value="{{system.cost.initiative}}"
                         data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Anima"}}</div>
-                    <input type="number" name="data.cost.anima" value="{{data.data.cost.anima}}" data-dtype="Number" />
+                    <input type="number" name="system.cost.anima" value="{{system.cost.anima}}" data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
-                    <input type="number" name="data.cost.willpower" value="{{data.data.cost.willpower}}"
+                    <input type="number" name="system.cost.willpower" value="{{system.cost.willpower}}"
                         data-dtype="Number" />
                 </div>
             </div>
             <div class="grid grid-4col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Health"}}</div>
-                    <input type="number" name="data.cost.health" value="{{data.data.cost.health}}"
+                    <input type="number" name="system.cost.health" value="{{system.cost.health}}"
                         data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.HealthType"}}</div>
-                    <select name="data.cost.healthtype" data-type="String">
-                        {{#select data.data.cost.healthtype}}
+                    <select name="system.cost.healthtype" data-type="String">
+                        {{#select system.cost.healthtype}}
                         <option value="bashing">{{localize "Ex3.Bashing"}}</option>
                         <option value="lethal">{{localize "Ex3.Lethal"}}</option>
                         <option value="aggravated">{{localize "Ex3.Aggravated"}}</option>
@@ -177,8 +178,8 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Aura"}}</div>
-                    <select name="data.cost.aura" data-type="String">
-                        {{#select data.data.cost.aura}}
+                    <select name="system.cost.aura" data-type="String">
+                        {{#select system.cost.aura}}
                         <option value=""></option>
                         <option value="any">{{localize "Ex3.Any"}}</option>
                         <option value="air">{{localize "Ex3.Air"}}</option>
@@ -191,7 +192,7 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.XP"}}</div>
-                    <input type="number" name="data.cost.xp" value="{{data.data.cost.xp}}" data-dtype="Number" />
+                    <input type="number" name="system.cost.xp" value="{{system.cost.xp}}" data-dtype="Number" />
                 </div>
             </div>
             <div class="flex-center">
@@ -200,21 +201,21 @@
             <div class="grid grid-3col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Silver"}}</div>
-                    <input type="number" name="data.cost.silverxp" value="{{data.data.cost.silverxp}}"
+                    <input type="number" name="system.cost.silverxp" value="{{system.cost.silverxp}}"
                         data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Gold"}}</div>
-                    <input type="number" name="data.cost.goldxp" value="{{data.data.cost.goldxp}}"
+                    <input type="number" name="system.cost.goldxp" value="{{system.cost.goldxp}}"
                         data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.White"}}</div>
-                    <input type="number" name="data.cost.whitexp" value="{{data.data.cost.whitexp}}"
+                    <input type="number" name="system.cost.whitexp" value="{{system.cost.whitexp}}"
                         data-dtype="Number" />
                 </div>
             </div>
-            {{editor content=data.data.description target="data.description" button=true owner=owner editable=true}}
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
@@ -224,47 +225,44 @@
             <div class="resource grid grid-2col flex-center">
                 <div>
                     <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
-                    <input name="data.diceroller.bonusdice" value="{{data.data.diceroller.bonusdice}}" type="number">
+                    <input name="system.diceroller.bonusdice" value="{{system.diceroller.bonusdice}}" type="number">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.SuccessBonus"}} </label>
-                    <input name="data.diceroller.bonussuccesses" value="{{data.data.diceroller.bonussuccesses}}"
+                    <input name="system.diceroller.bonussuccesses" value="{{system.diceroller.bonussuccesses}}"
                         type="number">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-                    <input name="data.diceroller.targetnumber" value="{{data.data.diceroller.targetnumber}}"
+                    <input name="system.diceroller.targetnumber" value="{{system.diceroller.targetnumber}}"
                         type="number">
                 </div>
 
                 <div>
                     <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                    <input name="data.diceroller.doublesuccess" value="{{data.data.diceroller.doublesuccess}}"
+                    <input name="system.diceroller.doublesuccess" value="{{system.diceroller.doublesuccess}}"
                         type="number">
                 </div>
             </div>
 
-            <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
-                <div class="resource-label">
-                    {{localize "Ex3.OtherModifiers"}}
-                </div>
-                <div>
-                    <i class="fas fa-caret-down"></i>
-                </div>
-            </div>
-            <div style="display:none;">
-                <div class="resource grid grid-2col flex-center">
+            <div>
+                <div class="resource grid grid-3col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
-                        <input name="data.diceroller.rerolldice" value="{{data.data.diceroller.rerolldice}}"
+                        <input name="system.diceroller.rerolldice" value="{{system.diceroller.rerolldice}}"
                             type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}} </label>
+                        <input name="system.diceroller.diceToSuccesses" value="{{system.diceroller.diceToSuccesses}}"
+                        type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
                         <div>
-                            <input type="checkbox" name="data.diceroller.rerollfailed"
-                                value="{{data.data.diceroller.rerollfailed}}" {{checked
-                                data.data.diceroller.rerollfailed}}>
+                            <input type="checkbox" name="system.diceroller.rerollfailed"
+                                value="{{system.diceroller.rerollfailed}}" {{checked
+                                system.diceroller.rerollfailed}}>
                         </div>
                     </div>
                 </div>
@@ -276,53 +274,53 @@
             <div class="resource d-flex flex-center">
                 <div>
                     <div>1</div>
-                    <input name="data.diceroller.reroll.one" value="data.diceroller.reroll.one" type="checkbox"
-                        {{checked data.data.diceroller.reroll.one}}>
+                    <input name="system.diceroller.reroll.one" value="system.diceroller.reroll.one" type="checkbox"
+                        {{checked system.diceroller.reroll.one}}>
                 </div>
                 <div>
                     <div>2</div>
-                    <input name="data.diceroller.reroll.two" value="data.diceroller.reroll.two" type="checkbox"
-                        {{checked data.data.diceroller.reroll.two}}>
+                    <input name="system.diceroller.reroll.two" value="system.diceroller.reroll.two" type="checkbox"
+                        {{checked system.diceroller.reroll.two}}>
                 </div>
                 <div>
                     <div>3</div>
-                    <input name="data.diceroller.reroll.three" value="data.diceroller.reroll.three" type="checkbox"
-                        {{checked data.data.diceroller.reroll.three}}>
+                    <input name="system.diceroller.reroll.three" value="system.diceroller.reroll.three" type="checkbox"
+                        {{checked system.diceroller.reroll.three}}>
                 </div>
                 <div>
                     <div>4</div>
-                    <input name="data.diceroller.reroll.four" value="data.diceroller.reroll.four" type="checkbox"
-                        {{checked data.data.diceroller.reroll.four}}>
+                    <input name="system.diceroller.reroll.four" value="system.diceroller.reroll.four" type="checkbox"
+                        {{checked system.diceroller.reroll.four}}>
                 </div>
                 <div>
                     <div>5</div>
-                    <input name="data.diceroller.reroll.five" value="data.diceroller.reroll.five" type="checkbox"
-                        {{checked data.data.diceroller.reroll.five}}>
+                    <input name="system.diceroller.reroll.five" value="system.diceroller.reroll.five" type="checkbox"
+                        {{checked system.diceroller.reroll.five}}>
                 </div>
                 <div>
                     <div>6</div>
-                    <input name="data.diceroller.reroll.six" value="data.diceroller.reroll.six" type="checkbox"
-                        {{checked data.data.diceroller.reroll.six}}>
+                    <input name="system.diceroller.reroll.six" value="system.diceroller.reroll.six" type="checkbox"
+                        {{checked system.diceroller.reroll.six}}>
                 </div>
                 <div>
                     <div>7</div>
-                    <input name="data.diceroller.reroll.seven" value="data.diceroller.reroll.seven" type="checkbox"
-                        {{checked data.data.diceroller.reroll.seven}}>
+                    <input name="system.diceroller.reroll.seven" value="system.diceroller.reroll.seven" type="checkbox"
+                        {{checked system.diceroller.reroll.seven}}>
                 </div>
                 <div>
                     <div>8</div>
-                    <input name="data.diceroller.reroll.eight" value="data.diceroller.reroll.eight" type="checkbox"
-                        {{checked data.data.diceroller.reroll.eight}}>
+                    <input name="system.diceroller.reroll.eight" value="system.diceroller.reroll.eight" type="checkbox"
+                        {{checked system.diceroller.reroll.eight}}>
                 </div>
                 <div>
                     <div>9</div>
-                    <input name="data.diceroller.reroll.nine" value="data.diceroller.reroll.nine" type="checkbox"
-                        {{checked data.data.diceroller.reroll.nine}}>
+                    <input name="system.diceroller.reroll.nine" value="system.diceroller.reroll.nine" type="checkbox"
+                        {{checked system.diceroller.reroll.nine}}>
                 </div>
                 <div>
                     <div>10</div>
-                    <input name="data.diceroller.reroll.ten" value="data.diceroller.reroll.ten" type="checkbox"
-                        {{checked data.data.diceroller.reroll.ten}}>
+                    <input name="system.diceroller.reroll.ten" value="system.diceroller.reroll.ten" type="checkbox"
+                        {{checked system.diceroller.reroll.ten}}>
                 </div>
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;">
@@ -332,35 +330,35 @@
                 <div class="resource grid grid-2col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
-                        <input type="number" name="data.diceroller.damage.bonusdice"
-                            value="{{data.data.diceroller.damage.bonusdice}}">
+                        <input type="number" name="system.diceroller.damage.bonusdice"
+                            value="{{system.diceroller.damage.bonusdice}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
-                        <input type="number" name="data.diceroller.damage.bonussuccesses"
-                            value="{{data.data.diceroller.damage.bonussuccesses}}">
+                        <input type="number" name="system.diceroller.damage.bonussuccesses"
+                            value="{{system.diceroller.damage.bonussuccesses}}">
                     </div>
                 </div>
                 <div class="resource grid grid-2col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                        <input type="number" name="data.diceroller.damage.doublesuccess"
-                            value="{{data.data.diceroller.damage.doublesuccess}}">
+                        <input type="number" name="system.diceroller.damage.doublesuccess"
+                            value="{{system.diceroller.damage.doublesuccess}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-                        <input type="number" name="data.diceroller.damage.targetnumber"
-                            value="{{data.data.diceroller.damage.targetnumber}}">
+                        <input type="number" name="system.diceroller.damage.targetnumber"
+                            value="{{system.diceroller.damage.targetnumber}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
-                        <input type="number" name="data.diceroller.damage.overwhelming"
-                            value="{{data.data.diceroller.damage.overwhelming}}">
+                        <input type="number" name="system.diceroller.damage.overwhelming"
+                            value="{{system.diceroller.damage.overwhelming}}">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
-                        <input type="number" name="data.diceroller.damage.postsoakdamage"
-                            value="{{data.data.diceroller.damage.postsoakdamage}}">
+                        <input type="number" name="system.diceroller.damage.postsoakdamage"
+                            value="{{system.diceroller.damage.postsoakdamage}}">
                     </div>
                 </div>
                 <div class="resource flex-center">
@@ -369,53 +367,53 @@
                 <div class="resource d-flex flex-center">
                     <div>
                         <div>1</div>
-                        <input name="data.diceroller.damage.reroll.one" value="data.diceroller.damage.reroll.one"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.one}}>
+                        <input name="system.diceroller.damage.reroll.one" value="system.diceroller.damage.reroll.one"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.one}}>
                     </div>
                     <div>
                         <div>2</div>
-                        <input name="data.diceroller.damage.reroll.two" value="data.diceroller.damage.reroll.two"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.two}}>
+                        <input name="system.diceroller.damage.reroll.two" value="system.diceroller.damage.reroll.two"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.two}}>
                     </div>
                     <div>
                         <div>3</div>
-                        <input name="data.diceroller.damage.reroll.three" value="data.diceroller.damage.reroll.three"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.three}}>
+                        <input name="system.diceroller.damage.reroll.three" value="system.diceroller.damage.reroll.three"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.three}}>
                     </div>
                     <div>
                         <div>4</div>
-                        <input name="data.diceroller.damage.reroll.four" value="data.diceroller.damage.reroll.four"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.four}}>
+                        <input name="system.diceroller.damage.reroll.four" value="system.diceroller.damage.reroll.four"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.four}}>
                     </div>
                     <div>
                         <div>5</div>
-                        <input name="data.diceroller.damage.reroll.five" value="data.diceroller.damage.reroll.five"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.five}}>
+                        <input name="system.diceroller.damage.reroll.five" value="system.diceroller.damage.reroll.five"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.five}}>
                     </div>
                     <div>
                         <div>6</div>
-                        <input name="data.diceroller.damage.reroll.six" value="data.diceroller.damage.reroll.six"
+                        <input name="system.diceroller.damage.reroll.six" value="system.diceroller.damage.reroll.six"
                             type="checkbox" {{checked data.damage.reroll.six}}>
                     </div>
                     <div>
                         <div>7</div>
-                        <input name="data.diceroller.damage.reroll.seven" value="data.diceroller.damage.reroll.seven"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.seven}}>
+                        <input name="system.diceroller.damage.reroll.seven" value="system.diceroller.damage.reroll.seven"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.seven}}>
                     </div>
                     <div>
                         <div>8</div>
-                        <input name="data.diceroller.damage.reroll.eight" value="data.diceroller.damage.reroll.eight"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.eight}}>
+                        <input name="system.diceroller.damage.reroll.eight" value="system.diceroller.damage.reroll.eight"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.eight}}>
                     </div>
                     <div>
                         <div>9</div>
-                        <input name="data.diceroller.damage.reroll.nine" value="data.diceroller.damage.reroll.nine"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.nine}}>
+                        <input name="system.diceroller.damage.reroll.nine" value="system.diceroller.damage.reroll.nine"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.nine}}>
                     </div>
                     <div>
                         <div>10</div>
-                        <input name="data.diceroller.damage.reroll.ten" value="data.diceroller.damage.reroll.ten"
-                            type="checkbox" {{checked data.data.diceroller.damage.reroll.ten}}>
+                        <input name="system.diceroller.damage.reroll.ten" value="system.diceroller.damage.reroll.ten"
+                            type="checkbox" {{checked system.diceroller.damage.reroll.ten}}>
                     </div>
                 </div>
             </div>

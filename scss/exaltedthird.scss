@@ -17,9 +17,28 @@
   @import 'components/items';
 }
 
-// .exaltedthird .window-content {
-//   background: url('../assets/background.png');
+@font-face {
+  font-family: "MinionPro";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MinionPro.otf") format("truetype");
+}
+
+
+// * {
+//   font-family: "MinionPro";
 // }
+
+.exaltedthird .window-content {
+  background: url('../assets/backgrounds/solar-background.jpg');
+}
+
+.solar-background {
+  .window-content {
+    background: url('../assets/backgrounds/solar-background.jpg');
+    background-size: cover;
+  }
+}
 
 .exaltedthird .window-content .abilities,
 .exaltedthird.sheet.actor .window-content .abilities {
@@ -232,6 +251,11 @@
   text-shadow: 0 0 black;
 }
 
+.chat-message {
+  background: url('../assets/backgrounds/chat-background.jpg');
+  background-size: cover;
+}
+
 .chat-card {
   font-style: normal;
   font-size: 12px;
@@ -242,6 +266,7 @@
     border-bottom: 2px groove #FFF;
 
     img {
+      background: black;
       flex: 0 0 36px;
       margin-right: 5px;
     }
@@ -310,6 +335,10 @@
       }
     }
   }
+}
+
+.chat-control-icon .fa-dice-d20:before {
+  content: "\f6cd" !important;
 }
 
 .chat-control-icon .fas.fa-dice-d20:hover:before {

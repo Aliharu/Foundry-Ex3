@@ -11,7 +11,7 @@
 </li>
 {{#each charm.list as |item id|}}
 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
         <a class="item-control item-spend" title="Spend Charm"><i class="fas fa-burn"></i></a>
@@ -22,29 +22,29 @@
 </li>
 <li class="item-description">
     <div>
-        <b>Cost</b>: {{#ifGreater item.data.cost.motes 0}}{{ item.data.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.data.cost.willpower 0}} {{ item.data.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.data.cost.anima 0}}{{ item.data.cost.anima }}a, {{/ifGreater}}
-        {{#ifGreater item.data.cost.initiative 0}}{{ item.data.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.data.cost.silverxp 0}}{{ item.data.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.data.cost.goldxp 0}} {{
-        item.data.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.data.cost.whitexp 0}}{{ item.data.cost.whitexp }}wxp; {{/ifGreater}} {{#ifGreater item.data.cost.xp 0}}{{ item.data.cost.xp }}xp; {{/ifGreater}}    
+        <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}
+        {{#ifGreater item.system.cost.initiative 0}}{{ item.system.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.system.cost.silverxp 0}}{{ item.system.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.system.cost.goldxp 0}} {{
+        item.system.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.system.cost.whitexp 0}}{{ item.system.cost.whitexp }}wxp; {{/ifGreater}} {{#ifGreater item.system.cost.xp 0}}{{ item.system.cost.xp }}xp; {{/ifGreater}}    
     </div>
-    {{#ifGreater item.data.cost.health 0}}
+    {{#ifGreater item.system.cost.health 0}}
     <div>
-        <b>Health cost</b>: {{ item.data.cost.health }} {{ item.data.cost.healthtype }}
+        <b>Health cost</b>: {{ item.system.cost.health }} {{ item.system.cost.healthtype }}
     </div>
     {{/ifGreater}}
     <div>
-        <b>Mins</b>: {{localize charm.name}} {{item.data.requirement}}, Essence {{item.data.essence}}
+        <b>Mins</b>: {{localize charm.name}} {{item.system.requirement}}, Essence {{item.system.essence}}
     </div>
     <div>
-        <b>Type</b>: {{item.data.type}}
+        <b>Type</b>: {{item.system.type}}
     </div>
     <div>
-        <b>Keywords</b>: {{item.data.keywords}}
+        <b>Keywords</b>: {{item.system.keywords}}
     </div>
     <div>
-        <b>Duration</b>: {{item.data.duration}}
+        <b>Duration</b>: {{item.system.duration}}
     </div>
     <div>
-        {{{item.data.description}}}
+        {{{item.system.description}}}
     </div>
 </li>
 {{/each}}
@@ -64,7 +64,7 @@
 </li>
 {{#each spell.list as |item id|}}
 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
         <a class="item-control item-spend" title="Spend Spell"><i class="fas fa-burn"></i></a>
@@ -75,7 +75,7 @@
 </li>
 <li class="item-description">
     <div>
-        {{{item.data.description}}}
+        {{{item.system.description}}}
     </div>
 </li>
 {{/each}}

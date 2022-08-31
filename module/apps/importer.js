@@ -350,7 +350,7 @@ export default class Importer extends FormApplication {
             charmArray.slice(1).forEach(async (charmRow, i) => {
                 charmData = {
                     type: 'charm',
-                    data: {
+                    system: {
                         cost: {
                             "motes": 0,
                             "initiative": 0,
@@ -364,7 +364,6 @@ export default class Importer extends FormApplication {
                             "whitexp": 0
                         }
                     }
-
                 };
                 if (charmRow[1] === 'Dragon-Blooded' || charmRow[1] === 'Lunar' || charmRow[1] === 'Solar' || charmRow[1] === 'Martial Arts' || charmRow[1] === 'Evocation' || charmRow[1] === 'Spell') {
                     if (charmRow[0]) {
@@ -373,40 +372,40 @@ export default class Importer extends FormApplication {
                     if (charmRow[1] === 'Spell') {
                         charmData.folder = spellFolderMap[charmRow[2]];
                         charmData.type = 'spell';
-                        charmData.data.circle = charmRow[2].toLowerCase();
+                        charmData.system.circle = charmRow[2].toLowerCase();
                         if (charmRow[4] !== 'Ritual' && parseInt(charmRow[4])) {
-                            charmData.data.cost = parseInt(charmRow[4]);
+                            charmData.system.cost = parseInt(charmRow[4]);
                         } else {
-                            charmData.data.cost = 0;
+                            charmData.system.cost = 0;
                         }
                         if (parseInt(charmRow[7])) {
-                            charmData.data.willpower = parseInt(charmRow[7]);
+                            charmData.system.willpower = parseInt(charmRow[7]);
                         }
                         if (charmRow[14] !== "—") {
-                            charmData.data.duration = charmRow[14];
+                            charmData.system.duration = charmRow[14];
                         }
                     }
                     else {
-                        if(charmRow[1] === 'Artifact') {
-                            charmData.data.charmtype = 'evocation';
+                        if (charmRow[1] === 'Artifact') {
+                            charmData.system.charmtype = 'evocation';
                         }
                         else {
-                            charmData.data.charmtype = charmRow[1].replace(' ', '').replace('-', '').toLowerCase();
+                            charmData.system.charmtype = charmRow[1].replace(' ', '').replace('-', '').toLowerCase();
                         }
                         if (charmRow[1] === 'Solar') {
                             charmData.folder = solarFolderMap[charmRow[2]];
-                            charmData.data.ability = charmRow[2].toLowerCase();
+                            charmData.system.ability = charmRow[2].toLowerCase();
                         }
                         if (charmRow[1] === 'Dragon-Blooded') {
                             charmData.folder = dragonFolderMap[charmRow[2]];
-                            charmData.data.ability = charmRow[2].toLowerCase();
+                            charmData.system.ability = charmRow[2].toLowerCase();
                         }
                         if (charmRow[1] === 'Lunar') {
                             var attributeArray = charmRow[2].split(',');
-                            charmData.data.ability = attributeArray[0].toLowerCase();
+                            charmData.system.ability = attributeArray[0].toLowerCase();
                             if (charmRow[2].includes('Universal')) {
                                 charmData.folder = universalFolder;
-                                charmData.data.ability = 'universal';
+                                charmData.system.ability = 'universal';
                             }
                             else {
                                 charmData.folder = lunarMap[attributeArray[0]].folders[attributeArray[1].trim()]
@@ -414,23 +413,23 @@ export default class Importer extends FormApplication {
                         }
                         if (charmRow[1] === 'Evocation') {
                             charmData.folder = artifactMap[charmRow[2]];
-                            charmData.data.ability = 'evocation';
+                            charmData.system.ability = 'evocation';
                         }
                         if (charmRow[1] === 'Martial Arts') {
                             charmData.folder = martialArtsMap[charmRow[2]];
-                            charmData.data.ability = 'martialarts';
+                            charmData.system.ability = 'martialarts';
                         }
                         if (charmRow[4] !== "—" && charmRow[4] !== 'Var') {
-                            charmData.data.cost.motes = parseInt(charmRow[4]);
+                            charmData.system.cost.motes = parseInt(charmRow[4]);
                         }
                         if (charmRow[5] !== "—") {
-                            charmData.data.cost.initiative = parseInt(charmRow[5]);
+                            charmData.system.cost.initiative = parseInt(charmRow[5]);
                         }
                         if (charmRow[6] !== "—") {
-                            charmData.data.cost.anima = parseInt(charmRow[6]);
+                            charmData.system.cost.anima = parseInt(charmRow[6]);
                         }
                         if (charmRow[7] !== "—") {
-                            charmData.data.cost.willpower = parseInt(charmRow[7]);
+                            charmData.system.cost.willpower = parseInt(charmRow[7]);
                         }
                         if (charmRow[8] !== "—") {
                             var miscCostArray = charmRow[8].split(',');
@@ -438,68 +437,68 @@ export default class Importer extends FormApplication {
                                 miscCost = miscCost.trim();
                                 if (miscCost.includes('hl')) {
                                     var num = miscCost.replace(/[^0-9]/g, '');
-                                    charmData.data.cost.health = parseInt(num);
+                                    charmData.system.cost.health = parseInt(num);
                                     if (miscCost.includes('ahl')) {
-                                        charmData.data.cost.healthtype = 'aggravated';
+                                        charmData.system.cost.healthtype = 'aggravated';
                                     }
                                     if (miscCost.includes('lhl')) {
-                                        charmData.data.cost.healthtype = 'lethal';
+                                        charmData.system.cost.healthtype = 'lethal';
                                     }
                                 }
                                 if (miscCost.includes('Fire')) {
-                                    charmData.data.cost.aura = 'fire';
+                                    charmData.system.cost.aura = 'fire';
                                 }
                                 if (miscCost.includes('Earth')) {
-                                    charmData.data.cost.aura = 'earth';
+                                    charmData.system.cost.aura = 'earth';
                                 }
                                 if (miscCost.includes('Air')) {
-                                    charmData.data.cost.aura = 'air';
+                                    charmData.system.cost.aura = 'air';
                                 }
                                 if (miscCost.includes('Water')) {
-                                    charmData.data.cost.aura = 'water';
+                                    charmData.system.cost.aura = 'water';
                                 }
                                 if (miscCost.includes('Wood')) {
-                                    charmData.data.cost.aura = 'wood';
+                                    charmData.system.cost.aura = 'wood';
                                 }
                                 if (miscCost.includes('gxp')) {
                                     var num = miscCost.replace(/[^0-9]/g, '');
-                                    charmData.data.cost.goldxp = parseInt(num);
+                                    charmData.system.cost.goldxp = parseInt(num);
                                 }
                                 else if (miscCost.includes('sxp')) {
                                     var num = miscCost.replace(/[^0-9]/g, '');
-                                    charmData.data.cost.silverxp = parseInt(num);
+                                    charmData.system.cost.silverxp = parseInt(num);
                                 }
                                 else if (miscCost.includes('wxp')) {
                                     var num = miscCost.replace(/[^0-9]/g, '');
-                                    charmData.data.cost.whitexp = parseInt(num);
+                                    charmData.system.cost.whitexp = parseInt(num);
                                 }
                                 else if (miscCost.includes('xp')) {
                                     var num = miscCost.replace(/[^0-9]/g, '');
-                                    charmData.data.cost.xp = parseInt(num);
+                                    charmData.system.cost.xp = parseInt(num);
                                 }
                             }
                         }
                         if (charmRow[9] !== "—") {
-                            charmData.data.requirement = parseInt(charmRow[9]);
+                            charmData.system.requirement = parseInt(charmRow[9]);
                         }
                         if (charmRow[10] !== "—") {
-                            charmData.data.essence = parseInt(charmRow[10]);
+                            charmData.system.essence = parseInt(charmRow[10]);
                         }
                         if (charmRow[12] !== "—") {
-                            charmData.data.type = charmRow[12];
+                            charmData.system.type = charmRow[12];
                         }
                         if (charmRow[13] !== "—") {
-                            charmData.data.keywords = charmRow[13];
+                            charmData.system.keywords = charmRow[13];
                         }
                         if (charmRow[14] !== "—") {
-                            charmData.data.duration = charmRow[14];
+                            charmData.system.duration = charmRow[14];
                         }
                         if (charmRow[15] !== "—") {
-                            charmData.data.prerequisites = charmRow[15];
+                            charmData.system.prerequisites = charmRow[15];
                         }
                     }
                     if (charmRow[16] !== "—") {
-                        charmData.data.description = charmRow[16];
+                        charmData.system.description = charmRow[16];
                     }
                     await Item.create(charmData);
                 }

@@ -4,7 +4,7 @@ export class RollForm extends FormApplication {
         this.actor = actor;
 
         if (data.rollId) {
-            this.object = duplicate(this.actor.data.data.savedRolls[data.rollId]);
+            this.object = duplicate(this.actor.system.savedRolls[data.rollId]);
             this.object.skipDialog = data.skipDialog || true;
             this.object.isSavedRoll = true;
         }
@@ -20,7 +20,7 @@ export class RollForm extends FormApplication {
             this.object.attackType = 'withering';
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft';
+            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working';
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -71,7 +71,7 @@ export class RollForm extends FormApplication {
             this.object.damage = {
                 damageDice: data.damage || 0,
                 damageSuccessModifier: data.damageSuccessModifier || 0,
-                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor?.data?.data?.battlegroup) ? 11 : 10),
+                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor?.system?.battlegroup) ? 11 : 10),
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
                 reroll: {
@@ -89,17 +89,17 @@ export class RollForm extends FormApplication {
                 type: 'lethal',
             };
             if (this.object.rollType !== 'base') {
-                this.object.characterType = this.actor.data.type;
+                this.object.characterType = this.actor.type;
 
-                this.object.conditions = (this.actor.token && this.actor.token.data.actorData.effects) ? this.actor.token.data.actorData.effects : [];
-                if (this.actor.data.type === 'character') {
+                this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
+                if (this.actor.type === 'character') {
                     this.object.stunt = "one";
                     this.object.attribute = data.attribute || this._getHighestAttribute();
                     this.object.ability = data.ability || "archery";
-                    this.object.appearance = this.actor.data.data.attributes.appearance.value;
+                    this.object.appearance = this.actor.system.attributes.appearance.value;
                 }
 
-                if (this.actor.data.type === "npc") {
+                if (this.actor.type === "npc") {
                     if (this.object.rollType === 'action') {
                         this.object.actionRoll = true;
                         this.object.actionId = data.actionId;
@@ -108,7 +108,7 @@ export class RollForm extends FormApplication {
                     else {
                         this.object.pool = data.pool || "administration";
                     }
-                    this.object.appearance = this.actor.data.data.appearance.value;
+                    this.object.appearance = this.actor.system.appearance.value;
                 }
                 this.object.difficultyString = 'Ex3.Difficulty';
                 if (this.object.rollType === 'readIntentions') {
@@ -144,6 +144,14 @@ export class RollForm extends FormApplication {
                         this.object.difficulty = 5;
                         this.object.goalNumber = 200;
                     }
+                }
+                this.object.finesse = 1;
+                this.object.ambition = 5;
+
+                if (this.object.rollType === 'working') {
+                    this.object.difficulty = 1;
+                    this.object.intervals = 5;
+                    this.object.goalNumber = 5;
                 }
 
                 if (this._isAttackRoll()) {
@@ -182,14 +190,18 @@ export class RollForm extends FormApplication {
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();
         }
+        if(this.object.diceToSuccesses === undefined) {
+            this.object.diceToSuccesses = 0;
+        }
         if (this.object.rollType !== 'base') {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.data.ability === this.object.ability);
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
+            this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
 
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == actor.id);
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
                         this.object.damage.damageDice = combatant.initiative;
@@ -200,40 +212,40 @@ export class RollForm extends FormApplication {
             if (this.object.target) {
                 if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
                     if (this.object.rollType === 'readIntentions') {
-                        this.object.difficulty = this.object.target.actor.data.data.guile.value;
+                        this.object.difficulty = this.object.target.actor.system.guile.value;
                     }
                     if (this.object.rollType === 'social') {
-                        this.object.difficulty = this.object.target.actor.data.data.resolve.value;
+                        this.object.difficulty = this.object.target.actor.system.resolve.value;
                     }
                 }
-                if (this.object.target.actor.data.data.parry.value >= this.object.target.actor.data.data.evasion.value) {
-                    this.object.defense = this.object.target.actor.data.data.parry.value;
-                    if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
+                if (this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value) {
+                    this.object.defense = this.object.target.actor.system.parry.value;
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.name === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
                 else {
-                    this.object.defense = this.object.target.actor.data.data.evasion.value;
-                    if (this.object.target.data.actorData.effects && this.object.target.data.actorData.effects.some(e => e.name === 'prone')) {
+                    this.object.defense = this.object.target.actor.system.evasion.value;
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.name === 'prone')) {
                         this.object.defense -= 2;
                     }
                 }
-                if (this.object.target.actor.data.data.warstrider.equipped) {
-                    this.object.soak = this.object.target.actor.data.data.warstrider.soak.value;
+                if (this.object.target.actor.system.warstrider.equipped) {
+                    this.object.soak = this.object.target.actor.system.warstrider.soak.value;
                 }
                 else {
-                    this.object.soak = this.object.target.actor.data.data.soak.value;
-                    this.object.armoredSoak = this.object.target.actor.data.data.armoredsoak.value;
-                    this.object.naturalSoak = this.object.target.actor.data.data.naturalsoak.value;
+                    this.object.soak = this.object.target.actor.system.soak.value;
+                    this.object.armoredSoak = this.object.target.actor.system.armoredsoak.value;
+                    this.object.naturalSoak = this.object.target.actor.system.naturalsoak.value;
                 }
-                if (this.object.target.data.actorData.effects) {
-                    if (this.object.target.data.actorData.effects.some(e => e.name === 'lightcover')) {
+                if (this.object.target.actor.effects) {
+                    if (this.object.target.actor.effects.some(e => e.name === 'lightcover')) {
                         this.object.defense += 1;
                     }
-                    if (this.object.target.data.actorData.effects.some(e => e.name === 'heavycover')) {
+                    if (this.object.target.actor.effects.some(e => e.name === 'heavycover')) {
                         this.object.defense += 2;
                     }
-                    if (this.object.target.data.actorData.effects.some(e => e.name === 'grappled') || this.object.target.data.actorData.effects.some(e => e.name === 'grappling')) {
+                    if (this.object.target.actor.effects.some(e => e.name === 'grappled') || this.object.target.actor.effects.some(e => e.name === 'grappling')) {
                         this.object.defense -= 2;
                     }
                 }
@@ -304,7 +316,7 @@ export class RollForm extends FormApplication {
 
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            classes: ["dialog"],
+            classes: ["dialog", `solar-background`],
             popOut: true,
             template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
             id: "roll-form",
@@ -393,6 +405,16 @@ export class RollForm extends FormApplication {
     activateListeners(html) {
         super.activateListeners(html);
 
+        html.on("change", "#working-finesse", ev => {
+            this.object.difficulty = parseInt(this.object.finesse);
+            this.render();
+        });
+
+        html.on("change", "#working-ambition", ev => {
+            this.object.goalNumber = parseInt(this.object.ambition);
+            this.render();
+        });
+
         html.find('#roll-button').click((event) => {
             this._roll();
             if (this.object.intervals <= 0) {
@@ -412,7 +434,7 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            this.object.addedCharms.push(item.data);
+            this.object.addedCharms.push(item);
             for(var charmlist of Object.values(this.object.charmList)) {
                 for(const charm of charmlist.list) {
                     if(this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
@@ -420,63 +442,64 @@ export class RollForm extends FormApplication {
                     }
                 }
             }
-            if (item.data.data.keywords.toLowerCase().includes('mute')) {
-                this.object.cost.muteMotes += item.data.data.cost.motes;
+            if (item.system.keywords.toLowerCase().includes('mute')) {
+                this.object.cost.muteMotes += item.system.cost.motes;
             }
             else {
-                this.object.cost.motes += item.data.data.cost.motes;
+                this.object.cost.motes += item.system.cost.motes;
             }
-            this.object.cost.anima += item.data.data.cost.anima;
-            this.object.cost.willpower += item.data.data.cost.willpower;
-            this.object.cost.silverxp += item.data.data.cost.silverxp;
-            this.object.cost.goldxp += item.data.data.cost.goldxp;
-            this.object.cost.whitexp += item.data.data.cost.whitexp;
-            this.object.cost.initiative += item.data.data.cost.initiative;
+            this.object.cost.anima += item.system.cost.anima;
+            this.object.cost.willpower += item.system.cost.willpower;
+            this.object.cost.silverxp += item.system.cost.silverxp;
+            this.object.cost.goldxp += item.system.cost.goldxp;
+            this.object.cost.whitexp += item.system.cost.whitexp;
+            this.object.cost.initiative += item.system.cost.initiative;
 
-            if (item.data.data.cost.aura) {
-                this.object.cost.aura = item.data.data.cost.aura;
+            if (item.system.cost.aura) {
+                this.object.cost.aura = item.system.cost.aura;
             }
 
-            if (item.data.data.cost.health > 0) {
-                if (item.data.data.cost.healthtype === 'bashing') {
-                    this.object.cost.healthbashing += item.data.data.cost.health;
+            if (item.system.cost.health > 0) {
+                if (item.system.cost.healthtype === 'bashing') {
+                    this.object.cost.healthbashing += item.system.cost.health;
                 }
-                else if (item.data.data.cost.healthtype === 'lethal') {
-                    this.object.cost.healthlethal += item.data.data.cost.health;
+                else if (item.system.cost.healthtype === 'lethal') {
+                    this.object.cost.healthlethal += item.system.cost.health;
                 }
                 else {
-                    this.object.cost.healthaggravated += item.data.data.cost.health;
+                    this.object.cost.healthaggravated += item.system.cost.health;
                 }
             }
-            this.object.diceModifier += item.data.data.diceroller.bonusdice;
-            this.object.successModifier += item.data.data.diceroller.bonussuccesses;
-            if (item.data.data.diceroller.doublesuccess < this.object.doubleSuccess) {
-                this.object.doubleSuccess = item.data.data.diceroller.doublesuccess;
+            this.object.diceModifier += item.system.diceroller.bonusdice;
+            this.object.successModifier += item.system.diceroller.bonussuccesses;
+            if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
+                this.object.doubleSuccess = item.system.diceroller.doublesuccess;
             }
-            if (item.data.data.diceroller.targetnumber < this.object.damage.targetNumber) {
-                this.object.targetNumber = item.data.data.diceroller.targetnumber;
+            if (item.system.diceroller.targetnumber < this.object.damage.targetNumber) {
+                this.object.targetNumber = item.system.diceroller.targetnumber;
             }
-            for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.reroll)) {
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                 if (rerollValue) {
                     this.object.reroll[rerollKey].status = true;
                 }
             }
-            if (item.data.data.diceroller.rerollfailed) {
-                this.object.rerollFailed = item.data.data.diceroller.rerollfailed;
+            if (item.system.diceroller.rerollfailed) {
+                this.object.rerollFailed = item.system.diceroller.rerollfailed;
             }
-            this.object.rerollNumber += item.data.data.diceroller.rerolldice;
+            this.object.rerollNumber += item.system.diceroller.rerolldice;
+            this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
 
-            this.object.damage.damageDice += item.data.data.diceroller.damage.bonusdice;
-            this.object.damage.damageSuccessModifier += item.data.data.diceroller.damage.bonussuccesses;
-            if (item.data.data.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
-                this.object.damage.doubleSuccess = item.data.data.diceroller.damage.doublesuccess;
+            this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
+            this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
+            if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
+                this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
             }
-            if (item.data.data.diceroller.damage.targetnumber < this.object.damage.targetNumber) {
-                this.object.damage.targetNumber = item.data.data.diceroller.damage.targetnumber;
+            if (item.system.diceroller.damage.targetnumber < this.object.damage.targetNumber) {
+                this.object.damage.targetNumber = item.system.diceroller.damage.targetnumber;
             }
-            this.object.overwhelming += item.data.data.diceroller.damage.overwhelming;
-            this.object.damage.postSoakDamage += item.data.data.diceroller.damage.postsoakdamage;
-            for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.damage.reroll)) {
+            this.object.overwhelming += item.system.diceroller.damage.overwhelming;
+            this.object.damage.postSoakDamage += item.system.diceroller.damage.postsoakdamage;
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                 if (rerollValue) {
                     this.object.damage.reroll[rerollKey].status = true;
                 }
@@ -500,51 +523,52 @@ export class RollForm extends FormApplication {
                 }
                 this.object.addedCharms.splice(index, 1);
 
-                if (item.data.data.keywords.toLowerCase().includes('mute')) {
-                    this.object.cost.muteMotes -= item.data.data.cost.motes;
+                if (item.system.keywords.toLowerCase().includes('mute')) {
+                    this.object.cost.muteMotes -= item.system.cost.motes;
                 }
                 else {
-                    this.object.cost.motes -= item.data.data.cost.motes;
+                    this.object.cost.motes -= item.system.cost.motes;
                 }
-                this.object.cost.anima -= item.data.data.cost.anima;
-                this.object.cost.willpower -= item.data.data.cost.willpower;
-                this.object.cost.silverxp -= item.data.data.cost.silverxp;
-                this.object.cost.goldxp -= item.data.data.cost.goldxp;
-                this.object.cost.whitexp -= item.data.data.cost.whitexp;
-                this.object.cost.initiative -= item.data.data.cost.initiative;
+                this.object.cost.anima -= item.system.cost.anima;
+                this.object.cost.willpower -= item.system.cost.willpower;
+                this.object.cost.silverxp -= item.system.cost.silverxp;
+                this.object.cost.goldxp -= item.system.cost.goldxp;
+                this.object.cost.whitexp -= item.system.cost.whitexp;
+                this.object.cost.initiative -= item.system.cost.initiative;
 
-                if (item.data.data.cost.aura === this.object.cost.aura) {
+                if (item.system.cost.aura === this.object.cost.aura) {
                     this.object.cost.aura = "";
                 }
 
-                if (item.data.data.cost.health > 0) {
-                    if (item.data.data.cost.healthtype === 'bashing') {
-                        this.object.cost.healthbashing -= item.data.data.cost.health;
+                if (item.system.cost.health > 0) {
+                    if (item.system.cost.healthtype === 'bashing') {
+                        this.object.cost.healthbashing -= item.system.cost.health;
                     }
-                    else if (item.data.data.cost.healthtype === 'lethal') {
-                        this.object.cost.healthlethal -= item.data.data.cost.health;
+                    else if (item.system.cost.healthtype === 'lethal') {
+                        this.object.cost.healthlethal -= item.system.cost.health;
                     }
                     else {
-                        this.object.cost.healthaggravated -= item.data.data.cost.health;
+                        this.object.cost.healthaggravated -= item.system.cost.health;
                     }
                 }
-                this.object.diceModifier -= item.data.data.diceroller.bonusdice;
-                this.object.successModifier -= item.data.data.diceroller.bonussuccesses;
-                for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.reroll)) {
+                this.object.diceModifier -= item.system.diceroller.bonusdice;
+                this.object.successModifier -= item.system.diceroller.bonussuccesses;
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                     if (rerollValue) {
                         this.object.reroll[rerollKey].status = false;
                     }
                 }
-                if (item.data.data.diceroller.rerollfailed) {
+                if (item.system.diceroller.rerollfailed) {
                     this.object.rerollFailed = false;
                 }
-                this.object.rerollNumber -= item.data.data.diceroller.rerolldice;
-
-                this.object.damage.damageDice -= item.data.data.diceroller.damage.bonusdice;
-                this.object.damage.damageSuccessModifier -= item.data.data.diceroller.damage.bonussuccesses;
-                this.object.overwhelming -= item.data.data.diceroller.damage.overwhelming;
-                this.object.damage.postSoakDamage -= item.data.data.diceroller.damage.postsoakdamage;
-                for (let [rerollKey, rerollValue] of Object.entries(item.data.data.diceroller.damage.reroll)) {
+                this.object.rerollNumber -= item.system.diceroller.rerolldice;
+                this.object.diceToSuccesses -= item.system.diceroller.diceToSuccesses;
+    
+                this.object.damage.damageDice -= item.system.diceroller.damage.bonusdice;
+                this.object.damage.damageSuccessModifier -= item.system.diceroller.damage.bonussuccesses;
+                this.object.overwhelming -= item.system.diceroller.damage.overwhelming;
+                this.object.damage.postSoakDamage -= item.system.diceroller.damage.postsoakdamage;
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                     if (rerollValue) {
                         this.object.damage.reroll[rerollKey].status = false;
                     }
@@ -565,7 +589,7 @@ export class RollForm extends FormApplication {
         });
 
         html.on("change", ".update-specialties", ev => {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.data.ability === this.object.ability);
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.render();
         });
 
@@ -587,7 +611,7 @@ export class RollForm extends FormApplication {
         else if (this.object.rollType === 'base') {
             await this._diceRoll();
         }
-        else if (this.object.rollType === 'craft') {
+        else if (this.object.rollType === 'craft' || this.object.rollType === 'working') {
             await this._completeCraftProject();
         }
         else {
@@ -602,16 +626,16 @@ export class RollForm extends FormApplication {
             dice = this.object.dice;
         }
         else {
-            const data = this.actor.data.data;
+            const data = this.actor.system;
             const actorData = duplicate(this.actor);
-            if (this.actor.data.type === 'character') {
+            if (this.actor.type === 'character') {
                 let attributeDice = data.attributes[this.object.attribute].value;
                 let abilityDice = data.abilities[this.object.ability].value;
                 dice = attributeDice + abilityDice;
             }
-            else if (this.actor.data.type === 'npc' && !this._isAttackRoll()) {
+            else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
                 if (this.object.rollType === 'action') {
-                    dice = this.actor.actions.find(x => x._id === this.object.actionId).data.value;
+                    dice = this.actor.actions.find(x => x._id === this.object.actionId).system.value;
                 }
                 else {
                     let poolDice = data.pools[this.object.pool].value;
@@ -621,8 +645,8 @@ export class RollForm extends FormApplication {
 
             if (this.object.armorPenalty) {
                 for (let armor of this.actor.armor) {
-                    if (armor.data.equiped) {
-                        dice = dice - Math.abs(armor.data.penalty);
+                    if (armor.system.equiped) {
+                        dice = dice - Math.abs(armor.system.penalty);
                     }
                 }
             }
@@ -630,12 +654,16 @@ export class RollForm extends FormApplication {
                 dice += 2;
             }
             if (this.object.stunt === 'two') {
-                actorData.data.willpower.value++;
+                actorData.system.willpower.value++;
                 this.object.successModifier++;
             }
             if (this.object.stunt === 'three') {
-                actorData.data.willpower.value += 2;
+                actorData.system.willpower.value += 2;
                 this.object.successModifier += 2;
+            }
+            if(this.object.diceToSuccesses > 0) {
+                this.object.successModifier += Math.min(dice, this.object.diceToSuccesses);
+                dice = Math.max(0, dice - this.object.diceToSuccesses);
             }
             if (this.object.woundPenalty && data.health.penalty !== 'inc') {
                 if (data.warstrider.equipped) {
@@ -656,7 +684,7 @@ export class RollForm extends FormApplication {
             }
             if (this.object.willpower) {
                 this.object.successModifier++;
-                actorData.data.willpower.value--;
+                actorData.system.willpower.value--;
             }
 
             this.actor.update(actorData);
@@ -664,7 +692,7 @@ export class RollForm extends FormApplication {
 
         if (this._isAttackRoll()) {
             dice += this.object.accuracy || 0;
-            if (this.object.weaponType !== 'melee' && (this.actor.data.type === 'npc' || this.object.rollType === 'withering')) {
+            if (this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.rollType === 'withering')) {
                 if (this.object.range !== 'short') {
                     dice += this._getRangedAccuracy();
                 }
@@ -745,14 +773,14 @@ export class RollForm extends FormApplication {
     }
 
     async _abilityRoll() {
-        if (this.actor.data.type === "npc") {
+        if (this.actor.type === "npc") {
             this.object.stunt = 'none';
             if (this.object.ability === "archery") {
                 this.object.ability = "primary";
             }
         }
         if (this.object.attribute == null) {
-            this.object.attribute = this.actor.data.type === "npc" ? null : this._getHighestAttribute();
+            this.object.attribute = this.actor.type === "npc" ? null : this._getHighestAttribute();
         }
         if (this.object.rollType === 'social') {
             this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
@@ -823,7 +851,7 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === "joinBattle") {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant) {
                     combat.setInitiative(combatant.id, this.object.total + 3);
                 }
@@ -831,7 +859,7 @@ export class RollForm extends FormApplication {
         }
         if (this.object.rollType === "sorcery") {
             const actorData = duplicate(this.actor);
-            actorData.data.sorcery.motes += this.object.total;
+            actorData.system.sorcery.motes += this.object.total;
             this.actor.update(actorData);
         }
     }
@@ -962,9 +990,8 @@ export class RollForm extends FormApplication {
 
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
-                let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
-                if (targetCombatant !== null) {
-                    if (targetCombatant.actor.data.type === 'npc' || targetCombatant.actor.data.data.battlegroup) {
+                if (this.object.targetCombatant !== null) {
+                    if (this.object.targetCombatant.actor.type === 'npc' || this.object.targetCombatant.actor.system.battlegroup) {
                         dice += Math.floor(dice / 4);
                         baseDamage = dice;
                     }
@@ -1025,8 +1052,8 @@ export class RollForm extends FormApplication {
             typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             this.object.characterInitiative = 3;
             if (this._useLegendarySize('decisive')) {
-                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.data.data.attributes.strength.value} + Charm damage levels</h4>`;
-                characterDamage = Math.min(characterDamage, 3 + this.actor.data.data.attributes.strength.value);
+                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value} + Charm damage levels</h4>`;
+                characterDamage = Math.min(characterDamage, 3 + this.actor.system.attributes.strength.value);
             }
             this.dealHealthDamage(characterDamage);
         }
@@ -1044,14 +1071,13 @@ export class RollForm extends FormApplication {
         else {
             let targetResults = ``;
             if (this.object.target && game.combat) {
-                let targetCombatant = game.combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
-                if (targetCombatant && targetCombatant.initiative !== null) {
+                if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
                     this.object.characterInitiative++;
-                    if (targetCombatant.actor.data.type !== 'npc' || targetCombatant.actor.data.data.battlegroup === false) {
-                        let newInitative = targetCombatant.initiative;
+                    if (this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) {
+                        let newInitative = this.object.targetCombatant.initiative;
                         newInitative -= total;
                         this.object.characterInitiative += total;
-                        if ((newInitative <= 0 && targetCombatant.initiative > 0)) {
+                        if ((newInitative <= 0 && this.object.targetCombatant.initiative > 0)) {
                             if (this._useLegendarySize('withering')) {
                                 newInitative = 1;
                             }
@@ -1061,10 +1087,14 @@ export class RollForm extends FormApplication {
                                 targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
                             }
                         }
-                        game.combat.setInitiative(targetCombatant.id, newInitative);
+                        game.combat.setInitiative(this.object.targetCombatant.id, newInitative);
                     }
-                    else if(targetCombatant.actor.data.data.battlegroup) {
-                        this.dealHealthDamage(total);
+                    else if(this.object.targetCombatant.actor.system.battlegroup) {
+                        var sizeDamaged = this.dealHealthDamage(total, true);
+                        if(sizeDamaged) {
+                            targetResults = `<h4 class="dice-total">Magnitude Filled!</h4>`;
+                            this.object.characterInitiative += 5;
+                        }
                     }
                 }
             }
@@ -1163,19 +1193,19 @@ export class RollForm extends FormApplication {
             }
         });
 
-        if (this.actor.data.type !== 'npc' || this.actor.data.data.battlegroup === false) {
+        if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
             let combat = game.combat;
             if (this.object.target && combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant && combatant.initiative != null) {
                     combat.setInitiative(combatant.id, this.object.characterInitiative);
                 }
             }
         }
-        else if (this.actor.data.data.battlegroup) {
+        else if (this.actor.system.battlegroup) {
             let combat = game.combat;
             if (this.object.target) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.object.target.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.object.target.actor.id);
                 if (combatant && combatant.initiative != null && combatant.initiative <= 0) {
                     this.dealHealthDamage(total);
                 }
@@ -1187,13 +1217,13 @@ export class RollForm extends FormApplication {
     async _addOnslaught() {
         if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
             if (!this._useLegendarySize('onslaught')) {
-                const onslaught = this.object.target.actor.effects.find(i => i.data.label == "Onslaught");
+                const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
                 if (onslaught) {
-                    let changes = duplicate(onslaught.data.changes);
-                    if (this.object.target.actor.data.data.evasion.value > 0) {
+                    let changes = duplicate(onslaught.changes);
+                    if (this.object.target.actor.system.evasion.value > 0) {
                         changes[0].value = changes[0].value - 1;
                     }
-                    if (this.object.target.actor.data.data.parry.value > 0) {
+                    if (this.object.target.actor.system.parry.value > 0) {
                         changes[1].value = changes[1].value - 1;
                     }
                     onslaught.update({ changes });
@@ -1201,7 +1231,7 @@ export class RollForm extends FormApplication {
                 else {
                     this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
                         label: 'Onslaught',
-                        icon: 'icons/svg/aura.svg',
+                        icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                         origin: this.object.target.actor.uuid,
                         disabled: false,
                         "changes": [
@@ -1222,24 +1252,28 @@ export class RollForm extends FormApplication {
         }
     }
 
-    async dealHealthDamage(characterDamage) {
+    dealHealthDamage(characterDamage, targetBattlegroup=false) {
         if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
             let totalHealth = 0;
             const targetActorData = duplicate(this.object.target.actor);
-            for (let [key, health_level] of Object.entries(targetActorData.data.health.levels)) {
+            for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
                 totalHealth += health_level.value;
             }
             if (this.object.damage.type === 'bashing') {
-                targetActorData.data.health.bashing = Math.min(totalHealth - targetActorData.data.health.aggravated - targetActorData.data.health.lethal, targetActorData.data.health.bashing + characterDamage);
+                targetActorData.system.health.bashing = Math.min(totalHealth - targetActorData.system.health.aggravated - targetActorData.system.health.lethal, targetActorData.system.health.bashing + characterDamage);
             }
             if (this.object.damage.type === 'lethal') {
-                targetActorData.data.health.lethal = Math.min(totalHealth - targetActorData.data.health.bashing - targetActorData.data.health.aggravated, targetActorData.data.health.lethal + characterDamage);
+                targetActorData.system.health.lethal = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.aggravated, targetActorData.system.health.lethal + characterDamage);
             }
             if (this.object.damage.type === 'aggravated') {
-                targetActorData.data.health.aggravated = Math.min(totalHealth - targetActorData.data.health.bashing - targetActorData.data.health.lethal, targetActorData.data.health.aggravated + characterDamage);
+                targetActorData.system.health.aggravated = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal, targetActorData.system.health.aggravated + characterDamage);
             }
             this.object.target.actor.update(targetActorData);
+            if(this._damageRollType('withering') && targetBattlegroup && (totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated) <= 0) {
+                return true;
+            }
         }
+        return false;
     }
 
     async _completeCraftProject() {
@@ -1261,8 +1295,8 @@ export class RollForm extends FormApplication {
             }
             for (let dice of this.object.roll.dice[0].results) {
                 if (dice.result === 1 && this.object.total === 0) {
-                    finished = true;
-                    resultString = `<h4 class="dice-total">Difficulty: ${difficulty}</h4><h4 class="dice-total">Botch</h4>`;
+                    this.object.finished = true;
+                    resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
                     craftFailed = true;
                 }
             }
@@ -1283,56 +1317,66 @@ export class RollForm extends FormApplication {
             }
             resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
         }
+        if(this.object.rollType === 'craft') {
+            if (craftFailed) {
+                projectStatus = `<h4 class="dice-total">Craft Project Failed</h4>`;
+            }
+            if (craftSuccess) {
+                const actorData = duplicate(this.actor);
+                var silverXPGained = 0;
+                var goldXPGained = 0;
+                var whiteXPGained = 0;
+                if (this.object.craftType === 'basic') {
+                    if (threshholdSuccesses >= 3) {
+                        silverXPGained = 3 * this.object.objectivesCompleted;
+                    }
+                    else {
+                        silverXPGained = 2 * this.object.objectivesCompleted;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
+                }
+                else if (this.object.craftType === "major") {
+                    if (threshholdSuccesses >= 3) {
+                        silverXPGained = this.object.objectivesCompleted;
+                        goldXPGained = 3 * this.object.objectivesCompleted;
+                    }
+                    else {
+                        silverXPGained = this.object.objectivesCompleted;
+                        goldXPGained = 2 * this.object.objectivesCompleted;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
+                }
+                else if (this.object.craftType === "superior") {
+                    if (this.object.objectivesCompleted > 0) {
+                        whiteXPGained = (this.object.craftRating - 1) + this.object.craftRating;
+                        goldXPGained = (this.object.craftRating * 2) * this.object.intervals;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                }
+                else if (this.object.craftType === "legendary") {
+                    if (this.object.objectivesCompleted > 0) {
+                        whiteXPGained = 10;
+                    }
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                }
+                else {
+                    projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
+                }
+                actorData.system.craft.experience.silver.value += silverXPGained;
+                actorData.system.craft.experience.gold.value += goldXPGained;
+                actorData.system.craft.experience.white.value += whiteXPGained;
+                this.actor.update(actorData);
+            }
+        }
+        if(this.object.rollType === 'working') {
+            if (craftFailed) {
+                projectStatus = `<h4 class="dice-total">Working Failed</h4>`;
+            }
+            if (craftSuccess) {
+                projectStatus = `<h4 class="dice-total">Working Success</h4>`;
+            }
+        }
 
-        if (craftFailed) {
-            projectStatus = `<h4 class="dice-total">Craft Project Failed</h4>`;
-        }
-        if (craftSuccess) {
-            const actorData = duplicate(this.actor);
-            var silverXPGained = 0;
-            var goldXPGained = 0;
-            var whiteXPGained = 0;
-            if (this.object.craftType === 'basic') {
-                if (threshholdSuccesses >= 3) {
-                    silverXPGained = 3 * this.object.objectivesCompleted;
-                }
-                else {
-                    silverXPGained = 2 * this.object.objectivesCompleted;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
-            }
-            else if (this.object.craftType === "major") {
-                if (threshholdSuccesses >= 3) {
-                    silverXPGained = this.object.objectivesCompleted;
-                    goldXPGained = 3 * this.object.objectivesCompleted;
-                }
-                else {
-                    silverXPGained = this.object.objectivesCompleted;
-                    goldXPGained = 2 * this.object.objectivesCompleted;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
-            }
-            else if (this.object.craftType === "superior") {
-                if (this.object.objectivesCompleted > 0) {
-                    whiteXPGained = (this.object.craftRating - 1) + this.object.craftRating;
-                    goldXPGained = (this.object.craftRating * 2) * this.object.intervals;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
-            }
-            else if (this.object.craftType === "legendary") {
-                if (this.object.objectivesCompleted > 0) {
-                    whiteXPGained = 10;
-                }
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
-            }
-            else {
-                projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
-            }
-            actorData.data.craft.experience.silver.value += silverXPGained;
-            actorData.data.craft.experience.gold.value += goldXPGained;
-            actorData.data.craft.experience.white.value += whiteXPGained;
-            this.actor.update(actorData);
-        }
 
         let messageContent = `
 <div class="chat-card">
@@ -1417,13 +1461,13 @@ export class RollForm extends FormApplication {
     _useLegendarySize(effectType) {
         if (this.object.target) {
             if (effectType === 'onslaught') {
-                return (this.object.target.actor.data.data.legendarysize && this.object.target.actor.data.data.warstrider.equipped) && !this.object.isMagic && !this.actor.data.data.legendarysize && !this.actor.data.data.warstrider.equipped;
+                return (this.object.target.actor.system.legendarysize && this.object.target.actor.system.warstrider.equipped) && !this.object.isMagic && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
             }
             if (effectType === 'withering') {
-                return (this.object.target.actor.data.data.legendarysize || this.object.target.actor.data.data.warstrider.equipped) && !this.actor.data.data.legendarysize && !this.actor.data.data.warstrider.equipped && this.object.finalDamageDice < 10;
+                return (this.object.target.actor.system.legendarysize || this.object.target.actor.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
             }
             if (effectType === 'decisive') {
-                return (this.object.target.actor.data.data.legendarysize || this.object.target.actor.data.data.warstrider.equipped) && !this.actor.data.data.legendarysize && !this.actor.data.data.warstrider.equipped;
+                return (this.object.target.actor.system.legendarysize || this.object.target.actor.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
             }
         }
         return false;
@@ -1437,30 +1481,96 @@ export class RollForm extends FormApplication {
             Bonfire: 3,
             Transcendent: 4
         }
-        if(this.object.rollType !== "base" && this.actor.type === "character") {
-            if (this.actor.data.data.details.exalt === "solar") {
-                return this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.attributes[this.object.attribute].value;
+        if(this.object.rollType !== "base") {
+            if(this.actor.type === "character") {
+                if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                    return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
+                }
+                if (this.actor.system.details.exalt === "dragonblooded") {
+                    return this.actor.system.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
+                }
+                if (this.actor.system.details.exalt === "lunar") {
+                    return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
+                }
+                if (this.actor.system.details.exalt === "dreamsouled") {
+                    return `${this.actor.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.essence.value)} when upholding ideal`;
+                }
+                if (this.actor.system.details.exalt === "umbral") {
+                    return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
+                }
+                if (this.actor.system.details.caste.toLowerCase() === "architect") {
+                    return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
+                }
+                if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+                    return `${this.actor.system.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+                } 
+                if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
+                    return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10);
+                }
             }
-            if (this.actor.data.data.details.exalt === "dragonblooded") {
-                return this.actor.data.data.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
-            }
-            if (this.actor.data.data.details.exalt === "lunar") {
-                return `${this.actor.data.data.attributes[this.object.attribute].value} - ${this.actor.data.data.attributes[this.object.attribute].value + 5}`;
-            }
-            if (this.actor.data.data.details.exalt === "dreamsouled") {
-                return `${this.actor.data.data.abilities[this.object.ability].value} or ${Math.min(10, this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.essence.value)} when upholding ideal`;
-            }
-            if (this.actor.data.data.details.exalt === "umbral") {
-                return `${Math.min(10, this.actor.data.data.abilities[this.object.ability].value + this.actor.data.data.details.penumbra.value)}`;
-            }
-            if (this.actor.data.data.details.caste.toLowerCase() === "architect") {
-                return `${this.actor.data.data.attributes[this.object.attribute].value} or ${this.actor.data.data.attributes[this.object.attribute].value + this.actor.data.data.essence.value} in cities`;
-            }
-            if (this.actor.data.data.details.caste.toLowerCase() === "janest" || this.actor.data.data.details.caste.toLowerCase() === 'strawmaiden') {
-                return `${this.actor.data.data.abilities[this.object.ability].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
-            }
-            if (this.actor.data.data.details.caste.toLowerCase() === "sovereign") {
-                return Math.min(Math.max(this.actor.data.data.essence.value, 3) + animaBonus[this.actor.data.data.anima.level], 10) ;
+            else if(this.actor.system.creaturetype === 'exalt') {
+                var dicePool = this.actor.system.pools[this.object.pool].value;
+                var diceTier = "zero";
+                var diceMap = {
+                    'zero': 0,
+                    'two': 2,
+                    'three': 3,
+                    'seven': 7,
+                    'eleven': 11,
+                };
+                if(dicePool <= 2) {
+                    diceTier = "two";
+                }
+                else if(dicePool <= 6) {
+                    diceTier = "three";
+                }
+                else if(dicePool <= 10) {
+                    diceTier = "seven";
+                }
+                else {
+                    diceTier = "eleven";
+                }
+                if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 2,
+                        'three': 5,
+                        'seven': 7,
+                        'eleven': 10,
+                    };
+                }
+                if (this.actor.system.details.exalt === "dragonblooded") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 0,
+                        'three': 2,
+                        'seven': 4,
+                        'eleven': 6,
+                    };
+                }
+                if (this.actor.system.details.exalt === "lunar") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 1,
+                        'three': 2,
+                        'seven': 4,
+                        'eleven': 5,
+                    };
+                    if(diceTier === 'two') {
+                        return 1;
+                    }
+                    return `${diceMap[diceTier]}, ${diceTier === 'seven' ? (diceMap[diceTier] * 2) - 1 : diceMap[diceTier] * 2}`;
+                }
+                if (this.actor.system.details.exalt === "liminal") {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 1,
+                        'three': 2,
+                        'seven': 4,
+                        'eleven': 5,
+                    };
+                }
+                return diceMap[diceTier];
             }
         }
         return "";
@@ -1469,7 +1579,7 @@ export class RollForm extends FormApplication {
     _getHighestAttribute() {
         var highestAttributeNumber = 0;
         var highestAttribute = "strength";
-        for (let [name, attribute] of Object.entries(this.actor.data.data.attributes)) {
+        for (let [name, attribute] of Object.entries(this.actor.system.attributes)) {
             if (attribute.value > highestAttributeNumber) {
                 highestAttributeNumber = attribute.value;
                 highestAttribute = name;
@@ -1481,8 +1591,8 @@ export class RollForm extends FormApplication {
     _spendMotes() {
         const actorData = duplicate(this.actor);
 
-        var newLevel = actorData.data.anima.level;
-        var newValue = actorData.data.anima.value;
+        var newLevel = actorData.system.anima.level;
+        var newValue = actorData.system.anima.value;
         if (this.object.cost.anima > 0) {
             for (var i = 0; i < this.object.cost.anima; i++) {
                 if (newLevel === "Transcendent") {
@@ -1506,10 +1616,10 @@ export class RollForm extends FormApplication {
         var spentPersonal = 0;
         var spentPeripheral = 0;
         var totalMotes = this.object.cost.motes + this.object.cost.muteMotes;
-        if (actorData.data.settings.charmmotepool === 'personal') {
-            var remainingPersonal = actorData.data.motes.personal.value - totalMotes;
+        if (actorData.system.settings.charmmotepool === 'personal') {
+            var remainingPersonal = actorData.system.motes.personal.value - totalMotes;
             if (remainingPersonal < 0) {
-                spentPersonal = totalMotes - actorData.data.motes.personal.value;
+                spentPersonal = totalMotes - actorData.system.motes.personal.value;
                 spentPeripheral = Math.abs(remainingPersonal);
             }
             else {
@@ -1517,17 +1627,17 @@ export class RollForm extends FormApplication {
             }
         }
         else {
-            var remainingPeripheral = actorData.data.motes.peripheral.value - totalMotes;
+            var remainingPeripheral = actorData.system.motes.peripheral.value - totalMotes;
             if (remainingPeripheral < 0) {
-                spentPeripheral = totalMotes - actorData.data.motes.peripheral.value;
+                spentPeripheral = totalMotes - actorData.system.motes.peripheral.value;
                 spentPersonal = Math.abs(remainingPeripheral);
             }
             else {
                 spentPeripheral = totalMotes;
             }
         }
-        actorData.data.motes.peripheral.value = Math.max(0 + actorData.data.motes.peripheral.committed, actorData.data.motes.peripheral.value - spentPeripheral);
-        actorData.data.motes.personal.value = Math.max(0 + actorData.data.motes.personal.committed, actorData.data.motes.personal.value - spentPersonal);
+        actorData.system.motes.peripheral.value = Math.max(0 + actorData.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
+        actorData.system.motes.personal.value = Math.max(0 + actorData.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
 
         if ((spentPeripheral - this.object.cost.muteMotes) > 4) {
             for (var i = 0; i < Math.floor((spentPeripheral- this.object.cost.muteMotes) / 5); i++) {
@@ -1543,19 +1653,19 @@ export class RollForm extends FormApplication {
                     newLevel = "Bonfire";
                     newValue = 3;
                 }
-                else if (actorData.data.anima.max === 4) {
+                else if (actorData.system.anima.max === 4) {
                     newLevel = "Transcendent";
                     newValue = 4;
                 }
             }
         }
 
-        actorData.data.anima.level = newLevel;
-        actorData.data.willpower.value = Math.max(0, actorData.data.willpower.value - this.object.cost.willpower);
+        actorData.system.anima.level = newLevel;
+        actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {
@@ -1566,17 +1676,17 @@ export class RollForm extends FormApplication {
             }
         }
         if (this.actor.type === 'character') {
-            actorData.data.craft.experience.silver.value = Math.max(0, actorData.data.craft.experience.silver.value - this.object.cost.silverxp);
-            actorData.data.craft.experience.gold.value = Math.max(0, actorData.data.craft.experience.gold.value - this.object.cost.goldxp);
-            actorData.data.craft.experience.white.value = Math.max(0, actorData.data.craft.experience.white.value - this.object.cost.whitexp);
+            actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - this.object.cost.silverxp);
+            actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - this.object.cost.goldxp);
+            actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - this.object.cost.whitexp);
         }
-        if (actorData.data.details.aura === this.object.cost.aura || this.object.cost.aura === 'any') {
-            actorData.data.details.aura = "none";
+        if (actorData.system.details.aura === this.object.cost.aura || this.object.cost.aura === 'any') {
+            actorData.system.details.aura = "none";
         }
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
+                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {
@@ -1587,17 +1697,17 @@ export class RollForm extends FormApplication {
             }
         }
         let totalHealth = 0;
-        for (let [key, health_level] of Object.entries(actorData.data.health.levels)) {
+        for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
             totalHealth += health_level.value;
         }
         if (this.object.cost.healthbashing > 0) {
-            actorData.data.health.bashing = Math.min(totalHealth - actorData.data.health.aggravated - actorData.data.health.lethal, actorData.data.health.bashing + this.object.cost.healthbashing);
+            actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + this.object.cost.healthbashing);
         }
         if (this.object.cost.healthlethal > 0) {
-            actorData.data.health.lethal = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.aggravated, actorData.data.health.lethal + this.object.cost.healthlethal);
+            actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + this.object.cost.healthlethal);
         }
         if (this.object.cost.healthaggravated > 0) {
-            actorData.data.health.aggravated = Math.min(totalHealth - actorData.data.health.bashing - actorData.data.health.lethal, actorData.data.health.aggravated + this.object.cost.healthaggravated);
+            actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + this.object.cost.healthaggravated);
         }
 
         this.actor.update(actorData);

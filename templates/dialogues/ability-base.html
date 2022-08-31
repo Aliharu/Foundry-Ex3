@@ -217,7 +217,7 @@
     <ol class="items-list">
         {{#each data.addedCharms as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
-            <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
             <div class="item-controls">
                 <a class="item-control remove-charm" title="Remove Charm"><i class="fas fa-trash"></i></a>
@@ -302,6 +302,8 @@
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
         <input name="object.rerollNumber" value="{{data.rerollNumber}}" type="number">
+        <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}} </label>
+        <input type="number" name="object.diceToSuccesses" value="{{data.diceToSuccesses}}">
         <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
         <input type="checkbox" name="object.rerollFailed" value="{{data.rerollFailed}}" {{checked data.rerollFailed}}>
     </div>
@@ -345,6 +347,37 @@
             <option value="2">{{localize "Ex3.Minor"}}</option>
             <option value="3">{{localize "Ex3.Major"}}</option>
             <option value="4">{{localize "Ex3.Defining"}}</option>
+            {{/select}}
+        </select>
+    </div>
+</div>
+{{/ifEquals}}
+
+{{#ifEquals data.rollType 'working'}}
+<div class="resource grid grid-2col flex-center">
+    <div>
+        <div class="resource-label">{{localize "Ex3.Ambition"}}</div>
+        <select id="working-ambition" name="object.ambition" value="{{data.ambition}}" data-type="String">
+            {{#select data.ambition}}
+            <option value="5">{{localize "Ex3.Terrestrial"}} 1</option>
+            <option value="10">{{localize "Ex3.Terrestrial"}} 2</option>
+            <option value="20">{{localize "Ex3.Terrestrial"}} 3</option>
+            <option value="25">{{localize "Ex3.Celestial"}} 1</option>
+            <option value="30">{{localize "Ex3.Celestial"}} 2</option>
+            <option value="35">{{localize "Ex3.Celestial"}} 3</option>
+            <option value="40">{{localize "Ex3.Solar"}} 1</option>
+            <option value="50">{{localize "Ex3.Solar"}} 2</option>
+            <option value="75">{{localize "Ex3.Solar"}} 3</option>
+            {{/select}}
+        </select>
+    </div>
+    <div>
+        <div class="resource-label">{{localize "Ex3.Finesse"}} </div>
+        <select id="working-finesse" name="object.finesse" value="{{data.finesse}}" data-type="String">
+            {{#select data.finesse}}
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
             {{/select}}
         </select>
     </div>
