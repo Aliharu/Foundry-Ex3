@@ -131,7 +131,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
-      offsensive: { name: 'Ex3.Offsensive', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
       defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
       social: { name: 'Ex3.Social', visible: false, list: [] },
     }
@@ -699,7 +699,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     else {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
-        data.motes.peripheral.max = 27 + (data.essence.value * 7);
+        data.motes.peripheral.max = 26 + (data.essence.value * 7);
       }
       if (data.details.exalt === 'dragonblooded') {
         data.motes.peripheral.max = 23 + (data.essence.value * 4);
