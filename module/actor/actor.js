@@ -222,7 +222,7 @@ export class ExaltedThirdActor extends Actor {
     data.warstrider.health.value = data.warstrider.health.max - data.warstrider.health.aggravated - data.warstrider.health.lethal - data.warstrider.health.bashing;
     data.warstrider.health.penalty = currentWarstriderPenalty;
 
-    
+
     for (let [key, health_level] of Object.entries(data.ship.health.levels)) {
       if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > totalShipHealth) {
         currentShipPenalty = health_level.penalty;
@@ -299,7 +299,7 @@ export class ExaltedThirdActor extends Actor {
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
-      offsensive: { name: 'Ex3.Offsensive', visible: false, list: [] },
+      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
       defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
       social: { name: 'Ex3.Social', visible: false, list: [] },
     }
