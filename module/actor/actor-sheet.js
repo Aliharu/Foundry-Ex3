@@ -699,7 +699,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     else {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
-        data.motes.peripheral.max = 27 + (data.essence.value * 7);
+        data.motes.peripheral.max = 26 + (data.essence.value * 7);
       }
       if (data.details.exalt === 'dragonblooded') {
         data.motes.peripheral.max = 23 + (data.essence.value * 4);
