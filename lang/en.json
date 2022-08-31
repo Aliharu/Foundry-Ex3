@@ -375,5 +375,11 @@
     "Ex3.DefenseOnDamage": "Defense on Damage",
     "Ex3.DefenseOnDamageDescription": "Use Defense values and attack success values on damage rolls, use this when you need abilities to alter defense after accuracy is rolled.  To use set defense to 0 on accuracy roll then input success result and defense value into damage roll.",
     "Ex3.AutoDecisiveDamage": "Auto Decisive Damage",
-    "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack (and battlegroup witherings vs crashed characters and withering vs battlegroups)."
+    "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack (and battlegroup witherings vs crashed characters and withering vs battlegroups).",
+
+    "Ex3.MaxAnima": "Max Anima",
+    "Ex3.ShowWarstrider": "Show Warstrider",
+    "Ex3.ShowShip": "Show Ship",
+    "Ex3.ShowEscort": "Show Escort",
+    "Ex3.ShowZeroValues": "Show Zero Values"
 }
