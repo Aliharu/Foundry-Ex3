@@ -807,6 +807,7 @@ export default class TemplateImporter extends Application {
       var intimacyString = '';
       var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
+        var intimacyStrength = 'defining';
         while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index]) && !textArray[index].includes('Guile:')) {
           intimacyString += textArray[index];
           index++;
@@ -822,18 +823,35 @@ export default class TemplateImporter extends Application {
             else if (intimacyArray[0].includes('Tie')) {
               intimacyType = 'tie';
             }
-            itemData.push(
-              {
-                type: 'intimacy',
-                img: this.getImageUrl('intimacy'),
-                name: intimacyArray[1].trim(),
-                system: {
-                  description: intimacyArray[1].trim(),
-                  intimacytype: intimacyType,
-                  strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
+            if(intimacyArray.length > 1) {
+              intimacyStrength = intimacyArray[0].replace('Principle', '').replace('Tie', '').replace('“', '').replace('”', '').trim().toLowerCase();
+              itemData.push(
+                {
+                  type: 'intimacy',
+                  img: this.getImageUrl('intimacy'),
+                  name: intimacyArray[1].trim(),
+                  system: {
+                    description: intimacyArray[1].trim(),
+                    intimacytype: intimacyType,
+                    strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').replace('“', '').replace('”', '').trim().toLowerCase()
+                  }
                 }
-              }
-            );
+              );
+            }
+            else {
+              itemData.push(
+                {
+                  type: 'intimacy',
+                  img: this.getImageUrl('intimacy'),
+                  name: intimacyArray[0].trim(),
+                  system: {
+                    description: intimacyArray[0].trim(),
+                    intimacytype: intimacyType,
+                    strength: intimacyStrength
+                  }
+                }
+              );
+            }
           }
         }
       }
