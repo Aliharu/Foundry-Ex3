@@ -1294,8 +1294,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (actorData.system.settings.charmmotepool === 'personal') {
           var remainingPersonal = actorData.system.motes.personal.value - item.system.cost.motes;
           if (remainingPersonal < 0) {
-            spentPersonal = item.system.cost.motes - actorData.system.motes.personal.value;
-            spentPeripheral = Math.abs(remainingPersonal);
+            spentPersonal = item.system.cost.motes + remainingPersonal;
+            spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
           }
           else {
             spentPersonal = item.system.cost.motes;
@@ -1304,8 +1304,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         else {
           var remainingPeripheral = actorData.system.motes.peripheral.value - item.system.cost.motes;
           if (remainingPeripheral < 0) {
-            spentPeripheral = item.system.cost.motes - actorData.system.motes.peripheral.value;
-            spentPersonal = Math.abs(remainingPeripheral);
+            spentPeripheral = item.system.cost.motes + remainingPeripheral;
+            spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
           }
           else {
             spentPeripheral = item.system.cost.motes;
