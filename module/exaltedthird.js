@@ -111,7 +111,17 @@ Hooks.once('init', async function() {
     }
 
     return ret
-  })
+  });
+
+  Handlebars.registerHelper('numLoopCertainStart', function (num, startNum, options) {
+    let ret = ''
+
+    for (let i = startNum, j = num + startNum; i < j; i++) {
+      ret = ret + options.fn(i)
+    }
+
+    return ret
+  });
 });
 
 Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {

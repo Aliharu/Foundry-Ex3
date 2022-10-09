@@ -382,6 +382,8 @@
     "Ex3.ShowShip": "Show Ship",
     "Ex3.ShowEscort": "Show Escort",
     "Ex3.ShowZeroValues": "Show Zero Values",
+    "Ex3.UseTenForAttributes": "Use 10 for Attribute Cap (Character Only)",
+
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.CharacterNotes": "Character Notes"
 }

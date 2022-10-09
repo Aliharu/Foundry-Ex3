@@ -129,7 +129,8 @@
           "showwarstrider": false,
           "showship": false,
           "showescort": false,
-          "showzerovalues": true
+          "showzerovalues": true,
+          "usetenattributes": false
         },
         "ship": {
           "name": "",

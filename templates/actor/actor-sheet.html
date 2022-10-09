@@ -190,6 +190,27 @@
       <div style="padding-top:10px;">
         <label class="resource-label">{{localize "Ex3.Attributes"}}</label>
       </div>
+      {{#if system.settings.usetenattributes}}
+      <div class="attributes grid grid-3col flex-group-center">
+        {{#each system.attributes as |attribute key|}}
+        <div class="attribute flexrow flex-center">
+          <input class="attribute-checkbox" name="system.attributes.{{key}}.favored" type="checkbox" {{checked
+            attribute.favored}}>
+          <label for="system.attributes.{{key}}.value" class="resource-label resource-value"
+            data-roll="{{attribute.value}}" data-label="{{attribute.name}}">{{localize attribute.name}}</label>
+          <div class="resource-value" data-value="{{attribute.value}}" data-name="system.attributes.{{key}}.value">
+            {{#numLoop 5}}
+            <span class="resource-value-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
       <div class="attributes grid grid-3col flex-group-center">
         {{#each system.attributes as |attribute key|}}
         <div class="attribute flexrow flex-center">
@@ -205,6 +226,7 @@
         </div>
         {{/each}}
       </div>
+      {{/if}}
       <label class="resource-label">{{localize "Ex3.Abilities"}}<i id="rollAbility"
           class="fas fa-dice-d10 cursor-pointer rollAbility" style="margin-left:5px;"></i></label>
       <div class="attributes grid grid-3col flex-group-center">

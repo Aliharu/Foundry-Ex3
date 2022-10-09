@@ -530,6 +530,7 @@ export default class TemplateImporter extends Application {
             "showship": false,
             "showescort": false,
             "showzerovalues": false,
+            "usetenattributes": false,
           },
         }
       };
@@ -747,6 +748,7 @@ export default class TemplateImporter extends Application {
           "showship": false,
           "showescort": false,
           "showzerovalues": false,
+          "usetenattributes": false,
         },
       }
     };
@@ -1482,6 +1484,7 @@ export default class TemplateImporter extends Application {
       var attributeString = textArray[index].replace('Attributes:', '');
       index++
       while (!textArray[index].includes("Essence")) {
+        attributeString += " ";
         attributeString += textArray[index];
         index++
       }
@@ -1490,6 +1493,9 @@ export default class TemplateImporter extends Application {
         var attributeSpecificArray = attribute.trim().split(' ');
         var trimmedName = attributeSpecificArray[0].trim().toLowerCase();
         var value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
+        if(value > 5) {
+          actorData.system.settings.usetenattributes = true;
+        }
         actorData.system.attributes[trimmedName].value = value;
       }
       actorData.system.essence.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
@@ -1530,6 +1536,7 @@ export default class TemplateImporter extends Application {
       var abilityString = textArray[index].replace('Abilities:', '');
       index++;
       while (!textArray[index].includes("Merits") && !textArray[index].includes("Attack")) {
+        abilityString += " ";
         abilityString += textArray[index];
         index++
       }
@@ -1542,9 +1549,15 @@ export default class TemplateImporter extends Application {
           specialtyText = ability.match(/\(([^)]+)\)/)[1];
           ability = ability.replace(/\([^()]*\)/g, "").replace("  ", " ");
         }
-        var abilitySpecificArray = ability.trim().split(' ');
-        var trimmedName = abilitySpecificArray[0].trim().toLowerCase();
-        var value = parseInt(abilitySpecificArray[1].replace(/[^0-9]/g, ''));
+        if(ability.toLowerCase().includes('martial arts')) {
+          trimmedName = 'martialarts';
+          var value = parseInt(ability.replace(/[^0-9]/g, ''));
+        }
+        else {
+          var abilitySpecificArray = ability.trim().split(' ');
+          trimmedName = abilitySpecificArray[0].trim().toLowerCase();
+          var value = parseInt(abilitySpecificArray[1].replace(/[^0-9]/g, ''));
+        }
         actorData.system.abilities[trimmedName].value = value;
         if (createSpecialty) {
           itemData.push(
@@ -1659,8 +1672,6 @@ export default class TemplateImporter extends Application {
             createArmor = true;
             armorName = armor;
           }
-          console.log(armor);
-          console.log(armorStat);
           combatStat = combatStat.replace(/\([^()]*\)/g, "").replace("  ", " ");
         }
         var combatValue = parseInt(combatStat.replace(/[^0-9]/g, ''));
@@ -1716,7 +1727,6 @@ export default class TemplateImporter extends Application {
       }
       itemData.push(...this._getItemData(textArray, index, actorData));
       actorData.items = itemData;
-      console.log(actorData);
       await Actor.create(actorData);
     }
     catch (error) {
