@@ -123,12 +123,21 @@
                     <option value="aggravated">{{localize "Ex3.Aggravated"}}</option>
                     {{/select}}
                 </select>
+                {{#ifNotEquals data.rollType 'withering'}}
+                <label class="resource-label">{{localize "Ex3.ThreshholdToDamage"}} </label>
+                <div>
+                    <input type="checkbox" name="object.damage.threshholdToDamage"
+                        value="{{data.damage.threshholdToDamage}}" {{checked data.damage.threshholdToDamage}}>
+                </div>
+                {{/ifNotEquals}}
             </div>
+
         </div>
 
         {{#if data.showWithering}}
         <div class="flex-center resource-label" style="font-weight: bold;">
-            {{localize "Ex3.Soak"}} ({{localize "Ex3.ArmoredSoak"}}: {{data.armoredSoak}} {{localize "Ex3.NaturalSoak"}}: {{data.naturalSoak}})
+            {{localize "Ex3.Soak"}} ({{localize "Ex3.ArmoredSoak"}}: {{data.armoredSoak}} {{localize
+            "Ex3.NaturalSoak"}}: {{data.naturalSoak}})
         </div>
         <div class="resource flex-center mb-2">
             <input placeholder="Soak" type="number" name="object.soak" value="{{data.soak}}">

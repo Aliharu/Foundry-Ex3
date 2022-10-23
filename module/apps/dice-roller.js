@@ -87,6 +87,7 @@ export class RollForm extends FormApplication {
                     ten: { status: false, number: 10 },
                 },
                 type: 'lethal',
+                threshholdToDamage: false,
             };
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
@@ -183,6 +184,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.damage.type === undefined) {
             this.object.damage.type = 'lethal';
+        }
+        if (this.object.damage.threshholdToDamage === undefined) {
+            this.object.damage.threshholdToDamage = false;
         }
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
@@ -504,6 +508,9 @@ export class RollForm extends FormApplication {
                     this.object.damage.reroll[rerollKey].status = true;
                 }
             }
+            if(item.system.diceroller.damage.threshholdtodamage) {
+                this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
+            }
 
             this.render();
         });
@@ -573,7 +580,9 @@ export class RollForm extends FormApplication {
                         this.object.damage.reroll[rerollKey].status = false;
                     }
                 }
-
+                if(item.system.diceroller.damage.threshholdtodamage) {
+                    this.object.damage.threshholdToDamage = false;
+                }
             }
             this.render();
         });
@@ -983,11 +992,16 @@ export class RollForm extends FormApplication {
     async _damageRoll() {
         let baseDamage = this.object.damage.damageDice;
         let dice = this.object.damage.damageDice;
-        if (this.object.rollType === 'damage' && game.settings.get("exaltedthird", "defenseOnDamage")) {
+        if (this.object.rollType === 'damage' && this.object.attackType === 'withering' && game.settings.get("exaltedthird", "defenseOnDamage")) {
             dice += this.object.attackSuccesses;
             dice -= this.object.defense;
         }
         var damageResults = ``;
+
+        if(this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
+            dice += this.object.thereshholdSuccesses;
+            baseDamage = dice;
+        }
 
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
@@ -1000,9 +1014,6 @@ export class RollForm extends FormApplication {
             }
         }
         else if (this._damageRollType('withering')) {
-            dice += this.object.thereshholdSuccesses;
-            baseDamage = dice;
-
             dice -= this.object.soak;
             if (dice < this.object.overwhelming) {
                 dice = Math.max(dice, this.object.overwhelming);

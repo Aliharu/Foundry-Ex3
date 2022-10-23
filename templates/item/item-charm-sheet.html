@@ -84,6 +84,8 @@
 
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
+        <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
+        <a class="item" data-tab="bonuses">{{localize "Ex3.RollBonuses"}}</a>
         <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
     </nav>
 
@@ -137,9 +139,10 @@
                     <input type="text" name="system.duration" value="{{system.duration}}" />
                 </div>
             </div>
-            <div class="flex-center">
-                <div class="resource-label">{{localize "Ex3.Cost"}}</div>
-            </div>
+            {{editor system.description target="system.description" button=true owner=owner editable=true}}
+        </div>
+
+        <div class="tab" data-group="primary" data-tab="costs">
             <div class="d-flex flex-center resources">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Motes"}}</div>
@@ -163,8 +166,7 @@
             <div class="grid grid-4col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Health"}}</div>
-                    <input type="number" name="system.cost.health" value="{{system.cost.health}}"
-                        data-dtype="Number" />
+                    <input type="number" name="system.cost.health" value="{{system.cost.health}}" data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.HealthType"}}</div>
@@ -206,8 +208,7 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Gold"}}</div>
-                    <input type="number" name="system.cost.goldxp" value="{{system.cost.goldxp}}"
-                        data-dtype="Number" />
+                    <input type="number" name="system.cost.goldxp" value="{{system.cost.goldxp}}" data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.White"}}</div>
@@ -215,38 +216,35 @@
                         data-dtype="Number" />
                 </div>
             </div>
-            {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
-        <div class="tab" data-group="primary" data-tab="effects">
+        <div class="tab" data-group="primary" data-tab="bonuses">
             <div class="resource flex-center">
                 <label class="resource-label">{{localize "Ex3.DiceRollModifiers"}}</label>
-            </div>
-            <div class="resource grid grid-2col flex-center">
-                <div>
-                    <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
-                    <input name="system.diceroller.bonusdice" value="{{system.diceroller.bonusdice}}" type="number">
-                </div>
-                <div>
-                    <label class="resource-label">{{localize "Ex3.SuccessBonus"}} </label>
-                    <input name="system.diceroller.bonussuccesses" value="{{system.diceroller.bonussuccesses}}"
-                        type="number">
-                </div>
-                <div>
-                    <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
-                    <input name="system.diceroller.targetnumber" value="{{system.diceroller.targetnumber}}"
-                        type="number">
-                </div>
-
-                <div>
-                    <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
-                    <input name="system.diceroller.doublesuccess" value="{{system.diceroller.doublesuccess}}"
-                        type="number">
-                </div>
             </div>
 
             <div>
                 <div class="resource grid grid-3col flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
+                        <input name="system.diceroller.bonusdice" value="{{system.diceroller.bonusdice}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.SuccessBonus"}} </label>
+                        <input name="system.diceroller.bonussuccesses" value="{{system.diceroller.bonussuccesses}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+                        <input name="system.diceroller.targetnumber" value="{{system.diceroller.targetnumber}}"
+                            type="number">
+                    </div>
+    
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
+                        <input name="system.diceroller.doublesuccess" value="{{system.diceroller.doublesuccess}}"
+                            type="number">
+                    </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
                         <input name="system.diceroller.rerolldice" value="{{system.diceroller.rerolldice}}"
@@ -255,14 +253,13 @@
                     <div>
                         <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}} </label>
                         <input name="system.diceroller.diceToSuccesses" value="{{system.diceroller.diceToSuccesses}}"
-                        type="number">
+                            type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
                         <div>
                             <input type="checkbox" name="system.diceroller.rerollfailed"
-                                value="{{system.diceroller.rerollfailed}}" {{checked
-                                system.diceroller.rerollfailed}}>
+                                value="system.diceroller.rerollfailed" {{checked system.diceroller.rerollfailed}}>
                         </div>
                     </div>
                 </div>
@@ -327,7 +324,7 @@
                 Damage
             </div>
             <div>
-                <div class="resource grid grid-2col flex-center">
+                <div class="resource grid grid-3col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
                         <input type="number" name="system.diceroller.damage.bonusdice"
@@ -338,8 +335,6 @@
                         <input type="number" name="system.diceroller.damage.bonussuccesses"
                             value="{{system.diceroller.damage.bonussuccesses}}">
                     </div>
-                </div>
-                <div class="resource grid grid-2col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
                         <input type="number" name="system.diceroller.damage.doublesuccess"
@@ -360,6 +355,13 @@
                         <input type="number" name="system.diceroller.damage.postsoakdamage"
                             value="{{system.diceroller.damage.postsoakdamage}}">
                     </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.ThreshholdToDamage"}} </label>
+                        <div>
+                            <input type="checkbox" name="system.diceroller.damage.threshholdtodamage"
+                                value="system.diceroller.damage.threshholdtodamage" {{checked system.diceroller.damage.threshholdtodamage}}>
+                        </div>
+                    </div>
                 </div>
                 <div class="resource flex-center">
                     <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
@@ -377,8 +379,9 @@
                     </div>
                     <div>
                         <div>3</div>
-                        <input name="system.diceroller.damage.reroll.three" value="system.diceroller.damage.reroll.three"
-                            type="checkbox" {{checked system.diceroller.damage.reroll.three}}>
+                        <input name="system.diceroller.damage.reroll.three"
+                            value="system.diceroller.damage.reroll.three" type="checkbox" {{checked
+                            system.diceroller.damage.reroll.three}}>
                     </div>
                     <div>
                         <div>4</div>
@@ -397,13 +400,15 @@
                     </div>
                     <div>
                         <div>7</div>
-                        <input name="system.diceroller.damage.reroll.seven" value="system.diceroller.damage.reroll.seven"
-                            type="checkbox" {{checked system.diceroller.damage.reroll.seven}}>
+                        <input name="system.diceroller.damage.reroll.seven"
+                            value="system.diceroller.damage.reroll.seven" type="checkbox" {{checked
+                            system.diceroller.damage.reroll.seven}}>
                     </div>
                     <div>
                         <div>8</div>
-                        <input name="system.diceroller.damage.reroll.eight" value="system.diceroller.damage.reroll.eight"
-                            type="checkbox" {{checked system.diceroller.damage.reroll.eight}}>
+                        <input name="system.diceroller.damage.reroll.eight"
+                            value="system.diceroller.damage.reroll.eight" type="checkbox" {{checked
+                            system.diceroller.damage.reroll.eight}}>
                     </div>
                     <div>
                         <div>9</div>
@@ -417,6 +422,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="tab" data-group="primary" data-tab="effects">
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 
