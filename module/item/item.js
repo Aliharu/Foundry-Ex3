@@ -35,7 +35,7 @@ export class ExaltedThirdItem extends Item {
     if (type === 'armor') {
       return "systems/exaltedthird/assets/icons/breastplate.svg";
     }
-    if (type === 'charm') {
+    if (type === 'charm' || type === 'action') {
       return "icons/svg/explosion.svg";
     }
     if (type === 'specialability') {

@@ -151,11 +151,14 @@ export default class TemplateImporter extends Application {
       }
       var requirementArray = costAndRequirement[1].toLowerCase().split(',');
       var abilityRequirement = requirementArray[0].trim().split(' ');
-      var essenceRequirement = requirementArray[1].trim().split(' ');
 
       charmData.system.ability = abilityRequirement[0].replace(' ', '');
       charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
-      charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
+
+      if(requirementArray.length > 1) {
+        var essenceRequirement = requirementArray[1].trim().split(' ');
+        charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
+      }
 
       charmData.system.type = textArray[index].replace('Type: ', '');
       index++;
@@ -1166,8 +1169,6 @@ export default class TemplateImporter extends Application {
             index++;
             newItem = true;
             actorData.system.settings.showescort = true;
-            itemDescription += textArray[index].trim();
-            itemDescription += '\n';
           }
           if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits') {
             itemType = 'specialability';
