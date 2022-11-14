@@ -20,7 +20,7 @@ export class RollForm extends FormApplication {
             this.object.attackType = 'withering';
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working';
+            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working' || data.rollType === 'rout';
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -154,6 +154,12 @@ export class RollForm extends FormApplication {
                     this.object.difficulty = 1;
                     this.object.intervals = 5;
                     this.object.goalNumber = 5;
+                }
+                if(this.object.rollType === 'rout') {
+                    this.object.difficulty = 1;
+                    if(parseInt(this.actor.system.drill.value) === 0) {
+                        this.object.difficulty = 2;
+                    }
                 }
 
                 if (this._isAttackRoll()) {
@@ -673,9 +679,10 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'action') {
                     dice = this.actor.actions.find(x => x._id === this.object.actionId).system.value;
                 }
-                else {
-                    let poolDice = data.pools[this.object.pool].value;
-                    dice = poolDice;
+                else if(this.object.pool === 'willpower') {
+                    dice = this.actor.system.willpower.max;
+                }else {
+                    dice = data.pools[this.object.pool].value;
                 }
             }
 

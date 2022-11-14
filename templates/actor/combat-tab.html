@@ -103,7 +103,7 @@
             </div>
         </div>
         {{#if system.battlegroup}}
-        <div class="grid grid-3col flex-group-center">
+        <div class="grid grid-4col flex-group-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Size"}}</label>
                 <input type="number" name="system.size.value" value="{{system.size.value}}" data-dtype="Number" />
@@ -121,6 +121,12 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Might"}}</label>
                 <input type="number" name="system.might.value" value="{{system.might.value}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.RoutCheck"}} <i
+                    class="fas fa-info-circle rout-modifiers cursor-pointer"></i></label>
+                <button class="roll-button rout-check"><i class="fas fa-swords"></i>{{localize
+                    "Ex3.Roll"}}</button>
             </div>
         </div>
         {{/if}}

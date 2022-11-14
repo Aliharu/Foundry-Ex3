@@ -431,6 +431,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: pool }).render(true);
     });
 
+    html.find('.rout-check').mousedown(ev => {
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
+    });
+
     html.find('.roll-action').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
@@ -497,6 +501,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else {
         new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', ability: 'socialize', attribute: 'charisma' }).render(true);
       }
+    });
+
+    html.find('.rout-modifiers').mousedown(async ev => {
+      const template = "systems/exaltedthird/templates/dialogues/rout-modifiers.html";
+      const html = await renderTemplate(template);
+      new Dialog({
+        title: `Craft`,
+        content: html,
+        buttons: {
+          cancel: { label: "Close" }
+        }
+      }).render(true);
     });
 
     html.find('.show-craft').mousedown(ev => {
