@@ -155,8 +155,12 @@ export default class TemplateImporter extends Application {
       charmData.system.ability = abilityRequirement[0].replace(' ', '');
       charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
 
-      if(requirementArray.length > 1) {
-        var essenceRequirement = requirementArray[1].trim().split(' ');
+      if(abilityRequirement[0].replace(' ', '') === 'martial') {
+        charmData.system.ability = 'martialarts';
+      }
+      if(requirementArray.length === 1) {
+        var essenceRequirement = requirementArray[0].trim().split(' ');
+        charmData.system.ability = 'evocation';
         charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
       }
 
