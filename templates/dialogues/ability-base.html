@@ -306,6 +306,8 @@
         <input type="number" name="object.diceToSuccesses" value="{{data.diceToSuccesses}}">
         <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
         <input type="checkbox" name="object.rerollFailed" value="{{data.rerollFailed}}" {{checked data.rerollFailed}}>
+        <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}}: </label>
+        <input type="checkbox" name="object.rollTwice" value="{{data.rollTwice}}" {{checked data.rollTwice}}>
     </div>
 </div>
 {{#ifNotEquals data.rollType 'base'}}

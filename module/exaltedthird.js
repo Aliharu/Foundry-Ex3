@@ -191,6 +191,10 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       if(onslaught) {
           onslaught.delete();
       }
+      const fullDefense = currentCombatant.actor.effects.find(i => i.data.label == "Full Defense");
+      if(fullDefense) {
+        fullDefense.delete();
+      }
     }
   }
 }));

@@ -49,6 +49,12 @@ exaltedthird.statusEffects = [
         name: 'heavycover'
     },
     {
+        icon: 'systems/exaltedthird/assets/icons/brick-wall.svg',
+        id: 'fullcover',
+        label: 'Ex3.FullCover',
+        name: 'fullcover'
+    },
+    {
         icon: 'systems/exaltedthird/assets/icons/grab.svg',
         id: 'grappled',
         label: 'Ex3.Grappled',
@@ -64,5 +70,10 @@ exaltedthird.statusEffects = [
         icon: 'systems/exaltedthird/assets/icons/drop-weapon.svg',
         id: 'disarmed',
         label: 'Ex3.Disarmed',
+    },
+    {
+        icon: 'icons/svg/shield.svg',
+        id: 'fulldefense',
+        label: 'Ex3.FullDefense',
     },
 ]

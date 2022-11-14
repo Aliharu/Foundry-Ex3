@@ -51,6 +51,7 @@ export class RollForm extends FormApplication {
 
             this.object.doubleSuccess = 10;
             this.object.rerollFailed = false;
+            this.object.rollTwice = false;
             this.object.targetNumber = 7;
             this.object.rerollNumber = 0;
             this.object.attackSuccesses = 0;
@@ -197,6 +198,12 @@ export class RollForm extends FormApplication {
         if (this.object.diceToSuccesses === undefined) {
             this.object.diceToSuccesses = 0;
         }
+        if (this.object.rollTwice === undefined) {
+            this.object.rollTwice = false;
+        }
+        if(this.actor.system.battlegroup && this._isAttackRoll()) {
+            this._setBattlegroupBonuses();
+        }
         if (this.object.rollType !== 'base') {
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
@@ -242,11 +249,25 @@ export class RollForm extends FormApplication {
                     this.object.armoredSoak = this.object.target.actor.system.armoredsoak.value;
                     this.object.naturalSoak = this.object.target.actor.system.naturalsoak.value;
                 }
+                if(this.object.target.actor.system.battlegroup) {
+                    this.object.defense += parseInt(this.object.target.actor.system.drill.value);
+                    if(this.object.target.actor.system.might.value > 1) {
+                        this.object.defense += (this.object.target.actor.system.might.value - 1);
+                    }
+                    else {
+                        this.object.defense += this.object.target.actor.system.might.value;
+                    }
+                    this.object.soak += this.object.target.actor.system.size.value;
+                    this.object.naturalSoak += this.object.target.actor.system.size.value;
+                }
                 if (this.object.target.actor.effects) {
                     if (this.object.target.actor.effects.some(e => e.name === 'lightcover')) {
                         this.object.defense += 1;
                     }
                     if (this.object.target.actor.effects.some(e => e.name === 'heavycover')) {
+                        this.object.defense += 2;
+                    }
+                    if (this.object.target.actor.effects.some(e => e.name === 'fulldefense')) {
                         this.object.defense += 2;
                     }
                     if (this.object.target.actor.effects.some(e => e.name === 'grappled') || this.object.target.actor.effects.some(e => e.name === 'grappling')) {
@@ -490,6 +511,9 @@ export class RollForm extends FormApplication {
             if (item.system.diceroller.rerollfailed) {
                 this.object.rerollFailed = item.system.diceroller.rerollfailed;
             }
+            if (item.system.diceroller.rolltwice) {
+                this.object.rollTwice = item.system.diceroller.rolltwice;
+            }
             this.object.rerollNumber += item.system.diceroller.rerolldice;
             this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
 
@@ -564,6 +588,9 @@ export class RollForm extends FormApplication {
                     if (rerollValue) {
                         this.object.reroll[rerollKey].status = false;
                     }
+                }
+                if (item.system.diceroller.rolltwice) {
+                    this.object.rollTwice = false;
                 }
                 if (item.system.diceroller.rerollfailed) {
                     this.object.rerollFailed = false;
@@ -719,25 +746,50 @@ export class RollForm extends FormApplication {
             }
         }
 
-        let roll = new Roll(`${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}`).evaluate({ async: false });
+        let diceString = `${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}`;
+        if (this.object.rollTwice) {
+            diceString = `{${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}, ${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}}kh`;
+        }
+        let roll = new Roll(diceString).evaluate({ async: false });
         let diceRoll = roll.dice[0].results;
-        let getDice = "";
-        let bonus = 0;
-        let total = 0;
-        let rerolledDice = 0;
+        let total = roll.total;
         var failedDice = Math.min(dice - roll.total, this.object.rerollNumber);
-
+        for (let dice of diceRoll) {
+            if (dice.result >= this.object.doubleSuccess) {
+                total++;
+            }
+        }
+        if (this.object.rollTwice) {
+            var secondTotal = roll.dice[1].total;
+            diceRoll = diceRoll.concat(roll.dice[1].results);
+            for (let dice of roll.dice[1].results) {
+                if (dice.result >= this.object.doubleSuccess) {
+                    secondTotal++;
+                }
+            }
+            if (secondTotal > total) {
+                total = secondTotal;
+                failedDice = Math.min(dice - roll.dice[1].total, this.object.rerollNumber);
+            };
+        }
+        
+        let rerolledDice = 0;
         while (failedDice !== 0 && (rerolledDice < this.object.rerollNumber)) {
             rerolledDice += failedDice;
             var failedDiceRoll = new Roll(`${failedDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
             failedDice = Math.min(failedDice - failedDiceRoll.total, (this.object.rerollNumber - rerolledDice));
             diceRoll = diceRoll.concat(failedDiceRoll.dice[0].results);
+            for (let dice of failedDiceRoll.dice[0].results) {
+                if (dice.result >= this.object.doubleSuccess) {
+                    total++;
+                }
+            }
             total += failedDiceRoll.total;
         }
 
+        let getDice = "";
         for (let dice of diceRoll) {
             if (dice.result >= this.object.doubleSuccess) {
-                bonus++;
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
             else if (dice.result >= this.object.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
@@ -745,8 +797,6 @@ export class RollForm extends FormApplication {
             else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
 
-        total += roll.total;
-        if (bonus) total += bonus;
         total += this.object.successModifier;
 
         this.object.dice = dice;
@@ -1586,6 +1636,13 @@ export class RollForm extends FormApplication {
             }
         }
         return "";
+    }
+
+    _setBattlegroupBonuses() {
+        this.object.diceModifier += (this.actor.system.size.value + this.actor.system.might.value);
+        if(this._damageRollType('withering')) {
+            this.object.damage.damageDice += (this.actor.system.size.value + this.actor.system.might.value);
+        }
     }
 
     _getHighestAttribute() {

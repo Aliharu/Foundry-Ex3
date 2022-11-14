@@ -186,7 +186,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if (i.system.ability !== undefined) {
+        if (i.system.ability === 'martial') {
+          charms['martialarts'].list.push(i);
+          charms['martialarts'].visible = true;
+        }
+        else if (i.system.ability === 'essence') {
+          charms['evocation'].list.push(i);
+          charms['evocation'].visible = true;
+        }
+        else if (i.system.ability !== undefined) {
           charms[i.system.ability].list.push(i);
           charms[i.system.ability].visible = true;
         }

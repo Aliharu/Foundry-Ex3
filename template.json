@@ -646,6 +646,7 @@
         "rerolldice": 0,
         "diceToSuccesses": 0,
         "rerollfailed": false,
+        "rolltwice": false,
         "reroll": {
           "one": false,
           "two": false,
