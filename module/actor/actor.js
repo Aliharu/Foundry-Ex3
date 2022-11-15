@@ -354,9 +354,19 @@ export class ExaltedThirdActor extends Actor {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if (i.system.ability === 'martial') {
-          charms['martialarts'].list.push(i);
-          charms['martialarts'].visible = true;
+        if (i.system.ability === 'martial' || i.system.ability === 'martialarts') {
+          if(i.system.martialart) {
+            if(charms[i.system.martialart]) {
+            }
+            else {
+              charms[i.system.martialart] = { name: i.system.martialart, visible: true, list: [] };
+            }
+            charms[i.system.martialart].list.push(i);
+          }
+          else {
+            charms['martialarts'].list.push(i);
+            charms['martialarts'].visible = true;
+          }
         }
         else if (i.system.ability === 'essence') {
           charms['evocation'].list.push(i);
