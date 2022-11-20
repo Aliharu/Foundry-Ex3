@@ -311,6 +311,26 @@
         <input type="checkbox" name="object.rollTwice" value="{{data.rollTwice}}" {{checked data.rollTwice}}>
     </div>
 </div>
+{{#ifEquals actor.system.details.exalt 'solar'}}
+{{#ifEquals data.rollType 'craft'}}
+<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+    <div class="resource-label">
+        {{localize "Ex3.CraftCharmEffects"}}
+    </div>
+    <div>
+        <i class="fas fa-caret-down"></i>
+    </div>
+</div>
+<div style="display:none;">
+    <div class="resource grid grid-2col flex-center">
+        <label class="resource-label">{{localize "Ex3.DivineInspirationTechnique"}}: </label>
+        <input type="checkbox" name="object.craft.divineInsperationTechnique" value="{{data.craft.divineInsperationTechnique}}" {{checked data.craft.divineInsperationTechnique}}>
+        <label class="resource-label">{{localize "Ex3.HolisticMiracleUnderstanding"}}: </label>
+        <input type="checkbox" name="object.craft.holisticMiracleUnderstanding" value="{{data.craft.holisticMiracleUnderstanding}}" {{checked data.craft.holisticMiracleUnderstanding}}>
+    </div>
+</div>
+{{/ifEquals}}
+{{/ifEquals}}
 {{#ifNotEquals data.rollType 'base'}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">

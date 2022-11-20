@@ -90,6 +90,10 @@ export class RollForm extends FormApplication {
                 type: 'lethal',
                 threshholdToDamage: false,
             };
+            this.object.craft = {
+                divineInsperationTechnique: false,
+                holisticMiracleUnderstanding: false,
+            }
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -155,13 +159,12 @@ export class RollForm extends FormApplication {
                     this.object.intervals = 5;
                     this.object.goalNumber = 5;
                 }
-                if(this.object.rollType === 'rout') {
+                if (this.object.rollType === 'rout') {
                     this.object.difficulty = 1;
-                    if(parseInt(this.actor.system.drill.value) === 0) {
+                    if (parseInt(this.actor.system.drill.value) === 0) {
                         this.object.difficulty = 2;
                     }
                 }
-
                 if (this._isAttackRoll()) {
                     if (this.object.conditions.some(e => e.name === 'prone')) {
                         this.object.diceModifier -= 3;
@@ -192,6 +195,12 @@ export class RollForm extends FormApplication {
         if (this.object.damage.type === undefined) {
             this.object.damage.type = 'lethal';
         }
+        if (this.object.craft === undefined) {
+            this.object.craft = {
+                divineInsperationTechnique: false,
+                holisticMiracleUnderstanding: false,
+            }
+        }
         if (this.object.damage.threshholdToDamage === undefined) {
             this.object.damage.threshholdToDamage = false;
         }
@@ -207,10 +216,10 @@ export class RollForm extends FormApplication {
         if (this.object.rollTwice === undefined) {
             this.object.rollTwice = false;
         }
-        if(this.actor.system.battlegroup && this._isAttackRoll()) {
-            this._setBattlegroupBonuses();
-        }
         if (this.object.rollType !== 'base') {
+            if (this.actor.system.battlegroup && this._isAttackRoll()) {
+                this._setBattlegroupBonuses();
+            }
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
@@ -255,9 +264,9 @@ export class RollForm extends FormApplication {
                     this.object.armoredSoak = this.object.target.actor.system.armoredsoak.value;
                     this.object.naturalSoak = this.object.target.actor.system.naturalsoak.value;
                 }
-                if(this.object.target.actor.system.battlegroup) {
+                if (this.object.target.actor.system.battlegroup) {
                     this.object.defense += parseInt(this.object.target.actor.system.drill.value);
-                    if(this.object.target.actor.system.might.value > 1) {
+                    if (this.object.target.actor.system.might.value > 1) {
                         this.object.defense += (this.object.target.actor.system.might.value - 1);
                     }
                     else {
@@ -538,7 +547,7 @@ export class RollForm extends FormApplication {
                     this.object.damage.reroll[rerollKey].status = true;
                 }
             }
-            if(item.system.diceroller.damage.threshholdtodamage) {
+            if (item.system.diceroller.damage.threshholdtodamage) {
                 this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
             }
 
@@ -613,7 +622,7 @@ export class RollForm extends FormApplication {
                         this.object.damage.reroll[rerollKey].status = false;
                     }
                 }
-                if(item.system.diceroller.damage.threshholdtodamage) {
+                if (item.system.diceroller.damage.threshholdtodamage) {
                     this.object.damage.threshholdToDamage = false;
                 }
             }
@@ -679,9 +688,9 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'action') {
                     dice = this.actor.actions.find(x => x._id === this.object.actionId).system.value;
                 }
-                else if(this.object.pool === 'willpower') {
+                else if (this.object.pool === 'willpower') {
                     dice = this.actor.system.willpower.max;
-                }else {
+                } else {
                     dice = data.pools[this.object.pool].value;
                 }
             }
@@ -779,7 +788,7 @@ export class RollForm extends FormApplication {
                 failedDice = Math.min(dice - roll.dice[1].total, this.object.rerollNumber);
             };
         }
-        
+
         let rerolledDice = 0;
         while (failedDice !== 0 && (rerolledDice < this.object.rerollNumber)) {
             rerolledDice += failedDice;
@@ -793,6 +802,27 @@ export class RollForm extends FormApplication {
             }
             total += failedDiceRoll.total;
         }
+        total += this.object.successModifier;
+        if (this.object.craft.divineInsperationTechnique || this.object.craft.holisticMiracleUnderstanding) {
+            let newCraftDice = Math.floor(total / 3);
+            while (newCraftDice > 0) {
+                var rollSuccessTotal = 0;
+                var craftDiceRoll = new Roll(`${newCraftDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
+                diceRoll = diceRoll.concat(craftDiceRoll.dice[0].results);
+                for (let dice of craftDiceRoll.dice[0].results) {
+                    if (dice.result >= this.object.doubleSuccess) {
+                        total++;
+                        rollSuccessTotal++;
+                    }
+                }
+                rollSuccessTotal += craftDiceRoll.total;
+                total += craftDiceRoll.total;
+                newCraftDice = Math.floor(rollSuccessTotal / 3);
+                if (this.object.craft.holisticMiracleUnderstanding) {
+                    newCraftDice * 4;
+                }
+            }
+        }
 
         let getDice = "";
         for (let dice of diceRoll) {
@@ -804,7 +834,6 @@ export class RollForm extends FormApplication {
             else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
 
-        total += this.object.successModifier;
 
         this.object.dice = dice;
         this.object.roll = roll;
@@ -1055,7 +1084,7 @@ export class RollForm extends FormApplication {
         }
         var damageResults = ``;
 
-        if(this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
+        if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
             dice += this.object.thereshholdSuccesses;
             baseDamage = dice;
         }
@@ -1647,7 +1676,7 @@ export class RollForm extends FormApplication {
 
     _setBattlegroupBonuses() {
         this.object.diceModifier += (this.actor.system.size.value + this.actor.system.might.value);
-        if(this._damageRollType('withering')) {
+        if (this._damageRollType('withering')) {
             this.object.damage.damageDice += (this.actor.system.size.value + this.actor.system.might.value);
         }
     }
@@ -1664,7 +1693,7 @@ export class RollForm extends FormApplication {
         return highestAttribute;
     }
 
-    _spendMotes() {
+    async _spendMotes() {
         const actorData = duplicate(this.actor);
         var newLevel = actorData.system.anima.level;
         var newValue = actorData.system.anima.value;
@@ -1736,6 +1765,8 @@ export class RollForm extends FormApplication {
         }
 
         actorData.system.anima.level = newLevel;
+        actorData.system.anima.value = newValue;
+
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
