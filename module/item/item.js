@@ -8,8 +8,6 @@ export class ExaltedThirdItem extends Item {
    */
   prepareData() {
     super.prepareData();
-
-    // Get the Item's data
   }
 
   async _preCreate(createData, options, userId) {

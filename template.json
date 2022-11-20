@@ -624,6 +624,7 @@
       "keywords": "",
       "ability": "athletics",
       "martialart" : "",
+      "listingname": "",
       "requirement": 0,
       "essence": 0,
       "cost": {

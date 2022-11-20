@@ -186,27 +186,35 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if (i.system.ability === 'martial' || i.system.ability === 'martialarts') {
-          if(i.system.martialart) {
-            if(charms[i.system.martialart]) {
-            }
-            else {
-              charms[i.system.martialart] = { name: i.system.martialart, visible: true, list: [] };
-            }
-            charms[i.system.martialart].list.push(i);
+        if(i.system.listingname) {
+          if(charms[i.system.listingname]) {
           }
           else {
+            charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+          }
+          charms[i.system.listingname].list.push(i);
+        }
+        else if(i.system.martialart) {
+          if(charms[i.system.martialart]) {
+          }
+          else {
+            charms[i.system.martialart] = { name: i.system.martialart, visible: true, list: [] };
+          }
+          charms[i.system.martialart].list.push(i);
+        }
+        else {
+          if (i.system.ability === 'martial' || i.system.ability === 'martialarts') {
             charms['martialarts'].list.push(i);
             charms['martialarts'].visible = true;
           }
-        }
-        else if (i.system.ability === 'essence') {
-          charms['evocation'].list.push(i);
-          charms['evocation'].visible = true;
-        }
-        else if (i.system.ability !== undefined) {
-          charms[i.system.ability].list.push(i);
-          charms[i.system.ability].visible = true;
+          else if (i.system.ability === 'essence') {
+            charms['evocation'].list.push(i);
+            charms['evocation'].visible = true;
+          }
+          else if (i.system.ability !== undefined) {
+            charms[i.system.ability].list.push(i);
+            charms[i.system.ability].visible = true;
+          }
         }
       }
       else if (i.type === 'spell') {

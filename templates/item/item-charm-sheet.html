@@ -94,12 +94,10 @@
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            {{#ifEquals system.ability 'martialarts'}}
             <div class="flex-center">
-                <div class="resource-label">{{localize "Ex3.MartialArt"}}</div>
+                <div class="resource-label">{{localize "Ex3.ListingName"}}</div>
             </div>
-            <input type="text" name="system.martialart" value="{{system.martialart}}" />
-            {{/ifEquals}}
+            <input type="text" name="system.listingname" value="{{system.listingname}}" />
             <div class="flex-center">
                 <div class="resource-label">{{localize "Ex3.Prerequisites"}} (Comma Separated)</div>
             </div>

@@ -320,6 +320,7 @@
     "Ex3.White": "White",
     "Ex3.Keywords": "Keywords",
     "Ex3.Prerequisites": "Prerequisites",
+    "Ex3.ListingName": "Listing Name (Defaults to Ability name if unset)",
     "Ex3.Warstrider": "Warstrider",
     "Ex3.Ship": "Ship",
     "Ex3.Hull": "Hull",
