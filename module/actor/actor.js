@@ -20,8 +20,8 @@ export class ExaltedThirdActor extends Actor {
 
   async displayEmbeddedItem(itemId) {
     // Render the chat card template
-    let item = this.items.find(x=> x.id === itemId);
-    if(!item){
+    let item = this.items.find(x => x.id === itemId);
+    if (!item) {
       return ui.notifications.error(`${this.name} does not have an embedded item id ${itemId}!`);
     }
     const token = this.token;
@@ -49,15 +49,15 @@ export class ExaltedThirdActor extends Actor {
 
     const actorData = duplicate(this);
 
-    let item = this.items.find(x=> x.id == itemId);
+    let item = this.items.find(x => x.id == itemId);
 
-    if(!item){
+    if (!item) {
       return ui.notifications.error(`${this.name} does not have an embedded item id ${itemId}!`);
     }
 
-    if(item.type === 'charm') {
-      if(item.system.cost.motes > 0) {
-        if(data.data.motes.peripheral.value > 0 && !personal) {
+    if (item.type === 'charm') {
+      if (item.system.cost.motes > 0) {
+        if (data.data.motes.peripheral.value > 0 && !personal) {
           data.data.motes.peripheral.value = Math.max(0, data.data.motes.peripheral.value - item.system.cost.motes);
         }
         else {
@@ -65,31 +65,31 @@ export class ExaltedThirdActor extends Actor {
         }
       }
       data.data.willpower.value = Math.max(0, data.data.willpower.value - item.system.cost.willpower);
-      if(this.type === 'character') {
+      if (this.type === 'character') {
         data.data.craft.experience.silver.value = Math.max(0, data.data.craft.experience.silver.value - item.system.cost.silverxp);
         data.data.craft.experience.gold.value = Math.max(0, data.data.craft.experience.gold.value - item.system.cost.goldxp);
         data.data.craft.experience.white.value = Math.max(0, data.data.craft.experience.white.value - item.system.cost.whitexp);
       }
-      if(data.data.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
+      if (data.data.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
         data.data.details.aura = "none";
       }
-      if(item.system.cost.initiative > 0) {
+      if (item.system.cost.initiative > 0) {
         let combat = game.combat;
         if (combat) {
-            let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.id);
-            if (combatant) {
-                var newInitiative = combatant.initiative - item.system.cost.initiative;
-                if(combatant.initiative > 0 && newInitiative <= 0) {
-                  newInitiative -= 5;
-                }
-                combat.setInitiative(combatant.id, newInitiative);
+          let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.id);
+          if (combatant) {
+            var newInitiative = combatant.initiative - item.system.cost.initiative;
+            if (combatant.initiative > 0 && newInitiative <= 0) {
+              newInitiative -= 5;
             }
+            combat.setInitiative(combatant.id, newInitiative);
+          }
         }
       }
-      if(item.system.cost.anima > 0) {
+      if (item.system.cost.anima > 0) {
         var newLevel = data.data.anima.level;
         var newValue = data.data.anima.value;
-        for(var i = 0; i < item.system.cost.anima; i++) {
+        for (var i = 0; i < item.system.cost.anima; i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
             newValue = 3;
@@ -110,15 +110,15 @@ export class ExaltedThirdActor extends Actor {
         data.data.anima.level = newLevel;
         data.data.anima.value = newValue;
       }
-      if(item.system.cost.health > 0) {
+      if (item.system.cost.health > 0) {
         let totalHealth = 0;
         for (let [key, health_level] of Object.entries(data.data.health.levels)) {
           totalHealth += health_level.value;
         }
-        if(item.system.cost.healthtype === 'bashing') {
+        if (item.system.cost.healthtype === 'bashing') {
           data.data.health.bashing = Math.min(totalHealth - data.data.health.aggravated - data.data.health.lethal, data.data.health.bashing + item.system.cost.health);
         }
-        else if(item.system.cost.healthtype === 'lethal') {
+        else if (item.system.cost.healthtype === 'lethal') {
           data.data.health.lethal = Math.min(totalHealth - data.data.health.bashing - data.data.health.aggravated, data.data.health.lethal + item.system.cost.health);
         }
         else {
@@ -126,7 +126,7 @@ export class ExaltedThirdActor extends Actor {
         }
       }
     }
-    if(item.type === 'spell') {
+    if (item.type === 'spell') {
       data.data.sorcery.motes = 0;
     }
 
@@ -135,11 +135,11 @@ export class ExaltedThirdActor extends Actor {
     this.update(actorData);
   }
 
-  async savedRoll(name){
+  async savedRoll(name) {
 
-    const roll = Object.values(this.system.savedRolls).find(x=>x. name === name);
+    const roll = Object.values(this.system.savedRolls).find(x => x.name === name);
 
-    if(!roll){
+    if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
 
@@ -147,10 +147,10 @@ export class ExaltedThirdActor extends Actor {
     await new RollForm(this, { event: this.event }, {}, { rollId: roll.id, skipDialog: true }).roll();
   }
 
-  getSavedRoll(name){
-    const roll = Object.values(this.system.savedRolls).find(x=>x. name === name);
+  getSavedRoll(name) {
+    const roll = Object.values(this.system.savedRolls).find(x => x.name === name);
 
-    if(!roll){
+    if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
 
@@ -172,7 +172,7 @@ export class ExaltedThirdActor extends Actor {
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
 
-    if(data.willpower.total !== 5 && data.willpower.max === 5) {
+    if (data.willpower.total !== 5 && data.willpower.max === 5) {
       data.willpower.max = data.willpower.total;
     }
 
@@ -354,16 +354,16 @@ export class ExaltedThirdActor extends Actor {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if(i.system.listingname) {
-          if(charms[i.system.listingname]) {
+        if (i.system.listingname) {
+          if (charms[i.system.listingname]) {
           }
           else {
             charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
           }
           charms[i.system.listingname].list.push(i);
         }
-        else if(i.system.martialart) {
-          if(charms[i.system.martialart]) {
+        else if (i.system.martialart) {
+          if (charms[i.system.martialart]) {
           }
           else {
             charms[i.system.martialart] = { name: i.system.martialart, visible: true, list: [] };

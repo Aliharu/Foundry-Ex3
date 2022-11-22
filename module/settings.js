@@ -25,4 +25,13 @@ export function registerSettings() {
         type: Boolean,
         config: true,
     });
+
+    game.settings.register('exaltedthird', 'animaTokenMagic', {
+        name: game.i18n.localize('Ex3.AnimaTokenEffects'),
+        hint: game.i18n.localize('Ex3.AnimaTokenEffectsDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
 }

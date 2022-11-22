@@ -1,8 +1,5 @@
-// import {
-//   DiceRollerDialogue
-// } from "./dialogue-diceRoller.js";
 import TraitSelector from "../apps/trait-selector.js";
-import { RollForm } from "../apps/dice-roller.js";
+import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import Importer from "../apps/importer.js";
 
@@ -186,16 +183,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         craftProjects.push(i);
       }
       else if (i.type === 'charm') {
-        if(i.system.listingname) {
-          if(charms[i.system.listingname]) {
+        if (i.system.listingname) {
+          if (charms[i.system.listingname]) {
           }
           else {
             charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
           }
           charms[i.system.listingname].list.push(i);
         }
-        else if(i.system.martialart) {
-          if(charms[i.system.martialart]) {
+        else if (i.system.martialart) {
+          if (charms[i.system.martialart]) {
           }
           else {
             charms[i.system.martialart] = { name: i.system.martialart, visible: true, list: [] };
@@ -712,6 +709,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     data.anima.level = newLevel;
     data.anima.value = newValue;
+    animaTokenMagic(this.actor, newValue);
     this.actor.update(actorData);
   }
 
@@ -1424,6 +1422,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     this._displayCard(event);
     this.actor.update(actorData);
+    animaTokenMagic(this.actor);
   }
 }
 

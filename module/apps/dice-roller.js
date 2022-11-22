@@ -805,6 +805,7 @@ export class RollForm extends FormApplication {
         total += this.object.successModifier;
         if (this.object.craft.divineInsperationTechnique || this.object.craft.holisticMiracleUnderstanding) {
             let newCraftDice = Math.floor(total / 3);
+            let remainder = total % 3;
             while (newCraftDice > 0) {
                 var rollSuccessTotal = 0;
                 var craftDiceRoll = new Roll(`${newCraftDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
@@ -817,7 +818,8 @@ export class RollForm extends FormApplication {
                 }
                 rollSuccessTotal += craftDiceRoll.total;
                 total += craftDiceRoll.total;
-                newCraftDice = Math.floor(rollSuccessTotal / 3);
+                newCraftDice = Math.floor((rollSuccessTotal + remainder) / 3);
+                remainder = rollSuccessTotal % 3;
                 if (this.object.craft.holisticMiracleUnderstanding) {
                     newCraftDice * 4;
                 }
@@ -1815,7 +1817,258 @@ export class RollForm extends FormApplication {
         if (this.object.cost.healthaggravated > 0) {
             actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + this.object.cost.healthaggravated);
         }
-
+        if (this.actor.system.anima.value !== newValue) {
+            animaTokenMagic(this.actor, newValue);
+        }
         this.actor.update(actorData);
+    }
+}
+
+export async function animaTokenMagic(actor, newAnimaValue) {
+    if (game.settings.get("exaltedthird", "animaTokenMagic")) {
+        let exaltMap = {
+            'solar': 0xF9B516,
+            'lunar': 0xA9A9AB,
+            'infernal': 0x00FF00,
+            'abyssal': 0x131514,
+        };
+        let casteMap = {
+            'fire': 0xB62723,
+            'earth': 0xFBFAF5,
+            'water': 0x131514,
+            'air': 0x538397,
+            'wood': 0x50CA5B,
+            'secrets': 0x417A39,
+            'journeys': 0xEAC645,
+            'battles': 0xC53840,
+            'serenity': 0x3952BA,
+            'spring': 0xEFABBA,
+            'summer': 0xC6F5BE,
+            'autumn': 0xE09474,
+            'winter': 0xADAFBB,
+            'blood': 0x8A0303,
+            'breath': 0xAFEEEE,
+            'flesh': 0xFFE9D1,
+            'marrow': 0x836539,
+            'orichalcum': 0xFFE56D,
+            'moonsilver': 0xBFE6f6,
+            'starmetal': 0xCBBCE1,
+            'jade': 0x9A0102,
+            'soulsteel': 0x292927,
+            'adamant': 0x01A3DC,
+        };
+        let defaultColor = 0xA9A9AB;
+        if (exaltMap[actor.system.details.exalt]) {
+            defaultColor = exaltMap[actor.system.details.exalt];
+        }
+        else if (casteMap[actor.system.details.caste.toLowerCase()]) {
+            defaultColor = casteMap[actor.system.details.caste.toLowerCase()];
+        }
+        var actorToken = canvas.tokens.placeables.filter(x => x.actor.id === actor.id)[0];
+        let glowing =
+            [{
+                filterType: "field",
+                filterId: "mySmokeField",
+                shieldType: 3,
+                gridPadding: 1,
+                color: defaultColor,
+                time: 0,
+                blend: 0,
+                intensity: 0.9,
+                lightAlpha: 1,
+                lightSize: 0.7,
+                scale: 1,
+                radius: 1,
+                chromatic: false,
+                zOrder: 512,
+                animated:
+                {
+                    time:
+                    {
+                        active: true,
+                        speed: 0.0015,
+                        animType: "move"
+                    }
+                }
+            }];
+        let burning =
+            [
+                {
+                    filterType: "field",
+                    filterId: "mySmokeField",
+                    shieldType: 3,
+                    gridPadding: 1,
+                    color: defaultColor,
+                    time: 0,
+                    blend: 0,
+                    intensity: 0.9,
+                    lightAlpha: 1,
+                    lightSize: 0.7,
+                    scale: 1,
+                    radius: 1,
+                    chromatic: false,
+                    zOrder: 512,
+                    animated:
+                    {
+                        time:
+                        {
+                            active: true,
+                            speed: 0.0015,
+                            animType: "move"
+                        }
+                    }
+                },
+                {
+                    filterType: "zapshadow",
+                    filterId: "myPureFireShadow",
+                    alphaTolerance: 0.50
+                },
+                {
+                    filterType: "xglow",
+                    filterId: "myPureFireAura",
+                    auraType: 2,
+                    color: defaultColor,
+                    thickness: 9.8,
+                    scale: 4.,
+                    time: 0,
+                    auraIntensity: 2,
+                    subAuraIntensity: 1.5,
+                    threshold: 0.40,
+                    discard: true,
+                    animated:
+                    {
+                        time:
+                        {
+                            active: true,
+                            speed: 0.0027,
+                            animType: "move"
+                        },
+                        thickness:
+                        {
+                            active: true,
+                            loopDuration: 3000,
+                            animType: "cosOscillation",
+                            val1: 2,
+                            val2: 5
+                        }
+                    }
+                }];
+        let bonfire =
+            [{
+                filterType: "field",
+                filterId: "mySmokeField",
+                shieldType: 3,
+                gridPadding: 1,
+                color: defaultColor,
+                time: 0,
+                blend: 0,
+                intensity: 0.9,
+                lightAlpha: 1,
+                lightSize: 0.7,
+                scale: 1,
+                radius: 1,
+                chromatic: false,
+                zOrder: 512,
+                animated:
+                {
+                    time:
+                    {
+                        active: true,
+                        speed: 0.0015,
+                        animType: "move"
+                    }
+                }
+            }, {
+                filterType: "zapshadow",
+                filterId: "myZap",
+                alphaTolerance: 0.45
+            }, {
+                filterType: "field",
+                filterId: "myLavaRing",
+                shieldType: 6,
+                gridPadding: 1.25,
+                color: defaultColor,
+                time: 0,
+                blend: 14,
+                intensity: 1,
+                lightAlpha: 0,
+                lightSize: 0.7,
+                scale: 1,
+                radius: 1,
+                chromatic: false,
+                discardThreshold: 0.30,
+                hideRadius: 0.95,
+                alphaDiscard: true,
+                animated:
+                {
+                    time:
+                    {
+                        active: true,
+                        speed: 0.0015,
+                        animType: "move"
+                    },
+                    radius:
+                    {
+                        active: true,
+                        loopDuration: 6000,
+                        animType: "cosOscillation",
+                        val1: 1,
+                        val2: 0.8
+                    },
+                    hideRadius:
+                    {
+                        active: true,
+                        loopDuration: 3000,
+                        animType: "cosOscillation",
+                        val1: 0.75,
+                        val2: 0.4
+                    }
+                }
+            }, {
+                filterType: "xglow",
+                filterId: "myBurningAura",
+                auraType: 2,
+                color: defaultColor,
+                thickness: 9.8,
+                scale: 1.,
+                time: 0,
+                auraIntensity: 2,
+                subAuraIntensity: 1,
+                threshold: 0.30,
+                discard: true,
+                zOrder: 3000,
+                animated:
+                {
+                    time:
+                    {
+                        active: true,
+                        speed: 0.0027,
+                        animType: "move"
+                    },
+                    thickness:
+                    {
+                        active: true,
+                        loopDuration: 600,
+                        animType: "cosOscillation",
+                        val1: 4,
+                        val2: 8
+                    }
+                }
+            }];
+
+        if (actorToken) {
+            await TokenMagic.deleteFilters(actorToken);
+            if (newAnimaValue > 0) {
+                if (newAnimaValue === 1) {
+                    await TokenMagic.addUpdateFilters(actorToken, glowing);
+                }
+                else if (newAnimaValue === 2) {
+                    await TokenMagic.addUpdateFilters(actorToken, burning);
+                }
+                else {
+                    await TokenMagic.addUpdateFilters(actorToken, bonfire);
+                }
+            }
+        }
     }
 }
