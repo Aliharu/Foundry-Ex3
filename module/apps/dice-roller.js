@@ -1825,99 +1825,72 @@ export class RollForm extends FormApplication {
 }
 
 export async function animaTokenMagic(actor, newAnimaValue) {
-    if (game.settings.get("exaltedthird", "animaTokenMagic")) {
-        let exaltMap = {
-            'solar': 0xF9B516,
-            'lunar': 0xA9A9AB,
-            'infernal': 0x00FF00,
-            'abyssal': 0x131514,
-        };
-        let casteMap = {
-            'fire': 0xB62723,
-            'earth': 0xFBFAF5,
-            'water': 0x131514,
-            'air': 0x538397,
-            'wood': 0x50CA5B,
-            'secrets': 0x417A39,
-            'journeys': 0xEAC645,
-            'battles': 0xC53840,
-            'serenity': 0x3952BA,
-            'spring': 0xEFABBA,
-            'summer': 0xC6F5BE,
-            'autumn': 0xE09474,
-            'winter': 0xADAFBB,
-            'blood': 0x8A0303,
-            'breath': 0xAFEEEE,
-            'flesh': 0xFFE9D1,
-            'marrow': 0x836539,
-            'orichalcum': 0xFFE56D,
-            'moonsilver': 0xBFE6f6,
-            'starmetal': 0xCBBCE1,
-            'jade': 0x9A0102,
-            'soulsteel': 0x292927,
-            'adamant': 0x01A3DC,
-        };
-        let defaultColor = 0xA9A9AB;
-        if (exaltMap[actor.system.details.exalt]) {
-            defaultColor = exaltMap[actor.system.details.exalt];
-        }
-        else if (casteMap[actor.system.details.caste.toLowerCase()]) {
-            defaultColor = casteMap[actor.system.details.caste.toLowerCase()];
-        }
-        var actorToken = canvas.tokens.placeables.filter(x => x.actor.id === actor.id)[0];
+    if (game.settings.get("exaltedthird", "animaTokenMagic") && actor.token) {
+        // let exaltMap = {
+        //     'solar': 0xF9B516,
+        //     'lunar': 0xA9A9AB,
+        //     'infernal': 0x00FF00,
+        //     'abyssal': 0x131514,
+        // };
+        // let casteMap = {
+        //     'fire': 0xB62723,
+        //     'earth': 0xFBFAF5,
+        //     'water': 0x131514,
+        //     'air': 0x538397,
+        //     'wood': 0x50CA5B,
+        //     'secrets': 0x417A39,
+        //     'journeys': 0xEAC645,
+        //     'battles': 0xC53840,
+        //     'serenity': 0x3952BA,
+        //     'spring': 0xEFABBA,
+        //     'summer': 0xC6F5BE,
+        //     'autumn': 0xE09474,
+        //     'winter': 0xADAFBB,
+        //     'blood': 0x8A0303,
+        //     'breath': 0xAFEEEE,
+        //     'flesh': 0xFFE9D1,
+        //     'marrow': 0x836539,
+        //     'orichalcum': 0xFFE56D,
+        //     'moonsilver': 0xBFE6f6,
+        //     'starmetal': 0xCBBCE1,
+        //     'jade': 0x9A0102,
+        //     'soulsteel': 0x292927,
+        //     'adamant': 0x01A3DC,
+        // };
+
+        let effectColor = Number(`0x${actor.system.details.color.replace('#', '')}`);
+        // let effectColor = 0xA9A9AB;
+        // if (exaltMap[actor.system.details.exalt]) {
+        //     effectColor = exaltMap[actor.system.details.exalt];
+        // }
+        // else if (casteMap[actor.system.details.caste.toLowerCase()]) {
+        //     effectColor = casteMap[actor.system.details.caste.toLowerCase()];
+        // }
+        var actorToken = canvas.tokens.placeables.filter(x => x.id === actor.token.id)[0];
+
         let glowing =
             [{
-                filterType: "field",
-                filterId: "mySmokeField",
-                shieldType: 3,
-                gridPadding: 1,
-                color: defaultColor,
-                time: 0,
-                blend: 0,
-                intensity: 0.9,
-                lightAlpha: 1,
-                lightSize: 0.7,
-                scale: 1,
-                radius: 1,
-                chromatic: false,
-                zOrder: 512,
+                filterType: "glow",
+                filterId: "superSpookyGlow",
+                outerStrength: 4,
+                innerStrength: 0,
+                color: effectColor,
+                quality: 0.5,
+                padding: 10,
                 animated:
                 {
-                    time:
+                    color:
                     {
                         active: true,
-                        speed: 0.0015,
-                        animType: "move"
+                        loopDuration: 3000,
+                        animType: "colorOscillation",
+                        val1: 0xFFFFFF,
+                        val2: effectColor
                     }
                 }
             }];
         let burning =
             [
-                {
-                    filterType: "field",
-                    filterId: "mySmokeField",
-                    shieldType: 3,
-                    gridPadding: 1,
-                    color: defaultColor,
-                    time: 0,
-                    blend: 0,
-                    intensity: 0.9,
-                    lightAlpha: 1,
-                    lightSize: 0.7,
-                    scale: 1,
-                    radius: 1,
-                    chromatic: false,
-                    zOrder: 512,
-                    animated:
-                    {
-                        time:
-                        {
-                            active: true,
-                            speed: 0.0015,
-                            animType: "move"
-                        }
-                    }
-                },
                 {
                     filterType: "zapshadow",
                     filterId: "myPureFireShadow",
@@ -1927,7 +1900,7 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                     filterType: "xglow",
                     filterId: "myPureFireAura",
                     auraType: 2,
-                    color: defaultColor,
+                    color: effectColor,
                     thickness: 9.8,
                     scale: 4.,
                     time: 0,
@@ -1953,32 +1926,9 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                         }
                     }
                 }];
+
         let bonfire =
             [{
-                filterType: "field",
-                filterId: "mySmokeField",
-                shieldType: 3,
-                gridPadding: 1,
-                color: defaultColor,
-                time: 0,
-                blend: 0,
-                intensity: 0.9,
-                lightAlpha: 1,
-                lightSize: 0.7,
-                scale: 1,
-                radius: 1,
-                chromatic: false,
-                zOrder: 512,
-                animated:
-                {
-                    time:
-                    {
-                        active: true,
-                        speed: 0.0015,
-                        animType: "move"
-                    }
-                }
-            }, {
                 filterType: "zapshadow",
                 filterId: "myZap",
                 alphaTolerance: 0.45
@@ -1987,7 +1937,7 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                 filterId: "myLavaRing",
                 shieldType: 6,
                 gridPadding: 1.25,
-                color: defaultColor,
+                color: effectColor,
                 time: 0,
                 blend: 14,
                 intensity: 1,
@@ -2028,7 +1978,7 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                 filterType: "xglow",
                 filterId: "myBurningAura",
                 auraType: 2,
-                color: defaultColor,
+                color: effectColor,
                 thickness: 9.8,
                 scale: 1.,
                 time: 0,
