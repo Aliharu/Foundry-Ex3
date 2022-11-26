@@ -26,6 +26,16 @@ Join Battle and attacking targets support modifying foundries initiative tracker
 
 https://game-icons.net/
 
+## Supported Modules
+
+Lancer Initiative - The onslaught automation requires this module to work correctly.  Onslaught automation can be toggled in the settings.
+
+Dice So Nice - Most base dice rolls support Dice so Nice integration.
+
+Polyglot - The languages on sheets supports polyglot
+
+TokenMagicFX - In settings there is an option to enable effects on anima.  Enabling this will automatically add tokeneffects based off the characters dot colors when their anima changes.
+
 # Copyright
 Exalted character sheets and dice rollers are covered under the Paradox Dark Pack licence.
 "Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com."
