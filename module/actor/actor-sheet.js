@@ -767,7 +767,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
         data.motes.personal.max = 11 + (data.essence.value * 2);
       }
-      data.motes.personal.value = data.motes.personal.max;
+      data.motes.personal.value = (data.motes.personal.max - data.motes.personal.committed);
     }
     else {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
@@ -794,7 +794,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
         data.motes.peripheral.max = 27 + (data.essence.value * 6);
       }
-      data.motes.peripheral.value = data.motes.peripheral.max;
+      data.motes.peripheral.value = (data.motes.peripheral.max - data.motes.peripheral.committed);
     }
     this.actor.update(actorData);
   }
