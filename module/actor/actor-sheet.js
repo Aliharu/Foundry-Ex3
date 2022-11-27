@@ -289,15 +289,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         onclick: () => this.helpDialogue(this.actor.type),
       };
       buttons = [settingsButton, helpButton, ...buttons];
-      if (this.actor.type != 'npc') {
-        const colorButton = {
-          label: game.i18n.localize('Ex3.DotColors'),
-          class: 'set-color',
-          icon: 'fas fa-palette',
-          onclick: (ev) => this.pickColor(ev),
-        };
-        buttons = [colorButton, ...buttons];
-      }
+      const colorButton = {
+        label: game.i18n.localize('Ex3.DotColors'),
+        class: 'set-color',
+        icon: 'fas fa-palette',
+        onclick: (ev) => this.pickColor(ev),
+      };
+      buttons = [colorButton, ...buttons];
       const rollButton = {
         label: game.i18n.localize('Ex3.Roll'),
         class: 'roll-dice',
@@ -957,7 +955,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async showAdvancement() {
     const template = "systems/exaltedthird/templates/dialogues/advancement-dialogue.html";
-    const html = await renderTemplate(template, {'exalt': this.actor.system.details.exalt});
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt });
     new Dialog({
       title: `Advancement`,
       content: html,
