@@ -12,8 +12,10 @@ import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
 import Importer from "./apps/importer.js";
 import TemplateImporter from "./apps/template-importer.js";
+import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
+import { ExaltedCombatant } from "./combat/combat.js";
 
-Hooks.once('init', async function() {
+Hooks.once('init', async function () {
 
   registerSettings();
 
@@ -49,6 +51,10 @@ Hooks.once('init', async function() {
   CONFIG.Actor.documentClass = ExaltedThirdActor;
   CONFIG.Item.documentClass = ExaltedThirdItem;
 
+  CONFIG.Combat.documentClass = ExaltedCombat;
+  CONFIG.Combatant.documentClass = ExaltedCombatant;
+  CONFIG.ui.combat = ExaltedCombatTracker;
+
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("exaltedthird", ExaltedThirdActorSheet, { makeDefault: true });
@@ -68,7 +74,7 @@ Hooks.once('init', async function() {
     "systems/exaltedthird/templates/actor/social-tab.html",
   ]);
 
-  Combatant.prototype._getInitiativeFormula = function() {
+  Combatant.prototype._getInitiativeFormula = function () {
     const actor = this.actor;
     var initDice = 0;
     if (this.actor.type != 'npc') {
@@ -82,14 +88,14 @@ Hooks.once('init', async function() {
     let bonus = 0;
     for (let dice of roll.dice[0].results) {
       if (dice.result >= 10) {
-          bonus++;
+        bonus++;
       }
     }
     return `${diceRoll + bonus}`;
   }
 
   // If you need to add Handlebars helpers, here are a few useful examples:
-  Handlebars.registerHelper('concat', function() {
+  Handlebars.registerHelper('concat', function () {
     var outStr = '';
     for (var arg in arguments) {
       if (typeof arguments[arg] != 'object') {
@@ -99,9 +105,9 @@ Hooks.once('init', async function() {
     return outStr;
   });
 
-  Handlebars.registerHelper('toLowerCase', function(str) {
+  Handlebars.registerHelper('toLowerCase', function (str) {
     return str.toLowerCase();
-  }); 
+  });
 
   Handlebars.registerHelper('numLoop', function (num, options) {
     let ret = ''
@@ -124,7 +130,7 @@ Hooks.once('init', async function() {
   });
 });
 
-Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
@@ -132,12 +138,12 @@ Handlebars.registerHelper('ifNotEquals', function (arg1, arg2, options) {
   return (arg1 != arg2) ? options.fn(this) : options.inverse(this);
 });
 
-Handlebars.registerHelper('ifGreater', function(arg1, arg2, options) {
+Handlebars.registerHelper('ifGreater', function (arg1, arg2, options) {
   return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
 });
 
-Handlebars.registerHelper('le', function( a, b ){
-  var next =  arguments[arguments.length-1];
+Handlebars.registerHelper('le', function (a, b) {
+  var next = arguments[arguments.length - 1];
   return (a <= b) ? next.fn(this) : next.inverse(this);
 });
 
@@ -146,7 +152,7 @@ $(document).ready(() => {
 
   $(document).on('click', diceIconSelector, ev => {
     ev.preventDefault();
-    new RollForm(null, {event:ev}, {}, {rollType: 'base'}).render(true);
+    new RollForm(null, { event: ev }, {}, { rollType: 'base' }).render(true);
   });
 });
 
@@ -158,21 +164,21 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   }
 
   if (update && update.round) {
-    for(var combatant of combat.data.combatants) {
+    for (var combatant of combat.data.combatants) {
       const actorData = duplicate(combatant.actor)
       var missingPersonal = (actorData.system.motes.personal.max - actorData.system.motes.personal.committed) - actorData.system.motes.personal.value;
       var missingPeripheral = (actorData.system.motes.peripheral.max - actorData.system.motes.peripheral.committed) - actorData.system.motes.peripheral.value;
       var restorePersonal = 0;
       var restorePeripheral = 0;
-      if(missingPeripheral >= 5) {
+      if (missingPeripheral >= 5) {
         restorePeripheral = 5;
       }
       else {
-        if(missingPeripheral > 0) {
+        if (missingPeripheral > 0) {
           restorePeripheral = missingPeripheral;
         }
         var maxPersonalRestore = 5 - restorePeripheral;
-        if(missingPersonal > maxPersonalRestore) {
+        if (missingPersonal > maxPersonalRestore) {
           restorePersonal = maxPersonalRestore;
         }
         else {
@@ -184,22 +190,22 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       combatant.actor.update(actorData);
     }
   }
-  if(update && (update.round || update.turn)) {
-    if(combat.current.combatantId) {
+  if (update && (update.round || update.turn)) {
+    if (combat.current.combatantId) {
       var currentCombatant = combat.data.combatants.get(combat.current.combatantId);
       const onslaught = currentCombatant.actor.effects.find(i => i.data.label == "Onslaught");
-      if(onslaught) {
-          onslaught.delete();
+      if (onslaught) {
+        onslaught.delete();
       }
       const fullDefense = currentCombatant.actor.effects.find(i => i.data.label == "Full Defense");
-      if(fullDefense) {
+      if (fullDefense) {
         fullDefense.delete();
       }
     }
   }
 }));
 
-Hooks.once("ready", async function() {
+Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createexaltedthirdMacro(data, slot));
 
@@ -207,7 +213,7 @@ Hooks.once("ready", async function() {
     const li = $(ev.currentTarget).next();
     li.toggle("fast");
   });
-  
+
 });
 
 /* -------------------------------------------- */
@@ -267,6 +273,119 @@ function rollItemMacro(itemName) {
  * @param {object} data 
  * @returns {Promise}
  */
-function roll(actor,object,data){
-  return new RollForm(actor,object,{},data).roll();
+function roll(actor, object, data) {
+  return new RollForm(actor, object, {}, data).roll();
+}
+
+export class ExaltedCombat extends Combat {
+  async resetTurnsTaken() {
+    const updates = this.combatants.map(c => {
+      return {
+        _id: c.id,
+        [`flags.acted`]: c.isDefeated
+          ? true
+          : false,
+      };
+    });
+    return this.updateEmbeddedDocuments("Combatant", updates);
+  }
+
+  async _preCreate(...[data, options, user]) {
+    this.turn = null;
+    return super._preCreate(data, options, user);
+  }
+
+  async startCombat() {
+    await this.resetTurnsTaken();
+    return this.update({ round: 1, turn: null });
+  }
+
+  // _sortCombatants(a,b) {
+  //   const ia = (Number.isNumeric(a.initiative) && !a.flags.acted) ? a.initiative : -Infinity;
+  //   const ib = (Number.isNumeric(b.initiative) && !b.flags.acted) ? b.initiative : -Infinity;
+  //   return (ib - ia) || (a.id > b.id ? 1 : -1);
+  // }
+
+  async nextRound() {
+    await this.resetTurnsTaken();
+    let advanceTime = Math.max(this.turns.length - (this.turn || 0), 0) * CONFIG.time.turnTime;
+    advanceTime += CONFIG.time.roundTime;
+    return this.update({ round: this.round + 1, turn: null }, { advanceTime });
+  }
+
+  // Foundry's initative keeps jumping arround the place
+  // async nextTurn() {
+  //   let round = this.round;
+  //   const currentPerson = this.turns[this.turn];
+  //   if(!currentPerson.flags.acted) {
+  //     await this.toggleTurnOver(currentPerson.id);
+  //   }
+  //   const nextTurn = this.turns.filter(t => t.flags.acted === false && t.initiative !== undefined).sort((a, b) => {
+  //     return a.initiative > b.initiative ? 1 : -1;
+  //   });
+  //   if(nextTurn.length === 0) {
+  //     return this.nextRound();
+  //   }
+  //   const updateData = {round, turn: 0};
+  //   const updateOptions = {advanceTime: CONFIG.time.turnTime, direction: 1};
+  //   // Hooks.callAll("combatTurn", this, updateData, updateOptions);
+  //   return this.update(updateData, updateOptions);
+  // }
+
+  async previousRound() {
+    await this.resetTurnsTaken();
+    const round = Math.max(this.round - 1, 0);
+    let advanceTime = 0;
+    if (round > 0)
+      advanceTime -= CONFIG.time.roundTime;
+    return this.update({ round, turn: null }, { advanceTime });
+  }
+
+  async resetAll() {
+    await this.resetTurnsTaken();
+    this.combatants.forEach(c => c.updateSource({ initiative: null }));
+    return this.update({ turn: null, combatants: this.combatants.toObject() }, { diff: false });
+  }
+
+  async toggleTurnOver(id) {
+    const combatant = this.getEmbeddedDocument("Combatant", id);
+    await combatant?.toggleCombatantTurnOver();
+    const turn = this.turns.findIndex(t => t.id === id);
+    return this.update({ turn });
+    // return this.nextTurn();
+  }
+
+
+  async rollInitiative(ids, formulaopt, updateTurnopt, messageOptionsopt) {
+    const combatant = this.combatants.get(ids[0]);
+    if (combatant.token.actor) {
+      if (combatant.token.actor.type === "npc") {
+        new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
+      }
+      else {
+        new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
+      }
+    }
+    else {
+      super.rollInitiative(ids, formulaopt, updateTurnopt, messageOptionsopt);
+    }
+  }
+
+  async rollAll(options) {
+    const ids = this.combatants.reduce((ids, c) => {
+      if (c.isOwner && (c.initiative === null)) ids.push(c.id);
+      return ids;
+    }, []);
+    await super.rollInitiative(ids, options);
+    return this.update({ turn: null });
+  }
+
+  async rollNPC(options = {}) {
+    const ids = this.combatants.reduce((ids, c) => {
+      if (c.isOwner && c.isNPC && (c.initiative === null)) ids.push(c.id);
+      return ids;
+    }, []);
+    await super.rollInitiative(ids, options);
+    return this.update({ turn: null });
+  }
 }
