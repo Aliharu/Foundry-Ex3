@@ -535,6 +535,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }).render(true);
     });
 
+    html.find('.show-advancement').mousedown(ev => {
+      this.showAdvancement();
+    });
+
     html.find('.show-craft').mousedown(ev => {
       this.showCraft();
     });
@@ -767,7 +771,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
         data.motes.personal.max = 11 + (data.essence.value * 2);
       }
-      data.motes.personal.value = (data.motes.personal.max - data.motes.personal.committed);
+      data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
     }
     else {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
@@ -794,7 +798,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
         data.motes.peripheral.max = 27 + (data.essence.value * 6);
       }
-      data.motes.peripheral.value = (data.motes.peripheral.max - data.motes.peripheral.committed);
+      data.motes.peripheral.value = (data.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
     }
     this.actor.update(actorData);
   }
@@ -944,6 +948,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const html = await renderTemplate(template);
     new Dialog({
       title: `Tags`,
+      content: html,
+      buttons: {
+        cancel: { label: "Close" }
+      }
+    }).render(true);
+  }
+
+  async showAdvancement() {
+    const template = "systems/exaltedthird/templates/dialogues/advancement-dialogue.html";
+    const html = await renderTemplate(template, {'exalt': this.actor.system.details.exalt});
+    new Dialog({
+      title: `Advancement`,
       content: html,
       buttons: {
         cancel: { label: "Close" }
@@ -1334,7 +1350,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         var spentPersonal = 0;
         var spentPeripheral = 0;
         if (actorData.system.settings.charmmotepool === 'personal') {
-          var remainingPersonal = actorData.system.motes.personal.value - item.system.cost.motes;
+          var remainingPersonal = (actorData.system.motes.personal.value - this.actor.system.motes.personal.committed) - item.system.cost.motes;
           if (remainingPersonal < 0) {
             spentPersonal = item.system.cost.motes + remainingPersonal;
             spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
@@ -1344,7 +1360,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
         }
         else {
-          var remainingPeripheral = actorData.system.motes.peripheral.value - item.system.cost.motes;
+          var remainingPeripheral = (actorData.system.motes.peripheral.value - this.actor.system.motes.peripheral.committed) - item.system.cost.motes;
           if (remainingPeripheral < 0) {
             spentPeripheral = item.system.cost.motes + remainingPeripheral;
             spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
@@ -1353,8 +1369,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             spentPeripheral = item.system.cost.motes;
           }
         }
-        actorData.system.motes.peripheral.value = Math.max(0 + actorData.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
-        actorData.system.motes.personal.value = Math.max(0 + actorData.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
+        actorData.system.motes.peripheral.value = Math.max(0 + this.actor.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
+        actorData.system.motes.personal.value = Math.max(0 + this.actor.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
 
         if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
           for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {

@@ -1723,7 +1723,7 @@ export class RollForm extends FormApplication {
         var spentPeripheral = 0;
         var totalMotes = this.object.cost.motes + this.object.cost.muteMotes;
         if (actorData.system.settings.charmmotepool === 'personal') {
-            var remainingPersonal = actorData.system.motes.personal.value - totalMotes;
+            var remainingPersonal = (actorData.system.motes.personal.value - this.actor.system.motes.personal.committed) - totalMotes;
             if (remainingPersonal < 0) {
                 spentPersonal = totalMotes + remainingPersonal;
                 spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
@@ -1733,7 +1733,7 @@ export class RollForm extends FormApplication {
             }
         }
         else {
-            var remainingPeripheral = actorData.system.motes.peripheral.value - totalMotes;
+            var remainingPeripheral = (actorData.system.motes.peripheral.value - this.actor.system.motes.peripheral.committed) - totalMotes;
             if (remainingPeripheral < 0) {
                 spentPeripheral = totalMotes + remainingPeripheral;
                 spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));

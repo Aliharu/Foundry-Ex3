@@ -164,10 +164,10 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   }
 
   if (update && update.round) {
-    for (var combatant of combat.data.combatants) {
+    for (var combatant of combat.combatants) {
       const actorData = duplicate(combatant.actor)
-      var missingPersonal = (actorData.system.motes.personal.max - actorData.system.motes.personal.committed) - actorData.system.motes.personal.value;
-      var missingPeripheral = (actorData.system.motes.peripheral.max - actorData.system.motes.peripheral.committed) - actorData.system.motes.peripheral.value;
+      var missingPersonal = (combatant.actor.system.motes.personal.max - combatant.actor.system.motes.personal.committed) - combatant.actor.system.motes.personal.value;
+      var missingPeripheral = (combatant.actor.system.motes.peripheral.max - combatant.actor.system.motes.peripheral.committed) - combatant.actor.system.motes.peripheral.value;
       var restorePersonal = 0;
       var restorePeripheral = 0;
       if (missingPeripheral >= 5) {
@@ -192,12 +192,12 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   }
   if (update && (update.round || update.turn)) {
     if (combat.current.combatantId) {
-      var currentCombatant = combat.data.combatants.get(combat.current.combatantId);
-      const onslaught = currentCombatant.actor.effects.find(i => i.data.label == "Onslaught");
+      var currentCombatant = combat.combatants.get(combat.current.combatantId);
+      const onslaught = currentCombatant.actor.effects.find(i => i.label == "Onslaught");
       if (onslaught) {
         onslaught.delete();
       }
-      const fullDefense = currentCombatant.actor.effects.find(i => i.data.label == "Full Defense");
+      const fullDefense = currentCombatant.actor.effects.find(i => i.label == "Full Defense");
       if (fullDefense) {
         fullDefense.delete();
       }
@@ -313,7 +313,7 @@ export class ExaltedCombat extends Combat {
     return this.update({ round: this.round + 1, turn: null }, { advanceTime });
   }
 
-  // Foundry's initative keeps jumping arround the place
+  // Foundry's combat.turn keeps jumping arround the place so this is unusable
   // async nextTurn() {
   //   let round = this.round;
   //   const currentPerson = this.turns[this.turn];
