@@ -1187,7 +1187,16 @@ export class RollForm extends FormApplication {
                                 targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
                             }
                         }
-                        game.combat.setInitiative(this.object.targetCombatant.id, newInitative);
+                        if(game.user.isGM) {
+                            game.combat.setInitiative(this.object.targetCombatant.id, newInitative);                        }
+                        else {
+                            game.socket.emit('system.exaltedthird', {
+                                type: 'updateInitiative',
+                                id: this.object.targetCombatant.id,
+                                data: newInitative,
+                            });
+                        }
+
                     }
                     else if (this.object.targetCombatant.actor.system.battlegroup) {
                         var sizeDamaged = this.dealHealthDamage(total, true);
@@ -1317,36 +1326,45 @@ export class RollForm extends FormApplication {
     async _addOnslaught() {
         if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
             if (!this._useLegendarySize('onslaught')) {
-                const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
-                if (onslaught) {
-                    let changes = duplicate(onslaught.changes);
-                    if (this.object.target.actor.system.evasion.value > 0) {
-                        changes[0].value = changes[0].value - 1;
+                if(game.user.isGM) {
+                    const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
+                    if (onslaught) {
+                        let changes = duplicate(onslaught.changes);
+                        if (this.object.target.actor.system.evasion.value > 0) {
+                            changes[0].value = changes[0].value - 1;
+                        }
+                        if (this.object.target.actor.system.parry.value > 0) {
+                            changes[1].value = changes[1].value - 1;
+                        }
+                        onslaught.update({ changes });
                     }
-                    if (this.object.target.actor.system.parry.value > 0) {
-                        changes[1].value = changes[1].value - 1;
+                    else {
+                        this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
+                            label: 'Onslaught',
+                            icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
+                            origin: this.object.target.actor.uuid,
+                            disabled: false,
+                            "changes": [
+                                {
+                                    "key": "data.evasion.value",
+                                    "value": -1,
+                                    "mode": 2
+                                },
+                                {
+                                    "key": "data.parry.value",
+                                    "value": -1,
+                                    "mode": 2
+                                }
+                            ]
+                        }]);
                     }
-                    onslaught.update({ changes });
                 }
                 else {
-                    this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
-                        label: 'Onslaught',
-                        icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
-                        origin: this.object.target.actor.uuid,
-                        disabled: false,
-                        "changes": [
-                            {
-                                "key": "data.evasion.value",
-                                "value": -1,
-                                "mode": 2
-                            },
-                            {
-                                "key": "data.parry.value",
-                                "value": -1,
-                                "mode": 2
-                            }
-                        ]
-                    }]);
+                    game.socket.emit('system.exaltedthird', {
+                        type: 'addOnslaught',
+                        id: this.object.target.id,
+                        data: null,
+                    });
                 }
             }
         }
@@ -1368,7 +1386,16 @@ export class RollForm extends FormApplication {
             if (this.object.damage.type === 'aggravated') {
                 targetActorData.system.health.aggravated = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal, targetActorData.system.health.aggravated + characterDamage);
             }
-            this.object.target.actor.update(targetActorData);
+            if(game.user.isGM) {
+                this.object.target.actor.update(targetActorData);
+            }
+            else {
+                game.socket.emit('system.exaltedthird', {
+                    type: 'healthDamage',
+                    id: this.object.target.id,
+                    data: targetActorData.system.health,
+                });
+            }
             if (this._damageRollType('withering') && targetBattlegroup && (totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated) <= 0) {
                 return true;
             }

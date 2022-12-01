@@ -55,6 +55,8 @@ Hooks.once('init', async function () {
   CONFIG.Combatant.documentClass = ExaltedCombatant;
   CONFIG.ui.combat = ExaltedCombatTracker;
 
+  game.socket.on('system.exaltedthird', handleSocket);
+
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("exaltedthird", ExaltedThirdActorSheet, { makeDefault: true });
@@ -130,6 +132,63 @@ Hooks.once('init', async function () {
   });
 });
 
+function handleSocket({type, id, data}) {
+  if (!game.user.isGM) return;
+
+  // if the logged in user is the active GM with the lowest user id
+  const isResponsibleGM = game.users
+    .some(user => user.isGM && user.active)
+
+  if (!isResponsibleGM) return;
+
+  if(type === 'updateInitiative') {
+    game.combat.setInitiative(id, data);
+  }
+  if(type === 'healthDamage') {
+    const targetedActor = game.canvas.tokens.get(id).actor;
+    if(targetedActor) {
+      const targetActorData = duplicate(targetedActor);
+      targetActorData.system.health = data;
+      targetedActor.update(targetActorData);
+    }
+  }
+  if(type === 'addOnslaught') {
+    const targetedActor = game.canvas.tokens.get(id).actor;
+    const onslaught = targetedActor.effects.find(i => i.label == "Onslaught");
+    if (onslaught) {
+        let changes = duplicate(onslaught.changes);
+        if (targetedActor.system.evasion.value > 0) {
+            changes[0].value = changes[0].value - 1;
+        }
+        if (targetedActor.system.parry.value > 0) {
+            changes[1].value = changes[1].value - 1;
+        }
+        onslaught.update({ changes });
+    }
+    else {
+      targetedActor.createEmbeddedDocuments('ActiveEffect', [{
+            label: 'Onslaught',
+            icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
+            origin: targetedActor.uuid,
+            disabled: false,
+            "changes": [
+                {
+                    "key": "data.evasion.value",
+                    "value": -1,
+                    "mode": 2
+                },
+                {
+                    "key": "data.parry.value",
+                    "value": -1,
+                    "mode": 2
+                }
+            ]
+        }]);
+    }
+  }
+}
+
+
 Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
@@ -158,6 +217,8 @@ $(document).ready(() => {
 
 Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   // Handle non-gm users.
+
+  if(!game.user.isGM) return;
 
   if (combat.current === undefined) {
     combat = game.combat;
