@@ -572,7 +572,8 @@
       "craft",
       "specialability",
       "craftproject",
-      "action"
+      "action",
+      "destiny"
     ],
     "templates": {
       "base": {
@@ -747,6 +748,11 @@
         "base"
       ],
       "value": 0
+    },
+    "destiny": {
+      "templates": [
+        "base"
+      ]
     }
   }
 }

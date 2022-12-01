@@ -42,5 +42,8 @@ export class ExaltedThirdItem extends Item {
     if (type === 'craftproject') {
       return "systems/exaltedthird/assets/icons/anvil-impact.svg";
     }
+    if (type === 'destiny') {
+      return "systems/exaltedthird/assets/icons/spy.svg";
+    }
   }
 }

@@ -32,6 +32,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
     // Alternatively, you could use the following return statement to do a
     // unique item sheet by type, like `weapon-sheet.html`.
+    if(this.item.type === 'destiny') return `${path}/item-sheet.html`
     return `${path}/item-${this.item.type}-sheet.html`;
   }
 

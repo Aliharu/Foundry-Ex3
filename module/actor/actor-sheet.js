@@ -91,6 +91,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const specialAbilities = [];
     const craftProjects = [];
     const actions = [];
+    const destinies = [];
 
 
     const charms = {
@@ -182,6 +183,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'craftproject') {
         craftProjects.push(i);
       }
+      else if (i.type === 'destiny') {
+        destinies.push(i);
+      }
       else if (i.type === 'charm') {
         if (i.system.listingname) {
           if (charms[i.system.listingname]) {
@@ -240,6 +244,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.specialabilities = specialAbilities;
     actorData.projects = craftProjects;
     actorData.actions = actions;
+    actorData.destinies = destinies;
   }
 
   /**
