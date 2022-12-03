@@ -14,7 +14,10 @@
     "Ex3.Willpower": "Willpower",
     "Ex3.Initiative": "Initiative",
     "Ex3.Limit": "Limit",
+    "Ex3.LimitTrigger": "Limit Trigger",
     "Ex3.Health": "Health",
+    "Ex3.HealthPenaltyModifier": "Health Penalty Modifier",
+    "Ex3.HealthPenaltyText": "This value will reduce what the health penalty on rolls is (Min 0)",
     "Ex3.Bashing": "Bashing",
     "Ex3.Lethal": "Lethal",
     "Ex3.Aggravated": "Aggravated",
@@ -260,6 +263,7 @@
     "Ex3.HolisticMiracleUnderstanding": "Holistic Miracle Understanding",
     "Ex3.Personal": "Personal",
     "Ex3.Peripheral": "Peripheral",
+    "Ex3.CommitM": "Commit.M",
     "Ex3.Committed": "Committed",
     "Ex3.Minor": "Minor",
     "Ex3.Major": "Major",
@@ -399,6 +403,7 @@
     "Ex3.ShowEscort": "Show Escort",
     "Ex3.ShowZeroValues": "Show Zero Values",
     "Ex3.UseTenForAttributes": "Use 10 for Attribute Cap (Character Only)",
+    "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
 
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.CharacterNotes": "Character Notes"

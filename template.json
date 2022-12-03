@@ -33,7 +33,8 @@
           "lethal": 0,
           "aggravated": 0,
           "value": 0,
-          "max": 0
+          "max": 0,
+          "penaltymod": 0
         },
         "willpower": {
           "value": 0,
@@ -130,7 +131,8 @@
           "showship": false,
           "showescort": false,
           "showzerovalues": true,
-          "usetenattributes": false
+          "usetenattributes": false,
+          "defenseStunts": false
         },
         "ship": {
           "name": "",
@@ -628,8 +630,10 @@
       "listingname": "",
       "requirement": 0,
       "essence": 0,
+      "active": false,
       "cost": {
         "motes": 0,
+        "commitmotes": 0,
         "initiative": 0,
         "anima": 0,
         "willpower": 0,

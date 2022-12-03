@@ -118,7 +118,7 @@
       </div>
       <div class="resource-content flexrow flex-center flex-between">
         <div>
-          <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
+          <label class="resource-label roll-ability" data-ability="willpower">{{localize "Ex3.Willpower"}}</label>
           <!-- <div class="resource-value" data-value="{{system.willpower.value}}" data-name="system.willpower.value">
             {{#numLoop 10}}
             <span class="resource-value-step" data-index="{{this}}"></span>
@@ -514,6 +514,10 @@
         <li>
           <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
           <input type="text" name="system.advantages.dissonance" value="{{system.advantages.dissonance}}" />
+        </li>
+        <li>
+          <label class="resource-label">{{localize "Ex3.LimitTrigger"}}</label>
+          <input type="text" name="system.limit.trigger" value="{{system.limit.trigger}}" />
         </li>
         {{#ifEquals system.details.exalt 'dreamsouled'}}
         <li>

@@ -243,16 +243,19 @@ export class RollForm extends FormApplication {
                     if (this.object.rollType === 'social') {
                         this.object.difficulty = this.object.target.actor.system.resolve.value;
                     }
+                    if(this.object.target.actor.system.settings.defenseStunts) {
+                        this.object.difficulty += 1;
+                    }
                 }
                 if (this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value) {
                     this.object.defense = this.object.target.actor.system.parry.value;
-                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.name === 'prone')) {
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags.core.statusId === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
                 else {
                     this.object.defense = this.object.target.actor.system.evasion.value;
-                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.name === 'prone')) {
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags.core.statusId === 'prone')) {
                         this.object.defense -= 2;
                     }
                 }
@@ -275,17 +278,23 @@ export class RollForm extends FormApplication {
                     this.object.soak += this.object.target.actor.system.size.value;
                     this.object.naturalSoak += this.object.target.actor.system.size.value;
                 }
+                if(this.object.target.actor.system.settings.defenseStunts) {
+                    this.object.defense += 1;
+                }
                 if (this.object.target.actor.effects) {
-                    if (this.object.target.actor.effects.some(e => e.name === 'lightcover')) {
+                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'lightcover')) {
                         this.object.defense += 1;
                     }
-                    if (this.object.target.actor.effects.some(e => e.name === 'heavycover')) {
+                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'heavycover')) {
                         this.object.defense += 2;
                     }
-                    if (this.object.target.actor.effects.some(e => e.name === 'fulldefense')) {
+                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'fullcover')) {
+                        this.object.defense += 3;
+                    }
+                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'fulldefense')) {
                         this.object.defense += 2;
                     }
-                    if (this.object.target.actor.effects.some(e => e.name === 'grappled') || this.object.target.actor.effects.some(e => e.name === 'grappling')) {
+                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'grappled') || this.object.target.actor.effects.some(e => e.flags.core.statusId === 'grappling')) {
                         this.object.defense -= 2;
                     }
                 }
@@ -680,9 +689,15 @@ export class RollForm extends FormApplication {
             const data = this.actor.system;
             const actorData = duplicate(this.actor);
             if (this.actor.type === 'character') {
-                let attributeDice = data.attributes[this.object.attribute].value;
-                let abilityDice = data.abilities[this.object.ability].value;
-                dice = attributeDice + abilityDice;
+                if(data.attributes[this.object.attribute]) {
+                    dice += data.attributes[this.object.attribute]?.value || 0;
+                }
+                if(this.object.ability === 'willpower') {
+                    dice += this.actor.system.willpower.max;
+                }
+                else if(data.abilities[this.object.ability]) {
+                    dice += data.abilities[this.object.ability]?.value || 0;
+                }
             }
             else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
                 if (this.object.rollType === 'action') {
@@ -728,7 +743,7 @@ export class RollForm extends FormApplication {
                     dice -= data.warstrider.health.penalty;
                 }
                 else {
-                    dice -= data.health.penalty;
+                    dice -= Math.max(0, data.health.penalty - data.health.penaltymod);
                 }
             }
             if (this.object.isFlurry) {
@@ -827,7 +842,7 @@ export class RollForm extends FormApplication {
         }
 
         let getDice = "";
-        for (let dice of diceRoll) {
+        for (let dice of diceRoll.sort((a,b) => b.result - a.result)) {
             if (dice.result >= this.object.doubleSuccess) {
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
@@ -1129,7 +1144,7 @@ export class RollForm extends FormApplication {
         let bonus = 0;
         this.object.finalDamageDice = dice;
 
-        for (let dice of diceRoll) {
+        for (let dice of diceRoll.sort((a,b) => b.result - a.result)) {
             if (dice.result >= this.object.damage.doubleSuccess) {
                 bonus++;
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
@@ -1608,7 +1623,7 @@ export class RollForm extends FormApplication {
             Bonfire: 3,
             Transcendent: 4
         }
-        if (this.object.rollType !== "base") {
+        if (this.object.rollType !== "base" && this.actor.system.abilities[this.object.ability] && this.actor.system.attributes[this.object.attribute]) {
             if (this.actor.type === "character") {
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
                     return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
@@ -1895,6 +1910,29 @@ export async function animaTokenMagic(actor, newAnimaValue) {
         // }
         var actorToken = canvas.tokens.placeables.filter(x => x.id === actor.token.id)[0];
 
+        let sovereign =
+        [{
+            filterType: "xfire",
+            filterId: "myChromaticXFire",
+            time: 0,
+            blend: 2,
+            amplitude: 1.1,
+            dispersion: 0,
+            chromatic: true,
+            scaleX: 1,
+            scaleY: 1,
+            inlay: false,
+            animated :
+            {
+              time : 
+              { 
+                active: true, 
+                speed: -0.0015, 
+                animType: "move" 
+              }
+            }
+        }];
+        
         let glowing =
             [{
                 filterType: "glow",
@@ -2041,9 +2079,15 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                 }
                 else if (newAnimaValue === 2) {
                     await TokenMagic.addUpdateFilters(actorToken, burning);
+                    if (actorToken.actor.system.details.caste.toLowerCase() === "sovereign") {
+                        await TokenMagic.addUpdateFilters(actorToken, sovereign);
+                    }
                 }
                 else {
                     await TokenMagic.addUpdateFilters(actorToken, bonfire);
+                    if (actorToken.actor.system.details.caste.toLowerCase() === "sovereign") {
+                        await TokenMagic.addUpdateFilters(actorToken, sovereign);
+                    }
                 }
             }
         }

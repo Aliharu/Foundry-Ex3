@@ -14,7 +14,15 @@
     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
-        <a class="item-control item-spend" title="Spend Charm"><i class="fas fa-burn"></i></a>
+        {{#ifGreater item.system.cost.commitmotes 0}}
+        {{#if item.system.active}}
+        <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
+        {{else}}
+        <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
+        {{/if}}
+        {{else}}
+        <a class="item-control item-spend" title="Spend Charm"><i class="fas fa-bolt"></i></a>
+        {{/ifGreater}}
         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -67,7 +75,7 @@
     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
-        <a class="item-control item-spend" title="Spend Spell"><i class="fas fa-burn"></i></a>
+        <a class="item-control item-spend" title="Spend Spell"><i class="fas fa-bolt"></i></a>
         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>

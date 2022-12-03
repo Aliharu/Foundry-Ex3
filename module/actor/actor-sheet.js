@@ -446,7 +446,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-ability').mousedown(ev => {
       var ability = $(ev.target).attr("data-ability");
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability }).render(true);
+      if(ability === 'willpower') {
+        if (this.actor.type === "npc") {
+          new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
+        }
+        else {
+          new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'willpower', attribute: 'none' }).render(true);
+        }
+      }
+      else {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability }).render(true);
+      }
     });
 
     html.find('.roll-pool').mousedown(ev => {
@@ -857,6 +867,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     var templateData = {
       'oxBodyText': oxBodyText,
+      'healthType': healthType,
     }
     if (healthType === 'warstrider') {
       templateData.zero = data.warstrider.health.levels.zero.value;
@@ -875,6 +886,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       templateData.one = data.health.levels.one.value;
       templateData.two = data.health.levels.two.value;
       templateData.four = data.health.levels.four.value;
+      templateData.penaltyMod = data.health.penaltymod;
     }
 
     const html = await renderTemplate(template, templateData);
@@ -892,6 +904,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           let one = parseInt(html.find('#one').val()) || 0;
           let two = parseInt(html.find('#two').val()) || 0;
           let four = parseInt(html.find('#four').val()) || 0;
+          let penaltyMod = parseInt(html.find('#penaltyMod').val()) || 0;
           if (healthType === 'warstrider') {
             data.warstrider.health.bashing = 0;
             data.warstrider.health.lethal = 0;
@@ -918,6 +931,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             data.health.levels.one.value = one;
             data.health.levels.two.value = two;
             data.health.levels.four.value = four;
+            data.health.penaltymod = penaltyMod;
           }
           this.actor.update(actorData);
         }
@@ -1012,7 +1026,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes });
+    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1029,6 +1043,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.showzerovalues = html.find('#showZeroValues').is(":checked");
           data.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
           data.anima.max = parseInt(html.find('#maxAnima').val());
+          data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
           this.actor.update(actorData);
         }
       }
@@ -1327,113 +1342,145 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let item = this.actor.items.get(li.data("item-id"));
 
     if (item.type === 'charm') {
-      var newLevel = actorData.system.anima.level;
-      var newValue = actorData.system.anima.value;
-      if (item.system.cost.anima > 0) {
-        for (var i = 0; i < item.system.cost.anima; i++) {
-          if (newLevel === "Transcendent") {
-            newLevel = "Bonfire";
-            newValue = 3;
-          }
-          else if (newLevel === "Bonfire") {
-            newLevel = "Burning";
-            newValue = 2;
-          }
-          else if (newLevel === "Burning") {
-            newLevel = "Glowing";
-            newValue = 1;
-          }
-          if (newLevel === "Glowing") {
-            newLevel = "Dim";
-            newValue = 0;
-          }
-        }
-      }
-      if (item.system.cost.motes > 0) {
-        var spentPersonal = 0;
-        var spentPeripheral = 0;
+      if (item.system.active) {
+        item.update({
+          [`system.active`]: false,
+        });
         if (actorData.system.settings.charmmotepool === 'personal') {
-          var remainingPersonal = (actorData.system.motes.personal.value - this.actor.system.motes.personal.committed) - item.system.cost.motes;
-          if (remainingPersonal < 0) {
-            spentPersonal = item.system.cost.motes + remainingPersonal;
-            spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
-          }
-          else {
-            spentPersonal = item.system.cost.motes;
+          if(item.system.cost.commitmotes > 0) {
+            actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+            actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.value + item.system.cost.commitmotes, actorData.system.motes.personal.max);
           }
         }
         else {
-          var remainingPeripheral = (actorData.system.motes.peripheral.value - this.actor.system.motes.peripheral.committed) - item.system.cost.motes;
-          if (remainingPeripheral < 0) {
-            spentPeripheral = item.system.cost.motes + remainingPeripheral;
-            spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
-          }
-          else {
-            spentPeripheral = item.system.cost.motes;
+          if(item.system.cost.commitmotes > 0) {
+            actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+            actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.value + item.system.cost.commitmotes, actorData.system.motes.peripheral.max);
           }
         }
-        actorData.system.motes.peripheral.value = Math.max(0 + this.actor.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
-        actorData.system.motes.personal.value = Math.max(0 + this.actor.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
-
-        if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
-          for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
-            if (newLevel === "Dim") {
-              newLevel = "Glowing";
-              newValue = 1;
+      }
+      else {
+        var newLevel = actorData.system.anima.level;
+        var newValue = actorData.system.anima.value;
+        if (item.system.cost.anima > 0) {
+          for (var i = 0; i < item.system.cost.anima; i++) {
+            if (newLevel === "Transcendent") {
+              newLevel = "Bonfire";
+              newValue = 3;
             }
-            else if (newLevel === "Glowing") {
+            else if (newLevel === "Bonfire") {
               newLevel = "Burning";
               newValue = 2;
             }
             else if (newLevel === "Burning") {
-              newLevel = "Bonfire";
-              newValue = 3;
+              newLevel = "Glowing";
+              newValue = 1;
             }
-            else if (actorData.system.anima.max === 4) {
-              newLevel = "Transcendent";
-              newValue = 4;
+            if (newLevel === "Glowing") {
+              newLevel = "Dim";
+              newValue = 0;
             }
           }
         }
-      }
-      actorData.system.anima.level = newLevel;
-      actorData.system.anima.value = newValue;
-      actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - item.system.cost.willpower);
-      if (this.actor.type === 'character') {
-        actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - item.system.cost.silverxp);
-        actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - item.system.cost.goldxp);
-        actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - item.system.cost.whitexp);
-      }
-      if (actorData.system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
-        actorData.system.details.aura = "none";
-      }
-      if (item.system.cost.initiative > 0) {
-        let combat = game.combat;
-        if (combat) {
-          let combatant = combat.data.combatants.find(c => c?.actor?.data?._id == this.actor.id);
-          if (combatant) {
-            var newInitiative = combatant.initiative - item.system.cost.initiative;
-            if (combatant.initiative > 0 && newInitiative <= 0) {
-              newInitiative -= 5;
+        if (item.system.cost.motes > 0 || item.system.cost.commitmotes > 0) {
+          var spendingMotes = item.system.cost.motes + item.system.cost.commitmotes;
+          var spentPersonal = 0;
+          var spentPeripheral = 0;
+          if (actorData.system.settings.charmmotepool === 'personal') {
+            var remainingPersonal = (actorData.system.motes.personal.value - this.actor.system.motes.personal.committed) - spendingMotes;
+            if (remainingPersonal < 0) {
+              spentPersonal = spendingMotes + remainingPersonal;
+              spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
             }
-            combat.setInitiative(combatant.id, newInitiative);
+            else {
+              spentPersonal = spendingMotes;
+            }
+            if(item.system.cost.commitmotes > 0) {
+              actorData.system.motes.personal.committed += item.system.cost.commitmotes;
+            }
+          }
+          else {
+            var remainingPeripheral = (actorData.system.motes.peripheral.value - this.actor.system.motes.peripheral.committed) - spendingMotes;
+            if (remainingPeripheral < 0) {
+              spentPeripheral = spendingMotes + remainingPeripheral;
+              spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+            }
+            else {
+              spentPeripheral = spendingMotes;
+            }
+            if(item.system.cost.commitmotes > 0) {
+              actorData.system.motes.peripheral.committed += item.system.cost.commitmotes;
+            }
+          }
+          actorData.system.motes.peripheral.value = Math.max(0 + this.actor.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
+          actorData.system.motes.personal.value = Math.max(0 + this.actor.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
+  
+          if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
+            for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+              if (newLevel === "Dim") {
+                newLevel = "Glowing";
+                newValue = 1;
+              }
+              else if (newLevel === "Glowing") {
+                newLevel = "Burning";
+                newValue = 2;
+              }
+              else if (newLevel === "Burning") {
+                newLevel = "Bonfire";
+                newValue = 3;
+              }
+              else if (actorData.system.anima.max === 4) {
+                newLevel = "Transcendent";
+                newValue = 4;
+              }
+            }
+          }
+          if(item.system.cost.commitmotes > 0) {
+            item.update({
+              [`system.active`]: true,
+            });
           }
         }
-      }
-      if (item.system.cost.health > 0) {
-        let totalHealth = 0;
-        for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
-          totalHealth += health_level.value;
+        actorData.system.anima.level = newLevel;
+        actorData.system.anima.value = newValue;
+        actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - item.system.cost.willpower);
+        if (this.actor.type === 'character') {
+          actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - item.system.cost.silverxp);
+          actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - item.system.cost.goldxp);
+          actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - item.system.cost.whitexp);
         }
-        if (item.system.cost.healthtype === 'bashing') {
-          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + item.system.cost.health);
+        if (actorData.system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
+          actorData.system.details.aura = "none";
         }
-        else if (item.system.cost.healthtype === 'lethal') {
-          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + item.system.cost.health);
+        if (item.system.cost.initiative > 0) {
+          let combat = game.combat;
+          if (combat) {
+            let combatant = combat.combatants.find(c => c?.actor?._id == this.actor.id);
+            if (combatant) {
+              var newInitiative = combatant.initiative - item.system.cost.initiative;
+              if (combatant.initiative > 0 && newInitiative <= 0) {
+                newInitiative -= 5;
+              }
+              combat.setInitiative(combatant.id, newInitiative);
+            }
+          }
         }
-        else {
-          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + item.system.cost.health);
+        if (item.system.cost.health > 0) {
+          let totalHealth = 0;
+          for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
+            totalHealth += health_level.value;
+          }
+          if (item.system.cost.healthtype === 'bashing') {
+            actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + item.system.cost.health);
+          }
+          else if (item.system.cost.healthtype === 'lethal') {
+            actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + item.system.cost.health);
+          }
+          else {
+            actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + item.system.cost.health);
+          }
         }
+        animaTokenMagic(this.actor, newValue);
       }
     }
     if (item.type === 'spell') {
@@ -1441,7 +1488,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     this._displayCard(event);
     this.actor.update(actorData);
-    animaTokenMagic(this.actor);
   }
 }
 
