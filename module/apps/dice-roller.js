@@ -1882,6 +1882,7 @@ export class RollForm extends FormApplication {
                     'bite': 'jb2a.bite.400px.red',
                     'brawl': 'jb2a.flurry_of_blows.physical.blue',
                     'claws': 'jb2a.claws.400px.red',
+                    'fireball': 'jb2a.fireball.beam.orange',
                     'firebreath': 'jb2a.breath_weapons.fire.line.orange',
                     'flamepiece': 'jb2a.bullet.01.orange.05ft',
                     'glaive': 'jb2a.glaive.melee.01.white.5',
@@ -1900,6 +1901,33 @@ export class RollForm extends FormApplication {
                 }
 
                 switch (this.object.attackEffectPreset) {
+                    case 'fireball':
+                        new Sequence()
+                            .effect()
+                            .file(effectsMap[this.object.attackEffectPreset])
+                            .atLocation(actorToken)
+                            .stretchTo(this.object.target)
+                            .effect()
+                            .file("jb2a.fireball.explosion.orange")
+                            .atLocation(this.object.target)
+                            .delay(2100)
+                            .effect()
+                            .file("jb2a.ground_cracks.orange.01")
+                            .atLocation(this.object.target)
+                            .belowTokens()
+                            .scaleIn(0.5, 150, { ease: "easeOutExpo" })
+                            .duration(5000)
+                            .fadeOut(3250, { ease: "easeInSine" })
+                            .name("Fireball_Impact")
+                            .delay(2300)
+                            .waitUntilFinished(-3250)
+                            .effect()
+                            .file("jb2a.impact.ground_crack.still_frame.01")
+                            .atLocation(this.object.target)
+                            .belowTokens()
+                            .fadeIn(300, { ease: "easeInSine" })
+                            .play();
+                        break;
                     case 'flamepiece':
                         new Sequence()
                             .effect()
