@@ -108,6 +108,42 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
+            <div>
+                <div class="d-flex flex-center resources">
+                    <label class="resource-label mr-1">{{localize "Ex3.AttackEffect"}} </label>
+                </div>
+                <div>
+                    <label class="resource-label mr-1">{{localize "Ex3.Preset"}}: </label>
+                    <select name="system.attackeffectpreset" data-type="String">
+                        {{#select system.attackeffectpreset}}
+                        <option value="arrow">{{localize "Ex3.Arrow"}}</option>
+                        <option value="bite">{{localize "Ex3.Bite"}}</option>
+                        <option value="brawl">{{localize "Ex3.Brawl"}}</option>
+                        <option value="claws">{{localize "Ex3.Claws"}}</option>
+                        <option value="firebreath">{{localize "Ex3.Firebreath"}}</option>
+                        <option value="flamepiece">{{localize "Ex3.Flamepiece"}}</option>
+                        <option value="glaive">{{localize "Ex3.Glaive"}}</option>
+                        <option value="goremaul">{{localize "Ex3.Goremaul"}}</option>
+                        <option value="greatsaxe">{{localize "Ex3.Greataxe"}}</option>
+                        <option value="greatsword">{{localize "Ex3.Greatsword"}}</option>
+                        <option value="handaxe">{{localize "Ex3.Handaxe"}}</option>
+                        <option value="lightning">{{localize "Ex3.Lightning"}}</option>
+                        <option value="quarterstaff">{{localize "Ex3.Quarterstaff"}}</option>
+                        <option value="rapier">{{localize "Ex3.Rapier"}}</option>
+                        <option value="scimitar">{{localize "Ex3.Scimitar"}}</option>
+                        <option value="shortsword">{{localize "Ex3.Shortsword"}}</option>
+                        <option value="spear">{{localize "Ex3.Spear"}}</option>
+                        <option value="sword">{{localize "Ex3.Sword"}}</option>
+                        <option value="throwdagger">{{localize "Ex3.ThrownDagger"}}</option>
+                        <option value="none">{{localize "Ex3.None"}}</option>
+                        {{/select}}
+                    </select>
+                    <div>
+                        <label class="resource-label mr-1">{{localize "Ex3.CustomInput"}}: </label>
+                        <input type="text" name="system.attackeffect" value="{{system.attackeffect}}" placeholder="jb2a.quarterstaff.melee.01.white" />
+                    </div>
+                </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

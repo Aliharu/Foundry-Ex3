@@ -446,7 +446,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-ability').mousedown(ev => {
       var ability = $(ev.target).attr("data-ability");
-      if(ability === 'willpower') {
+      if (ability === 'willpower') {
         if (this.actor.type === "npc") {
           new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
         }
@@ -562,12 +562,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'withering', attribute: item.system.attribute, ability: item.system.ability, accuracy: item.system.witheringaccuracy, damage: item.system.witheringdamage, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'withering', attribute: item.system.attribute, ability: item.system.ability, accuracy: item.system.witheringaccuracy, damage: item.system.witheringdamage, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic, attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect }).render(true);
     });
 
     html.find('.roll-decisive').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'decisive', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0, damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'decisive', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0, damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic, attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect }).render(true);
     });
 
     html.find('.roll-gambit').mousedown(ev => {
@@ -1347,13 +1347,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           [`system.active`]: false,
         });
         if (actorData.system.settings.charmmotepool === 'personal') {
-          if(item.system.cost.commitmotes > 0) {
+          if (item.system.cost.commitmotes > 0) {
             actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
             actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.value + item.system.cost.commitmotes, actorData.system.motes.personal.max);
           }
         }
         else {
-          if(item.system.cost.commitmotes > 0) {
+          if (item.system.cost.commitmotes > 0) {
             actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
             actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.value + item.system.cost.commitmotes, actorData.system.motes.peripheral.max);
           }
@@ -1395,7 +1395,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             else {
               spentPersonal = spendingMotes;
             }
-            if(item.system.cost.commitmotes > 0) {
+            if (item.system.cost.commitmotes > 0) {
               actorData.system.motes.personal.committed += item.system.cost.commitmotes;
             }
           }
@@ -1408,13 +1408,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             else {
               spentPeripheral = spendingMotes;
             }
-            if(item.system.cost.commitmotes > 0) {
+            if (item.system.cost.commitmotes > 0) {
               actorData.system.motes.peripheral.committed += item.system.cost.commitmotes;
             }
           }
           actorData.system.motes.peripheral.value = Math.max(0 + this.actor.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
           actorData.system.motes.personal.value = Math.max(0 + this.actor.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
-  
+
           if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
             for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
               if (newLevel === "Dim") {
@@ -1435,7 +1435,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               }
             }
           }
-          if(item.system.cost.commitmotes > 0) {
+          if (item.system.cost.commitmotes > 0) {
             item.update({
               [`system.active`]: true,
             });

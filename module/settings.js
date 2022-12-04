@@ -34,4 +34,13 @@ export function registerSettings() {
         type: Boolean,
         config: true,
     });
+
+    game.settings.register('exaltedthird', 'attackEffects', {
+        name: game.i18n.localize('Ex3.AttackEffects'),
+        hint: game.i18n.localize('Ex3.AttackEffectsDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
 }

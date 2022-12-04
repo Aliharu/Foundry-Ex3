@@ -397,6 +397,8 @@
     "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack (and battlegroup witherings vs crashed characters and withering vs battlegroups).",
     "Ex3.AnimaTokenEffects": "Anima Token Effects",
     "Ex3.AnimaTokenEffectsDescription": "If enables changing anima levels will add Token Magix Fx to tokens (Do not enable without the TokenMagicFx Module)",
+    "Ex3.AttackEffects": "Add Effects on Successful Attacks",
+    "Ex3.AttackEffectsDescription": "If enabled attacks will trigger certain animations based on a field on weapons set in the effects tab, can set a preset or copy paste a custom animation location.  Does not trigger on gambits. (Do not enable without Sequencer and JB2A Modules)",
     "Ex3.MaxAnima": "Max Anima",
     "Ex3.ShowWarstrider": "Show Warstrider",
     "Ex3.ShowShip": "Show Ship",
@@ -406,5 +408,27 @@
     "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
 
     "Ex3.FeatsofStrength": "Feats of Strength",
-    "Ex3.CharacterNotes": "Character Notes"
+    "Ex3.CharacterNotes": "Character Notes",
+
+    "Ex3.Preset": "Preset",
+    "Ex3.CustomInput": "Custom Input (Preset must be none)",
+    "Ex3.AttackEffect": "Attack Effect",
+    "Ex3.Arrow": "Arrow",
+    "Ex3.Bite": "Bite",
+    "Ex3.Claws": "Claws",
+    "Ex3.Firebreath": "Firebreath",
+    "Ex3.Flamepiece": "Flamepiece",
+    "Ex3.Glaive": "Glaive",
+    "Ex3.Greataxe": "Greataxe",
+    "Ex3.Greatsword": "Greatsword",
+    "Ex3.Handaxe": "Handaxe",
+    "Ex3.Lightning": "Lightning",
+    "Ex3.Goremaul": "Goremaul",
+    "Ex3.Quarterstaff": "Quarterstaff",
+    "Ex3.Rapier": "Rapier",
+    "Ex3.Scimitar": "Scimitar",
+    "Ex3.Shortsword": "Shortsword",
+    "Ex3.Spear": "Spear",
+    "Ex3.Sword": "Sword",
+    "Ex3.ThrownDagger": "Thrown Dagger"
 }

@@ -27,6 +27,8 @@ export class RollForm extends FormApplication {
             this.object.intervals = 0;
             this.object.difficulty = data.difficulty || 0;
             this.object.isMagic = data.isMagic || false;
+            this.object.attackEffectPreset = data.attackEffectPreset || 'none';
+            this.object.attackEffect = data.attackEffect || '';
             this.object.diceModifier = 0;
             this.object.accuracy = data.accuracy || 0;
 
@@ -216,6 +218,10 @@ export class RollForm extends FormApplication {
         if (this.object.rollTwice === undefined) {
             this.object.rollTwice = false;
         }
+        if (this.object.attackEffect === undefined) {
+            this.object.attackEffectPreset = data.attackEffectPreset || 'none';
+            this.object.attackEffect = data.attackEffect || '';
+        }
         if (this.object.rollType !== 'base') {
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
@@ -243,19 +249,19 @@ export class RollForm extends FormApplication {
                     if (this.object.rollType === 'social') {
                         this.object.difficulty = this.object.target.actor.system.resolve.value;
                     }
-                    if(this.object.target.actor.system.settings.defenseStunts) {
+                    if (this.object.target.actor.system.settings.defenseStunts) {
                         this.object.difficulty += 1;
                     }
                 }
                 if (this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value) {
                     this.object.defense = this.object.target.actor.system.parry.value;
-                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags.core.statusId === 'prone')) {
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
                 else {
                     this.object.defense = this.object.target.actor.system.evasion.value;
-                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags.core.statusId === 'prone')) {
+                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                         this.object.defense -= 2;
                     }
                 }
@@ -278,23 +284,23 @@ export class RollForm extends FormApplication {
                     this.object.soak += this.object.target.actor.system.size.value;
                     this.object.naturalSoak += this.object.target.actor.system.size.value;
                 }
-                if(this.object.target.actor.system.settings.defenseStunts) {
+                if (this.object.target.actor.system.settings.defenseStunts) {
                     this.object.defense += 1;
                 }
                 if (this.object.target.actor.effects) {
-                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'lightcover')) {
+                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
                         this.object.defense += 1;
                     }
-                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'heavycover')) {
+                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
                         this.object.defense += 2;
                     }
-                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'fullcover')) {
+                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
                         this.object.defense += 3;
                     }
-                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'fulldefense')) {
+                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
                         this.object.defense += 2;
                     }
-                    if (this.object.target.actor.effects.some(e => e.flags.core.statusId === 'grappled') || this.object.target.actor.effects.some(e => e.flags.core.statusId === 'grappling')) {
+                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
                         this.object.defense -= 2;
                     }
                 }
@@ -689,13 +695,13 @@ export class RollForm extends FormApplication {
             const data = this.actor.system;
             const actorData = duplicate(this.actor);
             if (this.actor.type === 'character') {
-                if(data.attributes[this.object.attribute]) {
+                if (data.attributes[this.object.attribute]) {
                     dice += data.attributes[this.object.attribute]?.value || 0;
                 }
-                if(this.object.ability === 'willpower') {
+                if (this.object.ability === 'willpower') {
                     dice += this.actor.system.willpower.max;
                 }
-                else if(data.abilities[this.object.ability]) {
+                else if (data.abilities[this.object.ability]) {
                     dice += data.abilities[this.object.ability]?.value || 0;
                 }
             }
@@ -842,7 +848,7 @@ export class RollForm extends FormApplication {
         }
 
         let getDice = "";
-        for (let dice of diceRoll.sort((a,b) => b.result - a.result)) {
+        for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
             if (dice.result >= this.object.doubleSuccess) {
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
@@ -1144,7 +1150,7 @@ export class RollForm extends FormApplication {
         let bonus = 0;
         this.object.finalDamageDice = dice;
 
-        for (let dice of diceRoll.sort((a,b) => b.result - a.result)) {
+        for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
             if (dice.result >= this.object.damage.doubleSuccess) {
                 bonus++;
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
@@ -1202,8 +1208,9 @@ export class RollForm extends FormApplication {
                                 targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
                             }
                         }
-                        if(game.user.isGM) {
-                            game.combat.setInitiative(this.object.targetCombatant.id, newInitative);                        }
+                        if (game.user.isGM) {
+                            game.combat.setInitiative(this.object.targetCombatant.id, newInitative);
+                        }
                         else {
                             game.socket.emit('system.exaltedthird', {
                                 type: 'updateInitiative',
@@ -1335,13 +1342,14 @@ export class RollForm extends FormApplication {
                 }
             }
         }
+        this.attackSequence();
         this._addOnslaught();
     }
 
     async _addOnslaught() {
         if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
             if (!this._useLegendarySize('onslaught')) {
-                if(game.user.isGM) {
+                if (game.user.isGM) {
                     const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
                     if (onslaught) {
                         let changes = duplicate(onslaught.changes);
@@ -1401,7 +1409,7 @@ export class RollForm extends FormApplication {
             if (this.object.damage.type === 'aggravated') {
                 targetActorData.system.health.aggravated = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal, targetActorData.system.health.aggravated + characterDamage);
             }
-            if(game.user.isGM) {
+            if (game.user.isGM) {
                 this.object.target.actor.update(targetActorData);
             }
             else {
@@ -1864,75 +1872,113 @@ export class RollForm extends FormApplication {
         }
         this.actor.update(actorData);
     }
+
+    attackSequence() {
+        if (this.object.target && this.actor.token && game.settings.get("exaltedthird", "attackEffects")) {
+            var actorToken = canvas.tokens.placeables.filter(x => x.id === this.actor.token.id)[0];
+            if (this.object.attackEffectPreset !== 'none') {
+                let effectsMap = {
+                    'arrow': 'jb2a.arrow.physical.white.01.05ft',
+                    'bite': 'jb2a.bite.400px.red',
+                    'brawl': 'jb2a.flurry_of_blows.physical.blue',
+                    'claws': 'jb2a.claws.400px.red',
+                    'firebreath': 'jb2a.breath_weapons.fire.line.orange',
+                    'flamepiece': 'jb2a.bullet.01.orange.05ft',
+                    'glaive': 'jb2a.glaive.melee.01.white.5',
+                    'goremaul': 'jb2a.maul.melee.standard.white',
+                    'greatsaxe': 'jb2a.greataxe.melee.standard.white',
+                    'greatsword': 'jb2a.greatsword.melee.standard.white',
+                    'handaxe': 'jb2a.handaxe.melee.standard.white',
+                    'lightning': 'jb2a.chain_lightning.primary.blue.05ft',
+                    'quarterstaff': 'jb2a.quarterstaff.melee.01.white.3',
+                    'rapier': 'jb2a.rapier.melee.01.white.4',
+                    'scimitar': 'jb2a.scimitar.melee.01.white.0',
+                    'shortsword': 'jb2a.shortsword.melee.01.white.0',
+                    'spear': 'jb2a.spear.melee.01.white.2',
+                    'sword': 'jb2a.sword.melee.01.white.4',
+                    'throwdagger': 'jb2a.dagger.throw.01.white.15ft',
+                }
+
+                switch (this.object.attackEffectPreset) {
+                    case 'flamepiece':
+                        new Sequence()
+                            .effect()
+                            .file(effectsMap[this.object.attackEffectPreset])
+                            .atLocation(actorToken)
+                            .stretchTo(this.object.target)
+                            .waitUntilFinished(-500)
+                            .effect()
+                            .file("jb2a.impact.010.orange")
+                            .atLocation(this.object.target)
+                            .play()
+                        break;
+                    case 'goremaul':
+                        new Sequence()
+                            .effect()
+                            .file(effectsMap[this.object.attackEffectPreset])
+                            .atLocation(actorToken)
+                            .stretchTo(this.object.target)
+                            .waitUntilFinished(-1100)
+                            .effect()
+                            .file("jb2a.impact.ground_crack.orange")
+                            .atLocation(this.object.target)
+                            .scale(0.5)
+                            .belowTokens()
+                            .play();
+                        break;
+                    case 'none':
+                        break;
+                    default:
+                        new Sequence()
+                            .effect()
+                            .file(effectsMap[this.object.attackEffectPreset])
+                            .atLocation(actorToken)
+                            .stretchTo(this.object.target)
+                            .play()
+                        break;
+                }
+
+            }
+            else if (this.object.attackEffect) {
+                new Sequence()
+                    .effect()
+                    .file(this.object.attackEffect)
+                    .atLocation(actorToken)
+                    .stretchTo(this.object.target)
+                    .play()
+            }
+        }
+    }
 }
 
 export async function animaTokenMagic(actor, newAnimaValue) {
     if (game.settings.get("exaltedthird", "animaTokenMagic") && actor.token) {
-        // let exaltMap = {
-        //     'solar': 0xF9B516,
-        //     'lunar': 0xA9A9AB,
-        //     'infernal': 0x00FF00,
-        //     'abyssal': 0x131514,
-        // };
-        // let casteMap = {
-        //     'fire': 0xB62723,
-        //     'earth': 0xFBFAF5,
-        //     'water': 0x131514,
-        //     'air': 0x538397,
-        //     'wood': 0x50CA5B,
-        //     'secrets': 0x417A39,
-        //     'journeys': 0xEAC645,
-        //     'battles': 0xC53840,
-        //     'serenity': 0x3952BA,
-        //     'spring': 0xEFABBA,
-        //     'summer': 0xC6F5BE,
-        //     'autumn': 0xE09474,
-        //     'winter': 0xADAFBB,
-        //     'blood': 0x8A0303,
-        //     'breath': 0xAFEEEE,
-        //     'flesh': 0xFFE9D1,
-        //     'marrow': 0x836539,
-        //     'orichalcum': 0xFFE56D,
-        //     'moonsilver': 0xBFE6f6,
-        //     'starmetal': 0xCBBCE1,
-        //     'jade': 0x9A0102,
-        //     'soulsteel': 0x292927,
-        //     'adamant': 0x01A3DC,
-        // };
-
         let effectColor = Number(`0x${actor.system.details.color.replace('#', '')}`);
-        // let effectColor = 0xA9A9AB;
-        // if (exaltMap[actor.system.details.exalt]) {
-        //     effectColor = exaltMap[actor.system.details.exalt];
-        // }
-        // else if (casteMap[actor.system.details.caste.toLowerCase()]) {
-        //     effectColor = casteMap[actor.system.details.caste.toLowerCase()];
-        // }
         var actorToken = canvas.tokens.placeables.filter(x => x.id === actor.token.id)[0];
 
         let sovereign =
-        [{
-            filterType: "xfire",
-            filterId: "myChromaticXFire",
-            time: 0,
-            blend: 2,
-            amplitude: 1.1,
-            dispersion: 0,
-            chromatic: true,
-            scaleX: 1,
-            scaleY: 1,
-            inlay: false,
-            animated :
-            {
-              time : 
-              { 
-                active: true, 
-                speed: -0.0015, 
-                animType: "move" 
-              }
-            }
-        }];
-        
+            [{
+                filterType: "xfire",
+                filterId: "myChromaticXFire",
+                time: 0,
+                blend: 2,
+                amplitude: 1.1,
+                dispersion: 0,
+                chromatic: true,
+                scaleX: 1,
+                scaleY: 1,
+                inlay: false,
+                animated:
+                {
+                    time:
+                    {
+                        active: true,
+                        speed: -0.0015,
+                        animType: "move"
+                    }
+                }
+            }];
+
         let glowing =
             [{
                 filterType: "glow",

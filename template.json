@@ -604,7 +604,9 @@
       "attribute": "dexterity",
       "range": "short",
       "artifact": false,
-      "magic": false
+      "magic": false,
+      "attackeffectpreset": "none",
+      "attackeffect": ""
     },
     "armor": {
       "templates": [
