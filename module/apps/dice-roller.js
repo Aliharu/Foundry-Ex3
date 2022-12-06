@@ -1903,6 +1903,10 @@ export class RollForm extends FormApplication {
                 switch (this.object.attackEffectPreset) {
                     case 'fireball':
                         new Sequence()
+                            // .effect()
+                            // .file('animated-spell-effects-cartoon.fire.118')
+                            // .atLocation(actorToken)
+                            // .delay(300)
                             .effect()
                             .file(effectsMap[this.object.attackEffectPreset])
                             .atLocation(actorToken)
