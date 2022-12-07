@@ -1597,10 +1597,33 @@ export default class TemplateImporter extends Application {
         }
         meritString = meritString.replace(/,(?=[^()]*\))/g, '');
         var meritArray = meritString.split(',');
+        var languages = [
+          "low realm",
+          "high realm",
+          "old realm",
+          "dragontongue",
+          "riverspeak",
+          "skytongue",
+          "flametongue",
+          "foresttongue",
+          "seatongue",
+          "guild cant",
+          "local tongue",
+        ]
         for (let merit of meritArray) {
           if(merit) {
             var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
             var meritName = merit.match(/[^0-9+]+/g)[0];
+            var lowerCaseMerit = merit.toLowerCase();
+            if(lowerCaseMerit.includes('language')) {
+              var newLanguageArray = [];
+              for(let language of languages){
+                if(lowerCaseMerit.includes(language)){
+                  newLanguageArray.push(language.replace(/ /g,''));
+                }
+              }
+              actorData.system.traits.languages.value = newLanguageArray;
+            }
             itemData.push(
               {
                 type: 'merit',
@@ -1841,7 +1864,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
-    game.templateImporter.type = "adversary";
+    game.templateImporter.type = "qc";
     game.templateImporter.render(true);
   })
 })
