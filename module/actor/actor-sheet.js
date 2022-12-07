@@ -1349,13 +1349,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (actorData.system.settings.charmmotepool === 'personal') {
           if (item.system.cost.commitmotes > 0) {
             actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
-            actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.value + item.system.cost.commitmotes, actorData.system.motes.personal.max);
           }
         }
         else {
           if (item.system.cost.commitmotes > 0) {
             actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
-            actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.value + item.system.cost.commitmotes, actorData.system.motes.peripheral.max);
           }
         }
       }

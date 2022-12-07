@@ -70,10 +70,18 @@ exaltedthird.statusEffects = [
         icon: 'systems/exaltedthird/assets/icons/drop-weapon.svg',
         id: 'disarmed',
         label: 'Ex3.Disarmed',
+        name: 'disarmed'
     },
     {
         icon: 'icons/svg/shield.svg',
         id: 'fulldefense',
         label: 'Ex3.FullDefense',
+        name: 'fulldefense'
+    },
+    {
+        icon: 'icons/svg/daze.svg',
+        id: 'surprised',
+        label: 'Ex3.Surprised',
+        name: 'surprised'
     },
 ]

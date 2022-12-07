@@ -170,8 +170,10 @@ export default class TemplateImporter extends Application {
       index++;
       charmData.system.duration = textArray[index].replace('Duration: ', '');
       index++;
-      charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
-      index++;
+      if(textArray[index].includes('Prerequisite Charms:')) {
+        charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
+        index++;
+      }
       var description = '';
       while(textArray[index] && index !== textArray.length) {
         description += textArray[index];
@@ -515,7 +517,7 @@ export default class TemplateImporter extends Application {
             }
           },
           "details": {
-            "exalt": "abyssal",
+            "exalt": "other",
             "caste": "",
             "color": "#000000",
             "tell": "",
@@ -1129,20 +1131,20 @@ export default class TemplateImporter extends Application {
             index++;
             newItem = true;
           }
-          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'evocations') {
-            if (textArray[index].trim().toLowerCase().includes('offensive charms')) {
+          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations')) {
+            if (textArray[index].trim().toLowerCase().includes('offensive')) {
               charmSystemData.ability = 'offensive';
             }
-            else if (textArray[index].trim().toLowerCase() === 'defensive charms') {
+            else if (textArray[index].trim().toLowerCase().includes('defensive')) {
               charmSystemData.ability = 'defensive';
             }
-            else if (textArray[index].trim().toLowerCase() === 'social charms') {
+            else if (textArray[index].trim().toLowerCase().includes('social')) {
               charmSystemData.ability = 'social';
             }
-            else if (textArray[index].trim().toLowerCase() === 'mobility charms') {
+            else if (textArray[index].trim().toLowerCase().includes('mobility') || textArray[index].trim().toLowerCase().includes('movement')) {
               charmSystemData.ability = 'mobility';
             }
-            else if (textArray[index].trim().toLowerCase() === 'evocations') {
+            else if (textArray[index].trim().toLowerCase().includes('evocations')) {
               charmSystemData.ability = 'evocation';
             }
             else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
@@ -1439,13 +1441,13 @@ export default class TemplateImporter extends Application {
       var actorDescription = '';
       var addingIntimacies = false;
       var intimacyString = '';
-      while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect') && !textArray[index].includes('Attributes:')) {
+      while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Attributes:')) {
         if (textArray[index].includes('Intimacies:')) {
           addingIntimacies = true;
         }
         if (textArray[index].includes('Secrets:')) {
           addingIntimacies = false;
-          var intimacyArray = intimacyString.split(';');
+          var intimacyArray = intimacyString.split(/,|;/);
           var intimacyStrength = 'minor';
           for (let intimacy of intimacyArray) {
             if (intimacy.includes('Defining:')) {
@@ -1488,40 +1490,46 @@ export default class TemplateImporter extends Application {
       }
       var attributeString = textArray[index].replace('Attributes:', '');
       index++
-      while (!textArray[index].includes("Essence")) {
+      while (!textArray[index].includes("Essence") && !textArray[index].includes("Willpower")) {
         attributeString += " ";
         attributeString += textArray[index];
         index++
       }
       var attributeArray = attributeString.split(/,|;/);
       for (const attribute of attributeArray) {
-        var attributeSpecificArray = attribute.trim().split(' ');
-        var trimmedName = attributeSpecificArray[0].trim().toLowerCase();
-        var value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
-        if(value > 5) {
-          actorData.system.settings.usetenattributes = true;
+        if(attribute) {
+          var attributeSpecificArray = attribute.trim().split(' ');
+          var trimmedName = attributeSpecificArray[0].trim().toLowerCase();
+          var value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
+          if(value > 5) {
+            actorData.system.settings.usetenattributes = true;
+          }
+          actorData.system.attributes[trimmedName].value = value;
         }
-        actorData.system.attributes[trimmedName].value = value;
       }
-      actorData.system.essence.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
-      index++;
+      if(textArray[index].includes("Essence")) {
+        actorData.system.essence.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
+        index++;
+      }
       actorData.system.willpower.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
       actorData.system.willpower.max = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
       index++;
       //Join Battle dice should be auto calculated so itsn ot needed
       index++;
-      var personalMotesValue = textArray[index].split(':')[1];
-      if (personalMotesValue.toLowerCase().includes('committed')) {
-        var personalSplitArray = personalMotesValue.split('(');
-        actorData.system.motes.personal.value = parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
-        actorData.system.motes.personal.max = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
-        actorData.system.motes.personal.committed = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+      if(textArray[index].toLowerCase().includes('personal')) {
+        var personalMotesValue = textArray[index].split(':')[1];
+        if (personalMotesValue.toLowerCase().includes('committed')) {
+          var personalSplitArray = personalMotesValue.split('(');
+          actorData.system.motes.personal.value = parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+          actorData.system.motes.personal.max = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
+          actorData.system.motes.personal.committed = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+        }
+        else {
+          actorData.system.motes.personal.value = parseInt(personalMotesValue.replace(/[^0-9]/g, ''));
+          actorData.system.motes.personal.max = parseInt(personalMotesValue.replace(/[^0-9]/g, ''));
+        }
+        index++;
       }
-      else {
-        actorData.system.motes.personal.value = parseInt(personalMotesValue.replace(/[^0-9]/g, ''));
-        actorData.system.motes.personal.max = parseInt(personalMotesValue.replace(/[^0-9]/g, ''));
-      }
-      index++;
       if (textArray[index].toLowerCase().includes('peripheral')) {
         var peripheralMotesValue = textArray[index].split(':')[1];
         if (peripheralMotesValue.toLowerCase().includes('committed')) {
@@ -1545,36 +1553,39 @@ export default class TemplateImporter extends Application {
         abilityString += textArray[index];
         index++
       }
+      abilityString = abilityString.replace(/,(?=[^()]*\))/g, '');
       var abilityArray = abilityString.split(/,|;/);
       for (let ability of abilityArray) {
-        var createSpecialty = false;
-        var specialtyText = ''
-        if (ability.includes('(')) {
-          createSpecialty = true;
-          specialtyText = ability.match(/\(([^)]+)\)/)[1];
-          ability = ability.replace(/\([^()]*\)/g, "").replace("  ", " ");
-        }
-        if(ability.toLowerCase().includes('martial arts')) {
-          trimmedName = 'martialarts';
-          var value = parseInt(ability.replace(/[^0-9]/g, ''));
-        }
-        else {
-          var abilitySpecificArray = ability.trim().split(' ');
-          trimmedName = abilitySpecificArray[0].trim().toLowerCase();
-          var value = parseInt(abilitySpecificArray[1].replace(/[^0-9]/g, ''));
-        }
-        actorData.system.abilities[trimmedName].value = value;
-        if (createSpecialty) {
-          itemData.push(
-            {
-              type: 'specialty',
-              img: this.getImageUrl('specialty'),
-              name: specialtyText.trim(),
-              system: {
-                ability: trimmedName,
+        if(ability) {
+          var createSpecialty = false;
+          var specialtyText = ''
+          if (ability.includes('(')) {
+            createSpecialty = true;
+            specialtyText = ability.match(/\(([^)]+)\)/)[1];
+            ability = ability.replace(/\([^()]*\)/g, "").replace("  ", " ");
+          }
+          if(ability.toLowerCase().includes('martial arts')) {
+            trimmedName = 'martialarts';
+            var value = parseInt(ability.replace(/[^0-9]/g, ''));
+          }
+          else {
+            var abilitySpecificArray = ability.trim().split(' ');
+            trimmedName = abilitySpecificArray[0].trim().toLowerCase();
+            var value = parseInt(abilitySpecificArray[1].replace(/[^0-9]/g, ''));
+          }
+          actorData.system.abilities[trimmedName].value = value;
+          if (createSpecialty) {
+            itemData.push(
+              {
+                type: 'specialty',
+                img: this.getImageUrl('specialty'),
+                name: specialtyText.trim(),
+                system: {
+                  ability: trimmedName,
+                }
               }
-            }
-          );
+            );
+          }
         }
       }
       if (!textArray[index].includes("Attack")) {
@@ -1584,20 +1595,23 @@ export default class TemplateImporter extends Application {
           meritString += textArray[index];
           index++;
         }
+        meritString = meritString.replace(/,(?=[^()]*\))/g, '');
         var meritArray = meritString.split(',');
         for (let merit of meritArray) {
-          var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
-          var meritName = merit.match(/[^0-9+]+/g)[0];
-          itemData.push(
-            {
-              type: 'merit',
-              img: this.getImageUrl('merit'),
-              name: meritName.trim(),
-              system: {
-                points: meritValue ? meritValue : 0,
+          if(merit) {
+            var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
+            var meritName = merit.match(/[^0-9+]+/g)[0];
+            itemData.push(
+              {
+                type: 'merit',
+                img: this.getImageUrl('merit'),
+                name: meritName.trim(),
+                system: {
+                  points: meritValue ? meritValue : 0,
+                }
               }
-            }
-          );
+            );
+          }
         }
       }
       while (textArray[index].includes('Attack')) {
@@ -1666,14 +1680,24 @@ export default class TemplateImporter extends Application {
       var armorValue = 0;
       var armorHardness = 0;
       var armorPenalty = 0;
-      var combatArray = combatString.split(';');
+      var combatArray = combatString.split(/,|;/);
       for (let combatStat of combatArray) {
         var armorStat = 0;
         var combatName = combatStat.match(/[^0-9+]+/g)[0];
-        if (combatStat.includes('(')) {
+        if (combatStat.includes('(') && (combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness')) {
           var armor = combatStat.match(/\(([^)]+)\)/)[1];
           armorStat = parseInt(armor.replace(/[^0-9]/g, ''));
           if (combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness' || combatName.toLowerCase().trim() === 'evasion') {
+            if(combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness') {
+              if(armor.includes('/')) {
+                var armorSplit = armor.split('/');
+                armorValue = parseInt(armorSplit[0].replace(/[^0-9]/g, ''));
+                armorHardness = parseInt(armorSplit[1].replace(/[^0-9]/g, ''));
+              }
+              else {
+                armorValue = armorStat;
+              }
+            }
             createArmor = true;
             armorName = armor;
           }
@@ -1683,15 +1707,9 @@ export default class TemplateImporter extends Application {
         if (combatName.toLowerCase().trim() === 'soak') {
           actorData.system.soak.value = combatValue;
           actorData.system.naturalsoak.value = combatValue;
-          if (armorStat) {
-            armorValue = armorStat;
-          }
         }
         if (combatName.toLowerCase().trim() === 'hardness') {
           actorData.system.hardness.value = combatValue;
-          if (armorStat) {
-            armorHardness = armorStat;
-          }
         }
         if (combatName.toLowerCase().trim() === 'evasion') {
           actorData.system.evasion.value = combatValue;
@@ -1710,12 +1728,14 @@ export default class TemplateImporter extends Application {
             img: this.getImageUrl('armor'),
             name: armorName.trim(),
             system: {
-              armorSoak: armorValue,
+              soak: armorValue,
               hardness: armorHardness,
               penalty: armorPenalty,
             }
           }
         );
+        actorData.system.armoredsoak.value = armorValue;
+        actorData.system.naturalsoak.value = actorData.system.naturalsoak.value - armorValue;
       }
       if (textArray[index].includes('Social')) {
         var socialArray = textArray[index].replace('Social:', '').split(',');
@@ -1821,7 +1841,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
-    game.templateImporter.type = "qc";
+    game.templateImporter.type = "adversary";
     game.templateImporter.render(true);
   })
 })

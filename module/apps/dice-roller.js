@@ -300,6 +300,9 @@ export class RollForm extends FormApplication {
                     if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
                         this.object.defense += 2;
                     }
+                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+                        this.object.defense -= 2;
+                    }
                     if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
                         this.object.defense -= 2;
                     }
