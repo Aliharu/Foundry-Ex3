@@ -315,6 +315,9 @@ export class ExaltedThirdActor extends Actor {
       terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
       celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
       solar: { name: 'Ex3.Solar', visible: false, list: [] },
+      ivory: { name: 'Ex3.Ivory', visible: false, list: [] },
+      shadow: { name: 'Ex3.Shadow', visible: false, list: [] },
+      void: { name: 'Ex3.Void', visible: false, list: [] },
     }
 
     // Iterate through items, allocating to containers
