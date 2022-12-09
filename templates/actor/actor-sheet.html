@@ -93,6 +93,18 @@
             <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
           </div>
           {{/ifEquals}}
+          {{#ifEquals system.details.exalt 'sidereal'}}
+          <div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.BirthSign"}}</label>
+              <input type="text" name="system.details.birthsign" value="{{system.details.birthsign}}" />
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.ExaltationSign"}}</label>
+              <input type="text" name="system.details.exaltsign" value="{{system.details.exaltsign}}" />
+            </div>
+          </div>
+          {{/ifEquals}}
           {{#ifEquals system.details.exalt 'dragonblooded'}}
           <div>
             <div class="resource-label">{{localize "Ex3.Aura"}}</div>

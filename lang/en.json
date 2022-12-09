@@ -30,6 +30,8 @@
     "Ex3.Aura": "Aura",
     "Ex3.Nature": "Nature",
     "Ex3.Tell": "Tell",
+    "Ex3.BirthSign": "Birth Sign",
+    "Ex3.ExaltationSign": "Exaltation Sign",
     "Ex3.Ideal": "Ideal",
     "Ex3.Penumbra": "Penumbra",
     "Ex3.Supernal": "Supernal",
@@ -435,5 +437,7 @@
     "Ex3.Shortsword": "Shortsword",
     "Ex3.Spear": "Spear",
     "Ex3.Sword": "Sword",
-    "Ex3.ThrownDagger": "Thrown Dagger"
+    "Ex3.ThrownDagger": "Thrown Dagger",
+    "Ex3.IncreaseInitiative": "Increase Initiative",
+    "Ex3.DecreaseInitiative": "Decrease Initiative"
 }

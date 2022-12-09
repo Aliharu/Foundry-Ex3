@@ -781,7 +781,12 @@ export class RollForm extends FormApplication {
 
         for (var rerollValue in this.object.reroll) {
             if (this.object.reroll[rerollValue].status) {
-                rerollString += `x${this.object.reroll[rerollValue].number}`;
+                if(this.object.reroll[rerollValue].number < this.object.targetNumber) {
+                    rerollString += `rr${this.object.reroll[rerollValue].number}`;
+                }
+                else {
+                    rerollString += `x${this.object.reroll[rerollValue].number}`;
+                }
                 rerolls.push(this.object.reroll[rerollValue].number);
             }
         }
@@ -795,7 +800,7 @@ export class RollForm extends FormApplication {
         let total = roll.total;
         var failedDice = Math.min(dice - roll.total, this.object.rerollNumber);
         for (let dice of diceRoll) {
-            if (dice.result >= this.object.doubleSuccess) {
+            if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
                 total++;
             }
         }
@@ -803,7 +808,7 @@ export class RollForm extends FormApplication {
             var secondTotal = roll.dice[1].total;
             diceRoll = diceRoll.concat(roll.dice[1].results);
             for (let dice of roll.dice[1].results) {
-                if (dice.result >= this.object.doubleSuccess) {
+                if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
                     secondTotal++;
                 }
             }
@@ -820,7 +825,7 @@ export class RollForm extends FormApplication {
             failedDice = Math.min(failedDice - failedDiceRoll.total, (this.object.rerollNumber - rerolledDice));
             diceRoll = diceRoll.concat(failedDiceRoll.dice[0].results);
             for (let dice of failedDiceRoll.dice[0].results) {
-                if (dice.result >= this.object.doubleSuccess) {
+                if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
                     total++;
                 }
             }
@@ -835,7 +840,7 @@ export class RollForm extends FormApplication {
                 var craftDiceRoll = new Roll(`${newCraftDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
                 diceRoll = diceRoll.concat(craftDiceRoll.dice[0].results);
                 for (let dice of craftDiceRoll.dice[0].results) {
-                    if (dice.result >= this.object.doubleSuccess) {
+                    if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
                         total++;
                         rollSuccessTotal++;
                     }
@@ -852,10 +857,11 @@ export class RollForm extends FormApplication {
 
         let getDice = "";
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
-            if (dice.result >= this.object.doubleSuccess) {
+            if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
             else if (dice.result >= this.object.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
+            else if (dice.rerolled) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
             else if (dice.result == 1) { getDice += `<li class="roll die d10 failure">${dice.result}</li>`; }
             else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
@@ -1141,7 +1147,12 @@ export class RollForm extends FormApplication {
 
         for (var rerollValue in this.object.damage.reroll) {
             if (this.object.damage.reroll[rerollValue].status) {
-                rerollString += `x${this.object.damage.reroll[rerollValue].number}`;
+                if (this.object.damage.reroll[rerollValue].number < this.object.damage.targetNumber) {
+                    rerollString += `rr${this.object.damage.reroll[rerollValue].number}`;
+                }
+                else {
+                    rerollString += `x${this.object.damage.reroll[rerollValue].number}`;
+                }
                 rerolls.push(this.object.damage.reroll[rerollValue].number);
             }
         }
@@ -1154,11 +1165,12 @@ export class RollForm extends FormApplication {
         this.object.finalDamageDice = dice;
 
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
-            if (dice.result >= this.object.damage.doubleSuccess) {
+            if (dice.result >= this.object.damage.doubleSuccess && dice.result >= this.object.damage.targetNumber) {
                 bonus++;
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
             else if (dice.result >= this.object.damage.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
+            else if (dice.rerolled) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
             else if (dice.result == 1) { getDice += `<li class="roll die d10 failure">${dice.result}</li>`; }
             else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
@@ -1634,8 +1646,8 @@ export class RollForm extends FormApplication {
             Bonfire: 3,
             Transcendent: 4
         }
-        if (this.object.rollType !== "base" && this.actor.system.abilities[this.object.ability] && this.actor.system.attributes[this.object.attribute]) {
-            if (this.actor.type === "character") {
+        if (this.object.rollType !== "base") {
+            if (this.actor.type === "character" && this.actor.system.abilities[this.object.ability] && this.actor.system.attributes[this.object.attribute]) {
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
                     return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
                 }
@@ -1644,6 +1656,22 @@ export class RollForm extends FormApplication {
                 }
                 if (this.actor.system.details.exalt === "lunar") {
                     return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
+                }
+                if (this.actor.system.details.exalt === "sidereal") {
+                    var baseSidCap = this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
+                    var tnChange = "";
+                    if(this.actor.system.abilities[this.object.ability].value === 5){
+                        if(this.actor.system.essence.value >= 3){
+                            tnChange = " - TN -3";
+                        }
+                        else {
+                            tnChange = " - TN -2";
+                        }
+                    }
+                    else if(this.actor.system.abilities[this.object.ability].value >= 3){
+                        tnChange = " - TN -1";
+                    }
+                    return `${baseSidCap}${tnChange}`;
                 }
                 if (this.actor.system.details.exalt === "dreamsouled") {
                     return `${this.actor.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.essence.value)} when upholding ideal`;
@@ -1661,7 +1689,7 @@ export class RollForm extends FormApplication {
                     return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10);
                 }
             }
-            else if (this.actor.system.creaturetype === 'exalt') {
+            else if (this.actor.system.creaturetype === 'exalt' && this.actor.system.pools[this.object.pool]) {
                 var dicePool = this.actor.system.pools[this.object.pool].value;
                 var diceTier = "zero";
                 var diceMap = {

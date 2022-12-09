@@ -1521,8 +1521,14 @@ export default class TemplateImporter extends Application {
         if (personalMotesValue.toLowerCase().includes('committed')) {
           var personalSplitArray = personalMotesValue.split('(');
           actorData.system.motes.personal.value = parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
-          actorData.system.motes.personal.max = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
-          actorData.system.motes.personal.committed = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+          if(personalSplitArray[0].split('/').length > 2) {
+            actorData.system.motes.personal.max = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
+            actorData.system.motes.personal.committed = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+          }
+          else {
+            actorData.system.motes.personal.max = parseInt(personalSplitArray[0].replace(/[^0-9]/g, ''));
+            actorData.system.motes.personal.committed = parseInt(personalSplitArray[1].replace(/[^0-9]/g, ''));
+          }
         }
         else {
           actorData.system.motes.personal.value = parseInt(personalMotesValue.replace(/[^0-9]/g, ''));
