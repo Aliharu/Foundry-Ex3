@@ -16,4 +16,13 @@ export class ExaltedCombatant extends Combatant {
             [`flags.acted`]: !this.flags.acted,
         });
     }
+
+    async updateInit(increase) {
+        if(increase) {
+            return this.update({initiative: this.initiative + 1});
+        }
+        else {
+            return this.update({initiative: this.initiative - 1});
+        }
+    }
 }

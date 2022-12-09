@@ -25,7 +25,7 @@ export class ExaltedCombatTracker extends CombatTracker {
             const bd = b.acted ? 1 : 0;
             return ad - bd;
         });
-        
+
         return data;
     }
     activateListeners(html) {
@@ -33,7 +33,8 @@ export class ExaltedCombatTracker extends CombatTracker {
         html
             .find(".toggle-turn-over")
             .on("click", this._toggleTurnOver.bind(this));
-    
+
+        html.find(".init-combatant-control").click(ev => this._initCombatantControl(ev));
     }
     async _toggleTurnOver(event) {
         event.preventDefault();
@@ -43,5 +44,22 @@ export class ExaltedCombatTracker extends CombatTracker {
         if (!id)
             return;
         await this.viewed.toggleTurnOver(id);
+    }
+
+    async _initCombatantControl(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const btn = event.currentTarget;
+        const li = btn.closest(".combatant");
+        const combat = this.viewed;
+        const c = combat.combatants.get(li.dataset.combatantId);
+
+        switch (btn.dataset.control) {
+            case "increaseInit":
+                return c.updateInit(true);
+
+            case "decreaseInit":
+                return c.updateInit(false);
+        }
     }
 }

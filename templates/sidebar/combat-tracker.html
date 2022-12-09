@@ -66,7 +66,17 @@
                 <h4>{{this.name}}</h4>
                 <div class="combatant-controls flexrow">
                     {{#if this.hasRolled}}
+                    {{#if this.owner}}
+                    <a class="combatant-control init-combatant-control" data-tooltip="Ex3.IncreaseInitiative" data-control="increaseInit" style="flex: 0 0 15px;">
+                        <i class="fas fa-caret-up"></i>
+                    </a>
+                    {{/if}}
                     <span class="initiative" style="flex: 0 0 1.5em">{{this.initiative}}</span>
+                    {{#if this.owner}}
+                    <a class="combatant-control init-combatant-control" data-tooltip="Ex3.DecreaseInitiative" data-control="decreaseInit">
+                        <i class="fas fa-caret-down"></i>
+                    </a>
+                    {{/if}}
                     {{else if this.owner}}
                     <a class="combatant-control" title="{{localize 'Ex3.JoinBattle'}}" data-control="rollInitiative">
                         <i class="fas fa-dice-d10"></i></a>
