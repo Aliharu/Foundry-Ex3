@@ -2,7 +2,7 @@
 
 Foundry system module for playing exalted third edition.
 
-[Link to wiki with some system features](https://github.com/Aliharu/Foundry-Ex3/wiki)
+[Link to the wiki with some of the system's features](https://github.com/Aliharu/Foundry-Ex3/wiki)
 
 ## Credits
 
