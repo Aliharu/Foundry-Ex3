@@ -2,13 +2,7 @@
 
 Foundry system module for playing exalted third edition.
 
-## Current system features
-
-Player Character sheet
-
-NPC Sheet
-
-Ability and Attack roller that should have options for most common bonuses.
+[Link to wiki with some system features](https://github.com/Aliharu/Foundry-Ex3/wiki)
 
 ## Credits
 
@@ -18,14 +12,9 @@ Code for dot/box counters taken from Foundry-V5 (credit to erizocosmico)
 
 Languages dialog code and effects code taken from the Foundry dnd5e system.
 
-## Die Roller
-
-Join Battle and attacking targets support modifying foundries initiative tracker.
-
 ## Icons
 
 https://game-icons.net/
-
 
 # Copyright
 Exalted character sheets and dice rollers are covered under the Paradox Dark Pack licence.
