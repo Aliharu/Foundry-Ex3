@@ -89,8 +89,14 @@
           {{/ifEquals}}
           {{#ifEquals system.details.exalt 'lunar'}}
           <div>
-            <label class="resource-label">{{localize "Ex3.Tell"}}</label>
-            <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
+            <div>
+              <label class="resource-label">{{localize "Ex3.Tell"}}</label>
+              <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
+            </div>
+            <div>
+              <label class="resource-label">{{localize "Ex3.SpiritShape"}}</label>
+              <input type="text" name="system.details.spiritshape" value="{{system.details.spiritshape}}" />
+            </div>
           </div>
           {{/ifEquals}}
           {{#ifEquals system.details.exalt 'sidereal'}}

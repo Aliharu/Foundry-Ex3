@@ -155,10 +155,10 @@ export default class TemplateImporter extends Application {
       charmData.system.ability = abilityRequirement[0].replace(' ', '');
       charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
 
-      if(abilityRequirement[0].replace(' ', '') === 'martial') {
+      if (abilityRequirement[0].replace(' ', '') === 'martial') {
         charmData.system.ability = 'martialarts';
       }
-      if(requirementArray.length === 1) {
+      if (requirementArray.length === 1) {
         var essenceRequirement = requirementArray[0].trim().split(' ');
         charmData.system.ability = 'evocation';
         charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
@@ -170,12 +170,12 @@ export default class TemplateImporter extends Application {
       index++;
       charmData.system.duration = textArray[index].replace('Duration: ', '');
       index++;
-      if(textArray[index].includes('Prerequisite Charms:')) {
+      if (textArray[index].includes('Prerequisite Charms:')) {
         charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
         index++;
       }
       var description = '';
-      while(textArray[index] && index !== textArray.length) {
+      while (textArray[index] && index !== textArray.length) {
         description += textArray[index];
         description += " ";
         index++;
@@ -210,13 +210,13 @@ export default class TemplateImporter extends Application {
           spellData.system.willpower = parseInt(num);
         }
       }
-  
+
       spellData.system.keywords = textArray[index].replace('Keywords: ', '');
       index++;
       spellData.system.duration = textArray[index].replace('Duration: ', '');
       index++;
       var description = '';
-      while(textArray[index] && index !== textArray.length) {
+      while (textArray[index] && index !== textArray.length) {
         description += textArray[index];
         description += " ";
         index++;
@@ -521,6 +521,7 @@ export default class TemplateImporter extends Application {
             "caste": "",
             "color": "#000000",
             "tell": "",
+            "spiritshape": "",
             "aura": "none",
             "ideal": "",
             "supernal": "",
@@ -772,18 +773,67 @@ export default class TemplateImporter extends Application {
     try {
       actorData.name = textArray[0].trim();
       var actorDescription = '';
-      while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:')) {
+      while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:') && !textArray[index].includes('Intimacies:')) {
         actorDescription += textArray[index];
         index++;
       }
       actorData.system.biography = actorDescription;
+      if (textArray[index].includes('Intimacies')) {
+        var intimacyStrength = 'defining';
+        while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:')) {
+          intimacyString += textArray[index];
+          index++;
+        }
+        var intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
+        for (const intimacy of intimaciesArray) {
+          if (intimacy) {
+            intimacyArray = intimacy.split(':');
+            var intimacyType = 'tie';
+            if (intimacyArray[0].includes('Principle')) {
+              intimacyType = 'principle';
+            }
+            else if (intimacyArray[0].includes('Tie')) {
+              intimacyType = 'tie';
+            }
+            if (intimacyArray.length > 1) {
+              intimacyStrength = intimacyArray[0].replace('Principle', '').replace('Tie', '').replace('“', '').replace('”', '').trim().toLowerCase();
+              itemData.push(
+                {
+                  type: 'intimacy',
+                  img: this.getImageUrl('intimacy'),
+                  name: intimacyArray[1].trim(),
+                  system: {
+                    description: intimacyArray[1].trim(),
+                    intimacytype: intimacyType,
+                    strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').replace('“', '').replace('”', '').trim().toLowerCase()
+                  }
+                }
+              );
+            }
+            else {
+              itemData.push(
+                {
+                  type: 'intimacy',
+                  img: this.getImageUrl('intimacy'),
+                  name: intimacyArray[0].trim(),
+                  system: {
+                    description: intimacyArray[0].trim(),
+                    intimacytype: intimacyType,
+                    strength: intimacyStrength
+                  }
+                }
+              );
+            }
+          }
+        }
+      }
       if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
         this._getExaltSpecificData(textArray, index, actorData, false);
         index++;
       }
       if (textArray[index].includes('Spirit Shape')) {
         var lunarArray = textArray[index].split(';');
-        actorData.system.qualities += `${lunarArray[0].trim()} \n`;
+        actorData.system.details.spiritshape = `${lunarArray[0].trim().replace('Spirit Shape:', '')}`;
         var tellArray = lunarArray[1].split(':')
         actorData.system.details.exalt = 'lunar';
         actorData.system.details.tell = tellArray[1].trim();
@@ -834,7 +884,7 @@ export default class TemplateImporter extends Application {
             else if (intimacyArray[0].includes('Tie')) {
               intimacyType = 'tie';
             }
-            if(intimacyArray.length > 1) {
+            if (intimacyArray.length > 1) {
               intimacyStrength = intimacyArray[0].replace('Principle', '').replace('Tie', '').replace('“', '').replace('”', '').trim().toLowerCase();
               itemData.push(
                 {
@@ -1118,316 +1168,334 @@ export default class TemplateImporter extends Application {
     var spellSystemData = {
       description: '',
     };
-    while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
-      if (textArray[index] && index !== (textArray.length - 1)) {
-        if (newItem) {
-          if (textArray[index].trim().toLowerCase() === 'merits') {
-            itemType = 'merit';
-            index++;
-            newItem = true;
+    try {
+      while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
+        if (textArray[index] && index !== (textArray.length - 1)) {
+          if (newItem) {
+            if (textArray[index].trim().toLowerCase() === 'merits') {
+              itemType = 'merit';
+              index++;
+              newItem = true;
+            }
+            if (textArray[index].trim().toLowerCase() === 'intimacies') {
+              itemType = 'intimacy';
+              index++;
+              newItem = true;
+            }
+            if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations')) {
+              if (textArray[index].trim().toLowerCase().includes('offensive')) {
+                charmSystemData.ability = 'offensive';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('defensive')) {
+                charmSystemData.ability = 'defensive';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('social')) {
+                charmSystemData.ability = 'social';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('mobility') || textArray[index].trim().toLowerCase().includes('movement')) {
+                charmSystemData.ability = 'mobility';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('evocations')) {
+                charmSystemData.ability = 'evocation';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('craft')) {
+                charmSystemData.ability = 'craft';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
+                charmSystemData.ability = 'war';
+              }
+              else {
+                charmSystemData.ability = 'other';
+              }
+              itemType = 'charm';
+              index++;
+              newItem = true;
+            }
+            if (textArray[index].trim().toLowerCase().includes('new merit:')) {
+              itemType = 'merit';
+              newItem = true;
+            }
+            if (textArray[index].trim().toLowerCase() === 'sorcery' || textArray[index].trim().toLowerCase() === 'necromancy') {
+              itemType = 'spell';
+              index++;
+              newItem = true;
+              charmSystemData.ability = 'occult';
+            }
+            if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
+              itemType = 'quality';
+              index++;
+              newItem = true;
+              itemDescription += textArray[index].trim();
+              itemDescription += '\n';
+            }
+            if (textArray[index].trim().toLowerCase() === 'escort') {
+              itemType = 'escort';
+              index++;
+              newItem = true;
+              actorData.system.settings.showescort = true;
+            }
+            if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits') {
+              itemType = 'specialability';
+              index++;
+              newItem = true;
+            }
           }
-          if (textArray[index].trim().toLowerCase() === 'intimacies') {
-            itemType = 'intimacy';
-            index++;
-            newItem = true;
+          if (index > textArray.length - 1) {
+            break;
           }
-          if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations')) {
-            if (textArray[index].trim().toLowerCase().includes('offensive')) {
-              charmSystemData.ability = 'offensive';
-            }
-            else if (textArray[index].trim().toLowerCase().includes('defensive')) {
-              charmSystemData.ability = 'defensive';
-            }
-            else if (textArray[index].trim().toLowerCase().includes('social')) {
-              charmSystemData.ability = 'social';
-            }
-            else if (textArray[index].trim().toLowerCase().includes('mobility') || textArray[index].trim().toLowerCase().includes('movement')) {
-              charmSystemData.ability = 'mobility';
-            }
-            else if (textArray[index].trim().toLowerCase().includes('evocations')) {
-              charmSystemData.ability = 'evocation';
-            }
-            else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
-              charmSystemData.ability = 'war';
-            }
-            else {
-              charmSystemData.ability = 'other';
-            }
-            itemType = 'charm';
+          if (textArray[index].trim() === '') {
             index++;
-            newItem = true;
           }
-          if (textArray[index].trim().toLowerCase() === 'sorcery') {
-            itemType = 'spell';
-            index++;
-            newItem = true;
-            charmSystemData.ability = 'occult';
+          if (index > textArray.length - 1) {
+            break;
           }
-          if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
-            itemType = 'quality';
-            index++;
-            newItem = true;
-            itemDescription += textArray[index].trim();
-            itemDescription += '\n';
+          if (newItem) {
+            if (itemType === 'intimacy') {
+              var intimacyArray = textArray[index].split(':');
+              var intimacyType = 'tie';
+              if (intimacyArray[0].includes('Principle')) {
+                intimacyType = 'principle';
+              }
+              else if (intimacyArray[0].includes('Tie')) {
+                intimacyType = 'tie';
+              }
+              itemData.push(
+                {
+                  type: itemType,
+                  img: this.getImageUrl(itemType),
+                  name: intimacyArray[1].trim(),
+                  system: {
+                    description: intimacyArray[1].trim(),
+                    intimacytype: intimacyType,
+                    strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
+                  }
+                }
+              );
+            }
+            //First line
+            else if (itemType === 'specialability' || itemType === 'merit') {
+              var titleArray = textArray[index].split(':');
+              itemName = titleArray[0].trim();
+              if (titleArray[0].toLowerCase().includes('new merit')) {
+                itemName = titleArray[1].trim();
+              }
+              else if (titleArray.length === 2) {
+                itemDescription += titleArray[1].trim();
+              }
+              if (itemType === 'merit' && itemName === 'Legendary Size') {
+                actorData.system.legendarysize = true;
+              }
+              newItem = false;
+            }
+            else if (itemType === 'quality' || itemType === 'escort') {
+              itemDescription += textArray[index].trim();
+              newItem = false;
+            }
+            else if (itemType === 'spell') {
+              if (textArray[index].toLowerCase().includes('shaping ritual')) {
+                var titleArray = textArray[index].split(':');
+                itemName = titleArray[0].trim();
+                if (titleArray.length === 2) {
+                  itemDescription += titleArray[1].trim();
+                }
+                itemType = 'initiation';
+              }
+              else if (!(/\d+(\.\d+)?sm/g).test(textArray[index]) && !textArray[index].includes('Ritual')) {
+                itemType = 'charm';
+              }
+              else {
+                itemType = 'spell';
+                var titleArray = (textArray[index] + textArray[index + 1]).split('(');
+                itemName = titleArray[0].trim();
+                var contentArray = titleArray[1].split('):');
+                var spellDataArray = contentArray[0].trim().split(';');
+                itemDescription += contentArray[1].trim();
+                var costArray = spellDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
+                for (let costString of costArray) {
+                  costString = costString.trim();
+                  if (costString.includes('sm')) {
+                    var num = costString.replace(/[^0-9]/g, '');
+                    spellSystemData.cost = parseInt(num);
+                  }
+                  if (costString.includes('wp')) {
+                    var num = costString.replace(/[^0-9]/g, '');
+                    spellSystemData.willpower = parseInt(num);
+                  }
+                }
+                index++;
+                spellSystemData.duration = spellDataArray[1]?.trim() || '';
+                spellSystemData.keywords = spellDataArray[2]?.trim() || '';
+              }
+              newItem = false;
+            }
+            if (itemType === 'charm') {
+              var titleArray = (textArray[index] + textArray[index + 1]).split('(');
+              itemName = titleArray[0].trim();
+              var contentArray = titleArray[1].split('):');
+              var charmDataArray = contentArray[0].trim().split(';');
+              itemDescription += contentArray[1].trim();
+              var costArray = charmDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
+              for (var i = 0; i < costArray.length; i++) {
+                var costString = costArray[i].trim();
+                if (costString.includes('m')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.motes = parseInt(num);
+                }
+                if (costString.includes('i')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.initiative = parseInt(num);
+                }
+                if (costString.includes('a')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.anima = parseInt(num);
+                }
+                if (costString.includes('wp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.willpower = parseInt(num);
+                }
+                if (costString.includes('hl')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.health = parseInt(num);
+                  if (costString.includes('ahl')) {
+                    charmSystemData.cost.healthtype = 'aggravated';
+                  }
+                  if (costString.includes('lhl')) {
+                    charmSystemData.cost.healthtype = 'lethal';
+                  }
+                }
+                if (costString.includes('Fire')) {
+                  charmSystemData.cost.aura = 'fire';
+                }
+                if (costString.includes('Earth')) {
+                  charmSystemData.cost.aura = 'earth';
+                }
+                if (costString.includes('Air')) {
+                  charmSystemData.cost.aura = 'air';
+                }
+                if (costString.includes('Water')) {
+                  charmSystemData.cost.aura = 'water';
+                }
+                if (costString.includes('Wood')) {
+                  charmSystemData.cost.aura = 'wood';
+                }
+                if (costString.includes('gxp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.goldxp = parseInt(num);
+                }
+                else if (costString.includes('sxp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.silverxp = parseInt(num);
+                }
+                else if (costString.includes('wxp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.whitexp = parseInt(num);
+                }
+                else if (costString.includes('xp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.xp = parseInt(num);
+                }
+              }
+              charmSystemData.type = charmDataArray[1]?.trim() || '';
+              charmSystemData.duration = charmDataArray[2]?.trim() || '';
+              if (charmSystemData.type === 'Permanent') {
+                charmSystemData.duration = 'Permanent';
+              }
+              else {
+                charmSystemData.duration = charmDataArray[2]?.trim() || '';
+              }
+              charmSystemData.keywords = charmDataArray[3]?.trim() || '';
+              index++;
+              newItem = false;
+            }
           }
-          if (textArray[index].trim().toLowerCase() === 'escort') {
-            itemType = 'escort';
-            index++;
-            newItem = true;
-            actorData.system.settings.showescort = true;
-          }
-          if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits') {
-            itemType = 'specialability';
-            index++;
-            newItem = true;
+          else {
+            itemDescription += ` ${textArray[index].trim()}`;
           }
         }
-        if (index > textArray.length - 1) {
-          break;
-        }
-        if (textArray[index].trim() === '') {
-          index++;
-        }
-        if (index > textArray.length - 1) {
-          break;
-        }
-        if (newItem) {
-          if (itemType === 'intimacy') {
-            var intimacyArray = textArray[index].split(':');
-            var intimacyType = 'tie';
-            if (intimacyArray[0].includes('Principle')) {
-              intimacyType = 'principle';
-            }
-            else if (intimacyArray[0].includes('Tie')) {
-              intimacyType = 'tie';
-            }
+        else {
+          if (index === textArray.length - 1) {
+            itemDescription += ` ${textArray[index].trim()}`;
+          }
+          newItem = true;
+          // Create Items
+          if (itemType === 'specialability' || itemType === 'merit' || itemType === 'initiation') {
             itemData.push(
               {
                 type: itemType,
                 img: this.getImageUrl(itemType),
-                name: intimacyArray[1].trim(),
+                name: itemName,
                 system: {
-                  description: intimacyArray[1].trim(),
-                  intimacytype: intimacyType,
-                  strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
+                  description: itemDescription.trim(),
                 }
               }
             );
-          }
-          //First line
-          else if (itemType === 'specialability' || itemType === 'merit') {
-            var titleArray = textArray[index].split(':');
-            itemName = titleArray[0].trim();
-            if (titleArray.length === 2) {
-              itemDescription += titleArray[1].trim();
+            if (itemType === 'initiation') {
+              itemType = 'spell';
             }
-            if (itemType === 'merit' && itemName === 'Legendary Size') {
-              actorData.system.legendarysize = true;
-            }
-            newItem = false;
           }
-          else if (itemType === 'quality' || itemType === 'escort') {
-            itemDescription += textArray[index].trim();
-            newItem = false;
+          else if (itemType === 'charm') {
+            charmSystemData.description = itemDescription.trim();
+            itemData.push(
+              {
+                type: itemType,
+                img: this.getImageUrl(itemType),
+                name: itemName,
+                system: charmSystemData,
+              }
+            );
+            if (charmSystemData.ability === 'occult') {
+              itemType = 'spell';
+            }
           }
           else if (itemType === 'spell') {
-            if (textArray[index].toLowerCase().includes('shaping ritual')) {
-              var titleArray = textArray[index].split(':');
-              itemName = titleArray[0].trim();
-              if (titleArray.length === 2) {
-                itemDescription += titleArray[1].trim();
+            spellSystemData.description = itemDescription.trim();
+            itemData.push(
+              {
+                type: itemType,
+                img: this.getImageUrl(itemType),
+                name: itemName,
+                system: spellSystemData,
               }
-              itemType = 'initiation';
-            }
-            else if (!(/\d+(\.\d+)?sm/g).test(textArray[index]) && !textArray[index].includes('Ritual')) {
-              itemType = 'charm';
-            }
-            else {
-              itemType = 'spell';
-              var titleArray = (textArray[index] + textArray[index + 1]).split('(');
-              itemName = titleArray[0].trim();
-              var contentArray = titleArray[1].split('):');
-              var spellDataArray = contentArray[0].trim().split(';');
-              itemDescription += contentArray[1].trim();
-              var costArray = spellDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
-              for (let costString of costArray) {
-                costString = costString.trim();
-                if (costString.includes('sm')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  spellSystemData.cost = parseInt(num);
-                }
-                if (costString.includes('wp')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  spellSystemData.willpower = parseInt(num);
-                }
-              }
-              index++;
-              spellSystemData.duration = spellDataArray[1]?.trim() || '';
-              spellSystemData.keywords = spellDataArray[2]?.trim() || '';
-            }
-            newItem = false;
+            );
           }
-          if (itemType === 'charm') {
-            var titleArray = (textArray[index] + textArray[index + 1]).split('(');
-            itemName = titleArray[0].trim();
-            var contentArray = titleArray[1].split('):');
-            var charmDataArray = contentArray[0].trim().split(';');
-            itemDescription += contentArray[1].trim();
-            var costArray = charmDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
-            for (var i = 0; i < costArray.length; i++) {
-              var costString = costArray[i].trim();
-              if (costString.includes('m')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.motes = parseInt(num);
-              }
-              if (costString.includes('i')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.initiative = parseInt(num);
-              }
-              if (costString.includes('a')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.anima = parseInt(num);
-              }
-              if (costString.includes('wp')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.willpower = parseInt(num);
-              }
-              if (costString.includes('hl')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.health = parseInt(num);
-                if (costString.includes('ahl')) {
-                  charmSystemData.cost.healthtype = 'aggravated';
-                }
-                if (costString.includes('lhl')) {
-                  charmSystemData.cost.healthtype = 'lethal';
-                }
-              }
-              if (costString.includes('Fire')) {
-                charmSystemData.cost.aura = 'fire';
-              }
-              if (costString.includes('Earth')) {
-                charmSystemData.cost.aura = 'earth';
-              }
-              if (costString.includes('Air')) {
-                charmSystemData.cost.aura = 'air';
-              }
-              if (costString.includes('Water')) {
-                charmSystemData.cost.aura = 'water';
-              }
-              if (costString.includes('Wood')) {
-                charmSystemData.cost.aura = 'wood';
-              }
-              if (costString.includes('gxp')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.goldxp = parseInt(num);
-              }
-              else if (costString.includes('sxp')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.silverxp = parseInt(num);
-              }
-              else if (costString.includes('wxp')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.whitexp = parseInt(num);
-              }
-              else if (costString.includes('xp')) {
-                var num = costString.replace(/[^0-9]/g, '');
-                charmSystemData.cost.xp = parseInt(num);
-              }
-            }
-            charmSystemData.type = charmDataArray[1]?.trim() || '';
-            charmSystemData.duration = charmDataArray[2]?.trim() || '';
-            if (charmSystemData.type === 'Permanent') {
-              charmSystemData.duration = 'Permanent';
-            }
-            else {
-              charmSystemData.duration = charmDataArray[2]?.trim() || '';
-            }
-            charmSystemData.keywords = charmDataArray[3]?.trim() || '';
-            index++;
-            newItem = false;
+          else if (itemType === 'quality') {
+            actorData.system.qualities += itemDescription.trim();
           }
+          else if (itemType === 'escort') {
+            actorData.system.escort += itemDescription.trim();
+          }
+          charmSystemData = {
+            description: '',
+            ability: charmSystemData.ability,
+            cost: {
+              "motes": 0,
+              "initiative": 0,
+              "anima": 0,
+              "willpower": 0,
+              "aura": "",
+              "health": 0,
+              "healthtype": "bashing",
+              "silverxp": 0,
+              "goldxp": 0,
+              "whitexp": 0
+            }
+          };
+          spellSystemData = {
+            description: '',
+          };
+          itemName = '';
+          itemDescription = '';
         }
-        else {
-          itemDescription += ` ${textArray[index].trim()}`;
-        }
+        index++;
       }
-      else {
-        if (index === textArray.length - 1) {
-          itemDescription += ` ${textArray[index].trim()}`;
-        }
-        newItem = true;
-        // Create Items
-        if (itemType === 'specialability' || itemType === 'merit' || itemType === 'initiation') {
-          itemData.push(
-            {
-              type: itemType,
-              img: this.getImageUrl(itemType),
-              name: itemName,
-              system: {
-                description: itemDescription.trim(),
-              }
-            }
-          );
-          if (itemType === 'initiation') {
-            itemType = 'spell';
-          }
-        }
-        else if (itemType === 'charm') {
-          charmSystemData.description = itemDescription.trim();
-          itemData.push(
-            {
-              type: itemType,
-              img: this.getImageUrl(itemType),
-              name: itemName,
-              system: charmSystemData,
-            }
-          );
-          if (charmSystemData.ability === 'occult') {
-            itemType = 'spell';
-          }
-        }
-        else if (itemType === 'spell') {
-          spellSystemData.description = itemDescription.trim();
-          itemData.push(
-            {
-              type: itemType,
-              img: this.getImageUrl(itemType),
-              name: itemName,
-              system: spellSystemData,
-            }
-          );
-        }
-        else if (itemType === 'quality') {
-          actorData.system.qualities += itemDescription.trim();
-        }
-        else if (itemType === 'escort') {
-          actorData.system.escort += itemDescription.trim();
-        }
-        charmSystemData = {
-          description: '',
-          ability: charmSystemData.ability,
-          cost: {
-            "motes": 0,
-            "initiative": 0,
-            "anima": 0,
-            "willpower": 0,
-            "aura": "",
-            "health": 0,
-            "healthtype": "bashing",
-            "silverxp": 0,
-            "goldxp": 0,
-            "whitexp": 0
-          }
-        };
-        spellSystemData = {
-          description: '',
-        };
-        itemName = '';
-        itemDescription = '';
-      }
-      index++;
+      return itemData;
+    } catch (error) {
+      console.log(error);
+      console.log(textArray);
+      console.log(index);
+      this.error = textArray[index];
+      this.showError = true;
     }
-    return itemData;
   }
 
   async createAdversary(html) {
@@ -1435,6 +1503,7 @@ export default class TemplateImporter extends Application {
     const itemData = [
     ];
     let index = 1;
+    var readingItems = false;
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     try {
       actorData.name = textArray[0].trim();
@@ -1488,6 +1557,14 @@ export default class TemplateImporter extends Application {
         this._getExaltSpecificData(textArray, index, actorData, false);
         index++;
       }
+      if (textArray[index].includes('Spirit Shape')) {
+        var lunarArray = textArray[index].split(';');
+        actorData.system.details.spiritshape = `${lunarArray[0].trim().replace('Spirit Shape:', '')}`;
+        var tellArray = lunarArray[1].split(':')
+        actorData.system.details.exalt = 'lunar';
+        actorData.system.details.tell = tellArray[1].trim();
+        index++;
+      }
       var attributeString = textArray[index].replace('Attributes:', '');
       index++
       while (!textArray[index].includes("Essence") && !textArray[index].includes("Willpower")) {
@@ -1497,17 +1574,17 @@ export default class TemplateImporter extends Application {
       }
       var attributeArray = attributeString.split(/,|;/);
       for (const attribute of attributeArray) {
-        if(attribute) {
+        if (attribute) {
           var attributeSpecificArray = attribute.trim().split(' ');
           var trimmedName = attributeSpecificArray[0].trim().toLowerCase();
           var value = parseInt(attributeSpecificArray[1].replace(/[^0-9]/g, ''));
-          if(value > 5) {
+          if (value > 5) {
             actorData.system.settings.usetenattributes = true;
           }
           actorData.system.attributes[trimmedName].value = value;
         }
       }
-      if(textArray[index].includes("Essence")) {
+      if (textArray[index].includes("Essence")) {
         actorData.system.essence.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
         index++;
       }
@@ -1516,12 +1593,12 @@ export default class TemplateImporter extends Application {
       index++;
       //Join Battle dice should be auto calculated so itsn ot needed
       index++;
-      if(textArray[index].toLowerCase().includes('personal')) {
+      if (textArray[index].toLowerCase().includes('personal')) {
         var personalMotesValue = textArray[index].split(':')[1];
         if (personalMotesValue.toLowerCase().includes('committed')) {
           var personalSplitArray = personalMotesValue.split('(');
           actorData.system.motes.personal.value = parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
-          if(personalSplitArray[0].split('/').length > 2) {
+          if (personalSplitArray[0].split('/').length > 2) {
             actorData.system.motes.personal.max = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
             actorData.system.motes.personal.committed = parseInt(personalSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(personalSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
           }
@@ -1541,8 +1618,14 @@ export default class TemplateImporter extends Application {
         if (peripheralMotesValue.toLowerCase().includes('committed')) {
           var peripheralSplitArray = peripheralMotesValue.split('(');
           actorData.system.motes.peripheral.value = parseInt(peripheralSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
-          actorData.system.motes.peripheral.max = parseInt(peripheralSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
-          actorData.system.motes.peripheral.committed = parseInt(peripheralSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(peripheralSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+          if (peripheralSplitArray[0].split('/').length > 2) {
+            actorData.system.motes.peripheral.max = parseInt(peripheralSplitArray[0].split('/')[1].replace(/[^0-9]/g, ''));
+            actorData.system.motes.peripheral.committed = parseInt(peripheralSplitArray[0].split('/')[1].replace(/[^0-9]/g, '')) - parseInt(peripheralSplitArray[0].split('/')[0].replace(/[^0-9]/g, ''));
+          }
+          else {
+            actorData.system.motes.peripheral.max = parseInt(peripheralSplitArray[0].replace(/[^0-9]/g, ''));
+            actorData.system.motes.peripheral.committed = parseInt(peripheralSplitArray[1].replace(/[^0-9]/g, ''));
+          }
         }
         else {
           actorData.system.motes.peripheral.value = parseInt(peripheralMotesValue.replace(/[^0-9]/g, ''));
@@ -1562,7 +1645,7 @@ export default class TemplateImporter extends Application {
       abilityString = abilityString.replace(/,(?=[^()]*\))/g, '');
       var abilityArray = abilityString.split(/,|;/);
       for (let ability of abilityArray) {
-        if(ability) {
+        if (ability) {
           var createSpecialty = false;
           var specialtyText = ''
           if (ability.includes('(')) {
@@ -1570,7 +1653,11 @@ export default class TemplateImporter extends Application {
             specialtyText = ability.match(/\(([^)]+)\)/)[1];
             ability = ability.replace(/\([^()]*\)/g, "").replace("  ", " ");
           }
-          if(ability.toLowerCase().includes('martial arts')) {
+          if (ability.toLowerCase().includes('craft')) {
+            trimmedName = 'craft';
+            var value = parseInt(ability.replace(/[^0-9]/g, ''));
+          }
+          else if (ability.toLowerCase().includes('martial arts')) {
             trimmedName = 'martialarts';
             var value = parseInt(ability.replace(/[^0-9]/g, ''));
           }
@@ -1617,15 +1704,15 @@ export default class TemplateImporter extends Application {
           "local tongue",
         ]
         for (let merit of meritArray) {
-          if(merit) {
+          if (merit) {
             var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
             var meritName = merit.match(/[^0-9+]+/g)[0];
             var lowerCaseMerit = merit.toLowerCase();
-            if(lowerCaseMerit.includes('language')) {
+            if (lowerCaseMerit.includes('language')) {
               var newLanguageArray = [];
-              for(let language of languages){
-                if(lowerCaseMerit.includes(language)){
-                  newLanguageArray.push(language.replace(/ /g,''));
+              for (let language of languages) {
+                if (lowerCaseMerit.includes(language)) {
+                  newLanguageArray.push(language.replace(/ /g, ''));
                 }
               }
               actorData.system.traits.languages.value = newLanguageArray;
@@ -1717,8 +1804,8 @@ export default class TemplateImporter extends Application {
           var armor = combatStat.match(/\(([^)]+)\)/)[1];
           armorStat = parseInt(armor.replace(/[^0-9]/g, ''));
           if (combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness' || combatName.toLowerCase().trim() === 'evasion') {
-            if(combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness') {
-              if(armor.includes('/')) {
+            if (combatName.toLowerCase().trim() === 'soak' || combatName.toLowerCase().trim() === 'hardness') {
+              if (armor.includes('/')) {
                 var armorSplit = armor.split('/');
                 armorValue = parseInt(armorSplit[0].replace(/[^0-9]/g, ''));
                 armorHardness = parseInt(armorSplit[1].replace(/[^0-9]/g, ''));
@@ -1764,7 +1851,9 @@ export default class TemplateImporter extends Application {
           }
         );
         actorData.system.armoredsoak.value = armorValue;
-        actorData.system.naturalsoak.value = actorData.system.naturalsoak.value - armorValue;
+        if (armorValue) {
+          actorData.system.naturalsoak.value = actorData.system.naturalsoak.value - armorValue;
+        }
       }
       if (textArray[index].includes('Social')) {
         var socialArray = textArray[index].replace('Social:', '').split(',');
@@ -1779,7 +1868,9 @@ export default class TemplateImporter extends Application {
         }
         index++;
       }
+      readingItems = true;
       itemData.push(...this._getItemData(textArray, index, actorData));
+      readingItems = false;
       actorData.items = itemData;
       await Actor.create(actorData);
     }
@@ -1787,7 +1878,9 @@ export default class TemplateImporter extends Application {
       console.log(error);
       console.log(textArray);
       console.log(index);
-      this.error = textArray[index];
+      if(!readingItems) {
+        this.error = textArray[index];
+      }
       this.showError = true;
     }
   }
