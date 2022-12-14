@@ -1781,6 +1781,8 @@ export default class TemplateImporter extends Application {
               witheringaccuracy: accuracy,
               witheringdamage: damage,
               overwhelming: overwhelming,
+              ability: "none",
+              attribute: "none",
             }
           }
         );

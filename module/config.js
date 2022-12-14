@@ -84,4 +84,22 @@ exaltedthird.statusEffects = [
         label: 'Ex3.Surprised',
         name: 'surprised'
     },
+    {
+        icon: 'icons/svg/blood.svg',
+        id: 'bleeding',
+        label: 'EFFECT.StatusBleeding',
+        name: 'bleeding'
+    },
+    {
+        icon: 'icons/svg/poison.svg',
+        id: 'poisoned',
+        label: 'EFFECT.StatusPoison',
+        name: 'poisoned'
+    },
+    {
+        icon: 'icons/svg/fire.svg',
+        id: 'burning',
+        label: 'EFFECT.StatusBurning',
+        name: 'burning'
+    },
 ]

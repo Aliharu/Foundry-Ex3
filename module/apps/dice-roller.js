@@ -307,6 +307,12 @@ export class RollForm extends FormApplication {
                         this.object.defense -= 2;
                     }
                 }
+                if(this.object.defense < 0) {
+                    this.object.defense = 0;
+                }
+                if(this.object.soak < 0) {
+                    this.object.soak = 0;
+                }
             }
         }
     }
@@ -1368,12 +1374,8 @@ export class RollForm extends FormApplication {
                     const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
                     if (onslaught) {
                         let changes = duplicate(onslaught.changes);
-                        if (this.object.target.actor.system.evasion.value > 0) {
-                            changes[0].value = changes[0].value - 1;
-                        }
-                        if (this.object.target.actor.system.parry.value > 0) {
-                            changes[1].value = changes[1].value - 1;
-                        }
+                        changes[0].value = changes[0].value - 1;
+                        changes[1].value = changes[1].value - 1;
                         onslaught.update({ changes });
                     }
                     else {
@@ -1382,6 +1384,9 @@ export class RollForm extends FormApplication {
                             icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                             origin: this.object.target.actor.uuid,
                             disabled: false,
+                            duration: {
+                                rounds: 10,
+                            },
                             "changes": [
                                 {
                                     "key": "data.evasion.value",
@@ -1804,7 +1809,7 @@ export class RollForm extends FormApplication {
         var spentPeripheral = 0;
         var totalMotes = this.object.cost.motes + this.object.cost.muteMotes;
         if (actorData.system.settings.charmmotepool === 'personal') {
-            var remainingPersonal = (actorData.system.motes.personal.value - this.actor.system.motes.personal.committed) - totalMotes;
+            var remainingPersonal = actorData.system.motes.personal.value - totalMotes;
             if (remainingPersonal < 0) {
                 spentPersonal = totalMotes + remainingPersonal;
                 spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
@@ -1814,7 +1819,7 @@ export class RollForm extends FormApplication {
             }
         }
         else {
-            var remainingPeripheral = (actorData.system.motes.peripheral.value - this.actor.system.motes.peripheral.committed) - totalMotes;
+            var remainingPeripheral = actorData.system.motes.peripheral.value - totalMotes;
             if (remainingPeripheral < 0) {
                 spentPeripheral = totalMotes + remainingPeripheral;
                 spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
@@ -1823,8 +1828,8 @@ export class RollForm extends FormApplication {
                 spentPeripheral = totalMotes;
             }
         }
-        actorData.system.motes.peripheral.value = Math.max(0 + actorData.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
-        actorData.system.motes.personal.value = Math.max(0 + actorData.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
+        actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+        actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
 
         if ((spentPeripheral - this.object.cost.muteMotes) > 4) {
             for (var i = 0; i < Math.floor((spentPeripheral - this.object.cost.muteMotes) / 5); i++) {

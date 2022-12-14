@@ -1388,7 +1388,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           var spentPersonal = 0;
           var spentPeripheral = 0;
           if (actorData.system.settings.charmmotepool === 'personal') {
-            var remainingPersonal = (actorData.system.motes.personal.value - this.actor.system.motes.personal.committed) - spendingMotes;
+            var remainingPersonal = actorData.system.motes.personal.value - spendingMotes;
             if (remainingPersonal < 0) {
               spentPersonal = spendingMotes + remainingPersonal;
               spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
@@ -1401,7 +1401,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             }
           }
           else {
-            var remainingPeripheral = (actorData.system.motes.peripheral.value - this.actor.system.motes.peripheral.committed) - spendingMotes;
+            var remainingPeripheral = actorData.system.motes.peripheral.value - spendingMotes;
             if (remainingPeripheral < 0) {
               spentPeripheral = spendingMotes + remainingPeripheral;
               spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
@@ -1413,8 +1413,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               actorData.system.motes.peripheral.committed += item.system.cost.commitmotes;
             }
           }
-          actorData.system.motes.peripheral.value = Math.max(0 + this.actor.system.motes.peripheral.committed, actorData.system.motes.peripheral.value - spentPeripheral);
-          actorData.system.motes.personal.value = Math.max(0 + this.actor.system.motes.personal.committed, actorData.system.motes.personal.value - spentPersonal);
+          actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+          actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
 
           if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
             for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {

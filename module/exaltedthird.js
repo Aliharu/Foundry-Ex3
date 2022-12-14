@@ -157,12 +157,8 @@ function handleSocket({type, id, data}) {
     const onslaught = targetedActor.effects.find(i => i.label == "Onslaught");
     if (onslaught) {
         let changes = duplicate(onslaught.changes);
-        if (targetedActor.system.evasion.value > 0) {
-            changes[0].value = changes[0].value - 1;
-        }
-        if (targetedActor.system.parry.value > 0) {
-            changes[1].value = changes[1].value - 1;
-        }
+        changes[0].value = changes[0].value - 1;
+        changes[1].value = changes[1].value - 1;
         onslaught.update({ changes });
     }
     else {
@@ -171,7 +167,10 @@ function handleSocket({type, id, data}) {
             icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
             origin: targetedActor.uuid,
             disabled: false,
-            "changes": [
+            duration: {
+              rounds: 10,
+            },
+            changes: [
                 {
                     "key": "data.evasion.value",
                     "value": -1,
@@ -251,7 +250,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       combatant.actor.update(actorData);
     }
   }
-  if (update && (update.round || update.turn)) {
+  if (update && (update.round !== undefined || update.turn !== undefined)) {
     if (combat.current.combatantId) {
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
       const onslaught = currentCombatant.actor.effects.find(i => i.label == "Onslaught");
