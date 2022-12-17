@@ -351,7 +351,7 @@
       </div>
       <ol class="items-list">
         {{#each system.savedRolls as |item id|}}
-        <li class="item flexrow" data-item-id="{{id}}">
+        <li class="item flexrow" data-item-id="{{id}}" data-saved-roll-id="{{id}}">
           <h4 class="item-name">{{item.name}}</h4>
           <div class="resource-table-value resource-value-static">
             {{item.rollType}}
@@ -396,7 +396,8 @@
           <div class="resource-content flexrow flex-center flex-between">
             <div>
               <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.spent}}
-                Spent)</label>
+                Spent)<i
+                class="fas fa-info-circle splat-xp cursor-pointer"></i></label>
               <div class="resource-content flexrow flex-center flex-between">
                 <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
                   placeholder="Remaining" />

@@ -27,6 +27,10 @@
         </div>
     </div>
 </div>
+<div class="resource-content flexrow flex-center flex-between mt-1">
+    <label class="resource-label">{{localize "Ex3.Combat"}} <i
+            class="fas fa-info-circle show-combat cursor-pointer"></i></label>
+</div>
 <div class="grid grid-2col flex-group-center">
     <button class="roll-button rollAbility"><i class="fas fa-dice-d10"></i>{{localize "Ex3.Ability"}}</button>
     <button class="roll-button join-battle"><i class="fas fa-bolt"></i>{{localize "Ex3.JoinBattle"}}</button>
@@ -63,12 +67,16 @@
             <div class="resource-content flexrow flex-center flex-between">
                 <div class="resource-content flexrow flex-center flex-between">
                     <div>
-                        <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}</label>
+                        <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}<i
+                                class="fas fa-calculator calculate-armored-soak cursor-pointer"
+                                title="Auto Set Armored Soak" style="margin-left:3px;"></i></label>
                         <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
                             data-dtype="Number" />
                     </div>
                     <div>
-                        <label class="resource-label">{{localize "Ex3.NaturalSoak"}}</label>
+                        <label class="resource-label">{{localize "Ex3.NaturalSoak"}}<i
+                                class="fas fa-calculator calculate-natural-soak cursor-pointer"
+                                title="Auto Set Natural Soak" style="margin-left:3px;"></i></label>
                         <input type="number" name="system.naturalsoak.value" value="{{system.naturalsoak.value}}"
                             data-dtype="Number" />
                     </div>
@@ -76,7 +84,9 @@
             </div>
             <div class="resource-content flexrow flex-center flex-between">
                 <div>
-                    <label class="resource-label">{{localize "Ex3.TotalSoak"}}</label>
+                    <label class="resource-label">{{localize "Ex3.TotalSoak"}}<i
+                            class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
+                            style="margin-left:3px;"></i></label>
                     <input type="number" name="system.soak.value" value="{{system.soak.value}}" data-dtype="Number" />
                 </div>
                 <div>
@@ -110,13 +120,14 @@
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Drill"}}</label>
-                <div class="charname"> <select name="system.drill.value" value="{{system.drill.value}}" data-type="String">
-                    {{#select system.drill.value}}
-                    <option value="0">{{localize "Ex3.Poor"}}</option>
-                    <option value="1">{{localize "Ex3.Average"}}</option>
-                    <option value="2">{{localize "Ex3.Elite"}}</option>
-                    {{/select}}
-                </select></div>
+                <div class="charname"> <select name="system.drill.value" value="{{system.drill.value}}"
+                        data-type="String">
+                        {{#select system.drill.value}}
+                        <option value="0">{{localize "Ex3.Poor"}}</option>
+                        <option value="1">{{localize "Ex3.Average"}}</option>
+                        <option value="2">{{localize "Ex3.Elite"}}</option>
+                        {{/select}}
+                    </select></div>
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Might"}}</label>
@@ -124,7 +135,7 @@
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.RoutCheck"}} <i
-                    class="fas fa-info-circle rout-modifiers cursor-pointer"></i></label>
+                        class="fas fa-info-circle rout-modifiers cursor-pointer"></i></label>
                 <button class="roll-button rout-check"><i class="fas fa-swords"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>

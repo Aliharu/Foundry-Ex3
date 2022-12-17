@@ -158,6 +158,7 @@
     "Ex3.Overwhelming": "Overwhelming",
     "Ex3.PostSoakDamage": "Post Soak Damage",
     "Ex3.ThreshholdToDamage": "Threshhold To Damage",
+    "Ex3.ResetInitiative": "Reset Initiative",
     "Ex3.Ranged": "Ranged",
     "Ex3.Armor": "Armor",
     "Ex3.Penalty": "Penalty",
@@ -412,6 +413,7 @@
     "Ex3.ShowEscort": "Show Escort",
     "Ex3.ShowZeroValues": "Show Zero Values",
     "Ex3.UseTenForAttributes": "Use 10 for Attribute Cap (Character Only)",
+    "Ex3.DefaultRollStunts": "Default tier one stunt bonus on rolls",
     "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
 
     "Ex3.FeatsofStrength": "Feats of Strength",
@@ -440,5 +442,6 @@
     "Ex3.Sword": "Sword",
     "Ex3.ThrownDagger": "Thrown Dagger",
     "Ex3.IncreaseInitiative": "Increase Initiative",
-    "Ex3.DecreaseInitiative": "Decrease Initiative"
+    "Ex3.DecreaseInitiative": "Decrease Initiative",
+    "Ex3.Dematerialized": "Dematerialized"
 }

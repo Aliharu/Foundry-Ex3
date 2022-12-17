@@ -267,7 +267,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
 
 Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-  Hooks.on("hotbarDrop", (bar, data, slot) => createexaltedthirdMacro(data, slot));
+  Hooks.on("hotbarDrop", (bar, data, slot) => creatExaltedthirdMacro(data, slot));
 
   $("#chat-log").on("click", " .item-row", ev => {
     const li = $(ev.currentTarget).next();
@@ -287,7 +287,7 @@ Hooks.once("ready", async function () {
  * @param {number} slot     The hotbar slot to use
  * @returns {Promise}
  */
-async function createexaltedthirdMacro(data, slot) {
+async function creatExaltedthirdMacro(data, slot) {
   if (data.type !== "Item") return;
   if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
   const item = data.data;

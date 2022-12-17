@@ -102,4 +102,10 @@ exaltedthird.statusEffects = [
         label: 'EFFECT.StatusBurning',
         name: 'burning'
     },
+    {
+        icon: 'icons/svg/invisible.svg',
+        id: 'dematerialized',
+        label: 'Ex3.Dematerialized',
+        name: 'dematerialized'
+    },
 ]

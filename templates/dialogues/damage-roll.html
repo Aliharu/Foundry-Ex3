@@ -6,7 +6,7 @@
         <div class="resource grid grid-2col flex-center">
             {{#ifEquals data.rollType 'damage'}}
             <label class="resource-label">{{localize "Ex3.AttackType"}}</label>
-            <select name="object.attackType" value="{{data.attackType}}" data-type="String">
+            <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
                 {{#select data.attackType}}
                 <option value="decisive">{{localize "Ex3.Decisive"}}</option>
                 <option value="withering">{{localize "Ex3.Withering"}}</option>
@@ -123,13 +123,18 @@
                     <option value="aggravated">{{localize "Ex3.Aggravated"}}</option>
                     {{/select}}
                 </select>
-                {{#ifNotEquals data.rollType 'withering'}}
+                {{#ifEquals data.attackType 'decisive'}}
                 <label class="resource-label">{{localize "Ex3.ThreshholdToDamage"}} </label>
                 <div>
                     <input type="checkbox" name="object.damage.threshholdToDamage"
                         value="{{data.damage.threshholdToDamage}}" {{checked data.damage.threshholdToDamage}}>
                 </div>
-                {{/ifNotEquals}}
+                <label class="resource-label">{{localize "Ex3.ResetInitiative"}} </label>
+                <div>
+                    <input type="checkbox" name="object.damage.resetInit"
+                        value="{{data.damage.resetInit}}" {{checked data.damage.resetInit}}>
+                </div>
+                {{/ifEquals}}
             </div>
 
         </div>

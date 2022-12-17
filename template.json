@@ -135,6 +135,7 @@
           "showescort": false,
           "showzerovalues": true,
           "usetenattributes": false,
+          "rollStunts": false,
           "defenseStunts": false
         },
         "ship": {

@@ -379,17 +379,42 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }).render(true);
     });
 
+    // html.find('.splat-xp').mousedown(ev => {
+    //   this.showDialogue('splat-xp');
+    // });
+
     html.find('.show-weapon-tags').mousedown(ev => {
-      this.showTags('weapons');
+      this.showDialogue('weapons');
     });
 
     html.find('.show-armor-tags').mousedown(ev => {
-      this.showTags('armor');
+      this.showDialogue('armor');
     });
 
     html.find('#calculate-health').mousedown(ev => {
       this.calculateHealth();
     });
+
+    html.find('.rout-modifiers').mousedown(async ev => {
+      this.showDialogue('rout');
+    });
+
+    html.find('.show-social').mousedown(ev => {
+      this.showDialogue('social');
+    });
+
+    html.find('.show-combat').mousedown(ev => {
+      this.showDialogue('combat');
+    });
+
+    html.find('.show-advancement').mousedown(ev => {
+      this.showDialogue('advancement');
+    });
+
+    html.find('.show-craft').mousedown(ev => {
+      this.showDialogue('craft');
+    });
+
 
     html.find('.calculate-peripheral-motes').mousedown(ev => {
       this.calculateMotes('peripheral');
@@ -397,6 +422,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.calculate-personal-motes').mousedown(ev => {
       this.calculateMotes('personal');
+    });
+
+    html.find('.calculate-soak').mousedown(ev => {
+      this.calculateDerivedStats('soak');
+    });
+
+    html.find('.calculate-natural-soak').mousedown(ev => {
+      this.calculateDerivedStats('natural-soak');
+    });
+
+    html.find('.calculate-armored-soak').mousedown(ev => {
+      this.calculateDerivedStats('armored-soak');
     });
 
     html.find('.calculate-parry').mousedown(ev => {
@@ -539,43 +576,33 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
 
-    html.find('.rout-modifiers').mousedown(async ev => {
-      const template = "systems/exaltedthird/templates/dialogues/rout-modifiers.html";
-      const html = await renderTemplate(template);
-      new Dialog({
-        title: `Craft`,
-        content: html,
-        buttons: {
-          cancel: { label: "Close" }
-        }
-      }).render(true);
-    });
-
-    html.find('.show-advancement').mousedown(ev => {
-      this.showAdvancement();
-    });
-
-    html.find('.show-craft').mousedown(ev => {
-      this.showCraft();
-    });
-
     html.find('#import-stuff').mousedown(ev => {
       new Importer().render(true);
     });
 
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'withering', attribute: item.system.attribute, ability: item.system.ability, accuracy: item.system.witheringaccuracy, damage: item.system.witheringdamage, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic, attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, {
+        rollType: 'withering', attribute: item.system.attribute, ability: item.system.ability, accuracy: item.system.witheringaccuracy,
+        damage: item.system.witheringdamage, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic,
+        attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect
+      }).render(true);
     });
 
     html.find('.roll-decisive').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'decisive', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0, damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic, attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, {
+        rollType: 'decisive', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0,
+        damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic, attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect
+      }).render(true);
     });
 
     html.find('.roll-gambit').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'gambit', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0, damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, {
+        rollType: 'gambit', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0,
+        damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic
+      }).render(true);
     });
 
     html.find('#anima-up').click(ev => {
@@ -614,17 +641,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.quick-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("item-id"), skipDialog: true }).roll();
+      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
     });
 
     html.find('.saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("item-id") }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id") }).render(true);
     });
 
     html.find('.delete-saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      var key = li.data("item-id");
+      var key = li.data("saved-roll-id");
       const rollDeleteString = "data.savedRolls.-=" + key;
 
       let deleteConfirm = new Dialog({
@@ -676,12 +703,38 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Drag events for macros.
     if (this.actor.isOwner) {
       let handler = ev => this._onDragStart(ev);
+      let savedRollhandler = ev => this._onDragSavedRoll(ev);
       html.find('li.item').each((i, li) => {
         if (li.classList.contains("inventory-header")) return;
         li.setAttribute("draggable", true);
         li.addEventListener("dragstart", handler, false);
       });
     }
+  }
+
+  _onDragSavedRoll(ev) {
+    const li = event.currentTarget;
+    if ( event.target.classList.contains("content-link") ) return;
+
+    // Create drag data
+    let dragData;
+
+    // Owned Items
+    if ( li.dataset.itemId ) {
+      const item = this.actor.items.get(li.dataset.itemId);
+      dragData = item.toDragData();
+    }
+
+    // Active Effect
+    if ( li.dataset.effectId ) {
+      const effect = this.actor.effects.get(li.dataset.effectId);
+      dragData = effect.toDragData();
+    }
+
+    if ( !dragData ) return;
+
+    // Set data transfer
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
   _updateAnima(direction) {
@@ -736,9 +789,31 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateDerivedStats(type) {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
+    var armoredSoakValue = 0;
+    if (type === 'natural-soak') {
+      data.naturalsoak.value = data.attributes.stamina.value;
+    }
+    if (type === 'soak' || type === 'armored-soak') {
+      for (let armor of this.actor.armor) {
+        if (armor.system.equiped) {
+          armoredSoakValue = armoredSoakValue + armor.system.soak;
+        }
+      }
+      if (type === 'armored-soak') {
+        data.armoredsoak.value = armoredSoakValue;
+      }
+      if (type === 'soak') {
+        data.soak.value = data.attributes.stamina.value + armoredSoakValue;
+      }
+    }
     if (type === 'parry') {
       var highestAbility = Math.max(data.abilities.melee.value, data.abilities.brawl.value, data.abilities.martialarts.value);
       data.parry.value = Math.ceil((data.attributes.dexterity.value + highestAbility) / 2);
+      for (let weapon of this.actor.weapons) {
+        if (weapon.system.equiped) {
+          data.parry.value = data.parry.value + weapon.system.defence;
+        }
+      }
     }
     if (type === 'evasion') {
       var newEvasionValue = Math.ceil((data.attributes.dexterity.value + data.abilities.dodge.value) / 2);
@@ -963,35 +1038,36 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this.actor.update(actorData);
   }
 
-  async showTags(type) {
-    const template = type === "weapons" ? "systems/exaltedthird/templates/dialogues/weapon-tags.html" : "systems/exaltedthird/templates/dialogues/armor-tags.html";
-    const html = await renderTemplate(template);
+  async showDialogue(type) {
+    var template = "systems/exaltedthird/templates/dialogues/armor-tags.html";
+    switch (type) {
+      case 'weapons':
+        template = "systems/exaltedthird/templates/dialogues/weapon-tags.html";
+        break;
+      case 'craft':
+        template = "systems/exaltedthird/templates/dialogues/craft-cheatsheet.html";
+        break;
+      case 'advancement':
+        template = "systems/exaltedthird/templates/dialogues/advancement-dialogue.html";
+        break;
+      case 'combat':
+        template = "systems/exaltedthird/templates/dialogues/combat-dialogue.html";
+        break;
+      case 'social':
+        template = "systems/exaltedthird/templates/dialogues/social-dialogue.html";
+        break;
+      case 'rout':
+        template = "systems/exaltedthird/templates/dialogues/rout-modifiers.html";
+        break;
+      case 'splat-xp':
+        template = "systems/exaltedthird/templates/dialogues/splat-xp-dialogue.html";
+        break;
+      default:
+        break;
+    }
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste });
     new Dialog({
       title: `Tags`,
-      content: html,
-      buttons: {
-        cancel: { label: "Close" }
-      }
-    }).render(true);
-  }
-
-  async showAdvancement() {
-    const template = "systems/exaltedthird/templates/dialogues/advancement-dialogue.html";
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt });
-    new Dialog({
-      title: `Advancement`,
-      content: html,
-      buttons: {
-        cancel: { label: "Close" }
-      }
-    }).render(true);
-  }
-
-  async showCraft() {
-    const template = "systems/exaltedthird/templates/dialogues/craft-cheatsheet.html";
-    const html = await renderTemplate(template);
-    new Dialog({
-      title: `Craft`,
       content: html,
       buttons: {
         cancel: { label: "Close" }
@@ -1029,7 +1105,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts });
+    const html = await renderTemplate(template, { rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1046,6 +1122,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.showzerovalues = html.find('#showZeroValues').is(":checked");
           data.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
           data.anima.max = parseInt(html.find('#maxAnima').val());
+          data.settings.rollStunts = html.find('#rollStunts').is(":checked");
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
           this.actor.update(actorData);
         }
