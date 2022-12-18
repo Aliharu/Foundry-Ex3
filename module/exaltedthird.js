@@ -70,10 +70,12 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/dialogues/accuracy-roll.html",
     "systems/exaltedthird/templates/dialogues/damage-roll.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
+    "systems/exaltedthird/templates/actor/effects-tab.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",
     "systems/exaltedthird/templates/actor/combat-tab.html",
     "systems/exaltedthird/templates/actor/charm-list.html",
     "systems/exaltedthird/templates/actor/social-tab.html",
+    "systems/exaltedthird/templates/actor/biography-tab.html",
   ]);
 
   Combatant.prototype._getInitiativeFormula = function () {
@@ -261,6 +263,10 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       if (fullDefense) {
         fullDefense.delete();
       }
+      const defensePenalty = currentCombatant.actor.effects.find(i => i.label == "Defense Penalty");
+      if (defensePenalty) {
+        defensePenalty.delete();
+      }
     }
   }
 }));
@@ -281,30 +287,44 @@ Hooks.once("ready", async function () {
 /* -------------------------------------------- */
 
 /**
- * Create a Macro from an Item drop.
+ * Create a Macro from an Item or SavedRoll drop.
  * Get an existing item macro if one exists, otherwise create a new one.
  * @param {Object} data     The dropped data
  * @param {number} slot     The hotbar slot to use
  * @returns {Promise}
  */
 async function creatExaltedthirdMacro(data, slot) {
-  if (data.type !== "Item") return;
-  if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
-  const item = data.data;
-
-  // Create the macro command
-  const command = `game.exaltedthird.rollItemMacro("${item.name}");`;
-  let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
-  if (!macro) {
-    macro = await Macro.create({
-      name: item.name,
-      type: "script",
-      img: item.img,
-      command: command,
-      flags: { "exaltedthird.itemMacro": true }
-    });
+  if (data.type !== "Item" && data.type !== "savedRoll") return;
+  if(data.type === "Item") {
+    if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
+    const item = data.data;
+  
+    // Create the macro command
+    const command = `game.exaltedthird.rollItemMacro("${item.name}");`;
+    let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
+    if (!macro) {
+      macro = await Macro.create({
+        name: item.name,
+        type: "script",
+        img: item.img,
+        command: command,
+        flags: { "exaltedthird.itemMacro": true }
+      });
+    }
+    game.user.assignHotbarMacro(macro, slot);
   }
-  game.user.assignHotbarMacro(macro, slot);
+  else {
+    // const command = `const actor = await fromUuid(${data.actorId});
+    // new RollForm(actor, {}, {}, { rollId: ${data.id} }).render(true);`;
+    // const macro = await Macro.create({
+    //   name: data.name,
+    //   img: 'systems/exaltedthird/assets/icons/d10.svg',
+    //   type: "script",
+    //   command: command,
+    // });
+    // game.user.assignHotbarMacro(macro, slot);
+  }
+
   return false;
 }
 

@@ -323,11 +323,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     this._setupDotCounters(html)
     this._setupSquareCounters(html)
+    this._setupButtons(html)
 
     html.find('.item-row').click(ev => {
       const li = $(ev.currentTarget).next();
       li.toggle("fast");
     });
+
+
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
@@ -416,8 +419,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
 
-    html.find('.calculate-peripheral-motes').mousedown(ev => {
-      this.calculateMotes('peripheral');
+    html.find('.set-pool-peripheral').mousedown(ev => {
+      this.setSpendPool('peripheral');
+    });
+
+
+    html.find('.set-pool-personal').mousedown(ev => {
+      this.setSpendPool('personal');
     });
 
     html.find('.calculate-personal-motes').mousedown(ev => {
@@ -474,6 +482,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('#recoverySceneShip').mousedown(ev => {
       this.recoverHealth('ship');
+    });
+
+    html.find('.add-defense-penalty').mousedown(ev => {
+      this.addDefensePenalty();
     });
 
     html.find('#rollDice').mousedown(ev => {
@@ -707,34 +719,23 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       html.find('li.item').each((i, li) => {
         if (li.classList.contains("inventory-header")) return;
         li.setAttribute("draggable", true);
-        li.addEventListener("dragstart", handler, false);
+        if (li.classList.contains("saved-roll-row")) {
+          li.addEventListener("dragstart", savedRollhandler, false);
+        }
+        else {
+          li.addEventListener("dragstart", handler, false);
+        }
       });
     }
   }
 
-  _onDragSavedRoll(ev) {
-    const li = event.currentTarget;
-    if ( event.target.classList.contains("content-link") ) return;
-
-    // Create drag data
-    let dragData;
-
-    // Owned Items
-    if ( li.dataset.itemId ) {
-      const item = this.actor.items.get(li.dataset.itemId);
-      dragData = item.toDragData();
-    }
-
-    // Active Effect
-    if ( li.dataset.effectId ) {
-      const effect = this.actor.effects.get(li.dataset.effectId);
-      dragData = effect.toDragData();
-    }
-
-    if ( !dragData ) return;
-
-    // Set data transfer
-    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+  async _onDragSavedRoll(ev) {
+    const li = ev.currentTarget;
+    if (ev.target.classList.contains("content-link")) return;
+    const savedRoll = this.actor.system.savedRolls[li.dataset.itemId];
+    ev.dataTransfer.setData("text/plain", JSON.stringify({ actorId: this.actor.uuid, type: 'savedRoll', id: li.dataset.itemId, name: savedRoll.name }));
+    const item = await fromUuid("Scene.nUvSTOjAkvqdSKcC.Token.gKXHXWQkgi1XmYBH");
+    console.log(item);
   }
 
   _updateAnima(direction) {
@@ -830,6 +831,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     if (type === 'guile') {
       data.guile.value = Math.ceil((data.attributes.manipulation.value + data.abilities.socialize.value) / 2);
     }
+    this.actor.update(actorData);
+  }
+
+  async setSpendPool(type) {
+    const actorData = duplicate(this.actor);
+    actorData.system.settings.charmmotepool = type;
     this.actor.update(actorData);
   }
 
@@ -1253,6 +1260,20 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this._assignToActorField(fields, 0)
   }
 
+  _setupButtons(html) {
+    const actorData = duplicate(this.actor)
+    html.find('.set-pool-personal').each(function (i) {
+      if (actorData.system.settings.charmmotepool === 'personal') {
+        $(this).css("color", actorData.system.details.color);
+      }
+    });
+    html.find('.set-pool-peripheral').each(function (i) {
+      if (actorData.system.settings.charmmotepool === 'peripheral') {
+        $(this).css("color", actorData.system.details.color);
+      }
+    });
+  }
+
   _setupDotCounters(html) {
     const actorData = duplicate(this.actor)
     html.find('.resource-value').each(function () {
@@ -1260,16 +1281,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       $(this).find('.resource-value-step').each(function (i) {
         if (i + 1 <= value) {
           $(this).addClass('active')
-          $(this).css("background-color", actorData.system.details.color);
+          $(this).css("background-color", '#F9B516');
         }
-      })
+      });
     })
     html.find('.resource-value-static').each(function () {
       const value = Number(this.dataset.value)
       $(this).find('.resource-value-static-step').each(function (i) {
         if (i + 1 <= value) {
           $(this).addClass('active')
-          $(this).css("background-color", actorData.system.details.color);
+          $(this).css("background-color", '#F9B516');
         }
       })
     })
@@ -1566,6 +1587,39 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     this._displayCard(event);
     this.actor.update(actorData);
+  }
+
+  async addDefensePenalty() {
+    const existingPenalty = this.actor.effects.find(i => i.label == "Defense Penalty");
+    if (existingPenalty) {
+      let changes = duplicate(existingPenalty.changes);
+      changes[0].value = changes[0].value - 1;
+      changes[1].value = changes[1].value - 1;
+      existingPenalty.update({ changes });
+    }
+    else {
+      this.actor.createEmbeddedDocuments('ActiveEffect', [{
+        label: 'Defense Penalty',
+        icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+        origin: this.actor.uuid,
+        disabled: false,
+        duration: {
+          rounds: 10,
+        },
+        "changes": [
+          {
+            "key": "data.evasion.value",
+            "value": -1,
+            "mode": 2
+          },
+          {
+            "key": "data.parry.value",
+            "value": -1,
+            "mode": 2
+          }
+        ]
+      }]);
+    }
   }
 }
 

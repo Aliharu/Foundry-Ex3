@@ -39,7 +39,8 @@
       <div class="resources grid grid-4col">
         <div class="flex-center">
           <div style="margin-bottom:3px;">
-            <label class="resource-label">{{localize "Ex3.Personal"}} <i
+            <i class="fas fa-bolt set-pool-personal cursor-pointer" title="Spend motes form this pool"></i>
+            <label class="resource-label"> {{localize "Ex3.Personal"}} <i
                 class="fas fa-calculator calculate-personal-motes cursor-pointer" title="Auto Set Motes"></i> </label>
             <div class="resource-content flexrow flex-center flex-between">
               <input type="number" name="system.motes.personal.value" value="{{system.motes.personal.value}}"
@@ -57,7 +58,8 @@
         </div>
         <div class="flex-center">
           <div style="margin-bottom:3px;">
-            <label class="resource-label">{{localize "Ex3.Peripheral"}} <i
+            <i class="fas fa-bolt set-pool-peripheral cursor-pointer" title="Spend motes form this pool"></i><label
+              class="resource-label"> {{localize "Ex3.Peripheral"}} <i
                 class="fas fa-calculator calculate-peripheral-motes cursor-pointer" title="Auto Set Motes"></i></label>
             <div class="resource-content flexrow flex-center flex-between">
               <input type="number" name="system.motes.peripheral.value" value="{{system.motes.peripheral.value}}"
@@ -344,27 +346,7 @@
     </div>
 
     <div class="tab effects" data-group="primary" data-tab="effects">
-      <div class="resource-label list-section-header d-flex flex-between">
-        <div>
-          {{localize "Ex3.SavedRolls"}}
-        </div>
-      </div>
-      <ol class="items-list">
-        {{#each system.savedRolls as |item id|}}
-        <li class="item flexrow" data-item-id="{{id}}" data-saved-roll-id="{{id}}">
-          <h4 class="item-name">{{item.name}}</h4>
-          <div class="resource-table-value resource-value-static">
-            {{item.rollType}}
-          </div>
-          <div class="item-controls">
-            <a class="item-control quick-roll" title="Roll"><i class="fas fa-dice-d10"></i></a>
-            <a class="item-control saved-roll" title="Edit"><i class="fas fa-edit"></i></a>
-            <a class="item-control delete-saved-roll" title="Delete Item"><i class="fas fa-trash"></i></a>
-          </div>
-        </li>
-        {{/each}}
-      </ol>
-      {{> systems/exaltedthird/templates/actor/active-effects.html}}
+      {{> systems/exaltedthird/templates/actor/effects-tab.html}}
     </div>
 
     {{!-- Intimacy Tab --}}
@@ -396,8 +378,7 @@
           <div class="resource-content flexrow flex-center flex-between">
             <div>
               <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.spent}}
-                Spent)<i
-                class="fas fa-info-circle splat-xp cursor-pointer"></i></label>
+                Spent)</label>
               <div class="resource-content flexrow flex-center flex-between">
                 <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
                   placeholder="Remaining" />
@@ -624,40 +605,7 @@
 
     {{!-- Biography Tab --}}
     <div class="tab biography" data-group="primary" data-tab="description">
-      <ol class="items-list">
-        <div class="resource-label list-section-header d-flex flex-between">
-          <div>
-            {{localize "Ex3.Items"}}
-          </div>
-          <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i>Add
-            Item</a>
-        </div>
-        {{#each actor.gear as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item._id}}">
-          <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-              height="24" /></div>
-          <h4 class="item-name">{{item.name}}</h4>
-          <div class="item-controls">
-            <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-          </div>
-        </li>
-        <li class="item-description">
-          <div>
-            {{{item.system.description}}}
-          </div>
-        </li>
-        {{/each}}
-      </ol>
-      {{#if system.settings.showescort}}
-      <div>
-        <label class="resource-label">{{localize "Ex3.Escort"}}</label>
-        <textarea type="text" name="system.escort" rows="6">{{system.escort}}</textarea>
-      </div>
-      {{/if}}
-      <div class="resource-label flex-center">{{localize "Ex3.CharacterNotes"}}</div>
-      {{editor system.biography target="system.biography" button=true owner=owner editable=true}}
+      {{> systems/exaltedthird/templates/actor/biography-tab.html}}
     </div>
 
   </section>
