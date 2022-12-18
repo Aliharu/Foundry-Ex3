@@ -1112,7 +1112,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts });
+    const html = await renderTemplate(template, { editMode: data.settings.editmode, rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1131,6 +1131,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.anima.max = parseInt(html.find('#maxAnima').val());
           data.settings.rollStunts = html.find('#rollStunts').is(":checked");
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
+          data.settings.editmode = html.find('#editMode').is(":checked");
           this.actor.update(actorData);
         }
       }

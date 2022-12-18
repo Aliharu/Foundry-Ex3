@@ -40,60 +40,74 @@
 <div>
     <div id="character-combat-tab">
         <div class="grid grid-4col flex-group-center">
-            <div>
-                <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}<i
-                        class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
-                        style="margin-left:3px;"></i>{{/ifEquals}}</label>
+            <div {{#if system.parry.padding}}style="margin-bottom:17px" {{/if}}>
+                <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}
+                    {{#if system.settings.editmode}}
+                    <i class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
+                        style="margin-left:3px;"></i>
+                    {{/if}}
+                    {{/ifEquals}}</label>
                 <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
+                <label>{{system.parry.cap}}</label>
             </div>
-            <div>
-                <label class="resource-label">{{localize "Ex3.Evasion"}}{{#ifEquals data.type 'character'}}<i
-                        class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
-                        style="margin-left:3px;"></i>{{/ifEquals}}</label>
+            <div {{#if system.evasion.padding}}style="margin-bottom:17px" {{/if}}>
+                <label class="resource-label">{{localize "Ex3.Evasion"}}
+                    {{#ifEquals data.type 'character'}}
+                    {{#if system.settings.editmode}}
+                    <i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
+                        style="margin-left:3px;"></i>
+                    {{/if}}
+                    {{/ifEquals}}</label>
                 <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
+                <label>{{system.evasion.cap}}</label>
             </div>
-            <div>
+            <div {{#if system.defenseCapPadding}}style="margin-bottom:17px" {{/if}}>
                 <label class="resource-label">{{localize "Ex3.Rush"}}</label>
                 <button class="roll-button rush"><i class="fas fa-person-running"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
-            <div>
+            <div {{#if system.defenseCapPadding}}style="margin-bottom:17px" {{/if}}>
                 <label class="resource-label">{{localize "Ex3.Disengage"}}</label>
                 <button class="roll-button disengage"><i class="fas fa-person-running"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
-        </div>
-        <div class="grid grid-2col flex-group-center">
-            <div class="resource-content flexrow flex-center flex-between">
-                <div class="resource-content flexrow flex-center flex-between">
-                    <div>
-                        <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}<i
-                                class="fas fa-calculator calculate-armored-soak cursor-pointer"
-                                title="Auto Set Armored Soak" style="margin-left:3px;"></i></label>
-                        <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
-                            data-dtype="Number" />
-                    </div>
-                    <div>
-                        <label class="resource-label">{{localize "Ex3.NaturalSoak"}}<i
-                                class="fas fa-calculator calculate-natural-soak cursor-pointer"
-                                title="Auto Set Natural Soak" style="margin-left:3px;"></i></label>
-                        <input type="number" name="system.naturalsoak.value" value="{{system.naturalsoak.value}}"
-                            data-dtype="Number" />
-                    </div>
-                </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}
+                    {{#if system.settings.editmode}}
+                    <i class="fas fa-calculator calculate-armored-soak cursor-pointer" title="Auto Set Armored Soak"
+                        style="margin-left:3px;"></i>
+                    {{/if}}
+                </label>
+                <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
+                    data-dtype="Number" />
             </div>
-            <div class="resource-content flexrow flex-center flex-between">
-                <div>
-                    <label class="resource-label">{{localize "Ex3.TotalSoak"}}<i
-                            class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
-                            style="margin-left:3px;"></i></label>
-                    <input type="number" name="system.soak.value" value="{{system.soak.value}}" data-dtype="Number" />
-                </div>
-                <div>
-                    <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
-                    <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
-                        data-dtype="Number" />
-                </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.NaturalSoak"}}
+                    {{#ifEquals data.type 'character'}}
+                    {{#if system.settings.editmode}}
+                    <i class="fas fa-calculator calculate-natural-soak cursor-pointer" title="Auto Set Natural Soak"
+                        style="margin-left:3px;"></i>
+                    {{/if}}
+                    {{/ifEquals}}
+                </label>
+                <input type="number" name="system.naturalsoak.value" value="{{system.naturalsoak.value}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.TotalSoak"}}
+                    {{#ifEquals data.type 'character'}}
+                    {{#if system.settings.editmode}}
+                    <i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
+                        style="margin-left:3px;"></i>
+                    {{/if}}
+                    {{/ifEquals}}
+                </label>
+                <input type="number" name="system.soak.value" value="{{system.soak.value}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
+                <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
+                    data-dtype="Number" />
             </div>
         </div>
         <div class="grid grid-3col flex-group-center">

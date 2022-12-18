@@ -4,31 +4,41 @@
 </div> -->
 <div class="grid {{#ifEquals actor.type 'npc'}} grid-5col {{else}} grid-4col {{/ifEquals}} flex-group-center">
   {{#ifEquals actor.type 'npc'}}
-  <div>
+  <div {{#if system.socialCapPadding}}style="margin-bottom:17px"{{/if}}>
       <label class="resource-label">{{localize "Ex3.Appearance"}}</label>
       <input type="number" name="system.appearance.value" value="{{system.appearance.value}}"
           data-dtype="Number" />
   </div>
   {{/ifEquals}}
-  <div>
-      <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}<i
+  <div {{#if system.resolve.padding}}style="margin-bottom:17px"{{/if}}>
+      <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}
+        {{#if system.settings.editmode}}
+        <i
         class="fas fa-calculator calculate-resolve cursor-pointer"
-        title="Auto Set Resolve" style="margin-left:3px;"></i>{{/ifEquals}}</label>
+        title="Auto Set Resolve" style="margin-left:3px;"></i>
+        {{/if}}
+        {{/ifEquals}}</label>
       <input type="number" name="system.resolve.value" value="{{system.resolve.value}}"
           data-dtype="Number" />
+      <label>{{system.resolve.cap}}</label>
   </div>
-  <div>
-      <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}<i
+  <div {{#if system.guile.padding}}style="margin-bottom:17px"{{/if}}>
+      <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}
+        {{#if system.settings.editmode}}
+        <i
         class="fas fa-calculator calculate-guile cursor-pointer"
-        title="Auto Set Guile" style="margin-left:3px;"></i>{{/ifEquals}}</label>
+        title="Auto Set Guile" style="margin-left:3px;"></i>
+        {{/if}}
+        {{/ifEquals}}</label>
       <input type="number" name="system.guile.value" value="{{system.guile.value}}"
           data-dtype="Number" />
+      <label>{{system.guile.cap}}</label>
   </div>
-  <div>
+  <div {{#if system.socialCapPadding}}style="margin-bottom:17px"{{/if}}>
       <label class="resource-label">{{localize "Ex3.ReadIntentions"}}</label>
       <button class="roll-button read-intentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
   </div>
-  <div>
+  <div {{#if system.socialCapPadding}}style="margin-bottom:17px"{{/if}}>
       <label class="resource-label">{{localize "Ex3.SocialInfluence"}}</label>
       <button class="roll-button social-influence"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
   </div>

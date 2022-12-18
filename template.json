@@ -136,7 +136,8 @@
           "showzerovalues": true,
           "usetenattributes": false,
           "rollStunts": false,
-          "defenseStunts": false
+          "defenseStunts": false,
+          "editmode": true
         },
         "ship": {
           "name": "",

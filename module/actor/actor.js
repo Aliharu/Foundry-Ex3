@@ -170,6 +170,35 @@ export class ExaltedThirdActor extends Actor {
       data.willpower.max = data.willpower.total;
     }
 
+    if (actorData.type === "character" || actorData.system.creaturetype === 'exalt') {
+      data.parry.cap = this._getStaticCap(actorData, 'parry', data.parry.value);
+      if (data.parry.cap !== '') {
+        data.evasion.padding = true;
+        data.defenseCapPadding = true;
+      }
+      data.evasion.cap = this._getStaticCap(actorData, 'evasion', data.evasion.value);
+      if (data.evasion.cap !== '') {
+        data.evasion.padding = false;
+        if(data.parry.cap === '') {
+          data.parry.padding = true;
+        }
+        data.defenseCapPadding = true;
+      }
+      data.guile.cap = this._getStaticCap(actorData, 'parry', data.guile.value);
+      if (data.guile.cap !== '') {
+        data.resolve.padding = true;
+        data.socialCapPadding = true;
+      }
+      data.resolve.cap = this._getStaticCap(actorData, 'resolve', data.resolve.value);
+      if (data.resolve.cap !== '') {
+        if(data.guile.cap === '') {
+          data.guile.padding = true;
+        }
+        data.resolve.padding = false;
+        data.socialCapPadding = true;
+      }
+    }
+
     if (data.battlegroup) {
       totalHealth = data.health.levels.zero.value + data.size.value;
       data.health.max = totalHealth;
@@ -413,5 +442,67 @@ export class ExaltedThirdActor extends Actor {
     actorData.projects = craftProjects;
     actorData.actions = actions;
     actorData.destinies = destinies;
+  }
+
+  _getStaticCap(actorData, type, value) {
+    if (actorData.type === "character") {
+      switch (actorData.system.details.exalt) {
+        case 'dragonblooded':
+          var newValue = Math.floor(value / 2);
+          return `(+${newValue} for ${newValue * 2}m)`
+        case 'sidereal':
+          return `(+${value} for ${value * 2}m)`
+        case 'solar':
+          return `(+${value} for ${value * 2}m)`
+        case 'abyssal':
+          return `(+${value} for ${value * 2}m)`
+        case 'lunar':
+          var newValue = Math.floor(value / 2);
+          return `(+${newValue} for ${newValue * 2}m)`
+        case 'liminal':
+          var newValue = Math.floor(value / 2);
+          return `(+${newValue} for ${newValue * 2}m)`
+        default:
+          return ''
+      }
+    }
+    else if (actorData.system.creaturetype === 'exalt') {
+      let caps
+      let bonus = 0
+      if (actorData.system.details.exalt === 'lunar') {
+        if (value <= 1) return `(+0 for 0m; +1 for 2m)`
+        else if (value <= 3) return `(+1 for 2m; +2 for 4m)`
+        else if (value <= 5) return `(+2 for 4m; +4 for 8m)`
+        else return `(+2 for 4m; +5 for 10m)`
+      }
+      else {
+        switch (actorData.system.details.exalt) {
+          case 'dragonblooded':
+            caps = [0, 1, 2, 3]
+            break
+          case 'sidereal':
+            return `(+${actorData.system.essence.value} for ${actorData.system.essence.value * 2}m)`
+          case 'solar':
+            caps = [0, 1, 3, 5]
+            break
+          case 'abyssal':
+            caps = [0, 1, 3, 5]
+            break
+          case 'liminal':
+            if (actorData.system.anima.value > 1) bonus = Math.floor(actorData.system.essence.value / 2)
+            caps = [0 + bonus, 1 + bonus, 2 + bonus, 2 + bonus]
+            break
+          default:
+            return ''
+        }
+
+        if (value <= 1) return `(+${caps[0]} for ${caps[0] * 2}m)`
+        else if (value <= 3) return `(+${caps[1]} for ${caps[1] * 2}m)`
+        else if (value <= 5) return `(+${caps[2]} for ${caps[2] * 2}m)`
+        else return `(+${caps[3]} for ${caps[3] * 2}m)`
+      }
+    }
+
+    return "";
   }
 }

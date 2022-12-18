@@ -1667,13 +1667,6 @@ export class RollForm extends FormApplication {
     }
 
     _getDiceCap() {
-        var animaBonus = {
-            Dim: 0,
-            Glowing: 1,
-            Burning: 2,
-            Bonfire: 3,
-            Transcendent: 4
-        }
         if (this.object.rollType !== "base") {
             if (this.actor.type === "character" && this.actor.system.abilities[this.object.ability] && this.actor.system.attributes[this.object.attribute]) {
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
@@ -1707,6 +1700,14 @@ export class RollForm extends FormApplication {
                 if (this.actor.system.details.exalt === "umbral") {
                     return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
                 }
+                if (this.actor.system.details.exalt === "liminal") {
+                    if(this.actor.system.anima.value > 1) {
+                        return `${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value}`;
+                    }
+                    else {
+                        return `${this.actor.system.attributes[this.object.attribute].value}`;
+                    }
+                }
                 if (this.actor.system.details.caste.toLowerCase() === "architect") {
                     return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
                 }
@@ -1714,7 +1715,7 @@ export class RollForm extends FormApplication {
                     return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
                 }
                 if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
-                    return Math.min(Math.max(this.actor.system.essence.value, 3) + animaBonus[this.actor.system.anima.level], 10);
+                    return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
                 }
             }
             else if (this.actor.system.creaturetype === 'exalt' && this.actor.system.pools[this.object.pool]) {

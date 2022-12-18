@@ -417,7 +417,8 @@
     "Ex3.UseTenForAttributes": "Use 10 for Attribute Cap (Character Only)",
     "Ex3.DefaultRollStunts": "Default tier one stunt bonus on rolls",
     "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
-
+    "Ex3.EditMode": "Enable Certain buttons and fields for editing",
+    
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.CharacterNotes": "Character Notes",
 
