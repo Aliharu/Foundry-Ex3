@@ -1265,12 +1265,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor)
     html.find('.set-pool-personal').each(function (i) {
       if (actorData.system.settings.charmmotepool === 'personal') {
-        $(this).css("color", actorData.system.details.color);
+        $(this).css("color", '#F9B516');
       }
     });
     html.find('.set-pool-peripheral').each(function (i) {
       if (actorData.system.settings.charmmotepool === 'peripheral') {
-        $(this).css("color", actorData.system.details.color);
+        $(this).css("color", '#F9B516');
       }
     });
   }
@@ -1282,7 +1282,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       $(this).find('.resource-value-step').each(function (i) {
         if (i + 1 <= value) {
           $(this).addClass('active')
-          $(this).css("background-color", '#F9B516');
+          $(this).css("background-color", actorData.system.details.color);
         }
       });
     })
@@ -1291,7 +1291,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       $(this).find('.resource-value-static-step').each(function (i) {
         if (i + 1 <= value) {
           $(this).addClass('active')
-          $(this).css("background-color", '#F9B516');
+          $(this).css("background-color", actorData.system.details.color);
         }
       })
     })
