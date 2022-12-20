@@ -94,6 +94,7 @@ export class RollForm extends FormApplication {
                 type: 'lethal',
                 threshholdToDamage: false,
                 resetInit: true,
+                doubleRolledDamage: false,
             };
             this.object.craft = {
                 divineInsperationTechnique: false,
@@ -596,6 +597,9 @@ export class RollForm extends FormApplication {
             if (item.system.diceroller.damage.threshholdtodamage) {
                 this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
             }
+            if (item.system.diceroller.damage.doublerolleddamage) {
+                this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
+            }
 
             this.render();
         });
@@ -670,6 +674,9 @@ export class RollForm extends FormApplication {
                 }
                 if (item.system.diceroller.damage.threshholdtodamage) {
                     this.object.damage.threshholdToDamage = false;
+                }
+                if (item.system.diceroller.damage.doublerolleddamage) {
+                    this.object.damage.doubleRolledDamage = false;
                 }
             }
             this.render();
@@ -1207,7 +1214,9 @@ export class RollForm extends FormApplication {
             total += bonus;
         }
         total += this.object.damage.damageSuccessModifier;
-        var characterDamage = total;
+        if(this.object.damage.doubleRolledDamage) {
+            total *= 2;
+        }
 
         let typeSpecificResults = ``;
 
@@ -1218,9 +1227,9 @@ export class RollForm extends FormApplication {
             }
             if (this._useLegendarySize('decisive')) {
                 typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value} + Charm damage levels</h4>`;
-                characterDamage = Math.min(characterDamage, 3 + this.actor.system.attributes.strength.value);
+                total = Math.min(total, 3 + this.actor.system.attributes.strength.value);
             }
-            this.dealHealthDamage(characterDamage);
+            this.dealHealthDamage(total);
         }
         else if (this.object.rollType === 'gambit') {
             if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
@@ -1679,7 +1688,7 @@ export class RollForm extends FormApplication {
                     return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
                 }
                 if (this.actor.system.details.exalt === "sidereal") {
-                    var baseSidCap = this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
+                    var baseSidCap = Math.min(5,  Math.max(3, this.actor.system.essence.value));
                     var tnChange = "";
                     if(this.actor.system.abilities[this.object.ability].value === 5){
                         if(this.actor.system.essence.value >= 3){
@@ -1739,6 +1748,9 @@ export class RollForm extends FormApplication {
                 }
                 else {
                     diceTier = "eleven";
+                }
+                if(this.actor.system.details.exalt === "sidereal") {
+                    return this.actor.system.essence.value;
                 }
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
                     diceMap = {

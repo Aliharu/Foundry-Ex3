@@ -314,15 +314,15 @@ async function creatExaltedthirdMacro(data, slot) {
     game.user.assignHotbarMacro(macro, slot);
   }
   else {
-    // const command = `const actor = await fromUuid(${data.actorId});
-    // new RollForm(actor, {}, {}, { rollId: ${data.id} }).render(true);`;
-    // const macro = await Macro.create({
-    //   name: data.name,
-    //   img: 'systems/exaltedthird/assets/icons/d10.svg',
-    //   type: "script",
-    //   command: command,
-    // });
-    // game.user.assignHotbarMacro(macro, slot);
+    const command = `const formActor = await fromUuid("${data.actorId}");
+    new game.exaltedthird.RollForm(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {}, {}, { rollId: "${data.id}" }).render(true);`;
+    const macro = await Macro.create({
+      name: data.name,
+      img: 'systems/exaltedthird/assets/icons/d10.svg',
+      type: "script",
+      command: command,
+    });
+    game.user.assignHotbarMacro(macro, slot);
   }
 
   return false;

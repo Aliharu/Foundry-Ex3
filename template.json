@@ -681,6 +681,7 @@
           "overwhelming": 0,
           "postsoakdamage": 0,
           "threshholdtodamage": false,
+          "doublerolleddamage": false,
           "reroll": {
             "one": false,
             "two": false,

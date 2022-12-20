@@ -451,7 +451,8 @@ export class ExaltedThirdActor extends Actor {
           var newValue = Math.floor(value / 2);
           return `(+${newValue} for ${newValue * 2}m)`
         case 'sidereal':
-          return `(+${value} for ${value * 2}m)`
+          var baseSidCap = Math.min(5,  Math.max(3, actorData.system.essence.value));
+          return `(+${baseSidCap} for ${baseSidCap * 2}m)`
         case 'solar':
           return `(+${value} for ${value * 2}m)`
         case 'abyssal':
