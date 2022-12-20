@@ -1,14 +1,14 @@
 <div class="resource flex-group-center d-flex">
     <div style="margin-right:20px;">
         <div class="flexrow">
-            <label for="system.health" class="resource-label"><i class="fas fa-calculator cursor-pointer"
-                    id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i> {{#if
+            <label for="system.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
+                id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i></a> {{#if
                 system.battlegroup}}
                 {{localize "Ex3.Magnitude"}}
                 {{else}}
                 {{localize "Ex3.Health"}}
-                {{/if}}<i id="recoveryScene" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
-                    style="margin-left:3px;"></i></label>
+                {{/if}}<a><i id="recoveryScene" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+                    style="margin-left:3px;"></i></a></label>
         </div>
         <div class="resource-content flexrow flex-center flex-between">
             <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated" data-max="{{system.health.max}}"
@@ -28,8 +28,8 @@
     </div>
 </div>
 <div class="resource-content flexrow flex-center flex-between mt-1">
-    <label class="resource-label">{{localize "Ex3.Combat"}} <i
-            class="fas fa-info-circle show-combat cursor-pointer"></i></label>
+    <label class="resource-label">{{localize "Ex3.Combat"}} <a><i
+        class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
 </div>
 <div class="grid grid-2col flex-group-center">
     <button class="roll-button rollAbility"><i class="fas fa-dice-d10"></i>{{localize "Ex3.Ability"}}</button>
@@ -43,8 +43,8 @@
             <div {{#if system.parry.padding}}style="margin-bottom:17px" {{/if}}>
                 <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
-                    <i class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
-                        style="margin-left:3px;"></i>
+                    <a><i class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
+                        style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}</label>
                 <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
@@ -54,8 +54,8 @@
                 <label class="resource-label">{{localize "Ex3.Evasion"}}
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
-                    <i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
-                        style="margin-left:3px;"></i>
+                    <a><i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
+                        style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}</label>
                 <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
@@ -74,8 +74,8 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}
                     {{#if system.settings.editmode}}
-                    <i class="fas fa-calculator calculate-armored-soak cursor-pointer" title="Auto Set Armored Soak"
-                        style="margin-left:3px;"></i>
+                    <a><i class="fas fa-calculator calculate-armored-soak cursor-pointer" title="Auto Set Armored Soak"
+                        style="margin-left:3px;"></i></a>
                     {{/if}}
                 </label>
                 <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
@@ -85,8 +85,8 @@
                 <label class="resource-label">{{localize "Ex3.NaturalSoak"}}
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
-                    <i class="fas fa-calculator calculate-natural-soak cursor-pointer" title="Auto Set Natural Soak"
-                        style="margin-left:3px;"></i>
+                    <a><i class="fas fa-calculator calculate-natural-soak cursor-pointer" title="Auto Set Natural Soak"
+                        style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}
                 </label>
@@ -97,8 +97,8 @@
                 <label class="resource-label">{{localize "Ex3.TotalSoak"}}
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
-                    <i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
-                        style="margin-left:3px;"></i>
+                    <a><i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
+                        style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}
                 </label>
@@ -148,8 +148,8 @@
                 <input type="number" name="system.might.value" value="{{system.might.value}}" data-dtype="Number" />
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.RoutCheck"}} <i
-                        class="fas fa-info-circle rout-modifiers cursor-pointer"></i></label>
+                <label class="resource-label">{{localize "Ex3.RoutCheck"}} <a><i
+                    class="fas fa-info-circle rout-modifiers cursor-pointer"></i></a></label>
                 <button class="roll-button rout-check"><i class="fas fa-swords"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>

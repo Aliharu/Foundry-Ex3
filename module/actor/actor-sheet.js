@@ -432,6 +432,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateMotes('personal');
     });
 
+    html.find('.calculate-peripheral-motes').mousedown(ev => {
+      this.calculateMotes('peripheral');
+    });
+
     html.find('.calculate-soak').mousedown(ev => {
       this.calculateDerivedStats('soak');
     });

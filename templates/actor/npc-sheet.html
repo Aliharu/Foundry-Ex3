@@ -85,9 +85,9 @@
             <div class="resources grid grid-4col">
                 <div class="flex-center">
                     <div style="margin-bottom:3px;">
-                        <i class="fas fa-bolt set-pool-personal cursor-pointer" title="Spend motes form this pool"></i><label class="resource-label">{{localize "Ex3.Personal"}} {{#ifEquals system.creaturetype
-                            'exalt'}} <i class="fas fa-calculator calculate-personal-motes cursor-pointer"
-                                title="Auto Set Motes"></i> {{/ifEquals}}</label>
+                        <a><i class="fas fa-bolt set-pool-personal cursor-pointer" title="Spend motes form this pool"></i></a>  <label class="resource-label">{{localize "Ex3.Personal"}} {{#ifEquals system.creaturetype
+                            'exalt'}} <a><i class="fas fa-calculator calculate-personal-motes cursor-pointer"
+                                title="Auto Set Motes"></i></a>  {{/ifEquals}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
                             <input type="number" name="system.motes.personal.value"
                                 value="{{system.motes.personal.value}}" data-dtype="Number" />
@@ -104,9 +104,9 @@
                 </div>
                 <div class="flex-center">
                     <div style="margin-bottom:3px;">
-                        <i class="fas fa-bolt set-pool-peripheral cursor-pointer" title="Spend motes form this pool"></i> <label class="resource-label">{{localize "Ex3.Peripheral"}} {{#ifEquals system.creaturetype
-                            'exalt'}} <i class="fas fa-calculator calculate-peripheral-motes cursor-pointer"
-                                title="Auto Set Motes"></i> {{/ifEquals}}</label>
+                        <a><i class="fas fa-bolt set-pool-peripheral cursor-pointer" title="Spend motes form this pool"></i></a> <label class="resource-label">{{localize "Ex3.Peripheral"}} {{#ifEquals system.creaturetype
+                            'exalt'}} <a><i class="fas fa-calculator calculate-peripheral-motes cursor-pointer"
+                                title="Auto Set Motes"></i> </a>{{/ifEquals}}</label>
                         <div class="resource-content flexrow flex-center flex-between">
                             <input type="number" name="system.motes.peripheral.value"
                                 value="{{system.motes.peripheral.value}}" data-dtype="Number" />
@@ -123,9 +123,9 @@
                 </div>
                 <div class="resource-content flexrow flex-center flex-between">
                     <div>
-                        <i id="anima-down" class="fas fa-caret-down cursor-pointer"></i><label
+                        <a><i id="anima-down" class="fas fa-caret-down cursor-pointer"></i></a><label
                             class="resource-label">{{localize
-                            "Ex3.Anima"}}</label><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i>
+                            "Ex3.Anima"}}</label><a><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i></a>
                         <div>{{system.anima.level}}</div>
                     </div>
                 </div>

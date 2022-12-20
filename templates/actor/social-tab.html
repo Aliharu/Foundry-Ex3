@@ -13,9 +13,9 @@
   <div {{#if system.resolve.padding}}style="margin-bottom:17px"{{/if}}>
       <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}
         {{#if system.settings.editmode}}
-        <i
-        class="fas fa-calculator calculate-resolve cursor-pointer"
-        title="Auto Set Resolve" style="margin-left:3px;"></i>
+        <a><i
+          class="fas fa-calculator calculate-resolve cursor-pointer"
+          title="Auto Set Resolve" style="margin-left:3px;"></i></a>
         {{/if}}
         {{/ifEquals}}</label>
       <input type="number" name="system.resolve.value" value="{{system.resolve.value}}"
@@ -25,9 +25,9 @@
   <div {{#if system.guile.padding}}style="margin-bottom:17px"{{/if}}>
       <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}
         {{#if system.settings.editmode}}
-        <i
-        class="fas fa-calculator calculate-guile cursor-pointer"
-        title="Auto Set Guile" style="margin-left:3px;"></i>
+        <a><i
+          class="fas fa-calculator calculate-guile cursor-pointer"
+          title="Auto Set Guile" style="margin-left:3px;"></i></a>
         {{/if}}
         {{/ifEquals}}</label>
       <input type="number" name="system.guile.value" value="{{system.guile.value}}"
