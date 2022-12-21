@@ -196,6 +196,25 @@
   font-size: 29px;
 }
 
+.exaltedthird .sheet-header h1.itemname {
+  height: 50px;
+  padding: 0px;
+  margin: 5px 0;
+  border-bottom: 0;
+}
+
+.exaltedthird .sheet-header h1.itemname input {
+  width: 90%;
+  height: 100%;
+  margin: 0;
+}
+
+.exaltedthird .sheet-header h1.itemname select {
+  width: 100%;
+  height: 100%;
+  font-size: 29px;
+}
+
 .exaltedthird .pool {
   border: none;
 }

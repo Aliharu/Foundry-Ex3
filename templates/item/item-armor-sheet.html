@@ -2,10 +2,17 @@
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-            <div class="check-button">
-                <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
-                <input name="system.equiped" type="checkbox" value="system.equiped" {{checked system.equiped}}>
+            <h1 class="itemname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/>
+                <a class="trait-selector" data-options="armortags" data-target="system.traits.armortags">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </h1>
+            <div class="mt-1">
+                <div class="mt-1">
+                    {{#each system.traits.armortags.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                    {{/each}}
+                </div>
             </div>
         </div>
     </header>
@@ -20,18 +27,24 @@
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            <div class="d-flex flex-center resources">
+            <div class="grid grid-4col flex-group-center">
                 <div>
-                    <div>{{localize "Ex3.Soak"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Soak"}}</div>
                     <input type="number" name="system.soak" value="{{system.soak}}" data-dtype="Number" />
                 </div>
                 <div>
-                    <div>{{localize "Ex3.Penalty"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Penalty"}}</div>
                     <input type="number" name="system.penalty" value="{{system.penalty}}" data-dtype="Number" />
                 </div>
                 <div>
-                    <div>{{localize "Ex3.Hardness"}}</div>
+                    <div class="resource-label">{{localize "Ex3.Hardness"}}</div>
                     <input type="number" name="system.hardness" value="{{system.hardness}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
+                    <div>
+                        <input name="system.equiped" type="checkbox" value="system.equiped" {{checked system.equiped}}>
+                    </div>
                 </div>
             </div>
             {{editor system.description target="system.description" button=true owner=owner editable=true}}

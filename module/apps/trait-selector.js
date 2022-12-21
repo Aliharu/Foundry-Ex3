@@ -9,7 +9,7 @@ export default class TraitSelector extends DocumentSheet {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 	    id: "trait-selector",
       classes: ["exaltedthird", "trait-selector", "subconfig"],
-      title: "Actor Trait Selection",
+      title: "Trait Selection",
       template: "systems/exaltedthird/templates/dialogues/trait-selector.html",
       width: 320,
       height: "auto",

@@ -95,6 +95,7 @@ export class RollForm extends FormApplication {
                 threshholdToDamage: false,
                 resetInit: true,
                 doubleRolledDamage: false,
+                ignoreSoak: 0,
             };
             this.object.craft = {
                 divineInsperationTechnique: false,
@@ -215,6 +216,12 @@ export class RollForm extends FormApplication {
         }
         if(this.object.damage.resetInit === undefined) {
             this.object.damage.resetInit = true;
+        }
+        if(this.object.damage.doubleRolledDamage === undefined) {
+            this.object.damage.doubleRolledDamage = false;
+        }
+        if(this.object.damage.ignoreSoak === undefined) {
+            this.object.damage.ignoreSoak = 0;
         }
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
@@ -600,7 +607,12 @@ export class RollForm extends FormApplication {
             if (item.system.diceroller.damage.doublerolleddamage) {
                 this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
             }
-
+            if (item.system.diceroller.damage.doublerolleddamage) {
+                this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
+            }
+            if (item.system.diceroller.damage.ignoresoak > 0) {
+                this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
+            }
             this.render();
         });
 
@@ -677,6 +689,9 @@ export class RollForm extends FormApplication {
                 }
                 if (item.system.diceroller.damage.doublerolleddamage) {
                     this.object.damage.doubleRolledDamage = false;
+                }
+                if (item.system.diceroller.damage.ignoresoak > 0) {
+                    this.object.damage.ignoreSoak -= item.system.diceroller.damage.ignoresoak;
                 }
             }
             this.render();
@@ -1166,7 +1181,7 @@ export class RollForm extends FormApplication {
             }
         }
         else if (this._damageRollType('withering')) {
-            dice -= this.object.soak;
+            dice -= Math.max(0, this.object.soak - this.object.damage.ignoreSoak);
             if (dice < this.object.overwhelming) {
                 dice = Math.max(dice, this.object.overwhelming);
             }
@@ -1282,7 +1297,7 @@ export class RollForm extends FormApplication {
                     }
                 }
             }
-            soakResult = `<h4 class="dice-formula">${this.object.soak} Soak!</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>`;
+            soakResult = `<h4 class="dice-formula">${this.object.soak} Soak! (Ignoring ${this.object.damage.ignoreSoak})</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>`;
             typeSpecificResults = `
                                     <h4 class="dice-formula">${total} Damage!</h4>
                                     <h4 class="dice-total">${total} Total Damage!</h4>

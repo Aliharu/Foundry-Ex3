@@ -157,9 +157,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         gear.push(i);
       }
       else if (i.type === 'weapon') {
+        this._prepareItemTraits('weapon', i);
         weapons.push(i);
       }
       else if (i.type === 'armor') {
+        this._prepareItemTraits('armor', i);
         armor.push(i);
       }
       else if (i.type === 'merit') {
@@ -261,6 +263,41 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     };
     for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];
+      if (!trait) continue;
+      let values = [];
+      if (trait.value) {
+        values = trait.value instanceof Array ? trait.value : [trait.value];
+      }
+      trait.selected = values.reduce((obj, t) => {
+        obj[t] = choices[t];
+        return obj;
+      }, {});
+
+      // Add custom entry
+      if (trait.custom) {
+        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
+      }
+      trait.cssClass = !isEmpty(trait.selected) ? "" : "inactive";
+    }
+  }
+
+  
+  /**
+ * Prepare the data structure for traits data like languages
+ * @param {object} traits   The raw traits data object from the actor data
+ * @private
+ */
+  _prepareItemTraits(type, i) {
+    const map = {
+    };
+    if (type === 'weapon') {
+      map['weapontags'] = CONFIG.exaltedthird.weapontags
+    }
+    if (type === 'armor') {
+      map['armortags'] = CONFIG.exaltedthird.armortags
+    }
+    for (let [t, choices] of Object.entries(map)) {
+      const trait = i.system.traits[t];
       if (!trait) continue;
       let values = [];
       if (trait.value) {

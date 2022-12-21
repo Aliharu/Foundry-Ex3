@@ -611,7 +611,13 @@
       "artifact": false,
       "magic": false,
       "attackeffectpreset": "none",
-      "attackeffect": ""
+      "attackeffect": "",
+      "traits": {
+        "weapontags": {
+          "value": [],
+          "custom": ""
+        }
+      }
     },
     "armor": {
       "templates": [
@@ -621,7 +627,13 @@
       "penalty": 0,
       "hardness": 0,
       "tags": "",
-      "equiped": true
+      "equiped": true,
+      "traits": {
+        "armortags": {
+          "value": [],
+          "custom": ""
+        }
+      }
     },
     "charm": {
       "templates": [
@@ -680,6 +692,7 @@
           "targetnumber": 7,
           "overwhelming": 0,
           "postsoakdamage": 0,
+          "ignoresoak": 0,
           "threshholdtodamage": false,
           "doublerolleddamage": false,
           "reroll": {

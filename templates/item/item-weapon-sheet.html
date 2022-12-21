@@ -1,9 +1,33 @@
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-            <div class="check-button">
+            <h1 class="itemname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" />
+                <a class="trait-selector" data-options="weapontags" data-target="system.traits.weapontags">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </h1>
+            <div class="mt-1">
+                <div class="mt-1">
+                    {{#each system.traits.weapontags.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
+        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+
+        {{!-- Description Tab --}}
+        <div class="tab" data-group="primary" data-tab="description">
+            <div class="check-button flex-center mb-1">
                 <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
                 <input name="system.equiped" type="checkbox" value="system.equiped" {{checked system.equiped}}>
                 <label class="resource-label mr-1">{{localize "Ex3.Type"}}: </label>
@@ -19,19 +43,6 @@
                 <label class="resource-label ml-1">{{localize "Ex3.Magic"}}: </label>
                 <input name="system.magic" type="checkbox" value="system.magic" {{checked system.magic}}>
             </div>
-        </div>
-    </header>
-
-    <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
-        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
-    </nav>
-
-    {{!-- Sheet Body --}}
-    <section class="sheet-body">
-
-        {{!-- Description Tab --}}
-        <div class="tab" data-group="primary" data-tab="description">
             <div class="d-flex flex-center resources">
                 <label class="resource-label mr-1">{{localize "Ex3.Attribute"}}: </label>
                 <select name="system.attribute" data-type="String">
@@ -84,11 +95,13 @@
             <div class="d-flex flex-center resources">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Accuracy"}} </div>
-                    <input type="number" name="system.witheringaccuracy" value="{{system.witheringaccuracy}}" data-dtype="Number" />
+                    <input type="number" name="system.witheringaccuracy" value="{{system.witheringaccuracy}}"
+                        data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Damage"}}</div>
-                    <input type="number" name="system.witheringdamage" value="{{system.witheringdamage}}" data-dtype="Number" />
+                    <input type="number" name="system.witheringdamage" value="{{system.witheringdamage}}"
+                        data-dtype="Number" />
                 </div>
             </div>
             <div class="d-flex flex-center mt-1 mb-1">
@@ -101,7 +114,8 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Overwhelming"}}</div>
-                    <input type="number" name="system.overwhelming" value="{{system.overwhelming}}" data-dtype="Number" />
+                    <input type="number" name="system.overwhelming" value="{{system.overwhelming}}"
+                        data-dtype="Number" />
                 </div>
             </div>
             {{editor system.description target="system.description" button=true owner=owner editable=true}}
@@ -141,7 +155,8 @@
                     </select>
                     <div>
                         <label class="resource-label mr-1">{{localize "Ex3.CustomInput"}}: </label>
-                        <input type="text" name="system.attackeffect" value="{{system.attackeffect}}" placeholder="jb2a.quarterstaff.melee.01.white" />
+                        <input type="text" name="system.attackeffect" value="{{system.attackeffect}}"
+                            placeholder="jb2a.quarterstaff.melee.01.white" />
                     </div>
                 </div>
             </div>

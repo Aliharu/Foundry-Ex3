@@ -160,6 +160,8 @@
     "Ex3.ThreshholdToDamage": "Threshhold To Damage",
     "Ex3.DoubleRolledDamage": "Double Rolled Damage",
     "Ex3.ResetInitiative": "Reset Initiative",
+    "Ex3.IgnoreArmorSoak": "Ignore Armor Soak",
+    "Ex3.IgnoreSoak": "Ignore Soak",
     "Ex3.Ranged": "Ranged",
     "Ex3.Armor": "Armor",
     "Ex3.Penalty": "Penalty",

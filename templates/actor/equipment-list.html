@@ -1,5 +1,6 @@
 <div>
-  <label class="resource-label">{{localize "Ex3.Weapons"}} <a><i class="fas fa-info-circle show-weapon-tags cursor-pointer"></i></a></label>
+  <label class="resource-label">{{localize "Ex3.Weapons"}} <a><i
+        class="fas fa-info-circle show-weapon-tags cursor-pointer"></i></a></label>
   <ol class="items-list" style="overflow-y: inherit;">
     <li class="item flexrow item-header">
       <div class="item-image"></div>
@@ -15,7 +16,8 @@
     </li>
     {{#each actor.weapons as |item id|}}
     <li class="item item-large flexrow item-row" data-item-id="{{item._id}}">
-      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
         {{item.system.witheringaccuracy}}
@@ -35,11 +37,16 @@
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>
     </li>
-    <li class="item-description">
-        <div>
-            {{{item.system.description}}}
+    <div class="item-description">
+      <div>
+        <div class="mt-1">
+          {{#each item.system.traits.weapontags.selected as |v k|}}
+          <li class="tag {{k}}">{{v}}</li>
+          {{/each}}
         </div>
-    </li>
+        {{{item.system.description}}}
+      </div>
+    </div>
     <li class="item item-large flexrow">
       <div>
         <button class="roll-button roll-withering" data-item-id="{{item._id}}"><i class="fas fa-bolt"></i>{{localize
@@ -58,7 +65,8 @@
   </ol>
 </div>
 <div>
-  <label class="resource-label">{{localize "Ex3.Armor"}} <a><i class="fas fa-info-circle show-armor-tags cursor-pointer"></i></a></label>
+  <label class="resource-label">{{localize "Ex3.Armor"}} <a><i
+        class="fas fa-info-circle show-armor-tags cursor-pointer"></i></a></label>
   <ol class="items-list">
     <li class="item flexrow item-header">
       <div class="item-image"></div>
@@ -73,7 +81,8 @@
     </li>
     {{#each actor.armor as |item id|}}
     <li class="item item-large flexrow item-row" data-item-id="{{item._id}}">
-      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
       <h4 class="item-name">{{item.name}}</h4>
       <div class="resource-value-static">
         {{item.system.soak}}
@@ -90,43 +99,48 @@
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>
     </li>
-    <li class="item-description">
-        <div>
-            {{{item.system.description}}}
+    <div class="item-description">
+      <div>
+        <div class="mt-1">
+          {{#each item.system.traits.armortags.selected as |v k|}}
+          <li class="tag {{k}}">{{v}}</li>
+          {{/each}}
         </div>
-    </li>
+        {{{item.system.description}}}
+      </div>
+    </div>
     {{/each}}
   </ol>
 </div>
 {{#if system.settings.showwarstrider}}
 <div>
   <label class="resource-label">{{localize "Ex3.Warstrider"}}</label>
-    <div class="resource flex-group-center d-flex">
-      <div style="margin-right:20px;">
-        <div class="flexrow">
-          <label for="system.warstrider.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
-            id="calculate-warstrider-health" style="margin-right:3px;" title="Calculate Health"></i></a>{{localize
-            "Ex3.Health"}}<i id="recoverySceneWarstrider" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+  <div class="resource flex-group-center d-flex">
+    <div style="margin-right:20px;">
+      <div class="flexrow">
+        <label for="system.warstrider.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
+              id="calculate-warstrider-health" style="margin-right:3px;" title="Calculate Health"></i></a>{{localize
+          "Ex3.Health"}}<i id="recoverySceneWarstrider" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
             style="margin-left:3px;"></i></label>
-        </div>
-        <div class="resource-content flexrow flex-center flex-between">
-          <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-            data-max="{{system.warstrider.health.max}}" data-bashing="{{system.warstrider.health.bashing}}"
-            data-lethal="{{system.warstrider.health.lethal}}" data-aggravated="{{system.warstrider.health.aggravated}}"
-            data-name="system.warstrider.health">
-            {{#numLoop system.warstrider.health.max}}
-            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
-            {{/numLoop}}
-          </div>
-        </div>
       </div>
-      <div>
-        <div class="flex-center">
-          <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-          <div>-{{system.warstrider.health.penalty}}</div>
+      <div class="resource-content flexrow flex-center flex-between">
+        <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
+          data-max="{{system.warstrider.health.max}}" data-bashing="{{system.warstrider.health.bashing}}"
+          data-lethal="{{system.warstrider.health.lethal}}" data-aggravated="{{system.warstrider.health.aggravated}}"
+          data-name="system.warstrider.health">
+          {{#numLoop system.warstrider.health.max}}
+          <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+          {{/numLoop}}
         </div>
       </div>
     </div>
+    <div>
+      <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
+        <div>-{{system.warstrider.health.penalty}}</div>
+      </div>
+    </div>
+  </div>
   <div class="grid grid-5col flex-group-center">
     <div class="d-flex" style="align-items: center; justify-content: center;">
       <label class="resource-label">{{localize "Ex3.Equipped"}}</label>
@@ -134,19 +148,23 @@
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Soak"}}</label>
-      <input type="number" name="system.warstrider.soak.value" value="{{system.warstrider.soak.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.soak.value" value="{{system.warstrider.soak.value}}"
+        data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
-      <input type="number" name="system.warstrider.hardness.value" value="{{system.warstrider.hardness.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.hardness.value" value="{{system.warstrider.hardness.value}}"
+        data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Strength"}}</label>
-      <input type="number" name="system.warstrider.strength.value" value="{{system.warstrider.strength.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.strength.value" value="{{system.warstrider.strength.value}}"
+        data-dtype="Number" />
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Speed"}}</label>
-      <input type="number" name="system.warstrider.speed.value" value="{{system.warstrider.speed.value}}" data-dtype="Number" />
+      <input type="number" name="system.warstrider.speed.value" value="{{system.warstrider.speed.value}}"
+        data-dtype="Number" />
     </div>
   </div>
 </div>
@@ -154,32 +172,32 @@
 {{#if system.settings.showship}}
 <div>
   <label class="resource-label">{{localize "Ex3.Ship"}}</label>
-    <div class="resource flex-group-center d-flex">
-      <div style="margin-right:20px;">
-        <div class="flexrow">
-          <label for="system.ship.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
-            id="calculate-ship-health" style="margin-right:3px;" title="Calculate Health"></i></a>{{localize
-            "Ex3.Hull"}}<i id="recoverySceneShip" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+  <div class="resource flex-group-center d-flex">
+    <div style="margin-right:20px;">
+      <div class="flexrow">
+        <label for="system.ship.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
+              id="calculate-ship-health" style="margin-right:3px;" title="Calculate Health"></i></a>{{localize
+          "Ex3.Hull"}}<i id="recoverySceneShip" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
             style="margin-left:3px;"></i></label>
-        </div>
-        <div class="resource-content flexrow flex-center flex-between">
-          <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
-            data-max="{{system.ship.health.max}}" data-bashing="{{system.ship.health.bashing}}"
-            data-lethal="{{system.ship.health.lethal}}" data-aggravated="{{system.ship.health.aggravated}}"
-            data-name="system.ship.health">
-            {{#numLoop system.ship.health.max}}
-            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
-            {{/numLoop}}
-          </div>
-        </div>
       </div>
-      <div>
-        <div class="flex-center">
-          <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
-          <div>-{{system.ship.health.penalty}}</div>
+      <div class="resource-content flexrow flex-center flex-between">
+        <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated"
+          data-max="{{system.ship.health.max}}" data-bashing="{{system.ship.health.bashing}}"
+          data-lethal="{{system.ship.health.lethal}}" data-aggravated="{{system.ship.health.aggravated}}"
+          data-name="system.ship.health">
+          {{#numLoop system.ship.health.max}}
+          <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+          {{/numLoop}}
         </div>
       </div>
     </div>
+    <div>
+      <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.WoundPenalty"}}</div>
+        <div>-{{system.ship.health.penalty}}</div>
+      </div>
+    </div>
+  </div>
   <div class="grid grid-2col flex-group-center">
     <div>
       <label class="resource-label">{{localize "Ex3.Speed"}}</label>
@@ -187,11 +205,12 @@
     </div>
     <div>
       <label class="resource-label">{{localize "Ex3.Maneuverability"}}</label>
-      <input type="number" name="system.ship.maneuverability.value" value="{{system.ship.maneuverability.value}}" data-dtype="Number" />
+      <input type="number" name="system.ship.maneuverability.value" value="{{system.ship.maneuverability.value}}"
+        data-dtype="Number" />
     </div>
   </div>
   <div>
-  <label class="resource-label">{{localize "Ex3.Cargo"}}</label>
+    <label class="resource-label">{{localize "Ex3.Cargo"}}</label>
     <textarea type="text" name="system.ship.cargo" rows="2">{{system.ship.cargo}}</textarea>
   </div>
 </div>

@@ -29,6 +29,44 @@ exaltedthird.languages = {
     "localtongue": "Local Tongue",
 };
 
+exaltedthird.weapontags = {
+    "archery": "Archery",
+    "artifact": "Artifact",
+    "balanced": "Balanced",
+    "bashing": "Bashing",
+    "bombard": "Bombard",
+    "brawl": "Brawl",
+    "chopping": "Chopping",
+    "concealable": "Concealable",
+    "crossbow": "Crossbow",
+    "disarming": "Disarming",
+    "flame": "Flame",
+    "flexible": "Flexible",
+    "improvised": "Improvised",
+    "grappling": "Grappling",
+    "lethal": "Lethal",
+    "martialarts": "Martial Arts",
+    "melee": "Melee",
+    "natural": "Natural",
+    "onehande": "One-Handed",
+    "piercing": "Piercing",
+    "powerful": "Powerful",
+    "reaching": "Reaching",
+    "shield": "Shield",
+    "slow": "Slow",
+    "smashing": "Smashing",
+    "special": "Special",
+    "thrown": "Thrown",
+    "twohanded": "Two-Handed",
+};
+
+exaltedthird.armortags = {
+    "artifact": "Artifact",
+    "buoyant": "Buoyant",
+    "concealable": "Concealable",
+    "silent": "Silent",
+};
+
 exaltedthird.statusEffects = [
     {
         icon: 'icons/svg/falling.svg',
