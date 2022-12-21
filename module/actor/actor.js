@@ -1,4 +1,5 @@
 import { RollForm } from "../apps/dice-roller.js";
+import { prepareItemTraits } from "../item/item.js";
 
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
@@ -351,9 +352,11 @@ export class ExaltedThirdActor extends Actor {
         gear.push(i);
       }
       else if (i.type === 'weapon') {
+        prepareItemTraits('weapon', i);
         weapons.push(i);
       }
       else if (i.type === 'armor') {
+        prepareItemTraits('armor', i);
         armor.push(i);
       }
       else if (i.type === 'merit') {

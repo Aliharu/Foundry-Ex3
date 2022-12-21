@@ -18,7 +18,7 @@ export class RollForm extends FormApplication {
             this.object.craftType = data.craftType || 0;
             this.object.craftRating = data.craftRating || 0;
             this.object.attackType = data.attackType || data.rollType || 'withering';
-            if(this.object.rollType === 'damage') {
+            if (this.object.rollType === 'damage') {
                 this.object.attackType = 'withering';
             }
             this.object.showPool = !this._isAttackRoll();
@@ -111,7 +111,7 @@ export class RollForm extends FormApplication {
                     this.object.appearance = this.actor.system.attributes.appearance.value;
                 }
 
-                if(this.actor.system.settings.rollStunts) {
+                if (this.actor.system.settings.rollStunts) {
                     this.object.stunt = "one";
                 }
 
@@ -125,6 +125,23 @@ export class RollForm extends FormApplication {
                         this.object.pool = data.pool || "administration";
                     }
                     this.object.appearance = this.actor.system.appearance.value;
+                }
+                if (data.weapon) {
+                    if (this.actor.type === 'character') {
+                        this.object.attribute = data.weapon.attribute || this._getHighestAttribute();
+                        this.object.ability = data.weapon.ability || "archery";
+                    }
+                    if(this.object.rollType === 'withering' || this.actor.type === "npc") {
+                        this.object.accuracy = data.weapon.witheringaccuracy || 0;
+                        if(this.object.rollType === 'withering') {
+                            this.object.damage.damageDice = data.weapon.witheringdamage || 0;
+                        }
+                    }
+                    this.object.overwhelming = data.weapon.overwhelming || 0;
+                    this.object.weaponType = data.weapon.weapontype || "melee";
+                    this.object.isMagic = data.weapon.magic || false;
+                    this.object.attackeffectpreset = data.weapon.attackeffectpreset || "none";
+                    this.object.attackeffect = data.weapon.attackeffect || "";
                 }
                 this.object.difficultyString = 'Ex3.Difficulty';
                 if (this.object.rollType === 'readIntentions') {
@@ -214,13 +231,13 @@ export class RollForm extends FormApplication {
         if (this.object.damage.threshholdToDamage === undefined) {
             this.object.damage.threshholdToDamage = false;
         }
-        if(this.object.damage.resetInit === undefined) {
+        if (this.object.damage.resetInit === undefined) {
             this.object.damage.resetInit = true;
         }
-        if(this.object.damage.doubleRolledDamage === undefined) {
+        if (this.object.damage.doubleRolledDamage === undefined) {
             this.object.damage.doubleRolledDamage = false;
         }
-        if(this.object.damage.ignoreSoak === undefined) {
+        if (this.object.damage.ignoreSoak === undefined) {
             this.object.damage.ignoreSoak = 0;
         }
         if (this.object.addedCharms === undefined) {
@@ -272,7 +289,7 @@ export class RollForm extends FormApplication {
                     if (this.object.target.actor.system.health.penalty !== 'inc') {
                         this.object.difficulty -= Math.max(0, this.object.target.actor.system.health.penalty - this.object.target.actor.system.health.penaltymod);
                     }
-                    if(this.object.difficulty < 0) {
+                    if (this.object.difficulty < 0) {
                         this.object.difficulty = 0;
                     }
                 }
@@ -333,10 +350,10 @@ export class RollForm extends FormApplication {
                         this.object.defense -= 2;
                     }
                 }
-                if(this.object.defense < 0) {
+                if (this.object.defense < 0) {
                     this.object.defense = 0;
                 }
-                if(this.object.soak < 0) {
+                if (this.object.soak < 0) {
                     this.object.soak = 0;
                 }
             }
@@ -831,7 +848,7 @@ export class RollForm extends FormApplication {
 
         for (var rerollValue in this.object.reroll) {
             if (this.object.reroll[rerollValue].status) {
-                if(this.object.reroll[rerollValue].number < this.object.targetNumber) {
+                if (this.object.reroll[rerollValue].number < this.object.targetNumber) {
                     rerollString += `rr${this.object.reroll[rerollValue].number}`;
                 }
                 else {
@@ -1229,7 +1246,7 @@ export class RollForm extends FormApplication {
             total += bonus;
         }
         total += this.object.damage.damageSuccessModifier;
-        if(this.object.damage.doubleRolledDamage) {
+        if (this.object.damage.doubleRolledDamage) {
             total *= 2;
         }
 
@@ -1237,7 +1254,7 @@ export class RollForm extends FormApplication {
 
         if (this._damageRollType('decisive')) {
             typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
-            if(this.object.damage.resetInit) {
+            if (this.object.damage.resetInit) {
                 this.object.characterInitiative = 3;
             }
             if (this._useLegendarySize('decisive')) {
@@ -1703,17 +1720,17 @@ export class RollForm extends FormApplication {
                     return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
                 }
                 if (this.actor.system.details.exalt === "sidereal") {
-                    var baseSidCap = Math.min(5,  Math.max(3, this.actor.system.essence.value));
+                    var baseSidCap = Math.min(5, Math.max(3, this.actor.system.essence.value));
                     var tnChange = "";
-                    if(this.actor.system.abilities[this.object.ability].value === 5){
-                        if(this.actor.system.essence.value >= 3){
+                    if (this.actor.system.abilities[this.object.ability].value === 5) {
+                        if (this.actor.system.essence.value >= 3) {
                             tnChange = " - TN -3";
                         }
                         else {
                             tnChange = " - TN -2";
                         }
                     }
-                    else if(this.actor.system.abilities[this.object.ability].value >= 3){
+                    else if (this.actor.system.abilities[this.object.ability].value >= 3) {
                         tnChange = " - TN -1";
                     }
                     return `${baseSidCap}${tnChange}`;
@@ -1725,7 +1742,7 @@ export class RollForm extends FormApplication {
                     return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
                 }
                 if (this.actor.system.details.exalt === "liminal") {
-                    if(this.actor.system.anima.value > 1) {
+                    if (this.actor.system.anima.value > 1) {
                         return `${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value}`;
                     }
                     else {
@@ -1764,7 +1781,7 @@ export class RollForm extends FormApplication {
                 else {
                     diceTier = "eleven";
                 }
-                if(this.actor.system.details.exalt === "sidereal") {
+                if (this.actor.system.details.exalt === "sidereal") {
                     return this.actor.system.essence.value;
                 }
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {

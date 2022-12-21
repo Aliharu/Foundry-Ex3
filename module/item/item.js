@@ -47,3 +47,32 @@ export class ExaltedThirdItem extends Item {
     }
   }
 }
+
+  export function prepareItemTraits(type, i) {
+    const map = {
+    };
+    if (type === 'weapon') {
+      map['weapontags'] = CONFIG.exaltedthird.weapontags
+    }
+    if (type === 'armor') {
+      map['armortags'] = CONFIG.exaltedthird.armortags
+    }
+    for (let [t, choices] of Object.entries(map)) {
+      const trait = i.system.traits[t];
+      if (!trait) continue;
+      let values = [];
+      if (trait.value) {
+        values = trait.value instanceof Array ? trait.value : [trait.value];
+      }
+      trait.selected = values.reduce((obj, t) => {
+        obj[t] = choices[t];
+        return obj;
+      }, {});
+
+      // Add custom entry
+      if (trait.custom) {
+        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
+      }
+      trait.cssClass = !isEmpty(trait.selected) ? "" : "inactive";
+    }
+  }

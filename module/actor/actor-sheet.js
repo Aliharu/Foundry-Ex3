@@ -2,6 +2,7 @@ import TraitSelector from "../apps/trait-selector.js";
 import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import Importer from "../apps/importer.js";
+import { prepareItemTraits } from "../item/item.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -157,11 +158,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         gear.push(i);
       }
       else if (i.type === 'weapon') {
-        this._prepareItemTraits('weapon', i);
+        prepareItemTraits('weapon', i);
         weapons.push(i);
       }
       else if (i.type === 'armor') {
-        this._prepareItemTraits('armor', i);
+        prepareItemTraits('armor', i);
         armor.push(i);
       }
       else if (i.type === 'merit') {
@@ -263,41 +264,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     };
     for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];
-      if (!trait) continue;
-      let values = [];
-      if (trait.value) {
-        values = trait.value instanceof Array ? trait.value : [trait.value];
-      }
-      trait.selected = values.reduce((obj, t) => {
-        obj[t] = choices[t];
-        return obj;
-      }, {});
-
-      // Add custom entry
-      if (trait.custom) {
-        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
-      }
-      trait.cssClass = !isEmpty(trait.selected) ? "" : "inactive";
-    }
-  }
-
-  
-  /**
- * Prepare the data structure for traits data like languages
- * @param {object} traits   The raw traits data object from the actor data
- * @private
- */
-  _prepareItemTraits(type, i) {
-    const map = {
-    };
-    if (type === 'weapon') {
-      map['weapontags'] = CONFIG.exaltedthird.weapontags
-    }
-    if (type === 'armor') {
-      map['armortags'] = CONFIG.exaltedthird.armortags
-    }
-    for (let [t, choices] of Object.entries(map)) {
-      const trait = i.system.traits[t];
       if (!trait) continue;
       let values = [];
       if (trait.value) {
@@ -635,27 +601,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-withering').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, {
-        rollType: 'withering', attribute: item.system.attribute, ability: item.system.ability, accuracy: item.system.witheringaccuracy,
-        damage: item.system.witheringdamage, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic,
-        attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect
-      }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'withering', weapon: item.system }).render(true);
     });
 
     html.find('.roll-decisive').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, {
-        rollType: 'decisive', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0,
-        damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic, attackEffectPreset: item.system.attackeffectpreset, attackEffect: item.system.attackeffect
-      }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'decisive', weapon: item.system }).render(true);
     });
 
     html.find('.roll-gambit').mousedown(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, {
-        rollType: 'gambit', attribute: item.system.attribute, ability: item.system.ability, accuracy: this.actor.type === 'npc' ? item.system.witheringaccuracy : 0,
-        damage: 0, overwhelming: item.system.overwhelming, weaponType: item.system.weapontype, isMagic: item.system.magic
-      }).render(true);
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'gambit', weapon: item.system }).render(true);
     });
 
     html.find('#anima-up').click(ev => {
