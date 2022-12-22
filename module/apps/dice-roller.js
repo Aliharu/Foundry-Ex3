@@ -18,7 +18,7 @@ export class RollForm extends FormApplication {
             this.object.craftType = data.craftType || 0;
             this.object.craftRating = data.craftRating || 0;
             this.object.attackType = data.attackType || data.rollType || 'withering';
-            if (this.object.rollType === 'damage') {
+            if (this.object.rollType === 'damage' || this.object.rollType === 'accuracy') {
                 this.object.attackType = 'withering';
             }
             this.object.showPool = !this._isAttackRoll();
@@ -127,15 +127,27 @@ export class RollForm extends FormApplication {
                     this.object.appearance = this.actor.system.appearance.value;
                 }
                 if (data.weapon) {
+                    this.object.weaponTags = data.weapon.traits.weapontags.selected;
                     if (this.actor.type === 'character') {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute();
                         this.object.ability = data.weapon.ability || "archery";
                     }
-                    if(this.object.rollType === 'withering' || this.actor.type === "npc") {
+                    if (this.object.rollType === 'withering' || this.actor.type === "npc") {
                         this.object.accuracy = data.weapon.witheringaccuracy || 0;
-                        if(this.object.rollType === 'withering') {
+                        if (this.object.rollType === 'withering') {
                             this.object.damage.damageDice = data.weapon.witheringdamage || 0;
+                            if (this.actor.type === 'character') {
+                                if(this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
+                                    this.object.damage.damageDice += 4;
+                                }
+                                else {
+                                    this.object.damage.damageDice += (this.actor.system.attributes[data.weapon.damageattribute]?.value || 0);
+                                }
+                            }
                         }
+                    }
+                    if(this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
+                        this.object.damage.type = 'bashing';
                     }
                     this.object.overwhelming = data.weapon.overwhelming || 0;
                     this.object.weaponType = data.weapon.weapontype || "melee";
@@ -203,6 +215,7 @@ export class RollForm extends FormApplication {
             }
         }
         this.object.addingCharms = false;
+        this.object.showSpecialAttacks = false;
         if (this.object.cost === undefined) {
             this.object.cost = {
                 motes: 0,
@@ -230,6 +243,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.damage.threshholdToDamage === undefined) {
             this.object.damage.threshholdToDamage = false;
+        }
+        if (this.object.weaponTags === undefined) {
+            this.object.weaponTags = {};
         }
         if (this.object.damage.resetInit === undefined) {
             this.object.damage.resetInit = true;
@@ -401,6 +417,9 @@ export class RollForm extends FormApplication {
                     }
                     else {
                         ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.Done')}`;
+                    }
+                    if(this.object.weaponTags) {
+                        this.object.showSpecialAttacks = true;
                     }
                     this.object.addingCharms = !this.object.addingCharms;
                     this.render();
@@ -716,6 +735,7 @@ export class RollForm extends FormApplication {
 
         html.find('#done-adding-charms').click(ev => {
             this.object.addingCharms = false;
+            this.object.showSpecialAttacks = false;
             this.render();
         });
 
@@ -836,7 +856,7 @@ export class RollForm extends FormApplication {
 
         if (this._isAttackRoll()) {
             dice += this.object.accuracy || 0;
-            if (this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.rollType === 'withering')) {
+            if (this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.attackType === 'withering')) {
                 if (this.object.range !== 'short') {
                     dice += this._getRangedAccuracy();
                 }
@@ -1689,6 +1709,9 @@ export class RollForm extends FormApplication {
 
         var key = `${this.object.weaponType}-${this.object.range}`;
         var accuracyModifier = ranges[key];
+        if(this.object.weaponTags["flame"] && this.object.range === 'close') {
+            accuracyModifier += 2;
+        }
         return accuracyModifier;
     }
 

@@ -36,6 +36,17 @@
                 </select>
             </div>
         </div>
+        {{#ifEquals data.rollType 'accuracy'}}
+        <div class="resource grid grid-2col flex-center">
+            <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
+            <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
+                {{#select data.attackType}}
+                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
+                <option value="withering">{{localize "Ex3.Withering"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        {{/ifEquals}}
         <div class="resource grid grid-2col flex-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Accuracy"}}</label>

@@ -5,7 +5,7 @@
     <div>
         <div class="resource grid grid-2col flex-center">
             {{#ifEquals data.rollType 'damage'}}
-            <label class="resource-label">{{localize "Ex3.AttackType"}}</label>
+            <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
             <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
                 {{#select data.attackType}}
                 <option value="decisive">{{localize "Ex3.Decisive"}}</option>

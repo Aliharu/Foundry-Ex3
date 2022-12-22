@@ -607,6 +607,7 @@
       "weapontype": "melee",
       "ability": "melee",
       "attribute": "dexterity",
+      "damageattribute": "strength",
       "range": "short",
       "artifact": false,
       "magic": false,
