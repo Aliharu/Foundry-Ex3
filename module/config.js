@@ -46,6 +46,7 @@ exaltedthird.weapontags = {
     "improvised": "Improvised",
     "grappling": "Grappling",
     "lethal": "Lethal",
+    "magicdamage": "Magic Damage",
     "martialarts": "Martial Arts",
     "melee": "Melee",
     "mounted": "Mounted",

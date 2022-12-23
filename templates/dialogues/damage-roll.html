@@ -139,6 +139,11 @@
                     <input type="checkbox" name="object.damage.resetInit"
                         value="{{data.damage.resetInit}}" {{checked data.damage.resetInit}}>
                 </div>
+                <label class="resource-label">{{localize "Ex3.MagicDamage"}} </label>
+                <div>
+                    <input type="checkbox" name="object.isMagic"
+                        value="{{data.isMagic}}" {{checked data.isMagic}}>
+                </div>
                 {{/ifEquals}}
                 {{#ifEquals data.attackType 'withering'}}
                 <label class="resource-label">{{localize "Ex3.IgnoreSoak"}} </label>

@@ -134,7 +134,7 @@ Hooks.once('init', async function () {
   });
 });
 
-function handleSocket({type, id, data}) {
+async function handleSocket({type, id, data}) {
   if (!game.user.isGM) return;
 
   // if the logged in user is the active GM with the lowest user id
@@ -155,6 +155,14 @@ function handleSocket({type, id, data}) {
     }
   }
   if(type === 'addOnslaught') {
+    if(data.knockdownTriggered) {
+      const token = game.canvas.tokens.get(id)
+      const isProne = token.actor.effects.find(i => i.label == "Prone");
+      if (!isProne) {
+          const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
+          await token.toggleEffect(newProneEffect);
+      }
+    }
     const targetedActor = game.canvas.tokens.get(id).actor;
     const onslaught = targetedActor.effects.find(i => i.label == "Onslaught");
     if (onslaught) {
@@ -164,7 +172,7 @@ function handleSocket({type, id, data}) {
         onslaught.update({ changes });
     }
     else {
-      targetedActor.createEmbeddedDocuments('ActiveEffect', [{
+      await targetedActor.createEmbeddedDocuments('ActiveEffect', [{
             label: 'Onslaught',
             icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
             origin: targetedActor.uuid,
@@ -185,6 +193,14 @@ function handleSocket({type, id, data}) {
                 }
             ]
         }]);
+    }
+  }
+  if(type === 'addKnockdown') {
+    const token = game.canvas.tokens.get(id)
+    const isProne = token.actor.effects.find(i => i.label == "Prone");
+    if (!isProne) {
+        const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
+        await token.toggleEffect(newProneEffect);
     }
   }
 }

@@ -609,8 +609,6 @@
       "attribute": "dexterity",
       "damageattribute": "strength",
       "range": "short",
-      "artifact": false,
-      "magic": false,
       "attackeffectpreset": "none",
       "attackeffect": "",
       "traits": {

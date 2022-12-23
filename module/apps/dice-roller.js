@@ -34,6 +34,8 @@ export class RollForm extends FormApplication {
             this.object.attackEffect = data.attackEffect || '';
             this.object.diceModifier = 0;
             this.object.accuracy = data.accuracy || 0;
+            this.object.triggerSelfDefensePenalty = 0;
+            this.object.triggerKnockdown = false;
 
             this.object.overwhelming = data.overwhelming || 0;
             this.object.soak = 0;
@@ -137,7 +139,7 @@ export class RollForm extends FormApplication {
                         if (this.object.rollType === 'withering') {
                             this.object.damage.damageDice = data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
-                                if(this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
+                                if (this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
                                     this.object.damage.damageDice += 4;
                                 }
                                 else {
@@ -146,14 +148,16 @@ export class RollForm extends FormApplication {
                             }
                         }
                     }
-                    if(this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
+                    if (this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
                         this.object.damage.type = 'bashing';
+                    }
+                    if (this.object.weaponTags["magicdamage"]) {
+                        this.object.isMagic = true;
                     }
                     this.object.overwhelming = data.weapon.overwhelming || 0;
                     this.object.weaponType = data.weapon.weapontype || "melee";
-                    this.object.isMagic = data.weapon.magic || false;
-                    this.object.attackeffectpreset = data.weapon.attackeffectpreset || "none";
-                    this.object.attackeffect = data.weapon.attackeffect || "";
+                    this.object.attackEffectPreset = data.weapon.attackeffectpreset || "none";
+                    this.object.attackEffect = data.weapon.attackeffect || "";
                 }
                 this.object.difficultyString = 'Ex3.Difficulty';
                 if (this.object.rollType === 'readIntentions') {
@@ -255,9 +259,19 @@ export class RollForm extends FormApplication {
         }
         if (this.object.damage.ignoreSoak === undefined) {
             this.object.damage.ignoreSoak = 0;
+            this.object.triggerSelfDefensePenalty = 0;
+            this.object.triggerKnockdown = false;
         }
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
+        }
+        if (this.object.specialAttacksList === undefined) {
+            this.object.specialAttacksList = [
+                { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
+                { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
+                { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
+                { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
+            ];
         }
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();
@@ -418,8 +432,21 @@ export class RollForm extends FormApplication {
                     else {
                         ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.Done')}`;
                     }
-                    if(this.object.weaponTags) {
-                        this.object.showSpecialAttacks = true;
+                    if (this._isAttackRoll() && this.object.rollType !== 'gambit') {
+                        for (var specialAttack of this.object.specialAttacksList) {
+                            if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
+                                specialAttack.show = true;
+                                this.object.showSpecialAttacks = true;
+                            }
+                            else if (this.object.weaponTags[specialAttack.id]) {
+                                specialAttack.show = true;
+                                this.object.showSpecialAttacks = true;
+                            }
+                            else {
+                                specialAttack.added = false;
+                                specialAttack.show = false;
+                            }
+                        }
                     }
                     this.object.addingCharms = !this.object.addingCharms;
                     this.render();
@@ -558,6 +585,63 @@ export class RollForm extends FormApplication {
             if (this.object.intervals <= 0) {
                 this.close();
             }
+        });
+
+
+        html.find('.add-special-attack').click((ev) => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let id = li.data("item-id");
+            for (var specialAttack of this.object.specialAttacksList) {
+                if (specialAttack.id === id) {
+                    specialAttack.added = true;
+                }
+            }
+            if (id === 'knockback' || id === 'knockdown') {
+                this.object.cost.initiative += 2;
+                if (id === 'knockdown') {
+                    this.object.triggerKnockdown = true;
+                }
+            }
+            else {
+                this.object.cost.initiative += 1;
+            }
+            if (id === 'chopping' && this.object.attackType === 'withering') {
+                this.object.damage.damageDice += 3;
+            }
+            if (id === 'piercing' && this.object.attackType === 'withering') {
+                this.object.damage.ignoreSoak += 4;
+            }
+            this.object.triggerSelfDefensePenalty += 1;
+            this.render();
+        });
+
+        html.find('.remove-special-attack').click((ev) => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let id = li.data("item-id");
+            for (var specialAttack of this.object.specialAttacksList) {
+                if (specialAttack.id === id) {
+                    specialAttack.added = false;
+                }
+            }
+            if (id === 'knockback' || id === 'knockdown') {
+                this.object.cost.initiative -= 2;
+                if (id === 'knockdown') {
+                    this.object.triggerKnockdown = false;
+                }
+            }
+            else {
+                this.object.cost.initiative -= 1;
+            }
+            if (id === 'chopping' && this.object.attackType === 'withering') {
+                this.object.damage.damageDice -= 3;
+            }
+            if (id === 'piercing' && this.object.attackType === 'withering') {
+                this.object.damage.ignoreSoak -= 4;
+            }
+            this.object.triggerSelfDefensePenalty = Math.max(0, this.object.triggerSelfDefensePenalty - 1);
+            this.render();
         });
 
         html.find('.add-charm').click(ev => {
@@ -1138,7 +1222,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                 });
-                this._addOnslaught();
+                this._addAttackEffects();
             }
         }
         if (this.object.rollType === 'accuracy') {
@@ -1183,7 +1267,7 @@ export class RollForm extends FormApplication {
                 }
             });
             if (this.object.thereshholdSuccesses < 0) {
-                this._addOnslaught();
+                this._addAttackEffects();
             }
         }
     }
@@ -1448,10 +1532,24 @@ export class RollForm extends FormApplication {
             }
         }
         this.attackSequence();
-        this._addOnslaught();
+        this._addAttackEffects();
     }
 
-    async _addOnslaught() {
+    async _addAttackEffects() {
+        var knockdownTriggered = false;
+        var onslaughtTriggered = false;
+        if (this.object.thereshholdSuccesses >= 0 && this.object.triggerKnockdown && this.object.target) {
+            if (game.user.isGM) {
+                const isProne = this.object.target.actor.effects.find(i => i.label == "Prone");
+                if (!isProne) {
+                    const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
+                    await this.object.target.toggleEffect(newProneEffect);
+                }
+            }
+            else {
+                knockdownTriggered = true;
+            }
+        }
         if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
             if (!this._useLegendarySize('onslaught')) {
                 if (game.user.isGM) {
@@ -1463,7 +1561,7 @@ export class RollForm extends FormApplication {
                         onslaught.update({ changes });
                     }
                     else {
-                        this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
+                        await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
                             label: 'Onslaught',
                             icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                             origin: this.object.target.actor.uuid,
@@ -1487,12 +1585,52 @@ export class RollForm extends FormApplication {
                     }
                 }
                 else {
+                    onslaughtTriggered = true;
                     game.socket.emit('system.exaltedthird', {
                         type: 'addOnslaught',
                         id: this.object.target.id,
-                        data: null,
+                        data: {'knockdownTriggered': knockdownTriggered},
                     });
                 }
+            }
+        }
+        if(!onslaughtTriggered && knockdownTriggered) {
+            game.socket.emit('system.exaltedthird', {
+                type: 'addKnockdown',
+                id: this.object.target.id,
+                data: null,
+            });
+        }
+        if (this.object.triggerSelfDefensePenalty > 0) {
+            const existingPenalty = this.actor.effects.find(i => i.label == "Defense Penalty");
+            if (existingPenalty) {
+                let changes = duplicate(existingPenalty.changes);
+                changes[0].value = changes[0].value - this.object.triggerSelfDefensePenalty;
+                changes[1].value = changes[1].value - this.object.triggerSelfDefensePenalty;
+                existingPenalty.update({ changes });
+            }
+            else {
+                this.actor.createEmbeddedDocuments('ActiveEffect', [{
+                    label: 'Defense Penalty',
+                    icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+                    origin: this.actor.uuid,
+                    disabled: false,
+                    duration: {
+                        rounds: 10,
+                    },
+                    "changes": [
+                        {
+                            "key": "data.evasion.value",
+                            "value": (this.object.triggerSelfDefensePenalty * -1),
+                            "mode": 2
+                        },
+                        {
+                            "key": "data.parry.value",
+                            "value": (this.object.triggerSelfDefensePenalty * -1),
+                            "mode": 2
+                        }
+                    ]
+                }]);
             }
         }
     }
@@ -1709,7 +1847,7 @@ export class RollForm extends FormApplication {
 
         var key = `${this.object.weaponType}-${this.object.range}`;
         var accuracyModifier = ranges[key];
-        if(this.object.weaponTags["flame"] && this.object.range === 'close') {
+        if (this.object.weaponTags["flame"] && this.object.range === 'close') {
             accuracyModifier += 2;
         }
         return accuracyModifier;
