@@ -136,13 +136,12 @@
         <input name="object.doubleSuccess" value="{{data.doubleSuccess}}" type="number">
     </div>
 
-    {{#ifEquals data.rollType 'base'}}
-    {{else}}
+    {{#ifNotEquals data.rollType 'base'}}
     <div>
         <label class="resource-label">{{localize "Ex3.DiceModifier"}} </label>
         <input name="object.diceModifier" value="{{data.diceModifier}}" type="number">
     </div>
-    {{/ifEquals}}
+    {{/ifNotEquals}}
 
 </div>
 <div class="resource flex-center">

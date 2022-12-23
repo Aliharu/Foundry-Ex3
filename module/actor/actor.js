@@ -510,3 +510,41 @@ export class ExaltedThirdActor extends Actor {
     return "";
   }
 }
+
+
+export async function addDefensePenalty(actor, label="Defense Penalty") {
+  var icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
+  if(label === 'Onslaught') {
+    icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
+  }
+  const existingPenalty = actor.effects.find(i => i.label == label);
+  if (existingPenalty) {
+    let changes = duplicate(existingPenalty.changes);
+    changes[0].value = changes[0].value - 1;
+    changes[1].value = changes[1].value - 1;
+    existingPenalty.update({ changes });
+  }
+  else {
+    actor.createEmbeddedDocuments('ActiveEffect', [{
+      label: label,
+      icon: icon,
+      origin: actor.uuid,
+      disabled: false,
+      duration: {
+        rounds: 10,
+      },
+      "changes": [
+        {
+          "key": "data.evasion.value",
+          "value": -1,
+          "mode": 2
+        },
+        {
+          "key": "data.parry.value",
+          "value": -1,
+          "mode": 2
+        }
+      ]
+    }]);
+  }
+}

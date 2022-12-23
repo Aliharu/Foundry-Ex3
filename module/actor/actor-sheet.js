@@ -3,6 +3,7 @@ import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import Importer from "../apps/importer.js";
 import { prepareItemTraits } from "../item/item.js";
+import { addDefensePenalty } from "./actor.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -492,7 +493,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.add-defense-penalty').mousedown(ev => {
-      this.addDefensePenalty();
+      addDefensePenalty(this.actor);
+    });
+
+    html.find('.add-onslaught-penalty').mousedown(ev => {
+      addDefensePenalty(this.actor, 'Onslaught');
     });
 
     html.find('#rollDice').mousedown(ev => {
@@ -1587,38 +1592,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this.actor.update(actorData);
   }
 
-  async addDefensePenalty() {
-    const existingPenalty = this.actor.effects.find(i => i.label == "Defense Penalty");
-    if (existingPenalty) {
-      let changes = duplicate(existingPenalty.changes);
-      changes[0].value = changes[0].value - 1;
-      changes[1].value = changes[1].value - 1;
-      existingPenalty.update({ changes });
-    }
-    else {
-      this.actor.createEmbeddedDocuments('ActiveEffect', [{
-        label: 'Defense Penalty',
-        icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
-        origin: this.actor.uuid,
-        disabled: false,
-        duration: {
-          rounds: 10,
-        },
-        "changes": [
-          {
-            "key": "data.evasion.value",
-            "value": -1,
-            "mode": 2
-          },
-          {
-            "key": "data.parry.value",
-            "value": -1,
-            "mode": 2
-          }
-        ]
-      }]);
-    }
-  }
 }
 
 

@@ -268,6 +268,7 @@ export class RollForm extends FormApplication {
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
                 { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
+                { id: 'flurry', name: "Flurry", added: false, show: this._isAttackRoll(), description: 'Cost: 3 dice and reduce defense by 1.', img: 'systems/exaltedthird/assets/icons/spinning-blades.svg' },
                 { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
                 { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
                 { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
@@ -386,6 +387,11 @@ export class RollForm extends FormApplication {
                 if (this.object.soak < 0) {
                     this.object.soak = 0;
                 }
+                if (this.object.weaponTags["bombard"]) {
+                    if(!this.object.target.actor.system.battlegroup && !this.object.target.actor.system.legendarysize && !this.object.target.actor.system.warstrider.equipped) {
+                        this.object.diceModifier -= 4;
+                    }
+                }
             }
         }
     }
@@ -432,19 +438,20 @@ export class RollForm extends FormApplication {
                     else {
                         ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.Done')}`;
                     }
-                    if (this._isAttackRoll() && this.object.rollType !== 'gambit') {
-                        for (var specialAttack of this.object.specialAttacksList) {
-                            if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
-                                specialAttack.show = true;
-                                this.object.showSpecialAttacks = true;
-                            }
-                            else if (this.object.weaponTags[specialAttack.id]) {
-                                specialAttack.show = true;
-                                this.object.showSpecialAttacks = true;
-                            }
-                            else {
-                                specialAttack.added = false;
-                                specialAttack.show = false;
+                    if (this._isAttackRoll()) {
+                        this.object.showSpecialAttacks = true;
+                        if(this.object.rollType !== 'gambit') {
+                            for (var specialAttack of this.object.specialAttacksList) {
+                                if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
+                                    specialAttack.show = true;
+                                }
+                                else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
+                                    specialAttack.show = true;
+                                }
+                                else {
+                                    specialAttack.added = false;
+                                    specialAttack.show = false;
+                                }
                             }
                         }
                     }
@@ -603,6 +610,9 @@ export class RollForm extends FormApplication {
                     this.object.triggerKnockdown = true;
                 }
             }
+            else if(id === 'flurry') {
+                this.object.isFlurry = true;
+            }
             else {
                 this.object.cost.initiative += 1;
             }
@@ -630,6 +640,9 @@ export class RollForm extends FormApplication {
                 if (id === 'knockdown') {
                     this.object.triggerKnockdown = false;
                 }
+            }
+            else if(id === 'flurry') {
+                this.object.isFlurry = false;
             }
             else {
                 this.object.cost.initiative -= 1;

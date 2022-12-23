@@ -172,7 +172,7 @@
         </div>
         <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
             <div class="resource-label">
-                Gambits (Difficulty)
+                {{localize "Ex3.Gambits"}} ({{localize "Ex3.Difficulty"}})
             </div>
             <div>
                 <i class="fas fa-caret-down"></i>
@@ -219,6 +219,28 @@
             </p>
             <p>
                 <b>Riposte (1) (pg.186)</b>: If the target attacks the gambit user before her next turn the gambit user may reflexivly decisive clash the attack, adding 4 dice to the damage pool.
+            </p>
+        </div>
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.Warstrider"}} {{localize "Ex3.Gambits"}} ({{localize "Ex3.Difficulty"}})
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <p>
+                <b>Block Vision (3)</b>: Pilot suffers a -3 penalty on all actions that depend on vision. The pilot may use a miscellaneous action to clear the obstruction.
+            </p>
+            <p>
+                <b>Disable Arm (5)</b>: Disables a warstrider's arm.  Warstrider drops anything that arm was carrying and cannot use the arm.  Warstrider takes a -3 on actions that require 2 arms.  Pilot can restore fuctionality with  5 init and a misc action.
+            </p>
+            <p>
+                <b>Disable Leg (6)</b>: Pilot must succees on Diff 5 (Dex + Athletics) roll or fall prone,  Pilot takes a -3 penalty of movement.  Pilot can restore fucitonality by paying 2 init and their turn's movement.  If both legs are disabled the warstrider cannot move and the init cost is raised to 5.
+            </p>
+            <p>
+                <b>Breach Frame (9)</b>: Makes an opening allowing attackers to pay 1 init to attack the pilot directly.
             </p>
         </div>
         {{/ifEquals}}

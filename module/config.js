@@ -105,7 +105,7 @@ exaltedthird.statusEffects = [
         name: 'grappled'
     },
     {
-        icon: 'icons/skills/social/diplomacy-handshake-gray.webp',
+        icon: 'systems/exaltedthird/assets/icons/shaking-hands.svg',
         id: 'grappling',
         label: 'Ex3.Grappling',
         name: 'grappling'

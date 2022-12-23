@@ -1,7 +1,7 @@
 // Import Modules
 import { exaltedthird } from "./config.js";
 
-import { ExaltedThirdActor } from "./actor/actor.js";
+import { addDefensePenalty, ExaltedThirdActor } from "./actor/actor.js";
 import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
 import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
@@ -164,36 +164,7 @@ async function handleSocket({type, id, data}) {
       }
     }
     const targetedActor = game.canvas.tokens.get(id).actor;
-    const onslaught = targetedActor.effects.find(i => i.label == "Onslaught");
-    if (onslaught) {
-        let changes = duplicate(onslaught.changes);
-        changes[0].value = changes[0].value - 1;
-        changes[1].value = changes[1].value - 1;
-        onslaught.update({ changes });
-    }
-    else {
-      await targetedActor.createEmbeddedDocuments('ActiveEffect', [{
-            label: 'Onslaught',
-            icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
-            origin: targetedActor.uuid,
-            disabled: false,
-            duration: {
-              rounds: 10,
-            },
-            changes: [
-                {
-                    "key": "data.evasion.value",
-                    "value": -1,
-                    "mode": 2
-                },
-                {
-                    "key": "data.parry.value",
-                    "value": -1,
-                    "mode": 2
-                }
-            ]
-        }]);
-    }
+    addDefensePenalty(targetedActor, 'Onslaught');
   }
   if(type === 'addKnockdown') {
     const token = game.canvas.tokens.get(id)
