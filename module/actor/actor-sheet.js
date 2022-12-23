@@ -1088,8 +1088,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let confirmed = false;
     const actorData = duplicate(this.actor);
     const data = actorData.system;
-    const template = "systems/exaltedthird/templates/dialogues/color-picker.html"
-    const html = await renderTemplate(template, { 'color': data.details.color });
+    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': data.details.color });
     new Dialog({
       title: `Pick Color`,
       content: html,
@@ -1114,7 +1113,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { editMode: data.settings.editmode, rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool, 'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts });
+    const html = await renderTemplate(template, { editMode: data.settings.editmode, rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool, 
+    'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort, 
+    'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues, 
+    'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts, 'isSorcerer': data.settings.issorcerer });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1134,6 +1136,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.rollStunts = html.find('#rollStunts').is(":checked");
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
           data.settings.editmode = html.find('#editMode').is(":checked");
+          data.settings.issorcerer = html.find('#isSorcerer').is(":checked");
           this.actor.update(actorData);
         }
       }
@@ -1142,8 +1145,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async helpDialogue(type) {
     let confirmed = false;
-    const actorData = duplicate(this.actor);
-    const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
     const html = await renderTemplate(template, { 'type': type });
     new Dialog({

@@ -556,6 +556,7 @@
           <a class="item-control item-create" title="Create initiation" data-type="initiation"><i
               class="fas fa-plus"></i>Add Initiation</a>
         </div>
+        {{#if system.settings.issorcerer}}
         {{#each actor.initiations as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
           <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
@@ -573,6 +574,7 @@
           </div>
         </li>
         {{/each}}
+        {{/if}}
         <div class="resource-label list-section-header d-flex flex-between">
           <div>
             {{localize "Ex3.Merits"}}

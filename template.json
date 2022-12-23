@@ -137,7 +137,8 @@
           "usetenattributes": false,
           "rollStunts": false,
           "defenseStunts": false,
-          "editmode": true
+          "editmode": true,
+          "issorcerer": true
         },
         "ship": {
           "name": "",

@@ -58,6 +58,7 @@
 {{/each}}
 {{/if}}
 {{/each}}
+{{#if system.settings.issorcerer}}
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
         {{localize "Ex3.Spells"}}
@@ -90,6 +91,8 @@
 {{/if}}
 {{/each}}
 </li>
+{{/if}}
+
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
         {{localize "Ex3.SpecialAbilities"}}

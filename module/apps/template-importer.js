@@ -27,8 +27,7 @@ export default class TemplateImporter extends Application {
       icon: 'fas fa-question',
       onclick: async () => {
         let confirmed = false;
-        const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
-        const html = await renderTemplate(template);
+        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
         new Dialog({
           title: `ReadMe`,
           content: html,

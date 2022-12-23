@@ -276,6 +276,7 @@
         <div class="tab items" data-group="primary" data-tab="charms">
             <ol class="items-list">
                 {{> systems/exaltedthird/templates/actor/charm-list.html}}
+                {{#if system.settings.issorcerer}}
                 <div class="resource-label list-section-header d-flex flex-between">
                     <div>
                         {{localize "Ex3.Initiations"}}
@@ -301,6 +302,7 @@
                     </div>
                 </li>
                 {{/each}}
+                {{/if}}
                 <div class="resource-label list-section-header d-flex flex-between">
                     <div>
                         {{localize "Ex3.Merits"}}
