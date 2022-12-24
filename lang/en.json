@@ -455,5 +455,6 @@
     "Ex3.ThrownDagger": "Thrown Dagger",
     "Ex3.IncreaseInitiative": "Increase Initiative",
     "Ex3.DecreaseInitiative": "Decrease Initiative",
-    "Ex3.Dematerialized": "Dematerialized"
+    "Ex3.Dematerialized": "Dematerialized",
+    "Ex3.Incapacitated": "Incapacitated"
 }

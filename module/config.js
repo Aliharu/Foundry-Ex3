@@ -152,4 +152,9 @@ exaltedthird.statusEffects = [
         label: 'Ex3.Dematerialized',
         name: 'dematerialized'
     },
+    {
+        icon: 'icons/svg/skull.svg',
+        id: 'incapacitated',
+        label: 'Ex3.Incapacitated',
+    },
 ]
