@@ -735,8 +735,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     if (ev.target.classList.contains("content-link")) return;
     const savedRoll = this.actor.system.savedRolls[li.dataset.itemId];
     ev.dataTransfer.setData("text/plain", JSON.stringify({ actorId: this.actor.uuid, type: 'savedRoll', id: li.dataset.itemId, name: savedRoll.name }));
-    const item = await fromUuid("Scene.nUvSTOjAkvqdSKcC.Token.gKXHXWQkgi1XmYBH");
-    console.log(item);
   }
 
   _updateAnima(direction) {
