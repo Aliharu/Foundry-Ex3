@@ -30,6 +30,7 @@ exaltedthird.languages = {
 };
 
 exaltedthird.weapontags = {
+    "aggravated": "Aggravated",
     "archery": "Archery",
     "artifact": "Artifact",
     "balanced": "Balanced",

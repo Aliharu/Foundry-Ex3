@@ -151,6 +151,9 @@ export class RollForm extends FormApplication {
                     if (this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
                         this.object.damage.type = 'bashing';
                     }
+                    if(this.object.weaponTags['aggravated']) {
+                        this.object.damage.type = 'aggravated';
+                    }
                     if (this.object.weaponTags["magicdamage"]) {
                         this.object.isMagic = true;
                     }

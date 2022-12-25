@@ -604,19 +604,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new Importer().render(true);
     });
 
-    html.find('.roll-withering').mousedown(ev => {
+
+    html.find('.weapon-roll').click(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'withering', weapon: item.system }).render(true);
+      let rollType = $(ev.target).attr("data-roll-type");
+      new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
     });
 
-    html.find('.roll-decisive').mousedown(ev => {
-      let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'decisive', weapon: item.system }).render(true);
-    });
-
-    html.find('.roll-gambit').mousedown(ev => {
-      let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'gambit', weapon: item.system }).render(true);
+    html.find('.weapon-icon').click(ev => {
+      ev.stopPropagation();
+      let item = this.actor.items.get($(ev.target.parentElement).attr("data-item-id"));
+      let rollType = $(ev.target.parentElement).attr("data-roll-type");
+      new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
     });
 
     html.find('#anima-up').click(ev => {
