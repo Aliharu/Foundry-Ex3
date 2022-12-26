@@ -21,6 +21,25 @@
         {{/select}}
     </select>
 
+    {{#if data.martialArtRoll}}
+    <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+    <select name="object.martialArtId" value="{{data.martialArtId}}" data-type="String">
+        {{#select data.martialArtId}}
+        {{#each actor.martialarts as |action key|}}
+        <option value="{{action._id}}">{{action.name}}</option>
+        {{/each}}
+        {{/select}}
+    </select>
+    {{else if data.craftRoll}}
+    <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+    <select name="object.craftId" value="{{data.craftId}}" data-type="String">
+        {{#select data.craftId}}
+        {{#each actor.crafts as |action key|}}
+        <option value="{{action._id}}">{{action.name}}</option>
+        {{/each}}
+        {{/select}}
+    </select> 
+    {{else}}
     <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
     <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
         {{#select data.ability}}
@@ -54,6 +73,7 @@
         <option value="none">{{localize "Ex3.None"}}</option>
         {{/select}}
     </select>
+    {{/if}}
 
     <label class="resource-label">{{localize "Ex3.Specialty"}}: </label>
     <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">

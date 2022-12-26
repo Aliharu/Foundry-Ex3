@@ -538,6 +538,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new RollForm(this.actor, { event: ev }, {}, { rollType: 'action', actionId: item.id }).render(true);
     });
 
+    html.find('.roll-ma').mousedown(ev => {
+      let li = $(event.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'martialArt', martialArtId: item.id }).render(true);
+    });
+
+    html.find('.roll-craft').mousedown(ev => {
+      let li = $(event.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'craftAbilityRoll', craftId: item.id }).render(true);
+    });
+
     html.find('.join-battle').mousedown(ev => {
       if (this.actor.type === "npc") {
         new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
@@ -794,7 +806,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     if (type === 'soak' || type === 'armored-soak') {
       for (let armor of this.actor.armor) {
-        if (armor.system.equiped) {
+        if (armor.system.equipped) {
           armoredSoakValue = armoredSoakValue + armor.system.soak;
         }
       }
@@ -809,7 +821,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       var highestAbility = Math.max(data.abilities.melee.value, data.abilities.brawl.value, data.abilities.martialarts.value);
       data.parry.value = Math.ceil((data.attributes.dexterity.value + highestAbility) / 2);
       for (let weapon of this.actor.weapons) {
-        if (weapon.system.equiped) {
+        if (weapon.system.equipped) {
           data.parry.value = data.parry.value + weapon.system.defence;
         }
       }
@@ -817,7 +829,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     if (type === 'evasion') {
       var newEvasionValue = Math.ceil((data.attributes.dexterity.value + data.abilities.dodge.value) / 2);
       for (let armor of this.actor.armor) {
-        if (armor.system.equiped) {
+        if (armor.system.equipped) {
           newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
         }
       }

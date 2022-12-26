@@ -612,6 +612,14 @@
   text-shadow: 0 0 black;
 }
 
+.roll-hover {
+  cursor: pointer;
+}
+
+.roll-hover:hover {
+  text-shadow: 0 0 black;
+}
+
 .chat-message {
   background: url("../assets/backgrounds/chat-background.jpg");
   background-size: cover;

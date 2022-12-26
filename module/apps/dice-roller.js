@@ -108,6 +108,16 @@ export class RollForm extends FormApplication {
 
                 this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
                 if (this.actor.type === 'character') {
+                    if (this.object.rollType === 'martialArt') {
+                        this.object.martialArtRoll = true;
+                        this.object.martialArtId = data.martialArtId;
+                        this.object.martialarts = this.actor.martialarts;
+                    }
+                    if (this.object.rollType === 'craftAbilityRoll') {
+                        this.object.craftRoll = true;
+                        this.object.craftId = data.craftId;
+                        this.object.crafts = this.actor.crafts;
+                    }
                     this.object.attribute = data.attribute || this._getHighestAttribute();
                     this.object.ability = data.ability || "archery";
                     this.object.appearance = this.actor.system.attributes.appearance.value;
@@ -294,7 +304,7 @@ export class RollForm extends FormApplication {
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
             }
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
+            this._updateSpecialtyList();
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
@@ -845,7 +855,7 @@ export class RollForm extends FormApplication {
         });
 
         html.on("change", ".update-specialties", ev => {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
+            this._updateSpecialtyList();
             this.render();
         });
 
@@ -875,6 +885,18 @@ export class RollForm extends FormApplication {
         }
     }
 
+    async _updateSpecialtyList() {
+        if (this.object.rollType === 'martialArt') {
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'martialarts');
+        }
+        else if (this.object.rollType === 'craftAbilityRoll') {
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'craft');
+        }
+        else {
+            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
+        }
+    }
+
     async _baseAbilityDieRoll() {
         let dice = 0;
 
@@ -888,11 +910,19 @@ export class RollForm extends FormApplication {
                 if (data.attributes[this.object.attribute]) {
                     dice += data.attributes[this.object.attribute]?.value || 0;
                 }
-                if (this.object.ability === 'willpower') {
-                    dice += this.actor.system.willpower.max;
+                if (this.object.rollType === 'martialArt') {
+                    dice += this.actor.martialarts.find(x => x._id === this.object.martialArtId).system.points;
                 }
-                else if (data.abilities[this.object.ability]) {
-                    dice += data.abilities[this.object.ability]?.value || 0;
+                else if(this.object.rollType === 'craftAbilityRoll') {
+                    dice += this.actor.crafts.find(x => x._id === this.object.craftId).system.points;
+                }
+                else {
+                    if (this.object.ability === 'willpower') {
+                        dice += this.actor.system.willpower.max;
+                    }
+                    else if (data.abilities[this.object.ability]) {
+                        dice += data.abilities[this.object.ability]?.value || 0;
+                    }
                 }
             }
             else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
@@ -908,7 +938,7 @@ export class RollForm extends FormApplication {
 
             if (this.object.armorPenalty) {
                 for (let armor of this.actor.armor) {
-                    if (armor.system.equiped) {
+                    if (armor.system.equipped) {
                         dice = dice - Math.abs(armor.system.penalty);
                     }
                 }

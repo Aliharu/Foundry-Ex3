@@ -604,7 +604,7 @@
       "defence": 0,
       "overwhelming": 1,
       "tags": "",
-      "equiped": true,
+      "equipped": true,
       "weapontype": "melee",
       "ability": "melee",
       "attribute": "dexterity",
@@ -627,7 +627,7 @@
       "penalty": 0,
       "hardness": 0,
       "tags": "",
-      "equiped": true,
+      "equipped": true,
       "traits": {
         "armortags": {
           "value": [],
