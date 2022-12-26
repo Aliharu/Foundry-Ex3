@@ -604,7 +604,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new Importer().render(true);
     });
 
-
     html.find('.weapon-roll').click(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
       let rollType = $(ev.target).attr("data-roll-type");

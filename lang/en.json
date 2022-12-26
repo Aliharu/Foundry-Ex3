@@ -421,7 +421,7 @@
     "Ex3.AnimaTokenEffects": "Anima Token Effects",
     "Ex3.AnimaTokenEffectsDescription": "If enables changing anima levels will add Token Magix Fx to tokens, The default black color will not show up. (Do not enable without the TokenMagicFx Module)",
     "Ex3.AttackEffects": "Add Effects on Successful Attacks",
-    "Ex3.AttackEffectsDescription": "If enabled attacks will trigger certain animations based on a field on weapons set in the effects tab, can set a preset or copy paste a custom animation location.  Does not trigger on gambits. (Do not enable without Sequencer and JB2A Modules)",
+    "Ex3.AttackEffectsDescription": "If enabled attacks will trigger certain animations based on a field on weapons set in the effects tab, can set a preset or copy paste a custom animation location. (Do not enable without Sequencer and JB2A Modules)",
     "Ex3.MaxAnima": "Max Anima",
     "Ex3.ShowWarstrider": "Show Warstrider",
     "Ex3.ShowShip": "Show Ship",
