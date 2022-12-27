@@ -822,7 +822,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       data.parry.value = Math.ceil((data.attributes.dexterity.value + highestAbility) / 2);
       for (let weapon of this.actor.weapons) {
         if (weapon.system.equipped) {
-          data.parry.value = data.parry.value + weapon.system.defence;
+          data.parry.value = data.parry.value + weapon.system.defense;
         }
       }
     }

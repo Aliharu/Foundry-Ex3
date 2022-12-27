@@ -262,6 +262,25 @@ Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => creatExaltedthirdMacro(data, slot));
 
+  if (isNewerVersion(game.system.version, game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    for (let item of game.items) {
+      console.log(`Migrating Item document ${item.name}`);
+      try {
+        let updateData = foundry.utils.deepClone(item.toObject());
+        if(updateData.type === 'weapon') {
+          updateData.system.defense = updateData.system.defense;
+          if (!foundry.utils.isEmpty(updateData)) {
+            await item.update(updateData, {enforceTypes: false});
+          }
+        }
+      } catch (error) {
+        error.message = `Failed migration for Item ${item.name}: ${error.message}`;
+        console.error(error);
+      }
+      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    }
+  }
+
   $("#chat-log").on("click", " .item-row", ev => {
     const li = $(ev.currentTarget).next();
     li.toggle("fast");
