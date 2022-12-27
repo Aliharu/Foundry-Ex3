@@ -134,7 +134,7 @@ Hooks.once('init', async function () {
   });
 });
 
-async function handleSocket({type, id, data}) {
+async function handleSocket({ type, id, data }) {
   if (!game.user.isGM) return;
 
   // if the logged in user is the active GM with the lowest user id
@@ -143,35 +143,35 @@ async function handleSocket({type, id, data}) {
 
   if (!isResponsibleGM) return;
 
-  if(type === 'updateInitiative') {
+  if (type === 'updateInitiative') {
     game.combat.setInitiative(id, data);
   }
-  if(type === 'healthDamage') {
+  if (type === 'healthDamage') {
     const targetedActor = game.canvas.tokens.get(id).actor;
-    if(targetedActor) {
+    if (targetedActor) {
       const targetActorData = duplicate(targetedActor);
       targetActorData.system.health = data;
       targetedActor.update(targetActorData);
     }
   }
-  if(type === 'addOnslaught') {
-    if(data.knockdownTriggered) {
+  if (type === 'addOnslaught') {
+    if (data.knockdownTriggered) {
       const token = game.canvas.tokens.get(id)
       const isProne = token.actor.effects.find(i => i.label == "Prone");
       if (!isProne) {
-          const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
-          await token.toggleEffect(newProneEffect);
+        const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
+        await token.toggleEffect(newProneEffect);
       }
     }
     const targetedActor = game.canvas.tokens.get(id).actor;
     addDefensePenalty(targetedActor, 'Onslaught');
   }
-  if(type === 'addKnockdown') {
+  if (type === 'addKnockdown') {
     const token = game.canvas.tokens.get(id)
     const isProne = token.actor.effects.find(i => i.label == "Prone");
     if (!isProne) {
-        const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
-        await token.toggleEffect(newProneEffect);
+      const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
+      await token.toggleEffect(newProneEffect);
     }
   }
 }
@@ -206,7 +206,7 @@ $(document).ready(() => {
 Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   // Handle non-gm users.
 
-  if(!game.user.isGM) return;
+  if (!game.user.isGM) return;
 
   if (combat.current === undefined) {
     combat = game.combat;
@@ -262,15 +262,18 @@ Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => creatExaltedthirdMacro(data, slot));
 
-  if (isNewerVersion(game.system.version, game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+  if (isNewerVersion("1.4.1", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     for (let item of game.items) {
-      console.log(`Migrating Item document ${item.name}`);
       try {
         let updateData = foundry.utils.deepClone(item.toObject());
-        if(updateData.type === 'weapon') {
-          updateData.system.defense = updateData.system.defense;
+        if (updateData.type === 'weapon') {
+          console.log(`Migrating Item document ${item.name}`);
+          if (updateData.system.defence && updateData.system.defence > 0) {
+            updateData.system.defense = updateData.system.defence;
+            updateData.system.defence = 0;
+          }
           if (!foundry.utils.isEmpty(updateData)) {
-            await item.update(updateData, {enforceTypes: false});
+            await item.update(updateData, { enforceTypes: false });
           }
         }
       } catch (error) {
@@ -301,10 +304,10 @@ Hooks.once("ready", async function () {
  */
 async function creatExaltedthirdMacro(data, slot) {
   if (data.type !== "Item" && data.type !== "savedRoll") return;
-  if(data.type === "Item") {
+  if (data.type === "Item") {
     if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
     const item = data.data;
-  
+
     // Create the macro command
     const command = `game.exaltedthird.rollItemMacro("${item.name}");`;
     let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
