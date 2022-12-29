@@ -35,6 +35,7 @@ exaltedthird.weapontags = {
     "artifact": "Artifact",
     "balanced": "Balanced",
     "bashing": "Bashing",
+    "binding": "Binding",
     "bombard": "Bombard",
     "brawl": "Brawl",
     "chopping": "Chopping",

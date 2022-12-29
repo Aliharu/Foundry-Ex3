@@ -640,6 +640,7 @@
         "base"
       ],
       "prerequisites": "",
+      "charmprerequisites": [],
       "charmtype": "other",
       "type": "supplemental",
       "duration": "instant",

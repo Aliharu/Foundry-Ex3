@@ -1,5 +1,47 @@
 <div>
     <p><b>Advancement Costs</b></p>
+    {{#if flatXP}}
+    <p><b>Flat Costs (Use other tables for fields not in this one)</b></p>
+    <table>
+        <tr style="text-align:center;">
+            <th>Trait</th>
+            <th>Cost</th>
+        </tr>
+        {{#ifNotEquals exalt 'lunar'}}
+        <tr style="text-align:center;">
+            <td>Attribute</td>
+            <td>10</td>
+        </tr>
+        {{/ifNotEquals}}
+        {{#ifEquals exalt 'lunar'}}
+        <tr style="text-align:center;">
+            <td>Non-Caste (-1 if Casteless)</td>
+            <td>10</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Caste or Favoured </td>
+            <td>7</td>
+        </tr>
+        {{/ifEquals}}
+        <tr style="text-align:center;">
+            <td>First Ability Dot</td>
+            <td>3</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Non-First Ability Dot</td>
+            <td>5</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>New Ability or Specialty</td>
+            <td>3</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Purchased Merit</td>
+            <td>3</td>
+        </tr>
+    </table>
+    {{/if}}
+    <p><b>Costs Table</b></p>
     {{#ifEquals exalt 'solar'}}
     <table>
         <tr style="text-align:center;">

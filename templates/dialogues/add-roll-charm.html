@@ -37,7 +37,7 @@
     </li>
     <li class="item-description">
         <div>
-            <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}}
+            <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.system.cost.commitmotes 0}}{{ item.system.cost.commitmotes }}cm,{{/ifGreater}}
             {{#ifGreater
             item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater
             item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}

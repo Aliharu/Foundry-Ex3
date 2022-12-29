@@ -164,7 +164,7 @@
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid black;
-    align-items:center;
+    align-items: center;
   }
 }
 
@@ -263,6 +263,32 @@
   background: url('../assets/backgrounds/chat-background.jpg');
   background-size: cover;
 }
+
+.embeded-item-list-wrapper {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.05);
+
+  .embeded-item-list {
+    padding: 0;
+    border: 0;
+    .embeded-item-pill {
+      list-style-type: none;
+      padding: 0 5px;
+      background-color: #fef6df;
+      border: 1px solid black;
+      border-radius: 12px;
+      float: left;
+      margin: 1px;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+  }
+}
+
+
+
 
 .chat-card {
   font-style: normal;

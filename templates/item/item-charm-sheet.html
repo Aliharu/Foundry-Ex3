@@ -90,7 +90,7 @@
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
         <a class="item" data-tab="bonuses">{{localize "Ex3.RollBonuses"}}</a>
-        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
+        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}/{{localize "Ex3.Other"}}</a>
     </nav>
 
     {{!-- Sheet Body --}}
@@ -98,46 +98,7 @@
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            <div class="flex-center">
-                <div class="resource-label">{{localize "Ex3.ListingName"}}</div>
-            </div>
-            <input type="text" name="system.listingname" value="{{system.listingname}}" />
-            <div class="flex-center">
-                <div class="resource-label">{{localize "Ex3.Prerequisites"}} (Comma Separated)</div>
-            </div>
-            <input type="text" name="system.prerequisites" value="{{system.prerequisites}}" />
-            <div class="flex-center mt-1">
-                <div class="resource-label">{{localize "Ex3.Keywords"}} <a><i
-                    class="fas fa-info-circle show-keywords cursor-pointer"></i></a></div>
-            </div>
-            <textarea type="text" name="system.keywords" rows="2">{{system.keywords}}</textarea>
-            <div class="grid grid-3col flex-group-center">
-                <div>
-                    <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
-                    <select name="system.charmtype" data-type="String">
-                        {{#select system.charmtype}}
-                        <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-                        <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-                        <option value="architect">{{localize "Ex3.Architect"}}</option>
-                        <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-                        <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-                        <option value="evocation">{{localize "Ex3.Evocation"}}</option>
-                        <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-                        <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-                        <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-                        <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-                        <option value="janest">{{localize "Ex3.Janest"}}</option>
-                        <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-                        <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-                        <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
-                        <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-                        <option value="solar">{{localize "Ex3.Solar"}}</option>
-                        <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-                        <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
-                    </select>
-                </div>
+            <div class="grid grid-2col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <input type="text" name="system.type" value="{{system.type}}" />
@@ -147,6 +108,38 @@
                     <input type="text" name="system.duration" value="{{system.duration}}" />
                 </div>
             </div>
+            <div class="flex-center mt-1">
+                <div class="resource-label">{{localize "Ex3.Keywords"}} <a><i
+                            class="fas fa-info-circle show-keywords cursor-pointer"></i></a></div>
+            </div>
+            <input type="text" name="system.keywords" value="{{system.keywords}}" />
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
+            </div>
+            <div class="embeded-item-list-wrapper" {{#if options.editable}}style="border: 1px solid var(--color-border-light-tertiary);"{{/if}}>
+                <div class="flex-group-center embeded-item-list">
+                    <ul>
+                        {{#if options.editable}}
+                        {{#each system.charmprerequisites as |item id|}}
+                        <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">
+                            {{item.name}}
+                            <i class="fas fa-trash embeded-item-delete"></i>
+                        </li>
+                        {{/each}}
+                        {{else}}
+                        {{#each system.charmprerequisites as |item id|}}
+                        <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">
+                            {{item.name}}
+                        </li>
+                        {{/each}}
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.Prerequisites"}}</div>
+            </div>
+            <input class="mb-1" type="text" name="system.prerequisites" value="{{system.prerequisites}}" />
             {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>
 
@@ -252,7 +245,7 @@
                         <input name="system.diceroller.targetnumber" value="{{system.diceroller.targetnumber}}"
                             type="number">
                     </div>
-    
+
                     <div>
                         <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
                         <input name="system.diceroller.doublesuccess" value="{{system.diceroller.doublesuccess}}"
@@ -384,14 +377,16 @@
                         <label class="resource-label">{{localize "Ex3.ThreshholdToDamage"}} </label>
                         <div>
                             <input type="checkbox" name="system.diceroller.damage.threshholdtodamage"
-                                value="system.diceroller.damage.threshholdtodamage" {{checked system.diceroller.damage.threshholdtodamage}}>
+                                value="system.diceroller.damage.threshholdtodamage" {{checked
+                                system.diceroller.damage.threshholdtodamage}}>
                         </div>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DoubleRolledDamage"}} </label>
                         <div>
                             <input type="checkbox" name="system.diceroller.damage.doublerolleddamage"
-                                value="system.diceroller.damage.doublerolleddamage" {{checked system.diceroller.damage.doublerolleddamage}}>
+                                value="system.diceroller.damage.doublerolleddamage" {{checked
+                                system.diceroller.damage.doublerolleddamage}}>
                         </div>
                     </div>
                 </div>
@@ -457,6 +452,41 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
+            <div class="grid grid-2col flex-group-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
+                    <select name="system.charmtype" data-type="String">
+                        {{#select system.charmtype}}
+                        <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
+                        <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
+                        <option value="architect">{{localize "Ex3.Architect"}}</option>
+                        <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
+                        <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
+                        <option value="evocation">{{localize "Ex3.Evocation"}}</option>
+                        <option value="exigent">{{localize "Ex3.Exigent"}}</option>
+                        <option value="getimian">{{localize "Ex3.Getimian"}}</option>
+                        <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
+                        <option value="infernal">{{localize "Ex3.Infernal"}}</option>
+                        <option value="janest">{{localize "Ex3.Janest"}}</option>
+                        <option value="liminal">{{localize "Ex3.Liminal"}}</option>
+                        <option value="lunar">{{localize "Ex3.Lunar"}}</option>
+                        <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
+                        <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
+                        <option value="solar">{{localize "Ex3.Solar"}}</option>
+                        <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
+                        <option value="umbral">{{localize "Ex3.Umbral"}}</option>
+                        <option value="other">{{localize "Ex3.Other"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+                <div>
+                    <div class="flex-center">
+                        <div class="resource-label">{{localize "Ex3.ListingName"}}</div>
+                    </div>
+                    <input type="text" name="system.listingname" value="{{system.listingname}}"
+                        placeholder="Defaults to ability name" />
+                </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

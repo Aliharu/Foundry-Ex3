@@ -62,10 +62,10 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   _prepareTraits(type, traits) {
     const map = {
     };
-    if(type === 'weapon') {
+    if (type === 'weapon') {
       map['weapontags'] = CONFIG.exaltedthird.weapontags
     }
-    if(type === 'armor') {
+    if (type === 'armor') {
       map['armortags'] = CONFIG.exaltedthird.armortags
     }
     for (let [t, choices] of Object.entries(map)) {
@@ -142,7 +142,136 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         buttons: {
           cancel: { label: "Close" }
         }
-      }, { height: 650, width: 1000 }).render(true);
+      }, { height: 1000, width: 1000 }).render(true);
     });
+
+    html.find(".embeded-item-delete").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      const itemIndex = parent.dataset.itemIndex;
+
+      const items = this.object.system.charmprerequisites;
+      items.splice(itemIndex, 1);
+
+      let formData = {};
+      setProperty(formData, `system.charmprerequisites`, items);
+
+      this.object.update(formData);
+    });
+
+    // Embeded Item code taken and modified from the Star Wars FFG FoundryVTT module
+    // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    // SOFTWARE.
+
+    html.find(".embeded-item-pill").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.itemName;
+      let itemIndex = li.dataset.itemIndex;
+
+      const embededItem = this.object.system.charmprerequisites[itemIndex];
+
+      var item;
+
+      if (embededItem.pack) {
+        // Case 1 - Import from a Compendium pack
+        item = await this.importItemFromCollection(embededItem.pack, embededItem.id);
+      }
+      else {
+        // Case 2 - Import from World entity
+        item = await game.items.get(embededItem.id);
+      }
+      if (!item) return ui.notifications.error(`Error: Could not find item, it may have been deleted`);;
+
+      item.sheet.render(true);
+    });
+
+    if (this.object.type === 'charm') {
+      const itemToItemAssociation = new DragDrop({
+        dragSelector: ".item",
+        dropSelector: null,
+        permissions: { dragstart: true, drop: true },
+        callbacks: { drop: this._onDropItem.bind(this) },
+      });
+      itemToItemAssociation.bind(html[0]);
+    }
+  }
+
+  importItemFromCollection(collection, entryId) {
+    const pack = game.packs.get(collection);
+    if (pack.documentName !== "Item") return;
+    return pack.getDocument(entryId).then((ent) => {
+      return ent;
+    });
+  }
+
+  async _onDropItem(event) {
+    let data;
+    const obj = this.object;
+    const li = event.currentTarget;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    data.id = data.uuid.split('.')[1];
+    if (data.uuid.includes('Compendium')) {
+      let tmp = data.uuid.split('.');
+      data.pack = tmp[1] + '.' + tmp[2];
+      data.id = tmp[3];
+    }
+
+    let itemObject;
+    if (data.pack) {
+      // Case 1 - Import from a Compendium pack
+      itemObject = await this.importItemFromCollection(data.pack, data.id);
+    }
+    else {
+      // Case 2 - Import from World entity
+      itemObject = await game.items.get(data.id);
+      if (!itemObject) {
+        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
+      };
+    }
+
+    var newItem = {
+      id: itemObject.id,
+      name: itemObject.name,
+      pack: data.pack,
+    }
+
+    if (itemObject.type === "charm") {
+      let items = obj?.system.charmprerequisites;
+      if (!items) {
+        items = [];
+      }
+
+      switch (itemObject.type) {
+        case "charm": {
+          items.push(newItem);
+          break;
+        }
+        default: {
+          return;
+        }
+      }
+
+      let formData = {};
+      setProperty(formData, `system.charmprerequisites`, items);
+
+      obj.update(formData);
+    }
   }
 }

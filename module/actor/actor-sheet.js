@@ -1082,7 +1082,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       default:
         break;
     }
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste });
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste, 'flatXP': game.settings.get("exaltedthird", "flatXP") });
     new Dialog({
       title: `Tags`,
       content: html,

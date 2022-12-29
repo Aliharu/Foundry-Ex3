@@ -51,4 +51,13 @@ export function registerSettings() {
         type: String,
         default: ""
     });
+
+    game.settings.register("exaltedthird", "flatXP", {
+        name: game.i18n.localize('Ex3.FlatXP'),
+        hint: game.i18n.localize('Ex3.FlatXPDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
 }
