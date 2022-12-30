@@ -236,47 +236,56 @@
         "strength": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Strength"
+          "name": "Ex3.Strength",
+          "type": "physical"
         },
         "charisma": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Charisma"
+          "name": "Ex3.Charisma",
+          "type": "social"
         },
         "perception": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Perception"
+          "name": "Ex3.Perception",
+          "type": "mental"
         },
         "dexterity": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Dexterity"
+          "name": "Ex3.Dexterity",
+          "type": "physical"
         },
         "manipulation": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Manipulation"
+          "name": "Ex3.Manipulation",
+          "type": "social"
         },
         "intelligence": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Intelligence"
+          "name": "Ex3.Intelligence",
+          "type": "mental"
         },
         "stamina": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Stamina"
+          "name": "Ex3.Stamina",
+          "type": "physical"
         },
         "appearance": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Appearance"
+          "name": "Ex3.Appearance",
+          "type": "social"
         },
         "wits": {
           "favored": false,
           "value": 1,
-          "name": "Ex3.Wits"
+          "name": "Ex3.Wits",
+          "type": "mental"
         }
       },
       "abilities": {
@@ -410,6 +419,11 @@
           "value": 0,
           "name": "Ex3.War"
         }
+      },
+      "charcreation": {
+        "physical": "primary",
+        "social": "secondary",
+        "mental": "tertiary"
       },
       "advantages": {
         "resonance": "",

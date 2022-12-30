@@ -1,0 +1,73 @@
+<div>
+    <p><b>Bonus Point Costs</b></p>
+    <table>
+        <tr style="text-align:center;">
+            <th>Trait</th>
+            <th>Cost</th>
+        </tr>
+        {{#ifNotEquals exalt 'lunar'}}
+        <tr style="text-align:center;">
+            <td>Primary or secondary Attribute</td>
+            <td>4 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Tertiary Attribute</td>
+            <td>3 per dot</td>
+        </tr>
+        {{/ifNotEquals}}
+        {{#ifEquals exalt 'lunar'}}   
+        <tr style="text-align:center;">
+            <td>Caste or Favored Attribute</td>
+            <td>3 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Non-Caste, Non-Favored Attribute</td>
+            <td>4 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Animal Latent Ability</td>
+            <td>3</td>
+        </tr>
+        {{/ifEquals}}
+        <tr style="text-align:center;">
+            <td>Caste or Favoured</td>
+            <td>1 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Non-Caste/Favored Ability</td>
+            <td>2 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Specialty</td>
+            <td>1</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Merits</td>
+            <td>1 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Caste/Favored Charm</td>
+            <td>4</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Non-Caste/Favored Charm {{#ifEquals exalt 'lunar'}}(-1 for casteless){{/ifEquals}}</td>
+            <td>5</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Spell (Occult Caste/Favored)</td>
+            <td>4</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Spell (Occult non-Caste/Favored)</td>
+            <td>5</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Evocation</td>
+            <td>4</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Willpower</td>
+            <td>2 per dot</td>
+        </tr>
+    </table>
+</div>

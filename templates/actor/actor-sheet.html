@@ -79,7 +79,8 @@
         </div>
         <div class="resource-content flexrow flex-center flex-between">
           <div>
-            <a><i id="anima-down" class="fas fa-caret-down cursor-pointer"></i></a><label class="resource-label">{{localize
+            <a><i id="anima-down" class="fas fa-caret-down cursor-pointer"></i></a><label
+              class="resource-label">{{localize
               "Ex3.Anima"}}</label><a><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i></a>
             <div>{{system.anima.level}}</div>
           </div>
@@ -209,6 +210,18 @@
 
     {{!-- Stats Tab --}}
     <div class="tab flex-center" data-group="primary" data-tab="stats">
+      {{#if system.settings.editmode}}
+      <div style="padding-top:10px;">
+        <label class="resource-label">{{localize "Ex3.CharacterCreationModePrompt"}}</label>
+      </div>
+      <div style="padding-top:10px;">
+        <label class="resource-label">{{localize "Ex3.BonusPoints"}}(Calculations Assume favored purchases with BP) <a><i
+          class="fas fa-info-circle show-bonus-points cursor-pointer"></i></a></label>
+      </div>
+      <div style="padding-top:10px;">
+        <label>{{system.charcreation.spent.bonuspoints}}/{{system.charcreation.available.bonuspoints}}</label>
+      </div>
+      {{/if}}
       <div style="padding-top:10px;">
         <label class="resource-label">{{localize "Ex3.Attributes"}}</label>
       </div>
@@ -234,6 +247,41 @@
       </div>
       {{else}}
       <div class="attributes grid grid-3col flex-group-center">
+        {{#if system.settings.editmode}}
+        <div>
+          <div>
+            <select name="system.charcreation.physical" data-type="String">
+              {{#select system.charcreation.physical}}
+              <option value="primary">{{localize "Ex3.Primary"}}</option>
+              <option value="secondary">{{localize "Ex3.Secondary"}}</option>
+              <option value="tertiary">{{localize "Ex3.Tertiary"}}</option>
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        <div>
+          <div>
+            <select name="system.charcreation.social" data-type="String">
+              {{#select system.charcreation.social}}
+              <option value="primary">{{localize "Ex3.Primary"}}</option>
+              <option value="secondary">{{localize "Ex3.Secondary"}}</option>
+              <option value="tertiary">{{localize "Ex3.Tertiary"}}</option>
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        <div>
+          <div>
+            <select name="system.charcreation.mental" data-type="String">
+              {{#select system.charcreation.mental}}
+              <option value="primary">{{localize "Ex3.Primary"}}</option>
+              <option value="secondary">{{localize "Ex3.Secondary"}}</option>
+              <option value="tertiary">{{localize "Ex3.Tertiary"}}</option>
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        {{/if}}
         {{#each system.attributes as |attribute key|}}
         <div class="attribute flexrow flex-center">
           <input class="attribute-checkbox" name="system.attributes.{{key}}.favored" type="checkbox" {{checked
@@ -247,10 +295,21 @@
           </div>
         </div>
         {{/each}}
+        {{#if system.settings.editmode}}
+        <div>
+          {{system.charcreation.spent.attributes.physical}}/{{system.charcreation.available.attributes.physical}}
+        </div>
+        <div>
+          {{system.charcreation.spent.attributes.social}}/{{system.charcreation.available.attributes.social}}
+        </div>
+        <div>
+          {{system.charcreation.spent.attributes.mental}}/{{system.charcreation.available.attributes.mental}}
+        </div>
+        {{/if}}
       </div>
       {{/if}}
       <label class="resource-label">{{localize "Ex3.Abilities"}}<a><i id="rollAbility"
-        class="fas fa-dice-d10 cursor-pointer rollAbility" style="margin-left:5px;"></i></a></label>
+            class="fas fa-dice-d10 cursor-pointer rollAbility" style="margin-left:5px;"></i></a></label>
       <div class="attributes grid grid-3col flex-group-center">
         {{#each system.abilities as |ability key|}}
         <div class="ability flexrow flex-center">
@@ -267,6 +326,11 @@
         </div>
         {{/each}}
       </div>
+      {{#if system.settings.editmode}}
+      <div style="margin-bottom:10px;">
+        Abilities: {{system.charcreation.spent.abilities}}/{{system.charcreation.available.abilities}} ({{system.charcreation.spent.abovethree}} above 3)
+      </div>
+      {{/if}}
       <label class="resource-label">{{localize "Ex3.Specialties"}}<a class="item-create" title="Create specialty"
           data-type="specialty"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
       <div class="attributes grid grid-3col flex-group-center">
@@ -280,6 +344,11 @@
         </div>
         {{/each}}
       </div>
+      {{#if system.settings.editmode}}
+      <div style="margin-bottom:10px;">
+        Specialties: {{system.charcreation.spent.specialties}}/{{system.charcreation.available.specialties}}
+      </div>
+      {{/if}}
       <label class="resource-label">{{localize "Ex3.MartialArts"}}<a class="item-create" title="Create martialart"
           data-type="martialart"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
       <div class="attributes grid grid-3col flex-group-center">
@@ -307,7 +376,8 @@
             <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
             <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
           </div>
-          <label class="resource-label roll-craft roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
+          <label class="resource-label roll-craft roll-hover" data-item-id="{{action._id}}">{{localize
+            item.name}}</label>
           <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
             {{#numLoop 5}}
             <span class="resource-value-static-step" data-index="{{this}}"></span>
@@ -343,6 +413,11 @@
           <textarea type="text" name="system.anima.iconic" rows="4">{{system.anima.iconic}}</textarea>
         </li>
         {{/ifNotEquals}}
+        {{#if system.settings.editmode}}
+        <div class="flex-center" style="margin-bottom:10px;">
+          {{localize "Ex3.Charms"}}: {{system.charcreation.spent.charms}}/{{system.charcreation.available.charms}} {{#ifEquals system.details.exalt 'dragonblooded'}}(5 are excellencies){{/ifEquals}}
+        </div>
+        {{/if}}
         {{> systems/exaltedthird/templates/actor/charm-list.html}}
       </ol>
     </div>
@@ -354,6 +429,12 @@
     {{!-- Intimacy Tab --}}
     <div class="tab social" data-group="primary" data-tab="social">
       {{> systems/exaltedthird/templates/actor/social-tab.html}}
+      {{#if system.settings.editmode}}
+      <div class="flex-center">
+        {{localize "Ex3.Intimacies"}}: {{system.charcreation.spent.intimacies}}/{{system.charcreation.available.intimacies}} (Must have 1 defining, 1 major, 1 minor, 1 negative tie)
+      </div>
+      {{/if}}
+
     </div>
 
     {{!-- Character Tab --}}
@@ -361,7 +442,7 @@
       <ol class="items-list">
         <div class="resource-content flexrow flex-center flex-between">
           <label class="resource-label">{{localize "Ex3.Advancement"}} <a><i
-            class="fas fa-info-circle show-advancement cursor-pointer"></i></a> </label>
+                class="fas fa-info-circle show-advancement cursor-pointer"></i></a> </label>
         </div>
         <div class="grid grid-2col flex-group-center">
           <div class="resource-content flexrow flex-center flex-between">
@@ -393,7 +474,7 @@
         </div>
         <div class="flex-center">
           <label class="resource-label">{{localize "Ex3.Craft"}} <a><i
-            class="fas fa-info-circle show-craft cursor-pointer"></i></a></label>
+                class="fas fa-info-circle show-craft cursor-pointer"></i></a></label>
           <div class="grid grid-4col flex-group-center">
             <div>
               <button class="roll-button craft-project" data-type="basic"><i class="fas fa-hammer"></i>{{localize
@@ -604,6 +685,11 @@
           </div>
         </li>
         {{/each}}
+        {{#if system.settings.editmode}}
+        <div class="flex-center" style="margin-bottom:10px;">
+          Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
+        </div>
+        {{/if}}
       </ol>
     </div>
 

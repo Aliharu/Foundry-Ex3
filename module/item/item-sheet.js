@@ -195,15 +195,15 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       item.sheet.render(true);
     });
 
-    if (this.object.type === 'charm') {
-      const itemToItemAssociation = new DragDrop({
-        dragSelector: ".item",
-        dropSelector: null,
-        permissions: { dragstart: true, drop: true },
-        callbacks: { drop: this._onDropItem.bind(this) },
-      });
-      itemToItemAssociation.bind(html[0]);
-    }
+    // if (this.object.type === 'charm') {
+    //   const itemToItemAssociation = new DragDrop({
+    //     dragSelector: ".item",
+    //     dropSelector: null,
+    //     permissions: { dragstart: true, drop: true },
+    //     callbacks: { drop: this._onDropItem.bind(this) },
+    //   });
+    //   itemToItemAssociation.bind(html[0]);
+    // }
   }
 
   importItemFromCollection(collection, entryId) {

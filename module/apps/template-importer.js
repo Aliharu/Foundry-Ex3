@@ -540,6 +540,7 @@ export default class TemplateImporter extends Application {
             "showescort": false,
             "showzerovalues": false,
             "usetenattributes": false,
+            "editmode": false,
           },
         }
       };
@@ -758,6 +759,7 @@ export default class TemplateImporter extends Application {
           "showescort": false,
           "showzerovalues": false,
           "usetenattributes": false,
+          "editmode": false,
         },
       }
     };

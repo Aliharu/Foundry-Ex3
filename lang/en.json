@@ -75,6 +75,8 @@
     "Ex3.Solar": "Solar",
     "Ex3.Umbral": "Umbral",
     "Ex3.Other": "Other",
+    "Ex3.CharacterCreationModePrompt": "Character creation mode enabled: can be turned off in the sheet settings.",
+    "Ex3.BonusPoints": "Bonus Points",
     "Ex3.Attribute": "Attribute",
     "Ex3.Attributes": "Attributes",
     "Ex3.DamageAttribute": "Damage Attribute",
@@ -433,7 +435,7 @@
     "Ex3.UseTenForAttributes": "Use 10 for Attribute Cap (Character Only)",
     "Ex3.DefaultRollStunts": "Default tier one stunt bonus on rolls",
     "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
-    "Ex3.EditMode": "Enable Certain buttons and fields for editing",
+    "Ex3.EditMode": "Enable character creation mode and auto set buttons",
     "Ex3.IsSorcerer": "Show sorcery fields",
     
     "Ex3.FeatsofStrength": "Feats of Strength",
