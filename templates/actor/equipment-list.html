@@ -129,7 +129,7 @@
           data-lethal="{{system.warstrider.health.lethal}}" data-aggravated="{{system.warstrider.health.aggravated}}"
           data-name="system.warstrider.health">
           {{#numLoop system.warstrider.health.max}}
-          <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+          <span class="resource-counter-step health-boxes" data-index="{{this}}" data-state="">{{healthCheck this 'warstrider'}}</span>
           {{/numLoop}}
         </div>
       </div>
@@ -186,7 +186,7 @@
           data-lethal="{{system.ship.health.lethal}}" data-aggravated="{{system.ship.health.aggravated}}"
           data-name="system.ship.health">
           {{#numLoop system.ship.health.max}}
-          <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+          <span class="resource-counter-step health-boxes" data-index="{{this}}" data-state="">{{healthCheck this 'ship'}}</span>
           {{/numLoop}}
         </div>
       </div>

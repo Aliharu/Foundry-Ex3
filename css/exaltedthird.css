@@ -127,8 +127,8 @@
 
 .exaltedthird .sheet-header {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 277px;
-  flex: 0 0 277px;
+  -ms-flex: 0 0 283px;
+  flex: 0 0 283px;
   overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -517,11 +517,19 @@
 }
 
 .exaltedthird .resource-counter .resource-counter-step {
-  height: 17px;
-  width: 17px;
   border: 1px solid black;
   display: inline-block;
   cursor: pointer;
+}
+
+.exaltedthird .non-health-boxes {
+  height: 14px;
+  width: 14px;
+}
+
+.exaltedthird .health-boxes {
+  height: 17px;
+  width: 17px;
 }
 
 .exaltedthird .resource-counter .resource-counter-step[data-state="-"] {

@@ -115,11 +115,19 @@
 }
 
 .exaltedthird .resource-counter .resource-counter-step {
-  height: 17px;
-  width: 17px;
   border: 1px solid black;
   display: inline-block;
   cursor: pointer;
+}
+
+.exaltedthird .non-health-boxes {
+  height: 14px;
+  width: 14px;
+}
+
+.exaltedthird .health-boxes {
+  height: 17px;
+  width: 17px;
 }
 
 .exaltedthird .resource-counter .resource-counter-step[data-state="-"] {

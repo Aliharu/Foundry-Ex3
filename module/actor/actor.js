@@ -167,10 +167,6 @@ export class ExaltedThirdActor extends Actor {
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
 
-    if (data.willpower.total !== 5 && data.willpower.max === 5) {
-      data.willpower.max = data.willpower.total;
-    }
-
     if (actorData.type === "character" || actorData.system.creaturetype === 'exalt') {
       data.parry.cap = this._getStaticCap(actorData, 'parry', data.parry.value);
       if (data.parry.cap !== '') {

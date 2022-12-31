@@ -72,6 +72,7 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/actor/active-effects.html",
     "systems/exaltedthird/templates/actor/effects-tab.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",
+    "systems/exaltedthird/templates/actor/header-exalt-data.html",
     "systems/exaltedthird/templates/actor/combat-tab.html",
     "systems/exaltedthird/templates/actor/charm-list.html",
     "systems/exaltedthird/templates/actor/social-tab.html",
@@ -113,8 +114,14 @@ Hooks.once('init', async function () {
     return str.toLowerCase();
   });
 
-  Handlebars.registerHelper('healthCheck', function (health, options) {
+  Handlebars.registerHelper('healthCheck', function (health, type, options) {
     let healthLevels = options.data.root.system.health.levels;
+    if(type === 'warstrider') {
+      healthLevels = options.data.root.system.warstrider.health.levels;
+    }
+    else if (type === 'ship'){
+      healthLevels = options.data.root.system.ship.health.levels;
+    }
     if(health < healthLevels.zero.value) {
       return '0'
     }

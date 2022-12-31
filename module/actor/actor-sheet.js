@@ -983,6 +983,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateMotes(type) {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
+    if(data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) return;
 
     if (type === 'personal') {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {

@@ -16,12 +16,12 @@
                 data-aggravated="{{system.health.aggravated}}" data-name="system.health">
                 {{#if system.battlegroup}}
                 {{#numLoop system.health.max}}
-                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+                <span class="health-boxes resource-counter-step" data-index="{{this}}" data-state=""></span>
                 {{/numLoop}}
                 {{else}}
                 {{#numLoop system.health.max}}
-                <span class="resource-counter-step" data-index="{{this}}" data-state="">
-                    {{healthCheck this}}
+                <span class="health-boxes resource-counter-step" data-index="{{this}}" data-state="">
+                    {{healthCheck this 'character'}}
                 </span>
                 {{/numLoop}}
                 {{/if}}

@@ -36,137 +36,7 @@
         <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
             placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
       </div>
-      <div class="resources grid grid-4col">
-        <div class="flex-center">
-          <div style="margin-bottom:3px;">
-            <a><i class="fas fa-bolt set-pool-personal cursor-pointer" title="Spend motes from this pool"></i></a>
-            <label class="resource-label"> {{localize "Ex3.Personal"}} <a><i
-                  class="fas fa-calculator calculate-personal-motes cursor-pointer" title="Auto Set Motes"></i></a>
-            </label>
-            <div class="resource-content flexrow flex-center flex-between">
-              <input type="number" name="system.motes.personal.value" value="{{system.motes.personal.value}}"
-                data-dtype="Number" />
-              /
-              <input type="number" name="system.motes.personal.max" value="{{system.motes.personal.max}}"
-                data-dtype="Number" />
-            </div>
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-            <input type="number" name="system.motes.personal.committed" value="{{system.motes.personal.committed}}"
-              data-dtype="Number" />
-          </div>
-        </div>
-        <div class="flex-center">
-          <div style="margin-bottom:3px;">
-            <a><i class="fas fa-bolt set-pool-peripheral cursor-pointer"
-                title="Spend motes from this pool"></i></a><label class="resource-label"> {{localize "Ex3.Peripheral"}}
-              <a><i class="fas fa-calculator calculate-peripheral-motes cursor-pointer"
-                  title="Auto Set Motes"></i></a></label>
-            <div class="resource-content flexrow flex-center flex-between">
-              <input type="number" name="system.motes.peripheral.value" value="{{system.motes.peripheral.value}}"
-                data-dtype="Number" />
-              /
-              <input type="number" name="system.motes.peripheral.max" value="{{system.motes.peripheral.max}}"
-                data-dtype="Number" />
-            </div>
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.Committed"}}</label>
-            <input type="number" name="system.motes.peripheral.committed" value="{{system.motes.peripheral.committed}}"
-              data-dtype="Number" />
-          </div>
-        </div>
-        <div class="resource-content flexrow flex-center flex-between">
-          <div>
-            <a><i id="anima-down" class="fas fa-caret-down cursor-pointer"></i></a><label
-              class="resource-label">{{localize
-              "Ex3.Anima"}}</label><a><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i></a>
-            <div>{{system.anima.level}}</div>
-          </div>
-        </div>
-        <div class="resource-content flexrow flex-center flex-between">
-          {{#ifEquals system.details.exalt 'solar'}}
-          <div>
-            <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
-            <input type="text" name="system.details.supernal" value="{{system.details.supernal}}" />
-          </div>
-          {{/ifEquals}}
-          {{#ifEquals system.details.exalt 'lunar'}}
-          <div>
-            <div>
-              <label class="resource-label">{{localize "Ex3.Tell"}}</label>
-              <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
-            </div>
-            <div>
-              <label class="resource-label">{{localize "Ex3.SpiritShape"}}</label>
-              <input type="text" name="system.details.spiritshape" value="{{system.details.spiritshape}}" />
-            </div>
-          </div>
-          {{/ifEquals}}
-          {{#ifEquals system.details.exalt 'sidereal'}}
-          <div>
-            <div>
-              <label class="resource-label">{{localize "Ex3.BirthSign"}}</label>
-              <input type="text" name="system.details.birthsign" value="{{system.details.birthsign}}" />
-            </div>
-            <div>
-              <label class="resource-label">{{localize "Ex3.ExaltationSign"}}</label>
-              <input type="text" name="system.details.exaltsign" value="{{system.details.exaltsign}}" />
-            </div>
-          </div>
-          {{/ifEquals}}
-          {{#ifEquals system.details.exalt 'dragonblooded'}}
-          <div>
-            <div class="resource-label">{{localize "Ex3.Aura"}}</div>
-            <select name="system.details.aura" data-type="String">
-              {{#select system.details.aura}}
-              <option value="none">{{localize "Ex3.None"}}</option>
-              <option value="air">{{localize "Ex3.Air"}}</option>
-              <option value="earth">{{localize "Ex3.Earth"}}</option>
-              <option value="fire">{{localize "Ex3.Fire"}}</option>
-              <option value="water">{{localize "Ex3.Water"}}</option>
-              <option value="wood">{{localize "Ex3.Wood"}}</option>
-              {{/select}}
-            </select>
-          </div>
-          {{/ifEquals}}
-          {{#ifEquals system.details.exalt 'umbral'}}
-          <div>
-            <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-            <input type="number" name="system.details.penumbra.value" value="{{system.details.penumbra.value}}" />
-          </div>
-          {{/ifEquals}}
-        </div>
-      </div>
-      <div class="resource-content flexrow flex-center flex-between">
-        <div>
-          <label class="resource-label roll-ability" data-ability="willpower">{{localize "Ex3.Willpower"}}</label>
-          <!-- <div class="resource-value" data-value="{{system.willpower.value}}" data-name="system.willpower.value">
-            {{#numLoop 10}}
-            <span class="resource-value-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-          </div> -->
-          <!-- <div class="resource-counter" data-states="x:max" data-max="{{system.willpower.max}}" data-name="system.willpower">
-            {{#numLoop 10}}
-            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
-            {{/numLoop}}
-          </div> -->
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
-              data-dtype="Number" />/
-            <input type="number" name="system.willpower.max" value="{{system.willpower.max}}" data-dtype="Number" />
-          </div>
-        </div>
-        <div>
-          <label class="resource-label">{{localize "Ex3.Limit"}}</label>
-          <div class="resource-value" data-value="{{system.limit.value}}" data-name="system.limit.value">
-            {{#numLoop 10}}
-            <span class="resource-value-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-          </div>
-        </div>
-      </div>
+      {{> systems/exaltedthird/templates/actor/header-exalt-data.html}}
     </div>
   </header>
 
@@ -215,8 +85,8 @@
         <label class="resource-label">{{localize "Ex3.CharacterCreationModePrompt"}}</label>
       </div>
       <div style="padding-top:10px;">
-        <label class="resource-label">{{localize "Ex3.BonusPoints"}}(Calculations Assume favored purchases with BP) <a><i
-          class="fas fa-info-circle show-bonus-points cursor-pointer"></i></a></label>
+        <label class="resource-label">{{localize "Ex3.BonusPoints"}}(Calculations Assume favored purchases with BP)
+          <a><i class="fas fa-info-circle show-bonus-points cursor-pointer"></i></a></label>
       </div>
       <div style="padding-top:10px;">
         <label>{{system.charcreation.spent.bonuspoints}}/{{system.charcreation.available.bonuspoints}}</label>
@@ -328,7 +198,8 @@
       </div>
       {{#if system.settings.editmode}}
       <div style="margin-bottom:10px;">
-        Abilities: {{system.charcreation.spent.abilities}}/{{system.charcreation.available.abilities}} ({{system.charcreation.spent.abovethree}} above 3)
+        Abilities: {{system.charcreation.spent.abilities}}/{{system.charcreation.available.abilities}}
+        ({{system.charcreation.spent.abovethree}} above 3)
       </div>
       {{/if}}
       <label class="resource-label">{{localize "Ex3.Specialties"}}<a class="item-create" title="Create specialty"
@@ -415,7 +286,8 @@
         {{/ifNotEquals}}
         {{#if system.settings.editmode}}
         <div class="flex-center" style="margin-bottom:10px;">
-          {{localize "Ex3.Charms"}}: {{system.charcreation.spent.charms}}/{{system.charcreation.available.charms}} {{#ifEquals system.details.exalt 'dragonblooded'}}(5 are excellencies){{/ifEquals}}
+          {{localize "Ex3.Charms"}}: {{system.charcreation.spent.charms}}/{{system.charcreation.available.charms}}
+          {{#ifEquals system.details.exalt 'dragonblooded'}}(5 are excellencies){{/ifEquals}}
         </div>
         {{/if}}
         {{> systems/exaltedthird/templates/actor/charm-list.html}}
@@ -431,7 +303,9 @@
       {{> systems/exaltedthird/templates/actor/social-tab.html}}
       {{#if system.settings.editmode}}
       <div class="flex-center">
-        {{localize "Ex3.Intimacies"}}: {{system.charcreation.spent.intimacies}}/{{system.charcreation.available.intimacies}} (Must have 1 defining, 1 major, 1 minor, 1 negative tie)
+        {{localize "Ex3.Intimacies"}}:
+        {{system.charcreation.spent.intimacies}}/{{system.charcreation.available.intimacies}} (Must have 1 defining, 1
+        major, 1 minor, 1 negative tie)
       </div>
       {{/if}}
 
@@ -687,7 +561,8 @@
         {{/each}}
         {{#if system.settings.editmode}}
         <div class="flex-center" style="margin-bottom:10px;">
-          Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
+          Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals
+          system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
         </div>
         {{/if}}
       </ol>
