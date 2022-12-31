@@ -113,6 +113,23 @@ Hooks.once('init', async function () {
     return str.toLowerCase();
   });
 
+  Handlebars.registerHelper('healthCheck', function (health, options) {
+    let healthLevels = options.data.root.system.health.levels;
+    if(health < healthLevels.zero.value) {
+      return '0'
+    }
+    else if(health < healthLevels.zero.value + healthLevels.one.value) {
+      return '1'
+    }
+    else if(health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value) {
+      return '2'
+    }
+    else if(health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.four.value) {
+      return '4'
+    }
+    return 'i'
+  });
+
   Handlebars.registerHelper('numLoop', function (num, options) {
     let ret = ''
 
@@ -278,6 +295,22 @@ Hooks.once("ready", async function () {
         }
       } catch (error) {
         error.message = `Failed migration for Item ${item.name}: ${error.message}`;
+        console.error(error);
+      }
+      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    }
+  }
+
+  if (isNewerVersion("1.4.3", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    for (let actor of game.actors) {
+      try {
+        let updateData = foundry.utils.deepClone(actor.toObject());
+        updateData.system.details.animacolor = updateData.system.details.color;
+        if (!foundry.utils.isEmpty(updateData)) {
+          await actor.update(updateData, { enforceTypes: false });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message}`;
         console.error(error);
       }
       await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);

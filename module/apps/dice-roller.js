@@ -2295,7 +2295,7 @@ export class RollForm extends FormApplication {
 
 export async function animaTokenMagic(actor, newAnimaValue) {
     if (game.settings.get("exaltedthird", "animaTokenMagic") && actor.token) {
-        let effectColor = Number(`0x${actor.system.details.color.replace('#', '')}`);
+        let effectColor = Number(`0x${actor.system.details.animacolor.replace('#', '')}`);
         var actorToken = canvas.tokens.placeables.filter(x => x.id === actor.token.id)[0];
 
         let sovereign =

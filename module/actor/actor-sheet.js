@@ -1228,7 +1228,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let confirmed = false;
     const actorData = duplicate(this.actor);
     const data = actorData.system;
-    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': data.details.color });
+    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': data.details.color, 'animaColor': data.details.animacolor });
     new Dialog({
       title: `Pick Color`,
       content: html,
@@ -1239,10 +1239,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       close: html => {
         if (confirmed) {
           let color = html.find('#color').val();
+          let animaColor = html.find('#animaColor').val();
           if (isColor(color)) {
-            data.details.color = color
-            this.actor.update(actorData)
+            data.details.color = color;
           }
+          if(isColor(animaColor)) {
+            data.details.animacolor = animaColor;
+          }
+          this.actor.update(actorData);
         }
       }
     }).render(true);

@@ -10,8 +10,11 @@ export class ExaltedThirdItem extends Item {
     super.prepareData();
   }
 
-  async _preCreate(createData, options, userId) {
-    this.updateSource({ img: this.getImageUrl(createData.type) });
+  async _preCreate(data, options, user) {
+    await super._preCreate(data, options, user);
+    if (!data.img || data.img == "icons/svg/item-bag.svg") {
+      this.updateSource({ img: this.getImageUrl(data.type) });
+    }
   }
 
   getImageUrl(type) {
@@ -45,34 +48,35 @@ export class ExaltedThirdItem extends Item {
     if (type === 'destiny') {
       return "systems/exaltedthird/assets/icons/spy.svg";
     }
+    return "icons/svg/item-bag.svg";
   }
 }
 
-  export function prepareItemTraits(type, i) {
-    const map = {
-    };
-    if (type === 'weapon') {
-      map['weapontags'] = CONFIG.exaltedthird.weapontags
-    }
-    if (type === 'armor') {
-      map['armortags'] = CONFIG.exaltedthird.armortags
-    }
-    for (let [t, choices] of Object.entries(map)) {
-      const trait = i.system.traits[t];
-      if (!trait) continue;
-      let values = [];
-      if (trait.value) {
-        values = trait.value instanceof Array ? trait.value : [trait.value];
-      }
-      trait.selected = values.reduce((obj, t) => {
-        obj[t] = choices[t];
-        return obj;
-      }, {});
-
-      // Add custom entry
-      if (trait.custom) {
-        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
-      }
-      trait.cssClass = !isEmpty(trait.selected) ? "" : "inactive";
-    }
+export function prepareItemTraits(type, i) {
+  const map = {
+  };
+  if (type === 'weapon') {
+    map['weapontags'] = CONFIG.exaltedthird.weapontags
   }
+  if (type === 'armor') {
+    map['armortags'] = CONFIG.exaltedthird.armortags
+  }
+  for (let [t, choices] of Object.entries(map)) {
+    const trait = i.system.traits[t];
+    if (!trait) continue;
+    let values = [];
+    if (trait.value) {
+      values = trait.value instanceof Array ? trait.value : [trait.value];
+    }
+    trait.selected = values.reduce((obj, t) => {
+      obj[t] = choices[t];
+      return obj;
+    }, {});
+
+    // Add custom entry
+    if (trait.custom) {
+      trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
+    }
+    trait.cssClass = !isEmpty(trait.selected) ? "" : "inactive";
+  }
+}

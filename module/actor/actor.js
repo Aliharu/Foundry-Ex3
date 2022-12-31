@@ -180,7 +180,7 @@ export class ExaltedThirdActor extends Actor {
       data.evasion.cap = this._getStaticCap(actorData, 'evasion', data.evasion.value);
       if (data.evasion.cap !== '') {
         data.evasion.padding = false;
-        if(data.parry.cap === '') {
+        if (data.parry.cap === '') {
           data.parry.padding = true;
         }
         data.defenseCapPadding = true;
@@ -192,7 +192,7 @@ export class ExaltedThirdActor extends Actor {
       }
       data.resolve.cap = this._getStaticCap(actorData, 'resolve', data.resolve.value);
       if (data.resolve.cap !== '') {
-        if(data.guile.cap === '') {
+        if (data.guile.cap === '') {
           data.guile.padding = true;
         }
         data.resolve.padding = false;
@@ -454,7 +454,7 @@ export class ExaltedThirdActor extends Actor {
           var newValue = Math.floor(value / 2);
           return `(+${newValue} for ${newValue * 2}m)`
         case 'sidereal':
-          var baseSidCap = Math.min(5,  Math.max(3, actorData.system.essence.value));
+          var baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
           return `(+${baseSidCap} for ${baseSidCap * 2}m)`
         case 'solar':
           return `(+${value} for ${value * 2}m)`
@@ -509,12 +509,26 @@ export class ExaltedThirdActor extends Actor {
 
     return "";
   }
+
+
+  async _preUpdate(updateData, options, user) {
+    await super._preUpdate(updateData, options, user);
+    if (updateData.system.battlegroup && !this.system.battlegroup) {
+      updateData.system.health = {
+        "levels": {
+          "zero": {
+            "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.four.value + 1,
+          }
+        }
+      };
+    }
+  }
 }
 
 
-export async function addDefensePenalty(actor, label="Defense Penalty") {
+export async function addDefensePenalty(actor, label = "Defense Penalty") {
   var icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
-  if(label === 'Onslaught') {
+  if (label === 'Onslaught') {
     icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
   }
   const existingPenalty = actor.effects.find(i => i.label == label);
