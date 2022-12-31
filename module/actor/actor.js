@@ -509,7 +509,7 @@ export class ExaltedThirdActor extends Actor {
 
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user);
-    if (updateData.system.battlegroup && !this.system.battlegroup) {
+    if (updateData.system?.battlegroup && !this.system.battlegroup) {
       updateData.system.health = {
         "levels": {
           "zero": {
