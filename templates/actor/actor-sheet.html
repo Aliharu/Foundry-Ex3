@@ -7,6 +7,27 @@
       <div class="flex-center">
         <label class="resource-label">{{localize "Ex3.Essence"}}</label>
         <input type="number" name="system.essence.value" value="{{system.essence.value}}" data-dtype="Number" />
+        <div>
+          <a><i id="anima-down" class="fas fa-caret-down cursor-pointer"></i></a><label
+            class="resource-label">{{localize
+            "Ex3.Anima"}}</label><a><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i></a>
+          <div>{{system.anima.level}}</div>
+        </div>
+        {{#ifEquals system.details.exalt 'dragonblooded'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+          <select name="system.details.aura" data-type="String">
+            {{#select system.details.aura}}
+            <option value="none">{{localize "Ex3.None"}}</option>
+            <option value="air">{{localize "Ex3.Air"}}</option>
+            <option value="earth">{{localize "Ex3.Earth"}}</option>
+            <option value="fire">{{localize "Ex3.Fire"}}</option>
+            <option value="water">{{localize "Ex3.Water"}}</option>
+            <option value="wood">{{localize "Ex3.Wood"}}</option>
+            {{/select}}
+          </select>
+        </div>
+        {{/ifEquals}}
       </div>
     </div>
     <div class="header-fields">
@@ -478,7 +499,42 @@
           <label class="resource-label">{{localize "Ex3.LimitTrigger"}}</label>
           <input type="text" name="system.limit.trigger" value="{{system.limit.trigger}}" />
         </li>
-        {{#ifEquals system.details.exalt 'dreamsouled'}}
+        {{#ifEquals system.details.exalt 'solar'}}
+        <div>
+          <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
+          <input type="text" name="system.details.supernal" value="{{system.details.supernal}}" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'lunar'}}
+        <div class="grid grid-2col flexrow">
+          <div>
+            <label class="resource-label">{{localize "Ex3.Tell"}}</label>
+            <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
+          </div>
+          <div>
+            <label class="resource-label">{{localize "Ex3.SpiritShape"}}</label>
+            <input type="text" name="system.details.spiritshape" value="{{system.details.spiritshape}}" />
+          </div>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'sidereal'}}
+        <div class="grid grid-2col flexrow">
+          <div>
+            <label class="resource-label">{{localize "Ex3.BirthSign"}}</label>
+            <input type="text" name="system.details.birthsign" value="{{system.details.birthsign}}" />
+          </div>
+          <div>
+            <label class="resource-label">{{localize "Ex3.ExaltationSign"}}</label>
+            <input type="text" name="system.details.exaltsign" value="{{system.details.exaltsign}}" />
+          </div>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'umbral'}}
+        <div>
+          <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
+          <input type="number" name="system.details.penumbra.value" value="{{system.details.penumbra.value}}" />
+        </div>
+        {{/ifEquals}} {{#ifEquals system.details.exalt 'dreamsouled'}}
         <li>
           <label class="resource-label">{{localize "Ex3.Ideal"}}</label>
           <input type="text" name="system.details.ideal" value="{{system.details.ideal}}" />

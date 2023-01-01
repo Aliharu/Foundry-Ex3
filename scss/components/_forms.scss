@@ -3,13 +3,14 @@
 }
 
 .sheet-header {
-  flex: 0 0 283px;
+  flex: 0 0 225px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 10px;
+  align-items: start !important;
 
   .profile-img-wrapper {
     max-width: 110px;

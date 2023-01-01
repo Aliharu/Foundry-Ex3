@@ -127,8 +127,8 @@
 
 .exaltedthird .sheet-header {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 283px;
-  flex: 0 0 283px;
+  -ms-flex: 0 0 225px;
+  flex: 0 0 225px;
   overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -143,6 +143,9 @@
   -ms-flex-pack: start;
   justify-content: flex-start;
   margin-bottom: 10px;
+  -webkit-box-align: start !important;
+  -ms-flex-align: start !important;
+  align-items: start !important;
 }
 
 .exaltedthird .sheet-header .profile-img-wrapper {
