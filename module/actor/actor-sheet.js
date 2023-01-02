@@ -699,7 +699,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.rush').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'movement' }).render(true);
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: 'movement' }).render(true);
       }
       else {
         new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'athletics', attribute: 'dexterity' }).render(true);
@@ -712,6 +712,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       else {
         new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'dodge', attribute: 'dexterity' }).render(true);
+      }
+    });
+
+    html.find('.grapple-control').mousedown(ev => {
+      if (this.actor.type === "npc") {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', pool: 'grapple' }).render(true);
+      }
+      else {
+        new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', ability: this.actor.system.abilities['brawl'].value >= this.actor.system.abilities['martialarts'].value ? 'brawl' : 'martialarts', attribute: 'strength' }).render(true);
       }
     });
 

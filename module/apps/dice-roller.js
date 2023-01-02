@@ -37,7 +37,7 @@ export class RollForm extends FormApplication {
             }
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working' || data.rollType === 'rout';
+            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'grappleControl' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working' || data.rollType === 'rout';
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -183,7 +183,7 @@ export class RollForm extends FormApplication {
                     if (this.object.weaponTags["magicdamage"]) {
                         this.object.isMagic = true;
                     }
-                    if(this.object.weaponTags["improvised"]) {
+                    if (this.object.weaponTags["improvised"]) {
                         this.object.cost.initiative += 1;
                     }
                     this.object.overwhelming = data.weapon.overwhelming || 0;
@@ -1224,6 +1224,11 @@ export class RollForm extends FormApplication {
                 resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
             }
             this.object.goalNumber = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
+            if (this.object.rollType === "grappleControl") {
+                const actorData = duplicate(this.actor);
+                actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
+                this.actor.update(actorData);
+            }
         }
         let theContent = `
   <div class="chat-card">
@@ -1665,56 +1670,63 @@ export class RollForm extends FormApplication {
                 knockdownTriggered = true;
             }
         }
-        if (this.object.target && game.settings.get("exaltedthird", "calculateOnslaught")) {
-            if (!this._useLegendarySize('onslaught')) {
-                if (game.user.isGM) {
-                    const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
-                    if (onslaught) {
-                        let changes = duplicate(onslaught.changes);
-                        changes[0].value = changes[0].value - 1;
-                        changes[1].value = changes[1].value - 1;
-                        onslaught.update({ changes });
+        if(this.object.target) {
+            if (game.settings.get("exaltedthird", "calculateOnslaught")) {
+                if (!this._useLegendarySize('onslaught')) {
+                    if (game.user.isGM) {
+                        const onslaught = this.object.target.actor.effects.find(i => i.label == "Onslaught");
+                        if (onslaught) {
+                            let changes = duplicate(onslaught.changes);
+                            changes[0].value = changes[0].value - 1;
+                            changes[1].value = changes[1].value - 1;
+                            onslaught.update({ changes });
+                        }
+                        else {
+                            await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
+                                label: 'Onslaught',
+                                icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
+                                origin: this.object.target.actor.uuid,
+                                disabled: false,
+                                duration: {
+                                    rounds: 10,
+                                },
+                                "changes": [
+                                    {
+                                        "key": "data.evasion.value",
+                                        "value": -1,
+                                        "mode": 2
+                                    },
+                                    {
+                                        "key": "data.parry.value",
+                                        "value": -1,
+                                        "mode": 2
+                                    }
+                                ]
+                            }]);
+                        }
                     }
                     else {
-                        await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
-                            label: 'Onslaught',
-                            icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
-                            origin: this.object.target.actor.uuid,
-                            disabled: false,
-                            duration: {
-                                rounds: 10,
-                            },
-                            "changes": [
-                                {
-                                    "key": "data.evasion.value",
-                                    "value": -1,
-                                    "mode": 2
-                                },
-                                {
-                                    "key": "data.parry.value",
-                                    "value": -1,
-                                    "mode": 2
-                                }
-                            ]
-                        }]);
+                        onslaughtTriggered = true;
+                        game.socket.emit('system.exaltedthird', {
+                            type: 'addOnslaught',
+                            id: this.object.target.id,
+                            data: { 'knockdownTriggered': knockdownTriggered },
+                        });
                     }
                 }
-                else {
-                    onslaughtTriggered = true;
-                    game.socket.emit('system.exaltedthird', {
-                        type: 'addOnslaught',
-                        id: this.object.target.id,
-                        data: { 'knockdownTriggered': knockdownTriggered },
-                    });
-                }
             }
-        }
-        if (!onslaughtTriggered && knockdownTriggered) {
-            game.socket.emit('system.exaltedthird', {
-                type: 'addKnockdown',
-                id: this.object.target.id,
-                data: null,
-            });
+            if (!onslaughtTriggered && knockdownTriggered) {
+                game.socket.emit('system.exaltedthird', {
+                    type: 'addKnockdown',
+                    id: this.object.target.id,
+                    data: null,
+                });
+            }
+            if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
+                const targetActorData = duplicate(this.object.target.actor);
+                targetActorData.system.grapplecontrolrounds.value = Math.max(0, targetActorData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2: 1));
+                this.object.target.actor.update(targetActorData);
+            }
         }
         if (this.object.triggerSelfDefensePenalty > 0) {
             const existingPenalty = this.actor.effects.find(i => i.label == "Defense Penalty");

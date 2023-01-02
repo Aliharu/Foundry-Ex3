@@ -284,6 +284,11 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       if (defensePenalty) {
         defensePenalty.delete();
       }
+      if(currentCombatant.actor.system.grapplecontrolrounds.value > 0){
+        const actorData = duplicate(currentCombatant.actor);
+        actorData.system.grapplecontrolrounds.value -= 1;
+        currentCombatant.actor.update(actorData);
+      }
     }
   }
 }));

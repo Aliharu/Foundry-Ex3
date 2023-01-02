@@ -103,6 +103,10 @@
         "sorcery": {
           "motes": 0
         },
+        "grapplecontrolrounds": {
+          "value": 0,
+          "min": 0
+        },
         "savedRolls": {},
         "legendarysize": false,
         "traits": {
