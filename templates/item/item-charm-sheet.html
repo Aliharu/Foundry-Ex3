@@ -225,7 +225,7 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="bonuses">
-            <div class="resource flex-center">
+            <div class="resource flex-center" style="font-size: 17px;">
                 <label class="resource-label">{{localize "Ex3.DiceRollModifiers"}}</label>
             </div>
 
@@ -334,7 +334,7 @@
                 </div>
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;">
-                Damage
+                {{localize "Ex3.Damage"}}
             </div>
             <div>
                 <div class="resource grid grid-3col flex-center">
@@ -446,6 +446,46 @@
                         <div>10</div>
                         <input name="system.diceroller.damage.reroll.ten" value="system.diceroller.damage.reroll.ten"
                             type="checkbox" {{checked system.diceroller.damage.reroll.ten}}>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex flex-center resource-label" style="font-weight: bold;font-size: 17px;">
+                <div>
+                    {{localize "Ex3.OpposedBonuses"}}
+                </div>
+                <input name="system.diceroller.opposedbonuses.enabled" value="system.diceroller.opposedbonuses.enabled"
+                    type="checkbox" {{checked system.diceroller.opposedbonuses.enabled}}>
+            </div>
+            <div>
+                <div class="resource grid grid-3col flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                        <input name="system.diceroller.opposedbonuses.resolve" value="{{system.diceroller.opposedbonuses.resolve}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Guile"}}</label>
+                        <input name="system.diceroller.opposedbonuses.guile" value="{{system.diceroller.opposedbonuses.guile}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.IncreaseTargetNumber"}}</label>
+                        <input name="system.diceroller.opposedbonuses.increasetargetnumber" value="{{system.diceroller.opposedbonuses.increasetargetnumber}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+                        <input name="system.diceroller.opposedbonuses.defense" value="{{system.diceroller.opposedbonuses.defense}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Soak"}}</label>
+                        <input name="system.diceroller.opposedbonuses.soak" value="{{system.diceroller.opposedbonuses.soak}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.IncreaseDamageTN"}}</label>
+                        <input name="system.diceroller.opposedbonuses.increasedamagetargetnumber" value="{{system.diceroller.opposedbonuses.increasedamagetargetnumber}}"
+                            type="number">
                     </div>
                 </div>
             </div>

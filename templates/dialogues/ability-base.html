@@ -312,6 +312,29 @@
         </div>
     </div>
 </div>
+{{#ifGreater data.opposingCharms.length 0}}
+<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+    <div class="resource-label">
+        {{localize "Ex3.OpposingCharms"}}
+    </div>
+    <div>
+        <i class="fas fa-caret-down"></i>
+    </div>
+</div>
+<div style="display:none;">
+    <ol class="items-list">
+        {{#each data.opposingCharms as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls">
+                <a class="item-control remove-opposing-charm" title="Remove Opposing Charm"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+</div>
+{{/ifGreater}}
 {{/ifNotEquals}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">

@@ -1,6 +1,12 @@
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+        <div class="profile-img-wrapper">
+            <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+            <div class="check-button flex-center mb-1">
+                <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
+                <input name="system.equipped" type="checkbox" value="system.equipped" {{checked system.equipped}}>
+            </div>
+        </div>
         <div class="header-fields">
             <h1 class="itemname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" />
                 <a class="trait-selector" data-options="weapontags" data-target="system.traits.weapontags">
@@ -109,10 +115,6 @@
                     </select>
                 </div>
             </div>
-            <div class="check-button flex-center mb-1">
-                <label class="resource-label">{{localize "Ex3.Equipped"}}: </label>
-                <input name="system.equipped" type="checkbox" value="system.equipped" {{checked system.equipped}}>
-            </div>
             <div class="d-flex flex-center resources">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Accuracy"}} </div>
@@ -124,11 +126,6 @@
                     <input type="number" name="system.witheringdamage" value="{{system.witheringdamage}}"
                         data-dtype="Number" />
                 </div>
-            </div>
-            <div class="d-flex flex-center mt-1 mb-1">
-                Use short range for ranged weapon accuracy.
-            </div>
-            <div class="d-flex flex-center resources">
                 <div>
                     <div class="resource-label">{{localize "Ex3.Defense"}}</div>
                     <input type="number" name="system.defense" value="{{system.defense}}" data-dtype="Number" />
@@ -138,6 +135,35 @@
                     <input type="number" name="system.overwhelming" value="{{system.overwhelming}}"
                         data-dtype="Number" />
                 </div>
+            </div>
+            <div class="d-flex flex-center mt-1 mb-1">
+                Use short range for ranged weapon accuracy.
+            </div>
+            <div class="grid grid-3col flex-group-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.DecisiveDamageDice"}}</div>
+                    <select name="system.decisivedamagetype" data-type="String">
+                        {{#select system.decisivedamagetype}}
+                        <option value="initiative">{{localize "Ex3.Initiative"}}</option>
+                        <option value="static">{{localize "Ex3.Static"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+                {{#ifEquals system.decisivedamagetype 'static'}}
+                <div>
+                    <div class="resource-label">{{localize "Ex3.StaticDamage"}}</div>
+                    <input type="number" name="system.staticdamage" value="{{system.staticdamage}}"
+                        data-dtype="Number" />
+                </div>
+                {{/ifEquals}}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.ResetInitiative"}} </label>
+                    <div>
+                        <input type="checkbox" name="object.resetinitiative"
+                            value="{{system.resetinitiative}}" {{checked system.resetinitiative}}>
+                    </div>
+                </div>
+
             </div>
             {{editor system.description target="system.description" button=true owner=owner editable=true}}
         </div>

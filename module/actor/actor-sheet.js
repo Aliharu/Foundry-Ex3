@@ -360,7 +360,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         threeOrBelow += Math.min(3, craft.system.points);
       }
       sheetData.system.charcreation.spent.abilities = threeOrBelow;
-      if(sheetData.system.details.exalt === 'lunar') {
+      if (sheetData.system.details.exalt === 'lunar') {
         sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28))) * 2;
       }
       else {
@@ -690,11 +690,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.accuracy').mousedown(ev => {
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'accuracy' }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'accuracy' }).render(true);
     });
 
     html.find('.damage').mousedown(ev => {
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'damage' }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'damage' }).render(true);
     });
 
     html.find('.rush').mousedown(ev => {
@@ -726,19 +726,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.read-intentions').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'readIntentions', pool: 'readintentions' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'readIntentions', pool: 'readintentions' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'readIntentions', ability: 'socialize', attribute: 'perception' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'readIntentions', ability: 'socialize', attribute: 'perception' }).render(true);
       }
     });
 
     html.find('.social-influence').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', pool: 'social' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', pool: 'social' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', ability: 'socialize', attribute: 'charisma' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', ability: 'socialize', attribute: 'charisma' }).render(true);
       }
     });
 
@@ -749,14 +749,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.weapon-roll').click(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
       let rollType = $(ev.target).attr("data-roll-type");
-      new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
     });
 
     html.find('.weapon-icon').click(ev => {
       ev.stopPropagation();
       let item = this.actor.items.get($(ev.target.parentElement).attr("data-item-id"));
       let rollType = $(ev.target.parentElement).attr("data-roll-type");
-      new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
     });
 
     html.find('#anima-up').click(ev => {
@@ -787,6 +787,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.item-complete').click(ev => {
       this._completeCraft(ev);
+    });
+
+    html.find('.add-opposing-charm').click(ev => {
+      this._addOpposingCharm(ev);
     });
 
     html.find('.item-spend').click(ev => {
@@ -983,7 +987,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateMotes(type) {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
-    if(data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) return;
+    if (data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) return;
 
     if (type === 'personal') {
       if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
@@ -1244,7 +1248,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           if (isColor(color)) {
             data.details.color = color;
           }
-          if(isColor(animaColor)) {
+          if (isColor(animaColor)) {
             data.details.animacolor = animaColor;
           }
           this.actor.update(actorData);
@@ -1582,6 +1586,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     // Create the Chat Message or return its data
     return ChatMessage.create(chatData);
+  }
+
+  _addOpposingCharm(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let li = $(event.currentTarget).parents(".item");
+    let item = this.actor.items.get(li.data("item-id"));
+
+    game.socket.emit('system.exaltedthird', {
+      type: 'addOpposingCharm',
+      data: item,
+    });
+
+    this._displayCard(event);
   }
 
   _spendItem(event) {

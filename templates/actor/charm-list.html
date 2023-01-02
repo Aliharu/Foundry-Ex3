@@ -14,6 +14,9 @@
     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
     <h4 class="item-name">{{item.name}}</h4>
     <div class="item-controls">
+        {{#if item.system.diceroller.opposedbonuses.enabled}}
+        <a class="item-control add-opposing-charm" title="Add charm's opposed bonuses to other characters rolls"><i class="fas fa-shield-plus"></i></a>
+        {{/if}}
         {{#ifGreater item.system.cost.commitmotes 0}}
         {{#if item.system.active}}
         <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>

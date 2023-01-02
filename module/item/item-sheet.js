@@ -12,7 +12,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     if (this.object.type === "charm") {
       this.options.width = this.position.width = 614;
       this.options.height = this.position.height = 850;
-    };
+    }
+    if (this.object.type === "weapon") {
+      this.options.width = this.position.width = 675;
+      this.options.height = this.position.height = 600;
+    }
   }
 
   /** @override */

@@ -21,6 +21,20 @@ export class RollForm extends FormApplication {
             if (this.object.rollType === 'damage' || this.object.rollType === 'accuracy') {
                 this.object.attackType = 'withering';
             }
+            this.object.cost = {
+                motes: 0,
+                muteMotes: 0,
+                willpower: 0,
+                initiative: 0,
+                anima: 0,
+                healthbashing: 0,
+                healthlethal: 0,
+                healthaggravated: 0,
+                silverxp: 0,
+                goldxp: 0,
+                whitexp: 0,
+                aura: "",
+            }
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
             this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working' || data.rollType === 'rout';
@@ -44,6 +58,7 @@ export class RollForm extends FormApplication {
             this.object.defense = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
+            this.object.weaponTags = {};
 
             this.object.weaponType = data.weaponType || 'melee';
             this.object.range = 'close';
@@ -140,13 +155,14 @@ export class RollForm extends FormApplication {
                 }
                 if (data.weapon) {
                     this.object.weaponTags = data.weapon.traits.weapontags.selected;
+                    this.object.damage.resetInit = data.weapon.resetinitiative;
                     if (this.actor.type === 'character') {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute();
                         this.object.ability = data.weapon.ability || "archery";
                     }
-                    if (this.object.rollType === 'withering' || this.actor.type === "npc") {
+                    if (this.object.rollType === 'withering' || this.object.rollType === 'accuracy' || this.object.rollType === 'damage' || this.actor.type === "npc") {
                         this.object.accuracy = data.weapon.witheringaccuracy || 0;
-                        if (this.object.rollType === 'withering') {
+                        if (this.object.rollType === 'withering' || this.object.rollType === 'accuracy' || this.object.rollType === 'damage') {
                             this.object.damage.damageDice = data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
                                 if (this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
@@ -161,11 +177,14 @@ export class RollForm extends FormApplication {
                     if (this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
                         this.object.damage.type = 'bashing';
                     }
-                    if(this.object.weaponTags['aggravated']) {
+                    if (this.object.weaponTags['aggravated']) {
                         this.object.damage.type = 'aggravated';
                     }
                     if (this.object.weaponTags["magicdamage"]) {
                         this.object.isMagic = true;
+                    }
+                    if(this.object.weaponTags["improvised"]) {
+                        this.object.cost.initiative += 1;
                     }
                     this.object.overwhelming = data.weapon.overwhelming || 0;
                     this.object.weaponType = data.weapon.weapontype || "melee";
@@ -301,6 +320,7 @@ export class RollForm extends FormApplication {
             this.object.attackEffect = data.attackEffect || '';
         }
         if (this.object.rollType !== 'base') {
+            this.object.opposingCharms = [];
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
             }
@@ -314,7 +334,11 @@ export class RollForm extends FormApplication {
                 let combatant = combat.combatants.find(c => c.actorId == actor.id);
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
-                        this.object.damage.damageDice = combatant.initiative;
+                        if (data.weapon && data.weapon.decisivedamagetype === 'static') {
+                            this.object.damage.damageDice = data.weapon.staticdamage;
+                        } else {
+                            this.object.damage.damageDice = combatant.initiative;
+                        }
                     }
                     this.object.characterInitiative = combatant.initiative;
                 }
@@ -337,13 +361,13 @@ export class RollForm extends FormApplication {
                         this.object.difficulty = 0;
                     }
                 }
-                if (this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value) {
+                if ((this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
                     this.object.defense = this.object.target.actor.system.parry.value;
                     if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
-                else {
+                if ((this.object.target.actor.system.evasion.value >= this.object.target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
                     this.object.defense = this.object.target.actor.system.evasion.value;
                     if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                         this.object.defense -= 2;
@@ -401,7 +425,7 @@ export class RollForm extends FormApplication {
                     this.object.soak = 0;
                 }
                 if (this.object.weaponTags["bombard"]) {
-                    if(!this.object.target.actor.system.battlegroup && !this.object.target.actor.system.legendarysize && !this.object.target.actor.system.warstrider.equipped) {
+                    if (!this.object.target.actor.system.battlegroup && !this.object.target.actor.system.legendarysize && !this.object.target.actor.system.warstrider.equipped) {
                         this.object.diceModifier -= 4;
                     }
                 }
@@ -453,7 +477,7 @@ export class RollForm extends FormApplication {
                     }
                     if (this._isAttackRoll()) {
                         this.object.showSpecialAttacks = true;
-                        if(this.object.rollType !== 'gambit') {
+                        if (this.object.rollType !== 'gambit') {
                             for (var specialAttack of this.object.specialAttacksList) {
                                 if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
                                     specialAttack.show = true;
@@ -575,6 +599,26 @@ export class RollForm extends FormApplication {
         mergeObject(this, formData);
     }
 
+    async addOpposingCharm(charm) {
+        const index = this.object.opposingCharms.findIndex(opposedCharm => charm._id === opposedCharm._id);
+        if (index === -1) {
+            this.object.opposingCharms.push(charm);
+            if (this._isAttackRoll()) {
+                this.object.defense += charm.system.diceroller.opposedbonuses.defense;
+                this.object.soak += charm.system.diceroller.opposedbonuses.soak;
+                this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
+                this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
+            }
+            if (this.object.rollType === 'readIntentions') {
+                this.object.difficulty += charm.system.diceroller.opposedbonuses.guile;
+            }
+            if (this.object.rollType === 'social') {
+                this.object.difficulty += charm.system.diceroller.opposedbonuses.resolve;
+            }
+            this.render();
+        }
+    }
+
     activateListeners(html) {
         super.activateListeners(html);
 
@@ -623,7 +667,7 @@ export class RollForm extends FormApplication {
                     this.object.triggerKnockdown = true;
                 }
             }
-            else if(id === 'flurry') {
+            else if (id === 'flurry') {
                 this.object.isFlurry = true;
             }
             else {
@@ -654,7 +698,7 @@ export class RollForm extends FormApplication {
                     this.object.triggerKnockdown = false;
                 }
             }
-            else if(id === 'flurry') {
+            else if (id === 'flurry') {
                 this.object.isFlurry = false;
             }
             else {
@@ -843,6 +887,31 @@ export class RollForm extends FormApplication {
             this.render();
         });
 
+        html.find('.remove-opposing-charm').click(ev => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let id = li.data("item-id");
+            const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
+            const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
+            if (index > -1) {
+                this.object.opposingCharms.splice(index, 1);
+                if (this._isAttackRoll()) {
+                    this.object.defense -= charm.system.diceroller.opposedbonuses.defense;
+                    this.object.soak -= charm.system.diceroller.opposedbonuses.soak;
+                    this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
+                    this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
+                }
+                if (this.object.rollType === 'readIntentions') {
+                    this.object.difficulty -= charm.system.diceroller.opposedbonuses.guile;
+                }
+                if (this.object.rollType === 'social') {
+                    this.object.difficulty -= charm.system.diceroller.opposedbonuses.resolve;
+                }
+                this.render();
+            }
+            this.render();
+        });
+
         html.find('#done-adding-charms').click(ev => {
             this.object.addingCharms = false;
             this.object.showSpecialAttacks = false;
@@ -913,7 +982,7 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'martialArt') {
                     dice += this.actor.martialarts.find(x => x._id === this.object.martialArtId).system.points;
                 }
-                else if(this.object.rollType === 'craftAbilityRoll') {
+                else if (this.object.rollType === 'craftAbilityRoll') {
                     dice += this.actor.crafts.find(x => x._id === this.object.craftId).system.points;
                 }
                 else {
@@ -1635,12 +1704,12 @@ export class RollForm extends FormApplication {
                     game.socket.emit('system.exaltedthird', {
                         type: 'addOnslaught',
                         id: this.object.target.id,
-                        data: {'knockdownTriggered': knockdownTriggered},
+                        data: { 'knockdownTriggered': knockdownTriggered },
                     });
                 }
             }
         }
-        if(!onslaughtTriggered && knockdownTriggered) {
+        if (!onslaughtTriggered && knockdownTriggered) {
             game.socket.emit('system.exaltedthird', {
                 type: 'addKnockdown',
                 id: this.object.target.id,

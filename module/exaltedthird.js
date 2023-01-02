@@ -159,6 +159,12 @@ Hooks.once('init', async function () {
 });
 
 async function handleSocket({ type, id, data }) {
+  if (type === 'addOpposingCharm') {
+    if(game.rollForm) {
+      game.rollForm.addOpposingCharm(data);
+    }
+  }
+  
   if (!game.user.isGM) return;
 
   // if the logged in user is the active GM with the lowest user id
@@ -364,7 +370,7 @@ async function creatExaltedthirdMacro(data, slot) {
   }
   else {
     const command = `const formActor = await fromUuid("${data.actorId}");
-    new game.exaltedthird.RollForm(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {}, {}, { rollId: "${data.id}" }).render(true);`;
+    game.rollForm = new game.exaltedthird.RollForm(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {}, {}, { rollId: "${data.id}" }).render(true);`;
     const macro = await Macro.create({
       name: data.name,
       img: 'systems/exaltedthird/assets/icons/d10.svg',

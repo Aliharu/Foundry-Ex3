@@ -627,6 +627,9 @@
       "range": "short",
       "attackeffectpreset": "none",
       "attackeffect": "",
+      "decisivedamagetype": "initiative",
+      "staticdamage": 0,
+      "resetinitiative": true,
       "traits": {
         "weapontags": {
           "value": [],
@@ -723,6 +726,15 @@
             "nine": false,
             "ten": false
           }
+        },
+        "opposedbonuses": {
+          "enabled": false,
+          "defense": 0,
+          "soak": 0,
+          "increasedamagetargetnumber": 0,
+          "increasetargetnumber": 0,
+          "resolve": 0,
+          "guile": 0
         }
       }
     },

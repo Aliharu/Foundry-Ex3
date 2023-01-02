@@ -61,6 +61,10 @@
           "Ex3.Gambit"}}</button>
       </div>
     </li>
+    <li class="item item-large flexrow">
+      <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="accuracy"><i class="fas fa-crosshairs weapon-icon"></i>{{localize "Ex3.Accuracy"}}</button>
+      <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="damage"><i class="fas fa-skull weapon-icon"></i>{{localize "Ex3.Damage"}}</button>
+    </li>
     {{/each}}
   </ol>
 </div>

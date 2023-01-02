@@ -65,6 +65,8 @@ exaltedthird.weapontags = {
     "subtle": "Subtle",
     "thrown": "Thrown",
     "twohanded": "Two-Handed",
+    "unblockable": "Unblockable",
+    "undodgeable": "Undodgeable",
     "worn": "Worn",
 };
 
