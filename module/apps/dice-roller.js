@@ -154,7 +154,7 @@ export class RollForm extends FormApplication {
                     this.object.appearance = this.actor.system.appearance.value;
                 }
                 if (data.weapon) {
-                    this.object.weaponTags = data.weapon.traits.weapontags.selected;
+                    this.object.weaponTags = data.weapon.traits?.weapontags?.selected || {};
                     this.object.damage.resetInit = data.weapon.resetinitiative;
                     if (this.actor.type === 'character') {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute();
@@ -325,6 +325,9 @@ export class RollForm extends FormApplication {
                 this._setBattlegroupBonuses();
             }
             this._updateSpecialtyList();
+            if(this.actor.system.dicepenalty.value) {
+                this.object.diceModifier -= this.actor.system.dicepenalty.value;
+            }
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");

@@ -107,6 +107,10 @@
           "value": 0,
           "min": 0
         },
+        "dicepenalty": {
+          "value": 0,
+          "min": 0
+        },
         "savedRolls": {},
         "legendarysize": false,
         "traits": {
@@ -143,7 +147,8 @@
           "rollStunts": false,
           "defenseStunts": false,
           "editmode": true,
-          "issorcerer": true
+          "issorcerer": true,
+          "iscrafter": true
         },
         "ship": {
           "name": "",

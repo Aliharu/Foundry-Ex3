@@ -259,6 +259,7 @@
         </div>
         {{/each}}
       </div>
+      {{#if system.settings.iscrafter}}
       <label class="resource-label">{{localize "Ex3.Craft"}}<a class="item-create" title="Create craft"
           data-type="craft"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
       <div class="attributes grid grid-3col flex-group-center">
@@ -278,6 +279,7 @@
         </div>
         {{/each}}
       </div>
+      {{/if}}
     </div>
 
     {{!-- Combat Tab --}}
@@ -367,6 +369,7 @@
             </div>
           </div>
         </div>
+        {{#if system.settings.iscrafter}}
         <div class="flex-center">
           <label class="resource-label">{{localize "Ex3.Craft"}} <a><i
                 class="fas fa-info-circle show-craft cursor-pointer"></i></a></label>
@@ -461,6 +464,7 @@
           </div>
         </li>
         {{/each}}
+        {{/if}}
         {{#ifEquals system.details.exalt 'sidereal'}}
         <div class="resource-label list-section-header d-flex flex-between">
           <div>

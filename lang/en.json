@@ -448,6 +448,7 @@
     "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
     "Ex3.EditMode": "Enable character creation mode and auto set buttons",
     "Ex3.IsSorcerer": "Show sorcery fields",
+    "Ex3.IsCrafter": "Show craft fields",
     
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.CharacterNotes": "Character Notes",

@@ -1275,7 +1275,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       editMode: data.settings.editmode, rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool,
       'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort,
       'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues,
-      'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts, 'isSorcerer': data.settings.issorcerer
+      'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts, 'isSorcerer': data.settings.issorcerer, 'isCrafter': data.settings.iscrafter
     });
     new Dialog({
       title: `Settings`,
@@ -1297,6 +1297,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
           data.settings.editmode = html.find('#editMode').is(":checked");
           data.settings.issorcerer = html.find('#isSorcerer').is(":checked");
+          data.settings.iscrafter = html.find('#isCrafter').is(":checked");
           this.actor.update(actorData);
         }
       }
@@ -1604,12 +1605,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
 
+    if(game.rollForm) {
+      game.rollForm.addOpposingCharm(item);
+    }
+
     game.socket.emit('system.exaltedthird', {
       type: 'addOpposingCharm',
       data: item,
     });
-
-    this._displayCard(event);
   }
 
   _spendItem(event) {
@@ -1764,10 +1767,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     if (item.type === 'spell') {
       actorData.system.sorcery.motes = 0;
     }
-    this._displayCard(event);
     this.actor.update(actorData);
   }
-
 }
 
 
