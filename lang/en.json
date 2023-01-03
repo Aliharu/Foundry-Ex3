@@ -193,6 +193,7 @@
     "Ex3.DiceBonus": "Dice Bonus",
     "Ex3.SuccessBonus": "Success Bonus",
     "Ex3.TargetNumber": "Target Number",
+    "Ex3.DecreaseTargetNumber": "Decrease Target Number",
     "Ex3.IncreaseTargetNumber": "Increase Target Number",
     "Ex3.IncreaseDamageTN": "Increase Damage TN",
     "Ex3.Reroll": "Reroll",

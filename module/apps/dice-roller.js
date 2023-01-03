@@ -762,9 +762,7 @@ export class RollForm extends FormApplication {
             if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
                 this.object.doubleSuccess = item.system.diceroller.doublesuccess;
             }
-            if (item.system.diceroller.targetnumber < this.object.damage.targetNumber) {
-                this.object.targetNumber = item.system.diceroller.targetnumber;
-            }
+            this.object.targetNumber -= item.system.diceroller.decreasetargetnumber;
             for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                 if (rerollValue) {
                     this.object.reroll[rerollKey].status = true;
@@ -784,9 +782,7 @@ export class RollForm extends FormApplication {
             if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
                 this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
             }
-            if (item.system.diceroller.damage.targetnumber < this.object.damage.targetNumber) {
-                this.object.damage.targetNumber = item.system.diceroller.damage.targetnumber;
-            }
+            this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
             this.object.overwhelming += item.system.diceroller.damage.overwhelming;
             this.object.damage.postSoakDamage += item.system.diceroller.damage.postsoakdamage;
             for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
@@ -854,6 +850,7 @@ export class RollForm extends FormApplication {
                 }
                 this.object.diceModifier -= item.system.diceroller.bonusdice;
                 this.object.successModifier -= item.system.diceroller.bonussuccesses;
+                this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                     if (rerollValue) {
                         this.object.reroll[rerollKey].status = false;
@@ -870,6 +867,7 @@ export class RollForm extends FormApplication {
 
                 this.object.damage.damageDice -= item.system.diceroller.damage.bonusdice;
                 this.object.damage.damageSuccessModifier -= item.system.diceroller.damage.bonussuccesses;
+                this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
                 this.object.overwhelming -= item.system.diceroller.damage.overwhelming;
                 this.object.damage.postSoakDamage -= item.system.diceroller.damage.postsoakdamage;
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
