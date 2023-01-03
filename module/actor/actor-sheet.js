@@ -92,10 +92,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actions = [];
     const destinies = [];
 
-    let favoredCharms = 0;
-    let nonFavoredCharms = 0;
-
-
     const charms = {
       offensive: { name: 'Ex3.Offensive', visible: false, list: [] },
       offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
@@ -142,6 +138,40 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
     }
 
+    // let journeysCharms = ['resistance', 'ride', 'sail', 'survival', 'thrown'];
+    // let serenityCharms = ['craft', 'dodge', 'linguistics', 'performance', 'socialize'];
+    // let battlesCharms = ['archery', 'brawl', 'melee', 'presence', 'war'];
+    // let secretsCharms = ['investigation', 'larceny', 'lore', 'occult', 'stealth'];
+    // let endingsCharms = ['athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine'];
+
+    // const siderealMaidenCharms = {
+    //   archery: 'battles',
+    //   athletics: 'endings',
+    //   awareness: 'endings',
+    //   brawl: 'battles',
+    //   bureaucracy: 'endings',
+    //   craft: 'serenity',
+    //   dodge: 'serenity',
+    //   integrity: 'endings',
+    //   investigation: 'secrets',
+    //   larceny: 'secrets',
+    //   linguistics: 'serenity',
+    //   lore: 'secrets',
+    //   medicine: 'battles',
+    //   melee: 'battles',
+    //   occult: 'battles',
+    //   performance: 'battles',
+    //   presence: 'battles',
+    //   resistance: 'battles',
+    //   ride: 'battles',
+    //   sail: 'battles',
+    //   socialize: 'battles',
+    //   stealth: 'battles',
+    //   survival: 'battles',
+    //   thrown: 'battles',
+    //   war: 'battles',
+    // }
+
     const spells = {
       terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
       celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
@@ -151,6 +181,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       void: { name: 'Ex3.Void', visible: false, list: [] },
     }
 
+    // sheetData.system.maidencharms = {
+    //   journeys: 0,
+    //   serenity: 0,
+    //   battles: 0,
+    //   secrets: 0,
+    //   endings: 0,
+    // }
     // Iterate through items, allocating to containers
     for (let i of sheetData.items) {
 
@@ -215,16 +252,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             charms['martialarts'].list.push(i);
             charms['martialarts'].visible = true;
             if (sheetData.system.abilities['martialarts'].favored) {
-              favoredCharms++;
             }
             else {
-              nonFavoredCharms++;
             }
           }
           else if (i.system.ability === 'essence') {
             charms['evocation'].list.push(i);
             charms['evocation'].visible = true;
-            favoredCharms++;
           }
           else if (i.system.ability !== undefined) {
             charms[i.system.ability].list.push(i);
@@ -1605,7 +1639,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
 
-    if(game.rollForm) {
+    if (game.rollForm) {
       game.rollForm.addOpposingCharm(item);
     }
 
