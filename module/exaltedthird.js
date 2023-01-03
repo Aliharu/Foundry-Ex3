@@ -500,10 +500,10 @@ export class ExaltedCombat extends Combat {
     const combatant = this.combatants.get(ids[0]);
     if (combatant.token.actor) {
       if (combatant.token.actor.type === "npc") {
-        new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
+        game.rollForm = new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
       }
       else {
-        new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
+        game.rollForm = new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
       }
     }
     else {

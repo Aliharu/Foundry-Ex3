@@ -325,7 +325,7 @@ export class RollForm extends FormApplication {
                 this._setBattlegroupBonuses();
             }
             this._updateSpecialtyList();
-            if(this.actor.system.dicepenalty.value) {
+            if (this.actor.system.dicepenalty.value) {
                 this.object.diceModifier -= this.actor.system.dicepenalty.value;
             }
             this.object.target = Array.from(game.user.targets)[0] || null;
@@ -606,10 +606,10 @@ export class RollForm extends FormApplication {
         const index = this.object.opposingCharms.findIndex(opposedCharm => charm._id === opposedCharm._id);
         if (index === -1) {
             this.object.opposingCharms.push(charm);
+            this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
             if (this._isAttackRoll()) {
                 this.object.defense += charm.system.diceroller.opposedbonuses.defense;
                 this.object.soak += charm.system.diceroller.opposedbonuses.soak;
-                this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
                 this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
             }
             if (this.object.rollType === 'readIntentions') {
@@ -896,10 +896,10 @@ export class RollForm extends FormApplication {
             const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
             if (index > -1) {
                 this.object.opposingCharms.splice(index, 1);
+                this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
                 if (this._isAttackRoll()) {
                     this.object.defense -= charm.system.diceroller.opposedbonuses.defense;
                     this.object.soak -= charm.system.diceroller.opposedbonuses.soak;
-                    this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
                     this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
                 }
                 if (this.object.rollType === 'readIntentions') {
@@ -1671,7 +1671,7 @@ export class RollForm extends FormApplication {
                 knockdownTriggered = true;
             }
         }
-        if(this.object.target) {
+        if (this.object.target) {
             if (game.settings.get("exaltedthird", "calculateOnslaught")) {
                 if (!this._useLegendarySize('onslaught')) {
                     if (game.user.isGM) {
@@ -1725,7 +1725,7 @@ export class RollForm extends FormApplication {
             }
             if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
                 const targetActorData = duplicate(this.object.target.actor);
-                targetActorData.system.grapplecontrolrounds.value = Math.max(0, targetActorData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2: 1));
+                targetActorData.system.grapplecontrolrounds.value = Math.max(0, targetActorData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2 : 1));
                 this.object.target.actor.update(targetActorData);
             }
         }

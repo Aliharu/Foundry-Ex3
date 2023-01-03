@@ -631,61 +631,61 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('#rollDice').mousedown(ev => {
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true);
     });
 
     html.find('.rollAbility').mousedown(ev => {
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability' }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability' }).render(true);
     });
 
     html.find('.roll-ability').mousedown(ev => {
       var ability = $(ev.target).attr("data-ability");
       if (ability === 'willpower') {
         if (this.actor.type === "npc") {
-          new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
+          game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
         }
         else {
-          new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'willpower', attribute: 'none' }).render(true);
+          game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'willpower', attribute: 'none' }).render(true);
         }
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability }).render(true);
       }
     });
 
     html.find('.roll-pool').mousedown(ev => {
       var pool = $(ev.target).attr("data-pool");
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: pool }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: pool }).render(true);
     });
 
     html.find('.rout-check').mousedown(ev => {
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
     });
 
     html.find('.roll-action').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'action', actionId: item.id }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'action', actionId: item.id }).render(true);
     });
 
     html.find('.roll-ma').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'martialArt', martialArtId: item.id }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'martialArt', martialArtId: item.id }).render(true);
     });
 
     html.find('.roll-craft').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'craftAbilityRoll', craftId: item.id }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'craftAbilityRoll', craftId: item.id }).render(true);
     });
 
     html.find('.join-battle').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
       }
     });
 
@@ -699,37 +699,37 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.rush').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: 'movement' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: 'movement' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'athletics', attribute: 'dexterity' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'athletics', attribute: 'dexterity' }).render(true);
       }
     });
 
     html.find('.disengage').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: 'movement' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: 'movement' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'dodge', attribute: 'dexterity' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'dodge', attribute: 'dexterity' }).render(true);
       }
     });
 
     html.find('.grapple-control').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', pool: 'grapple' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', pool: 'grapple' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', ability: this.actor.system.abilities['brawl'].value >= this.actor.system.abilities['martialarts'].value ? 'brawl' : 'martialarts', attribute: 'strength' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', ability: this.actor.system.abilities['brawl'].value >= this.actor.system.abilities['martialarts'].value ? 'brawl' : 'martialarts', attribute: 'strength' }).render(true);
       }
     });
 
     html.find('.shape-sorcery').mousedown(ev => {
       if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);
       }
       else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', ability: 'occult', attribute: 'intelligence' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', ability: 'occult', attribute: 'intelligence' }).render(true);
       }
     });
 
@@ -813,7 +813,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id") }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id") }).render(true);
     });
 
     html.find('.delete-saved-roll').click(ev => {
@@ -1560,7 +1560,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async _completeCraft(ev) {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
-    new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
+    game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
   }
 
   /**

@@ -141,7 +141,7 @@ export class ExaltedThirdActor extends Actor {
     if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
-    await new RollForm(this, { event: this.event }, {}, { rollId: roll.id, skipDialog: true }).roll();
+    game.rollForm = await new RollForm(this, { event: this.event }, {}, { rollId: roll.id, skipDialog: true }).roll();
   }
 
   getSavedRoll(name) {
