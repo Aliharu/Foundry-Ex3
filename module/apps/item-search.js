@@ -7,11 +7,13 @@ export default class ItemSearch extends Application {
         "charm": { display: "Charm", value: false },
         "spell": { display: "Spell", value: false },
         "initiation": { display: "Initiation", value: false },
+        "merit": { display: "Merit", value: false },
       },
       attribute: {
         name: "",
         description: "",
         worldItems: true,
+        lessThen: false,
         charmFilters: {
           ability: "",
           requirement: "",
@@ -96,14 +98,24 @@ export default class ItemSearch extends Application {
             filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.compendium)
             break;
           case "charmFilters":
+            if(this.filters.attribute.lessThen) {
+              if(this.filters.attribute[filter].requirement) {
+                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || 11) <= parseInt(this.filters.attribute[filter].requirement))
+              }
+              if(this.filters.attribute[filter].essence) {
+                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || 11) <= parseInt(this.filters.attribute[filter].essence))
+              }
+            }
+            else {
+              if(this.filters.attribute[filter].requirement) {
+                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || '').toString() === this.filters.attribute[filter].requirement)
+              }
+              if(this.filters.attribute[filter].essence) {
+                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || '').toString() === this.filters.attribute[filter].essence)
+              }
+            }
             if(this.filters.attribute[filter].ability) {
               filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.ability === this.filters.attribute[filter].ability)
-            }
-            if(this.filters.attribute[filter].requirement) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || '').toString() === this.filters.attribute[filter].requirement)
-            }
-            if(this.filters.attribute[filter].essence) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || '').toString() === this.filters.attribute[filter].essence)
             }
             if(this.filters.attribute[filter].charmtype) {
               filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.charmtype === this.filters.attribute[filter].charmtype)
@@ -142,8 +154,8 @@ export default class ItemSearch extends Application {
     })
   })
 
-    html.on("click", ".item-name", ev => {
-      let itemId = $(ev.currentTarget).parents(".item-row").attr("data-item-id")
+    html.on("click", ".item-row", ev => {
+      let itemId = $(ev.currentTarget).attr("data-item-id")
       this.items.find(i => i.id == itemId).sheet.render(true);
     });
 
@@ -162,6 +174,10 @@ export default class ItemSearch extends Application {
     });
     html.on("click", ".world-filter", ev => {
       this.filters.attribute.worldItems = $(ev.currentTarget).is(":checked");
+      this.applyFilter(html);
+    });
+    html.on("click", ".less-then", ev => {
+      this.filters.attribute.lessThen = $(ev.currentTarget).is(":checked");
       this.applyFilter(html);
     });
     html.on("change", ".charm-filter", ev => {

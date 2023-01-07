@@ -4,6 +4,10 @@
       <label class="resource-label">{{localize "Ex3.IncludeWorldItems"}}: </label>
       <input class="world-filter" type="checkbox" data-filter="worldItems" {{checked filters.attribute.worldItems}} />
     </div>
+    <div class="check-button">
+      <label class="resource-label">{{localize "Ex3.UseLessThen"}}: </label>
+      <input class="less-then" type="checkbox" {{checked filters.attribute.lessThen}} />
+    </div>
     <h2>{{localize "Ex3.Types"}}</h2>
     <div class="check-button">
       {{#each filters.type as |value filter|}}
