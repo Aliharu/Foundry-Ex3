@@ -237,7 +237,7 @@
         <i class="fas fa-caret-down"></i>
     </div>
 </div>
-<div style="display:none;">
+<div id="added-charms" {{#if data.showAddedCharmsList}} {{else}} style="display:none;" {{/if}}>
     <ol class="items-list">
         {{#each data.addedCharms as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">

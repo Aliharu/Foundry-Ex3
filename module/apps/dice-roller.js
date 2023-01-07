@@ -936,6 +936,9 @@ export class RollForm extends FormApplication {
 
         html.find('.collapsable').click(ev => {
             const li = $(ev.currentTarget).next();
+            if(li.attr('id') === 'added-charms') {
+                this.object.showAddedCharmsList = li.is(":hidden");
+            }
             li.toggle("fast");
         });
     }
