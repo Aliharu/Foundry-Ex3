@@ -1654,6 +1654,9 @@ export class RollForm extends FormApplication {
         }
         this.attackSequence();
         this._addAttackEffects();
+        if(this.object.rollType === 'damage') {
+            this._spendMotes();
+        }
     }
 
     async _addAttackEffects() {

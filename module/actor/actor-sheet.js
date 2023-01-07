@@ -110,12 +110,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       archery: { name: 'Ex3.Archery', visible: false, list: [] },
       athletics: { name: 'Ex3.Athletics', visible: false, list: [] },
       awareness: { name: 'Ex3.Awareness', visible: false, list: [] },
+      battles: { name: 'Ex3.Battles', visible: false, list: [] },
       brawl: { name: 'Ex3.Brawl', visible: false, list: [] },
       bureaucracy: { name: 'Ex3.Bureaucracy', visible: false, list: [] },
       craft: { name: 'Ex3.Craft', visible: false, list: [] },
       dodge: { name: 'Ex3.Dodge', visible: false, list: [] },
+      endings: { name: 'Ex3.Endings', visible: false, list: [] },
       integrity: { name: 'Ex3.Integrity', visible: false, list: [] },
       investigation: { name: 'Ex3.Investigation', visible: false, list: [] },
+      journeys: { name: 'Ex3.Journeys', visible: false, list: [] },
       larceny: { name: 'Ex3.Larceny', visible: false, list: [] },
       linguistics: { name: 'Ex3.Linguistics', visible: false, list: [] },
       lore: { name: 'Ex3.Lore', visible: false, list: [] },
@@ -128,6 +131,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       resistance: { name: 'Ex3.Resistance', visible: false, list: [] },
       ride: { name: 'Ex3.Ride', visible: false, list: [] },
       sail: { name: 'Ex3.Sail', visible: false, list: [] },
+      secrets: { name: 'Ex3.Secrets', visible: false, list: [] },
+      serenity: { name: 'Ex3.Serenity', visible: false, list: [] },
       socialize: { name: 'Ex3.Socialize', visible: false, list: [] },
       stealth: { name: 'Ex3.Stealth', visible: false, list: [] },
       survival: { name: 'Ex3.Survival', visible: false, list: [] },
@@ -138,39 +143,38 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
     }
 
-    // let journeysCharms = ['resistance', 'ride', 'sail', 'survival', 'thrown'];
-    // let serenityCharms = ['craft', 'dodge', 'linguistics', 'performance', 'socialize'];
-    // let battlesCharms = ['archery', 'brawl', 'melee', 'presence', 'war'];
-    // let secretsCharms = ['investigation', 'larceny', 'lore', 'occult', 'stealth'];
-    // let endingsCharms = ['athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine'];
-
-    // const siderealMaidenCharms = {
-    //   archery: 'battles',
-    //   athletics: 'endings',
-    //   awareness: 'endings',
-    //   brawl: 'battles',
-    //   bureaucracy: 'endings',
-    //   craft: 'serenity',
-    //   dodge: 'serenity',
-    //   integrity: 'endings',
-    //   investigation: 'secrets',
-    //   larceny: 'secrets',
-    //   linguistics: 'serenity',
-    //   lore: 'secrets',
-    //   medicine: 'battles',
-    //   melee: 'battles',
-    //   occult: 'battles',
-    //   performance: 'battles',
-    //   presence: 'battles',
-    //   resistance: 'battles',
-    //   ride: 'battles',
-    //   sail: 'battles',
-    //   socialize: 'battles',
-    //   stealth: 'battles',
-    //   survival: 'battles',
-    //   thrown: 'battles',
-    //   war: 'battles',
-    // }
+    const siderealMaidenCharms = {
+      archery: 'battles',
+      athletics: 'endings',
+      awareness: 'endings',
+      brawl: 'battles',
+      bureaucracy: 'endings',
+      craft: 'serenity',
+      dodge: 'serenity',
+      integrity: 'endings',
+      investigation: 'secrets',
+      larceny: 'secrets',
+      linguistics: 'serenity',
+      lore: 'secrets',
+      medicine: 'endings',
+      melee: 'battles',
+      occult: 'secrets',
+      performance: 'serenity',
+      presence: 'battles',
+      resistance: 'journeys',
+      ride: 'journeys',
+      sail: 'journeys',
+      socialize: 'serenity',
+      stealth: 'secrets',
+      survival: 'journeys',
+      thrown: 'journeys',
+      war: 'battles',
+      battles: 'battles',
+      journeys: 'journeys',
+      secrets: 'secrets',
+      serenity: 'serenity',
+      endings: 'endings',
+    }
 
     const spells = {
       terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
@@ -181,13 +185,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       void: { name: 'Ex3.Void', visible: false, list: [] },
     }
 
-    // sheetData.system.maidencharms = {
-    //   journeys: 0,
-    //   serenity: 0,
-    //   battles: 0,
-    //   secrets: 0,
-    //   endings: 0,
-    // }
+    sheetData.system.maidencharms = {
+      journeys: 0,
+      serenity: 0,
+      battles: 0,
+      secrets: 0,
+      endings: 0,
+    }
     // Iterate through items, allocating to containers
     for (let i of sheetData.items) {
 
@@ -231,6 +235,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         destinies.push(i);
       }
       else if (i.type === 'charm') {
+        if(siderealMaidenCharms[i.system.ability]) {
+          sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
+        }
         if (i.system.listingname) {
           if (charms[i.system.listingname]) {
           }
@@ -261,8 +268,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             charms['evocation'].visible = true;
           }
           else if (i.system.ability !== undefined) {
-            charms[i.system.ability].list.push(i);
-            charms[i.system.ability].visible = true;
+            if(charms[i.system.ability]) {
+              charms[i.system.ability].list.push(i);
+              charms[i.system.ability].visible = true;
+            }
+            else {
+              charms['other'].list.push(i);
+              charms['other'].visible = true;
+            }
           }
         }
       }

@@ -303,12 +303,15 @@ export class ExaltedThirdActor extends Actor {
       archery: { name: 'Ex3.Archery', visible: false, list: [] },
       athletics: { name: 'Ex3.Athletics', visible: false, list: [] },
       awareness: { name: 'Ex3.Awareness', visible: false, list: [] },
+      battles: { name: 'Ex3.Battles', visible: false, list: [] },
       brawl: { name: 'Ex3.Brawl', visible: false, list: [] },
       bureaucracy: { name: 'Ex3.Bureaucracy', visible: false, list: [] },
       craft: { name: 'Ex3.Craft', visible: false, list: [] },
       dodge: { name: 'Ex3.Dodge', visible: false, list: [] },
+      endings: { name: 'Ex3.Endings', visible: false, list: [] },
       integrity: { name: 'Ex3.Integrity', visible: false, list: [] },
       investigation: { name: 'Ex3.Investigation', visible: false, list: [] },
+      journeys: { name: 'Ex3.Journeys', visible: false, list: [] },
       larceny: { name: 'Ex3.Larceny', visible: false, list: [] },
       linguistics: { name: 'Ex3.Linguistics', visible: false, list: [] },
       lore: { name: 'Ex3.Lore', visible: false, list: [] },
@@ -321,16 +324,18 @@ export class ExaltedThirdActor extends Actor {
       resistance: { name: 'Ex3.Resistance', visible: false, list: [] },
       ride: { name: 'Ex3.Ride', visible: false, list: [] },
       sail: { name: 'Ex3.Sail', visible: false, list: [] },
+      secrets: { name: 'Ex3.Secrets', visible: false, list: [] },
+      serenity: { name: 'Ex3.Serenity', visible: false, list: [] },
       socialize: { name: 'Ex3.Socialize', visible: false, list: [] },
       stealth: { name: 'Ex3.Stealth', visible: false, list: [] },
       survival: { name: 'Ex3.Survival', visible: false, list: [] },
       thrown: { name: 'Ex3.Thrown', visible: false, list: [] },
       war: { name: 'Ex3.War', visible: false, list: [] },
       evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
-      universal: { name: 'Ex3.Universal', visible: false, list: [] },
       other: { name: 'Ex3.Other', visible: false, list: [] },
+      universal: { name: 'Ex3.Universal', visible: false, list: [] },
     }
-
+    
     const spells = {
       terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
       celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
@@ -409,8 +414,14 @@ export class ExaltedThirdActor extends Actor {
             charms['evocation'].visible = true;
           }
           else if (i.system.ability !== undefined) {
-            charms[i.system.ability].list.push(i);
-            charms[i.system.ability].visible = true;
+            if(charms[i.system.ability]) {
+              charms[i.system.ability].list.push(i);
+              charms[i.system.ability].visible = true;
+            }
+            else {
+              charms['other'].list.push(i);
+              charms['other'].visible = true;
+            }
           }
         }
       }

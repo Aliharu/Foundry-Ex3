@@ -2,6 +2,122 @@
     <div class="flex-center resource-label" style="font-weight: bold;">
         Damage
     </div>
+    {{#ifEquals data.rollType 'damage'}}
+    <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+        <div class="resource-label">
+            {{localize "Ex3.Charms"}} {{#ifNotEquals data.rollType 'damage'}}{{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}})
+            {{/ifNotEquals}}{{/ifNotEquals}}
+        </div>
+        <div>
+            <i class="fas fa-caret-down"></i>
+        </div>
+    </div>
+    <div style="display:none;">
+        <ol class="items-list">
+            {{#each data.addedCharms as |item id|}}
+            <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                        height="24" /></div>
+                <h4 class="item-name">{{item.name}}</h4>
+                <div class="item-controls">
+                    <a class="item-control remove-charm" title="Remove Charm"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+            {{/each}}
+        </ol>
+        <div class="resource flex-center">
+            <label class="resource-label">{{localize "Ex3.Cost"}}</label>
+        </div>
+        <div class="resource grid grid-3col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Motes"}}</label>
+                <input type="number" name="object.cost.motes" value="{{data.cost.motes}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.MuteMotes"}} </label>
+                <input type="number" name="object.cost.muteMotes" value="{{data.cost.muteMotes}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Initiative"}} </label>
+                <input type="number" name="object.cost.initiative" value="{{data.cost.initiative}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Anima"}} </label>
+                <input type="number" name="object.cost.anima" value="{{data.cost.anima}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Willpower"}} </label>
+                <input type="number" name="object.cost.willpower" value="{{data.cost.willpower}}">
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+                <select name="object.cost.aura" data-type="String">
+                    {{#select data.cost.aura}}
+                    <option value=""></option>
+                    <option value="any">{{localize "Ex3.Any"}}</option>
+                    <option value="air">{{localize "Ex3.Air"}}</option>
+                    <option value="earth">{{localize "Ex3.Earth"}}</option>
+                    <option value="fire">{{localize "Ex3.Fire"}}</option>
+                    <option value="water">{{localize "Ex3.Water"}}</option>
+                    <option value="wood">{{localize "Ex3.Wood"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Health"}}(b)</div>
+                <input type="number" name="object.cost.healthbashing" value="{{data.cost.healthbashing}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Health"}}(l)</div>
+                <input type="number" name="object.cost.healthlethal" value="{{data.cost.healthlethal}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Health"}}(a)</div>
+                <input type="number" name="object.cost.healthaggravated" value="{{data.cost.healthaggravated}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Silver"}}</div>
+                <input type="number" name="object.cost.silverxp" value="{{data.cost.silverxp}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Gold"}}</div>
+                <input type="number" name="object.cost.goldxp" value="{{data.cost.goldxp}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.White"}}</div>
+                <input type="number" name="object.cost.whitexp" value="{{data.cost.whitexp}}" data-dtype="Number" />
+            </div>
+        </div>
+    </div>
+    {{#ifGreater data.opposingCharms.length 0}}
+    <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+        <div class="resource-label">
+            {{localize "Ex3.OpposingCharms"}}
+        </div>
+        <div>
+            <i class="fas fa-caret-down"></i>
+        </div>
+    </div>
+    <div style="display:none;">
+        <ol class="items-list">
+            {{#each data.opposingCharms as |item id|}}
+            <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                        height="24" /></div>
+                <h4 class="item-name">{{item.name}}</h4>
+                <div class="item-controls">
+                    <a class="item-control remove-opposing-charm" title="Remove Opposing Charm"><i
+                            class="fas fa-trash"></i></a>
+                </div>
+            </li>
+            {{/each}}
+        </ol>
+    </div>
+    {{/ifGreater}}
+    {{/ifEquals}}
     <div>
         <div class="resource grid grid-2col flex-center">
             {{#ifEquals data.rollType 'damage'}}
@@ -136,13 +252,12 @@
                 </div>
                 <label class="resource-label">{{localize "Ex3.ResetInitiative"}} </label>
                 <div>
-                    <input type="checkbox" name="object.damage.resetInit"
-                        value="{{data.damage.resetInit}}" {{checked data.damage.resetInit}}>
+                    <input type="checkbox" name="object.damage.resetInit" value="{{data.damage.resetInit}}" {{checked
+                        data.damage.resetInit}}>
                 </div>
                 <label class="resource-label">{{localize "Ex3.MagicDamage"}} </label>
                 <div>
-                    <input type="checkbox" name="object.isMagic"
-                        value="{{data.isMagic}}" {{checked data.isMagic}}>
+                    <input type="checkbox" name="object.isMagic" value="{{data.isMagic}}" {{checked data.isMagic}}>
                 </div>
                 {{/ifEquals}}
                 {{#ifEquals data.attackType 'withering'}}
@@ -202,23 +317,30 @@
                 <b>Adversaries of the Righteous Gambits</b>
             </p>
             <p>
-                <b>Detonate (4) (pg.191)</b>: Explode a volatile target like a firedust barrel with a firewand or similar implement.  Creates a one-time environmental hazard
+                <b>Detonate (4) (pg.191)</b>: Explode a volatile target like a firedust barrel with a firewand or
+                similar implement. Creates a one-time environmental hazard
                 out to short range (damage 4L/instant, difficulty 5)
             </p>
             <p>
-                <b>Bind (2-4) (pg.185)</b>: Roll a gambit at difficulty 2 at close range (3 for Short Range, 3 for Medium Range). On success the target is treated as if they were in a grapple.  See the full text for this gambit effect.
+                <b>Bind (2-4) (pg.185)</b>: Roll a gambit at difficulty 2 at close range (3 for Short Range, 3 for
+                Medium Range). On success the target is treated as if they were in a grapple. See the full text for this
+                gambit effect.
             </p>
             <p>
-                <b>Goad (3) (pg.186)</b>: On success the target must pay 2 initiative to attack anyone but the gambit user.  Ends if the target is not in close range with the gambit user.
+                <b>Goad (3) (pg.186)</b>: On success the target must pay 2 initiative to attack anyone but the gambit
+                user. Ends if the target is not in close range with the gambit user.
             </p>
             <p>
-                <b>Leech (3) (pg.186)</b>: Deal 1L.  Target begins bleeding (Exalted, p. 174) and characters gain (Targets Wound Penalty) bonus successes to track the target. 
+                <b>Leech (3) (pg.186)</b>: Deal 1L. Target begins bleeding (Exalted, p. 174) and characters gain
+                (Targets Wound Penalty) bonus successes to track the target.
             </p>
             <p>
-                <b>Pile On (2) (pg.186)</b>: Chopping or piercing attacks by a chosen ally no longer cost initiative or defense vs the target until the targets next turn.
+                <b>Pile On (2) (pg.186)</b>: Chopping or piercing attacks by a chosen ally no longer cost initiative or
+                defense vs the target until the targets next turn.
             </p>
             <p>
-                <b>Riposte (1) (pg.186)</b>: If the target attacks the gambit user before her next turn the gambit user may reflexivly decisive clash the attack, adding 4 dice to the damage pool.
+                <b>Riposte (1) (pg.186)</b>: If the target attacks the gambit user before her next turn the gambit user
+                may reflexivly decisive clash the attack, adding 4 dice to the damage pool.
             </p>
         </div>
         <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
@@ -231,13 +353,18 @@
         </div>
         <div style="display:none;">
             <p>
-                <b>Block Vision (3)</b>: Pilot suffers a -3 penalty on all actions that depend on vision. The pilot may use a miscellaneous action to clear the obstruction.
+                <b>Block Vision (3)</b>: Pilot suffers a -3 penalty on all actions that depend on vision. The pilot may
+                use a miscellaneous action to clear the obstruction.
             </p>
             <p>
-                <b>Disable Arm (5)</b>: Disables a warstrider's arm.  Warstrider drops anything that arm was carrying and cannot use the arm.  Warstrider takes a -3 on actions that require 2 arms.  Pilot can restore fuctionality with  5 init and a misc action.
+                <b>Disable Arm (5)</b>: Disables a warstrider's arm. Warstrider drops anything that arm was carrying and
+                cannot use the arm. Warstrider takes a -3 on actions that require 2 arms. Pilot can restore fuctionality
+                with 5 init and a misc action.
             </p>
             <p>
-                <b>Disable Leg (6)</b>: Pilot must succees on Diff 5 (Dex + Athletics) roll or fall prone,  Pilot takes a -3 penalty of movement.  Pilot can restore fucitonality by paying 2 init and their turn's movement.  If both legs are disabled the warstrider cannot move and the init cost is raised to 5.
+                <b>Disable Leg (6)</b>: Pilot must succees on Diff 5 (Dex + Athletics) roll or fall prone, Pilot takes a
+                -3 penalty of movement. Pilot can restore fucitonality by paying 2 init and their turn's movement. If
+                both legs are disabled the warstrider cannot move and the init cost is raised to 5.
             </p>
             <p>
                 <b>Breach Frame (9)</b>: Makes an opening allowing attackers to pay 1 init to attack the pilot directly.
