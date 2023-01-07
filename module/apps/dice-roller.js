@@ -302,6 +302,15 @@ export class RollForm extends FormApplication {
                 if(!addedCharm.timesAdded) {
                     addedCharm.timesAdded = 1;
                 }
+                if(addedCharm.saveId) {
+                    addedCharm.id = addedCharm.saveId;
+                }
+                else{
+                    var actorItem = this.actor.items.find((item) => item.name==addedCharm.name && item.type=='charm');
+                    if(actorItem) {
+                        addedCharm.id = actorItem.id;
+                    }
+                }
             }
         }
         if (this.object.specialAttacksList === undefined) {
@@ -471,8 +480,8 @@ export class RollForm extends FormApplication {
                     this.object.charmList = this.actor.charms;
                     for (var charmlist of Object.values(this.object.charmList)) {
                         for (const charm of charmlist.list) {
-                            if (this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
-                                var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === charm._id);
+                            if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                                var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
                                 charm.charmAdded = true;
                                 charm.timesAdded = addedCharm.timesAdded || 1;
                             }
@@ -613,23 +622,27 @@ export class RollForm extends FormApplication {
     }
 
     async addOpposingCharm(charm) {
-        const index = this.object.opposingCharms.findIndex(opposedCharm => charm._id === opposedCharm._id);
-        if (index === -1) {
-            this.object.opposingCharms.push(charm);
-            this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
-            if (this._isAttackRoll()) {
-                this.object.defense += charm.system.diceroller.opposedbonuses.defense;
-                this.object.soak += charm.system.diceroller.opposedbonuses.soak;
-                this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
-            }
-            if (this.object.rollType === 'readIntentions') {
-                this.object.difficulty += charm.system.diceroller.opposedbonuses.guile;
-            }
-            if (this.object.rollType === 'social') {
-                this.object.difficulty += charm.system.diceroller.opposedbonuses.resolve;
-            }
-            this.render();
+        const addedCharm = this.object.opposingCharms.find(opposedCharm => charm._id === opposedCharm._id);
+        if (addedCharm) {
+            addedCharm.timesAdded++;
         }
+        else {
+            charm.timesAdded = 1;
+            this.object.opposingCharms.push(charm);
+        }
+        this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
+        if (this._isAttackRoll()) {
+            this.object.defense += charm.system.diceroller.opposedbonuses.defense;
+            this.object.soak += charm.system.diceroller.opposedbonuses.soak;
+            this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
+        }
+        if (this.object.rollType === 'readIntentions') {
+            this.object.difficulty += charm.system.diceroller.opposedbonuses.guile;
+        }
+        if (this.object.rollType === 'social') {
+            this.object.difficulty += charm.system.diceroller.opposedbonuses.resolve;
+        }
+        this.render();
     }
 
     activateListeners(html) {
@@ -731,17 +744,18 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === item._id);
+            var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === item._id);
             if(existingAddedCharm) {
                 existingAddedCharm.timesAdded++;
             }
             else {
                 item.timesAdded = 1;
+                item.saveId = item.id;
                 this.object.addedCharms.push(item);
             }
             for (var charmlist of Object.values(this.object.charmList)) {
                 for (const charm of charmlist.list) {
-                    var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === charm._id);
+                    var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
                     if (existingAddedCharm) {
                         charm.charmAdded = true;
                         charm.timesAdded = existingAddedCharm.timesAdded;
@@ -828,8 +842,8 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem._id);
-            const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem._id);
+            const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem.id);
+            const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem.id);
             if (index > -1) {
                 for (var charmlist of Object.values(this.object.charmList)) {
                     for (const charm of charmlist.list) {
@@ -925,8 +939,13 @@ export class RollForm extends FormApplication {
             let id = li.data("item-id");
             const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
             const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
-            if (index > -1) {
-                this.object.opposingCharms.splice(index, 1);
+            if (charm) {
+                if(charm.timesAdded <= 1) {
+                    this.object.opposingCharms.splice(index, 1);
+                }
+                else {
+                    charm.timesAdded--;
+                }
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
                 if (this._isAttackRoll()) {
                     this.object.defense -= charm.system.diceroller.opposedbonuses.defense;
@@ -939,7 +958,6 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'social') {
                     this.object.difficulty -= charm.system.diceroller.opposedbonuses.resolve;
                 }
-                this.render();
             }
             this.render();
         });
@@ -967,8 +985,8 @@ export class RollForm extends FormApplication {
 
         html.find('.collapsable').click(ev => {
             const li = $(ev.currentTarget).next();
-            if(li.attr('id') === 'added-charms') {
-                this.object.showAddedCharmsList = li.is(":hidden");
+            if(li.attr('id')) {
+                this.object[li.attr('id')] = li.is(":hidden");
             }
             li.toggle("fast");
         });

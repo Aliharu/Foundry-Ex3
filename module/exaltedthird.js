@@ -69,6 +69,7 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/dialogues/add-roll-charm.html",
     "systems/exaltedthird/templates/dialogues/accuracy-roll.html",
     "systems/exaltedthird/templates/dialogues/damage-roll.html",
+    "systems/exaltedthird/templates/dialogues/added-charm-list.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
     "systems/exaltedthird/templates/actor/effects-tab.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",

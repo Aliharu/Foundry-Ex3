@@ -1,0 +1,107 @@
+<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+    <div class="resource-label">
+        {{localize "Ex3.Charms"}} {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}}
+    </div>
+    <div>
+        <i class="fas fa-caret-down"></i>
+    </div>
+</div>
+<div id="addedCharmsDropdown" {{#if data.addedCharmsDropdown}} {{else}} style="display:none;" {{/if}}>
+    <ol class="items-list">
+        {{#each data.addedCharms as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item.id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+            <h4 class="item-name">{{item.name}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
+            <div class="item-controls">
+                <a class="item-control remove-charm" title="Remove Charm"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+    <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.Cost"}}</label>
+    </div>
+    <div class="resource grid grid-3col flex-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.Motes"}}</label>
+            <input type="number" name="object.cost.motes" value="{{data.cost.motes}}">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.MuteMotes"}} </label>
+            <input type="number" name="object.cost.muteMotes" value="{{data.cost.muteMotes}}">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Initiative"}} </label>
+            <input type="number" name="object.cost.initiative" value="{{data.cost.initiative}}">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Anima"}} </label>
+            <input type="number" name="object.cost.anima" value="{{data.cost.anima}}">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Willpower"}} </label>
+            <input type="number" name="object.cost.willpower" value="{{data.cost.willpower}}">
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+            <select name="object.cost.aura" data-type="String">
+                {{#select data.cost.aura}}
+                <option value=""></option>
+                <option value="any">{{localize "Ex3.Any"}}</option>
+                <option value="air">{{localize "Ex3.Air"}}</option>
+                <option value="earth">{{localize "Ex3.Earth"}}</option>
+                <option value="fire">{{localize "Ex3.Fire"}}</option>
+                <option value="water">{{localize "Ex3.Water"}}</option>
+                <option value="wood">{{localize "Ex3.Wood"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}(b)</div>
+            <input type="number" name="object.cost.healthbashing" value="{{data.cost.healthbashing}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}(l)</div>
+            <input type="number" name="object.cost.healthlethal" value="{{data.cost.healthlethal}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}(a)</div>
+            <input type="number" name="object.cost.healthaggravated" value="{{data.cost.healthaggravated}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Silver"}}</div>
+            <input type="number" name="object.cost.silverxp" value="{{data.cost.silverxp}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Gold"}}</div>
+            <input type="number" name="object.cost.goldxp" value="{{data.cost.goldxp}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.White"}}</div>
+            <input type="number" name="object.cost.whitexp" value="{{data.cost.whitexp}}" data-dtype="Number" />
+        </div>
+    </div>
+</div>
+{{#ifGreater data.opposingCharms.length 0}}
+<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+    <div class="resource-label">
+        {{localize "Ex3.OpposingCharms"}}
+    </div>
+    <div>
+        <i class="fas fa-caret-down"></i>
+    </div>
+</div>
+<div id="opposedCharmsDropdown" {{#if data.opposedCharmsDropdown}} {{else}} style="display:none;" {{/if}}>
+    <ol class="items-list">
+        {{#each data.opposingCharms as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+            <h4 class="item-name">{{item.name}} {{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
+            <div class="item-controls">
+                <a class="item-control remove-opposing-charm" title="Remove Opposing Charm"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+</div>
+{{/ifGreater}}
