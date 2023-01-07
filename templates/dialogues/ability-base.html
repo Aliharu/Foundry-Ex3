@@ -5,7 +5,7 @@
 <div class="resource grid grid-2col flex-center">
     {{#ifEquals data.characterType 'character'}}
 
-    <label class="resource-label">{{localize "Ex3.Attribute"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
     <select class="update-roller" name="object.attribute" value="{{data.attribute}}" data-type="String">
         {{#select data.attribute}}
         <option value="strength">{{localize "Ex3.Strength"}}</option>
@@ -22,7 +22,7 @@
     </select>
 
     {{#if data.martialArtRoll}}
-    <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Ability"}}</label>
     <select name="object.martialArtId" value="{{data.martialArtId}}" data-type="String">
         {{#select data.martialArtId}}
         {{#each actor.martialarts as |action key|}}
@@ -31,7 +31,7 @@
         {{/select}}
     </select>
     {{else if data.craftRoll}}
-    <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Ability"}}</label>
     <select name="object.craftId" value="{{data.craftId}}" data-type="String">
         {{#select data.craftId}}
         {{#each actor.crafts as |action key|}}
@@ -40,7 +40,7 @@
         {{/select}}
     </select> 
     {{else}}
-    <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Ability"}}</label>
     <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
         {{#select data.ability}}
         <option value="archery">{{localize "Ex3.Archery"}}</option>
@@ -75,7 +75,7 @@
     </select>
     {{/if}}
 
-    <label class="resource-label">{{localize "Ex3.Specialty"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Specialty"}}</label>
     <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">
         {{#select data.specialty}}
         <option value=""></option>
@@ -92,7 +92,7 @@
     {{#ifEquals data.characterType 'npc'}}
 
     {{#if data.actionRoll}}
-    <label class="resource-label">{{localize "Ex3.Action"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Action"}}</label>
     <select name="object.actionId" value="{{data.actionId}}" data-type="String">
         {{#select data.actionId}}
         {{#each actor.actions as |action key|}}
@@ -101,7 +101,7 @@
         {{/select}}
     </select>
     {{else}}
-    <label class="resource-label">{{localize "Ex3.Pool"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Pool"}}</label>
     <select name="object.pool" value="{{data.pool}}" data-type="String">
         {{#select data.pool}}
         <option value="administration">{{localize "Ex3.Administration"}}</option>
@@ -131,7 +131,7 @@
     {{/if}}
 
 
-    <label class="resource-label">{{localize "Ex3.StuntLevel"}}:</label>
+    <label class="resource-label">{{localize "Ex3.StuntLevel"}}</label>
     <select name="object.stunt" value="{{data.stunt}}" data-type="String">
         {{#select data.stunt}}
         <option value="none">None</option>
@@ -214,16 +214,16 @@
 {{#ifEquals data.rollType 'base'}}
 {{else}}
 <div class="resource grid grid-4col flex-center">
-    <label class="resource-label">{{localize "Ex3.WoundPenalty"}}: </label>
+    <label class="resource-label">{{localize "Ex3.WoundPenalty"}}</label>
     <input type="checkbox" name="object.woundPenalty" value="{{data.woundPenalty}}" {{checked data.woundPenalty}}>
 
-    <label class="resource-label">{{localize "Ex3.Flurry"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Flurry"}}</label>
     <input type="checkbox" name="object.isFlurry" value="{{data.isFlurry}}" {{checked data.isFlurry}}>
 
-    <label class="resource-label">{{localize "Ex3.ArmorPenalty"}}: </label>
+    <label class="resource-label">{{localize "Ex3.ArmorPenalty"}}</label>
     <input type="checkbox" name="object.armorPenalty" value="{{data.armorPenalty}}" {{checked data.armorPenalty}}>
 
-    <label class="resource-label">{{localize "Ex3.Willpower"}}: </label>
+    <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
     <input type="checkbox" name="object.willpower" value="{{data.willpower}}" {{checked data.willpower}}>
 </div>
 {{/ifEquals}}

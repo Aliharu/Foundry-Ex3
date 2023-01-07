@@ -540,7 +540,7 @@ export class RollForm extends FormApplication {
             template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
             id: "roll-form",
             title: `Roll`,
-            width: 350,
+            width: 400,
             resizable: true,
             submitOnChange: true,
             closeOnSubmit: false
