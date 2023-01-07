@@ -242,7 +242,7 @@
         {{#each data.addedCharms as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
-            <h4 class="item-name">{{item.name}}</h4>
+            <h4 class="item-name">{{item.name}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
             <div class="item-controls">
                 <a class="item-control remove-charm" title="Remove Charm"><i class="fas fa-trash"></i></a>
             </div>

@@ -297,6 +297,13 @@ export class RollForm extends FormApplication {
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
         }
+        else {
+            for (const addedCharm of this.object.addedCharms) {
+                if(!addedCharm.timesAdded) {
+                    addedCharm.timesAdded = 1;
+                }
+            }
+        }
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
                 { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
@@ -465,10 +472,13 @@ export class RollForm extends FormApplication {
                     for (var charmlist of Object.values(this.object.charmList)) {
                         for (const charm of charmlist.list) {
                             if (this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
+                                var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === charm._id);
                                 charm.charmAdded = true;
+                                charm.timesAdded = addedCharm.timesAdded || 1;
                             }
                             else {
                                 charm.charmAdded = false;
+                                charm.timesAdded = 0;
                             }
                         }
                     }
@@ -721,11 +731,20 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            this.object.addedCharms.push(item);
+            var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === item._id);
+            if(existingAddedCharm) {
+                existingAddedCharm.timesAdded++;
+            }
+            else {
+                item.timesAdded = 1;
+                this.object.addedCharms.push(item);
+            }
             for (var charmlist of Object.values(this.object.charmList)) {
                 for (const charm of charmlist.list) {
-                    if (this.object.addedCharms.some((addedCharm) => addedCharm._id === charm._id)) {
+                    var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === charm._id);
+                    if (existingAddedCharm) {
                         charm.charmAdded = true;
+                        charm.timesAdded = existingAddedCharm.timesAdded;
                     }
                 }
             }
@@ -810,15 +829,27 @@ export class RollForm extends FormApplication {
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
             const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem._id);
+            const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem._id);
             if (index > -1) {
                 for (var charmlist of Object.values(this.object.charmList)) {
                     for (const charm of charmlist.list) {
                         if (charm._id === item.id) {
-                            charm.charmAdded = false;
+                            if(addedCharm.timesAdded > 0) {
+                                charm.timesAdded--;
+                            }
+                            if(charm.timesAdded <= 0) {
+                                charm.charmAdded = false;
+                            }
                         }
                     }
                 }
-                this.object.addedCharms.splice(index, 1);
+
+                if(addedCharm.timesAdded > 0) {
+                    addedCharm.timesAdded--;
+                }
+                if(addedCharm.timesAdded <= 0) {
+                    this.object.addedCharms.splice(index, 1);
+                }
 
                 if (item.system.keywords.toLowerCase().includes('mute')) {
                     this.object.cost.muteMotes -= item.system.cost.motes;
