@@ -117,22 +117,22 @@ Hooks.once('init', async function () {
 
   Handlebars.registerHelper('healthCheck', function (health, type, options) {
     let healthLevels = options.data.root.system.health.levels;
-    if(type === 'warstrider') {
+    if (type === 'warstrider') {
       healthLevels = options.data.root.system.warstrider.health.levels;
     }
-    else if (type === 'ship'){
+    else if (type === 'ship') {
       healthLevels = options.data.root.system.ship.health.levels;
     }
-    if(health < healthLevels.zero.value) {
+    if (health < healthLevels.zero.value) {
       return '0'
     }
-    else if(health < healthLevels.zero.value + healthLevels.one.value) {
+    else if (health < healthLevels.zero.value + healthLevels.one.value) {
       return '1'
     }
-    else if(health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value) {
+    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value) {
       return '2'
     }
-    else if(health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.four.value) {
+    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.four.value) {
       return '4'
     }
     return 'i'
@@ -161,11 +161,11 @@ Hooks.once('init', async function () {
 
 async function handleSocket({ type, id, data }) {
   if (type === 'addOpposingCharm') {
-    if(game.rollForm) {
+    if (game.rollForm) {
       game.rollForm.addOpposingCharm(data);
     }
   }
-  
+
   if (!game.user.isGM) return;
 
   // if the logged in user is the active GM with the lowest user id
@@ -285,7 +285,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       if (defensePenalty) {
         defensePenalty.delete();
       }
-      if(currentCombatant.actor.system.grapplecontrolrounds.value > 0){
+      if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
         const actorData = duplicate(currentCombatant.actor);
         actorData.system.grapplecontrolrounds.value -= 1;
         currentCombatant.actor.update(actorData);
@@ -313,7 +313,7 @@ Hooks.once("ready", async function () {
           }
         }
       } catch (error) {
-        error.message = `Failed migration for Item ${item.name}: ${error.message}`;
+        error.message = `Failed migration for Item ${item.name}: ${error.message} `;
         console.error(error);
       }
       await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
@@ -329,7 +329,7 @@ Hooks.once("ready", async function () {
           await actor.update(updateData, { enforceTypes: false });
         }
       } catch (error) {
-        error.message = `Failed migration for Actor ${actor.name}: ${error.message}`;
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
         console.error(error);
       }
       await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
@@ -361,7 +361,7 @@ async function creatExaltedthirdMacro(data, slot) {
     const item = data.data;
 
     // Create the macro command
-    const command = `game.exaltedthird.rollItemMacro("${item.name}");`;
+    const command = `game.exaltedthird.rollItemMacro("${item.name}"); `;
     let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
     if (!macro) {
       macro = await Macro.create({
@@ -376,7 +376,7 @@ async function creatExaltedthirdMacro(data, slot) {
   }
   else {
     const command = `const formActor = await fromUuid("${data.actorId}");
-    game.rollForm = new game.exaltedthird.RollForm(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {}, {}, { rollId: "${data.id}" }).render(true);`;
+        game.rollForm = new game.exaltedthird.RollForm(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {}, {}, { rollId: "${data.id}" }).render(true); `;
     const macro = await Macro.create({
       name: data.name,
       img: 'systems/exaltedthird/assets/icons/d10.svg',
@@ -401,7 +401,7 @@ function rollItemMacro(itemName) {
   if (speaker.token) actor = game.actors.tokens[speaker.token];
   if (!actor) actor = game.actors.get(speaker.actor);
   const item = actor ? actor.items.find(i => i.name === itemName) : null;
-  if (!item) return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemName}`);
+  if (!item) return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemName} `);
 
   // Trigger the item roll
   return item.roll();

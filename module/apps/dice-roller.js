@@ -174,6 +174,9 @@ export class RollForm extends FormApplication {
                             }
                         }
                     }
+                    if(!this.object.showWithering && data.weapon.decisivedamagetype === 'static') {
+                        this.object.damage.damageDice = data.weapon.staticdamage;
+                    }
                     if (this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
                         this.object.damage.type = 'bashing';
                     }
@@ -347,17 +350,14 @@ export class RollForm extends FormApplication {
             this.object.target = Array.from(game.user.targets)[0] || null;
             this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
-
             let combat = game.combat;
             if (combat) {
                 let combatant = combat.combatants.find(c => c.actorId == actor.id);
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
-                        if (data.weapon && data.weapon.decisivedamagetype === 'static') {
-                            this.object.damage.damageDice = data.weapon.staticdamage;
-                        } else {
+                        if (data.weapon && data.weapon.decisivedamagetype !== 'static') {
                             this.object.damage.damageDice = combatant.initiative;
-                        }
+                        } 
                     }
                     this.object.characterInitiative = combatant.initiative;
                 }
@@ -1600,7 +1600,7 @@ export class RollForm extends FormApplication {
 
         }
         damageResults = `
-                                <h4 class="dice-total">${this.object.rollType === 'gambit' ? 'Gambit' : 'Damage'}</h4>
+                                <h4 class="dice-total" style="margin-bottom:5px;">${this.object.rollType === 'gambit' ? 'Gambit' : 'Damage'}</h4>
                                 <h4 class="dice-formula">${baseDamage} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
                                 ${soakResult}
                                 <div class="dice-tooltip">
