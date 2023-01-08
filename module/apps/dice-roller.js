@@ -1355,6 +1355,13 @@ export class RollForm extends FormApplication {
                     else {
                         this.object.characterInitiative = this.object.characterInitiative - 3;
                     }
+                    let combat = game.combat;
+                    if (this.object.target && combat) {
+                        let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
+                        if (combatant && combatant.initiative != null) {
+                            combat.setInitiative(combatant.id, this.object.characterInitiative);
+                        }
+                    }
                 }
                 var messageContent = `
                 <div class="chat-card">
