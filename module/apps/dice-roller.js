@@ -352,7 +352,7 @@ export class RollForm extends FormApplication {
             this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.combatants.find(c => c.actorId == actor.id);
+                let combatant = this._getActorCombatant();
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
                         if (data.weapon && data.weapon.decisivedamagetype !== 'static') {
@@ -1322,7 +1322,7 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === "joinBattle") {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
+                let combatant = this._getActorCombatant();
                 if (combatant) {
                     combat.setInitiative(combatant.id, this.object.total + 3);
                 }
@@ -1357,7 +1357,7 @@ export class RollForm extends FormApplication {
                     }
                     let combat = game.combat;
                     if (this.object.target && combat) {
-                        let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
+                        let combatant = this._getActorCombatant();
                         if (combatant && combatant.initiative != null) {
                             combat.setInitiative(combatant.id, this.object.characterInitiative);
                         }
@@ -1696,7 +1696,7 @@ export class RollForm extends FormApplication {
         if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
             let combat = game.combat;
             if (this.object.target && combat) {
-                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
+                let combatant = this._getActorCombatant();
                 if (combatant && combatant.initiative != null) {
                     combat.setInitiative(combatant.id, this.object.characterInitiative);
                 }
@@ -1704,8 +1704,8 @@ export class RollForm extends FormApplication {
         }
         else if (this.actor.system.battlegroup) {
             let combat = game.combat;
-            if (this.object.target) {
-                let combatant = combat.combatants.find(c => c.actorId == this.object.target.actor.id);
+            if (this.object.target && combat) {
+                let combatant = combat.combatants.find(c => c.tokenId == this.object.target.actor.token.id);
                 if (combatant && combatant.initiative != null && combatant.initiative <= 0) {
                     this.dealHealthDamage(total);
                 }
@@ -2012,6 +2012,12 @@ export class RollForm extends FormApplication {
         return this.object.rollType === rollType || (this.object.rollType === 'damage' && this.object.attackType === rollType);
     }
 
+    _getActorCombatant() {
+        if(game.combat) {
+            return game.combat.combatants.find(c => c.tokenId == this.actor.token.id);
+        }
+    }
+
     _getRangedAccuracy() {
         var ranges = {
             "bolt-close": 1,
@@ -2278,7 +2284,7 @@ export class RollForm extends FormApplication {
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
+                let combatant = this._getActorCombatant();
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {
@@ -2299,7 +2305,7 @@ export class RollForm extends FormApplication {
         if (this.object.cost.initiative > 0) {
             let combat = game.combat;
             if (combat) {
-                let combatant = combat.combatants.find(c => c.actorId == this.actor.id);
+                let combatant = this._getActorCombatant();
                 if (combatant) {
                     var newInitiative = combatant.initiative - this.object.cost.initiative;
                     if (combatant.initiative > 0 && newInitiative <= 0) {

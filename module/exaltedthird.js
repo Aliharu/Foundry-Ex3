@@ -5,6 +5,7 @@ import { addDefensePenalty, ExaltedThirdActor } from "./actor/actor.js";
 import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
 import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
+import * as Chat from "./chat.js";
 
 import { RollForm } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
@@ -225,6 +226,7 @@ Handlebars.registerHelper('le', function (a, b) {
   return (a <= b) ? next.fn(this) : next.inverse(this);
 });
 
+
 $(document).ready(() => {
   const diceIconSelector = '#chat-controls .chat-control-icon .fa-dice-d20';
 
@@ -293,6 +295,11 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
     }
   }
 }));
+
+// Hooks.on("renderChatLog", (app, html, data) => {
+//   //----chat messages listeners
+//   Chat.addChatListeners(html);
+// });
 
 Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to

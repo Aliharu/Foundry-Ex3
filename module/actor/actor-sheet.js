@@ -1783,8 +1783,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
         if (item.system.cost.initiative > 0) {
           let combat = game.combat;
-          if (combat) {
-            let combatant = combat.combatants.find(c => c?.actor?._id == this.actor.id);
+          if (combat && this.actor.token) {
+            let combatant = combat.combatants.find(c => c?.tokenId == this.actor.token.id);
             if (combatant) {
               var newInitiative = combatant.initiative - item.system.cost.initiative;
               if (combatant.initiative > 0 && newInitiative <= 0) {
