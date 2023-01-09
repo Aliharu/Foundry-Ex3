@@ -1348,7 +1348,7 @@ export class RollForm extends FormApplication {
         }
         else {
             if (this.object.thereshholdSuccesses < 0) {
-                if (this.object.rollType !== 'withering') {
+                if (this.object.rollType !== 'withering' && this.object.damage.resetInit) {
                     if (this.object.characterInitiative < 11) {
                         this.object.characterInitiative = this.object.characterInitiative - 2;
                     }

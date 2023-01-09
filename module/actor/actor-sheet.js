@@ -696,7 +696,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability }).render(true);
+        const abilityObject = this.actor.system.abilities[ability];
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability, attribute: abilityObject.prefattribute }).render(true);
       }
     });
 
