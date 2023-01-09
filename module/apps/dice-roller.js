@@ -174,7 +174,7 @@ export class RollForm extends FormApplication {
                             }
                         }
                     }
-                    if(!this.object.showWithering && data.weapon.decisivedamagetype === 'static') {
+                    if (!this.object.showWithering && data.weapon.decisivedamagetype === 'static') {
                         this.object.damage.damageDice = data.weapon.staticdamage;
                     }
                     if (this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
@@ -302,15 +302,15 @@ export class RollForm extends FormApplication {
         }
         else {
             for (const addedCharm of this.object.addedCharms) {
-                if(!addedCharm.timesAdded) {
+                if (!addedCharm.timesAdded) {
                     addedCharm.timesAdded = 1;
                 }
-                if(addedCharm.saveId) {
+                if (addedCharm.saveId) {
                     addedCharm.id = addedCharm.saveId;
                 }
-                else{
-                    var actorItem = this.actor.items.find((item) => item.name==addedCharm.name && item.type=='charm');
-                    if(actorItem) {
+                else {
+                    var actorItem = this.actor.items.find((item) => item.name == addedCharm.name && item.type == 'charm');
+                    if (actorItem) {
                         addedCharm.id = actorItem.id;
                     }
                 }
@@ -357,7 +357,7 @@ export class RollForm extends FormApplication {
                     if (!this.object.showWithering) {
                         if (data.weapon && data.weapon.decisivedamagetype !== 'static') {
                             this.object.damage.damageDice = combatant.initiative;
-                        } 
+                        }
                     }
                     this.object.characterInitiative = combatant.initiative;
                 }
@@ -745,7 +745,7 @@ export class RollForm extends FormApplication {
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
             var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === item._id);
-            if(existingAddedCharm) {
+            if (existingAddedCharm) {
                 existingAddedCharm.timesAdded++;
             }
             else {
@@ -848,20 +848,20 @@ export class RollForm extends FormApplication {
                 for (var charmlist of Object.values(this.object.charmList)) {
                     for (const charm of charmlist.list) {
                         if (charm._id === item.id) {
-                            if(addedCharm.timesAdded > 0) {
+                            if (addedCharm.timesAdded > 0) {
                                 charm.timesAdded--;
                             }
-                            if(charm.timesAdded <= 0) {
+                            if (charm.timesAdded <= 0) {
                                 charm.charmAdded = false;
                             }
                         }
                     }
                 }
 
-                if(addedCharm.timesAdded > 0) {
+                if (addedCharm.timesAdded > 0) {
                     addedCharm.timesAdded--;
                 }
-                if(addedCharm.timesAdded <= 0) {
+                if (addedCharm.timesAdded <= 0) {
                     this.object.addedCharms.splice(index, 1);
                 }
 
@@ -940,7 +940,7 @@ export class RollForm extends FormApplication {
             const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
             const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
             if (charm) {
-                if(charm.timesAdded <= 1) {
+                if (charm.timesAdded <= 1) {
                     this.object.opposingCharms.splice(index, 1);
                 }
                 else {
@@ -985,7 +985,7 @@ export class RollForm extends FormApplication {
 
         html.find('.collapsable').click(ev => {
             const li = $(ev.currentTarget).next();
-            if(li.attr('id')) {
+            if (li.attr('id')) {
                 this.object[li.attr('id')] = li.is(":hidden");
             }
             li.toggle("fast");
@@ -1217,25 +1217,22 @@ export class RollForm extends FormApplication {
 
     async _diceRoll() {
         this._baseAbilityDieRoll();
-        let messageContent = `<div class="chat-card">
-                        <div class="card-content">Dice Roll</div>
-                        <div class="card-buttons">
-                            <div class="flexrow 1">
-                                <div>Dice Roller - Number of Successes<div class="dice-roll">
-                                        <div class="dice-result">
-                                            <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
-                                            <div class="dice-tooltip">
-                                                <div class="dice">
-                                                    <ol class="dice-rolls">${this.object.getDice}</ol>
-                                                </div>
-                                            </div>
-                                            <h4 class="dice-total">${this.object.total} Successes</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
+        let messageContent = `
+        <div class="dice-roll">
+            <div class="dice-result">
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes
+                </h4>
+                <div class="dice-tooltip">
+                    <div class="dice">
+                        <ol class="dice-rolls">${this.object.getDice}</ol>
+                    </div>
+                </div>
+                <h4 class="dice-total">${this.object.total} Successes</h4>
+            </div>
+        </div>`;
+
+
+        messageContent = this._createChatMessageContent(messageContent, 'Dice Roll')
         ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
     }
 
@@ -1284,27 +1281,19 @@ export class RollForm extends FormApplication {
             }
         }
         let theContent = `
-  <div class="chat-card">
-      <div class="card-content">Dice Roll</div>
-      <div class="card-buttons">
-          <div class="flexrow 1">
-              <div>Dice Roller - Number of Successes<div class="dice-roll">
-                      <div class="dice-result">
-                          <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
-                          <div class="dice-tooltip">
-                              <div class="dice">
-                                  <ol class="dice-rolls">${this.object.getDice}</ol>
-                              </div>
-                          </div>
-                          <h4 class="dice-total">${this.object.total} Successes</h4>
-                          ${resultString}
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  `
+            <div class="dice-roll">
+                <div class="dice-result">
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                    <div class="dice-tooltip">
+                        <div class="dice">
+                            <ol class="dice-rolls">${this.object.getDice}</ol>
+                        </div>
+                    </div>
+                    <h4 class="dice-total">${this.object.total} Successes</h4>
+                    ${resultString}
+                </div>
+            </div>`
+        theContent = this._createChatMessageContent(theContent, 'Ability Roll')
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1364,29 +1353,20 @@ export class RollForm extends FormApplication {
                     }
                 }
                 var messageContent = `
-                <div class="chat-card">
-                    <div class="card-content">Attack Roll</div>
-                    <div class="card-buttons">
-                        <div class="flexrow 1">
-                            <div>
-                                <div class="dice-roll">
-                                    <div class="dice-result">
-                                        <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
-                                        <div class="dice-tooltip">
-                                            <div class="dice">
-                                                <ol class="dice-rolls">${this.object.getDice}</ol>
-                                            </div>
-                                        </div>
-                                        <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
-                                        <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
-                                        <h4 class="dice-total">Attack Missed!</h4>
+                        <div class="dice-roll">
+                            <div class="dice-result">
+                                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                                <div class="dice-tooltip">
+                                    <div class="dice">
+                                        <ol class="dice-rolls">${this.object.getDice}</ol>
                                     </div>
                                 </div>
+                                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                                <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+                                <h4 class="dice-total">Attack Missed!</h4>
                             </div>
-                        </div>
-                    </div>
-                </div>
-              `;
+                        </div>`;
+                messageContent = this._createChatMessageContent(messageContent, 'Attack Roll')
                 ChatMessage.create({
                     user: game.user.id,
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1407,11 +1387,6 @@ export class RollForm extends FormApplication {
         }
         if (this.object.rollType === 'accuracy') {
             var messageContent = `
-            <div class="chat-card">
-                <div class="card-content">Accuracy Roll</div>
-                <div class="card-buttons">
-                    <div class="flexrow 1">
-                        <div>
                             <div class="dice-roll">
                                 <div class="dice-result">
                                     <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
@@ -1424,12 +1399,8 @@ export class RollForm extends FormApplication {
                                     <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
                                     ${this.object.thereshholdSuccesses < 0 ? '<h4 class="dice-total">Attack Missed!</h4>' : ''}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          `;
+                            </div>`;
+            messageContent = this._createChatMessageContent(messageContent, 'Accuracy Roll');
             ChatMessage.create({
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1623,52 +1594,35 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'gambit') {
             title = "Gambit";
         }
+        var accuracyContent = ``;
         var messageContent = '';
-        if (this.object.rollType === 'damage') {
-            messageContent = `
-            <div class="chat-card">
-                <div class="card-content">Damage Roll</div>
-                <div class="card-buttons">
-                    <div class="flexrow 1">
-                        <div>
-                            <div class="dice-roll">
-                                <div class="dice-result">
-                                    ${damageResults}
-                                </div>
-                            </div>
-                        </div>
+        if (this.object.rollType !== 'damage') {
+            accuracyContent = `
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                <div class="dice-tooltip">
+                    <div class="dice">
+                        <ol class="dice-rolls">${this.object.getDice}</ol>
                     </div>
                 </div>
-            </div>
-          `;
+                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+            `
         }
         else {
-            messageContent = `
-            <div class="chat-card">
-                <div class="card-content">${title}</div>
-                <div class="card-buttons">
-                    <div class="flexrow 1">
-                        <div>
-                            <div class="dice-roll">
-                                <div class="dice-result">
-                                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
-                                    <div class="dice-tooltip">
-                                        <div class="dice">
-                                            <ol class="dice-rolls">${this.object.getDice}</ol>
-                                        </div>
-                                    </div>
-                                    <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
-                                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
-                                    ${damageResults}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          `;
+            title = 'Damage Roll';
         }
 
+        messageContent = `
+                <div class="dice-roll">
+                    <div class="dice-result">
+                        ${accuracyContent}
+                        ${damageResults}
+                    </div>
+                </div>
+          `;
+
+
+        messageContent = this._createChatMessageContent(messageContent, title);
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1713,7 +1667,7 @@ export class RollForm extends FormApplication {
         }
         this.attackSequence();
         this._addAttackEffects();
-        if(this.object.rollType === 'damage') {
+        if (this.object.rollType === 'damage') {
             this._spendMotes();
         }
     }
@@ -1961,28 +1915,21 @@ export class RollForm extends FormApplication {
 
 
         let messageContent = `
-<div class="chat-card">
-    <div class="card-content">Dice Roll</div>
-    <div class="card-buttons">
-        <div class="flexrow 1">
-            <div>Dice Roller - Number of Successes<div class="dice-roll">
-                    <div class="dice-result">
-                        <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
-                        <div class="dice-tooltip">
-                            <div class="dice">
-                                <ol class="dice-rolls">${this.object.getDice}</ol>
-                            </div>
+            <div class="dice-roll">
+                <div class="dice-result">
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                    <div class="dice-tooltip">
+                        <div class="dice">
+                            <ol class="dice-rolls">${this.object.getDice}</ol>
                         </div>
-                        <h4 class="dice-total">${this.object.total} Successes</h4>
-                        ${resultString}
-                        ${projectStatus}
                     </div>
+                    <h4 class="dice-total">${this.object.total} Successes</h4>
+                    ${resultString}
+                    ${projectStatus}
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-`
+        `
+        messageContent = this._createChatMessageContent(messageContent, 'Craft Roll');
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -2013,7 +1960,7 @@ export class RollForm extends FormApplication {
     }
 
     _getActorCombatant() {
-        if(game.combat) {
+        if (game.combat) {
             return game.combat.combatants.find(c => c.tokenId == this.actor.token.id);
         }
     }
@@ -2062,6 +2009,19 @@ export class RollForm extends FormApplication {
             }
         }
         return false;
+    }
+
+    _createChatMessageContent(content, cardName = 'Roll') {
+        return `
+            <div class="chat-card">
+                <div class="card-content">${cardName}</div>
+                <div class="card-buttons">
+                    <div class="flexrow 1">
+                        ${content}
+                    </div>
+                </div>
+            </div>
+        `
     }
 
     _getDiceCap() {
