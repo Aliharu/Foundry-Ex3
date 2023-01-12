@@ -1,0 +1,318 @@
+<div class="chat-card exaltedthird">
+    <div class="card-content">{{name}}</div>
+    {{#ifNotEquals rollData.rollType 'base'}}
+    <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+        <div class="resource-label">
+            {{localize "Ex3.RollDetails"}}
+        </div>
+        <div>
+            <i class="fas fa-caret-down"></i>
+        </div>
+    </div>
+    <div style="display:none;">
+        {{#ifNotEquals rollData.rollType 'damage'}}
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.BaseData"}}</b>
+        </div>
+        <div>
+            <b>{{localize "Ex3.Type"}}: </b>{{rollData.rollType}}
+        </div>
+        {{#ifEquals rollData.rollType 'action'}}
+        <div>
+            <b>{{localize "Ex3.Action"}}: </b>{{actionName}}
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals rollData.rollType 'martialArt'}}
+        <div>
+            <b>{{localize "Ex3.MartialArt"}}: </b>{{martialArtName}}
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals rollData.rollType 'craftAbilityRoll'}}
+        <div>
+            <b>{{localize "Ex3.Craft"}}: </b>{{craftRollName}}
+        </div>
+        {{/ifEquals}}
+        <div>
+            {{#if rollData.pool}}<b>{{localize "Ex3.Action"}}: </b>{{rollData.pool}}{{/if}}
+        </div>
+        <div>
+            {{#if rollData.attribute}}<b>{{localize "Ex3.Attribute"}}: </b>{{rollData.attribute}}{{/if}}{{#if rollData.ability}}, <b>{{localize "Ex3.Ability"}}: </b>{{rollData.ability}}{{/if}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.Stunt"}}: </b>{{rollData.stunt}}{{#if rollData.specialty}}, <b>{{localize "Ex3.Specialty"}}</b>: True{{/if}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.DiceBonus"}}: </b>{{rollData.diceModifier}}, <b>{{localize "Ex3.SuccessBonus"}}: </b>{{rollData.successModifier}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.TargetNumber"}}: </b>{{rollData.targetNumber}}, <b>{{localize "Ex3.DoubleSuccess"}}: </b>{{rollData.doubleSuccess}}+
+        </div>
+        <div>
+            <b>{{localize "Ex3.Reroll"}}:</b>
+            {{#each rollData.reroll as |rerollNum key|}}
+                {{#if rerollNum.status }}{{rerollNum.number}}s,{{/if}}
+            {{/each}}
+            <b>{{localize "Ex3.Reroll"}}#:</b> {{rollData.rerollNumber}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.DicetoSuccesses"}}:</b> {{rollData.diceToSuccesses}}
+        </div>
+        <div>
+            {{#if rollData.rerollFailed}}<b>{{localize "Ex3.RerollFailed"}}</b>{{/if}}{{#if rollData.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
+        </div>
+        <div>
+            {{#if rollData.difficulty}}<b>{{localize "Ex3.Difficulty"}}: </b>{{rollData.difficulty}}{{/if}}
+        </div>
+        <div>
+            {{#if rollData.goalNumber}}<b>{{localize "Ex3.GoalNumber"}}: </b>{{rollData.goalNumber}}{{/if}}
+        </div>
+        {{/ifNotEquals}}
+        {{#if isAttack}}
+            {{#ifNotEquals rollData.rollType 'damage'}}
+                <div class="roll-card-header">
+                    <b>{{localize "Ex3.Accuracy"}}</b>
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Accuracy"}}: </b>{{rollData.accuracy}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.WeaponType"}}: </b>{{rollData.weaponType}}, <b>{{localize "Ex3.Range"}}: </b>{{rollData.range}}
+                </div>
+            {{/ifNotEquals}}
+            {{#ifNotEquals rollData.rollType 'accuracy'}}
+                <div class="roll-card-header">
+                    <b>{{localize "Ex3.Damage"}}</b>
+                </div>
+                <div>
+                    <b>{{localize "Ex3.DiceBonus"}}: </b>{{rollData.damage.damageDice}}, <b>{{localize "Ex3.SuccessBonus"}}: </b>{{rollData.damage.damageSuccessModifier}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.TargetNumber"}}: </b>{{rollData.damage.targetNumber}}, <b>{{localize "Ex3.DoubleSuccess"}}: </b>{{rollData.damage.doubleSuccess}}+
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Reroll"}}:</b>
+                    {{#each rollData.damage.reroll as |rerollNum key|}}
+                        {{#if rerollNum.status }}{{rerollNum.number}}s,{{/if}}
+                    {{/each}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.DamageType"}}: </b>{{rollData.damage.type}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.DoubleRolledDamage"}}: </b>{{#if rollData.damage.doubleRolledDamage }}True{{else}}False{{/if}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.IgnoreSoak"}}: </b>{{rollData.damage.ignoreSoak}}
+                </div>
+                {{#if rollData.isMagic }}
+                <div>
+                    <b>{{localize "Ex3.MagicDamage"}}</b>
+                </div>
+                {{/if}}
+                {{#ifEquals rollData.attackType 'decisive'}}
+                    <div>
+                        <b>{{localize "Ex3.ThreshholdToDamage"}}: </b>{{#if rollData.damage.threshholdToDamage }}True{{else}}False{{/if}}
+                    </div>
+                    <div>
+                        <b>{{localize "Ex3.ResetInitiative"}}: </b>{{#if rollData.damage.resetInit }}True{{else}}False{{/if}}
+                    </div>
+                {{/ifEquals}}
+                {{#ifEquals rollData.rollType 'gambit'}}
+                    <div>
+                        <b>{{localize "Ex3.GambitDifficulty"}}: </b>{{rollData.gambitDifficulty}}
+                    </div>
+                {{/ifEquals}}
+            {{/ifNotEquals}}
+            <div>
+                {{#if rollData.target.actor}}
+                    <b>{{localize "Ex3.Conditions"}}: </b>
+                    {{#each rollData.target.actor.token.actorData.effects as |effect key|}}
+                        {{effect.label}}
+                        {{#ifEquals effect.flags.core.statusId 'lightcover'}}
+                        (+1 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'heavycover'}}
+                        (+2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'fullcover'}}
+                        (+3 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'fulldefense'}}
+                        (+2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'surprised'}}
+                        (-2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                        (-2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        ,
+                    {{/each}}
+                {{/if}}
+            </div>
+            {{#if showSpecialAttacks}}
+                <div class="roll-card-header">
+                    <b>{{localize "Ex3.SpecialAttacks"}}</b>
+                </div>
+                {{#each rollData.specialAttacksList as |specialAttack key|}}
+                    {{#if specialAttack.added}}
+                    <div>
+                        <b>{{specialAttack.name}}: </b>{{specialAttack.description}}
+                    </div>
+                    {{/if}}
+                {{/each}}
+            {{/if}}
+            {{#if rollData.weaponTags}}
+                <div>
+                    <b>{{localize "Ex3.WeaponTags"}}: </b>
+                    {{#each rollData.weaponTags as |tag key|}}
+                        {{tag}}
+                        {{#ifEquals key 'flame'}}
+                        (Static +4 W-Damage instead of attribute, +2 ACC at close range)
+                        {{/ifEquals}}
+                        {{#ifEquals key 'crossbow'}}
+                        (Static +4 W-Damage instead of Attribute)
+                        {{/ifEquals}}
+                        {{#ifEquals key 'bombard'}}
+                        (-4 ACC vs non-BG and non-LegendarySize)
+                        {{/ifEquals}}
+                        {{#ifEquals key 'improvised'}}
+                        (+1 Initiative Cost)
+                        {{/ifEquals}}
+                        ,
+                    {{/each}}
+                </div>
+            {{/if}}
+        {{/if}}
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.Modifiers"}}</b>
+        </div>
+        {{#if rollingActor.system.battlegroup}}
+        <div>
+            <b>{{localize "Ex3.Battlegroup"}}</b>
+        </div>
+        <div>
+            <b>{{localize "Ex3.Size"}}</b> {{rollingActor.system.size.value}},
+            <b>{{localize "Ex3.Might"}}</b> {{rollingActor.system.might.value}},
+            <b>{{localize "Ex3.Drill"}}</b> {{rollingActor.system.drill.value}}
+        </div>
+        {{/if}}
+        <div>
+            <b>{{localize "Ex3.AddedDefensePenalty"}}: </b>{{rollData.triggerSelfDefensePenalty}}
+        </div>
+        {{#ifEquals rollData.rollType 'craft'}}
+        <div>
+            {{#if rollData.craft.divineInsperationTechnique}}{{localize "Ex3.DivineInspirationTechnique"}}{{/if}}
+            {{#if rollData.craft.holisticMiracleUnderstanding}}{{localize "Ex3.HolisticMiracleUnderstanding"}}{{/if}}
+        </div>
+        {{#if rollData.finished}}
+        <div>
+            <b>{{localize "Ex3.ObjectivesCompleted"}}: </b>{{rollData.objectivesCompleted}}
+        </div>
+        {{/if}}
+        {{/ifEquals}}
+        <div>
+            <b>{{localize "Ex3.Conditions"}}: </b>
+            {{#each rollData.conditions as |effect key|}}
+                {{effect.label}}
+                {{#ifEquals effect.flags.core.statusId 'prone'}}
+                (-3 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
+                {{/ifEquals}}
+                {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                (-1 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
+                {{/ifEquals}},
+            {{/each}}
+        </div>
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.Spent"}}</b>
+        </div>
+        <div>
+            {{#if rollData.cost.motes }}{{ rollData.cost.motes }}m, {{/if}}
+            {{#if rollData.cost.muteMotes }}{{ rollData.cost.muteMotes }}mute-m, {{/if}}
+            {{#if rollData.cost.willpower }}{{ rollData.cost.willpower }}wp, {{/if}}
+            {{#if rollData.cost.anima }}{{ rollData.cost.anima }}a, {{/if}}
+            {{#if rollData.cost.initiative }}{{ rollData.cost.initiative }}i, {{/if}}
+            {{#if rollData.cost.healthbashing }}{{rollData.cost.healthbashing}}hl, {{/if}}
+            {{#if rollData.cost.healthlethal }}{{rollData.cost.healthlethal}}lhl, {{/if}}
+            {{#if rollData.cost.healthaggravated }}{{rollData.cost.healthaggravated}}ahl, {{/if}}
+            {{#if rollData.cost.silverxp }}{{ rollData.cost.silverxp }}sxp, {{/if}}
+            {{#if rollData.cost.goldxp }}{{rollData.cost.goldxp }}gxp, {{/if}}
+            {{#if rollData.cost.whitexp }}{{ rollData.cost.whitexp }}wxp, {{/if}}
+            {{#if rollData.cost.aura}}{{localize "Ex3.Aura"}}: {{ rollData.cost.aura }}{{/if}}
+        </div>
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.Charms"}}</b>
+        </div>
+        {{#each rollData.addedCharms as |charm index|}}
+        <div class="mb-1">
+            <a class="content-link" data-uuid="{{charm.uuid}}"><i class="fas fa-suitcase"></i>{{charm.name}}(x{{charm.timesAdded}})</a>
+        </div>
+        {{/each}}
+        {{#if rollData.target}}
+            <div class="roll-card-header">
+                <b>{{localize "Ex3.Target"}}</b>
+            </div>
+            {{#ifEquals rollData.rollType 'social'}}
+                <div>
+                    <b>{{localize "Ex3.Resolve"}}: </b>{{rollData.target.actor.system.resolve.value}}, 
+                </div>
+                <div>
+                    <b>{{localize "Ex3.SupportedIntimacyBonus"}}: {{ rollData.opposedIntimacy }}</b>
+                </div>
+                <div>
+                    <b>{{localize "Ex3.OpposedIntimacyBonus"}}: {{ rollData.opposedIntimacy }}</b>
+                </div>
+            {{/ifEquals}}
+            {{#ifEquals rollData.rollType 'readIntentions'}}
+            <div>
+                <b>{{localize "Ex3.Guile"}}: </b>{{rollData.target.actor.system.guile.value}}, 
+            </div>
+            {{/ifEquals}}
+            {{#if isAttack}}
+                <div>
+                    <b>{{localize "Ex3.Parry"}}: </b>{{rollData.target.actor.system.parry.value}}, 
+                    <b>{{localize "Ex3.Evasion"}}: </b>{{rollData.target.actor.system.evasion.value}}, 
+                    <b>{{localize "Ex3.Defense"}}: </b>{{rollData.defense}}, 
+                    <b>{{localize "Ex3.Soak"}}: </b>{{rollData.soak}}
+                </div>
+                <div>
+                    {{#if rollData.target.actor.system.legendarysize}}<b>{{localize "Ex3.LegendarySize"}}</b>{{/if}}
+                </div>
+                {{#if rollData.target.actor.system.battlegroup}}
+                <div>
+                    <b>{{localize "Ex3.Battlegroup"}}</b>
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Size"}}</b> {{rollData.target.actor.system.size.value}},
+                    <b>{{localize "Ex3.Might"}}</b> {{rollData.target.actor.system.might.value}},
+                    <b>{{localize "Ex3.Drill"}}</b> {{rollData.target.actor.system.drill.value}}
+                </div>
+                {{/if}}
+                {{#ifEquals rollData.attackType 'withering'}}
+                    {{#ifNotEquals rollData.rollType 'accuracy'}}
+                        {{#if rollData.targetCombatant.initiative}}
+                            <div>
+                                <b>{{localize "Ex3.OldInitiative"}}:</b> {{rollData.targetCombatant.initiative}}
+                                <b>{{localize "Ex3.CurrentInitiative"}}:</b> {{rollData.newTargetInitative}}
+                            </div>
+                        {{/if}}
+                    {{/ifNotEquals}}
+                {{/ifEquals}}
+            {{/if}}
+            <div class="roll-card-header">
+                <b>{{localize "Ex3.OpposingCharms"}}</b>
+            </div>
+            {{#each rollData.opposingCharms as |charm index|}}
+            <div class="mb-1">
+                <a class="content-link" data-uuid="{{charm.uuid}}"><i class="fas fa-suitcase"></i>{{charm.name}}(x{{charm.timesAdded}})</a>
+            </div>
+            {{/each}}
+        {{/if}}
+    </div>
+    {{/ifNotEquals}}
+    <div class="card-buttons">
+        <div class="flexrow 1">
+            {{{messageContent}}}
+        </div>
+    </div>
+</div>

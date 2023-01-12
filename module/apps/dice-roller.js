@@ -37,7 +37,7 @@ export class RollForm extends FormApplication {
             }
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-            this.object.hasDifficulty = data.rollType === 'ability' || data.rollType === 'grappleControl' || data.rollType === 'readIntentions' || data.rollType === 'social' || data.rollType === 'craft' || data.rollType === 'working' || data.rollType === 'rout';
+            this.object.hasDifficulty = (['ability', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt'].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -123,17 +123,19 @@ export class RollForm extends FormApplication {
 
                 this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
                 if (this.actor.type === 'character') {
+                    this.object.attribute = data.attribute || this._getHighestAttribute();
                     if (this.object.rollType === 'martialArt') {
                         this.object.martialArtRoll = true;
                         this.object.martialArtId = data.martialArtId;
                         this.object.martialarts = this.actor.martialarts;
+                        this.object.attribute = this.actor.system.abilities['martialarts'].prefattribute;
                     }
                     if (this.object.rollType === 'craftAbilityRoll') {
                         this.object.craftRoll = true;
                         this.object.craftId = data.craftId;
                         this.object.crafts = this.actor.crafts;
+                        this.object.attribute = this.actor.system.abilities['craft'].prefattribute;
                     }
-                    this.object.attribute = data.attribute || this._getHighestAttribute();
                     this.object.ability = data.ability || "archery";
                     this.object.appearance = this.actor.system.attributes.appearance.value;
                 }
@@ -1000,6 +1002,7 @@ export class RollForm extends FormApplication {
             await this._diceRoll();
         }
         else if (this.object.rollType === 'craft' || this.object.rollType === 'working') {
+            this.object.intervals -= 1;
             await this._completeCraftProject();
         }
         else {
@@ -1067,13 +1070,16 @@ export class RollForm extends FormApplication {
             }
             if (this.object.willpower) {
                 this.object.successModifier++;
-                actorData.system.willpower.value--;
+                this.object.cost.willpower++;
             }
             if (this.object.stunt !== 'none') {
                 dice += 2;
             }
             if (this.object.stunt === 'two') {
-                if (actorData.system.willpower.value < actorData.system.willpower.max) {
+                if (this.object.willpower) {
+                    this.object.cost.willpower--;
+                }
+                else if (actorData.system.willpower.value < actorData.system.willpower.max) {
                     actorData.system.willpower.value++;
                 }
                 this.object.successModifier++;
@@ -1130,6 +1136,9 @@ export class RollForm extends FormApplication {
             }
         }
 
+        if (dice < 0) {
+            dice = 0;
+        }
         let diceString = `${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}`;
         if (this.object.rollTwice) {
             diceString = `{${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}, ${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}}kh`;
@@ -1232,7 +1241,7 @@ export class RollForm extends FormApplication {
         </div>`;
 
 
-        messageContent = this._createChatMessageContent(messageContent, 'Dice Roll')
+        messageContent = await this._createChatMessageContent(messageContent, 'Dice Roll')
         ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
     }
 
@@ -1293,7 +1302,7 @@ export class RollForm extends FormApplication {
                     ${resultString}
                 </div>
             </div>`
-        theContent = this._createChatMessageContent(theContent, 'Ability Roll')
+        theContent = await this._createChatMessageContent(theContent, 'Ability Roll')
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1366,7 +1375,7 @@ export class RollForm extends FormApplication {
                                 <h4 class="dice-total">Attack Missed!</h4>
                             </div>
                         </div>`;
-                messageContent = this._createChatMessageContent(messageContent, 'Attack Roll')
+                messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
                 ChatMessage.create({
                     user: game.user.id,
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1400,7 +1409,7 @@ export class RollForm extends FormApplication {
                                     ${this.object.thereshholdSuccesses < 0 ? '<h4 class="dice-total">Attack Missed!</h4>' : ''}
                                 </div>
                             </div>`;
-            messageContent = this._createChatMessageContent(messageContent, 'Accuracy Roll');
+            messageContent = await this._createChatMessageContent(messageContent, 'Accuracy Roll');
             ChatMessage.create({
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1477,7 +1486,9 @@ export class RollForm extends FormApplication {
                 rerolls.push(this.object.damage.reroll[rerollValue].number);
             }
         }
-
+        if(dice < 0) {
+            dice = 0;
+        }
         let roll = new Roll(`${dice}d10${rerollString}cs>=${this.object.damage.targetNumber}`).evaluate({ async: false });
         let diceRoll = roll.dice[0].results;
         let getDice = "";
@@ -1548,6 +1559,7 @@ export class RollForm extends FormApplication {
                                 targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
                             }
                         }
+                        this.object.newTargetInitative = newInitative;
                         if (game.user.isGM) {
                             game.combat.setInitiative(this.object.targetCombatant.id, newInitative);
                         }
@@ -1622,7 +1634,7 @@ export class RollForm extends FormApplication {
           `;
 
 
-        messageContent = this._createChatMessageContent(messageContent, title);
+        messageContent = await this._createChatMessageContent(messageContent, title);
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1826,9 +1838,6 @@ export class RollForm extends FormApplication {
         }
         if (this.object.total < this.object.difficulty) {
             resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>${extendedTest}`;
-            if (this.object.intervals === 1) {
-                craftFailed = true;
-            }
             for (let dice of this.object.roll.dice[0].results) {
                 if (dice.result === 1 && this.object.total === 0) {
                     this.object.finished = true;
@@ -1841,7 +1850,7 @@ export class RollForm extends FormApplication {
             if (this.object.goalNumber > 0) {
                 goalNumberLeft = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
                 extendedTest = `<h4 class="dice-total">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
-                if (goalNumberLeft > 0 && this.object.intervals === 1) {
+                if (goalNumberLeft > 0 && this.object.intervals === 0) {
                     craftFailed = true;
                 }
                 else if (goalNumberLeft === 0) {
@@ -1850,6 +1859,7 @@ export class RollForm extends FormApplication {
             }
             else {
                 craftSuccess = true;
+                this.object.finished = true;
             }
             resultString = `<h4 class="dice-total">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
         }
@@ -1929,7 +1939,9 @@ export class RollForm extends FormApplication {
                 </div>
             </div>
         `
-        messageContent = this._createChatMessageContent(messageContent, 'Craft Roll');
+
+        this.object.finished = craftFailed || craftSuccess;
+        messageContent = await this._createChatMessageContent(messageContent, 'Craft Roll');
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1945,7 +1957,6 @@ export class RollForm extends FormApplication {
             }
         });
         this.object.goalNumber = goalNumberLeft;
-        this.object.intervals--;
         if (this.object.intervals > 0) {
             this.render();
         }
@@ -2011,17 +2022,37 @@ export class RollForm extends FormApplication {
         return false;
     }
 
-    _createChatMessageContent(content, cardName = 'Roll') {
-        return `
-            <div class="chat-card">
-                <div class="card-content">${cardName}</div>
-                <div class="card-buttons">
-                    <div class="flexrow 1">
-                        ${content}
-                    </div>
-                </div>
-            </div>
-        `
+    async _createChatMessageContent(content, cardName = 'Roll') {
+        var actionName = '';
+        var martialArtName = '';
+        var craftRollName = '';
+        if (this.object.rollType === 'action') {
+            actionName = this.actor.actions.find(x => x._id === this.object.actionId).name;
+        }
+        if (this.object.rollType === 'martialArt') {
+            martialArtName = this.actor.martialarts.find(x => x._id === this.object.martialArtId).name;
+        }
+        if (this.object.rollType === 'craftAbilityRoll') {
+            craftRollName = this.actor.crafts.find(x => x._id === this.object.craftId).name;
+        }
+        var showSpecialAttacks = false
+        for (var specialAttack of this.object.specialAttacksList) {
+            if (specialAttack.added) {
+                showSpecialAttacks = true
+            }
+        }
+        const messageData = {
+            name: cardName,
+            messageContent: content,
+            rollData: this.object,
+            isAttack: this._isAttackRoll(),
+            actionName: actionName,
+            martialArtName: martialArtName,
+            craftRollName: craftRollName,
+            showSpecialAttacks: showSpecialAttacks,
+            rollingActor: this.actor,
+        }
+        return await renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
     }
 
     _getDiceCap() {
