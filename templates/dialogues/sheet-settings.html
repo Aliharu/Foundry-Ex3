@@ -2,8 +2,8 @@
     <div class="sheet-body exaltedthird">
         <div class="grid grid-2col flex-group-center">
             <label className="resource-label">Spend motes from:</label>
-            <select id="charmMotePool" name="charmmotepool" data-type="String">
-                {{#select charmmotepool}}
+            <select id="charmMotePool" name="settings.charmmotepool" data-type="String">
+                {{#select settings.charmmotepool}}
                 <option value="personal">{{localize "Ex3.Personal"}}</option>
                 <option value="peripheral">{{localize "Ex3.Peripheral"}}</option>
                 {{/select}}
@@ -16,25 +16,25 @@
                 {{/select}}
             </select>
             <label className="resource-label">{{localize "Ex3.ShowWarstrider"}}:</label>
-            <input id="showWarstrider" name="showWarstrider" type="checkbox" {{checked showWarstrider}}>
+            <input id="showWarstrider" name="settings.showwarstrider" type="checkbox" {{checked settings.showwarstrider}}>
             <label className="resource-label">{{localize "Ex3.ShowShip"}}:</label>
-            <input id="showShip" name="showShip" type="checkbox" {{checked showShip}}>
+            <input id="showShip" name="settings.showship" type="checkbox" {{checked settings.showship}}>
             <label className="resource-label">{{localize "Ex3.ShowEscort"}}:</label>
-            <input id="showEscort" name="showEscort" type="checkbox" {{checked showEscort}}>
+            <input id="showEscort" name="settings.showescort" type="checkbox" {{checked settings.showescort}}>
             <label className="resource-label">{{localize "Ex3.ShowZeroValues"}}(NPC only):</label>
-            <input id="showZeroValues" name="showZeroValues" type="checkbox" {{checked showZeroValues}}>
+            <input id="showZeroValues" name="settings.showzerovalues" type="checkbox" {{checked settings.showzerovalues}}>
             <label className="resource-label">{{localize "Ex3.UseTenForAttributes"}}:</label>
-            <input id="useTenAttributes" name="useTenAttributes" type="checkbox" {{checked useTenAttributes}}>
+            <input id="useTenAttributes" name="settings.usetenattributes" type="checkbox" {{checked settings.usetenattributes}}>
             <label className="resource-label">{{localize "Ex3.DefaultRollStunts"}}:</label>
-            <input id="rollStunts" name="rollStunts" type="checkbox" {{checked rollStunts}}>
+            <input id="rollStunts" name="settings.rollStunts" type="checkbox" {{checked settings.rollStunts}}>
             <label className="resource-label">{{localize "Ex3.DefaultDefenseStunt"}}:</label>
-            <input id="defenseStunts" name="defenseStunts" type="checkbox" {{checked defenseStunts}}>
+            <input id="defenseStunts" name="settings.defenseStunts" type="checkbox" {{checked settings.defenseStunts}}>
             <label className="resource-label">{{localize "Ex3.EditMode"}}:</label>
-            <input id="editMode" name="editMode" type="checkbox" {{checked editMode}}>
+            <input id="editMode" name="settings.editmode" type="checkbox" {{checked settings.editmode}}>
             <label className="resource-label">{{localize "Ex3.IsSorcerer"}}:</label>
-            <input id="isSorcerer" name="isSorcerer" type="checkbox" {{checked isSorcerer}}>
+            <input id="isSorcerer" name="settings.issorcerer" type="checkbox" {{checked settings.issorcerer}}>
             <label className="resource-label">{{localize "Ex3.IsCrafter"}}:</label>
-            <input id="isCrafter" name="isCrafter" type="checkbox" {{checked isCrafter}}>
+            <input id="isCrafter" name="settings.iscrafter" type="checkbox" {{checked settings.iscrafter}}>
         </div>
     </div>
 </form>

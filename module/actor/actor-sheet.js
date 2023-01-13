@@ -1319,12 +1319,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, {
-      editMode: data.settings.editmode, rollStunts: data.settings.rollStunts, 'charmmotepool': data.settings.charmmotepool,
-      'showWarstrider': data.settings.showwarstrider, 'showShip': data.settings.showship, 'showEscort': data.settings.showescort,
-      'maxAnima': data.anima.max, 'showZeroValues': data.settings.showzerovalues,
-      'useTenAttributes': data.settings.usetenattributes, 'defenseStunts': data.settings.defenseStunts, 'isSorcerer': data.settings.issorcerer, 'isCrafter': data.settings.iscrafter
-    });
+    const html = await renderTemplate(template, { settings: data.settings, 'maxAnima': data.anima.max });
     new Dialog({
       title: `Settings`,
       content: html,
