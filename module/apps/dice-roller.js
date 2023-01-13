@@ -345,6 +345,9 @@ export class RollForm extends FormApplication {
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
             }
+            if(this.object.charmList === undefined){
+                this.object.charmList = this.actor.charms;
+            }
             this._updateSpecialtyList();
             if (this.actor.system.dicepenalty.value) {
                 this.object.diceModifier -= this.actor.system.dicepenalty.value;
@@ -623,6 +626,101 @@ export class RollForm extends FormApplication {
         mergeObject(this, formData);
     }
 
+    async addCharm(item) {
+        var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === item._id);
+        if (existingAddedCharm) {
+            existingAddedCharm.timesAdded++;
+        }
+        else {
+            item.timesAdded = 1;
+            item.saveId = item.id;
+            this.object.addedCharms.push(item);
+        }
+        for (var charmlist of Object.values(this.object.charmList)) {
+            for (const charm of charmlist.list) {
+                var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
+                if (existingAddedCharm) {
+                    charm.charmAdded = true;
+                    charm.timesAdded = existingAddedCharm.timesAdded;
+                }
+            }
+        }
+        if (item.system.keywords.toLowerCase().includes('mute')) {
+            this.object.cost.muteMotes += item.system.cost.motes;
+        }
+        else {
+            this.object.cost.motes += item.system.cost.motes;
+        }
+        this.object.cost.anima += item.system.cost.anima;
+        this.object.cost.willpower += item.system.cost.willpower;
+        this.object.cost.silverxp += item.system.cost.silverxp;
+        this.object.cost.goldxp += item.system.cost.goldxp;
+        this.object.cost.whitexp += item.system.cost.whitexp;
+        this.object.cost.initiative += item.system.cost.initiative;
+
+        if (item.system.cost.aura) {
+            this.object.cost.aura = item.system.cost.aura;
+        }
+
+        if (item.system.cost.health > 0) {
+            if (item.system.cost.healthtype === 'bashing') {
+                this.object.cost.healthbashing += item.system.cost.health;
+            }
+            else if (item.system.cost.healthtype === 'lethal') {
+                this.object.cost.healthlethal += item.system.cost.health;
+            }
+            else {
+                this.object.cost.healthaggravated += item.system.cost.health;
+            }
+        }
+        this.object.diceModifier += item.system.diceroller.bonusdice;
+        this.object.successModifier += item.system.diceroller.bonussuccesses;
+        if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
+            this.object.doubleSuccess = item.system.diceroller.doublesuccess;
+        }
+        this.object.targetNumber -= item.system.diceroller.decreasetargetnumber;
+        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
+            if (rerollValue) {
+                this.object.reroll[rerollKey].status = true;
+            }
+        }
+        if (item.system.diceroller.rerollfailed) {
+            this.object.rerollFailed = item.system.diceroller.rerollfailed;
+        }
+        if (item.system.diceroller.rolltwice) {
+            this.object.rollTwice = item.system.diceroller.rolltwice;
+        }
+        this.object.rerollNumber += item.system.diceroller.rerolldice;
+        this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
+
+        this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
+        this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
+        if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
+            this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
+        }
+        this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
+        this.object.overwhelming += item.system.diceroller.damage.overwhelming;
+        this.object.damage.postSoakDamage += item.system.diceroller.damage.postsoakdamage;
+        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
+            if (rerollValue) {
+                this.object.damage.reroll[rerollKey].status = true;
+            }
+        }
+        if (item.system.diceroller.damage.threshholdtodamage) {
+            this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
+        }
+        if (item.system.diceroller.damage.doublerolleddamage) {
+            this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
+        }
+        if (item.system.diceroller.damage.doublerolleddamage) {
+            this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
+        }
+        if (item.system.diceroller.damage.ignoresoak > 0) {
+            this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
+        }
+        this.render();
+    }
+
     async addOpposingCharm(charm) {
         const addedCharm = this.object.opposingCharms.find(opposedCharm => charm._id === opposedCharm._id);
         if (addedCharm) {
@@ -746,98 +844,7 @@ export class RollForm extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = this.actor.items.get(li.data("item-id"));
-            var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === item._id);
-            if (existingAddedCharm) {
-                existingAddedCharm.timesAdded++;
-            }
-            else {
-                item.timesAdded = 1;
-                item.saveId = item.id;
-                this.object.addedCharms.push(item);
-            }
-            for (var charmlist of Object.values(this.object.charmList)) {
-                for (const charm of charmlist.list) {
-                    var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
-                    if (existingAddedCharm) {
-                        charm.charmAdded = true;
-                        charm.timesAdded = existingAddedCharm.timesAdded;
-                    }
-                }
-            }
-            if (item.system.keywords.toLowerCase().includes('mute')) {
-                this.object.cost.muteMotes += item.system.cost.motes;
-            }
-            else {
-                this.object.cost.motes += item.system.cost.motes;
-            }
-            this.object.cost.anima += item.system.cost.anima;
-            this.object.cost.willpower += item.system.cost.willpower;
-            this.object.cost.silverxp += item.system.cost.silverxp;
-            this.object.cost.goldxp += item.system.cost.goldxp;
-            this.object.cost.whitexp += item.system.cost.whitexp;
-            this.object.cost.initiative += item.system.cost.initiative;
-
-            if (item.system.cost.aura) {
-                this.object.cost.aura = item.system.cost.aura;
-            }
-
-            if (item.system.cost.health > 0) {
-                if (item.system.cost.healthtype === 'bashing') {
-                    this.object.cost.healthbashing += item.system.cost.health;
-                }
-                else if (item.system.cost.healthtype === 'lethal') {
-                    this.object.cost.healthlethal += item.system.cost.health;
-                }
-                else {
-                    this.object.cost.healthaggravated += item.system.cost.health;
-                }
-            }
-            this.object.diceModifier += item.system.diceroller.bonusdice;
-            this.object.successModifier += item.system.diceroller.bonussuccesses;
-            if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
-                this.object.doubleSuccess = item.system.diceroller.doublesuccess;
-            }
-            this.object.targetNumber -= item.system.diceroller.decreasetargetnumber;
-            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
-                if (rerollValue) {
-                    this.object.reroll[rerollKey].status = true;
-                }
-            }
-            if (item.system.diceroller.rerollfailed) {
-                this.object.rerollFailed = item.system.diceroller.rerollfailed;
-            }
-            if (item.system.diceroller.rolltwice) {
-                this.object.rollTwice = item.system.diceroller.rolltwice;
-            }
-            this.object.rerollNumber += item.system.diceroller.rerolldice;
-            this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
-
-            this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
-            this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
-            if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
-                this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
-            }
-            this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
-            this.object.overwhelming += item.system.diceroller.damage.overwhelming;
-            this.object.damage.postSoakDamage += item.system.diceroller.damage.postsoakdamage;
-            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
-                if (rerollValue) {
-                    this.object.damage.reroll[rerollKey].status = true;
-                }
-            }
-            if (item.system.diceroller.damage.threshholdtodamage) {
-                this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
-            }
-            if (item.system.diceroller.damage.doublerolleddamage) {
-                this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
-            }
-            if (item.system.diceroller.damage.doublerolleddamage) {
-                this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
-            }
-            if (item.system.diceroller.damage.ignoresoak > 0) {
-                this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
-            }
-            this.render();
+            this.addCharm(item);
         });
 
         html.find('.remove-charm').click(ev => {
