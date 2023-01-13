@@ -272,8 +272,11 @@
                 <div>
                     <b>{{localize "Ex3.Parry"}}: </b>{{rollData.target.actor.system.parry.value}}, 
                     <b>{{localize "Ex3.Evasion"}}: </b>{{rollData.target.actor.system.evasion.value}}, 
-                    <b>{{localize "Ex3.Defense"}}: </b>{{rollData.defense}}, 
-                    <b>{{localize "Ex3.Soak"}}: </b>{{rollData.soak}}
+                    <b>{{localize "Ex3.Defense"}}: </b>{{rollData.defense}},
+                    <b>{{localize "Ex3.ArmoredSoak"}}: </b>{{rollData.target.actor.system.armoredsoak.value}},
+                    <b>{{localize "Ex3.NaturalSoak"}}: </b>{{rollData.target.actor.system.naturalsoak.value}},
+                    <b>{{localize "Ex3.Soak"}}: </b>{{rollData.soak}},
+                    <b>{{localize "Ex3.Hardness"}}: </b>{{rollData.target.actor.system.hardness.value}}
                 </div>
                 <div>
                     {{#if rollData.target.actor.system.legendarysize}}<b>{{localize "Ex3.LegendarySize"}}</b>{{/if}}
