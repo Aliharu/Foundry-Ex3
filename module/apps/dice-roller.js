@@ -37,7 +37,7 @@ export class RollForm extends FormApplication {
             }
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
-            this.object.hasDifficulty = (['ability', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt'].indexOf(data.rollType) !== -1);
+            this.object.hasDifficulty = (['ability', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage'].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -123,7 +123,20 @@ export class RollForm extends FormApplication {
 
                 this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
                 if (this.actor.type === 'character') {
-                    this.object.attribute = data.attribute || this._getHighestAttribute();
+                    if(this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]){
+                        this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
+                        this.object.ability = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].ability;
+                        this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
+                    }
+                    else if(this._isAttackRoll()) {
+                        this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
+                        this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
+                        this.object.diceModifier += this.actor.system.settings.rollsettings['attacks'].bonus;
+                    }
+                    else {
+                        this.object.attribute = data.attribute || this._getHighestAttribute();
+                        this.object.ability = data.ability || "archery";
+                    }
                     if (this.object.rollType === 'martialArt') {
                         this.object.martialArtRoll = true;
                         this.object.martialArtId = data.martialArtId;
@@ -136,7 +149,6 @@ export class RollForm extends FormApplication {
                         this.object.crafts = this.actor.crafts;
                         this.object.attribute = this.actor.system.abilities['craft'].prefattribute;
                     }
-                    this.object.ability = data.ability || "archery";
                     this.object.appearance = this.actor.system.attributes.appearance.value;
                 }
 
@@ -1253,11 +1265,6 @@ export class RollForm extends FormApplication {
     }
 
     async _abilityRoll() {
-        if (this.actor.type === "npc") {
-            if (this.object.ability === "archery") {
-                this.object.ability = "primary";
-            }
-        }
         if (this.object.attribute == null) {
             this.object.attribute = this.actor.type === "npc" ? null : this._getHighestAttribute();
         }

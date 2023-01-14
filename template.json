@@ -148,7 +148,57 @@
           "defenseStunts": false,
           "editmode": true,
           "issorcerer": true,
-          "iscrafter": true
+          "iscrafter": true,
+          "rollsettings": {
+            "attacks": {
+              "attribute": "dexterity",
+              "ability": "melee",
+              "bonus": 0,
+              "name": "Ex3.Attacks"
+            },
+            "disengage": {
+              "attribute": "dexterity",
+              "ability": "dodge",
+              "bonus": 0,
+              "name": "Ex3.Disengage"
+            },
+            "grapplecontrol": {
+              "attribute": "strength",
+              "ability": "brawl",
+              "bonus": 0,
+              "name": "Ex3.GrappleControl"
+            },
+            "joinbattle": {
+              "attribute": "wits",
+              "ability": "awareness",
+              "bonus": 0,
+              "name": "Ex3.JoinBattle"
+            },
+            "readintentions": {
+              "attribute": "perception",
+              "ability": "socialize",
+              "bonus": 0,
+              "name": "Ex3.ReadIntentions"
+            },
+            "rush": {
+              "attribute": "dexterity",
+              "ability": "athletics",
+              "bonus": 0,
+              "name": "Ex3.Rush"
+            },
+            "social": {
+              "attribute": "charisma",
+              "ability": "socialize",
+              "bonus": 0,
+              "name": "Ex3.Social"
+            },
+            "sorcery": {
+              "attribute": "intelligence",
+              "ability": "occult",
+              "bonus": 0,
+              "name": "Ex3.Sorcery"
+            }
+          }
         },
         "ship": {
           "name": "",
@@ -699,7 +749,7 @@
       "duration": "instant",
       "keywords": "",
       "ability": "athletics",
-      "martialart" : "",
+      "martialart": "",
       "listingname": "",
       "requirement": 0,
       "essence": 0,

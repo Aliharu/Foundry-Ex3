@@ -180,6 +180,7 @@
     "Ex3.Armor": "Armor",
     "Ex3.Penalty": "Penalty",
     "Ex3.Attack": "Attack",
+    "Ex3.Attacks": "Attacks",
     "Ex3.Decisive": "Decisive",
     "Ex3.Withering": "Withering",
     "Ex3.Evocation": "Evocation",
@@ -492,5 +493,6 @@
     "Ex3.OldInitiative": "Old Initiative",
     "Ex3.CurrentInitiative": "Current Initiative",
     "Ex3.Dematerialized": "Dematerialized",
-    "Ex3.Incapacitated": "Incapacitated"
+    "Ex3.Incapacitated": "Incapacitated",
+    "Ex3.RollSettings": "Roll Settings"
 }
