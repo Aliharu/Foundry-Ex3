@@ -122,6 +122,16 @@
                         <b>{{localize "Ex3.GambitDifficulty"}}: </b>{{rollData.gambitDifficulty}}
                     </div>
                 {{/ifEquals}}
+                {{#ifEquals rollData.attackType 'withering'}}
+                {{#ifNotEquals rollData.rollType 'accuracy'}}
+                    {{#if rollData.characterInitiative }}
+                        <div>
+                            <b>{{localize "Ex3.OldInitiative"}}:</b> {{rollData.originalInitiative}},
+                            <b>{{localize "Ex3.CurrentInitiative"}}:</b> {{rollData.characterInitiative}}
+                        </div>
+                    {{/if}}
+                {{/ifNotEquals}}
+            {{/ifEquals}}
             {{/ifNotEquals}}
             {{#if showSpecialAttacks}}
                 <div class="roll-card-header">
@@ -268,7 +278,7 @@
                     {{#ifNotEquals rollData.rollType 'accuracy'}}
                         {{#if rollData.targetCombatant.initiative}}
                             <div>
-                                <b>{{localize "Ex3.OldInitiative"}}:</b> {{rollData.targetCombatant.initiative}}
+                                <b>{{localize "Ex3.OldInitiative"}}:</b> {{rollData.targetCombatant.initiative}},
                                 <b>{{localize "Ex3.CurrentInitiative"}}:</b> {{rollData.newTargetInitative}}
                             </div>
                         {{/if}}

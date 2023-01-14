@@ -377,6 +377,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                     this.object.characterInitiative = combatant.initiative;
+                    this.object.originalInitiative = combatant.initiative;
                 }
             }
             if (this.object.target) {
@@ -2296,6 +2297,7 @@ export class RollForm extends FormApplication {
                         newInitiative -= 5;
                     }
                     combat.setInitiative(combatant.id, newInitiative);
+                    this.object.characterInitiative = newInitiative;
                 }
             }
         }
@@ -2306,19 +2308,6 @@ export class RollForm extends FormApplication {
         }
         if (actorData.system.details.aura === this.object.cost.aura || this.object.cost.aura === 'any') {
             actorData.system.details.aura = "none";
-        }
-        if (this.object.cost.initiative > 0) {
-            let combat = game.combat;
-            if (combat) {
-                let combatant = this._getActorCombatant();
-                if (combatant) {
-                    var newInitiative = combatant.initiative - this.object.cost.initiative;
-                    if (combatant.initiative > 0 && newInitiative <= 0) {
-                        newInitiative -= 5;
-                    }
-                    combat.setInitiative(combatant.id, newInitiative);
-                }
-            }
         }
         let totalHealth = 0;
         for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
