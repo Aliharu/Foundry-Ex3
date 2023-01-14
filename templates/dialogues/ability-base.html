@@ -21,25 +21,6 @@
         {{/select}}
     </select>
 
-    {{#if data.martialArtRoll}}
-    <label class="resource-label">{{localize "Ex3.Ability"}}</label>
-    <select name="object.martialArtId" value="{{data.martialArtId}}" data-type="String">
-        {{#select data.martialArtId}}
-        {{#each actor.martialarts as |action key|}}
-        <option value="{{action._id}}">{{action.name}}</option>
-        {{/each}}
-        {{/select}}
-    </select>
-    {{else if data.craftRoll}}
-    <label class="resource-label">{{localize "Ex3.Ability"}}</label>
-    <select name="object.craftId" value="{{data.craftId}}" data-type="String">
-        {{#select data.craftId}}
-        {{#each actor.crafts as |action key|}}
-        <option value="{{action._id}}">{{action.name}}</option>
-        {{/each}}
-        {{/select}}
-    </select> 
-    {{else}}
     <label class="resource-label">{{localize "Ex3.Ability"}}</label>
     <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
         {{#select data.ability}}
@@ -70,10 +51,15 @@
         <option value="thrown">{{localize "Ex3.Thrown"}}</option>
         <option value="war">{{localize "Ex3.War"}}</option>
         <option value="willpower">{{localize "Ex3.Willpower"}}</option>
+        {{#each actor.martialarts as |action key|}}
+        <option value="{{action._id}}">{{action.name}}</option>
+        {{/each}}
+        {{#each actor.crafts as |action key|}}
+        <option value="{{action._id}}">{{action.name}}</option>
+        {{/each}}
         <option value="none">{{localize "Ex3.None"}}</option>
         {{/select}}
     </select>
-    {{/if}}
 
     <label class="resource-label">{{localize "Ex3.Specialty"}}</label>
     <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">
@@ -90,17 +76,6 @@
 
     {{#if data.showPool}}
     {{#ifEquals data.characterType 'npc'}}
-
-    {{#if data.actionRoll}}
-    <label class="resource-label">{{localize "Ex3.Action"}}</label>
-    <select name="object.actionId" value="{{data.actionId}}" data-type="String">
-        {{#select data.actionId}}
-        {{#each actor.actions as |action key|}}
-        <option value="{{action._id}}">{{action.name}}</option>
-        {{/each}}
-        {{/select}}
-    </select>
-    {{else}}
     <label class="resource-label">{{localize "Ex3.Pool"}}</label>
     <select name="object.pool" value="{{data.pool}}" data-type="String">
         {{#select data.pool}}
@@ -123,10 +98,12 @@
         <option value="stealth">{{localize "Ex3.Strategy"}}</option>
         <option value="tracking">{{localize "Ex3.Tracking"}}</option>
         <option value="willpower">{{localize "Ex3.Willpower"}}</option>
+        {{#each actor.actions as |action key|}}
+        <option value="{{action._id}}">{{action.name}}</option>
+        {{/each}}
         <option value="other">{{localize "Ex3.Other"}}</option>
         {{/select}}
     </select>
-    {{/if}}
     {{/ifEquals}}
     {{/if}}
 

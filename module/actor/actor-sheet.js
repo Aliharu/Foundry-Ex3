@@ -706,26 +706,26 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: pool }).render(true);
     });
 
-    html.find('.rout-check').mousedown(ev => {
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
-    });
-
     html.find('.roll-action').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'action', actionId: item.id }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: item.id }).render(true);
+    });
+
+    html.find('.rout-check').mousedown(ev => {
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
     });
 
     html.find('.roll-ma').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'martialArt', martialArtId: item.id }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: item.id }).render(true);
     });
 
     html.find('.roll-craft').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'craftAbilityRoll', craftId: item.id }).render(true);
+      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: item.id }).render(true);
     });
 
     html.find('.join-battle').mousedown(ev => {

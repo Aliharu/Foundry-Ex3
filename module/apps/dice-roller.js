@@ -137,16 +137,12 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.attribute || this._getHighestAttribute();
                         this.object.ability = data.ability || "archery";
                     }
-                    if (this.object.rollType === 'martialArt') {
-                        this.object.martialArtRoll = true;
-                        this.object.martialArtId = data.martialArtId;
-                        this.object.martialarts = this.actor.martialarts;
+                    this.object.martialarts = this.actor.martialarts;
+                    this.object.crafts = this.actor.crafts;
+                    if (this.object.martialarts.some(ma => ma._id === this.object.ability)) {
                         this.object.attribute = this.actor.system.abilities['martialarts'].prefattribute;
                     }
-                    if (this.object.rollType === 'craftAbilityRoll') {
-                        this.object.craftRoll = true;
-                        this.object.craftId = data.craftId;
-                        this.object.crafts = this.actor.crafts;
+                    if (this.object.crafts.some(craft => craft._id === this.object.ability)) {
                         this.object.attribute = this.actor.system.abilities['craft'].prefattribute;
                     }
                     this.object.appearance = this.actor.system.attributes.appearance.value;
@@ -157,14 +153,8 @@ export class RollForm extends FormApplication {
                 }
 
                 if (this.actor.type === "npc") {
-                    if (this.object.rollType === 'action') {
-                        this.object.actionRoll = true;
-                        this.object.actionId = data.actionId;
-                        this.object.actions = this.actor.actions;
-                    }
-                    else {
-                        this.object.pool = data.pool || "administration";
-                    }
+                    this.object.actions = this.actor.actions;
+                    this.object.pool = data.pool || "administration";
                     this.object.appearance = this.actor.system.appearance.value;
                 }
                 if (data.weapon) {
@@ -353,6 +343,21 @@ export class RollForm extends FormApplication {
             this.object.attackEffect = data.attackEffect || '';
         }
         if (this.object.rollType !== 'base') {
+            if(this.actor.martialarts) {
+                this.object.martialarts = this.actor.martialarts;
+            }
+            if(this.actor.crafts) {
+                this.object.crafts = this.actor.crafts;
+            }
+            if(this.object.craftId) {
+                this.object.ability = this.object.craftId;
+            }
+            if(this.object.martialArtId) {
+                this.object.ability = this.object.martialArtId;
+            }
+            if(this.object.actionId) {
+                this.object.pool = this.object.actionId;
+            }
             this.object.opposingCharms = [];
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
@@ -1055,11 +1060,11 @@ export class RollForm extends FormApplication {
                 if (data.attributes[this.object.attribute]) {
                     dice += data.attributes[this.object.attribute]?.value || 0;
                 }
-                if (this.object.rollType === 'martialArt') {
-                    dice += this.actor.martialarts.find(x => x._id === this.object.martialArtId).system.points;
+                if (this.object.martialarts.some(ma => ma._id === this.object.ability)) {
+                    dice += this.actor.martialarts.find(x => x._id === this.object.ability).system.points;
                 }
-                else if (this.object.rollType === 'craftAbilityRoll') {
-                    dice += this.actor.crafts.find(x => x._id === this.object.craftId).system.points;
+                else if (this.object.crafts.some(craft => craft._id === this.object.ability)) {
+                    dice += this.actor.crafts.find(x => x._id === this.object.ability).system.points;
                 }
                 else {
                     if (this.object.ability === 'willpower') {
@@ -1071,8 +1076,8 @@ export class RollForm extends FormApplication {
                 }
             }
             else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
-                if (this.object.rollType === 'action') {
-                    dice = this.actor.actions.find(x => x._id === this.object.actionId).system.value;
+                if (this.object.actions.some(action => action._id === this.object.pool)) {
+                    dice += this.actor.actions.find(x => x._id === this.object.pool).system.value;
                 }
                 else if (this.object.pool === 'willpower') {
                     dice = this.actor.system.willpower.max;
@@ -1986,7 +1991,7 @@ export class RollForm extends FormApplication {
     }
 
     _getActorCombatant() {
-        if (game.combat) {
+        if (game.combat && this.actor.token) {
             return game.combat.combatants.find(c => c.tokenId == this.actor.token.id);
         }
     }
@@ -2041,14 +2046,15 @@ export class RollForm extends FormApplication {
         var actionName = '';
         var martialArtName = '';
         var craftRollName = '';
+        var abilityName = this.object.ability;
         if (this.object.rollType === 'action') {
             actionName = this.actor.actions.find(x => x._id === this.object.actionId).name;
         }
-        if (this.object.rollType === 'martialArt') {
-            martialArtName = this.actor.martialarts.find(x => x._id === this.object.martialArtId).name;
+        if (this.object.martialarts && this.object.martialarts.some(ma => ma._id === this.object.ability)) {
+            abilityName = this.actor.martialarts.find(x => x._id === this.object.ability).name;
         }
-        if (this.object.rollType === 'craftAbilityRoll') {
-            craftRollName = this.actor.crafts.find(x => x._id === this.object.craftId).name;
+        else if (this.object.crafts && this.object.crafts.some(craft => craft._id === this.object.ability)) {
+            abilityName = this.actor.crafts.find(x => x._id === this.object.ability).name;
         }
         var showSpecialAttacks = false
         for (var specialAttack of this.object.specialAttacksList) {
@@ -2064,6 +2070,7 @@ export class RollForm extends FormApplication {
             actionName: actionName,
             martialArtName: martialArtName,
             craftRollName: craftRollName,
+            abilityName: abilityName,
             showSpecialAttacks: showSpecialAttacks,
             rollingActor: this.actor,
         }
@@ -2071,13 +2078,23 @@ export class RollForm extends FormApplication {
     }
 
     _getDiceCap() {
-        if (this.object.rollType !== "base") {
-            if (this.actor.type === "character" && this.actor.system.abilities[this.object.ability] && this.actor.system.attributes[this.object.attribute]) {
+        if (this.object.rollType !== "base") {            
+            if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
+                var abilityValue = 0;
+                if (this.object.martialarts && this.object.martialarts.some(ma => ma._id === this.object.ability)) {
+                    abilityValue = this.actor.martialarts.find(x => x._id === this.object.ability).system.points;
+                }
+                else if (this.object.crafts && this.object.crafts.some(craft => craft._id === this.object.ability)) {
+                    abilityValue = this.actor.crafts.find(x => x._id === this.object.ability).system.points;
+                }
+                else if(this.actor.system.abilities[this.object.ability]) {
+                    abilityValue = this.actor.system.abilities[this.object.ability].value;
+                }
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
-                    return this.actor.system.abilities[this.object.ability].value + this.actor.system.attributes[this.object.attribute].value;
+                    return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                 }
                 if (this.actor.system.details.exalt === "dragonblooded") {
-                    return this.actor.system.abilities[this.object.ability].value + (this.object.specialty ? 1 : 0);
+                    return abilityValue + (this.object.specialty ? 1 : 0);
                 }
                 if (this.actor.system.details.exalt === "lunar") {
                     return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
@@ -2085,7 +2102,7 @@ export class RollForm extends FormApplication {
                 if (this.actor.system.details.exalt === "sidereal") {
                     var baseSidCap = Math.min(5, Math.max(3, this.actor.system.essence.value));
                     var tnChange = "";
-                    if (this.actor.system.abilities[this.object.ability].value === 5) {
+                    if (abilityValue === 5) {
                         if (this.actor.system.essence.value >= 3) {
                             tnChange = " - TN -3";
                         }
@@ -2093,16 +2110,16 @@ export class RollForm extends FormApplication {
                             tnChange = " - TN -2";
                         }
                     }
-                    else if (this.actor.system.abilities[this.object.ability].value >= 3) {
+                    else if (abilityValue >= 3) {
                         tnChange = " - TN -1";
                     }
                     return `${baseSidCap}${tnChange}`;
                 }
                 if (this.actor.system.details.exalt === "dreamsouled") {
-                    return `${this.actor.system.abilities[this.object.ability].value} or ${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.essence.value)} when upholding ideal`;
+                    return `${abilityValue} or ${Math.min(10, abilityValue + this.actor.system.essence.value)} when upholding ideal`;
                 }
                 if (this.actor.system.details.exalt === "umbral") {
-                    return `${Math.min(10, this.actor.system.abilities[this.object.ability].value + this.actor.system.details.penumbra.value)}`;
+                    return `${Math.min(10, abilityValue + this.actor.system.details.penumbra.value)}`;
                 }
                 if (this.actor.system.details.exalt === "liminal") {
                     if (this.actor.system.anima.value > 1) {
@@ -2122,8 +2139,14 @@ export class RollForm extends FormApplication {
                     return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
                 }
             }
-            else if (this.actor.system.creaturetype === 'exalt' && this.actor.system.pools[this.object.pool]) {
-                var dicePool = this.actor.system.pools[this.object.pool].value;
+            else if (this.actor.system.creaturetype === 'exalt') {
+                var dicePool = 0;
+                if (this.object.actions && this.object.actions.some(action => action._id === this.object.pool)) {
+                    dicePool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
+                }
+                else if(this.actor.system.pools[this.object.pool]) {
+                    dicePool = this.actor.system.pools[this.object.pool].value;
+                }
                 var diceTier = "zero";
                 var diceMap = {
                     'zero': 0,
