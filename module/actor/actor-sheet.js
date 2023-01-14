@@ -768,7 +768,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', pool: 'grapple' }).render(true);
       }
       else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', ability: this.actor.system.abilities['brawl'].value >= this.actor.system.abilities['martialarts'].value ? 'brawl' : 'martialarts', attribute: 'strength' }).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl' }).render(true);
       }
     });
 
