@@ -223,7 +223,7 @@ export class RollForm extends FormApplication {
                         if (this.object.craftRating === 4) {
                             this.object.goalNumber = 75;
                         }
-                        if (this.object.craftRating === 5) {
+                        if (this.object.craftRating >= 5) {
                             this.object.goalNumber = 100;
                         }
                     }
@@ -765,6 +765,50 @@ export class RollForm extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html);
+
+        html.on("change", "#craft-type", ev => {
+            this.object.intervals = 1;
+            this.object.difficulty = 1;
+            this.object.goalNumber = 0;
+            if (this.object.craftType === 'superior') {
+                this.object.intervals = 6;
+                this.object.difficulty = 5;
+                if (parseInt(this.object.craftRating) === 2) {
+                    this.object.goalNumber = 30;
+                }
+                if (parseInt(this.object.craftRating) === 3) {
+                    this.object.goalNumber = 50;
+                }
+                if (parseInt(this.object.craftRating) === 4) {
+                    this.object.goalNumber = 75;
+                }
+                if (parseInt(this.object.craftRating) === 5) {
+                    this.object.goalNumber = 100;
+                }
+            }
+            else if (this.object.craftType === 'legendary') {
+                this.object.intervals = 6;
+                this.object.difficulty = 5;
+                this.object.goalNumber = 200;
+            }
+            this.render();
+        });
+
+        html.on("change", "#craft-rating", ev => {
+            if (parseInt(this.object.craftRating) === 2) {
+                this.object.goalNumber = 30;
+            }
+            if (parseInt(this.object.craftRating) === 3) {
+                this.object.goalNumber = 50;
+            }
+            if (parseInt(this.object.craftRating) === 4) {
+                this.object.goalNumber = 75;
+            }
+            if (parseInt(this.object.craftRating) === 5) {
+                this.object.goalNumber = 100;
+            }
+            this.render();
+        });
 
         html.on("change", "#working-finesse", ev => {
             this.object.difficulty = parseInt(this.object.finesse);

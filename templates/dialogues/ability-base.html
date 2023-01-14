@@ -324,6 +324,34 @@
 </div>
 {{/ifEquals}}
 
+{{#ifEquals data.rollType 'craft'}}
+<div class="resource grid grid-2col flex-center">
+    <div>
+        <div class="resource-label">{{localize "Ex3.CraftType"}}</div>
+        <select id="craft-type" name="object.craftType" value="{{data.craftType}}" data-type="String">
+            {{#select data.craftType}}
+            <option value="basic">{{localize "Ex3.Basic"}}</option>
+            <option value="major">{{localize "Ex3.Major"}}</option>
+            <option value="superior">{{localize "Ex3.Superior"}}</option>
+            <option value="legendary">{{localize "Ex3.Legendary"}}</option>
+            {{/select}}
+        </select>
+    </div>
+    {{#ifEquals data.craftType 'superior'}}
+    <div>
+        <div class="resource-label">{{localize "Ex3.CraftRating"}}</div>
+        <select id="craft-rating" name="object.craftRating" value="{{data.craftRating}}" data-type="String">
+            {{#select data.craftRating}}
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            {{/select}}
+        </select>
+    </div>
+    {{/ifEquals}}
+</div>
+{{/ifEquals}}
 {{#if data.hasDifficulty}}
 <div class="resource grid grid-2col flex-center">
     <div>
