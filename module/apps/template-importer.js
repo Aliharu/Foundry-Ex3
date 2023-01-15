@@ -3,6 +3,7 @@ export default class TemplateImporter extends Application {
     super(app)
     this.type = 'charm';
     this.errorText = '';
+    this.errorSection = '';
     this.showError = false;
     this.textBox = '';
   }
@@ -47,6 +48,7 @@ export default class TemplateImporter extends Application {
     data.textBox = this.textBox;
     data.showError = this.showError;
     data.error = this.error;
+    data.errorSection = this.errorSection;
     if (this.type === 'charm') {
       data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
     }
@@ -776,6 +778,7 @@ export default class TemplateImporter extends Application {
     ];
     let index = 1;
     var textArray = html.find('#template-text').val().split(/\r?\n/);
+    this.errorSection = 'Initial Info';
     try {
       actorData.name = textArray[0].trim();
       var actorDescription = '';
@@ -785,6 +788,7 @@ export default class TemplateImporter extends Application {
       }
       actorData.system.biography = actorDescription;
       if (textArray[index].includes('Intimacies')) {
+        this.errorSection = 'Intimacies';
         var intimacyStrength = 'defining';
         while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:')) {
           intimacyString += textArray[index];
@@ -834,6 +838,7 @@ export default class TemplateImporter extends Application {
         }
       }
       if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
+        this.errorSection = 'Exalt Info';
         this._getExaltSpecificData(textArray, index, actorData, false);
         index++;
       }
@@ -845,6 +850,7 @@ export default class TemplateImporter extends Application {
         actorData.system.details.tell = tellArray[1].trim();
         index++;
       }
+      this.errorSection = 'Health/WP/Essence stats';
       var statArray = textArray[index].replace(/ *\([^)]*\) */g, "").replace('Cost: ', '').split(';');
       actorData.system.essence.value = parseInt(statArray[0].replace(/[^0-9]/g, ''));
       actorData.system.willpower.value = parseInt(statArray[1].replace(/[^0-9]/g, ''));
@@ -874,6 +880,7 @@ export default class TemplateImporter extends Application {
       var intimacyString = '';
       var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
+        this.errorSection = 'Intimacies';
         var intimacyStrength = 'defining';
         while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index]) && !textArray[index].includes('Guile:')) {
           intimacyString += textArray[index];
@@ -923,6 +930,7 @@ export default class TemplateImporter extends Application {
         }
       }
       if (textArray[index].includes('Speed Bonus')) {
+        this.errorSection = 'Speed Bonus';
         actorData.system.speed.value = parseInt(textArray[index].replace(/[^0-9]/g, ''));
         index++;
       }
@@ -933,6 +941,7 @@ export default class TemplateImporter extends Application {
       }
       var actionsArray = actionsString.replace('Actions:', '').replace('/', '').replace(/ *\([^)]*\) */g, "").split(';');
       for (const action of actionsArray) {
+        this.errorSection = 'Actions';
         if (!/^\s*$/.test(action)) {
           var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
           var name = actionSplit[0].replace(" ", "");
@@ -969,6 +978,7 @@ export default class TemplateImporter extends Application {
         }
       }
       if (textArray[index].toLowerCase().includes('resolve')) {
+        this.errorSection = 'Social Stats';
         var socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
         if (textArray[index].toLowerCase().includes('appearance')) {
           actorData.system.appearance.value = parseInt(socialArray[0].trim().split(" ")[1]);
@@ -986,6 +996,7 @@ export default class TemplateImporter extends Application {
         index++;
       }
       while (textArray[index].includes('Attack')) {
+        this.errorSection = 'Attacks';
         var attackString = textArray[index];
         if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement')) {
           attackString += textArray[index + 1];
@@ -1001,6 +1012,9 @@ export default class TemplateImporter extends Application {
         accuracy = parseInt(accuracySplit[0].replace(/[^0-9]/g, ''));
         if (!attackString.toLowerCase().includes('grapple')) {
           var damageSplit = accuracySplit[1].split('Damage');
+          if(!accuracySplit[1].includes('Damage')) {
+            damageSplit = accuracySplit[1].split('damage');
+          }
           if (damageSplit[1].includes('/')) {
             var damageSubSplit = damageSplit[1].split('/');
             damage = parseInt(damageSubSplit[0].replace(/[^0-9]/g, ''));
@@ -1042,12 +1056,13 @@ export default class TemplateImporter extends Application {
         );
       }
       if (textArray[index].includes('Combat Movement:')) {
+        this.errorSection = 'Combat Movement';
         var combatMovementArray = textArray[index].split(':');
         actorData.system.pools.movement.value = parseInt(combatMovementArray[1].replace(/ *\([^)]*\) */g, "").replace(/[^0-9]/g, ''));
         index++;
       }
 
-
+      this.errorSection = 'Combat Defenses';
       var defenseLine = textArray[index].replace(/ *\([^)]*\) */g, "");
       if (defenseLine.includes(',')) {
         var defenseArray = defenseLine.split(',');
@@ -1146,6 +1161,7 @@ export default class TemplateImporter extends Application {
   }
 
   _getItemData(textArray, index, actorData) {
+    this.errorSection = 'Items';
     var itemData = [];
     if (textArray[index] === '') {
       index++;
@@ -1499,6 +1515,7 @@ export default class TemplateImporter extends Application {
       console.log(error);
       console.log(textArray);
       console.log(index);
+      this.errorSection = itemType;
       this.error = textArray[index];
       this.showError = true;
     }

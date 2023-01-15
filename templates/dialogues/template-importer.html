@@ -18,6 +18,11 @@
       {{ localize "Ex3.QuickCharacter"}}
     </div>
     {{#if showError}}
+    {{#ifEquals type 'qc' }}
+    <div class="mb-2" style="color:red;">
+      Failed on section: {{errorSection}} 
+    </div>
+    {{/ifEquals}}
     <div class="mb-2" style="color:red;">
       Failed on line text: {{error}} 
     </div>
