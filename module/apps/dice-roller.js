@@ -247,6 +247,9 @@ export class RollForm extends FormApplication {
                         this.object.difficulty = 2;
                     }
                 }
+                if (this.object.conditions.some(e => e.name === 'blind')) {
+                    this.object.diceModifier -= 3;
+                }
                 if (this._isAttackRoll()) {
                     if (this.object.conditions.some(e => e.name === 'prone')) {
                         this.object.diceModifier -= 3;

@@ -440,6 +440,8 @@
     "Ex3.SavedRolls": "Saved Rolls",
     "Ex3.Target": "Target",
     "Ex3.EffectTriggers": "Effect Triggers",
+    "Ex3.CurrentEvasionPenalty": "Current Evasion Penalty",
+    "Ex3.CurrentParryPenalty": "Current Parry Penalty",
     "Ex3.DefensePenalty": "Defense Penalty",
     "Ex3.OnslaughtPenalty": "Onslaught Penalty",
     "Ex3.AttackSuccesses": "Attack Successes",
@@ -496,5 +498,6 @@
     "Ex3.CurrentInitiative": "Current Initiative",
     "Ex3.Dematerialized": "Dematerialized",
     "Ex3.Incapacitated": "Incapacitated",
-    "Ex3.RollSettings": "Roll Settings"
+    "Ex3.RollSettings": "Roll Settings",
+    "Ex3.Paralyzed": "Paralyzed"
 }

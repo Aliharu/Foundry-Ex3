@@ -39,6 +39,9 @@
         <input type="number" name="system.dicepenalty.value" value="{{system.dicepenalty.value}}" data-dtype="Number" />
     </div>
 </div>
+<div>
+    <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
+</div>
 {{#ifEquals data.type 'character'}}
 {{#if system.settings.editmode}}
 <div class="resource-label list-section-header d-flex flex-between">

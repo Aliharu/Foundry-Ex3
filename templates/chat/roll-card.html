@@ -201,6 +201,9 @@
                 {{#ifEquals effect.flags.core.statusId 'prone'}}
                 (-3 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
                 {{/ifEquals}}
+                {{#ifEquals effect.flags.core.statusId 'blind'}}
+                (-3 {{localize "Ex3.Dice"}})
+                {{/ifEquals}}
                 {{#ifEquals effect.flags.core.statusId 'grappled'}}
                 (-1 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
                 {{/ifEquals}},

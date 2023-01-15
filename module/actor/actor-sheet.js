@@ -235,7 +235,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         destinies.push(i);
       }
       else if (i.type === 'charm') {
-        if(siderealMaidenCharms[i.system.ability]) {
+        if (siderealMaidenCharms[i.system.ability]) {
           sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
         }
         if (i.system.listingname) {
@@ -268,7 +268,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             charms['evocation'].visible = true;
           }
           else if (i.system.ability !== undefined) {
-            if(charms[i.system.ability]) {
+            if (charms[i.system.ability]) {
               charms[i.system.ability].list.push(i);
               charms[i.system.ability].visible = true;
             }
@@ -425,6 +425,37 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - 4)));
       sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - 15))) * 4;
     }
+    var currentParryPenalty = 0;
+    var currentEvasionPenalty = 0;
+
+    for (const effect of sheetData.effects) {
+      for (const change of effect.changes) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
+          currentEvasionPenalty += (change.value * -1);
+        }
+        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
+          currentParryPenalty += (change.value * -1);
+        }
+      }
+    }
+    if (sheetData.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+      currentParryPenalty += 1;
+      currentEvasionPenalty += 2;
+    }
+    if (sheetData.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (sheetData.effects.some(e => e.flags?.core?.statusId === 'grappled') || sheetData.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (sheetData.system.health.penalty !== 'inc') {
+      currentParryPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
+      currentEvasionPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
+    }
+    sheetData.system.currentParryPenalty = currentParryPenalty;
+    sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
   }
 
   /**

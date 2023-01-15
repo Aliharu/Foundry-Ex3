@@ -157,6 +157,24 @@ exaltedthird.statusEffects = [
         name: 'dematerialized'
     },
     {
+        icon: 'icons/svg/blind.svg',
+        id: 'blind',
+        label: 'EFFECT.StatusBlind',
+        name: 'blind'
+    },
+    {
+        icon: 'icons/svg/blind.svg',
+        id: 'blind',
+        label: 'EFFECT.StatusBlind',
+        name: 'blind'
+    },
+    {
+        icon: 'icons/svg/paralysis.svg',
+        id: 'paralyzed',
+        label: 'Ex3.Paralyzed',
+        name: 'paralyzed'
+    },
+    {
         icon: 'icons/svg/skull.svg',
         id: 'incapacitated',
         label: 'Ex3.Incapacitated',
