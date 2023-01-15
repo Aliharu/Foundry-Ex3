@@ -927,7 +927,7 @@ export default class TemplateImporter extends Application {
         index++;
       }
       var actionsString = '';
-      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat') {
+      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:') {
         actionsString += textArray[index];
         index++;
       }
@@ -982,7 +982,7 @@ export default class TemplateImporter extends Application {
         index++
       }
 
-      if (textArray[index].trim().toLowerCase() === 'combat') {
+      if (textArray[index].trim().toLowerCase() === 'combat' || textArray[index].trim().toLowerCase() === 'combat:') {
         index++;
       }
       while (textArray[index].includes('Attack')) {
