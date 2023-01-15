@@ -1289,7 +1289,6 @@ export class RollForm extends FormApplication {
             }
             else if (dice.result >= this.object.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
             else if (dice.rerolled) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
-            // else if (counter < this.object.rerollNumber) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`;}
             else if (dice.result == 1) { getDice += `<li class="roll die d10 failure">${dice.result}</li>`; }
             else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
