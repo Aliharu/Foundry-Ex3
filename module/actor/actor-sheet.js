@@ -42,14 +42,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  async getData() {
     const context = super.getData();
     context.dtypes = ["String", "Number", "Boolean"];
 
     const actorData = this.actor.toObject(false);
     context.system = actorData.system;
     context.flags = actorData.flags;
-
+    context.biographyHTML = await TextEditor.enrichHTML(context.system.biography, {
+      secrets: this.document.isOwner,
+      async: true
+    });
     // Update traits
     this._prepareTraits(context.system.traits);
 

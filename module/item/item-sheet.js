@@ -39,10 +39,15 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  async getData() {
     const context = super.getData();
     const itemData = this.item.toObject(false);
     context.system = itemData.system;
+
+    context.descriptionHTML = await TextEditor.enrichHTML(context.system.description, {
+      secrets: this.document.isOwner,
+      async: true
+    });
 
     if (itemData.type === 'weapon' || itemData.type === 'armor') {
       this._prepareTraits(itemData.type, context.system.traits);

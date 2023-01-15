@@ -33,4 +33,5 @@
 {{/if}}
 {{/ifEquals}}
 <div class="resource-label flex-center">{{localize "Ex3.CharacterNotes"}}</div>
-{{editor system.biography target="system.biography" button=true owner=owner editable=true}}
+<!-- {{editor system.biography target="system.biography" button=true owner=owner editable=true}} -->
+{{editor biographyHTML target="system.biography" button=true editable=editable engine="prosemirror"}}

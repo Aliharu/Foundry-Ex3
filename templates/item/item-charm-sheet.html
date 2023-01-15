@@ -141,7 +141,7 @@
                 <div class="resource-label">{{localize "Ex3.Prerequisites"}}</div>
             </div>
             <input class="mb-1" type="text" name="system.prerequisites" value="{{system.prerequisites}}" />
-            {{editor system.description target="system.description" button=true owner=owner editable=true}}
+            {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="costs">
