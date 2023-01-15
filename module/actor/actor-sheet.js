@@ -43,7 +43,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   /** @override */
   async getData() {
-    const context = super.getData();
+    const context = await super.getData();
     context.dtypes = ["String", "Number", "Boolean"];
 
     const actorData = this.actor.toObject(false);
@@ -55,28 +55,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
     // Update traits
     this._prepareTraits(context.system.traits);
-
     // Prepare items.
-    if (this.actor.type === 'character') {
-      this._prepareCharacterItems(context);
-    }
-    if (this.actor.type === 'npc') {
-      this._prepareCharacterItems(context);
+    this._prepareCharacterItems(context);
+    context.itemDescriptions = {};
+    for (let item of this.actor.items) {
+      context.itemDescriptions[item.id] = await TextEditor.enrichHTML(item.system.description, {async: true, secrets: this.actor.isOwner, relativeTo: item});
     }
 
     context.effects = prepareActiveEffectCategories(this.document.effects);
-
     return context;
   }
 
 
-  /**
-   * Organize and classify Items for Character sheets.
-   *
-   * @param {Object} actorData The actor to prepare.
-   *
-   * @return {undefined}
-   */
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData.actor;
 
@@ -197,7 +187,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     // Iterate through items, allocating to containers
     for (let i of sheetData.items) {
-
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);

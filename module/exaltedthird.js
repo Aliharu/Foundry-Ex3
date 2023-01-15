@@ -159,6 +159,10 @@ Hooks.once('init', async function () {
 
     return ret
   });
+
+  Handlebars.registerHelper("enrichedHTMLItems", function (sheetData, type, itemID) {
+    return sheetData.itemDescriptions[itemID];
+  });
 });
 
 async function handleSocket({ type, id, data }) {

@@ -515,6 +515,7 @@ export class RollForm extends FormApplication {
                                 charm.charmAdded = false;
                                 charm.timesAdded = 0;
                             }
+                            this.getEnritchedHTML(charm);
                         }
                     }
                     if (this.object.addingCharms) {
@@ -557,6 +558,10 @@ export class RollForm extends FormApplication {
         }
 
         return buttons;
+    }
+
+    async getEnritchedHTML(charm) {
+        charm.enritchedHTML = await TextEditor.enrichHTML(charm.system.description, {async: true, secrets: this.actor.isOwner, relativeTo: charm});
     }
 
     static get defaultOptions() {
