@@ -123,12 +123,12 @@ export class RollForm extends FormApplication {
 
                 this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
                 if (this.actor.type === 'character') {
-                    if(this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]){
+                    if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
                         this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].ability;
                         this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                     }
-                    else if(this._isAttackRoll()) {
+                    else if (this._isAttackRoll()) {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
                         this.object.diceModifier += this.actor.system.settings.rollsettings['attacks'].bonus;
@@ -346,26 +346,26 @@ export class RollForm extends FormApplication {
             this.object.attackEffect = data.attackEffect || '';
         }
         if (this.object.rollType !== 'base') {
-            if(this.actor.martialarts) {
+            if (this.actor.martialarts) {
                 this.object.martialarts = this.actor.martialarts;
             }
-            if(this.actor.crafts) {
+            if (this.actor.crafts) {
                 this.object.crafts = this.actor.crafts;
             }
-            if(this.object.craftId) {
+            if (this.object.craftId) {
                 this.object.ability = this.object.craftId;
             }
-            if(this.object.martialArtId) {
+            if (this.object.martialArtId) {
                 this.object.ability = this.object.martialArtId;
             }
-            if(this.object.actionId) {
+            if (this.object.actionId) {
                 this.object.pool = this.object.actionId;
             }
             this.object.opposingCharms = [];
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
             }
-            if(this.object.charmList === undefined){
+            if (this.object.charmList === undefined) {
                 this.object.charmList = this.actor.charms;
             }
             this._updateSpecialtyList();
@@ -1276,12 +1276,20 @@ export class RollForm extends FormApplication {
         }
 
         let getDice = "";
+        let counter = 0;
+        for (let dice of diceRoll.sort((a, b) => a.result - b.result)) {
+            if (dice.result < this.object.targetNumber && !dice.rerolled && counter < this.object.rerollNumber) {
+                dice.rerolled = true;
+                counter++
+            }
+        }
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
             if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
                 getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
             else if (dice.result >= this.object.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
             else if (dice.rerolled) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
+            // else if (counter < this.object.rerollNumber) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`;}
             else if (dice.result == 1) { getDice += `<li class="roll die d10 failure">${dice.result}</li>`; }
             else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
@@ -1553,7 +1561,7 @@ export class RollForm extends FormApplication {
                 rerolls.push(this.object.damage.reroll[rerollValue].number);
             }
         }
-        if(dice < 0) {
+        if (dice < 0) {
             dice = 0;
         }
         let roll = new Roll(`${dice}d10${rerollString}cs>=${this.object.damage.targetNumber}`).evaluate({ async: false });
@@ -2125,7 +2133,7 @@ export class RollForm extends FormApplication {
     }
 
     _getDiceCap() {
-        if (this.object.rollType !== "base") {            
+        if (this.object.rollType !== "base") {
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
                 var abilityValue = 0;
                 if (this.object.martialarts && this.object.martialarts.some(ma => ma._id === this.object.ability)) {
@@ -2134,7 +2142,7 @@ export class RollForm extends FormApplication {
                 else if (this.object.crafts && this.object.crafts.some(craft => craft._id === this.object.ability)) {
                     abilityValue = this.actor.crafts.find(x => x._id === this.object.ability).system.points;
                 }
-                else if(this.actor.system.abilities[this.object.ability]) {
+                else if (this.actor.system.abilities[this.object.ability]) {
                     abilityValue = this.actor.system.abilities[this.object.ability].value;
                 }
                 if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
@@ -2191,7 +2199,7 @@ export class RollForm extends FormApplication {
                 if (this.object.actions && this.object.actions.some(action => action._id === this.object.pool)) {
                     dicePool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
                 }
-                else if(this.actor.system.pools[this.object.pool]) {
+                else if (this.actor.system.pools[this.object.pool]) {
                     dicePool = this.actor.system.pools[this.object.pool].value;
                 }
                 var diceTier = "zero";
