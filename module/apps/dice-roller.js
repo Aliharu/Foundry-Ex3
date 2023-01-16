@@ -367,6 +367,11 @@ export class RollForm extends FormApplication {
             }
             if (this.object.charmList === undefined) {
                 this.object.charmList = this.actor.charms;
+                for (var charmlist of Object.values(this.object.charmList)) {
+                    for (const charm of charmlist.list) {
+                        this.getEnritchedHTML(charm);
+                    }
+                }
             }
             this._updateSpecialtyList();
             if (this.actor.system.dicepenalty.value) {
