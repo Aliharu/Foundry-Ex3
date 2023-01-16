@@ -114,6 +114,33 @@ export class RollForm extends FormApplication {
                 doubleRolledDamage: false,
                 ignoreSoak: 0,
             };
+            this.object.settings = {
+                rerollCaps: {
+                    one: 0,
+                    two: 0,
+                    three: 0,
+                    four: 0,
+                    five: 0,
+                    six: 0,
+                    seven: 0,
+                    eight: 0,
+                    nine: 0,
+                    ten: 0
+                },
+                doubleSucccessCaps: {
+                    one: 0,
+                    two: 0,
+                    three: 0,
+                    four: 0,
+                    five: 0,
+                    six: 0,
+                    seven: 0,
+                    eight: 0,
+                    nine: 0,
+                    ten: 0
+                },
+            }
+            this.object.activateAura = 'none';
             this.object.craft = {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
@@ -262,89 +289,7 @@ export class RollForm extends FormApplication {
         }
         this.object.addingCharms = false;
         this.object.showSpecialAttacks = false;
-        if (this.object.cost === undefined) {
-            this.object.cost = {
-                motes: 0,
-                muteMotes: 0,
-                willpower: 0,
-                initiative: 0,
-                anima: 0,
-                healthbashing: 0,
-                healthlethal: 0,
-                healthaggravated: 0,
-                silverxp: 0,
-                goldxp: 0,
-                whitexp: 0,
-                aura: "",
-            }
-        }
-        if (this.object.damage.type === undefined) {
-            this.object.damage.type = 'lethal';
-        }
-        if (this.object.craft === undefined) {
-            this.object.craft = {
-                divineInsperationTechnique: false,
-                holisticMiracleUnderstanding: false,
-            }
-        }
-        if (this.object.damage.threshholdToDamage === undefined) {
-            this.object.damage.threshholdToDamage = false;
-        }
-        if (this.object.weaponTags === undefined) {
-            this.object.weaponTags = {};
-        }
-        if (this.object.damage.resetInit === undefined) {
-            this.object.damage.resetInit = true;
-        }
-        if (this.object.damage.doubleRolledDamage === undefined) {
-            this.object.damage.doubleRolledDamage = false;
-        }
-        if (this.object.damage.ignoreSoak === undefined) {
-            this.object.damage.ignoreSoak = 0;
-            this.object.triggerSelfDefensePenalty = 0;
-            this.object.triggerKnockdown = false;
-        }
-        if (this.object.addedCharms === undefined) {
-            this.object.addedCharms = [];
-        }
-        else {
-            for (const addedCharm of this.object.addedCharms) {
-                if (!addedCharm.timesAdded) {
-                    addedCharm.timesAdded = 1;
-                }
-                if (addedCharm.saveId) {
-                    addedCharm.id = addedCharm.saveId;
-                }
-                else {
-                    var actorItem = this.actor.items.find((item) => item.name == addedCharm.name && item.type == 'charm');
-                    if (actorItem) {
-                        addedCharm.id = actorItem.id;
-                    }
-                }
-            }
-        }
-        if (this.object.specialAttacksList === undefined) {
-            this.object.specialAttacksList = [
-                { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
-                { id: 'flurry', name: "Flurry", added: false, show: this._isAttackRoll(), description: 'Cost: 3 dice and reduce defense by 1.', img: 'systems/exaltedthird/assets/icons/spinning-blades.svg' },
-                { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
-                { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
-                { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
-            ];
-        }
-        if (this.object.diceCap === undefined) {
-            this.object.diceCap = this._getDiceCap();
-        }
-        if (this.object.diceToSuccesses === undefined) {
-            this.object.diceToSuccesses = 0;
-        }
-        if (this.object.rollTwice === undefined) {
-            this.object.rollTwice = false;
-        }
-        if (this.object.attackEffect === undefined) {
-            this.object.attackEffectPreset = data.attackEffectPreset || 'none';
-            this.object.attackEffect = data.attackEffect || '';
-        }
+        this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             if (this.actor.martialarts) {
                 this.object.martialarts = this.actor.martialarts;
@@ -749,6 +694,9 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.damage.ignoresoak > 0) {
             this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
         }
+        if(item.system.diceroller.activateAura !== 'none'){
+            this.object.activateAura = item.system.diceroller.activateAura;
+        }
         this.render();
     }
 
@@ -1012,6 +960,9 @@ export class RollForm extends FormApplication {
                 }
                 if (item.system.diceroller.damage.ignoresoak > 0) {
                     this.object.damage.ignoreSoak -= item.system.diceroller.damage.ignoresoak;
+                }
+                if(addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura){
+                    this.object.activateAura = 'none';
                 }
             }
             this.render();
@@ -1309,7 +1260,7 @@ export class RollForm extends FormApplication {
         this.object.getDice = getDice;
         this.object.total = total;
         if (this.object.rollType !== 'base') {
-            this._spendMotes();
+            this._spendResources();
         }
     }
 
@@ -1764,7 +1715,7 @@ export class RollForm extends FormApplication {
         this.attackSequence();
         this._addAttackEffects();
         if (this.object.rollType === 'damage') {
-            this._spendMotes();
+            this._spendResources();
         }
     }
 
@@ -2299,7 +2250,122 @@ export class RollForm extends FormApplication {
         return highestAttribute;
     }
 
-    async _spendMotes() {
+    _migrateNewData(data) {
+        if (this.object.cost === undefined) {
+            this.object.cost = {
+                motes: 0,
+                muteMotes: 0,
+                willpower: 0,
+                initiative: 0,
+                anima: 0,
+                healthbashing: 0,
+                healthlethal: 0,
+                healthaggravated: 0,
+                silverxp: 0,
+                goldxp: 0,
+                whitexp: 0,
+                aura: "",
+            }
+        }
+        if (this.object.damage.type === undefined) {
+            this.object.damage.type = 'lethal';
+        }
+        if (this.object.craft === undefined) {
+            this.object.craft = {
+                divineInsperationTechnique: false,
+                holisticMiracleUnderstanding: false,
+            }
+        }
+        if (this.object.damage.threshholdToDamage === undefined) {
+            this.object.damage.threshholdToDamage = false;
+        }
+        if (this.object.weaponTags === undefined) {
+            this.object.weaponTags = {};
+        }
+        if (this.object.damage.resetInit === undefined) {
+            this.object.damage.resetInit = true;
+        }
+        if (this.object.damage.doubleRolledDamage === undefined) {
+            this.object.damage.doubleRolledDamage = false;
+        }
+        if (this.object.damage.ignoreSoak === undefined) {
+            this.object.damage.ignoreSoak = 0;
+            this.object.triggerSelfDefensePenalty = 0;
+            this.object.triggerKnockdown = false;
+        }
+        if (this.object.addedCharms === undefined) {
+            this.object.addedCharms = [];
+        }
+        else {
+            for (const addedCharm of this.object.addedCharms) {
+                if (!addedCharm.timesAdded) {
+                    addedCharm.timesAdded = 1;
+                }
+                if (addedCharm.saveId) {
+                    addedCharm.id = addedCharm.saveId;
+                }
+                else {
+                    var actorItem = this.actor.items.find((item) => item.name == addedCharm.name && item.type == 'charm');
+                    if (actorItem) {
+                        addedCharm.id = actorItem.id;
+                    }
+                }
+            }
+        }
+        if (this.object.settings === undefined) {
+            this.object.settings = {
+                rerollCaps: {
+                    one: 0,
+                    two: 0,
+                    three: 0,
+                    four: 0,
+                    five: 0,
+                    six: 0,
+                    seven: 0,
+                    eight: 0,
+                    nine: 0,
+                    ten: 0
+                },
+                doubleSucccessCaps: {
+                    one: 0,
+                    two: 0,
+                    three: 0,
+                    four: 0,
+                    five: 0,
+                    six: 0,
+                    seven: 0,
+                    eight: 0,
+                    nine: 0,
+                    ten: 0
+                },
+            }
+            this.object.activateAura = 'none';
+        }
+        if (this.object.specialAttacksList === undefined) {
+            this.object.specialAttacksList = [
+                { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
+                { id: 'flurry', name: "Flurry", added: false, show: this._isAttackRoll(), description: 'Cost: 3 dice and reduce defense by 1.', img: 'systems/exaltedthird/assets/icons/spinning-blades.svg' },
+                { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
+                { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
+                { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
+            ];
+        }
+        if (this.object.diceCap === undefined) {
+            this.object.diceCap = this._getDiceCap();
+        }
+        if (this.object.diceToSuccesses === undefined) {
+            this.object.diceToSuccesses = 0;
+        }
+        if (this.object.rollTwice === undefined) {
+            this.object.rollTwice = false;
+        }
+        if (this.object.attackEffect === undefined) {
+            this.object.attackEffectPreset = data.attackEffectPreset || 'none';
+            this.object.attackEffect = data.attackEffect || '';
+        }
+    }
+
+    async _spendResources() {
         const actorData = duplicate(this.actor);
         var newLevel = actorData.system.anima.level;
         var newValue = actorData.system.anima.value;
@@ -2411,6 +2477,9 @@ export class RollForm extends FormApplication {
         }
         if (this.actor.system.anima.value !== newValue) {
             animaTokenMagic(this.actor, newValue);
+        }
+        if(this.object.activateAura !== 'none') {
+            actorData.system.details.aura = this.object.activateAura;
         }
         this.actor.update(actorData);
     }

@@ -226,6 +226,19 @@
         <input type="checkbox" name="object.rerollFailed" value="{{data.rerollFailed}}" {{checked data.rerollFailed}}>
         <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}}: </label>
         <input type="checkbox" name="object.rollTwice" value="{{data.rollTwice}}" {{checked data.rollTwice}}>
+        {{#ifEquals actor.system.details.exalt 'dragonblooded'}}
+        <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
+        <select name="object.activateAura" data-type="String">
+            {{#select data.activateAura}}
+            <option value="none">{{localize "Ex3.None"}}</option>
+            <option value="air">{{localize "Ex3.Air"}}</option>
+            <option value="earth">{{localize "Ex3.Earth"}}</option>
+            <option value="fire">{{localize "Ex3.Fire"}}</option>
+            <option value="water">{{localize "Ex3.Water"}}</option>
+            <option value="wood">{{localize "Ex3.Wood"}}</option>
+            {{/select}}
+        </select>
+        {{/ifEquals}}
     </div>
 </div>
 {{#ifEquals actor.system.details.exalt 'solar'}}
@@ -241,9 +254,11 @@
 <div style="display:none;">
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.DivineInspirationTechnique"}}: </label>
-        <input type="checkbox" name="object.craft.divineInsperationTechnique" value="{{data.craft.divineInsperationTechnique}}" {{checked data.craft.divineInsperationTechnique}}>
+        <input type="checkbox" name="object.craft.divineInsperationTechnique"
+            value="{{data.craft.divineInsperationTechnique}}" {{checked data.craft.divineInsperationTechnique}}>
         <label class="resource-label">{{localize "Ex3.HolisticMiracleUnderstanding"}}: </label>
-        <input type="checkbox" name="object.craft.holisticMiracleUnderstanding" value="{{data.craft.holisticMiracleUnderstanding}}" {{checked data.craft.holisticMiracleUnderstanding}}>
+        <input type="checkbox" name="object.craft.holisticMiracleUnderstanding"
+            value="{{data.craft.holisticMiracleUnderstanding}}" {{checked data.craft.holisticMiracleUnderstanding}}>
     </div>
 </div>
 {{/ifEquals}}

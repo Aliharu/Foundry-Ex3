@@ -777,6 +777,7 @@
         "diceToSuccesses": 0,
         "rerollfailed": false,
         "rolltwice": false,
+        "activateAura": "none",
         "reroll": {
           "one": false,
           "two": false,

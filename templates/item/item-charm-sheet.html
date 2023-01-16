@@ -334,7 +334,7 @@
                         {{checked system.diceroller.reroll.ten}}>
                 </div>
             </div>
-            <div class="flex-center resource-label" style="font-weight: bold;">
+            <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
                 {{localize "Ex3.Damage"}}
             </div>
             <div>
@@ -448,6 +448,24 @@
                         <input name="system.diceroller.damage.reroll.ten" value="system.diceroller.damage.reroll.ten"
                             type="checkbox" {{checked system.diceroller.damage.reroll.ten}}>
                     </div>
+                </div>
+            </div>
+            <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
+                {{localize "Ex3.OtherBonuses"}}
+            </div>
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
+                    <select name="system.diceroller.activateAura" data-type="String">
+                        {{#select system.diceroller.activateAura}}
+                        <option value="none">{{localize "Ex3.None"}}</option>
+                        <option value="air">{{localize "Ex3.Air"}}</option>
+                        <option value="earth">{{localize "Ex3.Earth"}}</option>
+                        <option value="fire">{{localize "Ex3.Fire"}}</option>
+                        <option value="water">{{localize "Ex3.Water"}}</option>
+                        <option value="wood">{{localize "Ex3.Wood"}}</option>
+                        {{/select}}
+                    </select>
                 </div>
             </div>
             <hr>
