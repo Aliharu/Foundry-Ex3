@@ -23,6 +23,11 @@
       Failed on section: {{errorSection}} 
     </div>
     {{/ifEquals}}
+    {{#ifEquals type 'adversary' }}
+    <div class="mb-2" style="color:red;">
+      Failed on section: {{errorSection}} 
+    </div>
+    {{/ifEquals}}
     <div class="mb-2" style="color:red;">
       Failed on line text: {{error}} 
     </div>

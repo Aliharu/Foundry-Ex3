@@ -1533,9 +1533,11 @@ export default class TemplateImporter extends Application {
       var actorDescription = '';
       var addingIntimacies = false;
       var intimacyString = '';
+      this.errorSection = 'Initial Data';
       while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Attributes:')) {
         if (textArray[index].includes('Intimacies:')) {
           addingIntimacies = true;
+          this.errorSection = 'Intimacies';
         }
         if (textArray[index].includes('Secrets:')) {
           addingIntimacies = false;
@@ -1577,6 +1579,7 @@ export default class TemplateImporter extends Application {
       }
       actorData.system.biography = actorDescription;
       if (textArray[index].includes('Caste') || textArray[index].includes('Aspect')) {
+        this.errorSection = 'Exalt Data';
         this._getExaltSpecificData(textArray, index, actorData, false);
         index++;
       }
@@ -1589,6 +1592,7 @@ export default class TemplateImporter extends Application {
         index++;
       }
       var attributeString = textArray[index].replace('Attributes:', '');
+      this.errorSection = 'Attributes';
       index++
       while (!textArray[index].includes("Essence") && !textArray[index].includes("Willpower")) {
         attributeString += " ";
@@ -1607,6 +1611,7 @@ export default class TemplateImporter extends Application {
           actorData.system.attributes[trimmedName].value = value;
         }
       }
+      this.errorSection = 'Essence/Willpower';
       if (textArray[index].includes("Essence")) {
         actorData.system.essence.value = parseInt(textArray[index].split(':')[1].replace(/[^0-9]/g, ''));
         index++;
@@ -1656,8 +1661,10 @@ export default class TemplateImporter extends Application {
         }
         index++;
       }
+      this.errorSection = 'Health';
       this._getHealthLevels(textArray, index, actorData);
       index++;
+      this.errorSection = 'Abilities';
       var abilityString = textArray[index].replace('Abilities:', '');
       index++;
       while (!textArray[index].includes("Merits") && !textArray[index].includes("Attack")) {
@@ -1704,6 +1711,7 @@ export default class TemplateImporter extends Application {
           }
         }
       }
+      this.errorSection = 'Merits';
       if (!textArray[index].includes("Attack")) {
         var meritString = textArray[index].replace('Merits:', '');
         index++;
@@ -1753,6 +1761,7 @@ export default class TemplateImporter extends Application {
           }
         }
       }
+      this.errorSection = 'Attacks';
       while (textArray[index].includes('Attack')) {
         var attackString = textArray[index];
         if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat')) {
@@ -1810,6 +1819,7 @@ export default class TemplateImporter extends Application {
           }
         );
       }
+      this.errorSection = 'Combat Stats';
       var combatString = textArray[index].replace('Combat:', '');
       index++;
       while (!textArray[index].includes("Social")) {
@@ -1881,6 +1891,7 @@ export default class TemplateImporter extends Application {
         }
       }
       if (textArray[index].includes('Social')) {
+        this.errorSection = 'Social Stats';
         var socialArray = textArray[index].replace('Social:', '').split(',');
         for (var socialAbility of socialArray) {
           var attributeSpecificArray = socialAbility.trim().split(' ');
