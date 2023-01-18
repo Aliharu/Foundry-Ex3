@@ -113,6 +113,9 @@ export class RollForm extends FormApplication {
                 resetInit: true,
                 doubleRolledDamage: false,
                 ignoreSoak: 0,
+                rerollFailed: false,
+                rollTwice: false,
+                rerollNumber: 0,
             };
             this.object.settings = {
                 doubleSucccessCaps: {
@@ -1104,8 +1107,139 @@ export class RollForm extends FormApplication {
     }
 
     // Dovie'andi se tovya sagain.
-    async rollTheDice() {
+    rollTheDice(diceModifiers) {
+        let rerollString = '';
+        let rerolls = [];
 
+        for (var rerollValue in diceModifiers.reroll) {
+            if (diceModifiers.reroll[rerollValue].status) {
+                if (diceModifiers.reroll[rerollValue].number < diceModifiers.targetNumber) {
+                    rerollString += `rr${diceModifiers.reroll[rerollValue].number}`;
+                }
+                else {
+                    rerollString += `x${diceModifiers.reroll[rerollValue].number}`;
+                }
+                rerolls.push(diceModifiers.reroll[rerollValue].number);
+            }
+        }
+        let diceString = `${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}`;
+        if (diceModifiers.rollTwice) {
+            diceString = `{${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}, ${dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}}kh`;
+        }
+        let roll = new Roll(diceString).evaluate({ async: false });
+        let diceRoll = roll.dice[0].results;
+        let total = roll.total;
+        var diceToReroll = Math.min(diceModifiers.dice - roll.total, diceModifiers.rerollNumber);
+        const doublesChart = {
+            7: 'sevens',
+            8: 'eights',
+            9: 'nines',
+            10: 'tens',
+        }
+        const doublesRolled = {
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+        }
+        for (let dice of diceRoll) {
+            if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
+                if (diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] === 0 || diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] > doublesRolled[dice.result]) {
+                    total++;
+                    doublesRolled[dice.result] += 1;
+                }
+            }
+            if (diceModifiers.settings.excludeOnesFromRerolls && dice.result === 1) {
+                diceToReroll--;
+            }
+        }
+        if (diceModifiers.rollTwice) {
+            var secondTotal = roll.dice[1].total;
+            diceRoll = diceRoll.concat(roll.dice[1].results);
+            for (let dice of roll.dice[1].results) {
+                if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
+                    secondTotal++;
+                }
+            }
+            if (secondTotal > total) {
+                total = secondTotal;
+                diceToReroll = Math.min(diceModifiers.dice - roll.dice[1].total, diceModifiers.rerollNumber);
+            };
+        }
+        // Reroll Number Dice
+        let rerolledDice = 0;
+        while (diceToReroll > 0 && (rerolledDice < diceModifiers.rerollNumber)) {
+            rerolledDice += diceToReroll;
+            var failedDiceRoll = new Roll(`${diceToReroll}d10cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+            diceToReroll = Math.min(diceToReroll - failedDiceRoll.total, (diceModifiers.rerollNumber - rerolledDice));
+            diceRoll = diceRoll.concat(failedDiceRoll.dice[0].results);
+            for (let dice of failedDiceRoll.dice[0].results) {
+                if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
+                    if (diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] === 0 || diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] > doublesRolled[dice.result]) {
+                        total++;
+                        doublesRolled[dice.result] += 1;
+                    }
+                }
+                if (diceModifiers.settings.excludeOnesFromRerolls && dice.result === 1) {
+                    diceToReroll--;
+                }
+            }
+            total += failedDiceRoll.total;
+        }
+        total += diceModifiers.successModifier;
+        // Create Holistic Miracle Understanding and Divine InsperationT echnique
+        if (this.object.craft.divineInsperationTechnique || this.object.craft.holisticMiracleUnderstanding) {
+            let newCraftDice = Math.floor(total / 3);
+            let remainder = total % 3;
+            while (newCraftDice > 0) {
+                var rollSuccessTotal = 0;
+                var craftDiceRoll = new Roll(`${newCraftDice}d10cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+                diceRoll = diceRoll.concat(craftDiceRoll.dice[0].results);
+                for (let dice of craftDiceRoll.dice[0].results) {
+                    if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
+                        if (diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] === 0 || diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] > doublesRolled[dice.result]) {
+                            total++;
+                            rollSuccessTotal++;
+                            doublesRolled[dice.result] += 1;
+                        }
+                    }
+                }
+                rollSuccessTotal += craftDiceRoll.total;
+                total += craftDiceRoll.total;
+                newCraftDice = Math.floor((rollSuccessTotal + remainder) / 3);
+                remainder = rollSuccessTotal % 3;
+                if (this.object.craft.holisticMiracleUnderstanding) {
+                    newCraftDice * 4;
+                }
+            }
+        }
+
+        let counter = 0;
+        // Create dice cards
+        for (let dice of diceRoll.sort((a, b) => a.result - b.result)) {
+            if (dice.result < diceModifiers.targetNumber && !dice.rerolled && counter < diceModifiers.rerollNumber) {
+                if (!diceModifiers.settings.excludeOnesFromRerolls || dice.result !== 1) {
+                    dice.rerolled = true;
+                    counter++
+                }
+            }
+        }
+        let diceDisplay = "";
+        for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
+            if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
+                diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
+            }
+            else if (dice.result >= diceModifiers.targetNumber) { diceDisplay += `<li class="roll die d10 success">${dice.result}</li>`; }
+            else if (dice.rerolled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
+            else if (dice.result == 1) { diceDisplay += `<li class="roll die d10 failure">${dice.result}</li>`; }
+            else { diceDisplay += `<li class="roll die d10">${dice.result}</li>`; }
+        }
+
+        return {
+            roll: roll,
+            diceDisplay: diceDisplay,
+            total: total,
+        };
     }
 
     async _baseAbilityDieRoll() {
@@ -1207,30 +1341,27 @@ export class RollForm extends FormApplication {
             }
         }
 
-        let rerollString = '';
-        let rerolls = [];
-
-        for (var rerollValue in this.object.reroll) {
-            if (this.object.reroll[rerollValue].status) {
-                if (this.object.reroll[rerollValue].number < this.object.targetNumber) {
-                    rerollString += `rr${this.object.reroll[rerollValue].number}`;
-                }
-                else {
-                    rerollString += `x${this.object.reroll[rerollValue].number}`;
-                }
-                rerolls.push(this.object.reroll[rerollValue].number);
-            }
-        }
-
         if (dice < 0) {
             dice = 0;
         }
 
+        var rollModifiers = {
+            dice: dice,
+            successModifier: this.object.successModifier,
+            doubleSuccess: this.object.doubleSuccess,
+            targetNumber: this.object.targetNumber, 
+            reroll: this.object.reroll,
+            rerollFailed: this.object.rerollFailed, 
+            rerollNumber: this.object.rerollNumber, 
+            rollTwice: this.object.rollTwice,
+            settings: this.object.settings,
+        }
+        var diceRollResults = this.rollTheDice(rollModifiers);
 
         this.object.dice = dice;
-        this.object.roll = roll;
-        this.object.getDice = getDice;
-        this.object.total = total;
+        this.object.roll = diceRollResults.roll;
+        this.object.displayDice = diceRollResults.diceDisplay;
+        this.object.total = diceRollResults.total;
         if (this.object.rollType !== 'base') {
             this._spendResources();
         }
@@ -1245,7 +1376,7 @@ export class RollForm extends FormApplication {
                 </h4>
                 <div class="dice-tooltip">
                     <div class="dice">
-                        <ol class="dice-rolls">${this.object.getDice}</ol>
+                        <ol class="dice-rolls">${this.object.displayDice}</ol>
                     </div>
                 </div>
                 <h4 class="dice-total">${this.object.total} Successes</h4>
@@ -1302,7 +1433,7 @@ export class RollForm extends FormApplication {
                     <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
                     <div class="dice-tooltip">
                         <div class="dice">
-                            <ol class="dice-rolls">${this.object.getDice}</ol>
+                            <ol class="dice-rolls">${this.object.displayDice}</ol>
                         </div>
                     </div>
                     <h4 class="dice-total">${this.object.total} Successes</h4>
@@ -1374,7 +1505,7 @@ export class RollForm extends FormApplication {
                                 <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
                                 <div class="dice-tooltip">
                                     <div class="dice">
-                                        <ol class="dice-rolls">${this.object.getDice}</ol>
+                                        <ol class="dice-rolls">${this.object.displayDice}</ol>
                                     </div>
                                 </div>
                                 <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
@@ -1408,7 +1539,7 @@ export class RollForm extends FormApplication {
                                     <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
                                     <div class="dice-tooltip">
                                         <div class="dice">
-                                            <ol class="dice-rolls">${this.object.getDice}</ol>
+                                            <ol class="dice-rolls">${this.object.displayDice}</ol>
                                         </div>
                                     </div>
                                     <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
@@ -1496,25 +1627,23 @@ export class RollForm extends FormApplication {
         if (dice < 0) {
             dice = 0;
         }
-        let roll = new Roll(`${dice}d10${rerollString}cs>=${this.object.damage.targetNumber}`).evaluate({ async: false });
-        let diceRoll = roll.dice[0].results;
-        let getDice = "";
+        var rollModifiers = {
+            dice: dice,
+            successModifier: this.object.damage.damageSuccessModifier,
+            doubleSuccess: this.object.damage.doubleSuccess,
+            targetNumber: this.object.damage.targetNumber, 
+            reroll: this.object.damage.reroll,
+            rerollFailed: this.object.damage.rerollFailed, 
+            rerollNumber: this.object.damage.rerollNumber, 
+            rollTwice: this.object.damage.rollTwice,
+            settings: this.object.settings.damage,
+        }
+        var diceRollResults = this.rollTheDice(rollModifiers);
         let soakResult = ``;
         let bonus = 0;
         this.object.finalDamageDice = dice;
 
-        for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
-            if (dice.result >= this.object.damage.doubleSuccess && dice.result >= this.object.damage.targetNumber) {
-                bonus++;
-                getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
-            }
-            else if (dice.result >= this.object.damage.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
-            else if (dice.rerolled) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
-            else if (dice.result == 1) { getDice += `<li class="roll die d10 failure">${dice.result}</li>`; }
-            else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
-        }
-
-        let total = roll.total;
+        let total = diceRollResults.total;
         if (bonus) {
             total += bonus;
         }
@@ -1602,7 +1731,7 @@ export class RollForm extends FormApplication {
                                 ${soakResult}
                                 <div class="dice-tooltip">
                                                     <div class="dice">
-                                                        <ol class="dice-rolls">${getDice}</ol>
+                                                        <ol class="dice-rolls">${diceRollResults.diceDisplay}</ol>
                                                     </div>
                                                 </div>${typeSpecificResults}`;
 
@@ -1620,7 +1749,7 @@ export class RollForm extends FormApplication {
                 <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
                 <div class="dice-tooltip">
                     <div class="dice">
-                        <ol class="dice-rolls">${this.object.getDice}</ol>
+                        <ol class="dice-rolls">${this.object.displayDice}</ol>
                     </div>
                 </div>
                 <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
@@ -1647,7 +1776,7 @@ export class RollForm extends FormApplication {
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
             type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-            roll: this.object.roll || roll,
+            roll: this.object.roll || diceRollResults.roll,
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
@@ -1937,7 +2066,7 @@ export class RollForm extends FormApplication {
                     <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
                     <div class="dice-tooltip">
                         <div class="dice">
-                            <ol class="dice-rolls">${this.object.getDice}</ol>
+                            <ol class="dice-rolls">${this.object.displayDice}</ol>
                         </div>
                     </div>
                     <h4 class="dice-total">${this.object.total} Successes</h4>
