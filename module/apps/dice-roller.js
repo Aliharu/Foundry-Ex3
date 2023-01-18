@@ -353,13 +353,16 @@ export class RollForm extends FormApplication {
                         this.object.difficulty = 0;
                     }
                 }
+                this.object.defenseType = game.i18n.localize('Ex3.None');
                 if ((this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
+                    this.object.defenseType = game.i18n.localize('Ex3.Parry');
                     this.object.defense = this.object.target.actor.system.parry.value;
                     if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                         this.object.defense -= 1;
                     }
                 }
                 if ((this.object.target.actor.system.evasion.value >= this.object.target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
+                    this.object.defenseType = game.i18n.localize('Ex3.Evasion');
                     this.object.defense = this.object.target.actor.system.evasion.value;
                     if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                         this.object.defense -= 2;
@@ -1107,10 +1110,9 @@ export class RollForm extends FormApplication {
     }
 
     // Dovie'andi se tovya sagain.
-    rollTheDice(diceModifiers) {
+    _rollTheDice(diceModifiers) {
         let rerollString = '';
         let rerolls = [];
-
         for (var rerollValue in diceModifiers.reroll) {
             if (diceModifiers.reroll[rerollValue].status) {
                 if (diceModifiers.reroll[rerollValue].number < diceModifiers.targetNumber) {
@@ -1122,10 +1124,11 @@ export class RollForm extends FormApplication {
                 rerolls.push(diceModifiers.reroll[rerollValue].number);
             }
         }
-        let roll = new Roll(`${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
-        let diceRoll = roll.dice[0].results;
-        let total = roll.total;
-        var diceToReroll = Math.min(diceModifiers.dice - roll.total, diceModifiers.rerollNumber);
+        var roll = new Roll(`${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+        return roll;
+    }
+
+    _calculateRoll(diceModifiers) {
         const doublesChart = {
             7: 'sevens',
             8: 'eights',
@@ -1138,6 +1141,11 @@ export class RollForm extends FormApplication {
             9: 0,
             10: 0,
         }
+
+        let roll = this._rollTheDice(diceModifiers);
+        let diceRoll = roll.dice[0].results;
+        let total = roll.total;
+        var diceToReroll = Math.min(diceModifiers.dice - roll.total, diceModifiers.rerollNumber);
         for (let dice of diceRoll) {
             if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
                 if (diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] === 0 || diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] > doublesRolled[dice.result]) {
@@ -1339,13 +1347,13 @@ export class RollForm extends FormApplication {
             rerollNumber: this.object.rerollNumber, 
             settings: this.object.settings,
         }
-        const diceRollResults = this.rollTheDice(rollModifiers);
+        const diceRollResults = this._calculateRoll(rollModifiers);
         this.object.roll = diceRollResults.roll;
         this.object.displayDice = diceRollResults.diceDisplay;
         this.object.total = diceRollResults.total;
 
         if(this.object.rollTwice) {
-            const secondRoll = this.rollTheDice(rollModifiers);
+            const secondRoll = this._calculateRoll(rollModifiers);
             if (secondRoll.total > diceRollResults.total) {
                 this.object.roll = secondRoll.roll;
                 this.object.displayDice = secondRoll.diceDisplay;
@@ -1628,7 +1636,7 @@ export class RollForm extends FormApplication {
             rerollNumber: this.object.damage.rerollNumber, 
             settings: this.object.settings.damage,
         }
-        var diceRollResults = this.rollTheDice(rollModifiers);
+        var diceRollResults = this._calculateRoll(rollModifiers);
         let soakResult = ``;
         let bonus = 0;
         this.object.finalDamageDice = dice;
