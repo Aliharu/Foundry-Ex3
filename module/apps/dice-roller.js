@@ -1122,11 +1122,7 @@ export class RollForm extends FormApplication {
                 rerolls.push(diceModifiers.reroll[rerollValue].number);
             }
         }
-        let diceString = `${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}`;
-        if (diceModifiers.rollTwice) {
-            diceString = `{${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}, ${dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}}kh`;
-        }
-        let roll = new Roll(diceString).evaluate({ async: false });
+        let roll = new Roll(`${diceModifiers.dice}d10${rerollString}${diceModifiers.rerollFailed ? `r<${diceModifiers.targetNumber}` : ""}cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
         let diceRoll = roll.dice[0].results;
         let total = roll.total;
         var diceToReroll = Math.min(diceModifiers.dice - roll.total, diceModifiers.rerollNumber);
@@ -1152,19 +1148,6 @@ export class RollForm extends FormApplication {
             if (diceModifiers.settings.excludeOnesFromRerolls && dice.result === 1) {
                 diceToReroll--;
             }
-        }
-        if (diceModifiers.rollTwice) {
-            var secondTotal = roll.dice[1].total;
-            diceRoll = diceRoll.concat(roll.dice[1].results);
-            for (let dice of roll.dice[1].results) {
-                if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
-                    secondTotal++;
-                }
-            }
-            if (secondTotal > total) {
-                total = secondTotal;
-                diceToReroll = Math.min(diceModifiers.dice - roll.dice[1].total, diceModifiers.rerollNumber);
-            };
         }
         // Reroll Number Dice
         let rerolledDice = 0;
@@ -1344,6 +1327,7 @@ export class RollForm extends FormApplication {
         if (dice < 0) {
             dice = 0;
         }
+        this.object.dice = dice;
 
         var rollModifiers = {
             dice: dice,
@@ -1353,15 +1337,22 @@ export class RollForm extends FormApplication {
             reroll: this.object.reroll,
             rerollFailed: this.object.rerollFailed, 
             rerollNumber: this.object.rerollNumber, 
-            rollTwice: this.object.rollTwice,
             settings: this.object.settings,
         }
-        var diceRollResults = this.rollTheDice(rollModifiers);
-
-        this.object.dice = dice;
+        const diceRollResults = this.rollTheDice(rollModifiers);
         this.object.roll = diceRollResults.roll;
         this.object.displayDice = diceRollResults.diceDisplay;
         this.object.total = diceRollResults.total;
+
+        if(this.object.rollTwice) {
+            const secondRoll = this.rollTheDice(rollModifiers);
+            if (secondRoll.total > diceRollResults.total) {
+                this.object.roll = secondRoll.roll;
+                this.object.displayDice = secondRoll.diceDisplay;
+                this.object.total = secondRoll.total;
+            }
+        }
+
         if (this.object.rollType !== 'base') {
             this._spendResources();
         }
@@ -1635,7 +1626,6 @@ export class RollForm extends FormApplication {
             reroll: this.object.damage.reroll,
             rerollFailed: this.object.damage.rerollFailed, 
             rerollNumber: this.object.damage.rerollNumber, 
-            rollTwice: this.object.damage.rollTwice,
             settings: this.object.settings.damage,
         }
         var diceRollResults = this.rollTheDice(rollModifiers);
@@ -2434,7 +2424,16 @@ export class RollForm extends FormApplication {
                     triggerOnOnes: 'none'
                 }
             }
+            this.object.damage.rerollNumber = 0;
+            this.object.damage.rerollFailed = false;
+            this.object.damage.rollTwice = false;
             this.object.activateAura = 'none';
+            for (var rerollValue in this.object.reroll) {
+                this.object.reroll[rerollValue].cap = 0;
+            }
+            for (var rerollValue in this.object.damage.reroll) {
+                this.object.damage.reroll[rerollValue].cap = 0;
+            }
         }
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
