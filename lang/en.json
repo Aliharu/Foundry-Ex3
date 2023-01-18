@@ -501,5 +501,13 @@
     "Ex3.Dematerialized": "Dematerialized",
     "Ex3.Incapacitated": "Incapacitated",
     "Ex3.RollSettings": "Roll Settings",
-    "Ex3.Paralyzed": "Paralyzed"
+    "Ex3.Paralyzed": "Paralyzed",
+
+    "Ex3.DoubleSuccessCap": "Double Successes Cap",
+    "Ex3.Sevens": "Sevens",
+    "Ex3.Eights": "Eights",
+    "Ex3.Nines": "Nines",
+    "Ex3.Tens": "Tens",
+    "Ex3.ExcludeOnesFromRerolls": "Exclude Ones From Rerolls",
+    "Ex3.TriggerOnOnes": "Trigger On Ones"
 }

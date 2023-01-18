@@ -78,16 +78,16 @@ export class RollForm extends FormApplication {
             this.object.attackSuccesses = 0;
 
             this.object.reroll = {
-                one: { status: false, number: 1 },
-                two: { status: false, number: 2 },
-                three: { status: false, number: 3 },
-                four: { status: false, number: 4 },
-                five: { status: false, number: 5 },
-                six: { status: false, number: 6 },
-                seven: { status: false, number: 7 },
-                eight: { status: false, number: 8 },
-                nine: { status: false, number: 9 },
-                ten: { status: false, number: 10 },
+                one: { status: false, number: 1, cap: 0 },
+                two: { status: false, number: 2, cap: 0 },
+                three: { status: false, number: 3, cap: 0 },
+                four: { status: false, number: 4, cap: 0 },
+                five: { status: false, number: 5, cap: 0 },
+                six: { status: false, number: 6, cap: 0 },
+                seven: { status: false, number: 7, cap: 0 },
+                eight: { status: false, number: 8, cap: 0 },
+                nine: { status: false, number: 9, cap: 0 },
+                ten: { status: false, number: 10, cap: 0 },
             }
 
             this.object.damage = {
@@ -97,16 +97,16 @@ export class RollForm extends FormApplication {
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
                 reroll: {
-                    one: { status: false, number: 1 },
-                    two: { status: false, number: 2 },
-                    three: { status: false, number: 3 },
-                    four: { status: false, number: 4 },
-                    five: { status: false, number: 5 },
-                    six: { status: false, number: 6 },
-                    seven: { status: false, number: 7 },
-                    eight: { status: false, number: 8 },
-                    nine: { status: false, number: 9 },
-                    ten: { status: false, number: 10 },
+                    one: { status: false, number: 1, cap: 0 },
+                    two: { status: false, number: 2, cap: 0 },
+                    three: { status: false, number: 3, cap: 0 },
+                    four: { status: false, number: 4, cap: 0 },
+                    five: { status: false, number: 5, cap: 0 },
+                    six: { status: false, number: 6, cap: 0 },
+                    seven: { status: false, number: 7, cap: 0 },
+                    eight: { status: false, number: 8, cap: 0 },
+                    nine: { status: false, number: 9, cap: 0 },
+                    ten: { status: false, number: 10, cap: 0 },
                 },
                 type: 'lethal',
                 threshholdToDamage: false,
@@ -115,30 +115,24 @@ export class RollForm extends FormApplication {
                 ignoreSoak: 0,
             };
             this.object.settings = {
-                rerollCaps: {
-                    one: 0,
-                    two: 0,
-                    three: 0,
-                    four: 0,
-                    five: 0,
-                    six: 0,
-                    seven: 0,
-                    eight: 0,
-                    nine: 0,
-                    ten: 0
-                },
                 doubleSucccessCaps: {
-                    one: 0,
-                    two: 0,
-                    three: 0,
-                    four: 0,
-                    five: 0,
-                    six: 0,
-                    seven: 0,
-                    eight: 0,
-                    nine: 0,
-                    ten: 0
+                    sevens: 0,
+                    eights: 0,
+                    nines: 0,
+                    tens: 0
                 },
+                excludeOnesFromRerolls: false,
+                triggerOnOnes: 'none',
+                damage: {
+                    doubleSucccessCaps: {
+                        sevens: 0,
+                        eights: 0,
+                        nines: 0,
+                        tens: 0
+                    },
+                    excludeOnesFromRerolls: false,
+                    triggerOnOnes: 'none'
+                }
             }
             this.object.activateAura = 'none';
             this.object.craft = {
@@ -447,6 +441,60 @@ export class RollForm extends FormApplication {
         let buttons = super._getHeaderButtons();
         // Token Configuration
         if (this.object.rollType !== 'base') {
+            const settingsButton = {
+                label: game.i18n.localize('Ex3.Settings'),
+                class: 'roller-settings',
+                id: "roller-settings",
+                icon: 'fas fa-cog',
+                onclick: async (ev) => {
+                    let confirmed = false;
+                    console.log(this.object.settings)
+                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'settings': this.object.settings });
+                    new Dialog({
+                        title: `Dice Roll Settings`,
+                        content: html,
+                        buttons: {
+                            roll: { label: "Save", callback: () => confirmed = true },
+                        },
+                        close: html => {
+                            // this.object.settings = {
+                            //     doubleSucccessCaps: {
+                            //         sevens: 0,
+                            //         eights: 0,
+                            //         nines: 0,
+                            //         tens: 0
+                            //     },
+                            //     excludeOnesFromRerolls: false,
+                            //     triggerOnOnes: 'none',
+                            //     damage: {
+                            //         doubleSucccessCap: {
+                            //             sevens: 0,
+                            //             eights: 0,
+                            //             nines: 0,
+                            //             tens: 0
+                            //         },
+                            //         excludeOnesFromRerolls: false,
+                            //         triggerOnOnes: 'none'
+                            //     }
+                            // }
+                            if (confirmed) {
+                                this.object.settings.doubleSucccessCaps.sevens = parseInt(html.find('#sevensCap').val() || 0);
+                                this.object.settings.doubleSucccessCaps.eights = parseInt(html.find('#eightsCap').val() || 0);
+                                this.object.settings.doubleSucccessCaps.nines = parseInt(html.find('#ninesCap').val() || 0);
+                                this.object.settings.doubleSucccessCaps.tens = parseInt(html.find('#tensCap').val() || 0);
+                                this.object.settings.excludeOnesFromRerolls = html.find('#excludeOnesFromRerolls').is(":checked");
+
+                                this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
+                                this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
+                                this.object.settings.damage.doubleSucccessCaps.nines = parseInt(html.find('#damageNinesCap').val() || 0);
+                                this.object.settings.damage.doubleSucccessCaps.tens = parseInt(html.find('#damageTensCap').val() || 0);
+                                this.object.settings.damage.excludeOnesFromRerolls = html.find('#damageExcludeOnesFromRerolls').is(":checked");
+                            }
+                        }
+                    }).render(true);
+                },
+            };
+            buttons = [settingsButton, ...buttons];
             const charmsButton = {
                 label: game.i18n.localize('Ex3.AddCharm'),
                 class: 'add-charm',
@@ -511,7 +559,7 @@ export class RollForm extends FormApplication {
     }
 
     async getEnritchedHTML(charm) {
-        charm.enritchedHTML = await TextEditor.enrichHTML(charm.system.description, {async: true, secrets: this.actor.isOwner, relativeTo: charm});
+        charm.enritchedHTML = await TextEditor.enrichHTML(charm.system.description, { async: true, secrets: this.actor.isOwner, relativeTo: charm });
     }
 
     static get defaultOptions() {
@@ -694,7 +742,7 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.damage.ignoresoak > 0) {
             this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
         }
-        if(item.system.diceroller.activateAura !== 'none'){
+        if (item.system.diceroller.activateAura !== 'none') {
             this.object.activateAura = item.system.diceroller.activateAura;
         }
         this.render();
@@ -961,7 +1009,7 @@ export class RollForm extends FormApplication {
                 if (item.system.diceroller.damage.ignoresoak > 0) {
                     this.object.damage.ignoreSoak -= item.system.diceroller.damage.ignoresoak;
                 }
-                if(addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura){
+                if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
                     this.object.activateAura = 'none';
                 }
             }
@@ -1053,6 +1101,11 @@ export class RollForm extends FormApplication {
         else {
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
         }
+    }
+
+    // Dovie'andi se tovya sagain.
+    async rollTheDice() {
+
     }
 
     async _baseAbilityDieRoll() {
@@ -1171,87 +1224,6 @@ export class RollForm extends FormApplication {
 
         if (dice < 0) {
             dice = 0;
-        }
-        let diceString = `${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}`;
-        if (this.object.rollTwice) {
-            diceString = `{${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}, ${dice}d10${rerollString}${this.object.rerollFailed ? `r<${this.object.targetNumber}` : ""}cs>=${this.object.targetNumber}}kh`;
-        }
-        let roll = new Roll(diceString).evaluate({ async: false });
-        let diceRoll = roll.dice[0].results;
-        let total = roll.total;
-        var failedDice = Math.min(dice - roll.total, this.object.rerollNumber);
-        for (let dice of diceRoll) {
-            if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
-                total++;
-            }
-        }
-        if (this.object.rollTwice) {
-            var secondTotal = roll.dice[1].total;
-            diceRoll = diceRoll.concat(roll.dice[1].results);
-            for (let dice of roll.dice[1].results) {
-                if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
-                    secondTotal++;
-                }
-            }
-            if (secondTotal > total) {
-                total = secondTotal;
-                failedDice = Math.min(dice - roll.dice[1].total, this.object.rerollNumber);
-            };
-        }
-
-        let rerolledDice = 0;
-        while (failedDice !== 0 && (rerolledDice < this.object.rerollNumber)) {
-            rerolledDice += failedDice;
-            var failedDiceRoll = new Roll(`${failedDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
-            failedDice = Math.min(failedDice - failedDiceRoll.total, (this.object.rerollNumber - rerolledDice));
-            diceRoll = diceRoll.concat(failedDiceRoll.dice[0].results);
-            for (let dice of failedDiceRoll.dice[0].results) {
-                if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
-                    total++;
-                }
-            }
-            total += failedDiceRoll.total;
-        }
-        total += this.object.successModifier;
-        if (this.object.craft.divineInsperationTechnique || this.object.craft.holisticMiracleUnderstanding) {
-            let newCraftDice = Math.floor(total / 3);
-            let remainder = total % 3;
-            while (newCraftDice > 0) {
-                var rollSuccessTotal = 0;
-                var craftDiceRoll = new Roll(`${newCraftDice}d10cs>=${this.object.targetNumber}`).evaluate({ async: false });
-                diceRoll = diceRoll.concat(craftDiceRoll.dice[0].results);
-                for (let dice of craftDiceRoll.dice[0].results) {
-                    if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
-                        total++;
-                        rollSuccessTotal++;
-                    }
-                }
-                rollSuccessTotal += craftDiceRoll.total;
-                total += craftDiceRoll.total;
-                newCraftDice = Math.floor((rollSuccessTotal + remainder) / 3);
-                remainder = rollSuccessTotal % 3;
-                if (this.object.craft.holisticMiracleUnderstanding) {
-                    newCraftDice * 4;
-                }
-            }
-        }
-
-        let getDice = "";
-        let counter = 0;
-        for (let dice of diceRoll.sort((a, b) => a.result - b.result)) {
-            if (dice.result < this.object.targetNumber && !dice.rerolled && counter < this.object.rerollNumber) {
-                dice.rerolled = true;
-                counter++
-            }
-        }
-        for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
-            if (dice.result >= this.object.doubleSuccess && dice.result >= this.object.targetNumber) {
-                getDice += `<li class="roll die d10 success double-success">${dice.result}</li>`;
-            }
-            else if (dice.result >= this.object.targetNumber) { getDice += `<li class="roll die d10 success">${dice.result}</li>`; }
-            else if (dice.rerolled) { getDice += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
-            else if (dice.result == 1) { getDice += `<li class="roll die d10 failure">${dice.result}</li>`; }
-            else { getDice += `<li class="roll die d10">${dice.result}</li>`; }
         }
 
 
@@ -2314,30 +2286,24 @@ export class RollForm extends FormApplication {
         }
         if (this.object.settings === undefined) {
             this.object.settings = {
-                rerollCaps: {
-                    one: 0,
-                    two: 0,
-                    three: 0,
-                    four: 0,
-                    five: 0,
-                    six: 0,
-                    seven: 0,
-                    eight: 0,
-                    nine: 0,
-                    ten: 0
-                },
                 doubleSucccessCaps: {
-                    one: 0,
-                    two: 0,
-                    three: 0,
-                    four: 0,
-                    five: 0,
-                    six: 0,
-                    seven: 0,
-                    eight: 0,
-                    nine: 0,
-                    ten: 0
+                    sevens: 0,
+                    eights: 0,
+                    nines: 0,
+                    tens: 0
                 },
+                excludeOnesFromRerolls: false,
+                triggerOnOnes: 'none',
+                damage: {
+                    doubleSucccessCaps: {
+                        sevens: 0,
+                        eights: 0,
+                        nines: 0,
+                        tens: 0
+                    },
+                    excludeOnesFromRerolls: false,
+                    triggerOnOnes: 'none'
+                }
             }
             this.object.activateAura = 'none';
         }
@@ -2478,7 +2444,7 @@ export class RollForm extends FormApplication {
         if (this.actor.system.anima.value !== newValue) {
             animaTokenMagic(this.actor, newValue);
         }
-        if(this.object.activateAura !== 'none') {
+        if (this.object.activateAura !== 'none') {
             actorData.system.details.aura = this.object.activateAura;
         }
         this.actor.update(actorData);

@@ -1,0 +1,61 @@
+<div class="exaltedthird">
+    <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.Sevens"}}</label>
+            <input id="sevensCap" name="settings.doubleSucccessCaps.sevens" value="{{settings.doubleSucccessCaps.sevens}}" type="number">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Eights"}}</label>
+            <input id="eightsCap" name="settings.doubleSucccessCaps.eights" value="{{settings.doubleSucccessCaps.eights}}" type="number">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Nines"}}</label>
+            <input id="ninesCap" name="settings.doubleSucccessCaps.nines" value="{{settings.doubleSucccessCaps.nines}}" type="number">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Tens"}}</label>
+            <input id="tensCap" name="settings.doubleSucccessCaps.tens" value="{{settings.doubleSucccessCaps.tens}}" type="number">
+        </div>
+    </div>
+    <div class="resource grid grid-2col flex-center">
+        <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</label>
+        <input id="excludeOnesFromRerolls" type="checkbox" name="settings.excludeOnesFromRerolls" value="{{settings.excludeOnesFromRerolls}}" {{checked settings.excludeOnesFromRerolls}}>
+        <!-- <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
+        <input id="triggerOnOnes" type="checkbox" name="settings.triggerOnOnes" value="{{settings.triggerOnOnes}}" {{checked settings.triggerOnOnes}}> -->
+    </div>
+    {{#if isAttack}}
+    <div class="resource flex-center">
+        <label class="resource-label" style="font-size: 17px;">{{localize "Ex3.Damage"}}</label>
+    </div>
+    <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.Sevens"}}</label>
+            <input id="damageSevensCap" name="settings.damage.doubleSucccessCaps.sevens" value="{{settings.damage.doubleSucccessCaps.sevens}}" type="number">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Eights"}}</label>
+            <input id="damageEightsCap" name="settings.damage.doubleSucccessCaps.eights" value="{{settings.damage.doubleSucccessCaps.eights}}" type="number">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Nines"}}</label>
+            <input id="damageNinesCap" name="settings.damage.doubleSucccessCaps.nines" value="{{settings.damage.doubleSucccessCaps.nines}}" type="number">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Tens"}}</label>
+            <input id="damageTensCap" name="settings.damage.doubleSucccessCaps.tens" value="{{settings.damage.doubleSucccessCaps.tens}}" type="number">
+        </div>
+    </div>
+    <div class="resource grid grid-2col flex-center">
+        <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</label>
+        <input id="damageExcludeOnesFromRerolls" type="checkbox" name="settings.damage.excludeOnesFromRerolls" value="{{settings.damage.excludeOnesFromRerolls}}" {{checked settings.damage.excludeOnesFromRerolls}}>
+        <!-- <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
+        <input id="triggerOnOnes" type="checkbox" name="settings.triggerOnOnes" value="{{settings.triggerOnOnes}}" {{checked settings.triggerOnOnes}}> -->
+    </div>
+    {{/if}}
+</div>

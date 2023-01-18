@@ -790,6 +790,13 @@
           "nine": false,
           "ten": false
         },
+        "doublesucccesscaps": {
+          "sevens": 0,
+          "eights": 0,
+          "nines": 0,
+          "tens": 0
+        },
+        "excludeonesfromrerolls": false,
         "damage": {
           "bonusdice": 0,
           "bonussuccesses": 0,
@@ -811,7 +818,14 @@
             "eight": false,
             "nine": false,
             "ten": false
-          }
+          },
+          "doublesucccesscaps": {
+            "sevens": 0,
+            "eights": 0,
+            "nines": 0,
+            "tens": 0
+          },
+          "excludeonesfromrerolls": false
         },
         "opposedbonuses": {
           "enabled": false,

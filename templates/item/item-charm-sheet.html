@@ -334,6 +334,35 @@
                         {{checked system.diceroller.reroll.ten}}>
                 </div>
             </div>
+            <div class="resource flex-center">
+                <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
+            </div>
+            <div class="resource grid grid-4col flex-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Sevens"}}</label>
+                    <input name="system.diceroller.doublesucccesscaps.sevens" value="{{system.diceroller.doublesucccesscaps.sevens}}" type="number">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Eights"}}</label>
+                    <input name="system.diceroller.doublesucccesscaps.eights" value="{{system.diceroller.doublesucccesscaps.eights}}" type="number">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Nines"}}</label>
+                    <input name="system.diceroller.doublesucccesscaps.nines" value="{{system.diceroller.doublesucccesscaps.nines}}" type="number">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Tens"}}</label>
+                    <input name="system.diceroller.doublesucccesscaps.tens" value="{{system.diceroller.doublesucccesscaps.tens}}" type="number">
+                </div>
+            </div>
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
+                    <input type="checkbox" name="system.diceroller.excludeonesfromrerolls" value="{{system.diceroller.excludeonesfromrerolls}}" {{checked system.diceroller.excludeonesfromrerolls}}>
+                </div>
+                <!-- <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
+                <input id="triggerOnOnes" type="checkbox" name="settings.triggerOnOnes" value="{{settings.triggerOnOnes}}" {{checked settings.triggerOnOnes}}> -->
+            </div>
             <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
                 {{localize "Ex3.Damage"}}
             </div>
