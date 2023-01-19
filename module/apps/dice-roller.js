@@ -1148,7 +1148,7 @@ export class RollForm extends FormApplication {
         results = roll.dice[0].results;
         total = roll.total;
         if(rerolls.length > 0) {
-            while(results.some(dieResult => (rerolls.includes(dieResult.result) && !dieResult.rerolled && diceModifiers.reroll[numbersChart[dieResult.result]].cap > numbersRerolled[dieResult.result]))) {
+            while(results.some(dieResult => (rerolls.includes(dieResult.result) && !dieResult.rerolled && (diceModifiers.reroll[numbersChart[dieResult.result]].cap === 0 || diceModifiers.reroll[numbersChart[dieResult.result]].cap > numbersRerolled[dieResult.result])))) {
                 var toReroll = 0;
                 for (const diceResult of results) {
                     if(!diceResult.rerolled && rerolls.includes(diceResult.result)) {
