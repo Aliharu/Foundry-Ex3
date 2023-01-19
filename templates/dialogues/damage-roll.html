@@ -60,52 +60,12 @@
             <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
         </div>
         <div class="resource d-flex flex-center">
+            {{#each data.damage.reroll as |reroll key|}}
             <div>
-                <div>1</div>
-                <input name="object.damage.reroll.one.status" type="checkbox" {{checked data.damage.reroll.one.status}}>
+                <div>{{reroll.number}}</div>
+                <input name="object.damage.reroll.{{key}}.status" type="checkbox" {{checked reroll.status}}>
             </div>
-            <div>
-                <div>2</div>
-                <input name="object.damage.reroll.two.status" type="checkbox" {{checked data.damage.reroll.two.status}}>
-            </div>
-            <div>
-                <div>3</div>
-                <input name="object.damage.reroll.three.status" type="checkbox" {{checked
-                    data.damage.reroll.three.status}}>
-            </div>
-            <div>
-                <div>4</div>
-                <input name="object.damage.reroll.four.status" type="checkbox" {{checked
-                    data.damage.reroll.four.status}}>
-            </div>
-            <div>
-                <div>5</div>
-                <input name="object.damage.reroll.five.status" type="checkbox" {{checked
-                    data.damage.reroll.five.status}}>
-            </div>
-            <div>
-                <div>6</div>
-                <input name="object.damage.reroll.six.status" type="checkbox" {{checked data.damage.reroll.six.status}}>
-            </div>
-            <div>
-                <div>7</div>
-                <input name="object.damage.reroll.seven.status" type="checkbox" {{checked
-                    data.damage.reroll.seven.status}}>
-            </div>
-            <div>
-                <div>8</div>
-                <input name="object.damage.reroll.eight.status" type="checkbox" {{checked
-                    data.damage.reroll.eight.status}}>
-            </div>
-            <div>
-                <div>9</div>
-                <input name="object.damage.reroll.nine.status" type="checkbox" {{checked
-                    data.damage.reroll.nine.status}}>
-            </div>
-            <div>
-                <div>10</div>
-                <input name="object.damage.reroll.ten.status" type="checkbox" {{checked data.damage.reroll.ten.status}}>
-            </div>
+            {{/each}}
         </div>
 
         <div class="d-flex flex-between mb-1 collapsable cursor-pointer">

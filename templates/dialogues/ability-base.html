@@ -146,46 +146,12 @@
     <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
 </div>
 <div class="resource d-flex flex-center">
+    {{#each data.reroll as |reroll key|}}
     <div>
-        <div>1</div>
-        <input name="object.reroll.one.status" type="checkbox" {{checked data.reroll.one.status}}>
+        <div>{{reroll.number}}</div>
+        <input name="object.reroll.{{key}}.status" type="checkbox" {{checked reroll.status}}>
     </div>
-    <div>
-        <div>2</div>
-        <input name="object.reroll.two.status" type="checkbox" {{checked data.reroll.two.status}}>
-    </div>
-    <div>
-        <div>3</div>
-        <input name="object.reroll.three.status" type="checkbox" {{checked data.reroll.three.status}}>
-    </div>
-    <div>
-        <div>4</div>
-        <input name="object.reroll.four.status" type="checkbox" {{checked data.reroll.four.status}}>
-    </div>
-    <div>
-        <div>5</div>
-        <input name="object.reroll.five.status" type="checkbox" {{checked data.reroll.five.status}}>
-    </div>
-    <div>
-        <div>6</div>
-        <input name="object.reroll.six.status" type="checkbox" {{checked data.reroll.six.status}}>
-    </div>
-    <div>
-        <div>7</div>
-        <input name="object.reroll.seven.status" type="checkbox" {{checked data.reroll.seven.status}}>
-    </div>
-    <div>
-        <div>8</div>
-        <input name="object.reroll.eight.status" type="checkbox" {{checked data.reroll.eight.status}}>
-    </div>
-    <div>
-        <div>9</div>
-        <input name="object.reroll.nine.status" type="checkbox" {{checked data.reroll.nine.status}}>
-    </div>
-    <div>
-        <div>10</div>
-        <input name="object.reroll.ten.status" type="checkbox" {{checked data.reroll.ten.status}}>
-    </div>
+    {{/each}}
 </div>
 
 {{#ifEquals data.rollType 'base'}}

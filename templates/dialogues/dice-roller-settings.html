@@ -1,5 +1,16 @@
 <div class="exaltedthird">
     <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.RerollsCap"}} <i title="Effects 'Rerolls 6s' style rerolls" class="fas fa-info-circle"></i></label>
+    </div>
+    <div class="resource d-flex flex-center mb-1">
+        {{#each rerolls as |reroll key|}}
+        <div>
+            <div>{{reroll.number}}</div>
+            <input id="reroll-{{reroll.number}}-cap" name="rerolls.{{key}}.cap" value="{{reroll.cap}}" type="number">
+        </div>
+        {{/each}}
+    </div>
+    <div class="resource flex-center">
         <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
     </div>
     <div class="resource grid grid-4col flex-center">
@@ -28,7 +39,18 @@
     </div>
     {{#if isAttack}}
     <div class="resource flex-center">
-        <label class="resource-label" style="font-size: 17px;">{{localize "Ex3.Damage"}}</label>
+        <label class="resource-label mb-1" style="font-size: 17px;">{{localize "Ex3.Damage"}}</label>
+    </div>
+    <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.RerollsCap"}}</label>
+    </div>
+    <div class="resource d-flex flex-center mb-1">
+        {{#each damageRerolls as |reroll key|}}
+        <div>
+            <div>{{reroll.number}}</div>
+            <input id="damage-reroll-{{reroll.number}}-cap" name="damageRerolls.{{key}}.cap" value="{{reroll.cap}}" type="number">
+        </div>
+        {{/each}}
     </div>
     <div class="resource flex-center">
         <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
