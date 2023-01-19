@@ -1120,28 +1120,52 @@ export class RollForm extends FormApplication {
     _rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled) {
         var total = 0;
         var results = null;
+        const numbersChart = {
+            1: 'one',
+            2: 'two',
+            3: 'three',
+            4: 'four',
+            5: 'five',
+            6: 'six',
+            7: 'seven',
+            8: 'eight',
+            9: 'nine',
+            10: 'ten',
+        }
         const doublesChart = {
             7: 'sevens',
             8: 'eights',
             9: 'nines',
             10: 'tens',
         }
-        let rerollString = '';
         let rerolls = [];
         for (var rerollValue in diceModifiers.reroll) {
             if (diceModifiers.reroll[rerollValue].status) {
-                if (diceModifiers.reroll[rerollValue].number < diceModifiers.targetNumber) {
-                    rerollString += `rr${diceModifiers.reroll[rerollValue].number}`;
-                }
-                else {
-                    rerollString += `x${diceModifiers.reroll[rerollValue].number}`;
-                }
                 rerolls.push(diceModifiers.reroll[rerollValue].number);
             }
         }
-        var roll = new Roll(`${dice}d10${rerollString}cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+        var roll = new Roll(`${dice}d10cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
         results = roll.dice[0].results;
         total = roll.total;
+        if(rerolls.length > 0) {
+            while(results.some(dieResult => (rerolls.includes(dieResult.result) && !dieResult.rerolled && diceModifiers.reroll[numbersChart[dieResult.result]].cap > numbersRerolled[dieResult.result]))) {
+                var toReroll = 0;
+                for (const diceResult of results) {
+                    if(!diceResult.rerolled && rerolls.includes(diceResult.result)) {
+                        if(diceModifiers.reroll[numbersChart[diceResult.result]].cap === 0 || diceModifiers.reroll[numbersChart[diceResult.result]].cap > numbersRerolled[diceResult.result]) {
+                            toReroll++;
+                            numbersRerolled[diceResult.result] += 1;
+                            if(diceResult.result < diceModifiers.targetNumber) {
+                                diceResult.rerolled = true;
+                            }
+                        }
+                    }
+                }
+                var rerollRoll = new Roll(`${toReroll}d10cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+                results = results.concat(rerollRoll.dice[0].results);
+                total += rerollRoll.total;
+            }
+        }
         for (let dice of results) {
             if (dice.result >= diceModifiers.doubleSuccess && dice.result >= diceModifiers.targetNumber) {
                 if (diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] === 0 || diceModifiers.settings.doubleSucccessCaps[doublesChart[dice.result]] > doublesRolled[dice.result]) {
@@ -1180,7 +1204,6 @@ export class RollForm extends FormApplication {
         let rollResults = this._rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled);
         let diceRoll = rollResults.results;
         let total = rollResults.total;
-        //Change how reroll is calculated
         var possibleRerolls = 0;
         if(diceModifiers.rerollFailed) {
             for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
@@ -1203,7 +1226,6 @@ export class RollForm extends FormApplication {
         }
         
         var diceToReroll = Math.min(possibleRerolls, diceModifiers.rerollNumber);
-        // Reroll Number Dice
         let rerolledDice = 0;
         while (diceToReroll > 0 && (rerolledDice < diceModifiers.rerollNumber)) {
             rerolledDice += possibleRerolls;
@@ -1220,7 +1242,6 @@ export class RollForm extends FormApplication {
             total += rerollNumDiceResults.total;
         }
         total += diceModifiers.successModifier;
-        // Create Holistic Miracle Understanding and Divine InsperationT echnique
         if (this.object.craft.divineInsperationTechnique || this.object.craft.holisticMiracleUnderstanding) {
             let newCraftDice = Math.floor(total / 3);
             let remainder = total % 3;
@@ -1238,11 +1259,11 @@ export class RollForm extends FormApplication {
             }
         }
 
-        //When "Trigger on 1s" is implemented
+        // When "Trigger on 1s" is implemented
         // let counter = 0;
         // for (let dice of diceRoll.sort((a, b) => a.result - b.result)) {
         //     if (dice.result < diceModifiers.targetNumber && !dice.rerolled && counter < diceModifiers.rerollNumber) {
-        //         if (!diceModifiers.settings.excludeOnesFromRerolls || dice.result !== 1) {
+        //         if (!dice.rerolled && diceModifiers.settings.excludeOnesFromRerolls && dice.result === 1) {
         //             counter++
         //         }
         //     }
@@ -1667,13 +1688,12 @@ export class RollForm extends FormApplication {
             settings: this.object.settings.damage,
         }
         var diceRollResults = this._calculateRoll(dice, rollModifiers);
-        let soakResult = ``;
         this.object.finalDamageDice = dice;
         let total = diceRollResults.total;
         if (this.object.damage.doubleRolledDamage) {
             total *= 2;
         }
-
+        let soakResult = ``;
         let typeSpecificResults = ``;
 
         if (this._damageRollType('decisive')) {
@@ -1798,7 +1818,7 @@ export class RollForm extends FormApplication {
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
             type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-            roll: this.object.roll || diceRollResults.roll,
+            roll: diceRollResults.roll || this.object.roll,
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
