@@ -462,26 +462,6 @@ export class RollForm extends FormApplication {
                             roll: { label: "Save", callback: () => confirmed = true },
                         },
                         close: html => {
-                            // this.object.settings = {
-                            //     doubleSucccessCaps: {
-                            //         sevens: 0,
-                            //         eights: 0,
-                            //         nines: 0,
-                            //         tens: 0
-                            //     },
-                            //     excludeOnesFromRerolls: false,
-                            //     triggerOnOnes: 'none',
-                            //     damage: {
-                            //         doubleSucccessCap: {
-                            //             sevens: 0,
-                            //             eights: 0,
-                            //             nines: 0,
-                            //             tens: 0
-                            //         },
-                            //         excludeOnesFromRerolls: false,
-                            //         triggerOnOnes: 'none'
-                            //     }
-                            // }
                             if (confirmed) {
                                 this.object.settings.doubleSucccessCaps.sevens = parseInt(html.find('#sevensCap').val() || 0);
                                 this.object.settings.doubleSucccessCaps.eights = parseInt(html.find('#eightsCap').val() || 0);
@@ -504,7 +484,7 @@ export class RollForm extends FormApplication {
                                 }
                             }
                         }
-                    }).render(true);
+                    }, {classes: ["dialog", "solar-background"]}).render(true);
                 },
             };
             buttons = [settingsButton, ...buttons];
@@ -649,7 +629,7 @@ export class RollForm extends FormApplication {
                     },
                 }
             }
-        }).render(true);
+        }, {classes: ["dialog", "solar-background"]}).render(true);
     }
 
     getData() {

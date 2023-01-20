@@ -579,7 +579,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             li.slideUp(200, () => this.render(false));
           }
         }
-      }).render(true);
+      }, {classes: ["dialog", "solar-background"]}).render(true);
     });
 
     // html.find('.splat-xp').mousedown(ev => {
@@ -1246,7 +1246,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }).render(true);
+    }, {classes: ["dialog", "solar-background"]}).render(true);
   }
 
   async recoverHealth(healthType = 'person') {
@@ -1306,7 +1306,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       buttons: {
         cancel: { label: "Close" }
       }
-    }).render(true);
+    }, {classes: ["dialog", "solar-background"]}).render(true);
   }
 
   async pickColor() {
@@ -1334,7 +1334,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }).render(true);
+    }, {classes: ["dialog", "solar-background"]}).render(true);
   }
 
   async sheetSettings() {
@@ -1367,7 +1367,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }).render(true);
+    }, {classes: ["dialog", "solar-background"]}).render(true);
   }
 
   async helpDialogue(type) {
@@ -1380,7 +1380,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       buttons: {
         cancel: { label: "Close", callback: () => confirmed = false }
       }
-    }).render(true);
+    }, {classes: ["dialog", "solar-background"]}).render(true);
   }
 
   _onSquareCounterChange(event) {

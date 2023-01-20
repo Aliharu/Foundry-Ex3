@@ -145,8 +145,8 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         content: html,
         buttons: {
           cancel: { label: "Close" }
-        }
-      }, { height: 1000, width: 1000 }).render(true);
+        },
+      }, { height: 1000, width: 1000, classes: ["dialog", "solar-background"] }).render(true);
     });
 
     html.find(".embeded-item-delete").on("click", (event) => {

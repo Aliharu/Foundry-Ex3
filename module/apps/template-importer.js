@@ -35,7 +35,7 @@ export default class TemplateImporter extends Application {
           buttons: {
             cancel: { label: "Close", callback: () => confirmed = false }
           }
-        }).render(true);
+        }, {classes: ["dialog", "solar-background"]}).render(true);
       },
     };
     buttons = [helpButton, ...buttons];
