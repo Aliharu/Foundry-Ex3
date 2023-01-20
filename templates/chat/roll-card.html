@@ -48,14 +48,28 @@
             <b>{{localize "Ex3.TargetNumber"}}: </b>{{rollData.targetNumber}}, <b>{{localize "Ex3.DoubleSuccess"}}: </b>{{rollData.doubleSuccess}}+
         </div>
         <div>
+            <b>{{localize "Ex3.DoubleSuccessCap"}}:</b>
+            {{#each rollData.settings.doubleSucccessCaps as |doubleSucccessCap key|}}
+                {{#if doubleSucccessCap }} {{key}}:{{doubleSucccessCap}}, {{/if}}
+            {{/each}}
+        </div>
+        <div>
             <b>{{localize "Ex3.Reroll"}}:</b>
             {{#each rollData.reroll as |rerollNum key|}}
-                {{#if rerollNum.status }}{{rerollNum.number}}s,{{/if}}
+                {{#if rerollNum.status }}{{rerollNum.number}}s{{#if rerollNum.status }}(Cap: {{rerollNum.cap}}){{/if}}, {{/if}}
             {{/each}}
             <b>{{localize "Ex3.Reroll"}}#:</b> {{rollData.rerollNumber}}
         </div>
+        {{#if rollData.settings.excludeOnesFromRerolls }}
+        <div>
+            <b>{{localize "Ex3.ExcludeOnesFromRerolls"}}</b>
+        </div>
+        {{/if}}
         <div>
             <b>{{localize "Ex3.DicetoSuccesses"}}:</b> {{rollData.diceToSuccesses}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.TriggerOnOnes"}}:</b> {{rollData.settings.triggerOnOnes}}
         </div>
         <div>
             {{#if rollData.rerollFailed}}<b>{{localize "Ex3.RerollFailed"}}</b>{{/if}}{{#if rollData.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
@@ -90,10 +104,25 @@
                     <b>{{localize "Ex3.TargetNumber"}}: </b>{{rollData.damage.targetNumber}}, <b>{{localize "Ex3.DoubleSuccess"}}: </b>{{rollData.damage.doubleSuccess}}+
                 </div>
                 <div>
+                    <b>{{localize "Ex3.DoubleSuccessCap"}}:</b>
+                    {{#each rollData.settings.damage.doubleSucccessCaps as |doubleSucccessCap key|}}
+                        {{#if doubleSucccessCap }} {{key}}:{{doubleSucccessCap}}, {{/if}}
+                    {{/each}}
+                </div>
+                <div>
                     <b>{{localize "Ex3.Reroll"}}:</b>
                     {{#each rollData.damage.reroll as |rerollNum key|}}
-                        {{#if rerollNum.status }}{{rerollNum.number}}s,{{/if}}
+                        {{#if rerollNum.status }}{{rerollNum.number}}s{{#if rerollNum.status }}(Cap: {{rerollNum.cap}}){{/if}}, {{/if}}
                     {{/each}}
+                    <b>{{localize "Ex3.Reroll"}}#:</b> {{rollData.damage.rerollNumber}}
+                </div>
+                {{#if rollData.settings.damage.excludeOnesFromRerolls }}
+                <div>
+                    <b>{{localize "Ex3.ExcludeOnesFromRerolls"}}</b>
+                </div>
+                {{/if}}
+                <div>
+                    {{#if rollData.damage.rerollFailed}}<b>{{localize "Ex3.RerollFailed"}}</b>{{/if}}{{#if rollData.damage.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
                 </div>
                 <div>
                     <b>{{localize "Ex3.DamageType"}}: </b>{{rollData.damage.type}}

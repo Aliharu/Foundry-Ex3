@@ -729,6 +729,19 @@ export class RollForm extends FormApplication {
         }
         this.object.rerollNumber += item.system.diceroller.rerolldice;
         this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
+        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
+            if (rerollValue) {
+                this.object.reroll[rerollKey].cap += rerollValue;
+            }
+        }
+        for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
+            if (value) {
+                this.object.settings.doubleSucccessCaps[key] += value;
+            }
+        }
+        if (item.system.diceroller.excludeonesfromrerolls) {
+            this.object.settings.excludeOnesFromRerolls = item.system.diceroller.excludeonesfromrerolls;
+        }
 
         this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
         this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
@@ -743,6 +756,13 @@ export class RollForm extends FormApplication {
                 this.object.damage.reroll[rerollKey].status = true;
             }
         }
+        if (item.system.diceroller.damage.rerollfailed) {
+            this.object.damage.rerollFailed = item.system.diceroller.damage.rerollfailed;
+        }
+        if (item.system.diceroller.damage.rolltwice) {
+            this.object.damage.rollTwice = item.system.diceroller.damage.rolltwice;
+        }
+        this.object.damage.rerollNumber += item.system.diceroller.damage.rerolldice;
         if (item.system.diceroller.damage.threshholdtodamage) {
             this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
         }
@@ -755,9 +775,25 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.damage.ignoresoak > 0) {
             this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
         }
+
+        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
+            if (rerollValue) {
+                this.object.damage.reroll[rerollKey].cap += rerollValue;
+            }
+        }
+        for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
+            if (value) {
+                this.object.settings.damage.doubleSucccessCaps[key] += value;
+            }
+        }
+        if (item.system.diceroller.damage.excludeonesfromrerolls) {
+            this.object.settings.damage.excludeOnesFromRerolls = item.system.diceroller.damage.excludeonesfromrerolls;
+        }
+
         if (item.system.diceroller.activateAura !== 'none') {
             this.object.activateAura = item.system.diceroller.activateAura;
         }
+
         this.render();
     }
 
@@ -781,6 +817,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.rollType === 'social') {
             this.object.difficulty += charm.system.diceroller.opposedbonuses.resolve;
+        }
+        if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
+            this.object.settings.triggerOnOnes = charm.system.diceroller.opposedbonuses.triggeronones;
         }
         this.render();
     }
@@ -1003,6 +1042,20 @@ export class RollForm extends FormApplication {
                 this.object.rerollNumber -= item.system.diceroller.rerolldice;
                 this.object.diceToSuccesses -= item.system.diceroller.diceToSuccesses;
 
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
+                    if (rerollValue) {
+                        this.object.reroll[rerollKey].cap -= rerollValue;
+                    }
+                }
+                for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
+                    if (value) {
+                        this.object.settings.doubleSucccessCaps[key] -= value;
+                    }
+                }
+                if (item.system.diceroller.excludeonesfromrerolls) {
+                    this.object.settings.excludeOnesFromRerolls = false;
+                }
+
                 this.object.damage.damageDice -= item.system.diceroller.damage.bonusdice;
                 this.object.damage.damageSuccessModifier -= item.system.diceroller.damage.bonussuccesses;
                 this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
@@ -1013,6 +1066,13 @@ export class RollForm extends FormApplication {
                         this.object.damage.reroll[rerollKey].status = false;
                     }
                 }
+                if (item.system.diceroller.damage.rerollfailed) {
+                    this.object.damage.rerollFailed = false;
+                }
+                if (item.system.diceroller.damage.rolltwice) {
+                    this.object.damage.rollTwice = false;
+                }
+                this.object.damage.rerollNumber -= item.system.diceroller.damage.rerolldice;
                 if (item.system.diceroller.damage.threshholdtodamage) {
                     this.object.damage.threshholdToDamage = false;
                 }
@@ -1021,6 +1081,19 @@ export class RollForm extends FormApplication {
                 }
                 if (item.system.diceroller.damage.ignoresoak > 0) {
                     this.object.damage.ignoreSoak -= item.system.diceroller.damage.ignoresoak;
+                }
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
+                    if (rerollValue) {
+                        this.object.damage.reroll[rerollKey].cap -= rerollValue;
+                    }
+                }
+                for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
+                    if (value) {
+                        this.object.settings.damage.doubleSucccessCaps[key] -= value;
+                    }
+                }
+                if (item.system.diceroller.damage.excludeonesfromrerolls) {
+                    this.object.settings.damage.excludeOnesFromRerolls = false;
                 }
                 if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
                     this.object.activateAura = 'none';
@@ -1053,6 +1126,9 @@ export class RollForm extends FormApplication {
                 }
                 if (this.object.rollType === 'social') {
                     this.object.difficulty -= charm.system.diceroller.opposedbonuses.resolve;
+                }
+                if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
+                    this.object.settings.triggerOnOnes = 'none';
                 }
             }
             this.render();

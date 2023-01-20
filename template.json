@@ -687,17 +687,22 @@
       "base": {
         "description": "",
         "pagenum": ""
+      },
+      "artifact": {
+        "attunement": 0
       }
     },
     "item": {
       "templates": [
-        "base"
+        "base",
+        "artifact"
       ],
       "quantity": 1
     },
     "weapon": {
       "templates": [
-        "base"
+        "base",
+        "artifact"
       ],
       "witheringaccuracy": 0,
       "witheringdamage": 0,
@@ -724,7 +729,8 @@
     },
     "armor": {
       "templates": [
-        "base"
+        "base",
+        "artifact"
       ],
       "soak": 0,
       "penalty": 0,
@@ -790,6 +796,18 @@
           "nine": false,
           "ten": false
         },
+        "rerollcap": {
+          "one": 0,
+          "two": 0,
+          "three": 0,
+          "four": 0,
+          "five": 0,
+          "six": 0,
+          "seven": 0,
+          "eight": 0,
+          "nine": 0,
+          "ten": 0
+        },
         "doublesucccesscaps": {
           "sevens": 0,
           "eights": 0,
@@ -802,6 +820,9 @@
           "bonussuccesses": 0,
           "doublesuccess": 11,
           "decreasetargetnumber": 0,
+          "rerolldice": 0,
+          "rerollfailed": false,
+          "rolltwice": false,
           "overwhelming": 0,
           "postsoakdamage": 0,
           "ignoresoak": 0,
@@ -819,6 +840,18 @@
             "nine": false,
             "ten": false
           },
+          "rerollcap": {
+            "one": 0,
+            "two": 0,
+            "three": 0,
+            "four": 0,
+            "five": 0,
+            "six": 0,
+            "seven": 0,
+            "eight": 0,
+            "nine": 0,
+            "ten": 0
+          },
           "doublesucccesscaps": {
             "sevens": 0,
             "eights": 0,
@@ -834,7 +867,8 @@
           "increasedamagetargetnumber": 0,
           "increasetargetnumber": 0,
           "resolve": 0,
-          "guile": 0
+          "guile": 0,
+          "triggeronones": "none"
         }
       }
     },

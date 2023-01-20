@@ -243,8 +243,8 @@
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DecreaseTargetNumber"}} </label>
-                        <input name="system.diceroller.decreasetargetnumber" value="{{system.diceroller.decreasetargetnumber}}"
-                            type="number">
+                        <input name="system.diceroller.decreasetargetnumber"
+                            value="{{system.diceroller.decreasetargetnumber}}" type="number">
                     </div>
 
                     <div>
@@ -335,33 +335,96 @@
                 </div>
             </div>
             <div class="resource flex-center">
+                <label class="resource-label">{{localize "Ex3.RerollsCap"}} <i
+                        title="Effects 'Rerolls 6s' style rerolls, 0 means no cap"
+                        class="fas fa-info-circle"></i></label>
+            </div>
+            <div class="resource d-flex flex-center mb-1">
+                <div class="resource d-flex flex-center">
+                    <div>
+                        <div>1</div>
+                        <input name="system.diceroller.rerollcap.one" value="{{system.diceroller.rerollcap.one}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>2</div>
+                        <input name="system.diceroller.rerollcap.two" value="{{system.diceroller.rerollcap.two}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>3</div>
+                        <input name="system.diceroller.rerollcap.three" value="{{system.diceroller.rerollcap.three}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>4</div>
+                        <input name="system.diceroller.rerollcap.four" value="{{system.diceroller.rerollcap.four}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>5</div>
+                        <input name="system.diceroller.rerollcap.five" value="{{system.diceroller.rerollcap.five}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>6</div>
+                        <input name="system.diceroller.rerollcap.six" value="{{system.diceroller.rerollcap.six}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>7</div>
+                        <input name="system.diceroller.rerollcap.seven" value="{{system.diceroller.rerollcap.seven}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>8</div>
+                        <input name="system.diceroller.rerollcap.eight" value="{{system.diceroller.rerollcap.eight}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>9</div>
+                        <input name="system.diceroller.rerollcap.nine" value="{{system.diceroller.rerollcap.nine}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div>10</div>
+                        <input name="system.diceroller.rerollcap.ten" value="{{system.diceroller.rerollcap.ten}}"
+                            type="number">
+                    </div>
+                </div>
+            </div>
+            <div class="resource flex-center">
                 <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
             </div>
             <div class="resource grid grid-4col flex-center">
                 <div>
                     <label class="resource-label">{{localize "Ex3.Sevens"}}</label>
-                    <input name="system.diceroller.doublesucccesscaps.sevens" value="{{system.diceroller.doublesucccesscaps.sevens}}" type="number">
+                    <input name="system.diceroller.doublesucccesscaps.sevens"
+                        value="{{system.diceroller.doublesucccesscaps.sevens}}" type="number">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.Eights"}}</label>
-                    <input name="system.diceroller.doublesucccesscaps.eights" value="{{system.diceroller.doublesucccesscaps.eights}}" type="number">
+                    <input name="system.diceroller.doublesucccesscaps.eights"
+                        value="{{system.diceroller.doublesucccesscaps.eights}}" type="number">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.Nines"}}</label>
-                    <input name="system.diceroller.doublesucccesscaps.nines" value="{{system.diceroller.doublesucccesscaps.nines}}" type="number">
+                    <input name="system.diceroller.doublesucccesscaps.nines"
+                        value="{{system.diceroller.doublesucccesscaps.nines}}" type="number">
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.Tens"}}</label>
-                    <input name="system.diceroller.doublesucccesscaps.tens" value="{{system.diceroller.doublesucccesscaps.tens}}" type="number">
+                    <input name="system.diceroller.doublesucccesscaps.tens"
+                        value="{{system.diceroller.doublesucccesscaps.tens}}" type="number">
                 </div>
             </div>
             <div class="resource grid grid-2col flex-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
-                    <input type="checkbox" name="system.diceroller.excludeonesfromrerolls" value="{{system.diceroller.excludeonesfromrerolls}}" {{checked system.diceroller.excludeonesfromrerolls}}>
+                    <input name="system.diceroller.excludeonesfromrerolls"
+                        value="system.diceroller.excludeonesfromrerolls" type="checkbox" {{checked
+                        system.diceroller.excludeonesfromrerolls}}>
                 </div>
-                <!-- <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
-                <input id="triggerOnOnes" type="checkbox" name="settings.triggerOnOnes" value="{{settings.triggerOnOnes}}" {{checked settings.triggerOnOnes}}> -->
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
                 {{localize "Ex3.Damage"}}
@@ -387,6 +450,27 @@
                         <label class="resource-label">{{localize "Ex3.DecreaseTargetNumber"}} </label>
                         <input type="number" name="system.diceroller.damage.decreasetargetnumber"
                             value="{{system.diceroller.damage.decreasetargetnumber}}">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
+                        <input name="system.diceroller.damage.rerolldice"
+                            value="{{system.diceroller.damage.rerolldice}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
+                        <div>
+                            <input type="checkbox" name="system.diceroller.damage.rerollfailed"
+                                value="system.diceroller.damage.rerollfailed" {{checked
+                                system.diceroller.damage.rerollfailed}}>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}} </label>
+                        <div>
+                            <input type="checkbox" name="system.diceroller.damage.rolltwice"
+                                value="system.diceroller.damage.rolltwice" {{checked
+                                system.diceroller.damage.rolltwice}}>
+                        </div>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
@@ -478,6 +562,96 @@
                             type="checkbox" {{checked system.diceroller.damage.reroll.ten}}>
                     </div>
                 </div>
+                <div class="resource flex-center">
+                    <label class="resource-label">{{localize "Ex3.RerollsCap"}}</label>
+                </div>
+                <div class="resource d-flex flex-center mb-1">
+                    <div class="resource d-flex flex-center">
+                        <div>
+                            <div>1</div>
+                            <input name="system.diceroller.damage.rerollcap.one"
+                                value="{{system.diceroller.damage.rerollcap.one}}" type="number">
+                        </div>
+                        <div>
+                            <div>2</div>
+                            <input name="system.diceroller.damage.rerollcap.two"
+                                value="{{system.diceroller.damage.rerollcap.two}}" type="number">
+                        </div>
+                        <div>
+                            <div>3</div>
+                            <input name="system.diceroller.damage.rerollcap.three"
+                                value="{{system.diceroller.damage.rerollcap.three}}" type="number">
+                        </div>
+                        <div>
+                            <div>4</div>
+                            <input name="system.diceroller.damage.rerollcap.four"
+                                value="{{system.diceroller.damage.rerollcap.four}}" type="number">
+                        </div>
+                        <div>
+                            <div>5</div>
+                            <input name="system.diceroller.damage.rerollcap.five"
+                                value="{{system.diceroller.damage.rerollcap.five}}" type="number">
+                        </div>
+                        <div>
+                            <div>6</div>
+                            <input name="system.diceroller.damage.rerollcap.six"
+                                value="{{system.diceroller.damage.rerollcap.six}}" type="number">
+                        </div>
+                        <div>
+                            <div>7</div>
+                            <input name="system.diceroller.damage.rerollcap.seven"
+                                value="{{system.diceroller.damage.rerollcap.seven}}" type="number">
+                        </div>
+                        <div>
+                            <div>8</div>
+                            <input name="system.diceroller.damage.rerollcap.eight"
+                                value="{{system.diceroller.damage.rerollcap.eight}}" type="number">
+                        </div>
+                        <div>
+                            <div>9</div>
+                            <input name="system.diceroller.damage.rerollcap.nine"
+                                value="{{system.diceroller.damage.rerollcap.nine}}" type="number">
+                        </div>
+                        <div>
+                            <div>10</div>
+                            <input name="system.diceroller.damage.rerollcap.ten"
+                                value="{{system.diceroller.damage.rerollcap.ten}}" type="number">
+                        </div>
+                    </div>
+                </div>
+                <div class="resource flex-center">
+                    <label class="resource-label">{{localize "Ex3.DoubleSuccessCap"}}</label>
+                </div>
+                <div class="resource grid grid-4col flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Sevens"}}</label>
+                        <input name="system.diceroller.damage.doublesucccesscaps.sevens"
+                            value="{{system.diceroller.damage.doublesucccesscaps.sevens}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Eights"}}</label>
+                        <input name="system.diceroller.damage.doublesucccesscaps.eights"
+                            value="{{system.diceroller.damage.doublesucccesscaps.eights}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Nines"}}</label>
+                        <input name="system.diceroller.damage.doublesucccesscaps.nines"
+                            value="{{system.diceroller.damage.doublesucccesscaps.nines}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Tens"}}</label>
+                        <input name="system.diceroller.damage.doublesucccesscaps.tens"
+                            value="{{system.diceroller.damage.doublesucccesscaps.tens}}" type="number">
+                    </div>
+                </div>
+                <div class="resource grid grid-2col flex-center">
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
+                        <input name="system.diceroller.damage.excludeonesfromrerolls"
+                            value="system.diceroller.damage.excludeonesfromrerolls" type="checkbox" {{checked
+                            system.diceroller.damage.excludeonesfromrerolls}}>
+                    </div>
+                </div>
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
                 {{localize "Ex3.OtherBonuses"}}
@@ -509,32 +683,42 @@
                 <div class="resource grid grid-3col flex-center">
                     <div>
                         <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
-                        <input name="system.diceroller.opposedbonuses.resolve" value="{{system.diceroller.opposedbonuses.resolve}}"
-                            type="number">
+                        <input name="system.diceroller.opposedbonuses.resolve"
+                            value="{{system.diceroller.opposedbonuses.resolve}}" type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Guile"}}</label>
-                        <input name="system.diceroller.opposedbonuses.guile" value="{{system.diceroller.opposedbonuses.guile}}"
-                            type="number">
+                        <input name="system.diceroller.opposedbonuses.guile"
+                            value="{{system.diceroller.opposedbonuses.guile}}" type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.IncreaseTargetNumber"}}</label>
-                        <input name="system.diceroller.opposedbonuses.increasetargetnumber" value="{{system.diceroller.opposedbonuses.increasetargetnumber}}"
-                            type="number">
+                        <input name="system.diceroller.opposedbonuses.increasetargetnumber"
+                            value="{{system.diceroller.opposedbonuses.increasetargetnumber}}" type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Defense"}}</label>
-                        <input name="system.diceroller.opposedbonuses.defense" value="{{system.diceroller.opposedbonuses.defense}}" type="number">
+                        <input name="system.diceroller.opposedbonuses.defense"
+                            value="{{system.diceroller.opposedbonuses.defense}}" type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Soak"}}</label>
-                        <input name="system.diceroller.opposedbonuses.soak" value="{{system.diceroller.opposedbonuses.soak}}" type="number">
+                        <input name="system.diceroller.opposedbonuses.soak"
+                            value="{{system.diceroller.opposedbonuses.soak}}" type="number">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.IncreaseDamageTN"}}</label>
-                        <input name="system.diceroller.opposedbonuses.increasedamagetargetnumber" value="{{system.diceroller.opposedbonuses.increasedamagetargetnumber}}"
-                            type="number">
+                        <input name="system.diceroller.opposedbonuses.increasedamagetargetnumber"
+                            value="{{system.diceroller.opposedbonuses.increasedamagetargetnumber}}" type="number">
                     </div>
+                </div>
+                <div style="padding-bottom:20px;">
+                    <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}: </label>
+                    <select name="system.diceroller.triggeronones" data-type="String">
+                        {{#select system.diceroller.triggeronones}}
+                        <option value="none">{{localize "Ex3.Nothing"}}</option>
+                        {{/select}}
+                    </select>
                 </div>
             </div>
         </div>
