@@ -32,10 +32,18 @@
         </div>
     </div>
     <div class="resource grid grid-2col flex-center">
-        <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</label>
+        <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}} <i title="Effects 'Reroll Failed' and 'Reroll Num dice'" class="fas fa-info-circle"></i></label>
         <input id="excludeOnesFromRerolls" type="checkbox" name="settings.excludeOnesFromRerolls" value="{{settings.excludeOnesFromRerolls}}" {{checked settings.excludeOnesFromRerolls}}>
-        <!-- <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
-        <input id="triggerOnOnes" type="checkbox" name="settings.triggerOnOnes" value="{{settings.triggerOnOnes}}" {{checked settings.triggerOnOnes}}> -->
+        <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
+        <select id="triggerOnOnes" name="settings.triggerOnOnes" data-type="String">
+            {{#select settings.triggerOnOnes}}
+            <option value="none">{{localize "Ex3.Nothing"}}</option>
+            <option value="soak">{{localize "Ex3.IncreaseEnemySoak"}}</option>
+            <option value="defense">{{localize "Ex3.IncreaseEnemyDefense"}}</option>
+            <option value="subtractInitiative">{{localize "Ex3.SubtractInitiative"}}</option>
+            <option value="subtractSuccesses">{{localize "Ex3.SubtractSuccesses"}}</option>
+            {{/select}}
+        </select>
     </div>
     {{#if isAttack}}
     <div class="resource flex-center">

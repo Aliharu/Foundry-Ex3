@@ -512,5 +512,15 @@
     "Ex3.Nines": "Nines",
     "Ex3.Tens": "Tens",
     "Ex3.ExcludeOnesFromRerolls": "Exclude Ones From Rerolls",
-    "Ex3.TriggerOnOnes": "Trigger On Ones"
+    "Ex3.TriggerOnOnes": "Trigger On Ones",
+    "Ex3.IncreaseEnemySoak": "Increase Enemy Soak",
+    "Ex3.IncreaseEnemyDefense": "Increase Enemy Defense",
+    "Ex3.SubtractInitiative": "Subtract Initiative",
+    "Ex3.SubtractSuccesses": "Subtract Successes",
+    "Ex3.TriggerOnEnemyOnes": "Trigger On Enemy Ones",
+    "Ex3.IncreaseSoak": "Increase Soak",
+    "Ex3.IncreaseDefense": "Increase Defense",
+    "Ex3.SubtractEnemyInitiative": "Subtract Enemy Initiative",
+    "Ex3.SubtractEnemySuccesses": "Subtract Enemy Successes",
+    "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes"
 }
