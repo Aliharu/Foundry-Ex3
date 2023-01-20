@@ -51,6 +51,12 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
+            <div class="grid grid-2col flex-group-center">
+                <div class="resource">
+                    <label class="resource-label">{{localize "Ex3.Attunement"}}</label>
+                    <input type="text" name="system.attunement" value="{{system.attunement}}" data-dtype="Number" />
+                </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 
