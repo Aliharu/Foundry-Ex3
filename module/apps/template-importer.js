@@ -87,8 +87,12 @@ export default class TemplateImporter extends Application {
       };
       charmData.name = textArray[index];
       index++;
-      var costAndRequirement = textArray[index].replace('Cost: ', '').replace('Mins: ', '').split(';');
+      var costAndRequirement = textArray[index];
       index++;
+      if(!textArray[index].includes('Type:')) {
+        costAndRequirement += textArray[index];
+      }
+      costAndRequirement = costAndRequirement.replace('Cost: ', '').replace('Mins: ', '').split(';');
       var costArray = costAndRequirement[0].split(',');
       for (let costString of costArray) {
         costString = costString.trim();
@@ -167,6 +171,10 @@ export default class TemplateImporter extends Application {
       if (requirementArray.length === 1) {
         var essenceRequirement = requirementArray[0].trim().split(' ');
         charmData.system.ability = 'evocation';
+        charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
+      }
+      if (requirementArray.length === 2) {
+        var essenceRequirement = requirementArray[1].trim().split(' ');
         charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
       }
 
