@@ -1464,6 +1464,7 @@ export class RollForm extends FormApplication {
                 diceRoll = secondRoll.diceRoll;
             }
         }
+        this.object.roll.dice[0].options.rollOrder = 1;
 
         let onesRolled = 0;
         for (let dice of diceRoll) {
@@ -1737,21 +1738,6 @@ export class RollForm extends FormApplication {
             }
             dice += this.object.damage.postSoakDamage;
         }
-
-        let rerollString = '';
-        let rerolls = [];
-
-        for (var rerollValue in this.object.damage.reroll) {
-            if (this.object.damage.reroll[rerollValue].status) {
-                if (this.object.damage.reroll[rerollValue].number < this.object.damage.targetNumber) {
-                    rerollString += `rr${this.object.damage.reroll[rerollValue].number}`;
-                }
-                else {
-                    rerollString += `x${this.object.damage.reroll[rerollValue].number}`;
-                }
-                rerolls.push(this.object.damage.reroll[rerollValue].number);
-            }
-        }
         if (dice < 0) {
             dice = 0;
         }
@@ -1766,6 +1752,10 @@ export class RollForm extends FormApplication {
         }
         var diceRollResults = this._calculateRoll(dice, rollModifiers);
         this.object.finalDamageDice = dice;
+        diceRollResults.roll.dice[0].options.rollOrder = 1;
+        if(this.object.roll){
+            diceRollResults.roll.dice[0].options.rollOrder = 2;
+        }
         let total = diceRollResults.total;
         if (this.object.damage.doubleRolledDamage) {
             total *= 2;
@@ -1895,7 +1885,7 @@ export class RollForm extends FormApplication {
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
             type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-            roll: diceRollResults.roll || this.object.roll,
+            rolls: this.object.roll ? [this.object.roll, diceRollResults.roll] : [diceRollResults.roll],
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
