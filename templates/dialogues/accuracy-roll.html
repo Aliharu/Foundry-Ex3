@@ -36,6 +36,8 @@
                 </select>
             </div>
         </div>
+        {{#if data.splitAttack}}
+        {{else}}
         {{#ifEquals data.rollType 'accuracy'}}
         <div class="resource grid grid-2col flex-center">
             <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
@@ -47,15 +49,26 @@
             </select>
         </div>
         {{/ifEquals}}
+        {{/if}}
+        {{#if data.splitAttack}}
+        <div class="resource flex-center mb-1">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Accuracy"}}</label>
+                <input type="number" name="object.accuracy" value="{{data.accuracy}}">
+            </div>
+        </div>
+        {{else}}
         <div class="resource grid grid-2col flex-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Accuracy"}}</label>
                 <input type="number" name="object.accuracy" value="{{data.accuracy}}">
             </div>
+
             <div>
                 <label class="resource-label">{{localize "Ex3.Defense"}} {{#if data.defenseType}}({{data.defenseType}}){{/if}}</label>
                 <input type="number" name="object.defense" value="{{data.defense}}">
             </div>
         </div>
+        {{/if}}
     </div>
 </div>

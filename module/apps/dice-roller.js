@@ -14,12 +14,23 @@ export class RollForm extends FormApplication {
             this.object.crashed = false;
             this.object.dice = data.dice || 0;
             this.object.successModifier = data.successModifier || 0;
-            this.object.rollType = data.rollType;
             this.object.craftType = data.craftType || 0;
             this.object.craftRating = data.craftRating || 0;
+            this.object.splitAttack = false;
+            this.object.rollType = data.rollType;
             this.object.attackType = data.attackType || data.rollType || 'withering';
             if (this.object.rollType === 'damage' || this.object.rollType === 'accuracy') {
                 this.object.attackType = 'withering';
+            }
+            if (data.rollType === 'withering-split') {
+                this.object.rollType = 'accuracy';
+                this.object.splitAttack = true;
+                this.object.attackType = 'withering';
+            }
+            else if (data.rollType === 'decisive-split') {
+                this.object.rollType = 'accuracy';
+                this.object.splitAttack = true;
+                this.object.attackType = 'decisive';
             }
             this.object.cost = {
                 motes: 0,
@@ -36,7 +47,7 @@ export class RollForm extends FormApplication {
                 aura: "",
             }
             this.object.showPool = !this._isAttackRoll();
-            this.object.showWithering = data.rollType === 'withering' || data.rollType === 'damage';
+            this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
             this.object.hasDifficulty = (['ability', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage'].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = 0;
@@ -93,7 +104,7 @@ export class RollForm extends FormApplication {
             this.object.damage = {
                 damageDice: data.damage || 0,
                 damageSuccessModifier: data.damageSuccessModifier || 0,
-                doubleSuccess: data.doubleSuccess || ((this.object.rollType === 'decisive' || this.actor?.system?.battlegroup) ? 11 : 10),
+                doubleSuccess: data.doubleSuccess || ((this.object.attackType === 'decisive' || this.actor?.system?.battlegroup) ? 11 : 10),
                 targetNumber: data.targetNumber || 7,
                 postSoakDamage: 0,
                 reroll: {
@@ -188,9 +199,9 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute();
                         this.object.ability = data.weapon.ability || "archery";
                     }
-                    if (this.object.rollType === 'withering' || this.object.rollType === 'accuracy' || this.object.rollType === 'damage' || this.actor.type === "npc") {
+                    if (this.object.attackType === 'withering' || this.actor.type === "npc") {
                         this.object.accuracy = data.weapon.witheringaccuracy || 0;
-                        if (this.object.rollType === 'withering' || this.object.rollType === 'accuracy' || this.object.rollType === 'damage') {
+                        if (this.object.attackType === 'withering') {
                             this.object.damage.damageDice = data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
                                 if (this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
@@ -868,9 +879,13 @@ export class RollForm extends FormApplication {
 
         html.find('#roll-button').click((event) => {
             this._roll();
-            if (this.object.intervals <= 0) {
+            if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
                 this.resolve(true);
                 this.close();
+            }
+            if (this.object.splitAttack || this.object.rollType === 'damage') {
+                this.object.rollType = 'damage';
+                this.render();
             }
         });
 
@@ -1481,7 +1496,7 @@ export class RollForm extends FormApplication {
                     this.object.defense += onesRolled;
                     break;
                 case 'subtractInitiative':
-                    if(this.object.characterInitiative) {
+                    if (this.object.characterInitiative) {
                         this.object.characterInitiative -= onesRolled;
                     }
                     break;
@@ -1491,7 +1506,7 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if (this.object.rollType !== 'base') {
+        if (this.object.rollType !== 'base' && !this.object.splitAttack) {
             this._spendResources();
         }
     }
@@ -1609,56 +1624,17 @@ export class RollForm extends FormApplication {
             this.object.thereshholdSuccesses = 0;
         }
         if ((this.object.thereshholdSuccesses >= 0 && this.object.rollType !== 'accuracy') || this.object.rollType === 'damage') {
-            this._damageRoll();
+            if (this.object.rollType === 'damage' && this.object.attackSuccesses < this.object.defense) {
+                this.object.thereshholdSuccesses = this.object.attackSuccesses - this.object.defense;
+                this.missAttack(false);
+            }
+            else {
+                this._damageRoll();
+            }
         }
         else {
             if (this.object.thereshholdSuccesses < 0) {
-                if (this.object.rollType !== 'withering' && this.object.damage.resetInit) {
-                    if (this.object.characterInitiative < 11) {
-                        this.object.characterInitiative = this.object.characterInitiative - 2;
-                    }
-                    else {
-                        this.object.characterInitiative = this.object.characterInitiative - 3;
-                    }
-                    let combat = game.combat;
-                    if (this.object.target && combat) {
-                        let combatant = this._getActorCombatant();
-                        if (combatant && combatant.initiative != null) {
-                            combat.setInitiative(combatant.id, this.object.characterInitiative);
-                        }
-                    }
-                }
-                var messageContent = `
-                        <div class="dice-roll">
-                            <div class="dice-result">
-                                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
-                                <div class="dice-tooltip">
-                                    <div class="dice">
-                                        <ol class="dice-rolls">${this.object.displayDice}</ol>
-                                    </div>
-                                </div>
-                                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
-                                <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
-                                <h4 class="dice-total">Attack Missed!</h4>
-                            </div>
-                        </div>`;
-                messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
-                ChatMessage.create({
-                    user: game.user.id,
-                    speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                    content: messageContent,
-                    type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll,
-                    flags: {
-                        "exaltedthird": {
-                            dice: this.object.dice,
-                            successModifier: this.object.successModifier,
-                            total: this.object.total,
-                            defense: this.object.defense,
-                            threshholdSuccesses: this.object.thereshholdSuccesses
-                        }
-                    }
-                });
-                this._addAttackEffects();
+                this.missAttack();
             }
         }
         if (this.object.rollType === 'accuracy') {
@@ -1671,7 +1647,7 @@ export class RollForm extends FormApplication {
                                             <ol class="dice-rolls">${this.object.displayDice}</ol>
                                         </div>
                                     </div>
-                                    <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                                    ${this.object.splitAttack ? '' : `<h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>`}
                                     <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
                                     ${this.object.thereshholdSuccesses < 0 ? '<h4 class="dice-total">Attack Missed!</h4>' : ''}
                                 </div>
@@ -1699,24 +1675,93 @@ export class RollForm extends FormApplication {
         }
     }
 
+    async missAttack(accuracyRoll = true) {
+        if (this.object.rollType !== 'withering' && this.object.damage.resetInit) {
+            if (this.object.characterInitiative < 11) {
+                this.object.characterInitiative = this.object.characterInitiative - 2;
+            }
+            else {
+                this.object.characterInitiative = this.object.characterInitiative - 3;
+            }
+            let combat = game.combat;
+            if (this.object.target && combat) {
+                let combatant = this._getActorCombatant();
+                if (combatant && combatant.initiative != null) {
+                    combat.setInitiative(combatant.id, this.object.characterInitiative);
+                }
+            }
+        }
+        if (accuracyRoll) {
+            var messageContent = `
+            <div class="dice-roll">
+                <div class="dice-result">
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                    <div class="dice-tooltip">
+                        <div class="dice">
+                            <ol class="dice-rolls">${this.object.displayDice || ''}</ol>
+                        </div>
+                    </div>
+                    <h4 class="dice-formula">${this.object.total || 0} Successes vs ${this.object.defense} Defense</h4>
+                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+                    <h4 class="dice-total">Attack Missed!</h4>
+                </div>
+            </div>`;
+            messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
+            ChatMessage.create({
+                user: game.user.id,
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                content: messageContent,
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll || undefined,
+                flags: {
+                    "exaltedthird": {
+                        dice: this.object.dice,
+                        successModifier: this.object.successModifier,
+                        total: this.object.total || 0,
+                        defense: this.object.defense,
+                        threshholdSuccesses: this.object.thereshholdSuccesses
+                    }
+                }
+            });
+        }
+        else {
+            var messageContent = `
+            <div class="dice-roll">
+                <div class="dice-result">
+                    <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
+                    <h4 class="dice-total">Attack Missed!</h4>
+                </div>
+            </div>`;
+            messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
+            ChatMessage.create({
+                user: game.user.id,
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                content: messageContent,
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+            });
+        }
+        if (this.object.rollType === 'damage') {
+            this._spendResources();
+        }
+        this._addAttackEffects();
+    }
+
     async _accuracyRoll() {
         this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
+        this.object.attackSuccesses = this.object.total;
     }
 
     async _damageRoll() {
-        let baseDamage = this.object.damage.damageDice;
         let dice = this.object.damage.damageDice;
-        if (this.object.rollType === 'damage' && this.object.attackType === 'withering' && game.settings.get("exaltedthird", "defenseOnDamage")) {
+        if (this.object.rollType === 'damage' && this.object.attackType === 'withering' && (game.settings.get("exaltedthird", "defenseOnDamage") || this.object.splitAttack)) {
             dice += this.object.attackSuccesses;
             dice -= this.object.defense;
         }
-        var damageResults = ``;
-
-        if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
+        else if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
             dice += this.object.thereshholdSuccesses;
-            baseDamage = dice;
         }
+        let baseDamage = dice;
+        var damageResults = ``;
 
         if (this._damageRollType('decisive')) {
             if (this.object.target && game.combat) {
@@ -1753,7 +1798,7 @@ export class RollForm extends FormApplication {
         var diceRollResults = this._calculateRoll(dice, rollModifiers);
         this.object.finalDamageDice = dice;
         diceRollResults.roll.dice[0].options.rollOrder = 1;
-        if(this.object.roll){
+        if (this.object.roll) {
             diceRollResults.roll.dice[0].options.rollOrder = 2;
         }
         let total = diceRollResults.total;
@@ -1924,7 +1969,7 @@ export class RollForm extends FormApplication {
         }
         this.attackSequence();
         this._addAttackEffects();
-        if (this.object.rollType === 'damage') {
+        if (this.object.rollType === 'damage' || this.object.splitAttack) {
             this._spendResources();
         }
     }
@@ -2658,7 +2703,7 @@ export class RollForm extends FormApplication {
             if (combat) {
                 let combatant = this._getActorCombatant();
                 if (combatant) {
-                    if(this.object.characterInitiative === undefined) {
+                    if (this.object.characterInitiative === undefined) {
                         this.object.characterInitiative = combatant.initiative - this.object.cost.initiative;
                     }
                     else {
