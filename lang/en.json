@@ -504,6 +504,7 @@
     "Ex3.Incapacitated": "Incapacitated",
     "Ex3.RollSettings": "Roll Settings",
     "Ex3.Paralyzed": "Paralyzed",
+    "Ex3.Entangled": "Entangled",
 
     "Ex3.RerollsCap": "Rerolls Cap",
     "Ex3.DoubleSuccessCap": "Double Successes Cap",
@@ -522,5 +523,6 @@
     "Ex3.IncreaseDefense": "Increase Defense",
     "Ex3.SubtractEnemyInitiative": "Subtract Enemy Initiative",
     "Ex3.SubtractEnemySuccesses": "Subtract Enemy Successes",
-    "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes"
+    "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes",
+    "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn"
 }

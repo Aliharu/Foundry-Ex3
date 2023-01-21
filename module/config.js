@@ -175,6 +175,12 @@ exaltedthird.statusEffects = [
         name: 'paralyzed'
     },
     {
+        icon: 'systems/exaltedthird/assets/icons/cobweb.svg',
+        id: 'entangled',
+        label: 'Ex3.Entangled',
+        name: 'entangled'
+    },
+    {
         icon: 'icons/svg/skull.svg',
         id: 'incapacitated',
         label: 'Ex3.Incapacitated',

@@ -111,6 +111,7 @@
           "value": 0,
           "min": 0
         },
+        "dontresetonslaught": false,
         "savedRolls": {},
         "legendarysize": false,
         "traits": {

@@ -279,22 +279,28 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   }
   if (update && (update.round !== undefined || update.turn !== undefined)) {
     if (combat.current.combatantId) {
+
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
-      const onslaught = currentCombatant.actor.effects.find(i => i.label == "Onslaught");
-      if (onslaught) {
-        onslaught.delete();
-      }
-      const fullDefense = currentCombatant.actor.effects.find(i => i.label == "Full Defense");
-      if (fullDefense) {
-        fullDefense.delete();
-      }
-      const defensePenalty = currentCombatant.actor.effects.find(i => i.label == "Defense Penalty");
-      if (defensePenalty) {
-        defensePenalty.delete();
-      }
-      if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
+      if(currentCombatant?.actor) {
         const actorData = duplicate(currentCombatant.actor);
-        actorData.system.grapplecontrolrounds.value -= 1;
+        const onslaught = currentCombatant.actor.effects.find(i => i.label == "Onslaught");
+        if (onslaught) {
+          if(!actorData.system.dontresetonslaught) {
+            onslaught.delete();
+          }
+        }
+        actorData.system.dontresetonslaught = false;
+        const fullDefense = currentCombatant.actor.effects.find(i => i.label == "Full Defense");
+        if (fullDefense) {
+          fullDefense.delete();
+        }
+        const defensePenalty = currentCombatant.actor.effects.find(i => i.label == "Defense Penalty");
+        if (defensePenalty) {
+          defensePenalty.delete();
+        }
+        if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
+          actorData.system.grapplecontrolrounds.value -= 1;
+        }
         currentCombatant.actor.update(actorData);
       }
     }
