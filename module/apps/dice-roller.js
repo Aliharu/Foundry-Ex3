@@ -843,6 +843,9 @@ export class RollForm extends FormApplication {
             }
             this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
         }
+        else {
+            this.object.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
+        }
         if (this.object.rollType === 'readIntentions') {
             this.object.difficulty += charm.system.diceroller.opposedbonuses.guile;
         }
@@ -1167,6 +1170,9 @@ export class RollForm extends FormApplication {
                         this.object.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
                     }
                     this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
+                }
+                else {
+                    this.object.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
                 }
                 if (this.object.rollType === 'readIntentions') {
                     this.object.difficulty -= charm.system.diceroller.opposedbonuses.guile;
