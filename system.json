@@ -10,9 +10,12 @@
     "verified": "10",
     "maximum": "10"
   },
-  "authors": [{
-    "name": "Aliharu"
-  }],
+  "authors": [
+    {
+      "name": "Aliharu",
+      "flags": {}
+    }
+  ],
   "esmodules": [
     "module/exaltedthird.js"
   ],

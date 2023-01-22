@@ -330,9 +330,6 @@ export class RollForm extends FormApplication {
             if (this.actor.system.dicepenalty.value) {
                 this.object.diceModifier -= this.actor.system.dicepenalty.value;
             }
-            this.object.target = Array.from(game.user.targets)[0] || null;
-            this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == this.object.target?.actor.id) || null;
-            this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
             let combat = game.combat;
             if (combat) {
                 let combatant = this._getActorCombatant();
@@ -346,95 +343,16 @@ export class RollForm extends FormApplication {
                     this.object.originalInitiative = combatant.initiative;
                 }
             }
-            if (this.object.target) {
-                if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
-                    if (this.object.rollType === 'readIntentions') {
-                        this.object.difficulty = this.object.target.actor.system.guile.value;
-                    }
-                    if (this.object.rollType === 'social') {
-                        this.object.difficulty = this.object.target.actor.system.resolve.value;
-                    }
-                    if (this.object.target.actor.system.settings.defenseStunts) {
-                        this.object.difficulty += 1;
-                    }
-                    if (this.object.target.actor.system.health.penalty !== 'inc') {
-                        this.object.difficulty -= Math.max(0, this.object.target.actor.system.health.penalty - this.object.target.actor.system.health.penaltymod);
-                    }
-                    if (this.object.difficulty < 0) {
-                        this.object.difficulty = 0;
-                    }
-                }
-                this.object.defenseType = game.i18n.localize('Ex3.None');
-                if ((this.object.target.actor.system.parry.value >= this.object.target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
-                    this.object.defenseType = game.i18n.localize('Ex3.Parry');
-                    this.object.defense = this.object.target.actor.system.parry.value;
-                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                        this.object.defense -= 1;
-                    }
-                }
-                if ((this.object.target.actor.system.evasion.value >= this.object.target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
-                    this.object.defenseType = game.i18n.localize('Ex3.Evasion');
-                    this.object.defense = this.object.target.actor.system.evasion.value;
-                    if (this.object.target.actor.effects && this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                        this.object.defense -= 2;
-                    }
-                }
-                if (this.object.target.actor.system.warstrider.equipped) {
-                    this.object.soak = this.object.target.actor.system.warstrider.soak.value;
+            this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
+            this.object.targets = Array.from(game.user.targets) || null;
+            if (this.object.targets && this.object.targets.length > 0) {
+                if (this._isAttackRoll()) {
+
                 }
                 else {
-                    this.object.soak = this.object.target.actor.system.soak.value;
-                    this.object.armoredSoak = this.object.target.actor.system.armoredsoak.value;
-                    this.object.naturalSoak = this.object.target.actor.system.naturalsoak.value;
+
                 }
-                if (this.object.target.actor.system.battlegroup) {
-                    this.object.defense += parseInt(this.object.target.actor.system.drill.value);
-                    if (this.object.target.actor.system.might.value > 1) {
-                        this.object.defense += (this.object.target.actor.system.might.value - 1);
-                    }
-                    else {
-                        this.object.defense += this.object.target.actor.system.might.value;
-                    }
-                    this.object.soak += this.object.target.actor.system.size.value;
-                    this.object.naturalSoak += this.object.target.actor.system.size.value;
-                }
-                if (this.object.target.actor.system.settings.defenseStunts) {
-                    this.object.defense += 1;
-                }
-                if (this.object.target.actor.system.health.penalty !== 'inc') {
-                    this.object.defense -= Math.max(0, this.object.target.actor.system.health.penalty - this.object.target.actor.system.health.penaltymod);
-                }
-                if (this.object.target.actor.effects) {
-                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
-                        this.object.defense += 1;
-                    }
-                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
-                        this.object.defense += 2;
-                    }
-                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
-                        this.object.defense += 3;
-                    }
-                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
-                        this.object.defense += 2;
-                    }
-                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
-                        this.object.defense -= 2;
-                    }
-                    if (this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || this.object.target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
-                        this.object.defense -= 2;
-                    }
-                }
-                if (this.object.defense < 0) {
-                    this.object.defense = 0;
-                }
-                if (this.object.soak < 0) {
-                    this.object.soak = 0;
-                }
-                if (this.object.weaponTags["bombard"]) {
-                    if (!this.object.target.actor.system.battlegroup && !this.object.target.actor.system.legendarysize && !this.object.target.actor.system.warstrider.equipped) {
-                        this.object.diceModifier -= 4;
-                    }
-                }
+                this._setupSingleTarget(this.object.targets[0]);
             }
         }
     }
@@ -452,6 +370,104 @@ export class RollForm extends FormApplication {
             template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
         }
         return template;
+    }
+
+    _setUpMultitargets() {
+
+    }
+
+    _setupSingleTarget(target) {
+        this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == target.actor.id) || null;
+        if (target) {
+            if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
+                if (this.object.rollType === 'readIntentions') {
+                    this.object.difficulty = target.actor.system.guile.value;
+                }
+                if (this.object.rollType === 'social') {
+                    this.object.difficulty = target.actor.system.resolve.value;
+                }
+                if (target.actor.system.settings.defenseStunts) {
+                    this.object.difficulty += 1;
+                }
+                if (target.actor.system.health.penalty !== 'inc') {
+                    this.object.difficulty -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
+                }
+                if (this.object.difficulty < 0) {
+                    this.object.difficulty = 0;
+                }
+            }
+            this.object.defenseType = game.i18n.localize('Ex3.None');
+            if ((target.actor.system.parry.value >= target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
+                this.object.defenseType = game.i18n.localize('Ex3.Parry');
+                this.object.defense = target.actor.system.parry.value;
+                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    this.object.defense -= 1;
+                }
+            }
+            if ((target.actor.system.evasion.value >= target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
+                this.object.defenseType = game.i18n.localize('Ex3.Evasion');
+                this.object.defense = target.actor.system.evasion.value;
+                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    this.object.defense -= 2;
+                }
+            }
+            if (target.actor.system.warstrider.equipped) {
+                this.object.soak = target.actor.system.warstrider.soak.value;
+            }
+            else {
+                this.object.soak = target.actor.system.soak.value;
+                this.object.armoredSoak = target.actor.system.armoredsoak.value;
+                this.object.naturalSoak = target.actor.system.naturalsoak.value;
+            }
+            if (target.actor.system.battlegroup) {
+                this.object.defense += parseInt(target.actor.system.drill.value);
+                if (target.actor.system.might.value > 1) {
+                    this.object.defense += (target.actor.system.might.value - 1);
+                }
+                else {
+                    this.object.defense += target.actor.system.might.value;
+                }
+                this.object.soak += target.actor.system.size.value;
+                this.object.naturalSoak += target.actor.system.size.value;
+            }
+            if (target.actor.system.settings.defenseStunts) {
+                this.object.defense += 1;
+            }
+            if (target.actor.system.health.penalty !== 'inc') {
+                this.object.defense -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
+            }
+            if (target.actor.effects) {
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
+                    this.object.defense += 1;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
+                    this.object.defense += 2;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
+                    this.object.defense += 3;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
+                    this.object.defense += 2;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+                    this.object.defense -= 2;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+                    this.object.defense -= 2;
+                }
+            }
+            if (this.object.defense < 0) {
+                this.object.defense = 0;
+            }
+            if (this.object.soak < 0) {
+                this.object.soak = 0;
+            }
+            if (this.object.weaponTags["bombard"]) {
+                if (!target.actor.system.battlegroup && !target.actor.system.legendarysize && !target.actor.system.warstrider.equipped) {
+                    this.object.diceModifier -= 4;
+                }
+            }
+        }
     }
 
     _getHeaderButtons() {
