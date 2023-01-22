@@ -8,15 +8,6 @@ export function registerSettings() {
         config: true,
     });
 
-    game.settings.register('exaltedthird', 'defenseOnDamage', {
-        name: game.i18n.localize('Ex3.DefenseOnDamage'),
-        hint: game.i18n.localize('Ex3.DefenseOnDamageDescription'),
-        default: false,
-        scope: 'world',
-        type: Boolean,
-        config: true,
-    });
-
     game.settings.register('exaltedthird', 'autoDecisiveDamage', {
         name: game.i18n.localize('Ex3.AutoDecisiveDamage'),
         hint: game.i18n.localize('Ex3.AutoDecisiveDamageDescription'),

@@ -15,16 +15,10 @@
                 <option value="withering">{{localize "Ex3.Withering"}}</option>
                 {{/select}}
             </select>
-            {{#if data.showDefenseOnDamage}}
             <div>
                 <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
                 <input type="number" name="object.attackSuccesses" value="{{data.attackSuccesses}}">
             </div>
-            <div>
-                <label class="resource-label">{{localize "Ex3.Defense"}} </label>
-                <input type="number" name="object.defense" value="{{data.defense}}">
-            </div>
-            {{/if}}
             {{/ifEquals}}
             <div>
                 <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
@@ -128,9 +122,11 @@
                 <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
                 <input name="object.damage.rerollNumber" value="{{data.damage.rerollNumber}}" type="number">
                 <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
-                <input type="checkbox" name="object.damage.rerollFailed" value="{{data.damage.rerollFailed}}" {{checked data.damage.rerollFailed}}>
+                <input type="checkbox" name="object.damage.rerollFailed" value="{{data.damage.rerollFailed}}" {{checked
+                    data.damage.rerollFailed}}>
                 <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}}: </label>
-                <input type="checkbox" name="object.damage.rollTwice" value="{{data.damage.rollTwice}}" {{checked data.damage.rollTwice}}>
+                <input type="checkbox" name="object.damage.rollTwice" value="{{data.damage.rollTwice}}" {{checked
+                    data.damage.rollTwice}}>
                 {{#ifEquals actor.system.details.exalt 'dragonblooded'}}
                 {{#ifEquals data.rollType 'damage'}}
                 <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
@@ -149,13 +145,60 @@
             </div>
         </div>
 
-        {{#if data.showWithering}}
-        <div class="flex-center resource-label" style="font-weight: bold;">
-            {{localize "Ex3.Soak"}} ({{localize "Ex3.ArmoredSoak"}}: {{data.armoredSoak}} {{localize
-            "Ex3.NaturalSoak"}}: {{data.naturalSoak}})
+        {{#if data.showTargets}}
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.Targets"}}
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
         </div>
-        <div class="resource flex-center mb-2">
-            <input placeholder="Soak" type="number" name="object.soak" value="{{data.soak}}">
+        <div id="targetsDropdown" {{#if data.targetsDropdown}} {{else}} style="display:none;" {{/if}}>
+            {{#each data.targets as |target id|}}
+            <div style="border-bottom: 1px solid black;margin-bottom: 10px;">
+                <div class="d-flex resource flex-center">
+                    <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24" height="24" /></div>
+                    <div class="resource-label">{{target.actor.name}}</div>
+                </div>
+                <div class="resource grid grid-2col flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Defense"}}
+                            ({{target.rollData.defenseType}})</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.defense"
+                            value="{{target.rollData.defense}}">
+                    </div>
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.Soak"}} (AS: {{target.rollData.armoredSoak}},
+                            NS:{{target.rollData.naturalSoak}})
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.soak"
+                            value="{{target.rollData.soak}}">
+                    </div>
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.DiceModifier"}}
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
+                            value="{{target.rollData.diceModifier}}">
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+                <input type="number" name="object.defense" value="{{data.defense}}">
+            </div>
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Soak"}}
+                </div>
+                <input type="number" name="object.soak" value="{{data.soak}}">
+            </div>
         </div>
         {{/if}}
 

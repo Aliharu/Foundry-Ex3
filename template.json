@@ -863,6 +863,7 @@
         },
         "opposedbonuses": {
           "enabled": false,
+          "dicemodifier": 0,
           "defense": 0,
           "soak": 0,
           "increasedamagetargetnumber": 0,

@@ -58,7 +58,6 @@ export class RollForm extends FormApplication {
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
             this.object.diceModifier = 0;
-            this.object.accuracy = data.accuracy || 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
 
@@ -200,7 +199,7 @@ export class RollForm extends FormApplication {
                         this.object.ability = data.weapon.ability || "archery";
                     }
                     if (this.object.attackType === 'withering' || this.actor.type === "npc") {
-                        this.object.accuracy = data.weapon.witheringaccuracy || 0;
+                        this.object.diceModifier = data.weapon.witheringaccuracy || 0;
                         if (this.object.attackType === 'withering') {
                             this.object.damage.damageDice = data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
@@ -314,6 +313,10 @@ export class RollForm extends FormApplication {
             if (this.object.actionId) {
                 this.object.pool = this.object.actionId;
             }
+            if(this.object.accuracy) {
+                this.object.diceModifier += this.object.accuracy;
+                this.object.accuracy = 0;
+            }
             this.object.opposingCharms = [];
             if (this.actor.system.battlegroup && this._isAttackRoll()) {
                 this._setBattlegroupBonuses();
@@ -343,16 +346,15 @@ export class RollForm extends FormApplication {
                     this.object.originalInitiative = combatant.initiative;
                 }
             }
-            this.object.showDefenseOnDamage = game.settings.get("exaltedthird", "defenseOnDamage");
-            this.object.targets = Array.from(game.user.targets) || null;
-            if (this.object.targets && this.object.targets.length > 0) {
+            this.object.targets = {}
+            if (game.user.targets && game.user.targets.size > 0) {
+                this.object.showTargets = game.user.targets.size;
                 if (this._isAttackRoll()) {
-
+                    this._setUpMultitargets();
                 }
                 else {
-
+                    this._setupSingleTarget(Array.from(game.user.targets)[0]);
                 }
-                this._setupSingleTarget(this.object.targets[0]);
             }
         }
     }
@@ -373,11 +375,90 @@ export class RollForm extends FormApplication {
     }
 
     _setUpMultitargets() {
-
+        for(const target of Array.from(game.user.targets)) {
+            target.rollData = {
+                armoredSoak: 0,
+                naturalSoak: 0,
+                defenseType: game.i18n.localize('Ex3.None'),
+                defense : 0,
+                soak: 0,
+                diceModifier: 0
+            }
+            if ((target.actor.system.parry.value >= target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
+                target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
+                target.rollData.defense = target.actor.system.parry.value;
+                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    target.rollData.defense -= 1;
+                }
+            }
+            if ((target.actor.system.evasion.value >= target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
+                target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
+                target.rollData.defense = target.actor.system.evasion.value;
+                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    target.rollData.defense -= 2;
+                }
+            }
+            if (target.actor.system.warstrider.equipped) {
+                target.rollData.soak = target.actor.system.warstrider.soak.value;
+            }
+            else {
+                target.rollData.soak = target.actor.system.soak.value;
+                target.rollData.armoredSoak = target.actor.system.armoredsoak.value;
+                target.rollData.naturalSoak = target.actor.system.naturalsoak.value;
+            }
+            if (target.actor.system.battlegroup) {
+                target.rollData.defense += parseInt(target.actor.system.drill.value);
+                if (target.actor.system.might.value > 1) {
+                    target.rollData.defense += (target.actor.system.might.value - 1);
+                }
+                else {
+                    target.rollData.defense += target.actor.system.might.value;
+                }
+                target.rollData.soak += target.actor.system.size.value;
+                target.rollData.naturalSoak += target.actor.system.size.value;
+            }
+            if (target.actor.system.settings.defenseStunts) {
+                target.rollData.defense += 1;
+            }
+            if (target.actor.system.health.penalty !== 'inc') {
+                target.rollData.defense -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
+            }
+            if (target.actor.effects) {
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
+                    target.rollData.defense += 1;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
+                    target.rollData.defense += 2;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
+                    target.rollData.defense += 3;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
+                    target.rollData.defense += 2;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+                    target.rollData.defense -= 2;
+                }
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+                    target.rollData.defense -= 2;
+                }
+            }
+            if (target.rollData.defense < 0) {
+                target.rollData.defense = 0;
+            }
+            if (target.rollData.soak < 0) {
+                target.rollData.soak = 0;
+            }
+            if (this.object.weaponTags["bombard"]) {
+                if (!target.actor.system.battlegroup && !target.actor.system.legendarysize && !target.actor.system.warstrider.equipped) {
+                    target.rollData.diceModifier -= 4;
+                }
+            }
+            this.object.targets[target.id] = target;
+        }
     }
 
     _setupSingleTarget(target) {
-        this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == target.actor.id) || null;
         if (target) {
             if (this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
                 if (this.object.rollType === 'readIntentions') {
@@ -394,77 +475,6 @@ export class RollForm extends FormApplication {
                 }
                 if (this.object.difficulty < 0) {
                     this.object.difficulty = 0;
-                }
-            }
-            this.object.defenseType = game.i18n.localize('Ex3.None');
-            if ((target.actor.system.parry.value >= target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
-                this.object.defenseType = game.i18n.localize('Ex3.Parry');
-                this.object.defense = target.actor.system.parry.value;
-                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                    this.object.defense -= 1;
-                }
-            }
-            if ((target.actor.system.evasion.value >= target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
-                this.object.defenseType = game.i18n.localize('Ex3.Evasion');
-                this.object.defense = target.actor.system.evasion.value;
-                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                    this.object.defense -= 2;
-                }
-            }
-            if (target.actor.system.warstrider.equipped) {
-                this.object.soak = target.actor.system.warstrider.soak.value;
-            }
-            else {
-                this.object.soak = target.actor.system.soak.value;
-                this.object.armoredSoak = target.actor.system.armoredsoak.value;
-                this.object.naturalSoak = target.actor.system.naturalsoak.value;
-            }
-            if (target.actor.system.battlegroup) {
-                this.object.defense += parseInt(target.actor.system.drill.value);
-                if (target.actor.system.might.value > 1) {
-                    this.object.defense += (target.actor.system.might.value - 1);
-                }
-                else {
-                    this.object.defense += target.actor.system.might.value;
-                }
-                this.object.soak += target.actor.system.size.value;
-                this.object.naturalSoak += target.actor.system.size.value;
-            }
-            if (target.actor.system.settings.defenseStunts) {
-                this.object.defense += 1;
-            }
-            if (target.actor.system.health.penalty !== 'inc') {
-                this.object.defense -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
-            }
-            if (target.actor.effects) {
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
-                    this.object.defense += 1;
-                }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
-                    this.object.defense += 2;
-                }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
-                    this.object.defense += 3;
-                }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
-                    this.object.defense += 2;
-                }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
-                    this.object.defense -= 2;
-                }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
-                    this.object.defense -= 2;
-                }
-            }
-            if (this.object.defense < 0) {
-                this.object.defense = 0;
-            }
-            if (this.object.soak < 0) {
-                this.object.soak = 0;
-            }
-            if (this.object.weaponTags["bombard"]) {
-                if (!target.actor.system.battlegroup && !target.actor.system.legendarysize && !target.actor.system.warstrider.equipped) {
-                    this.object.diceModifier -= 4;
                 }
             }
         }
@@ -817,8 +827,20 @@ export class RollForm extends FormApplication {
         }
         this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
         if (this._isAttackRoll()) {
-            this.object.defense += charm.system.diceroller.opposedbonuses.defense;
-            this.object.soak += charm.system.diceroller.opposedbonuses.soak;
+            if(this.object.showTargets && Object.values(this.object.targets).some(target => target.actor.id === charm.parent.id)) {
+                for(const target of Object.values(this.object.targets)) {
+                    if(target.actor.id === charm.parent.id) {
+                        target.rollData.defense += charm.system.diceroller.opposedbonuses.defense;
+                        target.rollData.soak += charm.system.diceroller.opposedbonuses.soak;
+                        target.rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
+                    }
+                }
+            }
+            else {
+                this.object.defense += charm.system.diceroller.opposedbonuses.defense;
+                this.object.soak += charm.system.diceroller.opposedbonuses.soak;
+                this.object.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
+            }
             this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
         }
         if (this.object.rollType === 'readIntentions') {
@@ -1130,8 +1152,20 @@ export class RollForm extends FormApplication {
                 }
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
                 if (this._isAttackRoll()) {
-                    this.object.defense -= charm.system.diceroller.opposedbonuses.defense;
-                    this.object.soak -= charm.system.diceroller.opposedbonuses.soak;
+                    if(this.object.showTargets && Object.values(this.object.targets).some(target => target.actor.id === charm.parent.id)) {
+                        for(const target of Object.values(this.object.targets)) {
+                            if(target.actor.id === charm.parent.id) {
+                                target.rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
+                                target.rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
+                                target.rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
+                            }
+                        }
+                    }
+                    else {
+                        this.object.defense -= charm.system.diceroller.opposedbonuses.defense;
+                        this.object.soak -= charm.system.diceroller.opposedbonuses.soak;
+                        this.object.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
+                    }
                     this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
                 }
                 if (this.object.rollType === 'readIntentions') {
@@ -1179,7 +1213,19 @@ export class RollForm extends FormApplication {
 
     async _roll() {
         if (this._isAttackRoll()) {
-            await this._attackRoll();
+            if(this.object.showTargets) {
+                for(const target of Object.values(this.object.targets)) {
+                    this.object.target = target;
+                    this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == target.actor.id) || null;
+                    this.object.soak = target.rollData.soak;
+                    this.object.defense = target.rollData.defense;
+                    this.object.targetSpecificDiceMod = target.rollData.diceModifier;
+                    await this._attackRoll();
+                }
+            }
+            else {
+                await this._attackRoll();
+            }
         }
         else if (this.object.rollType === 'base') {
             await this._diceRoll();
@@ -1452,6 +1498,9 @@ export class RollForm extends FormApplication {
             if (this.object.diceModifier) {
                 dice += this.object.diceModifier;
             }
+            if (this.object.targetSpecificDiceMod) {
+                dice += this.object.targetSpecificDiceMod;
+            }
             if (this.object.specialty) {
                 dice++;
             }
@@ -1459,7 +1508,6 @@ export class RollForm extends FormApplication {
         }
 
         if (this._isAttackRoll()) {
-            dice += this.object.accuracy || 0;
             if (this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.attackType === 'withering')) {
                 if (this.object.range !== 'short') {
                     dice += this._getRangedAccuracy();
@@ -1664,12 +1712,10 @@ export class RollForm extends FormApplication {
                                             <ol class="dice-rolls">${this.object.displayDice}</ol>
                                         </div>
                                     </div>
-                                    ${this.object.splitAttack ? '' : `<h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>`}
-                                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
-                                    ${this.object.thereshholdSuccesses < 0 ? '<h4 class="dice-total">Attack Missed!</h4>' : ''}
+                                    <h4 class="dice-formula">${this.object.total} Successes</h4>
                                 </div>
                             </div>`;
-            messageContent = await this._createChatMessageContent(messageContent, 'Accuracy Roll');
+            messageContent = await this._createChatMessageContent(messageContent, `Accuracy Roll ${this.object.target ? ` vs ${this.object.target.name}` : ''}`);
             ChatMessage.create({
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1690,6 +1736,10 @@ export class RollForm extends FormApplication {
                 this._addAttackEffects();
             }
         }
+    }
+
+    async postAttackResults() {
+        
     }
 
     async missAttack(accuracyRoll = true) {
@@ -1753,7 +1803,7 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                type: CONST.CHAT_MESSAGE_TYPES.OTHER,
             });
         }
         if (this.object.rollType === 'damage') {
@@ -1770,9 +1820,8 @@ export class RollForm extends FormApplication {
 
     async _damageRoll() {
         let dice = this.object.damage.damageDice;
-        if (this.object.rollType === 'damage' && this.object.attackType === 'withering' && (game.settings.get("exaltedthird", "defenseOnDamage") || this.object.splitAttack)) {
-            dice += this.object.attackSuccesses;
-            dice -= this.object.defense;
+        if (this.object.rollType === 'damage' && (this.object.attackType === 'withering' || this.object.damage.threshholdToDamage)) {
+            dice += Math.max(0, this.object.attackSuccesses - this.object.defense);
         }
         else if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
             dice += this.object.thereshholdSuccesses;
@@ -1877,7 +1926,6 @@ export class RollForm extends FormApplication {
                                 data: newInitative,
                             });
                         }
-
                     }
                     else if (this.object.targetCombatant.actor.system.battlegroup) {
                         var sizeDamaged = this.dealHealthDamage(total, true);
