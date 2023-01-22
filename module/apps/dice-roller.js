@@ -468,6 +468,7 @@ export class RollForm extends FormApplication {
                 }
             }
         }
+        this.object.target = target;
     }
 
     _getHeaderButtons() {
@@ -1938,6 +1939,10 @@ export class RollForm extends FormApplication {
                     </div>
                 </div>
           `;
+
+        if(this.object.target) {
+            title += ` vs ${this.object.target.actor.name}`
+        }
 
 
         messageContent = await this._createChatMessageContent(messageContent, title);
