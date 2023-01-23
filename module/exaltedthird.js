@@ -281,11 +281,11 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
     if (combat.current.combatantId) {
 
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
-      if(currentCombatant?.actor) {
+      if (currentCombatant?.actor) {
         const actorData = duplicate(currentCombatant.actor);
         const onslaught = currentCombatant.actor.effects.find(i => i.label == "Onslaught");
         if (onslaught) {
-          if(!actorData.system.dontresetonslaught) {
+          if (!actorData.system.dontresetonslaught) {
             onslaught.delete();
           }
         }
@@ -376,10 +376,10 @@ async function createItemMacro(data, slot) {
     }
     const item = await Item.fromDropData(data);
     let command = `Hotbar.toggleDocumentSheet("${data.uuid}");`;
-    if(item.type === 'weapon') {
-      command = `//Swtich withering with (decisive, gambit, accuracy, damage) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
+    if (item.type === 'weapon') {
+      command = `//Swtich withering with (decisive, gambit, withering-split, decisive-split) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
     }
-    if(item.type === 'charm') {
+    if (item.type === 'charm') {
       command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\ngame.exaltedthird.triggerItem("${data.uuid}");`;
     }
     let macro = game.macros.find(m => (m.name === item.name) && (m.command === command));
@@ -419,7 +419,7 @@ async function createItemMacro(data, slot) {
   return false;
 }
 
-function weaponAttack(itemUuid, attackType='withering') {
+function weaponAttack(itemUuid, attackType = 'withering') {
   // Reconstruct the drop data so that we can load the item.
   const dropData = {
     type: 'Item',
@@ -449,10 +449,10 @@ function triggerItem(itemUuid) {
       const itemName = item?.name ?? itemUuid;
       return ui.notifications.warn(`Could not find item ${itemName}. You may need to delete and recreate this macro.`);
     }
-    if(game.rollForm) {
+    if (game.rollForm) {
       game.rollForm.addCharm(item);
     }
-    if(item.system.diceroller.opposedbonuses.enabled) {
+    if (item.system.diceroller.opposedbonuses.enabled) {
       game.socket.emit('system.exaltedthird', {
         type: 'addOpposingCharm',
         data: item,

@@ -49,21 +49,28 @@
     </div>
     <li class="item item-large flexrow">
       <div>
-        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="withering"><i class="fas fa-swords weapon-icon"></i>{{localize
+        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="withering"><i
+            class="fas fa-swords weapon-icon"></i>{{localize
           "Ex3.Withering"}}</button>
       </div>
       <div>
-        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="decisive"><i class="fas fa-skull weapon-icon"></i>{{localize
+        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="decisive"><i
+            class="fas fa-axe-battle weapon-icon"></i>{{localize
           "Ex3.Decisive"}}</button>
       </div>
       <div>
-        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="gambit"><i class="fas fa-fist-raised weapon-icon"></i>{{localize
+        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="gambit"><i
+            class="fas fa-fist-raised weapon-icon"></i>{{localize
           "Ex3.Gambit"}}</button>
       </div>
     </li>
     <li class="item item-large flexrow">
-      <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="withering-split"><i class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-skull weapon-icon"></i>{{localize "Ex3.Withering"}}</button>
-      <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="decisive-split"><i class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-skull weapon-icon"></i>{{localize "Ex3.Decisive"}}</button>
+      <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="withering-split"><i
+          class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-skull weapon-icon"></i>{{localize
+        "Ex3.Withering"}}</button>
+      <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="decisive-split"><i
+          class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-skull weapon-icon"></i>{{localize
+        "Ex3.Decisive"}}</button>
     </li>
     {{/each}}
   </ol>
@@ -133,7 +140,8 @@
           data-lethal="{{system.warstrider.health.lethal}}" data-aggravated="{{system.warstrider.health.aggravated}}"
           data-name="system.warstrider.health">
           {{#numLoop system.warstrider.health.max}}
-          <span class="resource-counter-step health-boxes" data-index="{{this}}" data-state="">{{healthCheck this 'warstrider'}}</span>
+          <span class="resource-counter-step health-boxes" data-index="{{this}}" data-state="">{{healthCheck this
+            'warstrider'}}</span>
           {{/numLoop}}
         </div>
       </div>
@@ -190,7 +198,8 @@
           data-lethal="{{system.ship.health.lethal}}" data-aggravated="{{system.ship.health.aggravated}}"
           data-name="system.ship.health">
           {{#numLoop system.ship.health.max}}
-          <span class="resource-counter-step health-boxes" data-index="{{this}}" data-state="">{{healthCheck this 'ship'}}</span>
+          <span class="resource-counter-step health-boxes" data-index="{{this}}" data-state="">{{healthCheck this
+            'ship'}}</span>
           {{/numLoop}}
         </div>
       </div>

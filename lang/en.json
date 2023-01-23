@@ -316,7 +316,12 @@
     "Ex3.BonusDice": "Bonus Dice",
     "Ex3.Successes": "Successes",
     "Ex3.DamageDice": "Damage Dice",
+    "Ex3.DecisiveDamageType": "Decisive Damage Type",
+    "Ex3.MultiTargetDivide": "Multi Target Divide",
     "Ex3.DamageSuccesses": "Damage Successes",
+    "Ex3.EvenSplit": "Even Split",
+    "Ex3.Half": "Half",
+
     "Ex3.Primary": "Primary",
     "Ex3.Secondary": "Secondary",
     "Ex3.Tertiary": "Tertiary",
