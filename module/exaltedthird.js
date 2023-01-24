@@ -200,15 +200,31 @@ async function handleSocket({ type, id, data }) {
         await token.toggleEffect(newProneEffect);
       }
     }
+    if (data.triggerGambit && data.triggerGambit !== 'none') {
+      const token = game.canvas.tokens.get(id);
+      const conditionExists = (token.actor?.effects.find(e => e.getFlag("core", "statusId") === data.triggerGambit));
+      if (!conditionExists) {
+        const newStatusEffect = CONFIG.statusEffects.find(e => e.id === data.triggerGambit);
+        await token.toggleEffect(newStatusEffect);
+      }
+    }
     const targetedActor = game.canvas.tokens.get(id).actor;
     addDefensePenalty(targetedActor, 'Onslaught');
   }
-  if (type === 'addKnockdown') {
-    const token = game.canvas.tokens.get(id)
-    const isProne = token.actor.effects.find(i => i.label == "Prone");
+  if (type === 'triggerEffect') {
+    const token = game.canvas.tokens.get(id);
+    const isProne = (token.actor?.effects.find(e => e.getFlag("core", "statusId") === 'prone'));
     if (!isProne) {
       const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
       await token.toggleEffect(newProneEffect);
+    }
+    if (data.triggerGambit && data.triggerGambit !== 'none') {
+      const token = game.canvas.tokens.get(id);
+      const conditionExists = (token.actor?.effects.find(e => e.getFlag("core", "statusId") === data.triggerGambit));
+      if (!conditionExists) {
+        const newStatusEffect = CONFIG.statusEffects.find(e => e.id === data.triggerGambit);
+        await token.toggleEffect(newStatusEffect);
+      }
     }
   }
 }

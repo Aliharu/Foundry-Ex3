@@ -68,6 +68,7 @@ export class RollForm extends FormApplication {
             this.object.defense = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
+            this.object.gambit = 'none';
             this.object.weaponTags = {};
 
             this.object.weaponType = data.weaponType || 'melee';
@@ -865,6 +866,29 @@ export class RollForm extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html);
+
+        html.on("change", "#gambit", ev => {
+            const gambitCosts = {
+                'none': 0,
+                'grapple': 2,
+                'unhorse': 4,
+                'distract': 3,
+                'disarm': 3,
+                'detonate': 4,
+                'bind': 2,
+                'goad': 3,
+                'leech': 3,
+                'pileon': 2,
+                'riposte': 1,
+                'blockvision': 3,
+                'disablearm': 5,
+                'disableleg': 6,
+                'breachframe': 9,
+                'entangle': 2,
+            }
+            this.object.gambitDifficulty = gambitCosts[this.object.gambit];
+            this.render();
+        });
 
         html.on("change", "#craft-type", ev => {
             this.object.intervals = 1;
@@ -1927,8 +1951,10 @@ export class RollForm extends FormApplication {
             this.dealHealthDamage(total);
         }
         else if (this.object.rollType === 'gambit') {
+            this.object.gambitSuccess = true;
             var resultsText = `<h4 class="dice-total">Gambit Success</h4>`;
             if (this.object.gambitDifficulty > total) {
+                this.object.gambitSuccess = false;
                 resultsText = `<h4 class="dice-total">Gambit Failed</h4>`
             }
             typeSpecificResults = `<h4 class="dice-formula">${total} Successes vs ${this.object.gambitDifficulty} Difficulty!</h4>${resultsText}`;
@@ -2068,16 +2094,49 @@ export class RollForm extends FormApplication {
     async _addAttackEffects() {
         var knockdownTriggered = false;
         var onslaughtTriggered = false;
-        if (this.object.thereshholdSuccesses >= 0 && this.object.triggerKnockdown && this.object.target) {
-            if (game.user.isGM) {
-                const isProne = this.object.target.actor.effects.find(i => i.label == "Prone");
-                if (!isProne) {
-                    const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
-                    await this.object.target.toggleEffect(newProneEffect);
+        var triggerGambit = 'none';
+        const gambitChart = {
+            'leech': 'bleeding',
+            'unhorse': 'knockdown',
+            'grapple': 'grappled',
+            'disarm': 'disarmed',
+            'entangle': 'entangled',
+        }
+        if (this.object.target) {
+            if (this.object.triggerKnockdown && this.object.thereshholdSuccesses >= 0) {
+                if (game.user.isGM) {
+                    const isProne = (this.object.target.actor?.effects.find(e => e.getFlag("core", "statusId") === 'prone'));
+                    if (!isProne) {
+                        const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
+                        await this.object.target.toggleEffect(newProneEffect);
+                    }
+                }
+                else {
+                    knockdownTriggered = true;
                 }
             }
-            else {
-                knockdownTriggered = true;
+            if (this.object.gambitSuccess) {
+                if (this.object.gambit !== 'none' && gambitChart[this.object.gambit]) {
+                    triggerGambit = gambitChart[this.object.gambit];
+                    if (game.user.isGM) {
+                        const conditionExists = (this.object.target.actor?.effects.find(e => e.getFlag("core", "statusId") === triggerGambit));
+                        if (!conditionExists) {
+                            const newStatusEffect = CONFIG.statusEffects.find(e => e.id === triggerGambit);
+                            await this.object.target.toggleEffect(newStatusEffect);
+                        }
+                    }
+                }
+                if (this.object.gambit === 'leech') {
+                    this.dealHealthDamage(1);
+                }
+                if(this.object.gambit === 'grapple') {
+                    const grapplingExists = (this.actor?.effects.find(e => e.getFlag("core", "statusId") === 'grappling'));
+                    if (!grapplingExists) {
+                        var actorToken = canvas.tokens.placeables.filter(x => x.id === this.actor.token.id)[0];
+                        const newStatusEffect = CONFIG.statusEffects.find(e => e.id === 'grappling');
+                        await actorToken.toggleEffect(newStatusEffect);
+                    }
+                }
             }
         }
         if (this.object.target) {
@@ -2120,16 +2179,16 @@ export class RollForm extends FormApplication {
                         game.socket.emit('system.exaltedthird', {
                             type: 'addOnslaught',
                             id: this.object.target.id,
-                            data: { 'knockdownTriggered': knockdownTriggered },
+                            data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit },
                         });
                     }
                 }
             }
-            if (!onslaughtTriggered && knockdownTriggered) {
+            if (!onslaughtTriggered && (knockdownTriggered || triggerGambit !== 'none')) {
                 game.socket.emit('system.exaltedthird', {
-                    type: 'addKnockdown',
+                    type: 'triggerEffect',
                     id: this.object.target.id,
-                    data: null,
+                    data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit },
                 });
             }
             if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
@@ -2653,6 +2712,7 @@ export class RollForm extends FormApplication {
         if (this.object.damage.decisiveDamageType === undefined) {
             this.object.damage.decisiveDamageType = 'initiative';
             this.object.damage.decisiveDamageCalculation = 'evenSplit';
+            this.object.gambit = 'none';
         }
         else {
             for (const addedCharm of this.object.addedCharms) {

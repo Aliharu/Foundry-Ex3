@@ -257,6 +257,37 @@
         <div class="resource flex-center mb-2">
             <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
         </div>
+        <div class="resource grid grid-2col flex-center">
+            <div class="resource-label">{{localize "Ex3.Gambit"}}</div>
+            <select id="gambit" name="object.gambit" data-type="String">
+                {{#select data.gambit}}
+                <optgroup label="Standard">
+                    <option value="grapple">{{localize "Ex3.Grapple"}}</option>
+                    <option value="disarm">{{localize "Ex3.Disarm"}}</option>
+                    <option value="distract">{{localize "Ex3.Distract"}}</option>
+                    <option value="unhorse">{{localize "Ex3.Unhorse"}}</option>
+                </optgroup>
+                <optgroup label="Adversaries">
+                    <option value="bind">{{localize "Ex3.Bind"}}</option>
+                    <option value="detonate">{{localize "Ex3.Detonate"}}</option>
+                    <option value="goad">{{localize "Ex3.Goad"}}</option>
+                    <option value="leech">{{localize "Ex3.Leech"}}</option>
+                    <option value="pileon">{{localize "Ex3.PileOn"}}</option>
+                    <option value="riposte">{{localize "Ex3.Riposte"}}</option>
+                </optgroup>
+                <optgroup label="Warstrider">
+                    <option value="blockvision">{{localize "Ex3.BlockVision"}}</option>
+                    <option value="disablearm">{{localize "Ex3.DisableArm"}}</option>
+                    <option value="disableleg">{{localize "Ex3.DisableLeg"}}</option>
+                    <option value="breachframe">{{localize "Ex3.BreachFrame"}}</option>
+                </optgroup>
+                <optgroup label="Exalt Specific">
+                    <option value="entangle">{{localize "Ex3.Entangle"}}</option>
+                </optgroup>
+                <option value="none">{{localize "Ex3.None"}}</option>
+                {{/select}}
+            </select>
+        </div>
         <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
             <div class="resource-label">
                 {{localize "Ex3.Gambits"}} ({{localize "Ex3.Difficulty"}})
