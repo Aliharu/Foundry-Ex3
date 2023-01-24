@@ -1325,9 +1325,7 @@ export class RollForm extends FormApplication {
                         if (diceModifiers.reroll[numbersChart[diceResult.result]].cap === 0 || diceModifiers.reroll[numbersChart[diceResult.result]].cap > numbersRerolled[diceResult.result]) {
                             toReroll++;
                             numbersRerolled[diceResult.result] += 1;
-                            if (diceResult.result < diceModifiers.targetNumber) {
-                                diceResult.rerolled = true;
-                            }
+                            diceResult.rerolled = true;
                         }
                     }
                 }
