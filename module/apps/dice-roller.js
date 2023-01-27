@@ -1898,8 +1898,11 @@ export class RollForm extends FormApplication {
             if (this.object.damage.decisiveDamageCalculation === 'evenSplit') {
                 dice = Math.ceil(dice / this.object.showTargets);
             }
-            else {
+            else if(this.object.damage.decisiveDamageCalculation === 'half') {
                 dice = Math.ceil(dice / 2);
+            }
+            else {
+                dice = Math.ceil(dice / 3);
             }
         }
         if (this.object.rollType === 'damage' && (this.object.attackType === 'withering' || this.object.damage.threshholdToDamage)) {
