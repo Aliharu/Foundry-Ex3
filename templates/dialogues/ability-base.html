@@ -190,7 +190,7 @@
         <input type="number" name="object.diceToSuccesses" value="{{data.diceToSuccesses}}">
         <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
         <input type="checkbox" name="object.rerollFailed" value="{{data.rerollFailed}}" {{checked data.rerollFailed}}>
-        <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}}: </label>
+        <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}} </label>
         <input type="checkbox" name="object.rollTwice" value="{{data.rollTwice}}" {{checked data.rollTwice}}>
         {{#ifEquals actor.system.details.exalt 'dragonblooded'}}
         <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
@@ -230,6 +230,7 @@
 {{/ifEquals}}
 {{/ifEquals}}
 {{#ifNotEquals data.rollType 'base'}}
+{{#if data.conditions}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.Conditions"}}
@@ -242,9 +243,19 @@
     {{#each data.conditions as |condition key|}}
     <div>
         {{condition.label}}
+        {{#ifEquals condition.flags.core.statusId 'prone'}}
+        (-3 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
+        {{/ifEquals}}
+        {{#ifEquals condition.flags.core.statusId 'blind'}}
+        (-3 {{localize "Ex3.Dice"}})
+        {{/ifEquals}}
+        {{#ifEquals condition.flags.core.statusId 'grappled'}}
+        (-1 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
+        {{/ifEquals}}
     </div>
     {{/each}}
 </div>
+{{/if}}
 {{/ifNotEquals}}
 
 {{#ifEquals data.rollType 'social'}}

@@ -833,12 +833,20 @@ export class RollForm extends FormApplication {
         }
         this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
         if (this._isAttackRoll()) {
-            if (this.object.showTargets && Object.values(this.object.targets).some(target => target.actor.id === charm.parent.id)) {
-                for (const target of Object.values(this.object.targets)) {
-                    if (target.actor.id === charm.parent.id) {
-                        target.rollData.defense += charm.system.diceroller.opposedbonuses.defense;
-                        target.rollData.soak += charm.system.diceroller.opposedbonuses.soak;
-                        target.rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
+            if (this.object.showTargets) {
+                const targetValues = Object.values(this.object.targets);
+                if(targetValues.length === 1) {
+                    targetValues[0].rollData.defense += charm.system.diceroller.opposedbonuses.defense;
+                    targetValues[0].rollData.soak += charm.system.diceroller.opposedbonuses.soak;
+                    targetValues[0].rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
+                }
+                else {
+                    for (const target of targetValues) {
+                        if (target.actor.id === charm.parent.id || targetValues.length === 1) {
+                            target.rollData.defense += charm.system.diceroller.opposedbonuses.defense;
+                            target.rollData.soak += charm.system.diceroller.opposedbonuses.soak;
+                            target.rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
+                        }
                     }
                 }
             }
@@ -1180,12 +1188,20 @@ export class RollForm extends FormApplication {
                 }
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
                 if (this._isAttackRoll()) {
-                    if (this.object.showTargets && Object.values(this.object.targets).some(target => target.actor.id === charm.parent.id)) {
-                        for (const target of Object.values(this.object.targets)) {
-                            if (target.actor.id === charm.parent.id) {
-                                target.rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
-                                target.rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
-                                target.rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
+                    if (this.object.showTargets) {
+                        const targetValues = Object.values(this.object.targets);
+                        if(targetValues.length === 1) {
+                            targetValues[0].rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
+                            targetValues[0].rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
+                            targetValues[0].rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
+                        }
+                        else {
+                            for (const target of targetValues) {
+                                if (target.actor.id === charm.parent.id || targetValues.length === 1) {
+                                    target.rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
+                                    target.rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
+                                    target.rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
+                                }
                             }
                         }
                     }
@@ -1250,7 +1266,7 @@ export class RollForm extends FormApplication {
             if (this.object.showTargets) {
                 for (const target of Object.values(this.object.targets)) {
                     this.object.target = target;
-                    this.object.targetCombatant = game.combat?.combatants?.find(c => c.actorId == target.actor.id) || null;
+                    this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId == target.actor.token.id) || null;
                     this.object.soak = target.rollData.soak;
                     this.object.defense = target.rollData.defense;
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
