@@ -21,8 +21,8 @@ export class ExaltedCombatTracker extends CombatTracker {
             };
         });
         data.turns.sort(function (a, b) {
-            const ad = a.acted ? 1 : 0;
-            const bd = b.acted ? 1 : 0;
+            const ad = (a.acted && !a.active) ? 1 : 0;
+            const bd = (b.acted && !b.active)  ? 1 : 0;
             return ad - bd;
         });
 
