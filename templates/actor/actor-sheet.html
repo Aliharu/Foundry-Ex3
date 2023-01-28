@@ -116,27 +116,6 @@
       <div style="padding-top:10px;">
         <label class="resource-label">{{localize "Ex3.Attributes"}}</label>
       </div>
-      {{#if system.settings.usetenattributes}}
-      <div class="attributes grid grid-3col flex-group-center">
-        {{#each system.attributes as |attribute key|}}
-        <div class="attribute flexrow flex-center">
-          <input class="attribute-checkbox" name="system.attributes.{{key}}.favored" type="checkbox" {{checked
-            attribute.favored}}>
-          <label for="system.attributes.{{key}}.value" class="resource-label resource-value"
-            data-roll="{{attribute.value}}" data-label="{{attribute.name}}">{{localize attribute.name}}</label>
-          <div class="resource-value" data-value="{{attribute.value}}" data-name="system.attributes.{{key}}.value">
-            {{#numLoop 5}}
-            <span class="resource-value-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-            <div></div>
-            {{#numLoopCertainStart 5 5}}
-            <span class="resource-value-step" data-index="{{this}}"></span>
-            {{/numLoopCertainStart}}
-          </div>
-        </div>
-        {{/each}}
-      </div>
-      {{else}}
       <div class="attributes grid grid-3col flex-group-center">
         {{#if system.settings.editmode}}
         <div>
@@ -183,6 +162,12 @@
             {{#numLoop 5}}
             <span class="resource-value-step" data-index="{{this}}"></span>
             {{/numLoop}}
+            {{#if ../system.settings.usetenattributes}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+            {{/if}}
           </div>
         </div>
         {{/each}}
@@ -198,10 +183,8 @@
         </div>
         {{/if}}
       </div>
-      {{/if}}
       <label class="resource-label">{{localize "Ex3.Abilities"}}<a><i id="rollAbility"
             class="fas fa-dice-d10 cursor-pointer rollAbility" style="margin-left:5px;"></i></a></label>
-      {{#if system.settings.editmode}}
       <div class="attributes grid grid-3col flex-group-center">
         {{#each system.abilities as |ability key|}}
         <div>
@@ -217,45 +200,27 @@
               {{/numLoop}}
             </div>
           </div>
-          <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
-            <select name="system.abilities.{{key}}.prefattribute" value="{{ability.prefattribute}}" data-type="String">
-                {{#select ability.prefattribute}}
-                <option value="strength">{{localize "Ex3.Strength"}}</option>
-                <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
-                <option value="stamina">{{localize "Ex3.Stamina"}}</option>
-                <option value="charisma">{{localize "Ex3.Charisma"}}</option>
-                <option value="manipulation">{{localize "Ex3.Manipulation"}}</option>
-                <option value="appearance">{{localize "Ex3.Appearance"}}</option>
-                <option value="perception">{{localize "Ex3.Perception"}}</option>
-                <option value="intelligence">{{localize "Ex3.Intelligence"}}</option>
-                <option value="wits">{{localize "Ex3.Wits"}}</option>
-                {{/select}}
-            </select>
-          </div>
-        </div>
-        {{/each}}
-      </div>
-      {{else}}
-      <div class="attributes grid grid-3col flex-group-center">
-        {{#each system.abilities as |ability key|}}
-        <div>
-          <div class="ability flexrow flex-center">
-            <input class="ability-checkbox" name="system.abilities.{{key}}.favored" type="checkbox" {{checked
-              ability.favored}}>
-            <label for="system.abilities.{{key}}.value" class="resource-label vrollable roll-ability"
-              data-roll="{{ability.value}}" data-ability="{{key}}" data-label="{{ability.name}}">{{localize
-              ability.name}}</label>
-            <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
-              {{#numLoop 5}}
-              <span class="resource-value-step" data-index="{{this}}"></span>
-              {{/numLoop}}
+          {{#if ../system.settings.editmode}}
+            <div class="flexrow flex-center">
+              <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
+              <select name="system.abilities.{{key}}.prefattribute" value="{{ability.prefattribute}}" data-type="String">
+                  {{#select ability.prefattribute}}
+                  <option value="strength">{{localize "Ex3.Strength"}}</option>
+                  <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
+                  <option value="stamina">{{localize "Ex3.Stamina"}}</option>
+                  <option value="charisma">{{localize "Ex3.Charisma"}}</option>
+                  <option value="manipulation">{{localize "Ex3.Manipulation"}}</option>
+                  <option value="appearance">{{localize "Ex3.Appearance"}}</option>
+                  <option value="perception">{{localize "Ex3.Perception"}}</option>
+                  <option value="intelligence">{{localize "Ex3.Intelligence"}}</option>
+                  <option value="wits">{{localize "Ex3.Wits"}}</option>
+                  {{/select}}
+              </select>
             </div>
-          </div>
+          {{/if}}
         </div>
         {{/each}}
       </div>
-      {{/if}}
       {{#if system.settings.editmode}}
       <div style="margin-bottom:10px;">
         Abilities: {{system.charcreation.spent.abilities}}/{{system.charcreation.available.abilities}}
