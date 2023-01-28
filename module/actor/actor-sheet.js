@@ -30,6 +30,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   /** @override */
   static get defaultOptions() {
+    // Width 560px, Height 620px
     return mergeObject(super.defaultOptions, {
       classes: ["exaltedthird", "sheet", "actor"],
       template: "systems/exaltedthird/templates/actor/actor-sheet.html",
@@ -582,9 +583,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }, {classes: ["dialog", "solar-background"]}).render(true);
     });
 
-    // html.find('.splat-xp').mousedown(ev => {
-    //   this.showDialogue('splat-xp');
-    // });
+    html.find('.exalt-xp').mousedown(ev => {
+      this.showDialogue('exalt-xp');
+    });
 
     html.find('.show-bonus-points').mousedown(ev => {
       this.showDialogue('bonus-points');
@@ -1291,15 +1292,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       case 'rout':
         template = "systems/exaltedthird/templates/dialogues/rout-modifiers.html";
         break;
-      case 'splat-xp':
-        template = "systems/exaltedthird/templates/dialogues/splat-xp-dialogue.html";
+      case 'exalt-xp':
+        template = "systems/exaltedthird/templates/dialogues/exalt-xp-dialogue.html";
+        break;
       case 'bonus-points':
         template = "systems/exaltedthird/templates/dialogues/bonus-points-dialogue.html";
         break;
       default:
         break;
     }
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste, 'flatXP': game.settings.get("exaltedthird", "flatXP") });
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP") });
     new Dialog({
       title: `Tags`,
       content: html,
