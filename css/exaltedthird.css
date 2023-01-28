@@ -499,6 +499,12 @@
   margin: 0px 10px 0px 0px;
 }
 
+.list-input {
+  -webkit-box-flex: 0.3;
+  -ms-flex: 0.3;
+  flex: 0.3;
+}
+
 .ability-item-edit {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 40px;

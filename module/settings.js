@@ -51,4 +51,13 @@ export function registerSettings() {
         type: Boolean,
         default: false
     });
+
+    game.settings.register("exaltedthird", "compactSheets", {
+        name: game.i18n.localize('Ex3.CompactSheets'),
+        hint: game.i18n.localize('Ex3.CompactSheetsDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
 }

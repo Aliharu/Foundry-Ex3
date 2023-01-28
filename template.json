@@ -150,6 +150,7 @@
           "editmode": true,
           "issorcerer": true,
           "iscrafter": true,
+          "usedotsvalues": true,
           "rollsettings": {
             "attacks": {
               "attribute": "dexterity",

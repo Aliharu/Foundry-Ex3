@@ -158,6 +158,7 @@
             attribute.favored}}>
           <label for="system.attributes.{{key}}.value" class="resource-label resource-value"
             data-roll="{{attribute.value}}" data-label="{{attribute.name}}">{{localize attribute.name}}</label>
+          {{#if ../system.settings.usedotsvalues}}
           <div class="resource-value" data-value="{{attribute.value}}" data-name="system.attributes.{{key}}.value">
             {{#numLoop 5}}
             <span class="resource-value-step" data-index="{{this}}"></span>
@@ -169,6 +170,10 @@
             {{/numLoopCertainStart}}
             {{/if}}
           </div>
+          {{else}}
+          <input class="list-input" type="number" name="system.attributes.{{key}}.value"
+          value="{{attribute.value}}" data-dtype="Number" />
+          {{/if}}
         </div>
         {{/each}}
         {{#if system.settings.editmode}}
@@ -194,11 +199,16 @@
             <label for="system.abilities.{{key}}.value" class="resource-label vrollable roll-ability"
               data-roll="{{ability.value}}" data-ability="{{key}}" data-label="{{ability.name}}">{{localize
               ability.name}}</label>
-            <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
-              {{#numLoop 5}}
-              <span class="resource-value-step" data-index="{{this}}"></span>
-              {{/numLoop}}
-            </div>
+            {{#if ../system.settings.usedotsvalues}}
+              <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
+                {{#numLoop 5}}
+                <span class="resource-value-step" data-index="{{this}}"></span>
+                {{/numLoop}}
+              </div>
+            {{else}}
+            <input class="list-input" type="number" name="system.abilities.{{key}}.value"
+            value="{{ability.value}}" data-dtype="Number" />
+            {{/if}}
           </div>
           {{#if ../system.settings.editmode}}
             <div class="flexrow flex-center">
@@ -255,11 +265,16 @@
             <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
           </div>
           <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-            {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-          </div>
+          {{#if ../system.settings.usedotsvalues}}
+            <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+              {{#numLoop 5}}
+              <span class="resource-value-static-step" data-index="{{this}}"></span>
+              {{/numLoop}}
+            </div>
+          {{else}}
+          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
+            data-dtype="Number" />
+          {{/if}}
         </div>
         {{/each}}
       </div>
@@ -275,11 +290,16 @@
           </div>
           <label class="resource-label roll-craft roll-hover" data-item-id="{{action._id}}">{{localize
             item.name}}</label>
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-            {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-          </div>
+          {{#if ../system.settings.usedotsvalues}}
+            <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+              {{#numLoop 5}}
+              <span class="resource-value-static-step" data-index="{{this}}"></span>
+              {{/numLoop}}
+            </div>
+          {{else}}
+          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
+            data-dtype="Number" />
+          {{/if}}
         </div>
         {{/each}}
       </div>

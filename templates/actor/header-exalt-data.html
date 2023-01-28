@@ -44,6 +44,7 @@
         </div>
         <div class="flex-center">
             <label class="resource-label roll-ability" data-ability="willpower">{{localize "Ex3.Willpower"}}</label>
+            {{#if system.settings.usedotsvalues}}
             <div class="resource-value" data-value="{{system.willpower.max}}" data-name="system.willpower.max">
                 {{#numLoop 10}}
                 <span class="resource-value-step" data-index="{{this}}"></span>
@@ -55,23 +56,33 @@
                 <span class="resource-counter-step non-health-boxes" data-index="{{this}}" data-state=""></span>
                 {{/numLoop}}
             </div>
+            {{else}}
+            <div class="resource-content flexrow flex-center flex-between">
+                <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
+                    data-dtype="Number" />/
+                <input type="number" name="system.willpower.max" value="{{system.willpower.max}}" data-dtype="Number" />
+            </div>
+            {{/if}}
             {{#ifEquals actor.type 'character'}}
             {{#ifNotEquals system.details.exalt 'other'}}
+            <label class="resource-label">{{localize "Ex3.Limit"}}</label>
+            {{#if system.settings.usedotsvalues}}
             <div>
-                <label class="resource-label">{{localize "Ex3.Limit"}}</label>
                 <div class="resource-value" data-value="{{system.limit.value}}" data-name="system.limit.value">
                     {{#numLoop 10}}
                     <span class="resource-value-step" data-index="{{this}}"></span>
                     {{/numLoop}}
                 </div>
             </div>
+            {{else}}
+            <div class="resource-content flexrow flex-center flex-between">
+                <input type="number" name="system.limit.value" value="{{system.limit.value}}"
+                    data-dtype="Number" />
+            </div>
+            {{/if}}
             {{/ifNotEquals}}
             {{/ifEquals}}
-            <!-- <div class="resource-content flexrow flex-center flex-between">
-          <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
-            data-dtype="Number" />/
-          <input type="number" name="system.willpower.max" value="{{system.willpower.max}}" data-dtype="Number" />
-        </div> -->
+
         </div>
     </div>
 </div>

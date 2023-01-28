@@ -480,6 +480,8 @@
     "Ex3.AttackEffectsDescription": "If enabled attacks will trigger certain animations based on a field on weapons set in the effects tab, can set a preset or copy paste a custom animation location. (Do not enable without Sequencer and JB2A Modules)",
     "Ex3.FlatXP": "Flat XP",
     "Ex3.FlatXPDescription": "Show Flat XP in advancement dialogue",
+    "Ex3.CompactSheets": "Compact Sheets",
+    "Ex3.CompactSheetsDescription": "Shortens the default height/width of actor sheets.",
     "Ex3.MaxAnima": "Max Anima",
     "Ex3.ShowWarstrider": "Show Warstrider",
     "Ex3.ShowShip": "Show Ship",
@@ -491,6 +493,7 @@
     "Ex3.EditMode": "Enable character creation mode and auto set buttons",
     "Ex3.IsSorcerer": "Show sorcery fields",
     "Ex3.IsCrafter": "Show craft fields",
+    "Ex3.UseDotValues": "Use dot values",
     
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.CharacterNotes": "Character Notes",

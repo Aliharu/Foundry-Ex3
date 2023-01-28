@@ -30,12 +30,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   /** @override */
   static get defaultOptions() {
-    // Width 560px, Height 620px
     return mergeObject(super.defaultOptions, {
       classes: ["exaltedthird", "sheet", "actor"],
       template: "systems/exaltedthird/templates/actor/actor-sheet.html",
-      width: 800,
-      height: 1061,
+      width: game.settings.get("exaltedthird", "compactSheets") ? 560 :800,
+      height: game.settings.get("exaltedthird", "compactSheets") ? 620 : 1061,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
     });
   }
@@ -923,13 +922,26 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.npc-action').on('change', async (ev) => {
       const li = $(ev.currentTarget).parents('.item');
       const itemID = li.data('itemId');
-      const item = this.actor.items.get(itemID);
       const newNumber = parseInt(ev.currentTarget.value);
       await this.actor.updateEmbeddedDocuments('Item', [
         {
           _id: itemID,
-          data: {
+          system: {
             value: newNumber,
+          },
+        }
+      ]);
+    });
+
+    html.find('.list-ability').on('change', async (ev) => {
+      const li = $(ev.currentTarget).parents('.item');
+      const itemID = li.data('itemId');
+      const newNumber = parseInt(ev.currentTarget.value);
+      await this.actor.updateEmbeddedDocuments('Item', [
+        {
+          _id: itemID,
+          system: {
+            points: newNumber,
           },
         }
       ]);
@@ -1366,6 +1378,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.editmode = html.find('#editMode').is(":checked");
           data.settings.issorcerer = html.find('#isSorcerer').is(":checked");
           data.settings.iscrafter = html.find('#isCrafter').is(":checked");
+          data.settings.usedotsvalues = html.find('#useDotsValues').is(":checked");
           this.actor.update(actorData);
         }
       }
