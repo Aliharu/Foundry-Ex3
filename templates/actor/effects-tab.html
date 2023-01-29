@@ -29,6 +29,11 @@
         <input type="number" name="system.dicepenalty.value" value="{{system.dicepenalty.value}}" data-dtype="Number" />
     </div>
     <div>
+        <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a><i
+            class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
+        <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}" data-dtype="Number" />
+    </div>
+    <div>
         <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
         <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
             system.dontresetonslaught}}>

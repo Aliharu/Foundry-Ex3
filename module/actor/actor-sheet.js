@@ -439,10 +439,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           currentParryPenalty += (change.value * -1);
         }
       }
-      if(effect.flags.exaltedthird?.statusId === 'onslaught') {
+      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
         currentOnslaughtPenalty += (effect.changes[0].value * -1);
       }
-      if(effect.flags.exaltedthird?.statusId === 'defensePenalty') {
+      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
         currentDefensePenalty += (effect.changes[0].value * -1);
       }
     }
@@ -466,7 +466,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
     sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
     sheetData.system.currentDefensePenalty = currentDefensePenalty;
-    if(sheetData.actor.type === 'character') {
+    if (sheetData.actor.type === 'character') {
       sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
     }
     else {
@@ -636,6 +636,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.show-combat').mousedown(ev => {
       this.showDialogue('combat');
+    });
+
+    html.find('.show-feats-of-strength').mousedown(ev => {
+      this.showDialogue('feats-of-strength');
     });
 
     html.find('.show-advancement').mousedown(ev => {
@@ -1384,6 +1388,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       case 'exalt-xp':
         template = "systems/exaltedthird/templates/dialogues/exalt-xp-dialogue.html";
         break;
+      case 'feats-of-strength':
+        template = "systems/exaltedthird/templates/dialogues/feats-of-strength-dialogue.html";
+        break;
       case 'bonus-points':
         template = "systems/exaltedthird/templates/dialogues/bonus-points-dialogue.html";
         break;
@@ -1392,7 +1399,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP") });
     new Dialog({
-      title: `Tags`,
+      title: `Info Dialogue`,
       content: html,
       buttons: {
         cancel: { label: "Close" }

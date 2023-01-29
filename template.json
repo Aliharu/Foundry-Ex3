@@ -107,6 +107,10 @@
           "value": 0,
           "min": 0
         },
+        "effectivestrength": {
+          "value": 0,
+          "min": 0
+        },
         "dicepenalty": {
           "value": 0,
           "min": 0
