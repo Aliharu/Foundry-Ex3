@@ -6,11 +6,31 @@
     </header>
 
     <div class="card-content item-description">
+        {{#if item.system.traits.weapontags.selected}}
+        <div class="mt-1">
+            {{#each item.system.traits.weapontags.selected as |v k|}}
+            <span class="tag {{k}}">{{v}}</span>
+            {{/each}}
+        </div>
+        {{/if}}
+        {{#if item.system.traits.armortags.selected}}
+        <div class="mt-1">
+            {{#each item.system.traits.armortags.selected as |v k|}}
+            <span class="tag {{k}}">{{v}}</span>
+            {{/each}}
+        </div>
+        {{/if}}
         {{#ifEquals item.type 'charm'}}
         <div>
-            <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.system.cost.commitmotes 0}}{{ item.system.cost.commitmotes }}cm,{{/ifGreater}} {{#ifGreater item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}
-            {{#ifGreater item.system.cost.initiative 0}}{{ item.system.cost.initiative }}i, {{/ifGreater}} {{#ifGreater item.system.cost.silverxp 0}}{{ item.system.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater item.system.cost.goldxp 0}} {{
-            item.system.cost.goldxp }}gxp, {{/ifGreater}}  {{#ifGreater item.system.cost.whitexp 0}}{{ item.system.cost.whitexp }}wxp; {{/ifGreater}}
+            <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}}
+            {{#ifGreater item.system.cost.commitmotes 0}}{{ item.system.cost.commitmotes }}cm,{{/ifGreater}}
+            {{#ifGreater item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater
+            item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}
+            {{#ifGreater item.system.cost.initiative 0}}{{ item.system.cost.initiative }}i, {{/ifGreater}} {{#ifGreater
+            item.system.cost.silverxp 0}}{{ item.system.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater
+            item.system.cost.goldxp 0}} {{
+            item.system.cost.goldxp }}gxp, {{/ifGreater}} {{#ifGreater item.system.cost.whitexp 0}}{{
+            item.system.cost.whitexp }}wxp; {{/ifGreater}}
         </div>
         {{#ifGreater item.system.cost.health 0}}
         <div>
