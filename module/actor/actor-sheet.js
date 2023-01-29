@@ -33,7 +33,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     return mergeObject(super.defaultOptions, {
       classes: ["exaltedthird", "sheet", "actor"],
       template: "systems/exaltedthird/templates/actor/actor-sheet.html",
-      width: game.settings.get("exaltedthird", "compactSheets") ? 560 :800,
+      width: game.settings.get("exaltedthird", "compactSheets") ? 560 : 800,
       height: game.settings.get("exaltedthird", "compactSheets") ? 620 : 1061,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
     });
@@ -59,7 +59,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this._prepareCharacterItems(context);
     context.itemDescriptions = {};
     for (let item of this.actor.items) {
-      context.itemDescriptions[item.id] = await TextEditor.enrichHTML(item.system.description, {async: true, secrets: this.actor.isOwner, relativeTo: item});
+      context.itemDescriptions[item.id] = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: this.actor.isOwner, relativeTo: item });
     }
 
     context.effects = prepareActiveEffectCategories(this.document.effects);
@@ -579,7 +579,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             li.slideUp(200, () => this.render(false));
           }
         }
-      }, {classes: ["dialog", "solar-background"]}).render(true);
+      }, { classes: ["dialog", "solar-background"] }).render(true);
     });
 
     html.find('.exalt-xp').mousedown(ev => {
@@ -885,6 +885,51 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
       game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id") }).render(true);
+    });
+
+    html.find('.anima-flux').click(ev => {
+      if (game.user.targets && game.user.targets.size > 0) {
+        for (const target of game.user.targets) {
+          var roll = new Roll(`1d10cs>=7`).evaluate({ async: false });
+          var total = roll.total;
+          for (let dice of roll.dice[0].results) {
+            if (dice.result >= 10) {
+              total += 1;
+            }
+          }
+          if (total > 0) {
+            if (game.combat) {
+              let combatant = game.combat.combatants.find(c => c.tokenId == target.actor.token.id);
+              if (combatant && combatant.initiative != null) {
+                if (combatant.initiative > 0) {
+                  if (target.actor.system.hardness.value <= 0) {
+                    game.combat.setInitiative(combatant.id, combatant.initiative - total);
+                  }
+                }
+                else {
+                  let totalHealth = 0;
+                  const targetActorData = duplicate(target.actor);
+                  for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
+                    totalHealth += health_level.value;
+                  }
+                  targetActorData.system.health.lethal = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.aggravated, targetActorData.system.health.lethal + total);
+                  if (game.user.isGM) {
+                    target.actor.update(targetActorData);
+                  }
+                  else {
+                    game.socket.emit('system.exaltedthird', {
+                      type: 'healthDamage',
+                      id: target.id,
+                      data: targetActorData.system.health,
+                    });
+                  }
+                }
+              }
+            }
+          }
+          ChatMessage.create({ type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll });
+        }
+      }
     });
 
     html.find('.delete-saved-roll').click(ev => {
@@ -1259,7 +1304,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }, {classes: ["dialog", "solar-background"]}).render(true);
+    }, { classes: ["dialog", "solar-background"] }).render(true);
   }
 
   async recoverHealth(healthType = 'person') {
@@ -1320,7 +1365,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       buttons: {
         cancel: { label: "Close" }
       }
-    }, {classes: ["dialog", "solar-background"]}).render(true);
+    }, { classes: ["dialog", "solar-background"] }).render(true);
   }
 
   async pickColor() {
@@ -1348,7 +1393,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }, {classes: ["dialog", "solar-background"]}).render(true);
+    }, { classes: ["dialog", "solar-background"] }).render(true);
   }
 
   async sheetSettings() {
@@ -1382,7 +1427,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }, {classes: ["dialog", "solar-background"]}).render(true);
+    }, { classes: ["dialog", "solar-background"] }).render(true);
   }
 
   async helpDialogue(type) {
@@ -1395,7 +1440,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       buttons: {
         cancel: { label: "Close", callback: () => confirmed = false }
       }
-    }, {classes: ["dialog", "solar-background"]}).render(true);
+    }, { classes: ["dialog", "solar-background"] }).render(true);
   }
 
   _onSquareCounterChange(event) {
