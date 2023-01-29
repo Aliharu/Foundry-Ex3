@@ -335,7 +335,7 @@ export class ExaltedThirdActor extends Actor {
       other: { name: 'Ex3.Other', visible: false, list: [] },
       universal: { name: 'Ex3.Universal', visible: false, list: [] },
     }
-    
+
     const spells = {
       terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
       celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
@@ -414,7 +414,7 @@ export class ExaltedThirdActor extends Actor {
             charms['evocation'].visible = true;
           }
           else if (i.system.ability !== undefined) {
-            if(charms[i.system.ability]) {
+            if (charms[i.system.ability]) {
               charms[i.system.ability].list.push(i);
               charms[i.system.ability].visible = true;
             }
@@ -535,8 +535,10 @@ export class ExaltedThirdActor extends Actor {
 
 export async function addDefensePenalty(actor, label = "Defense Penalty") {
   var icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
+  var statusId = 'defensePenalty';
   if (label === 'Onslaught') {
     icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
+    statusId = 'onslaught';
   }
   const existingPenalty = actor.effects.find(i => i.label == label);
   if (existingPenalty) {
@@ -554,7 +556,12 @@ export async function addDefensePenalty(actor, label = "Defense Penalty") {
       duration: {
         rounds: 10,
       },
-      "changes": [
+      flags: {
+        "exaltedthird": {
+          statusId: statusId,
+        }
+      },
+      changes: [
         {
           "key": "data.evasion.value",
           "value": -1,
@@ -567,5 +574,26 @@ export async function addDefensePenalty(actor, label = "Defense Penalty") {
         }
       ]
     }]);
+  }
+}
+
+export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
+  var icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
+  var statusId = 'defensePenalty';
+  if (label === 'Onslaught') {
+    icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
+    statusId = 'onslaught';
+  }
+  const existingPenalty = actor.effects.find(i => i.label == label);
+  if (existingPenalty) {
+    let changes = duplicate(existingPenalty.changes);
+    if (changes[0].value < -1) {
+      changes[0].value = parseInt(changes[0].value) + 1;
+      changes[1].value = parseInt(changes[1].value) + 1;
+      existingPenalty.update({ changes });
+    }
+    else {
+      existingPenalty.delete();
+    }
   }
 }

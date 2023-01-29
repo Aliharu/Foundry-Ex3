@@ -3,7 +3,7 @@ import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import Importer from "../apps/importer.js";
 import { prepareItemTraits } from "../item/item.js";
-import { addDefensePenalty } from "./actor.js";
+import { addDefensePenalty, subtractDefensePenalty } from "./actor.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -16,6 +16,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     this._filters = {
       effects: new Set()
+    }
+    if (this.object.type === "character") {
+      this.options.width = this.position.width = game.settings.get("exaltedthird", "compactSheets") ? 560 : 800;
+      this.options.height = this.position.height = game.settings.get("exaltedthird", "compactSheets") ? 620 : 1061;
+    }
+    if (this.object.type === "npc") {
+      this.position.width = this.position.width = game.settings.get("exaltedthird", "compactSheetsNPC") ? 560 : 800;
+      this.position.height = this.position.height = game.settings.get("exaltedthird", "compactSheetsNPC") ? 620 : 1061;
     }
   }
 
@@ -33,8 +41,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     return mergeObject(super.defaultOptions, {
       classes: ["exaltedthird", "sheet", "actor"],
       template: "systems/exaltedthird/templates/actor/actor-sheet.html",
-      width: game.settings.get("exaltedthird", "compactSheets") ? 560 : 800,
-      height: game.settings.get("exaltedthird", "compactSheets") ? 620 : 1061,
+      width: 800,
+      height: 1061,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
     });
   }
@@ -419,6 +427,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     var currentParryPenalty = 0;
     var currentEvasionPenalty = 0;
+    var currentOnslaughtPenalty = 0;
+    var currentDefensePenalty = 0;
 
     for (const effect of sheetData.effects) {
       for (const change of effect.changes) {
@@ -428,6 +438,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
           currentParryPenalty += (change.value * -1);
         }
+      }
+      if(effect.flags.exaltedthird?.statusId === 'onslaught') {
+        currentOnslaughtPenalty += (effect.changes[0].value * -1);
+      }
+      if(effect.flags.exaltedthird?.statusId === 'defensePenalty') {
+        currentDefensePenalty += (effect.changes[0].value * -1);
       }
     }
     if (sheetData.effects.some(e => e.flags?.core?.statusId === 'prone')) {
@@ -448,6 +464,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     sheetData.system.currentParryPenalty = currentParryPenalty;
     sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
+    sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
+    sheetData.system.currentDefensePenalty = currentDefensePenalty;
+    if(sheetData.actor.type === 'character') {
+      sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
+    }
+    else {
+      sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheetsNPC");
+    }
   }
 
   /**
@@ -698,6 +722,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.add-onslaught-penalty').mousedown(ev => {
       addDefensePenalty(this.actor, 'Onslaught');
+    });
+
+    html.find('.subtract-defense-penalty').mousedown(ev => {
+      subtractDefensePenalty(this.actor);
+    });
+
+    html.find('.subtract-onslaught-penalty').mousedown(ev => {
+      subtractDefensePenalty(this.actor, 'Onslaught');
     });
 
     html.find('#rollDice').mousedown(ev => {
@@ -1423,7 +1455,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.editmode = html.find('#editMode').is(":checked");
           data.settings.issorcerer = html.find('#isSorcerer').is(":checked");
           data.settings.iscrafter = html.find('#isCrafter').is(":checked");
-          data.settings.usedotsvalues = html.find('#useDotsValues').is(":checked");
           this.actor.update(actorData);
         }
       }

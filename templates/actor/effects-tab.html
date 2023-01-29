@@ -25,26 +25,26 @@
 </div>
 <div class="grid grid-2col flex-group-center">
     <div>
-        <button class="roll-button add-defense-penalty"><i class="fas fa-shield-slash"></i>+{{localize
-            "Ex3.DefensePenalty"}}</button>
-    </div>
-    <div>
-        <button class="roll-button add-onslaught-penalty"><i class="fas fa-shield-slash"></i>+{{localize
-            "Ex3.OnslaughtPenalty"}}</button>
-    </div>
-</div>
-<div class="grid grid-2col flex-group-center">
-    <div>
         <label class="resource-label">{{localize "Ex3.DicePenalty"}} </label>
         <input type="number" name="system.dicepenalty.value" value="{{system.dicepenalty.value}}" data-dtype="Number" />
     </div>
     <div>
         <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
-        <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked system.dontresetonslaught}}>
+        <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
+            system.dontresetonslaught}}>
     </div>
 </div>
 <div>
-    <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
+    <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i
+            class="fas fa-minus"></i></a> {{system.currentOnslaughtPenalty}} <a
+        class="item-control add-onslaught-penalty"><i class="fas fa-plus"></i></a>, 
+        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control subtract-defense-penalty"><i
+            class="fas fa-minus"></i></a> {{system.currentDefensePenalty}} <a
+        class="item-control add-defense-penalty"><i class="fas fa-plus"></i></a>, 
+</div>
+<div>
+    <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
+        "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
 </div>
 {{#ifEquals data.type 'character'}}
 {{#if system.settings.editmode}}
@@ -115,7 +115,8 @@
         </div>
         <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
-            <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}" data-dtype="Number" />
+            <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}"
+                data-dtype="Number" />
         </div>
     </div>
     {{/each}}

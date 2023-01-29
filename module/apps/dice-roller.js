@@ -2176,7 +2176,12 @@ export class RollForm extends FormApplication {
                                 duration: {
                                     rounds: 10,
                                 },
-                                "changes": [
+                                flags: {
+                                    "exaltedthird": {
+                                        statusId: 'onslaught',
+                                    }
+                                },
+                                changes: [
                                     {
                                         "key": "data.evasion.value",
                                         "value": -1,
@@ -2231,7 +2236,12 @@ export class RollForm extends FormApplication {
                     duration: {
                         rounds: 10,
                     },
-                    "changes": [
+                    flags: {
+                        "exaltedthird": {
+                            statusId: 'defensePenalty',
+                        }
+                    },
+                    changes: [
                         {
                             "key": "data.evasion.value",
                             "value": (this.object.triggerSelfDefensePenalty * -1),

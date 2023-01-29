@@ -60,4 +60,13 @@ export function registerSettings() {
         type: Boolean,
         default: false
     });
+
+    game.settings.register("exaltedthird", "compactSheetsNPC", {
+        name: game.i18n.localize('Ex3.CompactSheetsNPC'),
+        hint: game.i18n.localize('Ex3.CompactSheetsDescriptionNPC'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
 }
