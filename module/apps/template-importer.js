@@ -1434,6 +1434,9 @@ export default class TemplateImporter extends Application {
                 charmSystemData.duration = charmDataArray[2]?.trim() || '';
               }
               charmSystemData.keywords = charmDataArray[3]?.trim() || '';
+              if(charmSystemData.keywords.toLowerCase().includes('eclipse')){
+                charmSystemData.charmtype = 'eclipse';
+              }
               index++;
               newItem = false;
             }

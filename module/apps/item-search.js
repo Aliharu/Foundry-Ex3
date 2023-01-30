@@ -26,6 +26,7 @@ export default class ItemSearch extends Application {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
+    options.classes = ["dialog", `solar-background`];
     options.id = "ex3-item-search";
     options.template = "systems/exaltedthird/templates/dialogues/item-search.html"
     options.resizable = true;

@@ -120,6 +120,7 @@
         <option value="architect">{{localize "Ex3.Architect"}}</option>
         <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
         <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
+        <option value="eclipse">{{localize "Ex3.Eclipse"}}</option>
         <option value="evocation">{{localize "Ex3.Evocation"}}</option>
         <option value="exigent">{{localize "Ex3.Exigent"}}</option>
         <option value="getimian">{{localize "Ex3.Getimian"}}</option>
@@ -142,7 +143,7 @@
   <div class="query-results">
     {{#each items as |item|}}
     <div class="search-item-row item-row cursor-pointer" data-item-id={{item.id}} data-filter-id={{item.filterId}}>
-      <div class="item-image mr-1"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+      <div class="item-image mr-1"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
       <div class="item-name">{{item.name}}</div>
     </div>
     {{/each}}
