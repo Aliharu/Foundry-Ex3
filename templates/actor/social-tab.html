@@ -54,10 +54,7 @@
   {{#each actor.intimacies as |item id|}}
   <li class="item flexrow item-row" data-item-id="{{item._id}}">
     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
-    <h4 class="item-name">{{item.name}}</h4>
-    <div class="resource-table-value resource-value-static">
-      {{item.system.strength}}
-    </div>
+    <h4 class="item-name"><span style="text-transform: capitalize;font-weight: bold;">{{item.system.strength}}: </span>{{item.name}}</h4>
     <div class="item-controls">
       <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
