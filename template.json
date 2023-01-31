@@ -162,6 +162,12 @@
               "bonus": 0,
               "name": "Ex3.Attacks"
             },
+            "craft": {
+              "attribute": "intelligence",
+              "ability": "craft",
+              "bonus": 0,
+              "name": "Ex3.Craft"
+            },
             "disengage": {
               "attribute": "dexterity",
               "ability": "dodge",

@@ -174,6 +174,9 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.attribute || this._getHighestAttribute();
                         this.object.ability = data.ability || "archery";
                     }
+                    if(this.object.rollType === 'ability' && this.object.ability === 'craft') {
+                        this.object.diceModifier += this.actor.system.settings.rollsettings['craft'].bonus;
+                    }
                     this.object.martialarts = this.actor.martialarts;
                     this.object.crafts = this.actor.crafts;
                     if (this.object.martialarts.some(ma => ma._id === this.object.ability)) {
