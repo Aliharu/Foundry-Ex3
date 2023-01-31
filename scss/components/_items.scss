@@ -9,7 +9,7 @@
   }
 
   .item {
-    height: 30px;
+    // height: 30px;
     line-height: 24px;
     padding: 3px 0;
     border-bottom: 1px solid #BBB;
@@ -29,12 +29,12 @@
   }
 
   .item-large {
-    height: 40px;
+    // height: 40px;
     text-align: center;
     align-items: center;
 
     .item-name {
-      white-space: nowrap;
+      // white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
     }
@@ -42,7 +42,7 @@
 
   .item-name {
     margin: 0;
-    white-space: nowrap;
+    // white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }

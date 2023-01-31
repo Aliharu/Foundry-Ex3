@@ -25,7 +25,7 @@
 
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
-        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
+        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}/{{localize "Ex3.Details"}}</a>
     </nav>
 
     {{!-- Sheet Body --}}
@@ -174,6 +174,22 @@
                     <div class="resource">
                         <label class="resource-label">{{localize "Ex3.Attunement"}}</label>
                         <input type="text" name="system.attunement" value="{{system.attunement}}" data-dtype="Number" />
+                    </div>
+                    <div class="resource">
+                        <label class="resource-label">{{localize "Ex3.Cost"}}</label>
+                        <input type="text" name="system.cost" value="{{system.cost}}" data-dtype="Number" />
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.Type"}}</div>
+                        <select class="change-type" name="system.weighttype" data-type="String">
+                            {{#select system.weighttype}}
+                            <option value="light">{{localize "Ex3.Light"}}</option>
+                            <option value="medium">{{localize "Ex3.Medium"}}</option>
+                            <option value="heavy">{{localize "Ex3.Heavy"}}</option>
+                            <option value="siege">{{localize "Ex3.Siege"}}</option>
+                            <option value="other">{{localize "Ex3.Other"}}</option>
+                            {{/select}}
+                        </select>
                     </div>
                 </div>
                 <div class="d-flex flex-center resources">

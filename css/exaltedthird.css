@@ -361,7 +361,6 @@
 }
 
 .exaltedthird .items-list .item {
-  height: 30px;
   line-height: 24px;
   padding: 3px 0;
   border-bottom: 1px solid #BBB;
@@ -383,7 +382,6 @@
 }
 
 .exaltedthird .items-list .item-large {
-  height: 40px;
   text-align: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -391,7 +389,6 @@
 }
 
 .exaltedthird .items-list .item-large .item-name {
-  white-space: nowrap;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -399,7 +396,6 @@
 
 .exaltedthird .items-list .item-name {
   margin: 0;
-  white-space: nowrap;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   overflow: hidden;

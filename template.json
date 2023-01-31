@@ -694,8 +694,15 @@
         "description": "",
         "pagenum": ""
       },
+      "equipment": {
+        "cost": 0,
+        "exceptional": false
+      },
       "artifact": {
         "attunement": 0
+      },
+      "summary": {
+        "summary": ""
       }
     },
     "item": {
@@ -710,6 +717,7 @@
         "base",
         "artifact"
       ],
+      "weighttype": "other",
       "witheringaccuracy": 0,
       "witheringdamage": 0,
       "defense": 0,
@@ -738,6 +746,7 @@
         "base",
         "artifact"
       ],
+      "weighttype": "other",
       "soak": 0,
       "penalty": 0,
       "hardness": 0,
@@ -752,7 +761,8 @@
     },
     "charm": {
       "templates": [
-        "base"
+        "base",
+        "summary"
       ],
       "prerequisites": "",
       "charmprerequisites": [],
@@ -893,7 +903,8 @@
     },
     "spell": {
       "templates": [
-        "base"
+        "base",
+        "summary"
       ],
       "circle": "terrestrial",
       "cost": 0,
