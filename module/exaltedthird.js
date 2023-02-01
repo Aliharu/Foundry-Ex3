@@ -165,6 +165,11 @@ Hooks.once('init', async function () {
   });
 });
 
+// Hooks.on("updateToken", (token, updateData, options) => {
+//   console.log(token);
+//   console.log(updateData);
+// });
+
 async function handleSocket({ type, id, data }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {

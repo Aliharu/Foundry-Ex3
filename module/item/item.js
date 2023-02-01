@@ -99,19 +99,51 @@ export class ExaltedThirdItem extends Item {
         },
       };
       if (this.type === 'weapon') {
-        if (this.system.traits.weapontags?.value?.includes('artifact')) {
-          updateData.system.witheringaccuracy = artifactEquipmentChart[updateData.system?.weighttype].accuracy;
-          updateData.system.witheringdamage = artifactEquipmentChart[updateData.system?.weighttype].damage;
-          updateData.system.defense = artifactEquipmentChart[updateData.system?.weighttype].defense;
-          updateData.system.overwhelming = artifactEquipmentChart[updateData.system?.weighttype].overwhelming;
-          updateData.system.attunement = artifactEquipmentChart[updateData.system?.weighttype].attunement;
+        if(updateData.system?.weighttype === 'bolt') {
+          updateData.system.witheringaccuracy = 4;
+          updateData.system.damageattribute = 'none';
+          if(this.actor) {
+            updateData.system.witheringdamage = this.actor.system.essence.value + 10;
+            updateData.system.overwhelming = this.actor.system.essence.value + 1;
+          }
         }
         else {
-          updateData.system.witheringaccuracy = equipmentChart[updateData.system?.weighttype].accuracy;
-          updateData.system.witheringdamage = equipmentChart[updateData.system?.weighttype].damage;
-          updateData.system.defense = equipmentChart[updateData.system?.weighttype].defense;
-          updateData.system.overwhelming = equipmentChart[updateData.system?.weighttype].overwhelming;
-          updateData.system.attunement = 0;
+          if (this.system.traits.weapontags?.value?.includes('artifact')) {
+            updateData.system.witheringaccuracy = artifactEquipmentChart[updateData.system?.weighttype].accuracy;
+            updateData.system.witheringdamage = artifactEquipmentChart[updateData.system?.weighttype].damage;
+            updateData.system.overwhelming = artifactEquipmentChart[updateData.system?.weighttype].overwhelming;
+            updateData.system.attunement = artifactEquipmentChart[updateData.system?.weighttype].attunement;
+          }
+          else {
+            updateData.system.witheringaccuracy = equipmentChart[updateData.system?.weighttype].accuracy;
+            updateData.system.witheringdamage = equipmentChart[updateData.system?.weighttype].damage;
+            updateData.system.overwhelming = equipmentChart[updateData.system?.weighttype].overwhelming;
+            updateData.system.attunement = 0;
+          }
+          if(this.system.weapontype === 'ranged') {
+            if (this.system.traits.weapontags?.value?.includes('artifact')) {
+              updateData.system.witheringaccuracy = artifactEquipmentChart['light'].accuracy;
+            }
+            else {
+              updateData.system.witheringaccuracy = equipmentChart['light'].accuracy;
+            }
+          }
+          else if (this.system.weapontype === 'thrown'){
+            if (this.system.traits.weapontags?.value?.includes('artifact')) {
+              updateData.system.witheringaccuracy = 4;
+            }
+            else {
+              updateData.system.witheringaccuracy = 3;
+            }
+          }
+          else {
+            if (this.system.traits.weapontags?.value?.includes('artifact')) {
+              updateData.system.defense = artifactEquipmentChart[updateData.system?.weighttype].defense;
+            }
+            else {
+              updateData.system.defense = equipmentChart[updateData.system?.weighttype].defense;
+            }
+          }
         }
       }
       if (this.type === 'armor') {
