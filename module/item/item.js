@@ -121,6 +121,7 @@ export class ExaltedThirdItem extends Item {
             updateData.system.attunement = 0;
           }
           if(this.system.weapontype === 'ranged') {
+            updateData.system.defense = 0;
             if (this.system.traits.weapontags?.value?.includes('artifact')) {
               updateData.system.witheringaccuracy = artifactEquipmentChart['light'].accuracy;
             }
@@ -129,6 +130,7 @@ export class ExaltedThirdItem extends Item {
             }
           }
           else if (this.system.weapontype === 'thrown'){
+            updateData.system.defense = 0;
             if (this.system.traits.weapontags?.value?.includes('artifact')) {
               updateData.system.witheringaccuracy = 4;
             }
