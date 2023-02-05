@@ -138,8 +138,8 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       li.toggle("fast");
     });
 
-    html.find(".show-keywords").click(async ev => {
-      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/keywords.html");
+    html.find(".charms-cheat-sheet").click(async ev => {
+      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
       new Dialog({
         title: `Keywords`,
         content: html,

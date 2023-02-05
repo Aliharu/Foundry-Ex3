@@ -606,6 +606,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }, { classes: ["dialog", "solar-background"] }).render(true);
     });
 
+    html.find(".charms-cheat-sheet").click(async ev => {
+      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
+      new Dialog({
+        title: `Keywords`,
+        content: html,
+        buttons: {
+          cancel: { label: "Close" }
+        },
+      }, { height: 1000, width: 1000, classes: ["dialog", "solar-background"] }).render(true);
+    });
+
     html.find('.exalt-xp').mousedown(ev => {
       this.showDialogue('exalt-xp');
     });

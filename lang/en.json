@@ -549,6 +549,7 @@
     "Ex3.Tens": "Tens",
     "Ex3.ExcludeOnesFromRerolls": "Exclude Ones From Rerolls",
     "Ex3.TriggerOnOnes": "Trigger On Ones",
+    "Ex3.TriggerOnTens": "Trigger On Tens",
     "Ex3.IncreaseEnemySoak": "Increase Enemy Soak",
     "Ex3.IncreaseEnemyDefense": "Increase Enemy Defense",
     "Ex3.SubtractInitiative": "Subtract Initiative",
