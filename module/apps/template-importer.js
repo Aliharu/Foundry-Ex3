@@ -2,6 +2,7 @@ export default class TemplateImporter extends Application {
   constructor(app, options, object, data) {
     super(app)
     this.type = 'charm';
+    this.charmType = 'other';
     this.errorText = '';
     this.errorSection = '';
     this.showError = false;
@@ -35,7 +36,7 @@ export default class TemplateImporter extends Application {
           buttons: {
             cancel: { label: "Close", callback: () => confirmed = false }
           }
-        }, {classes: ["dialog", "solar-background"]}).render(true);
+        }, { classes: ["dialog", "solar-background"] }).render(true);
       },
     };
     buttons = [helpButton, ...buttons];
@@ -45,6 +46,7 @@ export default class TemplateImporter extends Application {
   getData() {
     let data = super.getData();
     data.type = this.type;
+    data.charmType = this.charmType;
     data.textBox = this.textBox;
     data.showError = this.showError;
     data.error = this.error;
@@ -66,11 +68,13 @@ export default class TemplateImporter extends Application {
 
   async createCharm(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
+    var charmType = html.find('#charmType').val();
     var index = 0;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var charmData = {
         type: 'charm',
         system: {
+          charmtype: charmType,
           cost: {
             "motes": 0,
             "initiative": 0,
@@ -89,7 +93,7 @@ export default class TemplateImporter extends Application {
       index++;
       var costAndRequirement = textArray[index];
       index++;
-      if(!textArray[index].includes('Type:')) {
+      if (!textArray[index].includes('Type:')) {
         costAndRequirement += textArray[index];
       }
       costAndRequirement = costAndRequirement.replace('Cost: ', '').replace('Mins: ', '').split(';');
@@ -1020,7 +1024,7 @@ export default class TemplateImporter extends Application {
         accuracy = parseInt(accuracySplit[0].replace(/[^0-9]/g, ''));
         if (!attackString.toLowerCase().includes('grapple')) {
           var damageSplit = accuracySplit[1].split('Damage');
-          if(!accuracySplit[1].includes('Damage')) {
+          if (!accuracySplit[1].includes('Damage')) {
             damageSplit = accuracySplit[1].split('damage');
           }
           if (damageSplit[1].includes('/')) {
@@ -1434,7 +1438,7 @@ export default class TemplateImporter extends Application {
                 charmSystemData.duration = charmDataArray[2]?.trim() || '';
               }
               charmSystemData.keywords = charmDataArray[3]?.trim() || '';
-              if(charmSystemData.keywords.toLowerCase().includes('eclipse')){
+              if (charmSystemData.keywords.toLowerCase().includes('eclipse')) {
                 charmSystemData.charmtype = 'eclipse';
               }
               index++;
@@ -1925,7 +1929,7 @@ export default class TemplateImporter extends Application {
       console.log(error);
       console.log(textArray);
       console.log(index);
-      if(!readingItems) {
+      if (!readingItems) {
         this.error = textArray[index];
       }
       this.showError = true;
