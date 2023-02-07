@@ -2822,6 +2822,9 @@ export class RollForm extends FormApplication {
                 this.object.damage.reroll[rerollValue].cap = 0;
             }
         }
+        if(this.object.settings.triggerOnTens === undefined) {
+            this.object.settings.triggerOnTens = 'none';
+        }
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
                 { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
