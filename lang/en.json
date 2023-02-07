@@ -541,6 +541,10 @@
     "Ex3.Entangle": "Entangle",
     "Ex3.Entangled": "Entangled",
 
+    "Ex3.ExtraSuccess": "Extra Success",
+    "Ex3.AddExtraDie": "Add Extra Die",
+    "Ex3.RerollDie": "Reroll Die",
+
     "Ex3.RerollsCap": "Rerolls Cap",
     "Ex3.DoubleSuccessCap": "Double Successes Cap",
     "Ex3.Sevens": "Sevens",

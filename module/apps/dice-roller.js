@@ -139,6 +139,7 @@ export class RollForm extends FormApplication {
                 },
                 excludeOnesFromRerolls: false,
                 triggerOnOnes: 'none',
+                triggerOnTens: 'none',
                 damage: {
                     doubleSucccessCaps: {
                         sevens: 0,
@@ -174,7 +175,7 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.attribute || this._getHighestAttribute();
                         this.object.ability = data.ability || "archery";
                     }
-                    if(this.object.rollType === 'ability' && this.object.ability === 'craft') {
+                    if (this.object.rollType === 'ability' && this.object.ability === 'craft') {
                         this.object.diceModifier += this.actor.system.settings.rollsettings['craft'].bonus;
                     }
                     this.object.martialarts = this.actor.martialarts;
@@ -516,6 +517,7 @@ export class RollForm extends FormApplication {
                                 this.object.settings.doubleSucccessCaps.tens = parseInt(html.find('#tensCap').val() || 0);
                                 this.object.settings.excludeOnesFromRerolls = html.find('#excludeOnesFromRerolls').is(":checked");
                                 this.object.settings.triggerOnOnes = html.find('#triggerOnOnes').val() || 'none';
+                                this.object.settings.triggerOnTens = html.find('#triggerOnTens').val() || 'none';
 
                                 this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
@@ -821,6 +823,9 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.activateAura !== 'none') {
             this.object.activateAura = item.system.diceroller.activateAura;
         }
+        if (item.system.diceroller.triggerontens !== 'none') {
+            this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
+        }
 
         this.render();
     }
@@ -838,7 +843,7 @@ export class RollForm extends FormApplication {
         if (this._isAttackRoll()) {
             if (this.object.showTargets) {
                 const targetValues = Object.values(this.object.targets);
-                if(targetValues.length === 1) {
+                if (targetValues.length === 1) {
                     targetValues[0].rollData.defense += charm.system.diceroller.opposedbonuses.defense;
                     targetValues[0].rollData.soak += charm.system.diceroller.opposedbonuses.soak;
                     targetValues[0].rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
@@ -1172,6 +1177,9 @@ export class RollForm extends FormApplication {
                 if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
                     this.object.activateAura = 'none';
                 }
+                if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
+                    this.object.settings.triggerOnTens = 'none';
+                }
             }
             this.render();
         });
@@ -1193,7 +1201,7 @@ export class RollForm extends FormApplication {
                 if (this._isAttackRoll()) {
                     if (this.object.showTargets) {
                         const targetValues = Object.values(this.object.targets);
-                        if(targetValues.length === 1) {
+                        if (targetValues.length === 1) {
                             targetValues[0].rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
                             targetValues[0].rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
                             targetValues[0].rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
@@ -1360,6 +1368,9 @@ export class RollForm extends FormApplication {
                     dice.doubled = true;
                     doublesRolled[dice.result] += 1;
                 }
+            }
+            if(dice.result === 10 && diceModifiers.settings.triggerOnTens === 'rerolllDie') {
+                diceModifiers.rerollNumber += 1;
             }
         }
         return {
@@ -1599,9 +1610,13 @@ export class RollForm extends FormApplication {
         this.object.roll.dice[0].options.rollOrder = 1;
 
         let onesRolled = 0;
+        let tensRolled = 0;
         for (let dice of diceRoll) {
             if (!dice.rerolled && dice.result === 1) {
                 onesRolled++
+            }
+            if (!dice.rerolled && dice.result === 10) {
+                tensRolled++;
             }
         }
         if (onesRolled > 0 && this.object.settings.triggerOnOnes !== 'none') {
@@ -1619,6 +1634,20 @@ export class RollForm extends FormApplication {
                     break;
                 case 'subtractSuccesses':
                     this.object.total -= onesRolled;
+                    break;
+            }
+        }
+
+        if (tensRolled > 0 && this.object.settings.triggerOnTens !== 'none') {
+            switch (this.object.settings.triggerOnTens) {
+                case 'damage':
+                    this.object.damage.damageDice += tensRolled;
+                    break;
+                case 'postSoakDamage':
+                    this.object.damage.postSoakDamage += tensRolled;
+                    break;
+                case 'extraSuccess':
+                    this.object.total += tensRolled;
                     break;
             }
         }
@@ -1901,7 +1930,7 @@ export class RollForm extends FormApplication {
             if (this.object.damage.decisiveDamageCalculation === 'evenSplit') {
                 dice = Math.ceil(dice / this.object.showTargets);
             }
-            else if(this.object.damage.decisiveDamageCalculation === 'half') {
+            else if (this.object.damage.decisiveDamageCalculation === 'half') {
                 dice = Math.ceil(dice / 2);
             }
             else {
@@ -2149,7 +2178,7 @@ export class RollForm extends FormApplication {
                 if (this.object.gambit === 'leech') {
                     this.dealHealthDamage(1);
                 }
-                if(this.object.gambit === 'grapple') {
+                if (this.object.gambit === 'grapple') {
                     const grapplingExists = (this.actor?.effects.find(e => e.getFlag("core", "statusId") === 'grappling'));
                     if (!grapplingExists) {
                         var actorToken = canvas.tokens.placeables.filter(x => x.id === this.actor.token.id)[0];
@@ -2770,6 +2799,7 @@ export class RollForm extends FormApplication {
                 },
                 excludeOnesFromRerolls: false,
                 triggerOnOnes: 'none',
+                triggerOnTens: 'none',
                 damage: {
                     doubleSucccessCaps: {
                         sevens: 0,

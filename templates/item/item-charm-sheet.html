@@ -424,6 +424,18 @@
                         value="system.diceroller.excludeonesfromrerolls" type="checkbox" {{checked
                         system.diceroller.excludeonesfromrerolls}}>
                 </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}: </div>
+                    <select name="system.diceroller.triggerontens" data-type="String">
+                        {{#select system.diceroller.triggerontens}}
+                        <option value="none">{{localize "Ex3.Nothing"}}</option>
+                        <option value="damage">{{localize "Ex3.Damage"}}</option>
+                        <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
+                        <option value="extraSuccess">{{localize "Ex3.ExtraSuccess"}}</option>
+                        <option value="rerolllDie">{{localize "Ex3.RerollDie"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
                 {{localize "Ex3.Damage"}}

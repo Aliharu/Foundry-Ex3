@@ -891,7 +891,8 @@
           "increasetargetnumber": 0,
           "resolve": 0,
           "guile": 0,
-          "triggeronones": "none"
+          "triggeronones": "none",
+          "triggerontens": "none"
         }
       }
     },

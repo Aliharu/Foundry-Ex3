@@ -44,6 +44,16 @@
             <option value="subtractSuccesses">{{localize "Ex3.SubtractSuccesses"}}</option>
             {{/select}}
         </select>
+        <label class="resource-label">{{localize "Ex3.TriggerOnTens"}}</label>
+        <select id="triggerOnTens" name="settings.triggerOnTens" data-type="String">
+            {{#select settings.triggerOnTens}}
+            <option value="none">{{localize "Ex3.Nothing"}}</option>
+            <option value="damage">{{localize "Ex3.Damage"}}</option>
+            <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
+            <option value="extraSuccess">{{localize "Ex3.ExtraSuccess"}}</option>
+            <option value="rerolllDie">{{localize "Ex3.RerollDie"}}</option>
+            {{/select}}
+        </select>
     </div>
     {{#if isAttack}}
     <div class="resource flex-center">

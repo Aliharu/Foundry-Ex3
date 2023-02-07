@@ -530,6 +530,44 @@ export class ExaltedThirdActor extends Actor {
       };
     }
   }
+
+
+  /**
+   * Override getRollData() that's supplied to rolls.
+   */
+  getRollData() {
+    const data = {...super.getRollData()};
+
+    // Prepare character roll data.
+    this._getCharacterRollData(data);
+    this._getNpcRollData(data);
+
+    return data;
+  }
+
+  /**
+   * Prepare character roll data.
+   */
+  _getCharacterRollData(data) {
+    if (this.type !== 'character') return;
+
+    if (data.abilities) {
+      for (let [k, v] of Object.entries(data.abilities)) {
+        data[k] = foundry.utils.deepClone(v);
+      }
+    }
+
+    if (data.attributes) {
+      for (let [k, v] of Object.entries(data.attributes)) {
+        data[k] = foundry.utils.deepClone(v);
+      }
+    }
+  }
+
+  _getNpcRollData(data) {
+    if (this.type !== 'npc') return;
+  }
+
 }
 
 

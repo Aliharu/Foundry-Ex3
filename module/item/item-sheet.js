@@ -44,6 +44,12 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     const itemData = this.item.toObject(false);
     context.system = itemData.system;
 
+    context.rollData = {};
+    let actor = this.object?.parent ?? null;
+    if (actor) {
+      context.rollData = actor.getRollData();
+    }
+
     context.descriptionHTML = await TextEditor.enrichHTML(context.system.description, {
       secrets: this.document.isOwner,
       async: true
@@ -53,7 +59,6 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       this._prepareTraits(itemData.type, context.system.traits);
     }
 
-    context.system = itemData.system;
     context.effects = prepareActiveEffectCategories(this.item.effects);
     return context;
   }

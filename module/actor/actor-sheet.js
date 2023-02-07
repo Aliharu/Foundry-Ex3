@@ -61,6 +61,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       secrets: this.document.isOwner,
       async: true
     });
+    context.rollData = context.actor.getRollData();
     // Update traits
     this._prepareTraits(context.system.traits);
     // Prepare items.
