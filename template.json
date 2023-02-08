@@ -125,7 +125,7 @@
           }
         },
         "details": {
-          "exalt": "abyssal",
+          "exalt": "other",
           "caste": "",
           "color": "#000000",
           "animacolor": "#FFFFFF",
@@ -136,6 +136,7 @@
           "aura": "none",
           "ideal": "",
           "supernal": "",
+          "cthonic": "",
           "penumbra": {
             "value": 0,
             "max": 10,
@@ -525,7 +526,7 @@
       },
       "advantages": {
         "resonance": "",
-        "disonance": ""
+        "dissonance": ""
       },
       "experience": {
         "standard": {

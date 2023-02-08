@@ -381,6 +381,22 @@ Hooks.once("ready", async function () {
     }
   }
 
+  if (isNewerVersion("1.7.6", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    for (let actor of game.actors.filter((actor) => actor.type === 'npc' && actor.system.creaturetype !== 'exalt' && actor.system.details.exalt === 'abyssal')) {
+      try {
+        let updateData = foundry.utils.deepClone(actor.toObject());
+        updateData.system.details.exalt = 'other';
+        if (!foundry.utils.isEmpty(updateData)) {
+          await actor.update(updateData, { enforceTypes: false });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    }
+  }
+
   $("#chat-log").on("click", " .item-row", ev => {
     const li = $(ev.currentTarget).next();
     li.toggle("fast");

@@ -696,6 +696,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateDerivedStats('parry');
     });
 
+    html.find('.calculate-resonance').mousedown(ev => {
+      this.calculateDerivedStats('resonance');
+    });
+
     html.find('.calculate-evasion').mousedown(ev => {
       this.calculateDerivedStats('evasion');
     });
@@ -1160,6 +1164,54 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     if (type === 'guile') {
       data.guile.value = Math.ceil((data.attributes.manipulation.value + data.abilities.socialize.value) / 2);
+    }
+    if (type === 'resonance') {
+      const resonanceChart = {
+        "abyssal": "Soulsteel",
+        "alchemical": "",
+        "dragonblooded": "Jade",
+        "dreamsouled": "",
+        "getimian": "Starmetal",
+        "hearteater": "Adamant",
+        "infernal": "Orichalcum",
+        "liminal": "",
+        "lunar": "Moonsilver",
+        "sidereal": "Starmetal",
+        "solar": "All",
+        "umbral": "Soulsteel",
+      }
+      const dissonanceChart = {
+        "abyssal": "",
+        "alchemical": "",
+        "dragonblooded": "Soulsteel",
+        "dreamsouled": "Non-Moonsilver",
+        "getimian": "Non-Starmetal",
+        "hearteater": "",
+        "infernal": "",
+        "liminal": "Non-Soulsteel",
+        "lunar": "",
+        "sidereal": "Non-Starmetal",
+        "solar": "",
+        "umbral": "",
+      }
+      if(data.details.exalt === 'exigent') {
+        if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+          data.advantages.resonance =  'Orichalcum, Green Jade';
+          data.advantages.dissonance = 'Soulsteel';
+        }
+        if(data.details.caste.toLowerCase() === 'sovereign') {
+          data.advantages.resonance =  '';
+          data.advantages.dissonance = 'Non-Adamant';
+        }
+        if(data.details.caste.toLowerCase() === 'puppeteer') {
+          data.advantages.resonance =  'Artifact Puppets';
+          data.advantages.dissonance = 'Orichalcum, Jade, Soulsteel, Adamant';
+        }
+      }
+      else {
+        data.advantages.resonance = resonanceChart[data.details.exalt];
+        data.advantages.dissonance = dissonanceChart[data.details.exalt];
+      }
     }
     this.actor.update(actorData);
   }

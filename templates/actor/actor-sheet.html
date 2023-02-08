@@ -522,7 +522,8 @@
         </div>
         {{/ifEquals}}
         <li>
-          <label class="resource-label">{{localize "Ex3.Resonance"}}</label>
+          <label class="resource-label">{{localize "Ex3.Resonance"}}{{#if system.settings.editmode}} <a><i class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Parry"
+            style="margin-left:3px;"></i></a>{{/if}}</label>
           <input type="text" name="system.advantages.resonance" value="{{system.advantages.resonance}}" />
         </li>
         <li>
@@ -533,6 +534,12 @@
           <label class="resource-label">{{localize "Ex3.LimitTrigger"}}</label>
           <input type="text" name="system.limit.trigger" value="{{system.limit.trigger}}" />
         </li>
+        {{#ifEquals system.details.exalt 'abyssal'}}
+        <div>
+          <label class="resource-label">{{localize "Ex3.Cthonic"}}</label>
+          <input type="text" name="system.details.cthonic" value="{{system.details.cthonic}}" />
+        </div>
+        {{/ifEquals}}
         {{#ifEquals system.details.exalt 'solar'}}
         <div>
           <label class="resource-label">{{localize "Ex3.Supernal"}}</label>

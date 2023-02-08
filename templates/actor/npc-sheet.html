@@ -169,6 +169,12 @@
                     <input data-dtype="Boolean" name="system.legendarysize" type="checkbox" {{checked
                         system.legendarysize}}>
                 </div>
+                {{#ifEquals system.details.exalt 'abyssal'}}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Cthonic"}}</label>
+                    <input type="text" name="system.details.cthonic" value="{{system.details.cthonic}}" />
+                </div>
+                {{/ifEquals}}
                 {{#ifEquals system.details.exalt 'solar'}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Supernal"}}</label>

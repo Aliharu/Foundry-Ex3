@@ -543,6 +543,7 @@ export default class TemplateImporter extends Application {
             "aura": "none",
             "ideal": "",
             "supernal": "",
+            "cthonic": "",
             "penumbra": {
               "value": 0,
               "max": 10,
@@ -755,7 +756,7 @@ export default class TemplateImporter extends Application {
           }
         },
         "details": {
-          "exalt": "abyssal",
+          "exalt": "other",
           "caste": "",
           "color": "#000000",
           "tell": "",
