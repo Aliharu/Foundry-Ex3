@@ -212,7 +212,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         merits.push(i);
       }
       else if (i.type === 'intimacy') {
-        intimacies.push(i);
+        if(game.user.isGM || this.actor.isOwner || i.system.visible) {
+          intimacies.push(i);
+        }
       }
       else if (i.type === 'martialart') {
         martialarts.push(i);

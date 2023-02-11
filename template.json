@@ -927,6 +927,7 @@
       "templates": [
         "base"
       ],
+      "visible": false,
       "strength": "minor",
       "intimacytype": "tie"
     },

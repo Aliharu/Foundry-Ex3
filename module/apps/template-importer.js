@@ -149,6 +149,10 @@ export default class TemplateImporter extends Application {
       this.charmCost(costArray, charmData);
     }
     index++;
+    if(textArray[index].includes('Keywords:')) {
+      charmData.system.keywords = textArray[index].replace('Keywords: ', '');
+      index++;
+    }
     charmData.system.prerequisites = textArray[index].replace('Prerequisites: ', '');
     index++;
     return index;

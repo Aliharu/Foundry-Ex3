@@ -476,6 +476,7 @@ export class RollForm extends FormApplication {
                 }
                 if (this.object.rollType === 'social') {
                     this.object.difficulty = target.actor.system.resolve.value;
+                    this.object.targetIntimacies = target.actor.intimacies.filter((i) => i.system.visible || game.user.isGM);
                 }
                 if (target.actor.system.settings.defenseStunts) {
                     this.object.difficulty += 1;
@@ -1277,7 +1278,12 @@ export class RollForm extends FormApplication {
             if (this.object.showTargets) {
                 for (const target of Object.values(this.object.targets)) {
                     this.object.target = target;
-                    this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId == target.actor.token.id) || null;
+                    if(target.actor?.token?.id) {
+                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId == target.actor?.token?.id) || null;
+                    }
+                    else {
+                        this.object.targetCombatant = null;
+                    }
                     this.object.soak = target.rollData.soak;
                     this.object.defense = target.rollData.defense;
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;

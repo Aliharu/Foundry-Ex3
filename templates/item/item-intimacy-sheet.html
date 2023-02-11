@@ -3,22 +3,9 @@
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
-            <div class="d-flex flex-center">
-                <label class="resource-label">{{localize "Ex3.Strength"}}: </label>
-                <select name="system.strength" data-type="String">
-                    {{#select system.strength}}
-                    <option value="minor">{{localize "Ex3.Minor"}}</option>
-                    <option value="major">{{localize "Ex3.Major"}}</option>
-                    <option value="defining">{{localize "Ex3.Defining"}}</option>
-                    {{/select}}
-                </select>
-                <label class="resource-label">{{localize "Ex3.Type"}}: </label>
-                <select name="system.intimacytype" data-type="String">
-                    {{#select system.intimacytype}}
-                    <option value="tie">{{localize "Ex3.Tie"}}</option>
-                    <option value="principle">{{localize "Ex3.Principle"}}</option>
-                    {{/select}}
-                </select>
+            <div class="check-button">
+                <label class="resource-label">{{localize "Ex3.Visible"}}: </label>
+                <input name="system.visible" type="checkbox" value="system.visible" {{checked system.visible}}>
             </div>
         </div>
     </header>
@@ -32,6 +19,27 @@
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
+            <div class="grid grid-2col flex-group-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Strength"}}</div>
+                    <select name="system.strength" data-type="String">
+                        {{#select system.strength}}
+                        <option value="minor">{{localize "Ex3.Minor"}}</option>
+                        <option value="major">{{localize "Ex3.Major"}}</option>
+                        <option value="defining">{{localize "Ex3.Defining"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Type"}}</div>
+                    <select name="system.intimacytype" data-type="String">
+                        {{#select system.intimacytype}}
+                        <option value="tie">{{localize "Ex3.Tie"}}</option>
+                        <option value="principle">{{localize "Ex3.Principle"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+            </div>
             {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
         </div>
 

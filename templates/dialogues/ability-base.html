@@ -259,6 +259,27 @@
 {{/ifNotEquals}}
 
 {{#ifEquals data.rollType 'social'}}
+{{#if data.targetIntimacies}}
+<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+    <div class="resource-label">
+        {{localize "Ex3.TargetIntimacies"}}
+    </div>
+    <div>
+        <i class="fas fa-caret-down"></i>
+    </div>
+</div>
+<div style="display:none;">
+    {{#each data.targetIntimacies as |intimacy key|}}
+    <div>
+        <span style="text-transform: capitalize;font-weight: bold;">{{intimacy.system.strength}}</span>: {{intimacy.name}}
+    </div>
+    <hr>
+    {{/each}}
+</div>
+{{/if}}
+{{/ifEquals}}
+
+{{#ifEquals data.rollType 'social'}}
 <div class="resource grid grid-2col flex-center">
     <div>
         <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>

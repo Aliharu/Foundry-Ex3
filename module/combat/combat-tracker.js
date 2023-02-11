@@ -17,7 +17,6 @@ export class ExaltedCombatTracker extends CombatTracker {
                 ...t,
                 css: t.css,
                 acted: combatant?.flags.acted,
-                color: combatant.token.actor.system.details.color
             };
         });
         data.turns.sort(function (a, b) {
