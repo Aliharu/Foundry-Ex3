@@ -115,6 +115,9 @@
           "value": 0,
           "min": 0
         },
+        "baseinitiative": {
+          "value": 3
+        },
         "dontresetonslaught": false,
         "savedRolls": {},
         "legendarysize": false,

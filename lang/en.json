@@ -565,5 +565,6 @@
     "Ex3.SubtractEnemyInitiative": "Subtract Enemy Initiative",
     "Ex3.SubtractEnemySuccesses": "Subtract Enemy Successes",
     "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes",
-    "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn"
+    "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn",
+    "Ex3.BaseInitiative": "Base Initiative"
 }

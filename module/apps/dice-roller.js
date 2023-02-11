@@ -1842,7 +1842,7 @@ export class RollForm extends FormApplication {
                 }
             }
             if (this.object.attackType === 'decisive' && this.object.damage.resetInit) {
-                this.object.characterInitiative = 3;
+                this.object.characterInitiative = this.actor.system.baseinitiative.value;
             }
             if (this.object.attackType === 'gambit') {
                 if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
