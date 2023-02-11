@@ -678,6 +678,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateMotes('personal');
     });
 
+    html.find('.calculate-personal-commit').mousedown(ev => {
+      this.calculateCommitMotes('personal');
+    });
+
+    html.find('.calculate-peripheral-commit').mousedown(ev => {
+      this.calculateCommitMotes('peripheral');
+    });
+
     html.find('.calculate-peripheral-motes').mousedown(ev => {
       this.calculateMotes('peripheral');
     });
@@ -1221,6 +1229,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async setSpendPool(type) {
     const actorData = duplicate(this.actor);
     actorData.system.settings.charmmotepool = type;
+    this.actor.update(actorData);
+  }
+
+  async calculateCommitMotes(type) {
+    const actorData = duplicate(this.actor);
+    var commitMotes = 0;
+    for(const item of this.actor.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
+      if(item.type === 'item' || item.system.equipped) {
+        commitMotes += item.system.attunement;
+      }
+    }
+    actorData.system.motes[type].committed = commitMotes;
     this.actor.update(actorData);
   }
 
