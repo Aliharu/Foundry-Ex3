@@ -91,107 +91,13 @@ export default class TemplateImporter extends Application {
       };
       charmData.name = textArray[index];
       index++;
-      var costAndRequirement = textArray[index];
-      index++;
-      if (!textArray[index].includes('Type:')) {
-        costAndRequirement += textArray[index];
+      if(!textArray[index].includes('Cost')) {
+        index = this.goldenCalibrationCharm(charmData, textArray, index);
       }
-      costAndRequirement = costAndRequirement.replace('Cost: ', '').replace('Mins: ', '').split(';');
-      var costArray = costAndRequirement[0].split(',');
-      for (let costString of costArray) {
-        costString = costString.trim();
-        if (costString.includes('m')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.motes = parseInt(num);
-        }
-        if (costString.includes('i')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.initiative = parseInt(num);
-        }
-        if (costString.includes('a')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.anima = parseInt(num);
-        }
-        if (costString.includes('wp')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.willpower = parseInt(num);
-        }
-        if (costString.includes('hl')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.health = parseInt(num);
-          if (costString.includes('ahl')) {
-            charmData.system.cost.healthtype = 'aggravated';
-          }
-          if (costString.includes('lhl')) {
-            charmData.system.cost.healthtype = 'lethal';
-          }
-        }
-        if (costString.includes('Fire')) {
-          charmData.system.cost.aura = 'fire';
-        }
-        if (costString.includes('Earth')) {
-          charmData.system.cost.aura = 'earth';
-        }
-        if (costString.includes('Air')) {
-          charmData.system.cost.aura = 'air';
-        }
-        if (costString.includes('Water')) {
-          charmData.system.cost.aura = 'water';
-        }
-        if (costString.includes('Wood')) {
-          charmData.system.cost.aura = 'wood';
-        }
-        if (costString.includes('gxp')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.goldxp = parseInt(num);
-        }
-        else if (costString.includes('sxp')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.silverxp = parseInt(num);
-        }
-        else if (costString.includes('wxp')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.whitexp = parseInt(num);
-        }
-        else if (costString.includes('xp')) {
-          var num = costString.replace(/[^0-9]/g, '');
-          charmData.system.cost.xp = parseInt(num);
-        }
-      }
-      var requirementArray = costAndRequirement[1].toLowerCase().split(',');
-      var abilityRequirement = requirementArray[0].trim().split(' ');
-
-      charmData.system.ability = abilityRequirement[0].replace(' ', '');
-      charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
-
-      if (abilityRequirement[0].replace(' ', '') === 'martial') {
-        charmData.system.ability = 'martialarts';
-        charmData.system.requirement = abilityRequirement[2].replace(/[^0-9]/g, '');
-      }
-      if (abilityRequirement[0].replace(' ', '') === 'any') {
-        charmData.system.ability = abilityRequirement[1].replace(' ', '');
-        charmData.system.requirement = abilityRequirement[3].replace(/[^0-9]/g, '');
-      }
-      if (requirementArray.length === 1) {
-        var essenceRequirement = requirementArray[0].trim().split(' ');
-        charmData.system.ability = 'evocation';
-        charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
-      }
-      if (requirementArray.length === 2) {
-        var essenceRequirement = requirementArray[1].trim().split(' ');
-        charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
+      else {
+        index = this.standardCharm(charmData, textArray, index);
       }
 
-      charmData.system.type = textArray[index].replace('Type: ', '');
-      index++;
-      charmData.system.keywords = textArray[index].replace('Keywords: ', '');
-      index++;
-      charmData.system.duration = textArray[index].replace('Duration: ', '');
-      index++;
-      if (textArray[index].includes('Prerequisite Charms:')) {
-        charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
-        index++;
-      }
       var description = '';
       while (textArray[index] && index !== textArray.length) {
         description += textArray[index];
@@ -201,6 +107,138 @@ export default class TemplateImporter extends Application {
       charmData.system.description = description;
       await Item.create(charmData);
       index++;
+    }
+  }
+
+  standardCharm(charmData, textArray, index) {
+    var costAndRequirement = textArray[index];
+    index++;
+    if (!textArray[index].includes('Type:')) {
+      costAndRequirement += textArray[index];
+    }
+    costAndRequirement = costAndRequirement.replace('Cost: ', '').replace('Mins: ', '').split(';');
+    var costArray = costAndRequirement[0].split(',');
+    this.charmCost(costArray, charmData);
+    var requirementArray = costAndRequirement[1].toLowerCase().split(',');
+    this.charmRequirements(requirementArray, charmData);
+    charmData.system.type = textArray[index].replace('Type: ', '');
+    index++;
+    charmData.system.keywords = textArray[index].replace('Keywords: ', '');
+    index++;
+    charmData.system.duration = textArray[index].replace('Duration: ', '');
+    index++;
+    if (textArray[index].includes('Prerequisite Charms:')) {
+      charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
+      index++;
+    }
+    return index;
+  }
+
+  goldenCalibrationCharm(charmData, textArray, index) {
+    var typeAndRequirement = textArray[index];
+    typeAndRequirement = typeAndRequirement.split(' ');
+    charmData.system.type = typeAndRequirement[0];
+    charmData.system.ability = typeAndRequirement[1].toLowerCase();
+    charmData.system.requirement = typeAndRequirement[2].replace(/[^0-9]/g, '');
+    charmData.system.essence = typeAndRequirement[4].replace(/[^0-9]/g, '');
+    index++;
+    if(textArray[index].includes('Cost:')) {
+      var costDuration = textArray[index].replace('Cost: ', '').split('Duration:');
+      charmData.system.duration = costDuration[1];
+      var costArray = costDuration[0].split(',');
+      this.charmCost(costArray, charmData);
+    }
+    index++;
+    charmData.system.prerequisites = textArray[index].replace('Prerequisites: ', '');
+    index++;
+    return index;
+  }
+
+  charmCost(costArray, charmData) {
+    for (let costString of costArray) {
+      costString = costString.trim();
+      if (costString.includes('m')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.motes = parseInt(num);
+      }
+      if (costString.includes('i')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.initiative = parseInt(num);
+      }
+      if (costString.includes('a')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.anima = parseInt(num);
+      }
+      if (costString.includes('wp')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.willpower = parseInt(num);
+      }
+      if (costString.includes('hl')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.health = parseInt(num);
+        if (costString.includes('ahl')) {
+          charmData.system.cost.healthtype = 'aggravated';
+        }
+        if (costString.includes('lhl')) {
+          charmData.system.cost.healthtype = 'lethal';
+        }
+      }
+      if (costString.includes('Fire')) {
+        charmData.system.cost.aura = 'fire';
+      }
+      if (costString.includes('Earth')) {
+        charmData.system.cost.aura = 'earth';
+      }
+      if (costString.includes('Air')) {
+        charmData.system.cost.aura = 'air';
+      }
+      if (costString.includes('Water')) {
+        charmData.system.cost.aura = 'water';
+      }
+      if (costString.includes('Wood')) {
+        charmData.system.cost.aura = 'wood';
+      }
+      if (costString.includes('gxp')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.goldxp = parseInt(num);
+      }
+      else if (costString.includes('sxp')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.silverxp = parseInt(num);
+      }
+      else if (costString.includes('wxp')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.whitexp = parseInt(num);
+      }
+      else if (costString.includes('xp')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.xp = parseInt(num);
+      }
+    }
+  }
+
+  charmRequirements(requirementArray, charmData) {
+    var abilityRequirement = requirementArray[0].trim().split(' ');
+
+    charmData.system.ability = abilityRequirement[0].replace(' ', '');
+    charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
+
+    if (abilityRequirement[0].replace(' ', '') === 'martial') {
+      charmData.system.ability = 'martialarts';
+      charmData.system.requirement = abilityRequirement[2].replace(/[^0-9]/g, '');
+    }
+    if (abilityRequirement[0].replace(' ', '') === 'any') {
+      charmData.system.ability = abilityRequirement[1].replace(' ', '');
+      charmData.system.requirement = abilityRequirement[3].replace(/[^0-9]/g, '');
+    }
+    if (requirementArray.length === 1) {
+      var essenceRequirement = requirementArray[0].trim().split(' ');
+      charmData.system.ability = 'evocation';
+      charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
+    }
+    if (requirementArray.length === 2) {
+      var essenceRequirement = requirementArray[1].trim().split(' ');
+      charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
   }
 
