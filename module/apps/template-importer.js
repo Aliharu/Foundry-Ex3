@@ -103,6 +103,10 @@ export default class TemplateImporter extends Application {
         description += textArray[index];
         description += " ";
         index++;
+        if((textArray[index+1] && textArray[index+1].includes('Cost:')) || (textArray[index+2] && (textArray[index+2].includes('Cost:') && textArray[index+2].includes('Duration:')))){
+          index--;
+          break;
+        }
       }
       charmData.system.description = description;
       await Item.create(charmData);
@@ -280,6 +284,10 @@ export default class TemplateImporter extends Application {
         description += textArray[index];
         description += " ";
         index++;
+        if((textArray[index+1] && textArray[index+1].includes('Cost:'))){
+          index--;
+          break;
+        }
       }
       spellData.system.description = description;
       await Item.create(spellData);
