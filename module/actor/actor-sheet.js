@@ -1985,8 +1985,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
         if (item.system.cost.initiative > 0) {
           let combat = game.combat;
-          if (combat && this.actor.token) {
-            let combatant = combat.combatants.find(c => c?.tokenId == this.actor.token.id);
+          const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+          if (combat && tokenId) {
+            let combatant = combat.combatants.find(c => c?.tokenId === tokenId);
             if (combatant) {
               var newInitiative = combatant.initiative - item.system.cost.initiative;
               if (combatant.initiative > 0 && newInitiative <= 0) {

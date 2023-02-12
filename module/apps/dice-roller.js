@@ -159,7 +159,12 @@ export class RollForm extends FormApplication {
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
-                this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
+                if(this.actor.token) {
+                    this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
+                }
+                else {
+                    this.object.conditions = this.actor.effects;
+                }
                 if (this.actor.type === 'character') {
                     if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
                         this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
@@ -1278,8 +1283,9 @@ export class RollForm extends FormApplication {
             if (this.object.showTargets) {
                 for (const target of Object.values(this.object.targets)) {
                     this.object.target = target;
-                    if(target.actor?.token?.id) {
-                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId == target.actor?.token?.id) || null;
+                    if(target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
+                        const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
+                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
                     }
                     else {
                         this.object.targetCombatant = null;
@@ -2138,8 +2144,7 @@ export class RollForm extends FormApplication {
         if (this.actor.system.battlegroup) {
             let combat = game.combat;
             if (this.object.target && combat) {
-                let combatant = combat.combatants.find(c => c.tokenId == this.object.target.actor.token.id);
-                if (combatant && combatant.initiative != null && combatant.initiative <= 0) {
+                if (this.object.targetCombatant && this.object.targetCombatant.initiative != null && this.object.targetCombatant.initiative <= 0) {
                     this.dealHealthDamage(total);
                 }
             }
@@ -2187,7 +2192,7 @@ export class RollForm extends FormApplication {
                 if (this.object.gambit === 'grapple') {
                     const grapplingExists = (this.actor?.effects.find(e => e.getFlag("core", "statusId") === 'grappling'));
                     if (!grapplingExists) {
-                        var actorToken = canvas.tokens.placeables.filter(x => x.id === this.actor.token.id)[0];
+                        var actorToken = this._getActorToken();
                         const newStatusEffect = CONFIG.statusEffects.find(e => e.id === 'grappling');
                         await actorToken.toggleEffect(newStatusEffect);
                     }
@@ -2476,8 +2481,16 @@ export class RollForm extends FormApplication {
     }
 
     _getActorCombatant() {
-        if (game.combat && this.actor.token) {
-            return game.combat.combatants.find(c => c.tokenId == this.actor.token.id);
+        if (game.combat && (this.actor.token || this.actor.getActiveTokens()[0])) {
+            const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+            return game.combat.combatants.find(c => c.tokenId === tokenId);
+        }
+    }
+
+    _getActorToken() {
+        if (this.actor.token || this.actor.getActiveTokens()[0]) {
+            const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+            return canvas.tokens.placeables.filter(x => x.id === tokenId)[0];
         }
     }
 
@@ -2979,8 +2992,8 @@ export class RollForm extends FormApplication {
     }
 
     attackSequence() {
-        if (this.object.target && this.actor.token && game.settings.get("exaltedthird", "attackEffects")) {
-            var actorToken = canvas.tokens.placeables.filter(x => x.id === this.actor.token.id)[0];
+        const actorToken = this._getActorToken();
+        if (this.object.target && actorToken  && game.settings.get("exaltedthird", "attackEffects")) {
             if (this.object.attackEffectPreset !== 'none') {
                 let effectsMap = {
                     'arrow': 'jb2a.arrow.physical.white.01.05ft',
@@ -3088,10 +3101,10 @@ export class RollForm extends FormApplication {
 }
 
 export async function animaTokenMagic(actor, newAnimaValue) {
-    if (game.settings.get("exaltedthird", "animaTokenMagic") && actor.token) {
+    const tokenId = actor.token?.id || actor.getActiveTokens()[0]?.id;
+    const actorToken = canvas.tokens.placeables.filter(x => x.id === tokenId)[0];
+    if (game.settings.get("exaltedthird", "animaTokenMagic") && actorToken) {
         let effectColor = Number(`0x${actor.system.details.animacolor.replace('#', '')}`);
-        var actorToken = canvas.tokens.placeables.filter(x => x.id === actor.token.id)[0];
-
         let sovereign =
             [{
                 filterType: "xfire",

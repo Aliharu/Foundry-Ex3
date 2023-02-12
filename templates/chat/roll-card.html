@@ -328,28 +328,53 @@
             {{/if}}
             <div>
                 <b>{{localize "Ex3.Conditions"}}: </b>
-                {{#each rollData.target.actor.token.actorData.effects as |effect key|}}
-                    {{effect.label}}
-                    {{#ifEquals effect.flags.core.statusId 'lightcover'}}
-                    (+1 {{localize "Ex3.Defense"}})
-                    {{/ifEquals}}
-                    {{#ifEquals effect.flags.core.statusId 'heavycover'}}
-                    (+2 {{localize "Ex3.Defense"}})
-                    {{/ifEquals}}
-                    {{#ifEquals effect.flags.core.statusId 'fullcover'}}
-                    (+3 {{localize "Ex3.Defense"}})
-                    {{/ifEquals}}
-                    {{#ifEquals effect.flags.core.statusId 'fulldefense'}}
-                    (+2 {{localize "Ex3.Defense"}})
-                    {{/ifEquals}}
-                    {{#ifEquals effect.flags.core.statusId 'surprised'}}
-                    (-2 {{localize "Ex3.Defense"}})
-                    {{/ifEquals}}
-                    {{#ifEquals effect.flags.core.statusId 'grappled'}}
-                    (-2 {{localize "Ex3.Defense"}})
-                    {{/ifEquals}}
-                    ,
-                {{/each}}
+                {{#if rollData.taget.actor.token }}
+                    {{#each rollData.target.actor.token.actorData.effects as |effect key|}}
+                        {{effect.label}}
+                        {{#ifEquals effect.flags.core.statusId 'lightcover'}}
+                        (+1 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'heavycover'}}
+                        (+2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'fullcover'}}
+                        (+3 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'fulldefense'}}
+                        (+2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'surprised'}}
+                        (-2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                        (-2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        ,
+                    {{/each}}
+                {{else}}
+                    {{#each rollData.target.actor.effects as |effect key|}}
+                        {{effect.label}}
+                        {{#ifEquals effect.flags.core.statusId 'lightcover'}}
+                        (+1 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'heavycover'}}
+                        (+2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'fullcover'}}
+                        (+3 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'fulldefense'}}
+                        (+2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'surprised'}}
+                        (-2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                        (-2 {{localize "Ex3.Defense"}})
+                        {{/ifEquals}}
+                        ,
+                    {{/each}}
+                {{/if}}
             </div>
             <div class="roll-card-header">
                 <b>{{localize "Ex3.OpposingCharms"}}</b>
