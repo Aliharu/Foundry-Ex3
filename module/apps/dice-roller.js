@@ -867,14 +867,14 @@ export class RollForm extends FormApplication {
                 const targetValues = Object.values(this.object.targets);
                 if (targetValues.length === 1) {
                     targetValues[0].rollData.defense += charm.system.diceroller.opposedbonuses.defense;
-                    targetValues[0].rollData.soak += charm.system.diceroller.opposedbonuses.soak;
+                    targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
                     targetValues[0].rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
                 }
                 else {
                     for (const target of targetValues) {
                         if (target.actor.id === charm.parent.id || targetValues.length === 1) {
                             target.rollData.defense += charm.system.diceroller.opposedbonuses.defense;
-                            target.rollData.soak += charm.system.diceroller.opposedbonuses.soak;
+                            target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
                             target.rollData.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
                         }
                     }
@@ -882,7 +882,7 @@ export class RollForm extends FormApplication {
             }
             else {
                 this.object.defense += charm.system.diceroller.opposedbonuses.defense;
-                this.object.soak += charm.system.diceroller.opposedbonuses.soak;
+                this.object.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
                 this.object.diceModifier += charm.system.diceroller.opposedbonuses.dicemodifier;
             }
             this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
@@ -1223,14 +1223,14 @@ export class RollForm extends FormApplication {
                         const targetValues = Object.values(this.object.targets);
                         if (targetValues.length === 1) {
                             targetValues[0].rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
-                            targetValues[0].rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
+                            targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
                             targetValues[0].rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
                         }
                         else {
                             for (const target of targetValues) {
                                 if (target.actor.id === charm.parent.id || targetValues.length === 1) {
                                     target.rollData.defense -= charm.system.diceroller.opposedbonuses.defense;
-                                    target.rollData.soak -= charm.system.diceroller.opposedbonuses.soak;
+                                    target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
                                     target.rollData.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
                                 }
                             }
@@ -1238,7 +1238,7 @@ export class RollForm extends FormApplication {
                     }
                     else {
                         this.object.defense -= charm.system.diceroller.opposedbonuses.defense;
-                        this.object.soak -= charm.system.diceroller.opposedbonuses.soak;
+                        this.object.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
                         this.object.diceModifier -= charm.system.diceroller.opposedbonuses.dicemodifier;
                     }
                     this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
