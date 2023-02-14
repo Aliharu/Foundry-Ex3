@@ -277,9 +277,6 @@
     {{/each}}
 </div>
 {{/if}}
-{{/ifEquals}}
-
-{{#ifEquals data.rollType 'social'}}
 <div class="resource grid grid-2col flex-center">
     <div>
         <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
@@ -302,6 +299,14 @@
             <option value="4">{{localize "Ex3.Defining"}}</option>
             {{/select}}
         </select>
+    </div>
+    <div>
+        <div class="resource-label">{{localize "Ex3.ApplyAppearance"}}</div>
+        <input type="checkbox" name="object.applyAppearance" value="{{data.applyAppearance}}">
+    </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
+        <input type="number" name="object.appearanceBonus" value="{{data.appearanceBonus}}">
     </div>
 </div>
 {{/ifEquals}}

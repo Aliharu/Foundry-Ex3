@@ -480,6 +480,8 @@ export class RollForm extends FormApplication {
                     this.object.difficulty = target.actor.system.guile.value;
                 }
                 if (this.object.rollType === 'social') {
+                    var userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes.appearance.value;
+                    this.object.appearanceBonus = Math.max(0, userAppearance - target.actor.system.resolve.value);
                     this.object.difficulty = target.actor.system.resolve.value;
                     this.object.targetIntimacies = target.actor.intimacies.filter((i) => i.system.visible || game.user.isGM);
                 }
@@ -746,8 +748,8 @@ export class RollForm extends FormApplication {
                 this.object.cost.healthaggravated += item.system.cost.health;
             }
         }
-        this.object.diceModifier += item.system.diceroller.bonusdice;
-        this.object.successModifier += item.system.diceroller.bonussuccesses;
+        this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
+        this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
         if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
             this.object.doubleSuccess = item.system.diceroller.doublesuccess;
         }
@@ -763,8 +765,8 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.rolltwice) {
             this.object.rollTwice = item.system.diceroller.rolltwice;
         }
-        this.object.rerollNumber += item.system.diceroller.rerolldice;
-        this.object.diceToSuccesses += item.system.diceroller.diceToSuccesses;
+        this.object.rerollNumber += this._getFormulaValue(item.system.diceroller.rerolldice);
+        this.object.diceToSuccesses += this._getFormulaValue(item.system.diceroller.diceToSuccesses);
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
             if (rerollValue) {
                 this.object.reroll[rerollKey].cap += rerollValue;
@@ -779,14 +781,14 @@ export class RollForm extends FormApplication {
             this.object.settings.excludeOnesFromRerolls = item.system.diceroller.excludeonesfromrerolls;
         }
 
-        this.object.damage.damageDice += item.system.diceroller.damage.bonusdice;
-        this.object.damage.damageSuccessModifier += item.system.diceroller.damage.bonussuccesses;
+        this.object.damage.damageDice += this._getFormulaValue(item.system.diceroller.damage.bonusdice);
+        this.object.damage.damageSuccessModifier += this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
         if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
             this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
         }
         this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
-        this.object.overwhelming += item.system.diceroller.damage.overwhelming;
-        this.object.damage.postSoakDamage += item.system.diceroller.damage.postsoakdamage;
+        this.object.overwhelming += this._getFormulaValue(item.system.diceroller.damage.overwhelming);
+        this.object.damage.postSoakDamage += this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
             if (rerollValue) {
                 this.object.damage.reroll[rerollKey].status = true;
@@ -798,7 +800,7 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.damage.rolltwice) {
             this.object.damage.rollTwice = item.system.diceroller.damage.rolltwice;
         }
-        this.object.damage.rerollNumber += item.system.diceroller.damage.rerolldice;
+        this.object.damage.rerollNumber += this._getFormulaValue(item.system.diceroller.damage.rerolldice);
         if (item.system.diceroller.damage.threshholdtodamage) {
             this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
         }
@@ -808,9 +810,7 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.damage.doublerolleddamage) {
             this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
         }
-        if (item.system.diceroller.damage.ignoresoak > 0) {
-            this.object.damage.ignoreSoak += item.system.diceroller.damage.ignoresoak;
-        }
+        this.object.damage.ignoreSoak += this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
 
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
             if (rerollValue) {
@@ -834,6 +834,22 @@ export class RollForm extends FormApplication {
         }
 
         this.render();
+    }
+
+    _getFormulaValue(charmValue) {
+        var rollerValue = 0;
+        if(charmValue) {
+            if(parseInt(charmValue)) {
+                rollerValue = parseInt(charmValue);
+            }
+            else if(this.actor.getRollData()[charmValue]?.value) {
+                rollerValue = this.actor.getRollData()[charmValue]?.value;
+            }
+            else if(charmValue === 'essence or 3') {
+                rollerValue = Math.max(3, this.actor.system.essence.value);
+            }
+        }
+        return rollerValue
     }
 
     async addOpposingCharm(charm) {
@@ -1110,8 +1126,8 @@ export class RollForm extends FormApplication {
                         this.object.cost.healthaggravated -= item.system.cost.health;
                     }
                 }
-                this.object.diceModifier -= item.system.diceroller.bonusdice;
-                this.object.successModifier -= item.system.diceroller.bonussuccesses;
+                this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
+                this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                     if (rerollValue) {
@@ -1124,8 +1140,8 @@ export class RollForm extends FormApplication {
                 if (item.system.diceroller.rerollfailed) {
                     this.object.rerollFailed = false;
                 }
-                this.object.rerollNumber -= item.system.diceroller.rerolldice;
-                this.object.diceToSuccesses -= item.system.diceroller.diceToSuccesses;
+                this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
+                this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
 
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
                     if (rerollValue) {
@@ -1141,11 +1157,11 @@ export class RollForm extends FormApplication {
                     this.object.settings.excludeOnesFromRerolls = false;
                 }
 
-                this.object.damage.damageDice -= item.system.diceroller.damage.bonusdice;
-                this.object.damage.damageSuccessModifier -= item.system.diceroller.damage.bonussuccesses;
+                this.object.damage.damageDice -= this._getFormulaValue(item.system.diceroller.damage.bonusdice);
+                this.object.damage.damageSuccessModifier -= this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
                 this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
-                this.object.overwhelming -= item.system.diceroller.damage.overwhelming;
-                this.object.damage.postSoakDamage -= item.system.diceroller.damage.postsoakdamage;
+                this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
+                this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                     if (rerollValue) {
                         this.object.damage.reroll[rerollKey].status = false;
@@ -1157,16 +1173,14 @@ export class RollForm extends FormApplication {
                 if (item.system.diceroller.damage.rolltwice) {
                     this.object.damage.rollTwice = false;
                 }
-                this.object.damage.rerollNumber -= item.system.diceroller.damage.rerolldice;
+                this.object.damage.rerollNumber -= this._getFormulaValue(item.system.diceroller.damage.rerolldice);
                 if (item.system.diceroller.damage.threshholdtodamage) {
                     this.object.damage.threshholdToDamage = false;
                 }
                 if (item.system.diceroller.damage.doublerolleddamage) {
                     this.object.damage.doubleRolledDamage = false;
                 }
-                if (item.system.diceroller.damage.ignoresoak > 0) {
-                    this.object.damage.ignoreSoak -= item.system.diceroller.damage.ignoresoak;
-                }
+                this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
                     if (rerollValue) {
                         this.object.damage.reroll[rerollKey].cap -= rerollValue;
@@ -1695,6 +1709,9 @@ export class RollForm extends FormApplication {
             this.object.attribute = this.actor.type === "npc" ? null : this._getHighestAttribute();
         }
         if (this.object.rollType === 'social') {
+            if(this.object.applyAppearance) {
+                this.object.diceModifier += this.object.appearanceBonus;
+            }
             this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
         }
         let goalNumberLeft = 0;
@@ -2865,6 +2882,10 @@ export class RollForm extends FormApplication {
         if (this.object.attackEffect === undefined) {
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
+        }
+        if(this.object.applyAppearance === undefined) {
+            this.object.applyAppearance = false;
+            this.object.appearanceBonus = 0;
         }
     }
 

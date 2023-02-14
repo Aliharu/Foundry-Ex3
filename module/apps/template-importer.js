@@ -103,7 +103,11 @@ export default class TemplateImporter extends Application {
         description += textArray[index];
         description += " ";
         index++;
-        if((textArray[index+1] && textArray[index+1].includes('Cost:')) || (textArray[index+2] && (textArray[index+2].includes('Cost:') && textArray[index+2].includes('Duration:')))){
+        if((textArray[index+1] && textArray[index+1].includes('Cost:'))){
+          index--;
+          break;
+        }
+        if((textArray[index+2] && ((textArray[index+2].includes('Cost:') || (textArray[index+1].includes('Permanent')) && (textArray[index+2] && textArray[index+2].includes('Prerequisites:')))))) {
           index--;
           break;
         }
@@ -142,6 +146,9 @@ export default class TemplateImporter extends Application {
     var typeAndRequirement = textArray[index];
     typeAndRequirement = typeAndRequirement.split(' ');
     charmData.system.type = typeAndRequirement[0];
+    if(typeAndRequirement[0] === 'Permanent') {
+      charmData.system.duration = 'Permanent'
+    }
     charmData.system.ability = typeAndRequirement[1].toLowerCase();
     charmData.system.requirement = typeAndRequirement[2].replace(/[^0-9]/g, '');
     charmData.system.essence = typeAndRequirement[4].replace(/[^0-9]/g, '');
@@ -151,8 +158,8 @@ export default class TemplateImporter extends Application {
       charmData.system.duration = costDuration[1];
       var costArray = costDuration[0].split(',');
       this.charmCost(costArray, charmData);
+      index++;
     }
-    index++;
     if(textArray[index].includes('Keywords:')) {
       charmData.system.keywords = textArray[index].replace('Keywords: ', '');
       index++;
@@ -2018,6 +2025,11 @@ export default class TemplateImporter extends Application {
   }
 
   activateListeners(html) {
+    html.on("change", "#charmType", ev => {
+      this.charmType = ev.currentTarget.value;
+      this.render();
+    });
+
     html.on("change", ".radio", ev => {
       if (document.getElementById("charm-radio").checked) {
         this.type = "charm";
