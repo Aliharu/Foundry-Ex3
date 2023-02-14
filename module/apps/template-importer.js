@@ -107,7 +107,11 @@ export default class TemplateImporter extends Application {
           index--;
           break;
         }
-        if((textArray[index+2] && ((textArray[index+2].includes('Cost:') || (textArray[index+1].includes('Permanent')) && (textArray[index+2] && textArray[index+2].includes('Prerequisites:')))))) {
+        if(textArray[index+2] && textArray[index+2].includes('Cost:') && textArray[index+2].includes('Duration:')) {
+          index--;
+          break;
+        }
+        if(textArray[index+2] && (textArray[index+1].includes('Permanent')) && (textArray[index+2].includes('Prerequisites:'))) {
           index--;
           break;
         }
