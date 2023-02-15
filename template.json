@@ -62,19 +62,24 @@
           }
         },
         "evasion": {
-          "value": 0
+          "value": 0,
+          "min": 0
         },
         "parry": {
-          "value": 0
+          "value": 0,
+          "min": 0
         },
         "soak": {
-          "value": 1
+          "value": 1,
+          "min": 0
         },
         "armoredsoak": {
-          "value": 0
+          "value": 0,
+          "min": 0
         },
         "naturalsoak": {
-          "value": 1
+          "value": 1,
+          "min": 0
         },
         "hardness": {
           "value": 0,
@@ -807,6 +812,7 @@
         "decreasetargetnumber": 0,
         "rerolldice": 0,
         "diceToSuccesses": 0,
+        "reducedefense": 0,
         "rerollfailed": false,
         "rolltwice": false,
         "activateAura": "none",
@@ -893,6 +899,7 @@
           "soak": 0,
           "increasedamagetargetnumber": 0,
           "increasetargetnumber": 0,
+          "damagemodifier": 0,
           "resolve": 0,
           "guile": 0,
           "triggeronones": "none",

@@ -197,6 +197,13 @@
                             value="{{target.rollData.diceModifier}}">
                     </div>
                     {{/ifNotEquals}}
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.DamageModifier"}}
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.damageModifier"
+                            value="{{target.rollData.damageModifier}}">
+                    </div>
                 </div>
             </div>
             {{/each}}
@@ -232,6 +239,13 @@
                         value="{{target.rollData.diceModifier}}">
                 </div>
                 {{/ifNotEquals}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.DamageModifier"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.damageModifier"
+                        value="{{target.rollData.damageModifier}}">
+                </div>
             </div>
         </div>
         {{/each}}

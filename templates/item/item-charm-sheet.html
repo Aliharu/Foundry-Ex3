@@ -226,11 +226,8 @@
 
         <div class="tab" data-group="primary" data-tab="bonuses">
             <div class="resource flex-center" style="font-size: 17px;">
-                <label class="resource-label">{{localize "Ex3.DiceRollModifiers"}} <i
-                    title="Inputs marked with a * can have special inputs.  Input a lowercase attribute/ability/essence/willpower name such as 'strength' or 'martialarts' to use that fields value.  Special: 'essence or 3' will use the higher of Essence or 3"
-                    class="fas fa-info-circle"></i></label></label>
+                <label class="resource-label">{{localize "Ex3.DiceRollModifiers"}} <a><i class="formula-help fas fa-info-circle"></i></label></a></label>
             </div>
-
             <div>
                 <div class="resource grid grid-3col flex-center">
                     <div>
@@ -261,6 +258,11 @@
                     <div>
                         <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}}*</label>
                         <input name="system.diceroller.diceToSuccesses" value="{{system.diceroller.diceToSuccesses}}"
+                            type="text">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.ReduceDefense"}}*</label>
+                        <input name="system.diceroller.reducedefense" value="{{system.diceroller.reducedefense}}"
                             type="text">
                     </div>
                     <div>
@@ -695,19 +697,19 @@
             <div>
                 <div class="resource grid grid-3col flex-center">
                     <div>
-                        <label class="resource-label">{{localize "Ex3.DiceModifier"}}</label>
+                        <label class="resource-label">{{localize "Ex3.DiceModifier"}}*</label>
                         <input name="system.diceroller.opposedbonuses.dicemodifier"
-                            value="{{system.diceroller.opposedbonuses.dicemodifier}}" type="number">
+                            value="{{system.diceroller.opposedbonuses.dicemodifier}}" type="text">
                     </div>
                     <div>
-                        <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                        <label class="resource-label">{{localize "Ex3.Resolve"}}*</label>
                         <input name="system.diceroller.opposedbonuses.resolve"
-                            value="{{system.diceroller.opposedbonuses.resolve}}" type="number">
+                            value="{{system.diceroller.opposedbonuses.resolve}}" type="text">
                     </div>
                     <div>
-                        <label class="resource-label">{{localize "Ex3.Guile"}}</label>
+                        <label class="resource-label">{{localize "Ex3.Guile"}}*</label>
                         <input name="system.diceroller.opposedbonuses.guile"
-                            value="{{system.diceroller.opposedbonuses.guile}}" type="number">
+                            value="{{system.diceroller.opposedbonuses.guile}}" type="text">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.IncreaseTargetNumber"}}</label>
@@ -715,14 +717,19 @@
                             value="{{system.diceroller.opposedbonuses.increasetargetnumber}}" type="number">
                     </div>
                     <div>
-                        <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+                        <label class="resource-label">{{localize "Ex3.Defense"}}*</label>
                         <input name="system.diceroller.opposedbonuses.defense"
-                            value="{{system.diceroller.opposedbonuses.defense}}" type="number">
+                            value="{{system.diceroller.opposedbonuses.defense}}" type="text">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.Soak"}}*</label>
                         <input name="system.diceroller.opposedbonuses.soak"
                             value="{{system.diceroller.opposedbonuses.soak}}" type="text">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DamageModifier"}}*</label>
+                        <input name="system.diceroller.opposedbonuses.damagemodifier"
+                            value="{{system.diceroller.opposedbonuses.damagemodifier}}" type="text">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.IncreaseDamageTN"}}</label>

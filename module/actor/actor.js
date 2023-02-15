@@ -269,6 +269,48 @@ export class ExaltedThirdActor extends Actor {
       data.experience.exalt.spent = data.experience.exalt.total - data.experience.exalt.value;
     }
 
+    var currentParryPenalty = 0;
+    var currentEvasionPenalty = 0;
+    var currentOnslaughtPenalty = 0;
+    var currentDefensePenalty = 0;
+
+    for (const effect of actorData.effects) {
+      for (const change of effect.changes) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
+          currentEvasionPenalty += (change.value * -1);
+        }
+        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
+          currentParryPenalty += (change.value * -1);
+        }
+      }
+      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
+        currentOnslaughtPenalty += (effect.changes[0].value * -1);
+      }
+      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
+        currentDefensePenalty += (effect.changes[0].value * -1);
+      }
+    }
+    if (actorData.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+      currentParryPenalty += 1;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.effects.some(e => e.flags?.core?.statusId === 'grappled') || actorData.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.system.health.penalty !== 'inc') {
+      currentParryPenalty += Math.max(0, data.health.penalty - data.health.penaltymod);
+      currentEvasionPenalty += Math.max(0, data.health.penalty - data.health.penaltymod);
+    }
+    data.currentParryPenalty = currentParryPenalty;
+    data.currentEvasionPenalty = currentEvasionPenalty;
+    data.currentOnslaughtPenalty = currentOnslaughtPenalty;
+    data.currentDefensePenalty = currentDefensePenalty;
+
     // Initialize containers.
     const gear = [];
     const weapons = [];

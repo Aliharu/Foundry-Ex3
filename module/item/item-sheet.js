@@ -154,6 +154,17 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       }, { height: 1000, width: 1000, classes: ["dialog", "solar-background"] }).render(true);
     });
 
+    html.find(".formula-help").click(async ev => {
+      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/formula-dialogue.html");
+      new Dialog({
+        title: `Formulas`,
+        content: html,
+        buttons: {
+          cancel: { label: "Close" }
+        },
+      }, { classes: ["dialog", "solar-background"] }).render(true);
+    });
+
     html.find(".embeded-item-delete").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();

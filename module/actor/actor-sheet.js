@@ -428,47 +428,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - 4)));
       sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - 15))) * 4;
     }
-    var currentParryPenalty = 0;
-    var currentEvasionPenalty = 0;
-    var currentOnslaughtPenalty = 0;
-    var currentDefensePenalty = 0;
-
-    for (const effect of sheetData.effects) {
-      for (const change of effect.changes) {
-        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
-          currentEvasionPenalty += (change.value * -1);
-        }
-        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
-          currentParryPenalty += (change.value * -1);
-        }
-      }
-      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
-        currentOnslaughtPenalty += (effect.changes[0].value * -1);
-      }
-      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
-        currentDefensePenalty += (effect.changes[0].value * -1);
-      }
-    }
-    if (sheetData.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-      currentParryPenalty += 1;
-      currentEvasionPenalty += 2;
-    }
-    if (sheetData.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
-    if (sheetData.effects.some(e => e.flags?.core?.statusId === 'grappled') || sheetData.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
-    if (sheetData.system.health.penalty !== 'inc') {
-      currentParryPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
-      currentEvasionPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
-    }
-    sheetData.system.currentParryPenalty = currentParryPenalty;
-    sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
-    sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
-    sheetData.system.currentDefensePenalty = currentDefensePenalty;
     if (sheetData.actor.type === 'character') {
       sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
     }
