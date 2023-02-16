@@ -579,6 +579,11 @@ export class ExaltedThirdActor extends Actor {
    */
   getRollData() {
     const data = {...super.getRollData()};
+    data.woundpenalty = {'value': data.health.penalty};
+    data.evasionpenalty = {'value': data.currentEvasionPenalty};
+    data.onslaught = {'value': data.currentOnslaughtPenalty};
+    data.parrypenalty = {'value': data.currentParryPenalty};
+    data.defensepenalty = {'value': data.currentDefensePenalty};
 
     // Prepare character roll data.
     this._getCharacterRollData(data);

@@ -481,7 +481,7 @@ export class RollForm extends FormApplication {
                     this.object.difficulty = target.actor.system.guile.value;
                 }
                 if (this.object.rollType === 'social') {
-                    var userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes.appearance.value;
+                    var userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].value;
                     this.object.appearanceBonus = Math.max(0, userAppearance - target.actor.system.resolve.value);
                     this.object.difficulty = target.actor.system.resolve.value;
                     this.object.targetIntimacies = target.actor.intimacies.filter((i) => i.system.visible || game.user.isGM);
@@ -779,12 +779,12 @@ export class RollForm extends FormApplication {
         }
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
             if (rerollValue) {
-                this.object.reroll[rerollKey].cap += rerollValue;
+                this.object.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
             }
         }
         for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
             if (value) {
-                this.object.settings.doubleSucccessCaps[key] += value;
+                this.object.settings.doubleSucccessCaps[key] += this._getFormulaValue(value);
             }
         }
         if (item.system.diceroller.excludeonesfromrerolls) {
@@ -824,12 +824,12 @@ export class RollForm extends FormApplication {
 
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
             if (rerollValue) {
-                this.object.damage.reroll[rerollKey].cap += rerollValue;
+                this.object.damage.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
             }
         }
         for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
             if (value) {
-                this.object.settings.damage.doubleSucccessCaps[key] += value;
+                this.object.settings.damage.doubleSucccessCaps[key] += this._getFormulaValue(value);
             }
         }
         if (item.system.diceroller.damage.excludeonesfromrerolls) {
@@ -916,22 +916,15 @@ export class RollForm extends FormApplication {
                 return 0;
             }
         }
+        var negativeValue = false;
         if (formula.includes('-')) {
             formula = formula.replace('-', '');
+            negativeValue = true;
         }
-        if(formula === 'onslaught'){
-            formulaVal = forumlaActor.system.currentOnslaughtPenalty;
-        }
-        else if(formula === 'parrypenalty'){
-            formulaVal = forumlaActor.system.currentParryPenalty;
-        }
-        else if(formula === 'evasionpenalty'){
-            formulaVal = forumlaActor.system.currentEvasionPenalty;
-        }
-        else if (forumlaActor.getRollData()[formula]?.value) {
+        if (forumlaActor.getRollData()[formula]?.value) {
             formulaVal = forumlaActor.getRollData()[formula]?.value;
         }
-        if (formula.includes('-')) {
+        if (negativeValue) {
             formulaVal *= -1;
         }
         return formulaVal;
@@ -1243,12 +1236,12 @@ export class RollForm extends FormApplication {
 
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
                     if (rerollValue) {
-                        this.object.reroll[rerollKey].cap -= rerollValue;
+                        this.object.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
                     }
                 }
                 for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
                     if (value) {
-                        this.object.settings.doubleSucccessCaps[key] -= value;
+                        this.object.settings.doubleSucccessCaps[key] -= this._getFormulaValue(value);
                     }
                 }
                 if (item.system.diceroller.excludeonesfromrerolls) {
@@ -1281,12 +1274,12 @@ export class RollForm extends FormApplication {
                 this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
                     if (rerollValue) {
-                        this.object.damage.reroll[rerollKey].cap -= rerollValue;
+                        this.object.damage.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
                     }
                 }
                 for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
                     if (value) {
-                        this.object.settings.damage.doubleSucccessCaps[key] -= value;
+                        this.object.settings.damage.doubleSucccessCaps[key] -= this._getFormulaValue(value);
                     }
                 }
                 if (item.system.diceroller.damage.excludeonesfromrerolls) {

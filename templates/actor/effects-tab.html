@@ -127,6 +127,24 @@
             <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}"
                 data-dtype="Number" />
         </div>
+        {{#if roll.appearanceattribute}}
+        <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.Appearance"}} </label>
+            <select name="system.settings.rollsettings.{{key}}.appearanceattribute" value="{{roll.appearanceattribute}}" data-type="String">
+                {{#select roll.appearanceattribute}}
+                <option value="strength">{{localize "Ex3.Strength"}}</option>
+                <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
+                <option value="stamina">{{localize "Ex3.Stamina"}}</option>
+                <option value="charisma">{{localize "Ex3.Charisma"}}</option>
+                <option value="manipulation">{{localize "Ex3.Manipulation"}}</option>
+                <option value="appearance">{{localize "Ex3.Appearance"}}</option>
+                <option value="perception">{{localize "Ex3.Perception"}}</option>
+                <option value="intelligence">{{localize "Ex3.Intelligence"}}</option>
+                <option value="wits">{{localize "Ex3.Wits"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        {{/if}}
     </div>
     {{/each}}
 </div>
