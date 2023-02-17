@@ -1848,6 +1848,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
           }
         }
+        for(var effect of this.actor.effects.filter((effect => effect._sourceName === item.name))){
+          effect.update({disabled: true});
+        }
       }
       else {
         var newLevel = actorData.system.anima.level;
@@ -1929,6 +1932,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             item.update({
               [`system.active`]: true,
             });
+            for(var effect of this.actor.effects.filter((effect => effect._sourceName === item.name))){
+              effect.update({disabled: false});
+            }
           }
         }
         actorData.system.anima.level = newLevel;
