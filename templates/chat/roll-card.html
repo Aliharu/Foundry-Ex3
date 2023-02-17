@@ -84,6 +84,17 @@
             {{#if rollData.goalNumber}}<b>{{localize "Ex3.GoalNumber"}}: </b>{{rollData.goalNumber}}{{/if}}
         </div>
         {{/ifNotEquals}}
+        {{#ifEquals rollData.rollType 'social'}}
+            <div>
+                <b>{{localize "Ex3.AppearanceBonus"}}: </b>{{rollData.appearanceBonus}} {{#if rollData.applyAppearance}}(Applied){{else}}(Not applied){{/if}}
+            </div>
+            <div>
+                <b>{{localize "Ex3.SupportedIntimacyBonus"}}: {{ rollData.opposedIntimacy }}</b>
+            </div>
+            <div>
+                <b>{{localize "Ex3.OpposedIntimacyBonus"}}: {{ rollData.opposedIntimacy }}</b>
+            </div>
+        {{/ifEquals}}
         {{#if isAttack}}
             {{#ifNotEquals rollData.rollType 'damage'}}
                 <div class="roll-card-header">
@@ -279,15 +290,6 @@
             {{#ifEquals rollData.rollType 'social'}}
                 <div>
                     <b>{{localize "Ex3.Resolve"}}: </b>{{rollData.target.actor.system.resolve.value}}
-                </div>
-                <div>
-                    <b>{{localize "Ex3.AppearanceBonus"}}: </b>{{rollData.appearanceBonus}} {{#if rollData.applyAppearance}}(Applied){{else}}(Not applied){{/if}}
-                </div>
-                <div>
-                    <b>{{localize "Ex3.SupportedIntimacyBonus"}}: {{ rollData.opposedIntimacy }}</b>
-                </div>
-                <div>
-                    <b>{{localize "Ex3.OpposedIntimacyBonus"}}: {{ rollData.opposedIntimacy }}</b>
                 </div>
             {{/ifEquals}}
             {{#ifEquals rollData.rollType 'readIntentions'}}

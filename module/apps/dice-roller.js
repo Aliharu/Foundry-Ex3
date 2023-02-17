@@ -80,6 +80,8 @@ export class RollForm extends FormApplication {
 
             this.object.supportedIntimacy = 0;
             this.object.opposedIntimacy = 0;
+            this.object.applyAppearance = false;
+            this.object.appearanceBonus = 0;
 
             this.object.doubleSuccess = 10;
             this.object.rerollFailed = false;
@@ -211,7 +213,7 @@ export class RollForm extends FormApplication {
                         this.object.ability = data.weapon.ability || "archery";
                     }
                     if (this.object.attackType === 'withering' || this.actor.type === "npc") {
-                        this.object.diceModifier = data.weapon.witheringaccuracy || 0;
+                        this.object.diceModifier += data.weapon.witheringaccuracy || 0;
                         if (this.object.attackType === 'withering') {
                             this.object.damage.damageDice = data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
@@ -768,15 +770,21 @@ export class RollForm extends FormApplication {
         }
         this.object.rerollNumber += this._getFormulaValue(item.system.diceroller.rerolldice);
         this.object.diceToSuccesses += this._getFormulaValue(item.system.diceroller.diceToSuccesses);
-        if (this.object.showTargets) {
-            const targetValues = Object.values(this.object.targets);
-            for (const target of targetValues) {
-                target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedefense));
-            } 
+        if(this._isAttackRoll()) {
+            if (this.object.showTargets) {
+                const targetValues = Object.values(this.object.targets);
+                for (const target of targetValues) {
+                    target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                } 
+            }
+            else {
+                this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+            }
         }
         else {
-            this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedefense));
+            this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
         }
+
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
             if (rerollValue) {
                 this.object.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
@@ -1224,14 +1232,19 @@ export class RollForm extends FormApplication {
                 this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
                 this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
 
-                if (this.object.showTargets) {
-                    const targetValues = Object.values(this.object.targets);
-                    for (const target of targetValues) {
-                        target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedefense);
-                    } 
+                if(this._isAttackRoll()) {
+                    if (this.object.showTargets) {
+                        const targetValues = Object.values(this.object.targets);
+                        for (const target of targetValues) {
+                            target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        } 
+                    }
+                    else {
+                        this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                    }
                 }
                 else {
-                    this.object.defense += this._getFormulaValue(item.system.diceroller.reducedefense);
+                    this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                 }
 
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
@@ -1631,16 +1644,16 @@ export class RollForm extends FormApplication {
                     dice += this.actor.actions.find(x => x._id === this.object.pool).system.value;
                 }
                 else if (this.object.pool === 'willpower') {
-                    dice = this.actor.system.willpower.max;
+                    dice += this.actor.system.willpower.max;
                 } else {
-                    dice = data.pools[this.object.pool].value;
+                    dice += data.pools[this.object.pool].value;
                 }
             }
 
             if (this.object.armorPenalty) {
                 for (let armor of this.actor.armor) {
                     if (armor.system.equipped) {
-                        dice = dice - Math.abs(armor.system.penalty);
+                        dice -= Math.abs(armor.system.penalty);
                     }
                 }
             }
@@ -1810,7 +1823,7 @@ export class RollForm extends FormApplication {
             this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
         }
         let goalNumberLeft = 0;
-        this._baseAbilityDieRoll();
+        await this._baseAbilityDieRoll();
         let resultString = ``;
 
         if (this.object.rollType === "joinBattle") {
