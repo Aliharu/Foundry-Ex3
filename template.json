@@ -900,6 +900,7 @@
           "soak": 0,
           "increasedamagetargetnumber": 0,
           "increasetargetnumber": 0,
+          "increasegambitdifficulty": 0,
           "damagemodifier": 0,
           "resolve": 0,
           "guile": 0,

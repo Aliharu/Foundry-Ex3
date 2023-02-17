@@ -948,6 +948,7 @@ export class RollForm extends FormApplication {
             this.object.opposingCharms.push(charm);
         }
         this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
+        this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty);
         if (this._isAttackRoll()) {
             if (this.object.showTargets) {
                 const targetValues = Object.values(this.object.targets);
@@ -1322,6 +1323,7 @@ export class RollForm extends FormApplication {
                     charm.timesAdded--;
                 }
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
+                this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty);
                 if (this._isAttackRoll()) {
                     if (this.object.showTargets) {
                         const targetValues = Object.values(this.object.targets);

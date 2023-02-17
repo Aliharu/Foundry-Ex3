@@ -1,6 +1,6 @@
 <div class="sheet-body exaltedthird">
-    <div class="flex-center resource-label" style="font-weight: bold;">
-        Damage
+    <div class="flex-center resource-label">
+        {{#ifEquals data.rollType 'gambit'}}{{localize "Ex3.Initiative"}}{{else}}{{localize "Ex3.Damage"}}{{/ifEquals}}
     </div>
     {{#ifEquals data.rollType 'damage'}}
     {{> systems/exaltedthird/templates/dialogues/added-charm-list.html}}
