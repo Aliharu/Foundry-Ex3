@@ -813,7 +813,7 @@
         "decreasetargetnumber": 0,
         "rerolldice": 0,
         "diceToSuccesses": 0,
-        "reducedefense": 0,
+        "reducedifficulty": 0,
         "rerollfailed": false,
         "rolltwice": false,
         "activateAura": "none",
