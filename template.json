@@ -253,6 +253,9 @@
             "value": 0,
             "max": 0
           },
+          "momentum": {
+            "value": 0
+          },
           "speed": {
             "value": 0
           },
