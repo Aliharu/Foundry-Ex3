@@ -1804,7 +1804,7 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if (!this._isAttackRoll()) {
+        if (!this._isAttackRoll() && this.object.rollType !== 'base') {
             this._spendResources();
         }
     }
