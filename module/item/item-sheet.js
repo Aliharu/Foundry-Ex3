@@ -131,6 +131,8 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    this._setupButtons(html);
+
     html.find('.trait-selector').click(this._onTraitSelector.bind(this));
 
     html.find(".effect-control").click(ev => {
@@ -141,6 +143,19 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     html.find('.collapsable').click(ev => {
       const li = $(ev.currentTarget).next();
       li.toggle("fast");
+    });
+
+    html.find('.toggle-charm-dice').mousedown(ev => {
+      const itemData = duplicate(this.item);
+      itemData.system.diceroller.settings.noncharmdice = !itemData.system.diceroller.settings.noncharmdice;
+      this.item.update(itemData);
+    });
+
+    
+    html.find('.toggle-charm-successes').mousedown(ev => {
+      const itemData = duplicate(this.item);
+      itemData.system.diceroller.settings.noncharmsuccesses = !itemData.system.diceroller.settings.noncharmsuccesses;
+      this.item.update(itemData);
     });
 
     html.find(".charms-cheat-sheet").click(async ev => {
@@ -224,6 +239,20 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     //   });
     //   itemToItemAssociation.bind(html[0]);
     // }
+  }
+
+  _setupButtons(html) {
+    const itemData = duplicate(this.item);
+    html.find('.non-charm-dice').each(function (i) {
+      if (itemData.system.diceroller.settings.noncharmdice) {
+        $(this).css("color", '#F9B516');
+      }
+    });
+    html.find('.non-charm-successes').each(function (i) {
+      if (itemData.system.diceroller.settings.noncharmsuccesses) {
+        $(this).css("color", '#F9B516');
+      }
+    });
   }
 
   importItemFromCollection(collection, entryId) {

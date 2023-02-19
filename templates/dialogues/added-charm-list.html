@@ -1,6 +1,6 @@
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
-        {{localize "Ex3.Charms"}} {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}}
+        {{localize "Ex3.Charms"}} {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}} {{#if data.charmDiceAdded}}({{data.charmDiceAdded}} Charm Dice){{/if}}
     </div>
     <div>
         <i class="fas fa-caret-down"></i>

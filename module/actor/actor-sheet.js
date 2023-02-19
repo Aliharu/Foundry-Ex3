@@ -1635,7 +1635,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _setupButtons(html) {
-    const actorData = duplicate(this.actor)
+    const actorData = duplicate(this.actor);
     html.find('.set-pool-personal').each(function (i) {
       if (actorData.system.settings.charmmotepool === 'personal') {
         $(this).css("color", '#F9B516');

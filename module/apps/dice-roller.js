@@ -58,6 +58,7 @@ export class RollForm extends FormApplication {
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
             this.object.diceModifier = 0;
+            this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
 
@@ -753,6 +754,12 @@ export class RollForm extends FormApplication {
         }
         this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
         this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+        if(!item.system.diceroller.settings.noncharmdice) {
+            this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
+        }
+        if(!item.system.diceroller.settings.noncharmsuccesses) {
+            this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+        }
         if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
             this.object.doubleSuccess = item.system.diceroller.doublesuccess;
         }
@@ -1221,6 +1228,12 @@ export class RollForm extends FormApplication {
                 }
                 this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                if(!item.system.diceroller.settings.noncharmdice) {
+                    this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
+                }
+                if(!item.system.diceroller.settings.noncharmsuccesses) {
+                    this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
+                }
                 this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                     if (rerollValue) {
@@ -2988,6 +3001,9 @@ export class RollForm extends FormApplication {
                 { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
                 { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
             ];
+        }
+        if(this.object.charmDiceAdded === undefined) {
+            this.object.charmDiceAdded = 0;
         }
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();

@@ -820,6 +820,10 @@
         "rerollfailed": false,
         "rolltwice": false,
         "activateAura": "none",
+        "settings": {
+          "noncharmdice": false,
+          "noncharmsuccesses": false
+        },
         "reroll": {
           "one": false,
           "two": false,
