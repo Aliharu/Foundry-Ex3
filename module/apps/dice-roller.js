@@ -854,7 +854,7 @@ export class RollForm extends FormApplication {
         this.render();
     }
 
-    _getFormulaValue(charmValue) {
+    _getFormulaValue(charmValue, opposedCharmActor=null) {
         var rollerValue = 0;
         if (charmValue) {
             if (charmValue.split(' ').length === 3) {
@@ -864,9 +864,9 @@ export class RollForm extends FormApplication {
                     negativeValue = true;
                 }
                 var split = charmValue.split(' ');
-                var leftVar = this._getFormulaActorValue(split[0]);
+                var leftVar = this._getFormulaActorValue(split[0], opposedCharmActor);
                 var operand = split[1];
-                var rightVar = this._getFormulaActorValue(split[2]);
+                var rightVar = this._getFormulaActorValue(split[2], opposedCharmActor);
                 switch (operand) {
                     case '+':
                         rollerValue = leftVar + rightVar;
@@ -899,15 +899,18 @@ export class RollForm extends FormApplication {
                 }
             }
             else {
-                rollerValue = this._getFormulaActorValue(charmValue);
+                rollerValue = this._getFormulaActorValue(charmValue, opposedCharmActor);
             }
         }
         return rollerValue;
     }
 
-    _getFormulaActorValue(formula) {
+    _getFormulaActorValue(formula, opposedCharmActor=null) {
         var formulaVal = 0;
         var forumlaActor = this.actor;
+        if(opposedCharmActor) {
+            forumlaActor = opposedCharmActor;
+        }
         if (parseInt(formula)) {
             return parseInt(formula);
         }
@@ -948,43 +951,43 @@ export class RollForm extends FormApplication {
             this.object.opposingCharms.push(charm);
         }
         this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
-        this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty);
+        this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
         if (this._isAttackRoll()) {
             if (this.object.showTargets) {
                 const targetValues = Object.values(this.object.targets);
                 if (targetValues.length === 1) {
-                    targetValues[0].rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense);
-                    targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
-                    targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
-                    targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier);
+                    targetValues[0].rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                    targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                    targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                    targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                 }
                 else {
                     for (const target of targetValues) {
                         if (target.actor.id === charm.parent.id || targetValues.length === 1) {
-                            target.rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense);
-                            target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
-                            target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
-                            target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier);
+                            target.rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                            target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                            target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                            target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                         }
                     }
                 }
             }
             else {
-                this.object.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense);
-                this.object.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
-                this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
-                this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier);
+                this.object.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                this.object.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
             }
             this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
         }
         else {
-            this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
+            this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
         }
         if (this.object.rollType === 'readIntentions') {
-            this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile);
+            this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
         }
         if (this.object.rollType === 'social') {
-            this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve);
+            this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
         }
         if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
             this.object.settings.triggerOnOnes = charm.system.diceroller.opposedbonuses.triggeronones;
@@ -1323,43 +1326,43 @@ export class RollForm extends FormApplication {
                     charm.timesAdded--;
                 }
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
-                this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty);
+                this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
                 if (this._isAttackRoll()) {
                     if (this.object.showTargets) {
                         const targetValues = Object.values(this.object.targets);
                         if (targetValues.length === 1) {
-                            targetValues[0].rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense);
-                            targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
-                            targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
-                            targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier);
+                            targetValues[0].rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                            targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                            targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                            targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                         }
                         else {
                             for (const target of targetValues) {
                                 if (target.actor.id === charm.parent.id || targetValues.length === 1) {
-                                    target.rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense);
-                                    target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
-                                    target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
-                                    target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier);
+                                    target.rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                                    target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                                    target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                                    target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                                 }
                             }
                         }
                     }
                     else {
-                        this.object.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense);
-                        this.object.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak);
-                        this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
-                        this.object.damage.damageDice -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier);
+                        this.object.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                        this.object.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                        this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                        this.object.damage.damageDice -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                     }
                     this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
                 }
                 else {
-                    this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier);
+                    this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                 }
                 if (this.object.rollType === 'readIntentions') {
-                    this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile);
+                    this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
                 }
                 if (this.object.rollType === 'social') {
-                    this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve);
+                    this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
                 }
                 if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
                     this.object.settings.triggerOnOnes = 'none';

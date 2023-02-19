@@ -397,6 +397,117 @@ Hooks.once("ready", async function () {
     }
   }
 
+  // for (let item of game.items) {
+  //   try {
+  //     let updateData = foundry.utils.deepClone(item.toObject());
+  //     if (updateData.type === 'charm') {
+  //       var image = 'icons/svg/explosion.svg';
+  //       var imageMap = {};
+  //       switch (updateData.system.ability) {
+  //         case 'archery':
+  //           image = 'icons/skills/ranged/arrow-flying-white-blue.webp';
+  //           break;
+  //         case 'athletics':
+  //           imageMap = { 
+  //             'Attack': 'icons/skills/melee/strike-flail-destructive-yellow.webp',
+  //             'Might': 'icons/magic/control/buff-strength-muscle-damage-orange.webp',
+  //             'Mobility': 'icons/skills/movement/feet-winged-boots-glowing-yellow.webp',
+  //             'Special': 'icons/magic/holy/meditation-chi-focus-blue.webp',
+  //             'Speed': 'icons/skills/movement/feet-winged-boots-glowing-yellow.webp',
+  //           };
+  //           break;
+  //         case 'awareness':
+  //           image = 'icons/magic/control/hypnosis-mesmerism-eye-tan.webp'
+  //           break;
+  //         case 'brawl':
+  //           image = 'icons/skills/melee/unarmed-punch-fist-yellow-red.webp'
+  //           break;
+  //         case 'bureaucracy':
+  //           image = 'icons/skills/trades/academics-merchant-scribe.webp'
+  //           break;
+  //         case 'craft':
+  //           image = 'icons/skills/trades/smithing-anvil-silver-red.webp'
+  //           break;
+  //         case 'dodge':
+  //           image = 'icons/magic/movement/trail-streak-zigzag-yellow.webp'
+  //           break;
+  //         case 'integrity':
+  //           image = 'icons/magic/holy/meditation-chi-focus-blue.webp'
+  //           break;
+  //         case 'investigation':
+  //           image = 'icons/skills/trades/academics-investigation-study-blue.webp'
+  //           break;
+  //         case 'larceny':
+  //           image = 'icons/skills/trades/security-locksmith-key-gray.webp'
+  //           break;
+  //         case 'linguistics':
+  //           image = 'icons/skills/trades/academics-scribe-quill-gray.webp'
+  //           break;
+  //         case 'lore':
+  //           image = 'icons/skills/trades/academics-study-reading-book.webp'
+  //           break;
+  //         case 'medicine':
+  //           image = 'icons/tools/cooking/mortar-stone-yellow.webp'
+  //           break;
+  //         case 'melee':
+  //           image = 'icons/skills/melee/weapons-crossed-swords-yellow.webp'
+  //           break;
+  //         case 'occult':
+  //           image = 'icons/skills/trades/academics-book-study-purple.webp'
+  //           break;
+  //         case 'performance':
+  //           image = 'icons/skills/trades/music-notes-sound-blue.webp';
+  //           break;
+  //         case 'presence':
+  //           image = 'icons/magic/control/silhouette-aura-energy.webp'
+  //           break;
+  //         case 'resistance':
+  //           image = 'icons/magic/defensive/shield-barrier-deflect-gold.webp'
+  //           break;
+  //         case 'ride':
+  //           image = 'icons/environment/creatures/horse-brown.webp'
+  //           break;
+  //         case 'sail':
+  //           image = 'icons/skills/trades/profession-sailing-ship.webp';
+  //           imageMap = {
+  //             'Navigation': 'icons/tools/navigation/map-marked-blue.webp'
+  //           };
+  //           break;
+  //         case 'socialize':
+  //           image = 'icons/skills/social/diplomacy-handshake-yellow.webp'
+  //           break;
+  //         case 'stealth':
+  //           image = 'icons/magic/perception/shadow-stealth-eyes-purple.webp'
+  //           break;
+  //         case 'survival':
+  //           image = 'icons/magic/nature/wolf-paw-glow-large-green.webp';
+  //           imageMap = {
+  //             'Wilderness': 'icons/environment/wilderness/terrain-river-road-gray.webp'
+  //           };
+  //           break;
+  //         case 'thrown':
+  //           image = 'icons/skills/ranged/daggers-thrown-salvo-orange.webp'
+  //           break;
+  //         case 'war':
+  //           image = 'icons/environment/people/charge.webp'
+  //           break;
+  //       }
+  //       if(imageMap[item.folder.name]) {
+  //         image = imageMap[item.folder.name];
+  //       }
+  //       updateData.img = image;
+  //       if (!foundry.utils.isEmpty(updateData)) {
+  //         await item.update(updateData, { enforceTypes: false });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+  //     console.error(error);
+  //   }
+  // }
+
+
+
   $("#chat-log").on("click", " .item-row", ev => {
     const li = $(ev.currentTarget).next();
     li.toggle("fast");
