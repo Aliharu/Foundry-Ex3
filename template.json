@@ -722,6 +722,9 @@
       },
       "summary": {
         "summary": ""
+      },
+      "macro": {
+        "macro": ""
       }
     },
     "item": {
@@ -781,7 +784,8 @@
     "charm": {
       "templates": [
         "base",
-        "summary"
+        "summary",
+        "macro"
       ],
       "prerequisites": "",
       "charmprerequisites": [],
