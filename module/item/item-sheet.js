@@ -110,18 +110,6 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     return new TraitSelector(this.item, options).render(true)
   }
 
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  setPosition(options = {}) {
-    const position = super.setPosition(options);
-    const sheetBody = this.element.find(".sheet-body");
-    const bodyHeight = position.height - 192;
-    sheetBody.css("height", bodyHeight);
-    return position;
-  }
-
   /* -------------------------------------------- */
 
   /** @override */
@@ -151,7 +139,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       this.item.update(itemData);
     });
 
-    
+
     html.find('.toggle-charm-successes').mousedown(ev => {
       const itemData = duplicate(this.item);
       itemData.system.diceroller.settings.noncharmsuccesses = !itemData.system.diceroller.settings.noncharmsuccesses;

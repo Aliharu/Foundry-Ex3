@@ -782,7 +782,7 @@ export class RollForm extends FormApplication {
                 const targetValues = Object.values(this.object.targets);
                 for (const target of targetValues) {
                     target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                } 
+                }
             }
             else {
                 this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
@@ -1254,7 +1254,7 @@ export class RollForm extends FormApplication {
                         const targetValues = Object.values(this.object.targets);
                         for (const target of targetValues) {
                             target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        } 
+                        }
                     }
                     else {
                         this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
@@ -1525,11 +1525,17 @@ export class RollForm extends FormApplication {
                 diceModifiers.rerollNumber += 1;
             }
         }
-        return {
+
+        let rollResult = {
             roll: roll,
             results: results,
             total: total,
         };
+
+        if (diceModifiers.macros.length > 0)
+            rollResult = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), rollResult);
+
+        return rollResult;
     }
 
     _calculateRoll(dice, diceModifiers) {
@@ -1743,7 +1749,23 @@ export class RollForm extends FormApplication {
             rerollFailed: this.object.rerollFailed,
             rerollNumber: this.object.rerollNumber,
             settings: this.object.settings,
+            macros: [],
         }
+
+        for (let charm of this.object.addedCharms){
+            if (!charm.system.macro) continue;
+            let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
+            rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                try{
+                    return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                } catch (e) {
+                    ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                    console.error(e);
+                }
+                return rollResult;
+            });
+        }
+
         const diceRollResults = this._calculateRoll(dice, rollModifiers);
         this.object.roll = diceRollResults.roll;
         this.object.displayDice = diceRollResults.diceDisplay;

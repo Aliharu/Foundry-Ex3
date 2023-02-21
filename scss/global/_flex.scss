@@ -2,6 +2,14 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-fill {
+  flex: 1 0 auto;
+}
+
 .flex-center {
   align-items: center;
   justify-content: center;
