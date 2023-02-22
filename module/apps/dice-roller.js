@@ -1613,8 +1613,13 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if (diceModifiers.macros.length > 0)
-            rollResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), rollResults);
+        if (diceModifiers.macros.length > 0){
+            let newResults = { ...rollResults, results: diceRoll, total };
+            newResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), newResults);
+            total = newResults.total
+            diceRoll = newResults.diceRoll
+            rollResults = newResults
+        }
 
         let diceDisplay = "";
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
