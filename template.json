@@ -34,6 +34,7 @@
           "aggravated": 0,
           "value": 0,
           "max": 0,
+          "penalty": 0,
           "penaltymod": 0
         },
         "willpower": {
@@ -251,7 +252,8 @@
             "lethal": 0,
             "aggravated": 0,
             "value": 0,
-            "max": 0
+            "max": 0,
+            "penalty": 0
           },
           "momentum": {
             "value": 0
@@ -294,7 +296,8 @@
             "lethal": 0,
             "aggravated": 0,
             "value": 0,
-            "max": 0
+            "max": 0,
+            "penalty": 0
           },
           "soak": {
             "value": 1
