@@ -412,7 +412,7 @@ Hooks.once("ready", async function () {
   //             'Attack': 'icons/skills/melee/strike-flail-destructive-yellow.webp',
   //             'Might': 'icons/magic/control/buff-strength-muscle-damage-orange.webp',
   //             'Mobility': 'icons/skills/movement/feet-winged-boots-glowing-yellow.webp',
-  //             'Special': 'icons/magic/holy/meditation-chi-focus-blue.webp',
+  //             'Special': 'icons/magic/light/explosion-beam-impact-silhouette.webp',
   //             'Speed': 'icons/skills/movement/feet-winged-boots-glowing-yellow.webp',
   //           };
   //           break;
@@ -421,6 +421,9 @@ Hooks.once("ready", async function () {
   //           break;
   //         case 'brawl':
   //           image = 'icons/skills/melee/unarmed-punch-fist-yellow-red.webp'
+  //           imageMap = { 
+  //             'Grappling': 'icons/skills/melee/strike-chain-whip-blue.webp',
+  //           };
   //           break;
   //         case 'bureaucracy':
   //           image = 'icons/skills/trades/academics-merchant-scribe.webp'
@@ -448,18 +451,27 @@ Hooks.once("ready", async function () {
   //           break;
   //         case 'medicine':
   //           image = 'icons/tools/cooking/mortar-stone-yellow.webp'
+  //           imageMap = {
+  //             'Poison': 'icons/skills/toxins/poison-bottle-corked-fire-green.webp'
+  //           };
   //           break;
   //         case 'melee':
   //           image = 'icons/skills/melee/weapons-crossed-swords-yellow.webp'
+  //           imageMap = { 
+  //             'Defense': 'icons/skills/melee/shield-block-gray-orange.webp',
+  //           };
   //           break;
   //         case 'occult':
-  //           image = 'icons/skills/trades/academics-book-study-purple.webp'
+  //           image = 'icons/magic/symbols/runes-star-pentagon-orange.webp'
   //           break;
   //         case 'performance':
   //           image = 'icons/skills/trades/music-notes-sound-blue.webp';
   //           break;
   //         case 'presence':
   //           image = 'icons/magic/control/silhouette-aura-energy.webp'
+  //           imageMap = {
+  //             'Seduction': 'icons/magic/life/heart-glowing-red.webp'
+  //           };
   //           break;
   //         case 'resistance':
   //           image = 'icons/magic/defensive/shield-barrier-deflect-gold.webp'
@@ -482,7 +494,7 @@ Hooks.once("ready", async function () {
   //         case 'survival':
   //           image = 'icons/magic/nature/wolf-paw-glow-large-green.webp';
   //           imageMap = {
-  //             'Wilderness': 'icons/environment/wilderness/terrain-river-road-gray.webp'
+  //             'Wilderness': 'icons/magic/nature/plant-bamboo-green.webp'
   //           };
   //           break;
   //         case 'thrown':
@@ -491,11 +503,19 @@ Hooks.once("ready", async function () {
   //         case 'war':
   //           image = 'icons/environment/people/charge.webp'
   //           break;
+  //         case 'universal':
+  //           image = 'icons/magic/light/explosion-star-large-orange.webp';
+  //           break;
   //       }
   //       if(imageMap[item.folder.name]) {
   //         image = imageMap[item.folder.name];
   //       }
+  //       var listingName = updateData.system.ability.charAt(0).toUpperCase() + updateData.system.ability.slice(1);
+  //       if(item.folder.name !== listingName) {
+  //         listingName += ` (${item.folder.name})`;
+  //       }
   //       updateData.img = image;
+  //       updateData.system.listingname = listingName;
   //       if (!foundry.utils.isEmpty(updateData)) {
   //         await item.update(updateData, { enforceTypes: false });
   //       }
