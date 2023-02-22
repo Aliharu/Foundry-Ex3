@@ -170,9 +170,13 @@ Hooks.once('init', async function () {
 //   console.log(updateData);
 // });
 
-async function handleSocket({ type, id, data }) {
+async function handleSocket({ type, id, data, actorId }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {
+      data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
+      if(!data.actor) { 
+        data.actor = game.actors.get(actorId);
+      }
       game.rollForm.addOpposingCharm(data);
     }
   }
@@ -624,6 +628,7 @@ function triggerItem(itemUuid) {
       game.socket.emit('system.exaltedthird', {
         type: 'addOpposingCharm',
         data: item,
+        actorId: item.actor._id,
       });
     }
   });

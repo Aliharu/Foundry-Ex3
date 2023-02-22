@@ -579,11 +579,63 @@ export class ExaltedThirdActor extends Actor {
    */
   getRollData() {
     const data = {...super.getRollData()};
-    data.woundpenalty = {'value': data.health.penalty};
-    data.evasionpenalty = {'value': data.currentEvasionPenalty};
-    data.onslaught = {'value': data.currentOnslaughtPenalty};
-    data.parrypenalty = {'value': data.currentParryPenalty};
-    data.defensepenalty = {'value': data.currentDefensePenalty};
+    var currentParryPenalty = 0;
+    var currentEvasionPenalty = 0;
+    var currentOnslaughtPenalty = 0;
+    var currentDefensePenalty = 0;
+    var totalHealth = 0;
+    var currentPenalty = 0;
+
+    if (this.system.battlegroup) {
+      currentPenalty = 0;
+    }
+    else {
+      for (let [key, health_level] of Object.entries(this.system.health.levels)) {
+        if ((this.system.health.bashing + this.system.health.lethal + this.system.health.aggravated) > totalHealth) {
+          currentPenalty = health_level.penalty;
+        }
+        totalHealth += health_level.value;
+      }
+    }
+
+    for (const effect of this.effects) {
+      for (const change of effect.changes) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
+          currentEvasionPenalty += (change.value * -1);
+        }
+        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
+          currentParryPenalty += (change.value * -1);
+        }
+      }
+      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
+        currentOnslaughtPenalty += (effect.changes[0].value * -1);
+      }
+      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
+        currentDefensePenalty += (effect.changes[0].value * -1);
+      }
+    }
+    if (this.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+      currentParryPenalty += 1;
+      currentEvasionPenalty += 2;
+    }
+    if (this.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (this.effects.some(e => e.flags?.core?.statusId === 'grappled') || this.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (currentPenalty !== 'inc') {
+      currentParryPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
+      currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
+    }
+    
+    data.woundpenalty = {'value': currentPenalty};
+    data.evasionpenalty = {'value': currentEvasionPenalty};
+    data.onslaught = {'value': currentOnslaughtPenalty};
+    data.parrypenalty = {'value': currentParryPenalty};
+    data.defensepenalty = {'value': currentDefensePenalty};
 
     // Prepare character roll data.
     this._getCharacterRollData(data);

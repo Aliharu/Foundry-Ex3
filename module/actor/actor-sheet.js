@@ -1821,6 +1821,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     game.socket.emit('system.exaltedthird', {
       type: 'addOpposingCharm',
       data: item,
+      actorId: item.actor._id,
     });
   }
 
