@@ -1532,9 +1532,6 @@ export class RollForm extends FormApplication {
             total: total,
         };
 
-        if (diceModifiers.macros.length > 0)
-            rollResult = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), rollResult);
-
         return rollResult;
     }
 
@@ -1615,6 +1612,10 @@ export class RollForm extends FormApplication {
                 }
             }
         }
+
+        if (diceModifiers.macros.length > 0)
+            rollResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), rollResults);
+
         let diceDisplay = "";
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
             if (dice.doubled) {
