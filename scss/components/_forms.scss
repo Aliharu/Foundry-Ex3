@@ -102,6 +102,7 @@ textarea {
 .sheet-body,
 .sheet-body .tab,
 .sheet-body .tab .editor {
+  height: 100%;
   flex-direction: column;
   flex: 1;
   align-items: stretch;

@@ -271,6 +271,7 @@
 .exaltedthird .sheet-body,
 .exaltedthird .sheet-body .tab,
 .exaltedthird .sheet-body .tab .editor {
+  height: 100%;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
