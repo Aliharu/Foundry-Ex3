@@ -2168,19 +2168,19 @@ export class RollForm extends FormApplication {
             macros: [],
         }
 
-        // for (let charm of this.object.addedCharms){
-        //     if (!charm.system.damagemacro) continue;
-        //     let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.damagemacro);
-        //     rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
-        //         try{
-        //             return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
-        //         } catch (e) {
-        //             ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
-        //             console.error(e);
-        //         }
-        //         return rollResult;
-        //     });
-        // }
+        for (let charm of this.object.addedCharms){
+            if (!charm.system.damagemacro) continue;
+            let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.damagemacro);
+            rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                try{
+                    return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                } catch (e) {
+                    ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                    console.error(e);
+                }
+                return rollResult;
+            });
+        }
 
         var diceRollResults = this._calculateRoll(dice, rollModifiers);
         if (this.object.damage.rollTwice) {

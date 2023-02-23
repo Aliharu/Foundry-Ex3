@@ -727,7 +727,8 @@
         "summary": ""
       },
       "macro": {
-        "macro": ""
+        "macro": "",
+        "damagemacro": ""
       }
     },
     "item": {
