@@ -89,8 +89,9 @@
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
-        <a class="item" data-tab="bonuses">{{localize "Ex3.RollBonuses"}}</a>
-        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}/{{localize "Ex3.Other"}}</a>
+        <a class="item" data-tab="bonuses">{{localize "Ex3.Dice"}}</a>
+        <a class="item" data-tab="macros">{{localize "Ex3.Macros"}}</a>
+        <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
     </nav>
 
     {{!-- Sheet Body --}}
@@ -757,7 +758,29 @@
             </div>
         </div>
 
-        <div class="tab" data-group="primary" data-tab="effects">
+        <div class="tab" data-group="primary" data-tab="macros">
+            <div class="resource flex-center" style="font-size: 17px;">
+                <label class="resource-label">{{localize "Ex3.Macros"}}</label>
+            </div>
+            <div class="resource-label list-section-header d-flex flex-between">
+                <div>
+                    {{localize "Ex3.Macro"}}
+                </div>
+            </div>
+            <div class="flex-group-center d-flex flex-col flex-fill">
+                <textarea class="flex-fill" type="text" name="system.macro" rows="16" placeholder='{{localize "Ex3.MacroHint"}}'>{{system.macro}}</textarea>
+            </div>
+            <!-- <div class="resource-label list-section-header d-flex flex-between">
+                <div>
+                    {{localize "Ex3.DamageMacro"}}
+                </div>
+            </div>
+            <div class="flex-group-center d-flex flex-col flex-fill">
+                <textarea class="flex-fill" type="text" name="system.damagemacro" rows="16">{{system.damagemacro}}</textarea>
+            </div> -->
+        </div>
+
+        <div class="tab" data-group="primary" data-tab="other">
             <div class="flex-group-center">
                 <label class="resource-label">{{localize "Ex3.Summary"}}</label>
                 <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
@@ -799,14 +822,6 @@
                 </div>
             </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
-            <div class="resource-label list-section-header d-flex flex-between">
-                <div>
-                    Macro
-                </div>
-            </div>
-            <div class="flex-group-center d-flex flex-col flex-fill">
-                <textarea class="flex-fill" type="text" name="system.macro" rows="16">{{system.macro}}</textarea>
-            </div>
         </div>
 
     </section>

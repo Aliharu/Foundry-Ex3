@@ -1616,10 +1616,10 @@ export class RollForm extends FormApplication {
         if (diceModifiers.macros.length > 0){
             let newResults = { ...rollResults, results: diceRoll, total };
             newResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), newResults);
-            total = newResults.total
-            diceRoll = newResults.results
-            rollResults = newResults
+            total = newResults.total;
+            rollResults = newResults;
         }
+        rollResults.roll.dice[0].results = diceRoll;
 
         let diceDisplay = "";
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
@@ -1631,7 +1631,6 @@ export class RollForm extends FormApplication {
             else if (dice.result == 1) { diceDisplay += `<li class="roll die d10 failure">${dice.result}</li>`; }
             else { diceDisplay += `<li class="roll die d10">${dice.result}</li>`; }
         }
-        rollResults.roll.dice[0].results = diceRoll;
 
         return {
             roll: rollResults.roll,
@@ -2166,8 +2165,30 @@ export class RollForm extends FormApplication {
             rerollFailed: this.object.damage.rerollFailed,
             rerollNumber: this.object.damage.rerollNumber,
             settings: this.object.settings.damage,
+            macros: [],
         }
+
+        // for (let charm of this.object.addedCharms){
+        //     if (!charm.system.damagemacro) continue;
+        //     let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.damagemacro);
+        //     rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+        //         try{
+        //             return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+        //         } catch (e) {
+        //             ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+        //             console.error(e);
+        //         }
+        //         return rollResult;
+        //     });
+        // }
+
         var diceRollResults = this._calculateRoll(dice, rollModifiers);
+        if (this.object.damage.rollTwice) {
+            const secondRoll = this._calculateRoll(dice, rollModifiers);
+            if (secondRoll.total > diceRollResults.total) {
+                diceRollResults = secondRoll;
+            }
+        }
         this.object.finalDamageDice = dice;
         diceRollResults.roll.dice[0].options.rollOrder = 1;
         if (this.object.roll) {
