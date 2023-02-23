@@ -1617,7 +1617,7 @@ export class RollForm extends FormApplication {
             let newResults = { ...rollResults, results: diceRoll, total };
             newResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), newResults);
             total = newResults.total
-            diceRoll = newResults.diceRoll
+            diceRoll = newResults.results
             rollResults = newResults
         }
 
