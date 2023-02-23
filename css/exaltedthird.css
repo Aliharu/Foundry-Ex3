@@ -104,6 +104,14 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-fill {
+  flex: 1 0 auto;
+}
+
 .flex-center {
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -248,9 +256,24 @@
 }
 
 .exaltedthird .sheet-body,
+.exaltedthird .sheet-body .tab.active,
+.exaltedthird .sheet-body .tab .editor {
+  display: flex;
+}
+
+.exaltedthird .sheet-body,
 .exaltedthird .sheet-body .tab,
 .exaltedthird .sheet-body .tab .editor {
-  height: 100%;
+  flex-direction: column;
+  flex: 1;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+.exaltedthird.sheet form {
+  display: flex;
+  flex-direction: column;
 }
 
 .exaltedthird .tox .tox-editor-container {

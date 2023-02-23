@@ -94,9 +94,19 @@ textarea {
 }
 
 .sheet-body,
+.sheet-body .tab.active,
+.sheet-body .tab .editor {
+  display: flex;
+}
+
+.sheet-body,
 .sheet-body .tab,
 .sheet-body .tab .editor {
-  height: 100%;
+  flex-direction: column;
+  flex: 1;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
 }
 
 .tox {
