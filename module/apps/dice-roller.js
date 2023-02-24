@@ -754,10 +754,10 @@ export class RollForm extends FormApplication {
         }
         this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
         this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
-        if(!item.system.diceroller.settings.noncharmdice) {
+        if (!item.system.diceroller.settings.noncharmdice) {
             this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
         }
-        if(!item.system.diceroller.settings.noncharmsuccesses) {
+        if (!item.system.diceroller.settings.noncharmsuccesses) {
             this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
         }
         if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
@@ -777,7 +777,7 @@ export class RollForm extends FormApplication {
         }
         this.object.rerollNumber += this._getFormulaValue(item.system.diceroller.rerolldice);
         this.object.diceToSuccesses += this._getFormulaValue(item.system.diceroller.diceToSuccesses);
-        if(this._isAttackRoll()) {
+        if (this._isAttackRoll()) {
             if (this.object.showTargets) {
                 const targetValues = Object.values(this.object.targets);
                 for (const target of targetValues) {
@@ -861,12 +861,12 @@ export class RollForm extends FormApplication {
         this.render();
     }
 
-    _getFormulaValue(charmValue, opposedCharmActor=null) {
+    _getFormulaValue(charmValue, opposedCharmActor = null) {
         var rollerValue = 0;
         if (charmValue) {
             if (charmValue.split(' ').length === 3) {
                 var negativeValue = false;
-                if(charmValue.includes('-(')) {
+                if (charmValue.includes('-(')) {
                     charmValue = charmValue.replace(/(-\(|\))/g, '');
                     negativeValue = true;
                 }
@@ -882,12 +882,12 @@ export class RollForm extends FormApplication {
                         rollerValue = leftVar - rightVar;
                         break;
                     case '/>':
-                        if(rightVar) {
+                        if (rightVar) {
                             rollerValue = Math.ceil(leftVar / rightVar);
                         }
                         break;
                     case '/<':
-                        if(rightVar) {
+                        if (rightVar) {
                             rollerValue = Math.floor(leftVar / rightVar);
                         }
                         break;
@@ -901,7 +901,7 @@ export class RollForm extends FormApplication {
                         rollerValue = Math.min(leftVar, rightVar);
                         break;
                 }
-                if(negativeValue) {
+                if (negativeValue) {
                     rollerValue *= -1;
                 }
             }
@@ -912,21 +912,21 @@ export class RollForm extends FormApplication {
         return rollerValue;
     }
 
-    _getFormulaActorValue(formula, opposedCharmActor=null) {
+    _getFormulaActorValue(formula, opposedCharmActor = null) {
         var formulaVal = 0;
         var forumlaActor = this.actor;
-        if(opposedCharmActor) {
+        if (opposedCharmActor) {
             forumlaActor = opposedCharmActor;
         }
         if (parseInt(formula)) {
             return parseInt(formula);
         }
-        if(formula.includes('target-')) {
+        if (formula.includes('target-')) {
             formula = formula.replace('target-', '');
             if (this.object.target?.actor) {
                 forumlaActor = this.object.target?.actor;
             }
-            else if(this.object.targets) {
+            else if (this.object.targets) {
                 const targetValues = Object.values(this.object.targets);
                 forumlaActor = targetValues[0].actor;
             }
@@ -1228,10 +1228,10 @@ export class RollForm extends FormApplication {
                 }
                 this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-                if(!item.system.diceroller.settings.noncharmdice) {
+                if (!item.system.diceroller.settings.noncharmdice) {
                     this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
                 }
-                if(!item.system.diceroller.settings.noncharmsuccesses) {
+                if (!item.system.diceroller.settings.noncharmsuccesses) {
                     this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
                 }
                 this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
@@ -1249,7 +1249,7 @@ export class RollForm extends FormApplication {
                 this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
                 this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
 
-                if(this._isAttackRoll()) {
+                if (this._isAttackRoll()) {
                     if (this.object.showTargets) {
                         const targetValues = Object.values(this.object.targets);
                         for (const target of targetValues) {
@@ -1613,7 +1613,7 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if (diceModifiers.macros.length > 0){
+        if (diceModifiers.macros.length > 0) {
             let newResults = { ...rollResults, results: diceRoll, total };
             newResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), newResults);
             total = newResults.total;
@@ -1757,11 +1757,11 @@ export class RollForm extends FormApplication {
             macros: [],
         }
 
-        for (let charm of this.object.addedCharms){
+        for (let charm of this.object.addedCharms) {
             if (!charm.system.macro) continue;
             let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
             rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
-                try{
+                try {
                     return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
                 } catch (e) {
                     ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
@@ -2110,7 +2110,7 @@ export class RollForm extends FormApplication {
         let dice = this.object.damage.damageDice;
         if (this._damageRollType('decisive') && this.object.damage.decisiveDamageType === 'initiative') {
             dice -= this.object.cost.initiative;
-            if(this.object.showTargets) {
+            if (this.object.showTargets) {
                 if (this.object.damage.decisiveDamageCalculation === 'evenSplit') {
                     dice = Math.ceil(dice / this.object.showTargets);
                 }
@@ -2168,11 +2168,11 @@ export class RollForm extends FormApplication {
             macros: [],
         }
 
-        for (let charm of this.object.addedCharms){
+        for (let charm of this.object.addedCharms) {
             if (!charm.system.damagemacro) continue;
             let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.damagemacro);
             rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
-                try{
+                try {
                     return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
                 } catch (e) {
                     ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
@@ -3051,7 +3051,7 @@ export class RollForm extends FormApplication {
                 { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
             ];
         }
-        if(this.object.charmDiceAdded === undefined) {
+        if (this.object.charmDiceAdded === undefined) {
             this.object.charmDiceAdded = 0;
         }
         if (this.object.diceCap === undefined) {
