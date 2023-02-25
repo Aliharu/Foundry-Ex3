@@ -817,6 +817,12 @@
         "goldxp": 0,
         "whitexp": 0
       },
+      "restore": {
+        "motes": 0,
+        "willpower": 0,
+        "health": 0,
+        "initiative": 0
+      },
       "diceroller": {
         "bonusdice": 0,
         "bonussuccesses": 0,

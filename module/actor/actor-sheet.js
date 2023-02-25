@@ -212,7 +212,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         merits.push(i);
       }
       else if (i.type === 'intimacy') {
-        if(game.user.isGM || this.actor.isOwner || i.system.visible) {
+        if (game.user.isGM || this.actor.isOwner || i.system.visible) {
           intimacies.push(i);
         }
       }
@@ -1163,17 +1163,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         "solar": "",
         "umbral": "",
       }
-      if(data.details.exalt === 'exigent') {
+      if (data.details.exalt === 'exigent') {
         if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-          data.advantages.resonance =  'Orichalcum, Green Jade';
+          data.advantages.resonance = 'Orichalcum, Green Jade';
           data.advantages.dissonance = 'Soulsteel';
         }
-        if(data.details.caste.toLowerCase() === 'sovereign') {
-          data.advantages.resonance =  '';
+        if (data.details.caste.toLowerCase() === 'sovereign') {
+          data.advantages.resonance = '';
           data.advantages.dissonance = 'Non-Adamant';
         }
-        if(data.details.caste.toLowerCase() === 'puppeteer') {
-          data.advantages.resonance =  'Artifact Puppets';
+        if (data.details.caste.toLowerCase() === 'puppeteer') {
+          data.advantages.resonance = 'Artifact Puppets';
           data.advantages.dissonance = 'Orichalcum, Jade, Soulsteel, Adamant';
         }
       }
@@ -1194,8 +1194,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateCommitMotes(type) {
     const actorData = duplicate(this.actor);
     var commitMotes = 0;
-    for(const item of this.actor.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
-      if(item.type === 'item' || item.system.equipped) {
+    for (const item of this.actor.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
+      if (item.type === 'item' || item.system.equipped) {
         commitMotes += item.system.attunement;
       }
     }
@@ -1849,8 +1849,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
           }
         }
-        for(var effect of this.actor.effects.filter((effect => effect._sourceName === item.name))){
-          effect.update({disabled: true});
+        for (var effect of this.actor.effects.filter((effect => effect._sourceName === item.name))) {
+          effect.update({ disabled: true });
         }
       }
       else {
@@ -1933,8 +1933,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             item.update({
               [`system.active`]: true,
             });
-            for(var effect of this.actor.effects.filter((effect => effect._sourceName === item.name))){
-              effect.update({disabled: false});
+            for (var effect of this.actor.effects.filter((effect => effect._sourceName === item.name))) {
+              effect.update({ disabled: false });
             }
           }
         }
@@ -1949,20 +1949,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (actorData.system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
           actorData.system.details.aura = "none";
         }
-        if (item.system.cost.initiative > 0) {
-          let combat = game.combat;
-          const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
-          if (combat && tokenId) {
-            let combatant = combat.combatants.find(c => c?.tokenId === tokenId);
-            if (combatant) {
-              var newInitiative = combatant.initiative - item.system.cost.initiative;
-              if (combatant.initiative > 0 && newInitiative <= 0) {
-                newInitiative -= 5;
-              }
-              combat.setInitiative(combatant.id, newInitiative);
-            }
-          }
-        }
         if (item.system.cost.health > 0) {
           let totalHealth = 0;
           for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
@@ -1976,6 +1962,35 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
           else {
             actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + item.system.cost.health);
+          }
+        }
+        if (actorData.system.settings.charmmotepool === 'personal') {
+          actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + item.system.restore.motes);
+        }
+        else {
+          actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + item.system.restore.motes);
+        }
+        actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + item.system.restore.willpower);
+        if (item.system.restore.health > 0) {
+          const bashingHealed = item.system.restore.health - actorData.system.health.lethal;
+          actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - item.system.restore.health);
+          if (bashingHealed > 0) {
+            actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
+          }
+        }
+        const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+        if (game.combat && tokenId) {
+          let combatant = game.combat.combatants.find(c => c?.tokenId === tokenId);
+          if (combatant) {
+            var newInitiative = combatant.initiative;
+            if (item.system.cost.initiative > 0) {
+              newInitiative -= item.system.cost.initiative;
+            }
+            if (combatant.initiative > 0 && newInitiative <= 0) {
+              newInitiative -= 5;
+            }
+            newInitiative += item.system.restore.initiative;
+            game.combat.setInitiative(combatant.id, newInitiative);
           }
         }
         animaTokenMagic(this.actor, newValue);

@@ -81,6 +81,27 @@
             <input type="number" name="object.cost.whitexp" value="{{data.cost.whitexp}}" data-dtype="Number" />
         </div>
     </div>
+    <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.Restore"}}</label>
+    </div>
+    <div class="resource grid grid-3col flex-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.Motes"}}</label>
+            <input type="number" name="object.restore.motes" value="{{data.restore.motes}}">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Initiative"}} </label>
+            <input type="number" name="object.restore.initiative" value="{{data.restore.initiative}}">
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Willpower"}} </label>
+            <input type="number" name="object.restore.willpower" value="{{data.restore.willpower}}">
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}</div>
+            <input type="number" name="object.restore.health" value="{{data.restore.health}}" data-dtype="Number" />
+        </div>
+    </div>
 </div>
 {{#ifGreater data.opposingCharms.length 0}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">

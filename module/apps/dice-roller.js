@@ -45,7 +45,13 @@ export class RollForm extends FormApplication {
                 goldxp: 0,
                 whitexp: 0,
                 aura: "",
-            }
+            };
+            this.object.restore = {
+                motes: 0,
+                willpower: 0,
+                health: 0,
+                initiative: 0
+            };
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
             this.object.hasDifficulty = (['ability', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage'].indexOf(data.rollType) !== -1);
@@ -752,6 +758,11 @@ export class RollForm extends FormApplication {
                 this.object.cost.healthaggravated += item.system.cost.health;
             }
         }
+        this.object.restore.motes += item.system.restore.motes;
+        this.object.restore.willpower += item.system.restore.willpower;
+        this.object.restore.health += item.system.restore.health;
+        this.object.restore.initiative += item.system.restore.initiative;
+
         this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
         this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
         if (!item.system.diceroller.settings.noncharmdice) {
@@ -1226,6 +1237,11 @@ export class RollForm extends FormApplication {
                         this.object.cost.healthaggravated -= item.system.cost.health;
                     }
                 }
+                this.object.restore.motes -= item.system.restore.motes;
+                this.object.restore.willpower -= item.system.restore.willpower;
+                this.object.restore.health -= item.system.restore.health;
+                this.object.restore.initiative -= item.system.restore.initiative;
+
                 this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 if (!item.system.diceroller.settings.noncharmdice) {
@@ -1832,7 +1848,7 @@ export class RollForm extends FormApplication {
         }
 
         if (!this._isAttackRoll() && this.object.rollType !== 'base') {
-            this._spendResources();
+            this._updateCharacterResources();
         }
     }
 
@@ -2004,7 +2020,7 @@ export class RollForm extends FormApplication {
 
     async _postAttackResults() {
         if (this.object.rollType !== 'accuracy' || !this.object.splitAttack) {
-            await this._spendResources();
+            await this._updateCharacterResources();
             if (this.object.gainedInitiative) {
                 this.object.characterInitiative += this.object.gainedInitiative;
             }
@@ -2956,6 +2972,14 @@ export class RollForm extends FormApplication {
                 aura: "",
             }
         }
+        if (this.object.restore === undefined) {
+            this.object.restore = {
+                motes: 0,
+                willpower: 0,
+                health: 0,
+                initiative: 0
+            };
+        }
         if (this.object.damage.type === undefined) {
             this.object.damage.type = 'lethal';
         }
@@ -3073,7 +3097,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    async _spendResources() {
+    async _updateCharacterResources() {
         const actorData = duplicate(this.actor);
         var newLevel = actorData.system.anima.level;
         var newValue = actorData.system.anima.value;
@@ -3148,24 +3172,6 @@ export class RollForm extends FormApplication {
         actorData.system.anima.value = newValue;
 
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
-        if (this.object.cost.initiative > 0) {
-            let combat = game.combat;
-            if (combat) {
-                let combatant = this._getActorCombatant();
-                if (combatant) {
-                    if (this.object.characterInitiative === undefined) {
-                        this.object.characterInitiative = combatant.initiative - this.object.cost.initiative;
-                    }
-                    else {
-                        this.object.characterInitiative -= this.object.cost.initiative;
-                    }
-                    if (combatant.initiative > 0 && this.object.characterInitiative <= 0) {
-                        this.object.characterInitiative -= 5;
-                    }
-                    combat.setInitiative(combatant.id, this.object.characterInitiative);
-                }
-            }
-        }
         if (this.actor.type === 'character') {
             actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - this.object.cost.silverxp);
             actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - this.object.cost.goldxp);
@@ -3192,6 +3198,38 @@ export class RollForm extends FormApplication {
         }
         if (this.object.activateAura !== 'none') {
             actorData.system.details.aura = this.object.activateAura;
+        }
+        if (actorData.system.settings.charmmotepool === 'personal') {
+            actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + this.object.restore.motes);
+        }
+        else {
+            actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + this.object.restore.motes);
+        }
+        actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + this.object.restore.willpower);
+        if(this.object.restore.health > 0) {
+            const bashingHealed = this.object.restore.health - actorData.system.health.lethal;
+            actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - this.object.restore.health);
+            if(bashingHealed > 0) {
+                actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
+            }
+        }
+        if (game.combat) {
+            let combatant = this._getActorCombatant();
+            if (combatant) {
+                if (this.object.characterInitiative === undefined) {
+                    this.object.characterInitiative = combatant.initiative;
+                }
+                if (this.object.cost.initiative > 0) {
+                    this.object.characterInitiative -= this.object.cost.initiative;
+                    if (combatant.initiative > 0 && this.object.characterInitiative <= 0) {
+                        this.object.characterInitiative -= 5;
+                    }
+                }
+                if(this.object.restore.initiative > 0) {
+                    this.object.characterInitiative += this.object.restore.initiative;
+                }
+                game.combat.setInitiative(combatant.id, this.object.characterInitiative);
+            }
         }
         this.actor.update(actorData);
     }
