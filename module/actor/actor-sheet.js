@@ -1530,41 +1530,57 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     event.preventDefault()
     const element = event.currentTarget
     const index = Number(element.dataset.index)
-    const oldState = element.dataset.state || ''
     const parent = $(element.parentNode)
     const data = parent[0].dataset
     const states = parseCounterStates(data.states)
     const fields = data.name.split('.')
     const steps = parent.find('.resource-counter-step')
-    const fulls = Number(data[states['-']]) || 0
-    const halfs = Number(data[states['/']]) || 0
-    const crosses = Number(data[states['x']]) || 0
 
     if (index < 0 || index > steps.length) {
       return
     }
 
-    const allStates = ['', ...Object.keys(states)]
-    const currentState = allStates.indexOf(oldState)
-    if (currentState < 0) {
-      return
+    const currentState = steps[index].dataset.state;
+    if(currentState === '') {
+      for(const step of steps) {
+        if(step.dataset.state === '') {
+          step.dataset.state = '/';
+          data['bashing'] = Number(data['bashing']) + 1;
+          break;
+        }
+      }
+    }
+    if(currentState === '/') {
+      for(const step of steps) {
+        if(step.dataset.state === '/') {
+          step.dataset.state = 'x';
+          data['lethal'] = Number(data['lethal']) + 1;
+          data['bashing'] = Number(data['bashing']) - 1;
+          break;
+        }
+      }
+    }
+    if(currentState === 'x') {
+      for(const step of steps) {
+        if(step.dataset.state === 'x') {
+          step.dataset.state = '*';
+          data['aggravated'] = Number(data['aggravated']) + 1;
+          data['lethal'] = Number(data['lethal']) - 1;
+          break;
+        }
+      }
+    }
+    if(currentState === '*') {
+      for(const step of steps) {
+        if(step.dataset.state === '*') {
+          step.dataset.state = '';
+          data['aggravated'] = Number(data['aggravated']) - 1;
+          break;
+        }
+      }
     }
 
-    const newState = allStates[(currentState + 1) % allStates.length]
-    steps[index].dataset.state = newState
 
-    if ((oldState !== '' && oldState !== '-') || (oldState !== '')) {
-      data[states[oldState]] = Number(data[states[oldState]]) - 1
-    }
-
-    // If the step was removed we also need to subtract from the maximum.
-    if (oldState !== '' && newState === '') {
-      data[states['-']] = Number(data[states['-']]) - 1
-    }
-
-    if (newState !== '') {
-      data[states[newState]] = Number(data[states[newState]]) + Math.max(index + 1 - fulls - halfs - crosses, 1)
-    }
 
     const newValue = Object.values(states).reduce(function (obj, k) {
       obj[k] = Number(data[k]) || 0
@@ -1679,11 +1695,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const crossed = Number(data[states.x]) || 0;
       const stars = Number(data[states['*']]) || 0;
 
-      const values = new Array(halfs + crossed + stars);
+      const values = new Array(stars + crossed + halfs);
 
-      values.fill('/', 0, halfs);
-      values.fill('x', halfs, halfs + crossed);
-      values.fill('*', halfs + crossed, halfs + crossed + stars);
+      values.fill('*', 0, stars);
+      values.fill('x', stars, stars + crossed);
+      values.fill('/', stars + crossed, halfs + crossed + stars);
+
 
       $(this).find('.resource-counter-step').each(function () {
         this.dataset.state = ''
