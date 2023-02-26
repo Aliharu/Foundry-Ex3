@@ -1541,46 +1541,66 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
 
     const currentState = steps[index].dataset.state;
-    if(currentState === '') {
-      for(const step of steps) {
-        if(step.dataset.state === '') {
-          step.dataset.state = '/';
-          data['bashing'] = Number(data['bashing']) + 1;
-          break;
+    if(steps[index].dataset.type) {
+      if(currentState === '') {
+        for(const step of steps) {
+          if(step.dataset.state === '') {
+            step.dataset.state = 'x';
+            data['value'] = Number(data['value']) + 1;
+            break;
+          }
+        }
+      }
+      else {
+        for(const step of steps) {
+          if(step.dataset.state === 'x') {
+            step.dataset.state = '';
+            data['value'] = Number(data['value']) - 1;
+            break;
+          }
         }
       }
     }
-    if(currentState === '/') {
-      for(const step of steps) {
-        if(step.dataset.state === '/') {
-          step.dataset.state = 'x';
-          data['lethal'] = Number(data['lethal']) + 1;
-          data['bashing'] = Number(data['bashing']) - 1;
-          break;
+    else {
+      if(currentState === '') {
+        for(const step of steps) {
+          if(step.dataset.state === '') {
+            step.dataset.state = '/';
+            data['bashing'] = Number(data['bashing']) + 1;
+            break;
+          }
+        }
+      }
+      if(currentState === '/') {
+        for(const step of steps) {
+          if(step.dataset.state === '/') {
+            step.dataset.state = 'x';
+            data['lethal'] = Number(data['lethal']) + 1;
+            data['bashing'] = Number(data['bashing']) - 1;
+            break;
+          }
+        }
+      }
+      if(currentState === 'x') {
+        for(const step of steps) {
+          if(step.dataset.state === 'x') {
+            step.dataset.state = '*';
+            data['aggravated'] = Number(data['aggravated']) + 1;
+            data['lethal'] = Number(data['lethal']) - 1;
+            break;
+          }
+        }
+      }
+      if(currentState === '*') {
+        for(const step of steps) {
+          if(step.dataset.state === '*') {
+            step.dataset.state = '';
+            data['aggravated'] = Number(data['aggravated']) - 1;
+            break;
+          }
         }
       }
     }
-    if(currentState === 'x') {
-      for(const step of steps) {
-        if(step.dataset.state === 'x') {
-          step.dataset.state = '*';
-          data['aggravated'] = Number(data['aggravated']) + 1;
-          data['lethal'] = Number(data['lethal']) - 1;
-          break;
-        }
-      }
-    }
-    if(currentState === '*') {
-      for(const step of steps) {
-        if(step.dataset.state === '*') {
-          step.dataset.state = '';
-          data['aggravated'] = Number(data['aggravated']) - 1;
-          break;
-        }
-      }
-    }
-
-
 
     const newValue = Object.values(states).reduce(function (obj, k) {
       obj[k] = Number(data[k]) || 0
