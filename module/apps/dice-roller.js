@@ -67,6 +67,7 @@ export class RollForm extends FormApplication {
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
+            this.object.macroMessages = '';
 
             this.object.overwhelming = data.overwhelming || 0;
             this.object.soak = 0;

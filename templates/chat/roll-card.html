@@ -216,6 +216,12 @@
                 </div>
             {{/if}}
         {{/if}}
+        {{#if rollData.macroMessages }}
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.Macros"}}</b>
+        </div>
+        {{ rollData.macroMessages }}
+        {{/if}}
         <div class="roll-card-header">
             <b>{{localize "Ex3.Modifiers"}}</b>
         </div>
