@@ -2172,7 +2172,6 @@ export class RollForm extends FormApplication {
         <div class="dice-roll">
             <div class="dice-result">
                 ${accuracyContent}
-                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
                 <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness</h4>
                 <h4 class="dice-total">Hardness Stopped Decisive!</h4>
             </div>
