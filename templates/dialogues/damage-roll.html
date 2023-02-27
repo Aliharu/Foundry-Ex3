@@ -177,6 +177,7 @@
                         <input type="number" name="object.targets.{{id}}.rollData.defense"
                             value="{{target.rollData.defense}}">
                     </div>
+                    {{#ifEquals ../data.attackType 'withering'}}
                     <div>
                         <div class="flex-center resource-label">
                             {{localize "Ex3.Soak"}} (AS: {{target.rollData.armoredSoak}},
@@ -185,6 +186,16 @@
                         <input type="number" name="object.targets.{{id}}.rollData.soak"
                             value="{{target.rollData.soak}}">
                     </div>
+                    {{/ifEquals}}
+                    {{#ifEquals ../data.attackType 'decisive'}}
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.Hardness"}}
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.hardness"
+                            value="{{target.rollData.hardness}}">
+                    </div>
+                    {{/ifEquals}}
                     {{#ifNotEquals ../data.rollType 'damage'}}
                     <div>
                         <div class="flex-center resource-label">
@@ -220,13 +231,25 @@
                     <input type="number" name="object.targets.{{id}}.rollData.defense"
                         value="{{target.rollData.defense}}">
                 </div>
+                {{#ifEquals ../data.attackType 'withering'}}
                 <div>
                     <div class="flex-center resource-label">
                         {{localize "Ex3.Soak"}} (AS: {{target.rollData.armoredSoak}},
                         NS:{{target.rollData.naturalSoak}})
                     </div>
-                    <input type="number" name="object.targets.{{id}}.rollData.soak" value="{{target.rollData.soak}}">
+                    <input type="number" name="object.targets.{{id}}.rollData.soak"
+                        value="{{target.rollData.soak}}">
                 </div>
+                {{/ifEquals}}
+                {{#ifEquals ../data.attackType 'decisive'}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.Hardness"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.hardness"
+                        value="{{target.rollData.hardness}}">
+                </div>
+                {{/ifEquals}}
                 {{#ifNotEquals ../data.rollType 'damage'}}
                 <div>
                     <div class="flex-center resource-label">
@@ -253,12 +276,22 @@
                 <label class="resource-label">{{localize "Ex3.Defense"}}</label>
                 <input type="number" name="object.defense" value="{{data.defense}}">
             </div>
+            {{#ifEquals data.attackType 'withering'}}
             <div>
                 <div class="flex-center resource-label">
                     {{localize "Ex3.Soak"}}
                 </div>
                 <input type="number" name="object.soak" value="{{data.soak}}">
             </div>
+            {{/ifEquals}}
+            {{#ifEquals data.attackType 'decisive'}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Hardness"}}
+                </div>
+                <input type="number" name="object.hardness" value="{{data.hardness}}">
+            </div>
+            {{/ifEquals}}
         </div>
         {{/if}}
 

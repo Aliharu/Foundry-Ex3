@@ -919,6 +919,7 @@
           "dicemodifier": 0,
           "defense": 0,
           "soak": 0,
+          "hardness": 0,
           "increasedamagetargetnumber": 0,
           "increasetargetnumber": 0,
           "increasegambitdifficulty": 0,

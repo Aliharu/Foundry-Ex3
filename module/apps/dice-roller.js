@@ -74,6 +74,7 @@ export class RollForm extends FormApplication {
             this.object.armoredSoak = 0;
             this.object.naturalSoak = 0;
             this.object.defense = 0;
+            this.object.hardness = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
             this.object.gambit = 'none';
@@ -133,6 +134,7 @@ export class RollForm extends FormApplication {
                 threshholdToDamage: false,
                 resetInit: true,
                 doubleRolledDamage: false,
+                doublePreRolledDamage: false,
                 ignoreSoak: 0,
                 rerollFailed: false,
                 rollTwice: false,
@@ -406,6 +408,7 @@ export class RollForm extends FormApplication {
                 naturalSoak: 0,
                 defenseType: game.i18n.localize('Ex3.None'),
                 defense: 0,
+                hardness: 0,
                 soak: 0,
                 diceModifier: 0,
                 damageModifier: 0,
@@ -426,11 +429,18 @@ export class RollForm extends FormApplication {
             }
             if (target.actor.system.warstrider.equipped) {
                 target.rollData.soak = target.actor.system.warstrider.soak.value;
+                target.rollData.hardness = target.actor.system.warstrider.hardness.value;
             }
             else {
                 target.rollData.soak = target.actor.system.soak.value;
                 target.rollData.armoredSoak = target.actor.system.armoredsoak.value;
                 target.rollData.naturalSoak = target.actor.system.naturalsoak.value;
+                target.rollData.hardness = target.actor.system.hardness.value;
+            }
+            const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
+            let combatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+            if (combatant && combatant.initiative && combatant.initiative <= 0) {
+                target.rollData.hardness = 0;
             }
             if (target.actor.system.battlegroup) {
                 target.rollData.defense += parseInt(target.actor.system.drill.value);
@@ -977,6 +987,7 @@ export class RollForm extends FormApplication {
                 if (targetValues.length === 1) {
                     targetValues[0].rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                     targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                    targetValues[0].rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                     targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                     targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                 }
@@ -985,6 +996,7 @@ export class RollForm extends FormApplication {
                         if (target.actor.id === charm.parent.id || targetValues.length === 1) {
                             target.rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                             target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                            target.rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                             target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                             target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                         }
@@ -994,6 +1006,7 @@ export class RollForm extends FormApplication {
             else {
                 this.object.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                 this.object.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                this.object.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                 this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                 this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
             }
@@ -1363,6 +1376,7 @@ export class RollForm extends FormApplication {
                         if (targetValues.length === 1) {
                             targetValues[0].rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                             targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                            targetValues[0].rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                             targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                             targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                         }
@@ -1371,6 +1385,7 @@ export class RollForm extends FormApplication {
                                 if (target.actor.id === charm.parent.id || targetValues.length === 1) {
                                     target.rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                                     target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                                    target.rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                                     target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                                     target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                                 }
@@ -1380,6 +1395,7 @@ export class RollForm extends FormApplication {
                     else {
                         this.object.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                         this.object.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                        this.object.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                         this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                         this.object.damage.damageDice -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                     }
@@ -1447,6 +1463,7 @@ export class RollForm extends FormApplication {
                         this.object.targetCombatant = null;
                     }
                     this.object.soak = target.rollData.soak;
+                    this.object.hardness = target.rollData.hardness;
                     this.object.defense = target.rollData.defense;
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
@@ -1636,6 +1653,8 @@ export class RollForm extends FormApplication {
             total = newResults.total;
             rollResults = newResults;
         }
+        // let newResults = { ...rollResults, results: diceRoll, total };
+        // this._testMacro(newResults, dice, diceModifiers, doublesRolled, numbersRerolled);
         rollResults.roll.dice[0].results = diceRoll;
 
         let diceDisplay = "";
@@ -1655,6 +1674,11 @@ export class RollForm extends FormApplication {
             total: total,
             diceRoll: diceRoll,
         };
+    }
+
+    _testMacro(rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) {
+        let { results, roll, total } = rollResult;
+        return { results, roll, total };
     }
 
     async _baseAbilityDieRoll() {
@@ -2117,6 +2141,38 @@ export class RollForm extends FormApplication {
         }
     }
 
+    async _failedDecisive(dice) {
+        let accuracyContent = '';
+        if (this.object.rollType !== 'damage') {
+            accuracyContent = `
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                <div class="dice-tooltip">
+                    <div class="dice">
+                        <ol class="dice-rolls">${this.object.displayDice}</ol>
+                    </div>
+                </div>
+                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+            `
+        }
+        var messageContent = `
+        <div class="dice-roll">
+            <div class="dice-result">
+                ${accuracyContent}
+                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness</h4>
+                <h4 class="dice-total">Hardness Stopped Decisive!</h4>
+            </div>
+        </div>`;
+        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        });
+    }
+
     async _accuracyRoll() {
         this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
@@ -2171,8 +2227,14 @@ export class RollForm extends FormApplication {
             }
             dice += this.object.damage.postSoakDamage;
         }
+        if (this.object.damage.doublePreRolledDamage) {
+            dice *= 2;
+        }
         if (dice < 0) {
             dice = 0;
+        }
+        if (this.object.attackType === 'decisive' && dice <= this.object.hardness) {
+            return this._failedDecisive(dice);
         }
         var rollModifiers = {
             successModifier: this.object.damage.damageSuccessModifier,
@@ -3096,6 +3158,9 @@ export class RollForm extends FormApplication {
             this.object.applyAppearance = false;
             this.object.appearanceBonus = 0;
         }
+        if(this.object.hardness === undefined) {
+            this.object.hardness = 0;
+        }
     }
 
     async _updateCharacterResources() {
@@ -3207,10 +3272,10 @@ export class RollForm extends FormApplication {
             actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + this.object.restore.motes);
         }
         actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + this.object.restore.willpower);
-        if(this.object.restore.health > 0) {
+        if (this.object.restore.health > 0) {
             const bashingHealed = this.object.restore.health - actorData.system.health.lethal;
             actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - this.object.restore.health);
-            if(bashingHealed > 0) {
+            if (bashingHealed > 0) {
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
         }
@@ -3226,7 +3291,7 @@ export class RollForm extends FormApplication {
                         this.object.characterInitiative -= 5;
                     }
                 }
-                if(this.object.restore.initiative > 0) {
+                if (this.object.restore.initiative > 0) {
                     this.object.characterInitiative += this.object.restore.initiative;
                 }
                 game.combat.setInitiative(combatant.id, this.object.characterInitiative);
