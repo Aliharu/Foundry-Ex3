@@ -604,6 +604,9 @@ export class RollForm extends FormApplication {
                                 else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
                                     specialAttack.show = true;
                                 }
+                                else if (specialAttack.id === 'aim') {
+                                    specialAttack.show = true;
+                                }
                                 else {
                                     specialAttack.added = false;
                                     specialAttack.show = false;
@@ -1136,25 +1139,30 @@ export class RollForm extends FormApplication {
                     specialAttack.added = true;
                 }
             }
-            if (id === 'knockback' || id === 'knockdown') {
-                this.object.cost.initiative += 2;
-                if (id === 'knockdown') {
-                    this.object.triggerKnockdown = true;
-                }
-            }
-            else if (id === 'flurry') {
-                this.object.isFlurry = true;
+            if (id === 'aim') {
+                this.object.diceModifier += 3;
             }
             else {
-                this.object.cost.initiative += 1;
+                if (id === 'knockback' || id === 'knockdown') {
+                    this.object.cost.initiative += 2;
+                    if (id === 'knockdown') {
+                        this.object.triggerKnockdown = true;
+                    }
+                }
+                else if (id === 'flurry') {
+                    this.object.isFlurry = true;
+                }
+                else {
+                    this.object.cost.initiative += 1;
+                }
+                if (id === 'chopping' && this.object.attackType === 'withering') {
+                    this.object.damage.damageDice += 3;
+                }
+                if (id === 'piercing' && this.object.attackType === 'withering') {
+                    this.object.damage.ignoreSoak += 4;
+                }
+                this.object.triggerSelfDefensePenalty += 1;
             }
-            if (id === 'chopping' && this.object.attackType === 'withering') {
-                this.object.damage.damageDice += 3;
-            }
-            if (id === 'piercing' && this.object.attackType === 'withering') {
-                this.object.damage.ignoreSoak += 4;
-            }
-            this.object.triggerSelfDefensePenalty += 1;
             this.render();
         });
 
@@ -1167,25 +1175,30 @@ export class RollForm extends FormApplication {
                     specialAttack.added = false;
                 }
             }
-            if (id === 'knockback' || id === 'knockdown') {
-                this.object.cost.initiative -= 2;
-                if (id === 'knockdown') {
-                    this.object.triggerKnockdown = false;
-                }
-            }
-            else if (id === 'flurry') {
-                this.object.isFlurry = false;
+            if (id === 'aim') {
+                this.object.diceModifier -= 3;
             }
             else {
-                this.object.cost.initiative -= 1;
+                if (id === 'knockback' || id === 'knockdown') {
+                    this.object.cost.initiative -= 2;
+                    if (id === 'knockdown') {
+                        this.object.triggerKnockdown = false;
+                    }
+                }
+                else if (id === 'flurry') {
+                    this.object.isFlurry = false;
+                }
+                else {
+                    this.object.cost.initiative -= 1;
+                }
+                if (id === 'chopping' && this.object.attackType === 'withering') {
+                    this.object.damage.damageDice -= 3;
+                }
+                if (id === 'piercing' && this.object.attackType === 'withering') {
+                    this.object.damage.ignoreSoak -= 4;
+                }
+                this.object.triggerSelfDefensePenalty = Math.max(0, this.object.triggerSelfDefensePenalty - 1);
             }
-            if (id === 'chopping' && this.object.attackType === 'withering') {
-                this.object.damage.damageDice -= 3;
-            }
-            if (id === 'piercing' && this.object.attackType === 'withering') {
-                this.object.damage.ignoreSoak -= 4;
-            }
-            this.object.triggerSelfDefensePenalty = Math.max(0, this.object.triggerSelfDefensePenalty - 1);
             this.render();
         });
 
@@ -3131,6 +3144,7 @@ export class RollForm extends FormApplication {
         }
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
+                { id: 'aim', name: "Aim", added: false, show: false, description: '+3 Attack Dice', img: 'systems/exaltedthird/assets/icons/targeting.svg' },
                 { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
                 { id: 'flurry', name: "Flurry", added: false, show: this._isAttackRoll(), description: 'Cost: 3 dice and reduce defense by 1.', img: 'systems/exaltedthird/assets/icons/spinning-blades.svg' },
                 { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
@@ -3158,7 +3172,7 @@ export class RollForm extends FormApplication {
             this.object.applyAppearance = false;
             this.object.appearanceBonus = 0;
         }
-        if(this.object.hardness === undefined) {
+        if (this.object.hardness === undefined) {
             this.object.hardness = 0;
         }
     }
