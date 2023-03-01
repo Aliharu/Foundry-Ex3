@@ -274,7 +274,7 @@ export class ExaltedThirdActor extends Actor {
     var currentOnslaughtPenalty = 0;
     var currentDefensePenalty = 0;
 
-    for (const effect of actorData.effects) {
+    for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
       for (const change of effect.changes) {
         if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
           currentEvasionPenalty += (change.value * -1);
@@ -306,6 +306,22 @@ export class ExaltedThirdActor extends Actor {
       currentParryPenalty += Math.max(0, data.health.penalty - data.health.penaltymod);
       currentEvasionPenalty += Math.max(0, data.health.penalty - data.health.penaltymod);
     }
+    var originalOnslaught = currentOnslaughtPenalty;
+    for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
+      for (const change of effect.changes) {
+        if ((change.key === 'system.currentEvasionPenalty' || change.key === 'system.currentDefensePenalty') && change.value < 0 && change.mode === 2) {
+          currentEvasionPenalty = Math.max(0, currentEvasionPenalty + parseInt(change.value));
+        }
+        if ((change.key === 'system.currentParryPenalty' || change.key === 'system.currentDefensePenalty') && change.value < 0 && change.mode === 2) {
+          currentParryPenalty = Math.max(0, currentParryPenalty + parseInt(change.value));
+        }
+        if(change.key === 'system.currentOnslaughtPenalty' && change.value < 0 && change.mode === 2) {
+          currentOnslaughtPenalty = Math.max(0, currentOnslaughtPenalty + parseInt(change.value));
+        }
+      }
+    }
+    currentEvasionPenalty = Math.max(0, currentEvasionPenalty - (originalOnslaught - currentOnslaughtPenalty));
+    currentParryPenalty = Math.max(0, currentParryPenalty - (originalOnslaught - currentOnslaughtPenalty));
     data.currentParryPenalty = currentParryPenalty;
     data.currentEvasionPenalty = currentEvasionPenalty;
     data.currentOnslaughtPenalty = currentOnslaughtPenalty;
@@ -598,7 +614,7 @@ export class ExaltedThirdActor extends Actor {
       }
     }
 
-    for (const effect of this.effects) {
+    for (const effect of this.effects.filter((effect) => !effect.disabled)) {
       for (const change of effect.changes) {
         if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
           currentEvasionPenalty += (change.value * -1);
@@ -630,7 +646,23 @@ export class ExaltedThirdActor extends Actor {
       currentParryPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
       currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
     }
-    
+    var originalOnslaught = currentOnslaughtPenalty;
+    for (const effect of this.effects.filter((effect) => !effect.disabled)) {
+      for (const change of effect.changes) {
+        if ((change.key === 'system.currentEvasionPenalty' || change.key === 'system.currentDefensePenalty') && change.value < 0 && change.mode === 2) {
+          currentEvasionPenalty = Math.max(0, currentEvasionPenalty + parseInt(change.value));
+        }
+        if ((change.key === 'system.currentParryPenalty' || change.key === 'system.currentDefensePenalty') && change.value < 0 && change.mode === 2) {
+          currentParryPenalty = Math.max(0, currentParryPenalty + parseInt(change.value));
+        }
+        if(change.key === 'system.currentOnslaughtPenalty' && change.value < 0 && change.mode === 2) {
+          currentOnslaughtPenalty = Math.max(0, currentOnslaughtPenalty + parseInt(change.value));
+        }
+      }
+    }
+
+    currentEvasionPenalty = Math.max(0, currentEvasionPenalty - (originalOnslaught - currentOnslaughtPenalty));
+    currentParryPenalty = Math.max(0, currentParryPenalty - (originalOnslaught - currentOnslaughtPenalty));
     data.woundpenalty = {'value': currentPenalty};
     data.evasionpenalty = {'value': currentEvasionPenalty};
     data.onslaught = {'value': currentOnslaughtPenalty};
