@@ -39,14 +39,16 @@
     {{/if}}
 </div>
 <div class="resource-content flexrow flex-center flex-between mt-1">
-    <label class="resource-label">{{localize "Ex3.Combat"}} <a><i
+    <label class="resource-label"><a><i id="rollAbility"
+        class="fas fa-dice-d10 cursor-pointer rollAbility"></i></a> {{localize "Ex3.Combat"}} <a><i
         class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
 </div>
-<div class="grid grid-2col flex-group-center">
-    <button class="roll-button rollAbility"><i class="fas fa-dice-d10"></i>{{localize "Ex3.Ability"}}</button>
+<div class="grid grid-3col flex-group-center">
     <button class="roll-button join-battle"><i class="fas fa-play"></i>{{localize "Ex3.JoinBattle"}}</button>
     <button class="roll-button accuracy"><i class="fas fa-crosshairs"></i>{{localize "Ex3.Accuracy"}}</button>
     <button class="roll-button damage"><i class="fas fa-skull"></i>{{localize "Ex3.Damage"}}</button>
+</div>
+<div class="grid grid-2col flex-group-center">
     <div>
         <label class="resource-label">{{localize "Ex3.GrappleControl"}}</label>
         <button class="roll-button grapple-control"><i class="fas fa-hand-fist"></i>{{localize

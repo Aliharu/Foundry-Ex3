@@ -2342,8 +2342,8 @@ export class RollForm extends FormApplication {
                     else if (this.object.targetCombatant.actor.system.battlegroup) {
                         var sizeDamaged = this.dealHealthDamage(total, true);
                         if (sizeDamaged) {
-                            targetResults = `<h4 class="dice-total">Magnitude Filled!</h4>`;
-                            this.object.characterInitiative += 5;
+                            targetResults = `<h4 class="dice-total" style="margin-top:5px;">${sizeDamaged} Size Damage!</h4>`;
+                            this.object.characterInitiative += (5 * sizeDamaged);
                         }
                     }
                 }
@@ -2591,11 +2591,29 @@ export class RollForm extends FormApplication {
     }
 
     dealHealthDamage(characterDamage, targetBattlegroup = false) {
+        let sizeDamaged = 0;
         if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
             let totalHealth = 0;
             const targetActorData = duplicate(this.object.target.actor);
-            for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
-                totalHealth += health_level.value;
+            if(targetBattlegroup) {
+                totalHealth = targetActorData.system.health.levels.zero.value + targetActorData.system.size.value;
+            }
+            else {
+                for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
+                    totalHealth += health_level.value;
+                }
+            }
+            if(targetBattlegroup) {
+                var remainingHealth = totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated;
+                while(remainingHealth <= characterDamage && targetActorData.system.size.value > 0) {
+                    sizeDamaged++;
+                    targetActorData.system.health.bashing = 0;
+                    targetActorData.system.health.lethal = 0;
+                    targetActorData.system.health.aggravated = 0;
+                    characterDamage -= remainingHealth;
+                    remainingHealth = totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated;
+                    targetActorData.system.size.value -= 1;
+                }
             }
             if (this.object.damage.type === 'bashing') {
                 targetActorData.system.health.bashing = Math.min(totalHealth - targetActorData.system.health.aggravated - targetActorData.system.health.lethal, targetActorData.system.health.bashing + characterDamage);
@@ -2616,11 +2634,11 @@ export class RollForm extends FormApplication {
                     data: targetActorData.system.health,
                 });
             }
-            if (this._damageRollType('withering') && targetBattlegroup && (totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated) <= 0) {
-                return true;
+            if (targetBattlegroup && sizeDamaged) {
+                return sizeDamaged;
             }
         }
-        return false;
+        return 0;
     }
 
     async _completeCraftProject() {

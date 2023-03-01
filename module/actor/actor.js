@@ -203,7 +203,7 @@ export class ExaltedThirdActor extends Actor {
         data.health.aggravated = data.health.max - data.health.lethal;
         if (data.health.aggravated <= 0) {
           data.health.aggravated = 0
-          data.health.lethal = data.health.max
+          data.health.lethal = data.health.max;
         }
       }
       data.health.value = data.health.max - data.health.aggravated - data.health.lethal - data.health.bashing;
