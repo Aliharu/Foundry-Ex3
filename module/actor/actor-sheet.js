@@ -1206,61 +1206,69 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateMotes(type) {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
-    if (data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) return;
 
-    if (type === 'personal') {
-      if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
-        data.motes.personal.max = 10 + (data.essence.value * 3);
-      }
-      if (data.details.exalt === 'dragonblooded') {
-        data.motes.personal.max = 11 + data.essence.value;
-      }
-      if (data.details.exalt === 'lunar') {
-        data.motes.personal.max = 15 + data.essence.value;
-      }
-      if (data.details.exalt === 'exigent') {
-        data.motes.personal.max = 11 + data.essence.value;
-      }
-      if (data.details.exalt === 'sidereal') {
-        data.motes.personal.max = 9 + (data.essence.value * 2);
-      }
-      if (data.details.exalt === 'liminal') {
-        data.motes.personal.max = 10 + (data.essence.value * 3);
-      }
-      if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
-        data.motes.personal.max = 11 + data.essence.value;
-      }
-      if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-        data.motes.personal.max = 11 + (data.essence.value * 2);
+    if (data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) {
+      data.motes.personal.max = 10 * data.essence.value;
+      if (data.creaturetype === 'god' || data.creaturetype === 'undead') {
+        data.motes.personal.max += 50;
       }
       data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
     }
     else {
-      if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
-        data.motes.peripheral.max = 26 + (data.essence.value * 7);
+      if (type === 'personal') {
+        if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
+          data.motes.personal.max = 10 + (data.essence.value * 3);
+        }
+        if (data.details.exalt === 'dragonblooded') {
+          data.motes.personal.max = 11 + data.essence.value;
+        }
+        if (data.details.exalt === 'lunar') {
+          data.motes.personal.max = 15 + data.essence.value;
+        }
+        if (data.details.exalt === 'exigent') {
+          data.motes.personal.max = 11 + data.essence.value;
+        }
+        if (data.details.exalt === 'sidereal') {
+          data.motes.personal.max = 9 + (data.essence.value * 2);
+        }
+        if (data.details.exalt === 'liminal') {
+          data.motes.personal.max = 10 + (data.essence.value * 3);
+        }
+        if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
+          data.motes.personal.max = 11 + data.essence.value;
+        }
+        if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+          data.motes.personal.max = 11 + (data.essence.value * 2);
+        }
+        data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
       }
-      if (data.details.exalt === 'dragonblooded') {
-        data.motes.peripheral.max = 23 + (data.essence.value * 4);
+      else {
+        if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
+          data.motes.peripheral.max = 26 + (data.essence.value * 7);
+        }
+        if (data.details.exalt === 'dragonblooded') {
+          data.motes.peripheral.max = 23 + (data.essence.value * 4);
+        }
+        if (data.details.exalt === 'lunar') {
+          data.motes.peripheral.max = 34 + (data.essence.value * 4);
+        }
+        if (data.details.exalt === 'exigent') {
+          data.motes.peripheral.max = 23 + (data.essence.value * 4);
+        }
+        if (data.details.exalt === 'sidereal') {
+          data.motes.peripheral.max = 25 + (data.essence.value * 6);
+        }
+        if (data.details.exalt === 'liminal') {
+          data.motes.peripheral.max = 23 + (data.essence.value * 4);
+        }
+        if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
+          data.motes.peripheral.max = 23 + (data.essence.value * 4);
+        }
+        if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
+          data.motes.peripheral.max = 27 + (data.essence.value * 6);
+        }
+        data.motes.peripheral.value = (data.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
       }
-      if (data.details.exalt === 'lunar') {
-        data.motes.peripheral.max = 34 + (data.essence.value * 4);
-      }
-      if (data.details.exalt === 'exigent') {
-        data.motes.peripheral.max = 23 + (data.essence.value * 4);
-      }
-      if (data.details.exalt === 'sidereal') {
-        data.motes.peripheral.max = 25 + (data.essence.value * 6);
-      }
-      if (data.details.exalt === 'liminal') {
-        data.motes.peripheral.max = 23 + (data.essence.value * 4);
-      }
-      if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
-        data.motes.peripheral.max = 23 + (data.essence.value * 4);
-      }
-      if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-        data.motes.peripheral.max = 27 + (data.essence.value * 6);
-      }
-      data.motes.peripheral.value = (data.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
     }
     this.actor.update(actorData);
   }
@@ -1541,10 +1549,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
 
     const currentState = steps[index].dataset.state;
-    if(steps[index].dataset.type) {
-      if(currentState === '') {
-        for(const step of steps) {
-          if(step.dataset.state === '') {
+    if (steps[index].dataset.type) {
+      if (currentState === '') {
+        for (const step of steps) {
+          if (step.dataset.state === '') {
             step.dataset.state = 'x';
             data['value'] = Number(data['value']) + 1;
             break;
@@ -1552,8 +1560,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       else {
-        for(const step of steps) {
-          if(step.dataset.state === 'x') {
+        for (const step of steps) {
+          if (step.dataset.state === 'x') {
             step.dataset.state = '';
             data['value'] = Number(data['value']) - 1;
             break;
@@ -1562,18 +1570,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
     else {
-      if(currentState === '') {
-        for(const step of steps) {
-          if(step.dataset.state === '') {
+      if (currentState === '') {
+        for (const step of steps) {
+          if (step.dataset.state === '') {
             step.dataset.state = '/';
             data['bashing'] = Number(data['bashing']) + 1;
             break;
           }
         }
       }
-      if(currentState === '/') {
-        for(const step of steps) {
-          if(step.dataset.state === '/') {
+      if (currentState === '/') {
+        for (const step of steps) {
+          if (step.dataset.state === '/') {
             step.dataset.state = 'x';
             data['lethal'] = Number(data['lethal']) + 1;
             data['bashing'] = Number(data['bashing']) - 1;
@@ -1581,9 +1589,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
         }
       }
-      if(currentState === 'x') {
-        for(const step of steps) {
-          if(step.dataset.state === 'x') {
+      if (currentState === 'x') {
+        for (const step of steps) {
+          if (step.dataset.state === 'x') {
             step.dataset.state = '*';
             data['aggravated'] = Number(data['aggravated']) + 1;
             data['lethal'] = Number(data['lethal']) - 1;
@@ -1591,9 +1599,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
         }
       }
-      if(currentState === '*') {
-        for(const step of steps) {
-          if(step.dataset.state === '*') {
+      if (currentState === '*') {
+        for (const step of steps) {
+          if (step.dataset.state === '*') {
             step.dataset.state = '';
             data['aggravated'] = Number(data['aggravated']) - 1;
             break;
