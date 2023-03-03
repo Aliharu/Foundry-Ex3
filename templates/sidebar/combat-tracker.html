@@ -72,6 +72,9 @@
                     </a>
                     {{/if}}
                     <span class="initiative" style="flex: 0 0 1.5em">{{this.initiative}}</span>
+                    {{#ifNotEquals this.initiative this.turnOrderInitiative}}
+                    <span style="flex: 0.2 0 1.5em;">({{this.turnOrderInitiative}})</span>
+                    {{/ifNotEquals}}
                     {{#if this.owner}}
                     <a class="combatant-control init-combatant-control" data-tooltip="Ex3.DecreaseInitiative" data-control="decreaseInit">
                         <i class="fas fa-caret-down"></i>

@@ -582,5 +582,7 @@
     "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn",
     "Ex3.BaseInitiative": "Base Initiative",
     "Ex3.NegateParryPenalty": "Negate Parry Penalty",
-    "Ex3.NegateEvasionPenalty": "Negate Evasion Penalty"
+    "Ex3.NegateEvasionPenalty": "Negate Evasion Penalty",
+    "Ex3.TurnOrderInitiative": "Turn Order Initiative"
+
 }

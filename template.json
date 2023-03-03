@@ -125,6 +125,9 @@
           "value": 0,
           "min": 0
         },
+        "turnorderinitiative": {
+          "value": 0
+        },
         "dicepenalty": {
           "value": 0,
           "min": 0

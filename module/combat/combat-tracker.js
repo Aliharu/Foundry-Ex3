@@ -17,11 +17,15 @@ export class ExaltedCombatTracker extends CombatTracker {
                 ...t,
                 css: t.css,
                 acted: combatant?.flags.acted,
+                turnOrderInitiative: ((combatant?.initiative || 0) + (combatant?.actor?.system?.turnorderinitiative.value || 0))
             };
         });
         data.turns.sort(function (a, b) {
             const ad = (a.acted && !a.active) ? 1 : 0;
-            const bd = (b.acted && !b.active)  ? 1 : 0;
+            const bd = (b.acted && !b.active) ? 1 : 0;
+            if(ad === bd) {
+                return (b.turnOrderInitiative || 0) - (a.turnOrderInitiative || 0);
+            }
             return ad - bd;
         });
 
