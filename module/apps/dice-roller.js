@@ -414,16 +414,6 @@ export class RollForm extends FormApplication {
                 damageModifier: 0,
             }
             var defenseType = 'none';
-            if ((target.actor.system.parry.value >= target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
-                target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
-                target.rollData.defense = target.actor.system.parry.value;
-                defenseType = 'parry';
-            }
-            if ((target.actor.system.evasion.value >= target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
-                target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
-                target.rollData.defense = target.actor.system.evasion.value;
-                defenseType = 'evasion';
-            }
             if (target.actor.system.warstrider.equipped) {
                 target.rollData.soak = target.actor.system.warstrider.soak.value;
                 target.rollData.hardness = target.actor.system.warstrider.hardness.value;
@@ -456,31 +446,52 @@ export class RollForm extends FormApplication {
             if (target.actor.system.health.penalty !== 'inc') {
                 target.rollData.defense -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
             }
+            let effectiveParry = target.actor.system.parry.value;
+            let effectiveEvasion = target.actor.system.evasion.value;
+
             if (target.actor.effects) {
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
-                    target.rollData.defense += 1;
+                    effectiveParry += 1;
+                    effectiveEvasion += 1;
                 }
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
-                    target.rollData.defense += 2;
+                    effectiveParry += 2;
+                    effectiveEvasion += 3;
                 }
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
-                    target.rollData.defense += 3;
+                    effectiveParry += 3;
+                    effectiveEvasion += 3;
                 }
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense')) {
-                    target.rollData.defense += 2;
+                    effectiveParry += 2;
+                    effectiveEvasion += 2;
                 }
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
-                    target.rollData.defense -= 2;
+                    effectiveParry -= 2;
+                    effectiveEvasion -= 2;
                 }
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
-                    target.rollData.defense -= 2;
+                    effectiveParry -= 2;
+                    effectiveEvasion -= 2;
                 }
-                if (defenseType === 'parry' && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                    target.rollData.defense -= 1;
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    effectiveParry -= 1;
                 }
-                if (defenseType === 'evasion' && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                    target.rollData.defense -= 2;
+                effectiveParry += Math.min(target.actor.system.negateparrypenalty.value, target.actor.getRollData().currentParryPenalty);
+                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    effectiveEvasion -= 2;
                 }
+                effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
+            }
+            if ((effectiveParry >= effectiveEvasion || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
+                target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
+                target.rollData.defense = effectiveParry;
+                defenseType = 'parry';
+            }
+            if ((effectiveEvasion >= effectiveParry || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
+                target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
+                target.rollData.defense = effectiveEvasion;
+                defenseType = 'evasion';
             }
             if (target.rollData.defense < 0) {
                 target.rollData.defense = 0;
@@ -907,7 +918,7 @@ export class RollForm extends FormApplication {
                         rollerValue = leftVar + rightVar;
                         break;
                     case '-':
-                        rollerValue = leftVar - rightVar;
+                        rollerValue = Math.max(0, leftVar - rightVar);
                         break;
                     case '/>':
                         if (rightVar) {
@@ -2626,7 +2637,7 @@ export class RollForm extends FormApplication {
         if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
             let totalHealth = 0;
             const targetActorData = duplicate(this.object.target.actor);
-            if(targetBattlegroup) {
+            if (targetBattlegroup) {
                 totalHealth = targetActorData.system.health.levels.zero.value + targetActorData.system.size.value;
             }
             else {
@@ -2634,9 +2645,9 @@ export class RollForm extends FormApplication {
                     totalHealth += health_level.value;
                 }
             }
-            if(targetBattlegroup) {
+            if (targetBattlegroup) {
                 var remainingHealth = totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.lethal - targetActorData.system.health.aggravated;
-                while(remainingHealth <= characterDamage && targetActorData.system.size.value > 0) {
+                while (remainingHealth <= characterDamage && targetActorData.system.size.value > 0) {
                     sizeDamaged++;
                     targetActorData.system.health.bashing = 0;
                     targetActorData.system.health.lethal = 0;
