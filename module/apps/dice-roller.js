@@ -3144,6 +3144,9 @@ export class RollForm extends FormApplication {
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
         }
+        if (this.object.opposingCharms === undefined) {
+            this.object.opposingCharms = [];
+        }
         if (this.object.damage.decisiveDamageType === undefined) {
             this.object.damage.decisiveDamageType = 'initiative';
             this.object.damage.decisiveDamageCalculation = 'evenSplit';
