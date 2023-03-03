@@ -413,19 +413,16 @@ export class RollForm extends FormApplication {
                 diceModifier: 0,
                 damageModifier: 0,
             }
+            var defenseType = 'none';
             if ((target.actor.system.parry.value >= target.actor.system.evasion.value || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
                 target.rollData.defense = target.actor.system.parry.value;
-                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                    target.rollData.defense -= 1;
-                }
+                defenseType = 'parry';
             }
             if ((target.actor.system.evasion.value >= target.actor.system.parry.value || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
                 target.rollData.defense = target.actor.system.evasion.value;
-                if (target.actor.effects && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
-                    target.rollData.defense -= 2;
-                }
+                defenseType = 'evasion';
             }
             if (target.actor.system.warstrider.equipped) {
                 target.rollData.soak = target.actor.system.warstrider.soak.value;
@@ -476,6 +473,12 @@ export class RollForm extends FormApplication {
                     target.rollData.defense -= 2;
                 }
                 if (target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+                    target.rollData.defense -= 2;
+                }
+                if (defenseType === 'parry' && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                    target.rollData.defense -= 1;
+                }
+                if (defenseType === 'evasion' && target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
                     target.rollData.defense -= 2;
                 }
             }
@@ -1825,6 +1828,20 @@ export class RollForm extends FormApplication {
             });
         }
 
+        for (let charm of this.object.opposingCharms) {
+            if (!charm.system.macro) continue;
+            let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
+            rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                try {
+                    return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                } catch (e) {
+                    ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                    console.error(e);
+                }
+                return rollResult;
+            });
+        }
+
         const diceRollResults = this._calculateRoll(dice, rollModifiers);
         this.object.roll = diceRollResults.roll;
         this.object.displayDice = diceRollResults.diceDisplay;
@@ -2260,6 +2277,20 @@ export class RollForm extends FormApplication {
         }
 
         for (let charm of this.object.addedCharms) {
+            if (!charm.system.damagemacro) continue;
+            let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.damagemacro);
+            rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                try {
+                    return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                } catch (e) {
+                    ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                    console.error(e);
+                }
+                return rollResult;
+            });
+        }
+
+        for (let charm of this.object.opposingCharms) {
             if (!charm.system.damagemacro) continue;
             let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.damagemacro);
             rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {

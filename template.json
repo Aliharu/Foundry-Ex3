@@ -117,6 +117,14 @@
           "value": 0,
           "min": 0
         },
+        "evasionpenalty": {
+          "value": 0,
+          "min": 0
+        },
+        "parrypenalty": {
+          "value": 0,
+          "min": 0
+        },
         "dicepenalty": {
           "value": 0,
           "min": 0
