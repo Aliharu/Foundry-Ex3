@@ -142,6 +142,14 @@
           "languages": {
             "value": [],
             "custom": ""
+          },
+          "resonance": {
+            "value": [],
+            "custom": ""
+          },
+          "dissonance": {
+            "value": [],
+            "custom": ""
           }
         },
         "details": {
@@ -165,6 +173,8 @@
         },
         "settings": {
           "charmmotepool": "peripheral",
+          "martialartsmastery": "standard",
+          "smaenlightenment": false,
           "showwarstrider": false,
           "showship": false,
           "showescort": false,
@@ -549,10 +559,6 @@
         "physical": "primary",
         "social": "secondary",
         "mental": "tertiary"
-      },
-      "advantages": {
-        "resonance": "",
-        "dissonance": ""
       },
       "experience": {
         "standard": {
@@ -977,7 +983,8 @@
       "templates": [
         "base"
       ],
-      "points": 0
+      "points": 0,
+      "siderealmartialart": false
     },
     "craft": {
       "templates": [

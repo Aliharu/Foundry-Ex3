@@ -15,6 +15,16 @@
                 <option value="4">{{localize "Ex3.Transcendent"}}</option>
                 {{/select}}
             </select>
+            <label className="resource-label">{{localize "Ex3.MartialArtsMastery"}}:</label>
+            <select id="martialArtsMastery" name="settings.martialartsmastery" data-type="String">
+                {{#select settings.martialartsmastery}}
+                <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
+                <option value="standard">{{localize "Ex3.Standard"}}</option>
+                <option value="mastery">{{localize "Ex3.Mastery"}}</option>
+                {{/select}}
+            </select>
+            <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
+            <input id="smaEnlightenment" name="settings.smaenlightenment" type="checkbox" {{checked settings.smaenlightenment}}>
             <label className="resource-label">{{localize "Ex3.ShowWarstrider"}}:</label>
             <input id="showWarstrider" name="settings.showwarstrider" type="checkbox" {{checked settings.showwarstrider}}>
             <label className="resource-label">{{localize "Ex3.ShowShip"}}:</label>

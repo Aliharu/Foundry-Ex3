@@ -522,15 +522,6 @@
         </div>
         {{/ifEquals}}
         <li>
-          <label class="resource-label">{{localize "Ex3.Resonance"}}{{#if system.settings.editmode}} <a><i class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Parry"
-            style="margin-left:3px;"></i></a>{{/if}}</label>
-          <input type="text" name="system.advantages.resonance" value="{{system.advantages.resonance}}" />
-        </li>
-        <li>
-          <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
-          <input type="text" name="system.advantages.dissonance" value="{{system.advantages.dissonance}}" />
-        </li>
-        <li>
           <label class="resource-label">{{localize "Ex3.LimitTrigger"}}</label>
           <input type="text" name="system.limit.trigger" value="{{system.limit.trigger}}" />
         </li>
@@ -590,6 +581,29 @@
         <!-- <div class="grid flex-group-center">
           <button id="import-stuff">Import</button>
         </div> -->
+        <div class="mt-1">
+          <label class="resource-label">{{localize "Ex3.Resonance"}} {{#if system.settings.editmode}} <a><i class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Resonance/Dissonance"
+            style="margin-left:3px;"></i></a>{{/if}}</label>
+          <a class="trait-selector" data-options="resonance" data-target="system.traits.resonance">
+            <i class="fas fa-edit"></i>
+          </a>
+          <div class="mt-1">
+            {{#each system.traits.resonance.selected as |v k|}}
+            <li class="tag {{k}}">{{v}}</li>
+            {{/each}}
+          </div>
+        </div>
+        <div class="mt-1">
+          <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
+          <a class="trait-selector" data-options="dissonance" data-target="system.traits.dissonance">
+            <i class="fas fa-edit"></i>
+          </a>
+          <div class="mt-1">
+            {{#each system.traits.dissonance.selected as |v k|}}
+            <li class="tag {{k}}">{{v}}</li>
+            {{/each}}
+          </div>
+        </div>
         <div class="mt-1">
           <label class="resource-label">{{localize "Ex3.Languages"}}</label>
           <a class="trait-selector" data-options="languages" data-target="system.traits.languages">

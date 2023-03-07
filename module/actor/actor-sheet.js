@@ -444,6 +444,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   _prepareTraits(traits) {
     const map = {
       "languages": CONFIG.exaltedthird.languages,
+      "resonance": CONFIG.exaltedthird.resonance,
+      "dissonance": CONFIG.exaltedthird.dissonance,
     };
     for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];
@@ -1136,50 +1138,52 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     if (type === 'resonance') {
       const resonanceChart = {
-        "abyssal": "Soulsteel",
-        "alchemical": "",
-        "dragonblooded": "Jade",
-        "dreamsouled": "",
-        "getimian": "Starmetal",
-        "hearteater": "Adamant",
-        "infernal": "Orichalcum",
-        "liminal": "",
-        "lunar": "Moonsilver",
-        "sidereal": "Starmetal",
-        "solar": "All",
-        "umbral": "Soulsteel",
+        "abyssal": ['soulsteel'],
+        "alchemical": [],
+        "dragonblooded": ['blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+        "dreamsouled": [],
+        "getimian": ['starmetal'],
+        "hearteater": ['adamant'],
+        "infernal": ['orichalcum'],
+        "liminal": [],
+        "lunar": ['moonsilver'],
+        "sidereal": ['starmetal'],
+        "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+        "umbral": ['soulsteel'],
       }
       const dissonanceChart = {
-        "abyssal": "",
-        "alchemical": "",
-        "dragonblooded": "Soulsteel",
-        "dreamsouled": "Non-Moonsilver",
-        "getimian": "Non-Starmetal",
-        "hearteater": "",
-        "infernal": "",
-        "liminal": "Non-Soulsteel",
+        "abyssal": [],
+        "alchemical": [],
+        "dragonblooded": ['soulsteel'],
+        "dreamsouled": ['adamant', 'orichalcum', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+        "getimian": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+        "hearteater": [],
+        "infernal": [],
+        "liminal": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
         "lunar": "",
-        "sidereal": "Non-Starmetal",
-        "solar": "",
-        "umbral": "",
+        "sidereal": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+        "solar": [],
+        "umbral": [],
       }
+      
       if (data.details.exalt === 'exigent') {
         if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-          data.advantages.resonance = 'Orichalcum, Green Jade';
-          data.advantages.dissonance = 'Soulsteel';
+          data.traits.resonance.value = ['orichalcum', 'greenjade'];
+          data.traits.dissonance.value = ['soulsteel'];
         }
         if (data.details.caste.toLowerCase() === 'sovereign') {
-          data.advantages.resonance = '';
-          data.advantages.dissonance = 'Non-Adamant';
+          data.traits.resonance.value = [];
+          data.traits.dissonance.value = ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
         }
         if (data.details.caste.toLowerCase() === 'puppeteer') {
-          data.advantages.resonance = 'Artifact Puppets';
-          data.advantages.dissonance = 'Orichalcum, Jade, Soulsteel, Adamant';
+          data.traits.resonance.value = [];
+          data.traits.resonance.custom = 'Artifact Puppets';
+          data.traits.dissonance.value = ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
         }
       }
       else {
-        data.advantages.resonance = resonanceChart[data.details.exalt];
-        data.advantages.dissonance = dissonanceChart[data.details.exalt];
+        data.traits.resonance.value = resonanceChart[data.details.exalt];
+        data.traits.dissonance.value = dissonanceChart[data.details.exalt];
       }
     }
     this.actor.update(actorData);
@@ -1504,7 +1508,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       close: html => {
         if (confirmed) {
           data.settings.charmmotepool = html.find('#charmMotePool').val();
-          data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
+          data.settings.charmmotepool = html.find('#charmMotePool').val();
+          data.settings.martialartsmastery = html.find('#martialArtsMastery').val();
+          data.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
           data.settings.showship = html.find('#showShip').is(":checked");
           data.settings.showescort = html.find('#showEscort').is(":checked");
           data.settings.showzerovalues = html.find('#showZeroValues').is(":checked");

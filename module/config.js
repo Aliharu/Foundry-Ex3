@@ -29,6 +29,32 @@ exaltedthird.languages = {
     "localtongue": "Local Tongue",
 };
 
+exaltedthird.resonance = {
+    "adamant": "Adamant",
+    "orichalcum": "Orichalcum",
+    "moonsilver": "Moonsilver",
+    "starmetal": "Starmetal",
+    "soulsteel": "Soulsteel",
+    "blackjade": "Black Jade",
+    "bluejade": "Blue Jade",
+    "greenjade": "Green Jade",
+    "redjade": "Red Jade",
+    "whitejade": "White Jade",
+};
+
+exaltedthird.dissonance = {
+    "adamant": "Adamant",
+    "orichalcum": "Orichalcum",
+    "moonsilver": "Moonsilver",
+    "starmetal": "Starmetal",
+    "soulsteel": "Soulsteel",
+    "blackjade": "Black Jade",
+    "bluejade": "Blue Jade",
+    "greenjade": "Green Jade",
+    "redjade": "Red Jade",
+    "whitejade": "White Jade",
+};
+
 exaltedthird.weapontags = {
     "aggravated": "Aggravated",
     "archery": "Archery",
