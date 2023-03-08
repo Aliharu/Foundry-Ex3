@@ -62,6 +62,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       async: true
     });
     context.rollData = context.actor.getRollData();
+    context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks")
     // Update traits
     this._prepareTraits(context.system.traits);
     // Prepare items.

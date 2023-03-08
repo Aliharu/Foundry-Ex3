@@ -1,6 +1,6 @@
 <div class="sheet-body exaltedthird">
     <div class="flex-center resource-label">
-        {{#ifEquals data.rollType 'gambit'}}{{localize "Ex3.Initiative"}}{{else}}{{localize "Ex3.Damage"}}{{/ifEquals}}
+        {{#ifEquals data.attackType 'gambit'}}{{localize "Ex3.Initiative"}}{{else}}{{localize "Ex3.Damage"}}{{/ifEquals}}
     </div>
     {{#ifEquals data.rollType 'damage'}}
     {{> systems/exaltedthird/templates/dialogues/added-charm-list.html}}
@@ -11,8 +11,9 @@
             <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
             <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
                 {{#select data.attackType}}
-                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
                 <option value="withering">{{localize "Ex3.Withering"}}</option>
+                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
+                <option value="gambit">{{localize "Ex3.Gambit"}}</option>
                 {{/select}}
             </select>
             <div>
@@ -39,7 +40,7 @@
                 <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
                 <input type="number" name="object.damage.targetNumber" value="{{data.damage.targetNumber}}">
             </div>
-            {{#if data.showWithering }}
+            {{#if data.showWithering}}
             <div>
                 <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
                 <input type="number" name="object.overwhelming" value="{{data.overwhelming}}">
@@ -295,7 +296,7 @@
         </div>
         {{/if}}
 
-        {{#ifEquals data.rollType 'gambit'}}
+        {{#ifEquals data.attackType 'gambit'}}
         <div class="flex-center resource-label" style="font-weight: bold;">
             {{localize "Ex3.GambitDifficulty"}}
         </div>

@@ -32,6 +32,11 @@ export class RollForm extends FormApplication {
                 this.object.splitAttack = true;
                 this.object.attackType = 'decisive';
             }
+            else if (data.rollType === 'gambit-split') {
+                this.object.rollType = 'accuracy';
+                this.object.splitAttack = true;
+                this.object.attackType = 'gambit';
+            }
             this.object.cost = {
                 motes: 0,
                 muteMotes: 0,
@@ -2346,7 +2351,7 @@ export class RollForm extends FormApplication {
             }
             this.dealHealthDamage(total);
         }
-        else if (this.object.rollType === 'gambit') {
+        else if (this._damageRollType('gambit')) {
             this.object.gambitSuccess = true;
             var resultsText = `<h4 class="dice-total">Gambit Success</h4>`;
             if (this.object.gambitDifficulty > total) {
@@ -2402,8 +2407,13 @@ export class RollForm extends FormApplication {
                                     `;
 
         }
+        var defenseResult = ''
+        if (this.object.rollType === 'damage') {
+            defenseResult = `<h4 class="dice-formula">${this.object.attackSuccesses} Accuracy Successes vs ${this.object.defense} Defense</h4>`
+        }
         damageResults = `
-                                <h4 class="dice-total" style="margin-bottom:5px;">${this.object.rollType === 'gambit' ? 'Gambit' : 'Damage'}</h4>
+                                <h4 class="dice-total" style="margin-bottom:5px;">${this._damageRollType('gambit') ? 'Gambit' : 'Damage'}</h4>
+                                ${defenseResult}
                                 <h4 class="dice-formula">${baseDamage} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
                                 ${soakResult}
                                 <div class="dice-tooltip">
@@ -2416,7 +2426,7 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'withering') {
             title = "Withering Attack";
         }
-        if (this.object.rollType === 'gambit') {
+        if (this._damageRollType('gambit')) {
             title = "Gambit";
         }
         var accuracyContent = ``;

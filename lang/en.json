@@ -506,6 +506,8 @@
     "Ex3.CompactSheetsDescription": "Shortens the default height/width of character sheets.  Replaces certain dot values with inputs to take less space (Requires reload)",
     "Ex3.CompactSheetsNPC": "Compact Sheets (NPC)",
     "Ex3.CompactSheetsDescriptionNPC": "Shortens the default height/width of NPC sheets.  Replaces certain dot values with inputs to take less space (Requires reload)",
+    "Ex3.ShowFullAttackButtons": "Show full attack buttons",
+    "Ex3.ShowFullAttackButtonsDescriptions": "Show full attack buttons on weapons (top row).",
     "Ex3.MaxAnima": "Max Anima",
     "Ex3.ShowWarstrider": "Show Warstrider",
     "Ex3.ShowShip": "Show Ship",

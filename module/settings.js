@@ -69,4 +69,13 @@ export function registerSettings() {
         type: Boolean,
         default: false
     });
+
+    game.settings.register("exaltedthird", "showFullAttacks", {
+        name: game.i18n.localize('Ex3.ShowFullAttackButtons'),
+        hint: game.i18n.localize('Ex3.ShowFullAttackButtonsDescriptions'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: true
+    });
 }

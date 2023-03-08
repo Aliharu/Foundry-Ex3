@@ -47,6 +47,7 @@
         {{{enrichedHTMLItems ../this "description" item._id}}}
       </div>
     </div>
+    {{#if ../showFullAttackButtons}}
     <li class="item item-large flexrow">
       <div>
         <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="withering"><i
@@ -64,6 +65,7 @@
           "Ex3.Gambit"}}</button>
       </div>
     </li>
+    {{/if}}
     <li class="item item-large flexrow">
       <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="withering-split"><i
           class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-skull weapon-icon"></i>{{localize
@@ -71,6 +73,9 @@
       <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="decisive-split"><i
           class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-skull weapon-icon"></i>{{localize
         "Ex3.Decisive"}}</button>
+        <button class="roll-button weapon-roll" data-item-id="{{item._id}}" data-roll-type="gambit-split"><i
+          class="fas fa-crosshairs weapon-icon"></i>/ <i class="fas fa-fist-raised weapon-icon"></i>{{localize
+        "Ex3.Gambit"}}</button>
     </li>
     {{/each}}
   </ol>
