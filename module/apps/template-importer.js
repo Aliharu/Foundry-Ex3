@@ -3,6 +3,7 @@ export default class TemplateImporter extends Application {
     super(app)
     this.type = 'charm';
     this.charmType = 'other';
+    this.folder = '';
     this.errorText = '';
     this.errorSection = '';
     this.showError = false;
@@ -47,6 +48,7 @@ export default class TemplateImporter extends Application {
     let data = super.getData();
     data.type = this.type;
     data.charmType = this.charmType;
+    data.folder = this.folder;
     data.textBox = this.textBox;
     data.showError = this.showError;
     data.error = this.error;
@@ -69,6 +71,19 @@ export default class TemplateImporter extends Application {
   async createCharm(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     var charmType = html.find('#charmType').val();
+    var folderName = html.find('#folder').val();
+    var folder = null;
+
+    if(folderName) {
+      folder = game.folders.find(folder => {
+        return folder.name === folderName && folder.type === 'Item';
+      });
+  
+      if(!folder) {
+        folder = await Folder.create({ name: folderName, type: 'Item' });
+      }
+    }
+
     var index = 0;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var charmData = {
@@ -91,7 +106,7 @@ export default class TemplateImporter extends Application {
       };
       charmData.name = textArray[index];
       index++;
-      if(!textArray[index].includes('Cost')) {
+      if (!textArray[index].includes('Cost')) {
         index = this.goldenCalibrationCharm(charmData, textArray, index);
       }
       else {
@@ -103,20 +118,23 @@ export default class TemplateImporter extends Application {
         description += textArray[index];
         description += " ";
         index++;
-        if((textArray[index+1] && textArray[index+1].includes('Cost:'))){
+        if ((textArray[index + 1] && textArray[index + 1].includes('Cost:'))) {
           index--;
           break;
         }
-        if(textArray[index+2] && textArray[index+2].includes('Cost:') && textArray[index+2].includes('Duration:')) {
+        if (textArray[index + 2] && textArray[index + 2].includes('Cost:') && textArray[index + 2].includes('Duration:')) {
           index--;
           break;
         }
-        if(textArray[index+2] && (textArray[index+1].includes('Permanent')) && (textArray[index+2].includes('Prerequisites:'))) {
+        if (textArray[index + 2] && (textArray[index + 1].includes('Permanent')) && (textArray[index + 2].includes('Prerequisites:'))) {
           index--;
           break;
         }
       }
       charmData.system.description = description;
+      if(folder) {
+        charmData.folder = folder;
+      }
       await Item.create(charmData);
       index++;
     }
@@ -150,21 +168,21 @@ export default class TemplateImporter extends Application {
     var typeAndRequirement = textArray[index];
     typeAndRequirement = typeAndRequirement.split(' ');
     charmData.system.type = typeAndRequirement[0];
-    if(typeAndRequirement[0] === 'Permanent') {
+    if (typeAndRequirement[0] === 'Permanent') {
       charmData.system.duration = 'Permanent'
     }
     charmData.system.ability = typeAndRequirement[1].toLowerCase();
     charmData.system.requirement = typeAndRequirement[2].replace(/[^0-9]/g, '');
     charmData.system.essence = typeAndRequirement[4].replace(/[^0-9]/g, '');
     index++;
-    if(textArray[index].includes('Cost:')) {
+    if (textArray[index].includes('Cost:')) {
       var costDuration = textArray[index].replace('Cost: ', '').split('Duration:');
       charmData.system.duration = costDuration[1];
       var costArray = costDuration[0].split(',');
       this.charmCost(costArray, charmData);
       index++;
     }
-    if(textArray[index].includes('Keywords:')) {
+    if (textArray[index].includes('Keywords:')) {
       charmData.system.keywords = textArray[index].replace('Keywords: ', '');
       index++;
     }
@@ -295,7 +313,7 @@ export default class TemplateImporter extends Application {
         description += textArray[index];
         description += " ";
         index++;
-        if((textArray[index+1] && textArray[index+1].includes('Cost:'))){
+        if ((textArray[index + 1] && textArray[index + 1].includes('Cost:'))) {
           index--;
           break;
         }
@@ -2031,6 +2049,11 @@ export default class TemplateImporter extends Application {
   activateListeners(html) {
     html.on("change", "#charmType", ev => {
       this.charmType = ev.currentTarget.value;
+      this.render();
+    });
+
+    html.on("change", "#folder", ev => {
+      this.folder = ev.currentTarget.value;
       this.render();
     });
 
