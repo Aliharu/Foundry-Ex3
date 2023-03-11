@@ -819,6 +819,7 @@
       "requirement": 0,
       "essence": 0,
       "active": false,
+      "endtrigger": "none",
       "cost": {
         "motes": 0,
         "commitmotes": 0,

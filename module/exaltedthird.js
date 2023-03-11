@@ -15,6 +15,7 @@ import Importer from "./apps/importer.js";
 import TemplateImporter from "./apps/template-importer.js";
 import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
 import { ExaltedCombatant } from "./combat/combat.js";
+import ExaltedActiveEffect from "./active-effect.js";
 
 Hooks.once('init', async function () {
 
@@ -56,6 +57,7 @@ Hooks.once('init', async function () {
   CONFIG.Combat.documentClass = ExaltedCombat;
   CONFIG.Combatant.documentClass = ExaltedCombatant;
   CONFIG.ui.combat = ExaltedCombatTracker;
+  CONFIG.ActiveEffect.documentClass = ExaltedActiveEffect;
 
   game.socket.on('system.exaltedthird', handleSocket);
 
@@ -174,7 +176,7 @@ async function handleSocket({ type, id, data, actorId }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
-      if(!data.actor) { 
+      if (!data.actor) {
         data.actor = game.actors.get(actorId);
       }
       game.rollForm.addOpposingCharm(data);
@@ -304,7 +306,6 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   }
   if (update && (update.round !== undefined || update.turn !== undefined)) {
     if (combat.current.combatantId) {
-
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
       if (currentCombatant?.actor) {
         const actorData = duplicate(currentCombatant.actor);
@@ -326,11 +327,86 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
           actorData.system.grapplecontrolrounds.value -= 1;
         }
+        const startTurnCharms = currentCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'startturn');
+        for (const charm of startTurnCharms) {
+          charm.update({
+            [`system.active`]: false,
+          });
+          if (actorData.system.settings.charmmotepool === 'personal') {
+            if (charm.system.cost.commitmotes > 0) {
+              actorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          else {
+            if (charm.system.cost.commitmotes > 0) {
+              actorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          for (var effect of currentCombatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
+            effect.update({ disabled: true });
+          }
+        }
         currentCombatant.actor.update(actorData);
+      }
+    }
+    if (combat.previous.combatantId) {
+      var previousCombatant = combat.combatants.get(combat.previous.combatantId);
+      const previousActorData = duplicate(previousCombatant.actor);
+      if (previousCombatant?.actor) {
+        const endTurnCharms = previousCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endturn');
+        for (const charm of endTurnCharms) {
+          charm.update({
+            [`system.active`]: false,
+          });
+          if (previousActorData.system.settings.charmmotepool === 'personal') {
+            if (charm.system.cost.commitmotes > 0) {
+              previousActorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          else {
+            if (charm.system.cost.commitmotes > 0) {
+              previousActorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          for (var effect of currentCombatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
+            effect.update({ disabled: true });
+          }
+        }
+        currentCombatant.actor.update(previousActorData);
       }
     }
   }
 }));
+
+Hooks.on("deleteCombat", (entity, deleted) => {
+  for (const combatant of entity.combatants) {
+    if (combatant?.actor) {
+      const endSceneCharms = combatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endscene');
+      if (endSceneCharms?.length) {
+        const previousActorData = duplicate(combatant.actor);
+        for (const charm of endSceneCharms) {
+          charm.update({
+            [`system.active`]: false,
+          });
+          if (previousActorData.system.settings.charmmotepool === 'personal') {
+            if (charm.system.cost.commitmotes > 0) {
+              previousActorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          else {
+            if (charm.system.cost.commitmotes > 0) {
+              previousActorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          for (var effect of combatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
+            effect.update({ disabled: true });
+          }
+        }
+        combatant.actor.update(previousActorData);
+      }
+    }
+  }
+});
 
 Hooks.on("renderChatLog", (app, html, data) => {
   Chat.addChatListeners(html);
