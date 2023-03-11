@@ -30,20 +30,24 @@
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a><i
-            class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
-        <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}" data-dtype="Number" />
+                    class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
+        <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}"
+            data-dtype="Number" />
     </div>
     <div>
         <div class="resource-label">{{localize "Ex3.NegateParryPenalty"}}</div>
-        <input type="number" name="system.negateparrypenalty.value" value="{{system.negateparrypenalty.value}}" data-dtype="Number" />
+        <input type="number" name="system.negateparrypenalty.value" value="{{system.negateparrypenalty.value}}"
+            data-dtype="Number" />
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.NegateEvasionPenalty"}}</label>
-        <input type="number" name="system.negateevasionpenalty.value" value="{{system.negateevasionpenalty.value}}" data-dtype="Number" />
+        <input type="number" name="system.negateevasionpenalty.value" value="{{system.negateevasionpenalty.value}}"
+            data-dtype="Number" />
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.TurnOrderInitiative"}}</label>
-        <input type="number" name="system.turnorderinitiative.value" value="{{system.turnorderinitiative.value}}" data-dtype="Number" />
+        <input type="number" name="system.turnorderinitiative.value" value="{{system.turnorderinitiative.value}}"
+            data-dtype="Number" />
     </div>
     <div>
         <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
@@ -52,16 +56,17 @@
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.BaseInitiative"}}</label>
-        <input type="number" name="system.baseinitiative.value" value="{{system.baseinitiative.value}}" data-dtype="Number" />
+        <input type="number" name="system.baseinitiative.value" value="{{system.baseinitiative.value}}"
+            data-dtype="Number" />
     </div>
 </div>
 <div>
     <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i
             class="fas fa-minus"></i></a> {{system.currentOnslaughtPenalty}} <a
-        class="item-control add-onslaught-penalty"><i class="fas fa-plus"></i></a>, 
-        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control subtract-defense-penalty"><i
+        class="item-control add-onslaught-penalty"><i class="fas fa-plus"></i></a>,
+    <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control subtract-defense-penalty"><i
             class="fas fa-minus"></i></a> {{system.currentDefensePenalty}} <a
-        class="item-control add-defense-penalty"><i class="fas fa-plus"></i></a>, 
+        class="item-control add-defense-penalty"><i class="fas fa-plus"></i></a>,
 </div>
 <div>
     <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
@@ -142,7 +147,8 @@
         {{#if roll.appearanceattribute}}
         <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.Appearance"}} </label>
-            <select name="system.settings.rollsettings.{{key}}.appearanceattribute" value="{{roll.appearanceattribute}}" data-type="String">
+            <select name="system.settings.rollsettings.{{key}}.appearanceattribute" value="{{roll.appearanceattribute}}"
+                data-type="String">
                 {{#select roll.appearanceattribute}}
                 <option value="strength">{{localize "Ex3.Strength"}}</option>
                 <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
@@ -157,6 +163,23 @@
             </select>
         </div>
         {{/if}}
+    </div>
+    {{/each}}
+    {{#each system.settings.attackrollsettings as |roll key|}}
+    <div>
+        <div>
+            <label class="resource-label">{{localize roll.name}}</label>
+        </div>
+        <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
+            <input type="number" name="system.settings.attackrollsettings.{{key}}.bonus" value="{{roll.bonus}}"
+                data-dtype="Number" />
+        </div>
+        <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.Damage"}} </label>
+            <input type="number" name="system.settings.attackrollsettings.{{key}}.damage" value="{{roll.damage}}"
+                data-dtype="Number" />
+        </div>
     </div>
     {{/each}}
 </div>

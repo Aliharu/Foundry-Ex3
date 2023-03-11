@@ -183,15 +183,19 @@ export class RollForm extends FormApplication {
                     this.object.conditions = this.actor.effects;
                 }
                 if (this.actor.type === 'character') {
-                    if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
-                        this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
-                        this.object.ability = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].ability;
-                        this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
-                    }
-                    else if (this._isAttackRoll()) {
+                    if (this._isAttackRoll()) {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
                         this.object.diceModifier += this.actor.system.settings.rollsettings['attacks'].bonus;
+                        if (this.actor.system.settings.attackrollsettings[this.object.attackType]) {
+                            this.object.diceModifier += this.actor.system.settings.attackrollsettings[this.object.attackType].bonus;
+                            this.object.damage.damageDice += this.actor.system.settings.attackrollsettings[this.object.attackType].damage;
+                        }
+                    }
+                    else if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
+                        this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
+                        this.object.ability = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].ability;
+                        this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                     }
                     else {
                         this.object.attribute = data.attribute || this._getHighestAttribute();
@@ -230,7 +234,7 @@ export class RollForm extends FormApplication {
                     if (this.object.attackType === 'withering' || this.actor.type === "npc") {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
                         if (this.object.attackType === 'withering') {
-                            this.object.damage.damageDice = data.weapon.witheringdamage || 0;
+                            this.object.damage.damageDice += data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
                                 if (this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
                                     this.object.damage.damageDice += 4;
@@ -242,7 +246,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                     if (!this.object.showWithering && data.weapon.decisivedamagetype === 'static') {
-                        this.object.damage.damageDice = data.weapon.staticdamage;
+                        this.object.damage.damageDice += data.weapon.staticdamage;
                         this.object.damage.decisiveDamageType = 'static';
                     }
                     if (this.object.weaponTags["bashing"] && !this.object.weaponTags["lethal"]) {
@@ -371,7 +375,7 @@ export class RollForm extends FormApplication {
                 if (combatant && combatant.initiative) {
                     if (!this.object.showWithering) {
                         if (data.weapon && this.object.damage.decisiveDamageType === 'initiative') {
-                            this.object.damage.damageDice = combatant.initiative;
+                            this.object.damage.damageDice += combatant.initiative;
                         }
                     }
                     this.object.characterInitiative = combatant.initiative;

@@ -2030,7 +2030,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
           }
         }
-        const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+        const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
         if (game.combat && tokenId) {
           let combatant = game.combat.combatants.find(c => c?.tokenId === tokenId);
           if (combatant) {

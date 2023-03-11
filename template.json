@@ -242,6 +242,23 @@
               "bonus": 0,
               "name": "Ex3.Sorcery"
             }
+          },
+          "attackrollsettings": {
+            "withering": {
+              "bonus": 0,
+              "damage": 0,
+              "name": "Ex3.Withering"
+            },
+            "decisive": {
+              "bonus": 0,
+              "damage": 0,
+              "name": "Ex3.Decisive"
+            },
+            "gambit": {
+              "bonus": 0,
+              "damage": 0,
+              "name": "Ex3.Gambit"
+            }
           }
         },
         "ship": {
