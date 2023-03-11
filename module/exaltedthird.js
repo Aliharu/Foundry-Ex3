@@ -351,8 +351,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
     }
     if (combat.previous.combatantId) {
       var previousCombatant = combat.combatants.get(combat.previous.combatantId);
-      const previousActorData = duplicate(previousCombatant.actor);
       if (previousCombatant?.actor) {
+        const previousActorData = duplicate(previousCombatant.actor);
         const endTurnCharms = previousCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endturn');
         for (const charm of endTurnCharms) {
           charm.update({
@@ -368,11 +368,11 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
               previousActorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
             }
           }
-          for (var effect of currentCombatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
+          for (var effect of previousCombatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
             effect.update({ disabled: true });
           }
         }
-        currentCombatant.actor.update(previousActorData);
+        previousCombatant.actor.update(previousActorData);
       }
     }
   }
