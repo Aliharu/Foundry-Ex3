@@ -171,8 +171,8 @@
             {{/if}}
           </div>
           {{else}}
-          <input class="list-input" type="number" name="system.attributes.{{key}}.value"
-          value="{{attribute.value}}" data-dtype="Number" />
+          <input class="list-input" type="number" name="system.attributes.{{key}}.value" value="{{attribute.value}}"
+            data-dtype="Number" />
           {{/if}}
         </div>
         {{/each}}
@@ -200,33 +200,65 @@
               data-roll="{{ability.value}}" data-ability="{{key}}" data-label="{{ability.name}}">{{localize
               ability.name}}</label>
             {{#if ../system.settings.usedotsvalues}}
-              <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
-                {{#numLoop 5}}
-                <span class="resource-value-step" data-index="{{this}}"></span>
-                {{/numLoop}}
-              </div>
+            <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
+              {{#numLoop 5}}
+              <span class="resource-value-step" data-index="{{this}}"></span>
+              {{/numLoop}}
+            </div>
             {{else}}
-            <input class="list-input" type="number" name="system.abilities.{{key}}.value"
-            value="{{ability.value}}" data-dtype="Number" />
+            <input class="list-input" type="number" name="system.abilities.{{key}}.value" value="{{ability.value}}"
+              data-dtype="Number" />
             {{/if}}
           </div>
           {{#if ../system.settings.editmode}}
-            <div class="flexrow flex-center">
-              <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
-              <select name="system.abilities.{{key}}.prefattribute" value="{{ability.prefattribute}}" data-type="String">
-                  {{#select ability.prefattribute}}
-                  <option value="strength">{{localize "Ex3.Strength"}}</option>
-                  <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
-                  <option value="stamina">{{localize "Ex3.Stamina"}}</option>
-                  <option value="charisma">{{localize "Ex3.Charisma"}}</option>
-                  <option value="manipulation">{{localize "Ex3.Manipulation"}}</option>
-                  <option value="appearance">{{localize "Ex3.Appearance"}}</option>
-                  <option value="perception">{{localize "Ex3.Perception"}}</option>
-                  <option value="intelligence">{{localize "Ex3.Intelligence"}}</option>
-                  <option value="wits">{{localize "Ex3.Wits"}}</option>
-                  {{/select}}
-              </select>
-            </div>
+          <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
+            <select name="system.abilities.{{key}}.prefattribute" value="{{ability.prefattribute}}" data-type="String">
+              {{#select ability.prefattribute}}
+              <option value="strength">{{localize "Ex3.Strength"}}</option>
+              <option value="dexterity">{{localize "Ex3.Dexterity"}}</option>
+              <option value="stamina">{{localize "Ex3.Stamina"}}</option>
+              <option value="charisma">{{localize "Ex3.Charisma"}}</option>
+              <option value="manipulation">{{localize "Ex3.Manipulation"}}</option>
+              <option value="appearance">{{localize "Ex3.Appearance"}}</option>
+              <option value="perception">{{localize "Ex3.Perception"}}</option>
+              <option value="intelligence">{{localize "Ex3.Intelligence"}}</option>
+              <option value="wits">{{localize "Ex3.Wits"}}</option>
+              {{/select}}
+            </select>
+          </div>
+          {{/if}}
+        </div>
+        {{/each}}
+        {{#each actor.martialarts as |item id|}}
+        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+          <input class="item-favored" name="system.favored" type="checkbox" {{checked item.system.favored}}>
+          <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
+          {{#if ../system.settings.usedotsvalues}}
+          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+            {{#numLoop 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+          </div>
+          {{else}}
+          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
+            data-dtype="Number" />
+          {{/if}}
+        </div>
+        {{/each}}
+        {{#each actor.crafts as |item id|}}
+        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+          <input class="item-favored" name="system.favored" type="checkbox" {{checked item.system.favored}}>
+          <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
+          {{#if ../system.settings.usedotsvalues}}
+          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+            {{#numLoop 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+          </div>
+          {{else}}
+          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
+            data-dtype="Number" />
           {{/if}}
         </div>
         {{/each}}
@@ -254,7 +286,6 @@
       <div style="margin-bottom:10px;">
         Specialties: {{system.charcreation.spent.specialties}}/{{system.charcreation.available.specialties}}
       </div>
-      {{/if}}
       <label class="resource-label">{{localize "Ex3.MartialArts"}}<a class="item-create" title="Create martialart"
           data-type="martialart"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
       <div class="attributes grid grid-3col flex-group-center">
@@ -266,11 +297,11 @@
           </div>
           <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
           {{#if ../system.settings.usedotsvalues}}
-            <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-              {{#numLoop 5}}
-              <span class="resource-value-static-step" data-index="{{this}}"></span>
-              {{/numLoop}}
-            </div>
+          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+            {{#numLoop 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+          </div>
           {{else}}
           <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
             data-dtype="Number" />
@@ -291,11 +322,11 @@
           <label class="resource-label roll-craft roll-hover" data-item-id="{{action._id}}">{{localize
             item.name}}</label>
           {{#if ../system.settings.usedotsvalues}}
-            <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-              {{#numLoop 5}}
-              <span class="resource-value-static-step" data-index="{{this}}"></span>
-              {{/numLoop}}
-            </div>
+          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+            {{#numLoop 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+          </div>
           {{else}}
           <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
             data-dtype="Number" />
@@ -303,6 +334,7 @@
         </div>
         {{/each}}
       </div>
+      {{/if}}
       {{/if}}
     </div>
 
@@ -382,15 +414,15 @@
           <div class="resource-content flexrow flex-center flex-between">
             <div>
               <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.spent}}
-                Spent) 
+                Spent)
                 <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
-              <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
-                  placeholder="Remaining" />
-                /
-                <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}" type="text"
-                  placeholder="Earned" />
-              </div>
+                <div class="resource-content flexrow flex-center flex-between">
+                  <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
+                    placeholder="Remaining" />
+                  /
+                  <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}" type="text"
+                    placeholder="Earned" />
+                </div>
             </div>
           </div>
         </div>
@@ -516,7 +548,8 @@
         </li>
         {{/each}}
         <div>
-          <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{system.maidencharms.journeys}}, {{localize "Ex3.Serenity"}}:
+          <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{system.maidencharms.journeys}}, {{localize
+          "Ex3.Serenity"}}:
           {{system.maidencharms.serenity}}, {{localize "Ex3.Battles"}}: {{system.maidencharms.battles}}, {{localize
           "Ex3.Secrets"}}: {{system.maidencharms.secrets}}, {{localize "Ex3.Endings"}}: {{system.maidencharms.endings}}
         </div>
@@ -582,8 +615,9 @@
           <button id="import-stuff">Import</button>
         </div> -->
         <div class="mt-1">
-          <label class="resource-label">{{localize "Ex3.Resonance"}} {{#if system.settings.editmode}} <a><i class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Resonance/Dissonance"
-            style="margin-left:3px;"></i></a>{{/if}}</label>
+          <label class="resource-label">{{localize "Ex3.Resonance"}} {{#if system.settings.editmode}} <a><i
+                class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Resonance/Dissonance"
+                style="margin-left:3px;"></i></a>{{/if}}</label>
           <a class="trait-selector" data-options="resonance" data-target="system.traits.resonance">
             <i class="fas fa-edit"></i>
           </a>

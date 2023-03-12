@@ -763,6 +763,10 @@
       "macro": {
         "macro": "",
         "damagemacro": ""
+      },
+      "ability": {
+        "favored": false,
+        "points": 0
       }
     },
     "item": {
@@ -998,16 +1002,16 @@
     },
     "martialart": {
       "templates": [
-        "base"
+        "base",
+        "ability"
       ],
-      "points": 0,
       "siderealmartialart": false
     },
     "craft": {
       "templates": [
-        "base"
-      ],
-      "points": 0
+        "base",
+        "ability"
+      ]
     },
     "specialty": {
       "templates": [

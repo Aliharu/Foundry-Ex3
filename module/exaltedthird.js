@@ -477,6 +477,33 @@ Hooks.once("ready", async function () {
     }
   }
 
+  if (isNewerVersion("1.9.2", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    for (let item of game.items) {
+      try {
+        if (item.type === 'charm') {
+          let updateData = foundry.utils.deepClone(item.toObject());
+          if (updateData.system.ability === 'martial' || updateData.system.ability === 'essence' || (updateData.system.martialart && !updateData.system.listingname)) {
+            console.log(`Migrating Item document ${item.name}`);
+            updateData.system.listingname = updateData.system.martialart;
+            if (updateData.system.ability === 'martial') {
+              updateData.system.ability === 'martialarts';
+            }
+            if (updateData.system.ability === 'essence') {
+              updateData.system.ability === 'evocation';
+            }
+          }
+          if (!foundry.utils.isEmpty(updateData)) {
+            await item.update(updateData, { enforceTypes: false });
+          }
+        }
+      } catch (error) {
+        error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+        console.error(error);
+      }
+      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    }
+  }
+
   // for (let item of game.items) {
   //   try {
   //     let updateData = foundry.utils.deepClone(item.toObject());

@@ -94,57 +94,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const craftProjects = [];
     const actions = [];
     const destinies = [];
+    const activeCharms = [];
 
-    const charms = {
-      offensive: { name: 'Ex3.Offensive', visible: false, list: [] },
-      offsensive: { name: 'Ex3.Offensive', visible: false, list: [] },
-      defensive: { name: 'Ex3.Defensive', visible: false, list: [] },
-      social: { name: 'Ex3.Social', visible: false, list: [] },
-      mobility: { name: 'Ex3.Mobility', visible: false, list: [] },
-      strength: { name: 'Ex3.Strength', visible: false, list: [] },
-      dexterity: { name: 'Ex3.Dexterity', visible: false, list: [] },
-      stamina: { name: 'Ex3.Stamina', visible: false, list: [] },
-      charisma: { name: 'Ex3.Charisma', visible: false, list: [] },
-      manipulation: { name: 'Ex3.Manipulation', visible: false, list: [] },
-      appearance: { name: 'Ex3.Appearance', visible: false, list: [] },
-      perception: { name: 'Ex3.Perception', visible: false, list: [] },
-      intelligence: { name: 'Ex3.Intelligence', visible: false, list: [] },
-      wits: { name: 'Ex3.Wits', visible: false, list: [] },
-      archery: { name: 'Ex3.Archery', visible: false, list: [] },
-      athletics: { name: 'Ex3.Athletics', visible: false, list: [] },
-      awareness: { name: 'Ex3.Awareness', visible: false, list: [] },
-      battles: { name: 'Ex3.Battles', visible: false, list: [] },
-      brawl: { name: 'Ex3.Brawl', visible: false, list: [] },
-      bureaucracy: { name: 'Ex3.Bureaucracy', visible: false, list: [] },
-      craft: { name: 'Ex3.Craft', visible: false, list: [] },
-      dodge: { name: 'Ex3.Dodge', visible: false, list: [] },
-      endings: { name: 'Ex3.Endings', visible: false, list: [] },
-      integrity: { name: 'Ex3.Integrity', visible: false, list: [] },
-      investigation: { name: 'Ex3.Investigation', visible: false, list: [] },
-      journeys: { name: 'Ex3.Journeys', visible: false, list: [] },
-      larceny: { name: 'Ex3.Larceny', visible: false, list: [] },
-      linguistics: { name: 'Ex3.Linguistics', visible: false, list: [] },
-      lore: { name: 'Ex3.Lore', visible: false, list: [] },
-      martialarts: { name: 'Ex3.MartialArts', visible: false, list: [] },
-      medicine: { name: 'Ex3.Medicine', visible: false, list: [] },
-      melee: { name: 'Ex3.Melee', visible: false, list: [] },
-      occult: { name: 'Ex3.Occult', visible: false, list: [] },
-      performance: { name: 'Ex3.Performance', visible: false, list: [] },
-      presence: { name: 'Ex3.Presence', visible: false, list: [] },
-      resistance: { name: 'Ex3.Resistance', visible: false, list: [] },
-      ride: { name: 'Ex3.Ride', visible: false, list: [] },
-      sail: { name: 'Ex3.Sail', visible: false, list: [] },
-      secrets: { name: 'Ex3.Secrets', visible: false, list: [] },
-      serenity: { name: 'Ex3.Serenity', visible: false, list: [] },
-      socialize: { name: 'Ex3.Socialize', visible: false, list: [] },
-      stealth: { name: 'Ex3.Stealth', visible: false, list: [] },
-      survival: { name: 'Ex3.Survival', visible: false, list: [] },
-      thrown: { name: 'Ex3.Thrown', visible: false, list: [] },
-      war: { name: 'Ex3.War', visible: false, list: [] },
-      evocation: { name: 'Ex3.Evocation', visible: false, list: [] },
-      other: { name: 'Ex3.Other', visible: false, list: [] },
-      universal: { name: 'Ex3.Universal', visible: false, list: [] },
-    }
+    const charms = {}
 
     const siderealMaidenCharms = {
       archery: 'battles',
@@ -217,6 +169,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           intimacies.push(i);
         }
       }
+      else if (i.type === 'charm') {
+        if(i.system.active) {
+          activeCharms.push(i);
+        }
+      }
       else if (i.type === 'martialart') {
         martialarts.push(i);
       }
@@ -238,51 +195,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'destiny') {
         destinies.push(i);
       }
-      else if (i.type === 'charm') {
-        if (siderealMaidenCharms[i.system.ability]) {
-          sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
-        }
-        if (i.system.listingname) {
-          if (charms[i.system.listingname]) {
-          }
-          else {
-            charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
-          }
-          charms[i.system.listingname].list.push(i);
-        }
-        else if (i.system.martialart) {
-          if (charms[i.system.martialart]) {
-          }
-          else {
-            charms[i.system.martialart] = { name: i.system.martialart, visible: true, list: [] };
-          }
-          charms[i.system.martialart].list.push(i);
-        }
-        else {
-          if (i.system.ability === 'martial' || i.system.ability === 'martialarts') {
-            charms['martialarts'].list.push(i);
-            charms['martialarts'].visible = true;
-            if (sheetData.system.abilities['martialarts'].favored) {
-            }
-            else {
-            }
-          }
-          else if (i.system.ability === 'essence') {
-            charms['evocation'].list.push(i);
-            charms['evocation'].visible = true;
-          }
-          else if (i.system.ability !== undefined) {
-            if (charms[i.system.ability]) {
-              charms[i.system.ability].list.push(i);
-              charms[i.system.ability].visible = true;
-            }
-            else {
-              charms['other'].list.push(i);
-              charms['other'].visible = true;
-            }
-          }
-        }
-      }
       else if (i.type === 'spell') {
         if (i.system.circle !== undefined) {
           spells[i.system.circle].list.push(i);
@@ -294,8 +206,38 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
 
+    let actorCharms = actorData.items.filter((item) => item.type === 'charm');
+    actorCharms = actorCharms.sort(function (a, b) {
+      const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
+      const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+      return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+    });
+
+    for (let i of actorCharms) {
+      if (siderealMaidenCharms[i.system.ability]) {
+        sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
+      }
+      if (i.system.listingname) {
+        if (charms[i.system.listingname]) {
+        }
+        else {
+          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+        }
+        charms[i.system.listingname].list.push(i);
+      }
+      else {
+        if (charms[i.system.ability]) {
+        }
+        else {
+          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+        }
+        charms[i.system.ability].list.push(i);
+      }
+    }
+
     // Assign and return
     actorData.gear = gear;
+    actorData.activecharms = activeCharms;
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;
@@ -519,8 +461,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       li.toggle("fast");
     });
 
-
-
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
@@ -541,6 +481,20 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
       item.sheet.render(true);
+    });
+
+    html.find('.item-favored').on('click', async (ev) => {
+      const li = $(ev.currentTarget).parents('.item');
+      const itemID = li.data('itemId');
+      const item = this.actor.items.get(itemID);
+      await this.actor.updateEmbeddedDocuments('Item', [
+        {
+          _id: itemID,
+          system: {
+            favored: !item.system.favored,
+          },
+        }
+      ]);
     });
 
     // Delete Inventory Item
@@ -1166,7 +1120,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         "solar": [],
         "umbral": [],
       }
-      
+
       if (data.details.exalt === 'exigent') {
         if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
           data.traits.resonance.value = ['orichalcum', 'greenjade'];
