@@ -484,12 +484,15 @@ Hooks.once("ready", async function () {
           let updateData = foundry.utils.deepClone(item.toObject());
           if (updateData.system.ability === 'martial' || updateData.system.ability === 'essence' || (updateData.system.martialart && !updateData.system.listingname)) {
             console.log(`Migrating Item document ${item.name}`);
-            updateData.system.listingname = updateData.system.martialart;
+            if(updateData.system.martialart && !updateData.system.listingname) {
+              updateData.system.listingname = updateData.system.martialart;
+              updateData.system.martialart = "";
+            }
             if (updateData.system.ability === 'martial') {
-              updateData.system.ability === 'martialarts';
+              updateData.system.ability = 'martialarts';
             }
             if (updateData.system.ability === 'essence') {
-              updateData.system.ability === 'evocation';
+              updateData.system.ability = 'evocation';
             }
           }
           if (!foundry.utils.isEmpty(updateData)) {
