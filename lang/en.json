@@ -187,6 +187,7 @@
     "Ex3.Static": "Static",
     "Ex3.IgnoreArmorSoak": "Ignore Armor Soak",
     "Ex3.IgnoreSoak": "Ignore Soak",
+    "Ex3.IgnoreHardness": "Ignore Hardness",
     "Ex3.Ranged": "Ranged",
     "Ex3.Armor": "Armor",
     "Ex3.Light": "Light",
@@ -565,7 +566,8 @@
     "Ex3.Paralyzed": "Paralyzed",
     "Ex3.Entangle": "Entangle",
     "Ex3.Entangled": "Entangled",
-
+    
+    "Ex3.RestoreMote": "Restore Mote",
     "Ex3.ExtraSuccess": "Extra Success",
     "Ex3.AddExtraDie": "Add Extra Die",
     "Ex3.RerollDie": "Reroll Die",

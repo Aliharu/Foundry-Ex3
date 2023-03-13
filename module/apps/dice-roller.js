@@ -1921,6 +1921,12 @@ export class RollForm extends FormApplication {
                 case 'extraSuccess':
                     this.object.total += tensRolled;
                     break;
+                case 'ignoreHardness':
+                    this.object.hardness = Math.max(0, this.object.hardness - tensRolled);
+                    break;
+                case 'restoreMote':
+                    this.object.restore.motes += tensRolled;
+                    break
             }
         }
 
