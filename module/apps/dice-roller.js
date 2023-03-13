@@ -221,7 +221,7 @@ export class RollForm extends FormApplication {
 
                 if (this.actor.type === "npc") {
                     this.object.actions = this.actor.actions;
-                    this.object.pool = data.pool || "administration";
+                    this.object.pool = data.pool || "command";
                     this.object.appearance = this.actor.system.appearance.value;
                 }
                 if (data.weapon) {
@@ -3260,6 +3260,13 @@ export class RollForm extends FormApplication {
         }
         if (this.object.hardness === undefined) {
             this.object.hardness = 0;
+        }
+        if(this.object.rollType !== 'base' && this.actor.type === 'npc' && !this.actor.system.pools[this.object.pool]) {
+            const findPool = this.actor.actions.find((action) => action.system.oldKey === this.object.pool);
+            if(findPool) {
+                this.object.pool = findPool._id;
+                this.object.actions = this.actor.actions;
+            }
         }
     }
 

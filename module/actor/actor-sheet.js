@@ -1468,7 +1468,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
           data.settings.showship = html.find('#showShip').is(":checked");
           data.settings.showescort = html.find('#showEscort').is(":checked");
-          data.settings.showzerovalues = html.find('#showZeroValues').is(":checked");
           data.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
           data.anima.max = parseInt(html.find('#maxAnima').val());
           data.settings.rollStunts = html.find('#rollStunts').is(":checked");

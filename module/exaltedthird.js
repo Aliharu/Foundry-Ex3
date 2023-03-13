@@ -478,13 +478,14 @@ Hooks.once("ready", async function () {
   }
 
   if (isNewerVersion("1.9.2", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 1.9.2, please wait`);
     for (let item of game.items) {
       try {
         if (item.type === 'charm') {
           let updateData = foundry.utils.deepClone(item.toObject());
           if (updateData.system.ability === 'martial' || updateData.system.ability === 'essence' || (updateData.system.martialart && !updateData.system.listingname)) {
             console.log(`Migrating Item document ${item.name}`);
-            if(updateData.system.martialart && !updateData.system.listingname) {
+            if (updateData.system.martialart && !updateData.system.listingname) {
               updateData.system.listingname = updateData.system.martialart;
               updateData.system.martialart = "";
             }
@@ -503,8 +504,36 @@ Hooks.once("ready", async function () {
         error.message = `Failed migration for Item ${item.name}: ${error.message} `;
         console.error(error);
       }
-      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     }
+    for (let actor of game.actors.filter((actor) => actor.type === 'npc' && actor.name === 'Aughdeighe (Copy)')) {
+      try {
+        let updateData = duplicate(actor);
+        const doNotUpdate = ['command', 'grapple', 'joinbattle', 'movement', 'readintentions', 'social', 'sorcery'];
+        for (let [key, pool] of Object.entries(updateData.system.pools)) {
+          if (!doNotUpdate.includes(key)) {
+            if (pool.value) {
+              const itemData = {
+                name: game.i18n.localize(pool.name),
+                type: 'action',
+                system: {
+                  'value': pool.value,
+                  'oldKey': key,
+                }
+              };
+              actor.createEmbeddedDocuments("Item", [itemData]);
+            }
+            await actor.update({
+              [`system.pools.-=${key}`]: null,
+            });
+          }
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    ui.notifications.notify(`Migration Complete`);
   }
 
   // for (let item of game.items) {

@@ -637,7 +637,6 @@ export default class TemplateImporter extends Application {
             "showwarstrider": false,
             "showship": false,
             "showescort": false,
-            "showzerovalues": false,
             "usetenattributes": false,
             "editmode": false,
           },
@@ -648,40 +647,16 @@ export default class TemplateImporter extends Application {
       type: 'npc',
       system: {
         "pools": {
-          "administration": {
-            "name": "Ex3.Administration",
-            "value": 0
-          },
           "command": {
             "name": "Ex3.Command",
-            "value": 0
-          },
-          "craft": {
-            "name": "Ex3.Craft",
-            "value": 0
-          },
-          "strength": {
-            "name": "Ex3.FeatsofStrength",
             "value": 0
           },
           "grapple": {
             "name": "Ex3.GrappleControl",
             "value": 0
           },
-          "investigation": {
-            "name": "Ex3.Investigation",
-            "value": 0
-          },
           "joinbattle": {
             "name": "Ex3.JoinBattle",
-            "value": 0
-          },
-          "larceny": {
-            "name": "Ex3.Larceny",
-            "value": 0
-          },
-          "medicine": {
-            "name": "Ex3.Medicine",
             "value": 0
           },
           "movement": {
@@ -692,40 +667,12 @@ export default class TemplateImporter extends Application {
             "name": "Ex3.ReadIntentions",
             "value": 0
           },
-          "resistpoison": {
-            "name": "Ex3.ResistPoison",
-            "value": 0
-          },
-          "sail": {
-            "name": "Ex3.Sail",
-            "value": 0
-          },
-          "senses": {
-            "name": "Ex3.Senses",
-            "value": 0
-          },
           "social": {
             "name": "Ex3.Social",
             "value": 0
           },
           "sorcery": {
             "name": "Ex3.Sorcery",
-            "value": 0
-          },
-          "strategy": {
-            "name": "Ex3.Strategy",
-            "value": 0
-          },
-          "stealth": {
-            "name": "Ex3.Stealth",
-            "value": 0
-          },
-          "tracking": {
-            "name": "Ex3.Tracking",
-            "value": 0
-          },
-          "other": {
-            "name": "Ex3.Other",
             "value": 0
           }
         },
@@ -856,7 +803,6 @@ export default class TemplateImporter extends Application {
           "showwarstrider": false,
           "showship": false,
           "showescort": false,
-          "showzerovalues": false,
           "usetenattributes": false,
           "editmode": false,
         },
@@ -1037,14 +983,8 @@ export default class TemplateImporter extends Application {
         if (!/^\s*$/.test(action)) {
           var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
           var name = actionSplit[0].replace(" ", "");
-          if (name.toLocaleLowerCase().includes('resistpoison') || name.toLocaleLowerCase().includes('resistdiseasepoison')) {
-            actorData.system.pools.resistpoison.value = parseInt(actionSplit[1].trim());
-          }
-          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
+          if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
             actorData.system.pools.social.value = parseInt(actionSplit[1].trim());
-          }
-          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'featsofstrength') {
-            actorData.system.pools.strength.value = parseInt(actionSplit[1].trim());
           }
           else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
             actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
