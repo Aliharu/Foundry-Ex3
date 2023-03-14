@@ -773,6 +773,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
 
+    html.find('.command').mousedown(ev => {
+      if (this.actor.type === "npc") {
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command', pool: 'command' }).render(true);
+      }
+      else {
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command'}).render(true);
+      }
+    });
+
     html.find('.shape-sorcery').mousedown(ev => {
       if (this.actor.type === "npc") {
         game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);

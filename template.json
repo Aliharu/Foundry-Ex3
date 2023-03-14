@@ -192,6 +192,12 @@
               "bonus": 0,
               "name": "Ex3.Attacks"
             },
+            "command": {
+              "attribute": "charisma",
+              "ability": "war",
+              "bonus": 0,
+              "name": "Ex3.Command"
+            },
             "craft": {
               "attribute": "intelligence",
               "ability": "craft",
@@ -653,6 +659,10 @@
       "battlegroup": false,
       "appearance": {
         "value": 0
+      },
+      "commandbonus": {
+        "value": 0,
+        "min": 0
       },
       "size": {
         "value": 0,

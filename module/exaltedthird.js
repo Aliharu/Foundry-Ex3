@@ -353,6 +353,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       var previousCombatant = combat.combatants.get(combat.previous.combatantId);
       if (previousCombatant?.actor) {
         const previousActorData = duplicate(previousCombatant.actor);
+        if(previousActorData.system.battlegroup) {
+          previousActorData.system.commandbonus.value = 0;
+        }
         const endTurnCharms = previousCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endturn');
         for (const charm of endTurnCharms) {
           charm.update({

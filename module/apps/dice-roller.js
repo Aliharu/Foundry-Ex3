@@ -59,7 +59,7 @@ export class RollForm extends FormApplication {
             };
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
-            this.object.hasDifficulty = (['ability', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage'].indexOf(data.rollType) !== -1);
+            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage'].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -315,6 +315,9 @@ export class RollForm extends FormApplication {
                         this.object.difficulty = 2;
                     }
                 }
+                if(this.object.rollType === 'command') {
+                    this.object.difficulty = 1;
+                }
                 if (this.object.conditions.some(e => e.name === 'blind')) {
                     this.object.diceModifier -= 3;
                 }
@@ -354,7 +357,7 @@ export class RollForm extends FormApplication {
                 this.object.accuracy = 0;
             }
             this.object.opposingCharms = [];
-            if (this.actor.system.battlegroup && this._isAttackRoll()) {
+            if (this.actor.system.battlegroup) {
                 this._setBattlegroupBonuses();
             }
             if (this.object.charmList === undefined) {
@@ -1997,6 +2000,13 @@ export class RollForm extends FormApplication {
                 actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
                 this.actor.update(actorData);
             }
+            if (this.object.target && this.object.rollType === "command") {
+                if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
+                    const targetActorData = duplicate(this.object.target.actor);
+                    targetActorData.system.commandbonus.value = threshholdSuccesses;
+                    this.object.target.actor.update(targetActorData);
+                }
+            }
         }
         let theContent = `
             <div class="dice-roll">
@@ -3096,9 +3106,12 @@ export class RollForm extends FormApplication {
     }
 
     _setBattlegroupBonuses() {
-        this.object.diceModifier += (this.actor.system.size.value + this.actor.system.might.value);
-        if (this._damageRollType('withering')) {
-            this.object.damage.damageDice += (this.actor.system.size.value + this.actor.system.might.value);
+        this.object.diceModifier += this.actor.system.commandbonus.value;
+        if (this._isAttackRoll()) {
+            this.object.diceModifier += (this.actor.system.size.value + this.actor.system.might.value);
+            if (this._damageRollType('withering')) {
+                this.object.damage.damageDice += (this.actor.system.size.value + this.actor.system.might.value);
+            }
         }
     }
 
@@ -3261,9 +3274,9 @@ export class RollForm extends FormApplication {
         if (this.object.hardness === undefined) {
             this.object.hardness = 0;
         }
-        if(this.object.rollType !== 'base' && this.actor.type === 'npc' && !this.actor.system.pools[this.object.pool]) {
+        if (this.object.rollType !== 'base' && this.actor.type === 'npc' && !this.actor.system.pools[this.object.pool]) {
             const findPool = this.actor.actions.find((action) => action.system.oldKey === this.object.pool);
-            if(findPool) {
+            if (findPool) {
                 this.object.pool = findPool._id;
                 this.object.actions = this.actor.actions;
             }

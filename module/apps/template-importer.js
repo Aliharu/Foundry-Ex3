@@ -986,6 +986,9 @@ export default class TemplateImporter extends Application {
           if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
             actorData.system.pools.social.value = parseInt(actionSplit[1].trim());
           }
+          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'commandsoldiers') {
+            actorData.system.pools.command.value = parseInt(actionSplit[1].trim());
+          }
           else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
             actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
           }
