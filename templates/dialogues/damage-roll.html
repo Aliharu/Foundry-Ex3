@@ -293,16 +293,18 @@
                 <input type="number" name="object.hardness" value="{{data.hardness}}">
             </div>
             {{/ifEquals}}
+            {{#ifEquals data.attackType 'gambit'}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.GambitDifficulty"}}
+                </div>
+                <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
+            </div>
+            {{/ifEquals}}
         </div>
         {{/if}}
 
         {{#ifEquals data.attackType 'gambit'}}
-        <div class="flex-center resource-label" style="font-weight: bold;">
-            {{localize "Ex3.GambitDifficulty"}}
-        </div>
-        <div class="resource flex-center mb-2">
-            <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
-        </div>
         <div class="resource grid grid-2col flex-center">
             <div class="resource-label">{{localize "Ex3.Gambit"}}</div>
             <select id="gambit" name="object.gambit" data-type="String">

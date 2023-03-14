@@ -113,6 +113,13 @@ export default class TemplateImporter extends Application {
         index = this.standardCharm(charmData, textArray, index);
       }
 
+      if(charmData.system.duration.toLowerCase() === 'one scene') {
+        charmData.system.endtrigger = 'endscene';
+      }
+      if(charmData.system.duration.toLowerCase() === 'one turn' || charmData.system.duration.toLowerCase() === 'until next turn') {
+        charmData.system.endtrigger = 'startturn';
+      }
+
       var description = '';
       while (textArray[index] && index !== textArray.length) {
         description += textArray[index];

@@ -539,6 +539,24 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
   }
 
+  // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {
+  //   let updateData = foundry.utils.deepClone(item.toObject());
+  //   updateData.system.endtrigger = 'endscene';
+  //   if (!foundry.utils.isEmpty(updateData)) {
+  //     await item.update(updateData, { enforceTypes: false });
+  //   }
+  //   console.log(item.name);
+  // }
+
+  // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One turn' || item.system.duration.trim() === 'Until next turn')) {
+  //   let updateData = foundry.utils.deepClone(item.toObject());
+  //   updateData.system.endtrigger = 'startturn';
+  //   if (!foundry.utils.isEmpty(updateData)) {
+  //     await item.update(updateData, { enforceTypes: false });
+  //   }
+  //   console.log(item.name);
+  // }
+
   // for (let item of game.items) {
   //   try {
   //     let updateData = foundry.utils.deepClone(item.toObject());
