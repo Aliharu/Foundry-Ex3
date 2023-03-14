@@ -508,7 +508,7 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    for (let actor of game.actors.filter((actor) => actor.type === 'npc' && actor.name === 'Aughdeighe (Copy)')) {
+    for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
         let updateData = duplicate(actor);
         const doNotUpdate = ['command', 'grapple', 'joinbattle', 'movement', 'readintentions', 'social', 'sorcery'];

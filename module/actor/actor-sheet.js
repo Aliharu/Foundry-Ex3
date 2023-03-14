@@ -96,7 +96,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const destinies = [];
     const activeCharms = [];
 
-    const charms = {}
+    const charms = {};
 
     const siderealMaidenCharms = {
       archery: 'battles',
