@@ -718,6 +718,7 @@
         "summary": ""
       },
       "macro": {
+        "prerollmacro": "",
         "macro": "",
         "damagemacro": ""
       },

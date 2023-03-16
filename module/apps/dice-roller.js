@@ -1628,6 +1628,11 @@ export class RollForm extends FormApplication {
             10: 0,
         }
 
+        if (diceModifiers.preRollMacros.length > 0) {
+            let results = {};
+            results = diceModifiers.preRollMacros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), results);
+        }
+
         let rollResults = this._rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled);
         let diceRoll = rollResults.results;
         let total = rollResults.total;
@@ -1834,37 +1839,70 @@ export class RollForm extends FormApplication {
             rerollFailed: this.object.rerollFailed,
             rerollNumber: this.object.rerollNumber,
             settings: this.object.settings,
+            preRollMacros: [],
             macros: [],
         }
 
         for (let charm of this.object.addedCharms) {
-            if (!charm.system.macro) continue;
-            let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
-            rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
-                try {
-                    this.object.currentMacroCharm = charm;
-                    return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
-                } catch (e) {
-                    ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
-                    console.error(e);
-                }
-                return rollResult;
-            });
+            if (charm.system.prerollmacro) {
+                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.prerollmacro);
+                rollModifiers.preRollMacros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                    try {
+                        this.object.currentMacroCharm = charm;
+                        this.object.opposedCharmMacro = false;
+                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                    } catch (e) {
+                        ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                    return rollResult;
+                });
+            }
+            if (charm.system.macro) {
+                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
+                rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                    try {
+                        this.object.currentMacroCharm = charm;
+                        this.object.opposedCharmMacro = false;
+                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                    } catch (e) {
+                        ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                    return rollResult;
+                });
+            }
         }
 
         for (let charm of this.object.opposingCharms) {
-            if (!charm.system.macro) continue;
-            let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
-            rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
-                try {
-                    this.object.currentMacroCharm = charm;
-                    return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
-                } catch (e) {
-                    ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
-                    console.error(e);
-                }
-                return rollResult;
-            });
+            if (charm.system.prerollmacro) {
+                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.prerollmacro);
+                rollModifiers.preRollMacros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                    try {
+                        this.object.opposedCharmMacro = true;
+                        this.object.currentMacroCharm = charm;
+                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                    } catch (e) {
+                        ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                    return rollResult;
+                });
+            }
+            if (charm.system.macro) {
+                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
+                rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                    try {
+                        this.object.opposedCharmMacro = true;
+                        this.object.currentMacroCharm = charm;
+                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                    } catch (e) {
+                        ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                    return rollResult;
+                });
+            }
         }
 
         const diceRollResults = this._calculateRoll(dice, rollModifiers);
@@ -2311,6 +2349,7 @@ export class RollForm extends FormApplication {
             rerollFailed: this.object.damage.rerollFailed,
             rerollNumber: this.object.damage.rerollNumber,
             settings: this.object.settings.damage,
+            preRollMacros: [],
             macros: [],
         }
 
@@ -2320,6 +2359,7 @@ export class RollForm extends FormApplication {
             rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
                 try {
                     this.object.currentMacroCharm = charm;
+                    this.object.opposedCharmMacro = false;
                     return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
                 } catch (e) {
                     ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
@@ -2335,6 +2375,7 @@ export class RollForm extends FormApplication {
             rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
                 try {
                     this.object.currentMacroCharm = charm;
+                    this.object.opposedCharmMacro = true;
                     return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
                 } catch (e) {
                     ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
