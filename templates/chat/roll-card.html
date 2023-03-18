@@ -282,6 +282,15 @@
             {{#if rollData.cost.aura}}{{localize "Ex3.Aura"}}: {{ rollData.cost.aura }}{{/if}}
         </div>
         <div class="roll-card-header">
+            <b>{{localize "Ex3.Restore"}}</b>
+        </div>
+        <div>
+            {{#if rollData.restore.motes }}{{ rollData.restore.motes }}m, {{/if}}
+            {{#if rollData.restore.willpower }}{{ rollData.restore.willpower }}wp, {{/if}}
+            {{#if rollData.restore.health }}{{rollData.restore.health}}h', {{/if}}
+            {{#if rollData.restore.initiative }}{{ rollData.restore.initiative }}i, {{/if}}
+        </div>
+        <div class="roll-card-header">
             <b>{{localize "Ex3.Charms"}}</b>
         </div>
         {{#each rollData.addedCharms as |charm index|}}
