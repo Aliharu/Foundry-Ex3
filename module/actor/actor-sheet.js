@@ -250,7 +250,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.spells = spells;
     actorData.specialabilities = specialAbilities;
     actorData.projects = craftProjects;
-    actorData.actions = actions;
+    actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
     actorData.destinies = destinies;
 
     if (actorData.type === 'character') {
