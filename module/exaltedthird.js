@@ -172,7 +172,7 @@ Hooks.once('init', async function () {
 //   console.log(updateData);
 // });
 
-async function handleSocket({ type, id, data, actorId }) {
+async function handleSocket({ type, id, data, actorId, crasherId=null }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
@@ -192,7 +192,7 @@ async function handleSocket({ type, id, data, actorId }) {
   if (!isResponsibleGM) return;
 
   if (type === 'updateInitiative') {
-    game.combat.setInitiative(id, data);
+    game.combat.setInitiative(id, data, crasherId);
   }
   if (type === 'healthDamage') {
     const targetedActor = game.canvas.tokens.get(id).actor;
@@ -824,6 +824,20 @@ export class ExaltedCombat extends Combat {
     return this.update({ round: 1, turn: null });
   }
 
+  async setInitiative(id, value, crasherId=null) {
+    const combatant = this.combatants.get(id, {strict: true});
+    const newVal = {
+      initiative: value
+    };
+    if(value <= 0 && combatant.initiative && combatant.initiative > 0 && crasherId) {
+      newVal[`flags.crashedBy`] = crasherId;
+    }
+    if(value > 0) {
+      newVal[`flags.crashedBy`] = null;
+    }
+    await combatant.update(newVal);
+  }
+  
   // _sortCombatants(a,b) {
   //   const ia = (Number.isNumeric(a.initiative) && !a.flags.acted) ? a.initiative : -Infinity;
   //   const ib = (Number.isNumeric(b.initiative) && !b.flags.acted) ? b.initiative : -Infinity;

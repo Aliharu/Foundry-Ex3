@@ -18,6 +18,9 @@ export class ExaltedCombatant extends Combatant {
     }
 
     async updateInit(increase) {
+        if(increase && this.initiative >= 0) {
+            this.update({[`flags.crashedBy`]: null});
+        }
         if(increase) {
             return this.update({initiative: this.initiative + 1});
         }

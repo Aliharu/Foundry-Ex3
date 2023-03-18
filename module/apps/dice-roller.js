@@ -2179,6 +2179,9 @@ export class RollForm extends FormApplication {
                 }
                 this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
             }
+            if(this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
+                this.object.characterInitiative = this.actor.system.baseinitiative.value;
+            }
             if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
                 let combat = game.combat;
                 if (this.object.target && combat) {
@@ -2430,24 +2433,34 @@ export class RollForm extends FormApplication {
                         let newInitative = this.object.targetCombatant.initiative;
                         newInitative -= total;
                         this.object.gainedInitiative = Math.max(total, this.object.gainedInitiative);
+                        var attackerCombatant = this._getActorCombatant();
                         if ((newInitative <= 0 && this.object.targetCombatant.initiative > 0)) {
                             if (this._useLegendarySize('withering')) {
                                 newInitative = 1;
                             }
                             else {
                                 this.object.crashed = true;
-                                targetResults = `<h4 class="dice-total">Target Crashed!</h4>`;
+                                targetResults = `<h4 class="dice-total" style="margin-top: 5px;">Target Crashed!</h4>`;
+                                if(this.object.targetCombatant.id === attackerCombatant.flags?.crashedBy) {
+                                    this.object.initiativeShift = true
+                                    targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Initiative Shift!</h4>';
+                                }
                             }
+                        }
+                        let crasherId = null;
+                        if(this.object.crashed) {
+                            crasherId = attackerCombatant.id;
                         }
                         this.object.newTargetInitative = newInitative;
                         if (game.user.isGM) {
-                            game.combat.setInitiative(this.object.targetCombatant.id, newInitative);
+                            game.combat.setInitiative(this.object.targetCombatant.id, newInitative, crasherId);
                         }
                         else {
                             game.socket.emit('system.exaltedthird', {
                                 type: 'updateInitiative',
                                 id: this.object.targetCombatant.id,
                                 data: newInitative,
+                                crasherId: crasherId,
                             });
                         }
                     }
