@@ -3,6 +3,8 @@ export default class TemplateImporter extends Application {
     super(app)
     this.type = 'charm';
     this.charmType = 'other';
+    this.spellCircle = 'terrestrial';
+    this.itemType = 'armor';
     this.folder = '';
     this.errorText = '';
     this.errorSection = '';
@@ -48,6 +50,8 @@ export default class TemplateImporter extends Application {
     let data = super.getData();
     data.type = this.type;
     data.charmType = this.charmType;
+    data.spellCircle = this.spellCircle;
+    data.itemType = this.itemType;
     data.folder = this.folder;
     data.textBox = this.textBox;
     data.showError = this.showError;
@@ -64,6 +68,9 @@ export default class TemplateImporter extends Application {
     }
     if (this.type === 'qc') {
       data.templateHint = game.i18n.localize("Ex3.QCImportHint");
+    }
+    if (this.type === 'other') {
+      data.templateHint = game.i18n.localize("Ex3.OtherImportHint");
     }
     return data;
   }
@@ -288,11 +295,26 @@ export default class TemplateImporter extends Application {
 
   async createSpell(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
+    var spellCircle = html.find('#spellCircle').val();
+
     var index = 0;
+    var folderName = html.find('#folder').val();
+    var folder = null;
+
+    if(folderName) {
+      folder = game.folders.find(folder => {
+        return folder.name === folderName && folder.type === 'Item';
+      });
+  
+      if(!folder) {
+        folder = await Folder.create({ name: folderName, type: 'Item' });
+      }
+    }
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var spellData = {
         type: 'spell',
         system: {
+          circle: spellCircle,
         }
       };
       spellData.name = textArray[index];
@@ -326,7 +348,95 @@ export default class TemplateImporter extends Application {
         }
       }
       spellData.system.description = description;
+      if(folder) {
+        spellData.folder = folder;
+      }
       await Item.create(spellData);
+      index++;
+    }
+  }
+
+  
+  async createOther(html) {
+    var textArray = html.find('#template-text').val().split(/\r?\n/);
+    var itemType = html.find('#itemType').val();
+    var index = 0;
+
+    var folderName = html.find('#folder').val();
+    var folder = null;
+
+    if(folderName) {
+      folder = game.folders.find(folder => {
+        return folder.name === folderName && folder.type === 'Item';
+      });
+  
+      if(!folder) {
+        folder = await Folder.create({ name: folderName, type: 'Item' });
+      }
+    }
+    const weaponTags = CONFIG.exaltedthird.weapontags;
+    const armorTags = CONFIG.exaltedthird.armortags;
+    while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
+      var itemData = {
+        type: itemType,
+        system: {
+        }
+      };
+      itemData.name = textArray[index];
+      index++;
+      var description = '';
+      while (textArray[index] && index !== textArray.length) {
+        if(textArray[index].includes('Tags:')) {
+          var tagString = textArray[index].toLowerCase().replace('tags:' , '');
+          var tagSplit = tagString.split(/,|;/);
+          var itemTags = [];
+          for(let tag of tagSplit) {
+            if(tag.includes('(')) {
+              var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim();
+              console.log(rangeTag);
+              if(weaponTags[rangeTag] && itemType === 'weapon') {
+                itemTags.push(rangeTag);
+              }
+              else if(armorTags[rangeTag] && itemType === 'armor') {
+                itemTags.push(rangeTag);
+              }
+              tag = tag.replace(/\(([^)]+)\)/g, '');
+            }
+            tag = tag.replace(/\s+/g, '').replace('-', '').trim();
+            if(weaponTags[tag] && itemType === 'weapon') {
+              itemTags.push(tag);
+            }
+            else if(armorTags[tag] && itemType === 'armor') {
+              itemTags.push(tag);
+            }
+          }
+          itemData.system.traits = {};
+          if(itemType === 'armor') {
+            itemData.system.traits.armortags = {
+              "value": [],
+              "custom": ""
+            }
+            itemData.system.traits.armortags.value = itemTags;
+          }
+          if(itemType === 'weapon') {
+            itemData.system.traits.weapontags = {
+              "value": [],
+              "custom": ""
+            }
+            itemData.system.traits.weapontags.value = itemTags;
+          }
+        } else {
+          description += textArray[index];
+          description += " ";
+        }
+
+        index++;
+      }
+      itemData.system.description = description;
+      if(folder) {
+        itemData.folder = folder;
+      }
+      await Item.create(itemData);
       index++;
     }
   }
@@ -1077,11 +1187,13 @@ export default class TemplateImporter extends Application {
             damage = parseInt(damageSplit[1].replace(/[^0-9]/g, ''));
           }
         }
-        // else {
-        //   // Doesn't work
-        //   var grappleValue = parseInt(damageSplit[1].replace(/[^0-9]/g, ''));
-        //   actorData.system.pools.grapple.value = grappleValue;
-        // }
+        else {
+          damage = 0;
+          overwhelming= 0;
+          var grappleSplit = attackArray[1].split('(');
+          var grappleValue = parseInt(grappleSplit[1].replace(/[^0-9]/g, ''));
+          actorData.system.pools.grapple.value = grappleValue;
+        }
         index++;
         itemData.push(
           {
@@ -1246,7 +1358,8 @@ export default class TemplateImporter extends Application {
               index++;
               newItem = true;
             }
-            if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations')) {
+            if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations') || textArray[index].trim().toLowerCase() === 'anima') {
+              charmSystemData.listingname = textArray[index].trim();
               if (textArray[index].trim().toLowerCase().includes('offensive')) {
                 charmSystemData.ability = 'offensive';
               }
@@ -1534,6 +1647,7 @@ export default class TemplateImporter extends Application {
           charmSystemData = {
             description: '',
             ability: charmSystemData.ability,
+            listingname: charmSystemData.listingname,
             cost: {
               "motes": 0,
               "initiative": 0,
@@ -2002,6 +2116,11 @@ export default class TemplateImporter extends Application {
       this.render();
     });
 
+    html.on("change", "#itemType", ev => {
+      this.itemType = ev.currentTarget.value;
+      this.render();
+    });
+
     html.on("change", "#folder", ev => {
       this.folder = ev.currentTarget.value;
       this.render();
@@ -2018,6 +2137,9 @@ export default class TemplateImporter extends Application {
       else if (document.getElementById("adversary-radio").checked) {
         this.type = "adversary";
       }
+      else if (document.getElementById("other-radio").checked) {
+        this.type = "other";
+      }
       this.render();
     });
 
@@ -2033,6 +2155,9 @@ export default class TemplateImporter extends Application {
       }
       else if (this.type === 'adversary') {
         this.createAdversary(html);
+      }
+      else if (this.type === 'other') {
+        this.createOther(html);
       }
       this.render();
     });

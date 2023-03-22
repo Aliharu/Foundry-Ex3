@@ -78,4 +78,12 @@ export function registerSettings() {
         type: Boolean,
         default: true
     });
+    // game.settings.register("exaltedthird", "useShieldInitiative", {
+    //     name: game.i18n.localize('Ex3.ShieldInitiativeSetting'),
+    //     hint: game.i18n.localize('Ex3.ShieldInitiativeSettingDescription'),
+    //     scope: "world",
+    //     config: true,
+    //     type: Boolean,
+    //     default: true
+    // });
 }

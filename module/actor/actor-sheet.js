@@ -62,7 +62,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       async: true
     });
     context.rollData = context.actor.getRollData();
-    context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks")
+    context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
+    // context.userBurnerInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     // Update traits
     this._prepareTraits(context.system.traits);
     // Prepare items.

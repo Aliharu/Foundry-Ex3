@@ -16,6 +16,9 @@
       <input class="radio" id="qc-radio" type="radio" name="type" value="qc" data-dtype="String" value="{{type}}"
         {{#ifEquals type 'qc' }} checked {{/ifEquals}} />
       {{ localize "Ex3.QuickCharacter"}}
+      <input class="radio" id="other-radio" type="radio" name="type" value="qc" data-dtype="String" value="{{type}}"
+      {{#ifEquals type 'other' }} checked {{/ifEquals}} />
+    {{ localize "Ex3.Other"}}
     </div>
     {{#if showError}}
     {{#ifEquals type 'qc' }}
@@ -58,6 +61,41 @@
           <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
           <option value="umbral">{{localize "Ex3.Umbral"}}</option>
           <option value="other">{{localize "Ex3.Other"}}</option>
+          {{/select}}
+      </select>
+      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
+      <input id="folder" style="width:200px;" type="text" name="folder" value="{{folder}}" />
+    </div>
+    {{/ifEquals}}
+
+    {{#ifEquals type 'spell'}}
+    <div>
+      <label class="resource-label">{{localize "Ex3.Circle"}} </label>
+      <select id="spellCircle" name="spellCircle" value="{{spellCircle}}" data-type="String">
+          {{#select spellCircle}}
+          <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
+          <option value="celestial">{{localize "Ex3.Celestial"}}</option>
+          <option value="solar">{{localize "Ex3.Solar"}}</option>
+          <option value="ivory">{{localize "Ex3.Ivory"}}</option>
+          <option value="shadow">{{localize "Ex3.Shadow"}}</option>
+          <option value="void">{{localize "Ex3.Void"}}</option>
+          {{/select}}
+      </select>
+      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
+      <input id="folder" style="width:200px;" type="text" name="folder" value="{{folder}}" />
+    </div>
+    {{/ifEquals}}
+
+    {{#ifEquals type 'other'}}
+    <div>
+      <label class="resource-label">{{localize "Ex3.ItemType"}} </label>
+      <select id="itemType" name="itemType" value="{{itemType}}" data-type="String">
+          {{#select itemType}}
+          <option value="armor">{{localize "Ex3.Armor"}}</option>
+          <option value="initiation">{{localize "Ex3.SorcerousInitiation"}}</option>
+          <option value="item">{{localize "Ex3.Item"}}</option>
+          <option value="merit">{{localize "Ex3.Merit"}}</option>
+          <option value="weapon">{{localize "Ex3.Weapon"}}</option>
           {{/select}}
       </select>
       <label class="resource-label">{{localize "Ex3.Folder"}} </label>

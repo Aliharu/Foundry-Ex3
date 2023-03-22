@@ -70,6 +70,11 @@
           "value": 0,
           "min": 0
         },
+        "shieldinitiative": {
+          "value": 0,
+          "min": 0,
+          "max": 0
+        },
         "soak": {
           "value": 1,
           "min": 0
@@ -730,14 +735,16 @@
     "item": {
       "templates": [
         "base",
-        "artifact"
+        "artifact",
+        "equipment"
       ],
       "quantity": 1
     },
     "weapon": {
       "templates": [
         "base",
-        "artifact"
+        "artifact",
+        "equipment"
       ],
       "weighttype": "other",
       "witheringaccuracy": 0,
@@ -766,7 +773,8 @@
     "armor": {
       "templates": [
         "base",
-        "artifact"
+        "artifact",
+        "equipment"
       ],
       "weighttype": "other",
       "soak": 0,
