@@ -348,11 +348,6 @@
             "max": 0,
             "penalty": 0
           },
-          "shieldinitiative": {
-            "value": 0,
-            "min": 0,
-            "max": 0
-          },
           "soak": {
             "value": 1
           },

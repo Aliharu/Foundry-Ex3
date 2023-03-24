@@ -430,16 +430,15 @@ export class RollForm extends FormApplication {
             }
             if (target.actor.system.warstrider.equipped) {
                 target.rollData.soak = target.actor.system.warstrider.soak.value;
-                target.rollData.shieldInitiative = target.actor.system.warstrider.shieldinitiative.value;
                 target.rollData.hardness = target.actor.system.warstrider.hardness.value;
             }
             else {
                 target.rollData.soak = target.actor.system.soak.value;
-                target.rollData.shieldInitiative = target.actor.system.shieldinitiative.value;
                 target.rollData.armoredSoak = target.actor.system.armoredsoak.value;
                 target.rollData.naturalSoak = target.actor.system.naturalsoak.value;
                 target.rollData.hardness = target.actor.system.hardness.value;
             }
+            target.rollData.shieldInitiative = target.actor.system.shieldinitiative.value;
             const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
             let combatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
             if (combatant && combatant.initiative && combatant.initiative <= 0) {

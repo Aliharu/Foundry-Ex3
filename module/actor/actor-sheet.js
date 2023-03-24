@@ -1473,13 +1473,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       close: html => {
         if (confirmed) {
           data.settings.charmmotepool = html.find('#charmMotePool').val();
-          data.settings.charmmotepool = html.find('#charmMotePool').val();
           data.settings.martialartsmastery = html.find('#martialArtsMastery').val();
           data.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
+          data.anima.max = parseInt(html.find('#maxAnima').val());
+          data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
           data.settings.showship = html.find('#showShip').is(":checked");
           data.settings.showescort = html.find('#showEscort').is(":checked");
           data.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
-          data.anima.max = parseInt(html.find('#maxAnima').val());
           data.settings.rollStunts = html.find('#rollStunts').is(":checked");
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
           data.settings.showanima = html.find('#showAnima').is(":checked");
