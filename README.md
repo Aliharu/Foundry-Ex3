@@ -18,7 +18,7 @@ Languages dialog code and effects code taken from the Foundry dnd5e system.
 
 [Golden Calibration (Fanmade Solar Charmset Compendium)](https://github.com/Aliharu/Ex3-Golden-Calibration)
 
-[Macro and Helpful Files Directory](https://drive.google.com/drive/folders/1CEqlC3E_pEqtsCv-Jz-q6VZkb6lZukqc?usp=share_link)
+[Macros and Helpful Files Directory](https://drive.google.com/drive/folders/1CEqlC3E_pEqtsCv-Jz-q6VZkb6lZukqc?usp=share_link)
 
 ## Icons
 
