@@ -208,6 +208,22 @@
         {{!-- Charms Tab --}}
         <div class="tab items" data-group="primary" data-tab="charms">
             <ol class="items-list">
+                {{#if system.settings.showanima}}
+                <li>
+                  <div class="resource-label list-section-header mb-2">
+                    {{localize "Ex3.Anima"}}
+                  </div>
+                </li>
+                <li>
+                  <textarea type="text" name="system.anima.passive" rows="4">{{system.anima.passive}}</textarea>
+                </li>
+                <li>
+                  <textarea type="text" name="system.anima.active" rows="4">{{system.anima.active}}</textarea>
+                </li>
+                <li>
+                  <textarea type="text" name="system.anima.iconic" rows="4">{{system.anima.iconic}}</textarea>
+                </li>
+                {{/if}}
                 {{> systems/exaltedthird/templates/actor/charm-list.html}}
                 {{#if system.settings.issorcerer}}
                 <div class="resource-label list-section-header d-flex flex-between">

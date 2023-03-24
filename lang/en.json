@@ -539,6 +539,8 @@
     "Ex3.IsSorcerer": "Show sorcery fields",
     "Ex3.IsCrafter": "Show craft fields",
     "Ex3.UseDotValues": "Use dot values",
+    "Ex3.ShowAnima": "Show Anima",
+
     
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.EffectiveStrength": "Effective Strength",
@@ -603,6 +605,8 @@
     "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes",
     "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn",
     "Ex3.BaseInitiative": "Base Initiative",
+    "Ex3.ShieldInitiative": "Shield Initiative",
+
     "Ex3.NegateParryPenalty": "Negate Parry Penalty",
     "Ex3.NegateEvasionPenalty": "Negate Evasion Penalty",
     "Ex3.TurnOrderInitiative": "Turn Order Initiative",

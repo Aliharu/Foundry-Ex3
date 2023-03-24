@@ -63,7 +63,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
-    // context.userBurnerInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+    context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     // Update traits
     this._prepareTraits(context.system.traits);
     // Prepare items.
@@ -1482,6 +1482,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.anima.max = parseInt(html.find('#maxAnima').val());
           data.settings.rollStunts = html.find('#rollStunts').is(":checked");
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
+          data.settings.showanima = html.find('#showAnima').is(":checked");
           data.settings.editmode = html.find('#editMode').is(":checked");
           data.settings.issorcerer = html.find('#isSorcerer').is(":checked");
           data.settings.iscrafter = html.find('#isCrafter').is(":checked");

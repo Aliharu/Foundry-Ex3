@@ -194,12 +194,10 @@ async function handleSocket({ type, id, data, actorId, crasherId=null }) {
   if (type === 'updateInitiative') {
     game.combat.setInitiative(id, data, crasherId);
   }
-  if (type === 'healthDamage') {
+  if (type === 'updateTargetData') {
     const targetedActor = game.canvas.tokens.get(id).actor;
     if (targetedActor) {
-      const targetActorData = duplicate(targetedActor);
-      targetActorData.system.health = data;
-      targetedActor.update(targetActorData);
+      targetedActor.update(data);
     }
   }
   if (type === 'addOnslaught') {
@@ -301,6 +299,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       }
       actorData.system.motes.personal.value += restorePersonal;
       actorData.system.motes.peripheral.value += restorePeripheral;
+      actorData.system.shieldinitiative.value = actorData.system.shieldinitiative.max;
       combatant.actor.update(actorData);
     }
   }

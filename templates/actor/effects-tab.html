@@ -59,6 +59,16 @@
         <input type="number" name="system.baseinitiative.value" value="{{system.baseinitiative.value}}"
             data-dtype="Number" />
     </div>
+    {{#if useShieldInitiative}}
+    <div>
+        <label class="resource-label">{{localize "Ex3.ShieldInitiative"}}</label>
+        <div class="resource-content flexrow flex-center flex-between">
+            <input name="system.shieldinitiative.value" value="{{system.shieldinitiative.value}}" type="Number" />
+            /
+            <input name="system.shieldinitiative.max" value="{{system.shieldinitiative.max}}" type="Number" />
+        </div>
+    </div>
+    {{/if}}
 </div>
 <div>
     <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i

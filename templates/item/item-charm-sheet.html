@@ -758,6 +758,13 @@
                         <input name="system.diceroller.opposedbonuses.hardness"
                             value="{{system.diceroller.opposedbonuses.hardness}}" type="text">
                     </div>
+                    {{#if useShieldInitiative}}
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.ShieldInitiative"}}*</label>
+                        <input name="system.diceroller.opposedbonuses.shieldinitiative"
+                            value="{{system.diceroller.opposedbonuses.shieldinitiative}}" type="text">
+                    </div>
+                    {{/if}}
                     <div>
                         <label class="resource-label">{{localize "Ex3.DamageModifier"}}*</label>
                         <input name="system.diceroller.opposedbonuses.damagemodifier"

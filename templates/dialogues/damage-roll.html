@@ -187,6 +187,15 @@
                         <input type="number" name="object.targets.{{id}}.rollData.soak"
                             value="{{target.rollData.soak}}">
                     </div>
+                    {{#if ../data.useShieldInitiative}}
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.ShieldInitiative"}}
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.shieldInitiative"
+                            value="{{target.rollData.shieldInitiative}}">
+                    </div>
+                    {{/if}}
                     {{/ifEquals}}
                     {{#ifEquals ../data.attackType 'decisive'}}
                     <div>
@@ -241,6 +250,15 @@
                     <input type="number" name="object.targets.{{id}}.rollData.soak"
                         value="{{target.rollData.soak}}">
                 </div>
+                {{#if ../data.useShieldInitiative}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.ShieldInitiative"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.shieldInitiative"
+                        value="{{target.rollData.shieldInitiative}}">
+                </div>
+                {{/if}}
                 {{/ifEquals}}
                 {{#ifEquals ../data.attackType 'decisive'}}
                 <div>
@@ -284,6 +302,15 @@
                 </div>
                 <input type="number" name="object.soak" value="{{data.soak}}">
             </div>
+            {{#if data.useShieldInitiative}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.ShieldInitiative"}}
+                </div>
+                <input type="number" name="object.shieldInitiative"
+                    value="{{data.shieldInitiative}}">
+            </div>
+            {{/if}}
             {{/ifEquals}}
             {{#ifEquals data.attackType 'decisive'}}
             <div>

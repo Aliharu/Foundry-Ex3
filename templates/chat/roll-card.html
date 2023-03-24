@@ -211,6 +211,9 @@
                         {{#ifEquals key 'improvised'}}
                         (+1 Initiative Cost)
                         {{/ifEquals}}
+                        {{#ifEquals key 'flexible'}}
+                        (Ignore full defense)
+                        {{/ifEquals}}
                         ,
                     {{/each}}
                 </div>
@@ -320,6 +323,9 @@
                     <b>{{localize "Ex3.ArmoredSoak"}}: </b>{{rollData.target.actor.system.armoredsoak.value}},
                     <b>{{localize "Ex3.NaturalSoak"}}: </b>{{rollData.target.actor.system.naturalsoak.value}},
                     <b>{{localize "Ex3.Soak"}}: </b>{{rollData.soak}},
+                    {{#if rollData.useShieldInitiative}}
+                    <b>{{localize "Ex3.ShieldInitiative"}}: </b>{{rollData.shieldInitiative}},
+                    {{/if}}
                     <b>{{localize "Ex3.Hardness"}}: </b>{{rollData.target.actor.system.hardness.value}}
                 </div>
                 <div>
