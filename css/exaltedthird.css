@@ -487,13 +487,18 @@
   opacity: 0.7;
 }
 
-.exaltedthird .window-content {
+.solar-background .window-content {
   background: url("../assets/backgrounds/solar-background.jpg");
   background-size: cover;
 }
 
-.solar-background .window-content {
-  background: url("../assets/backgrounds/solar-background.jpg");
+.lunar-background .window-content {
+  background: url("../assets/backgrounds/lunar-background.jpg");
+  background-size: cover;
+}
+
+.db-background .window-content {
+  background: url("../assets/backgrounds/db-background.jpg");
   background-size: cover;
 }
 

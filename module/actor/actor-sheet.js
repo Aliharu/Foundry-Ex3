@@ -25,6 +25,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.position.width = this.position.width = game.settings.get("exaltedthird", "compactSheetsNPC") ? 560 : 800;
       this.position.height = this.position.height = game.settings.get("exaltedthird", "compactSheetsNPC") ? 620 : 1061;
     }
+    this.options.classes = [...this.options.classes, this.getTypeSpecificCSSClasses()];
+
   }
 
   /**
@@ -45,6 +47,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       height: 1061,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
     });
+  }
+
+  getTypeSpecificCSSClasses() {
+    return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
   }
 
   /* -------------------------------------------- */
@@ -523,7 +529,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             li.slideUp(200, () => this.render(false));
           }
         }
-      }, { classes: ["dialog", "solar-background"] }).render(true);
+      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
     });
 
     html.find(".charms-cheat-sheet").click(async ev => {
@@ -534,7 +540,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         buttons: {
           cancel: { label: "Close" }
         },
-      }, { height: 1000, width: 1000, classes: ["dialog", "solar-background"] }).render(true);
+      }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
     });
 
     html.find('.exalt-xp').mousedown(ev => {
@@ -1362,7 +1368,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }, { classes: ["dialog", "solar-background"] }).render(true);
+    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
   async recoverHealth(healthType = 'person') {
@@ -1426,7 +1432,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       buttons: {
         cancel: { label: "Close" }
       }
-    }, { classes: ["dialog", "solar-background"] }).render(true);
+    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
   async pickColor() {
@@ -1454,7 +1460,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }, { classes: ["dialog", "solar-background"] }).render(true);
+    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
   async sheetSettings() {
@@ -1489,7 +1495,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update(actorData);
         }
       }
-    }, { classes: ["dialog", "solar-background"] }).render(true);
+    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
   async helpDialogue(type) {
@@ -1502,7 +1508,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       buttons: {
         cancel: { label: "Close", callback: () => confirmed = false }
       }
-    }, { classes: ["dialog", "solar-background"] }).render(true);
+    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
   _onSquareCounterChange(event) {

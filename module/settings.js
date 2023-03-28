@@ -86,4 +86,20 @@ export function registerSettings() {
         type: Boolean,
         default: false
     });
+    game.settings.register("exaltedthird", "sheetStyle", {
+        name: "Ex3.SheetStyle",
+        hint: "Ex3.SheetStyleDescription",
+        scope: "world",
+        config: true,
+        default: "solar",
+        type: String,
+        choices: {
+            "solar": "Ex3.Solar",
+            "lunar": "Ex3.Lunar",
+            "db": "Ex3.Dragonblooded",
+        },
+        onChange: (choice) => {
+            window.location.reload();
+        },
+    });
 }

@@ -17,6 +17,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       this.options.width = this.position.width = 675;
       this.options.height = this.position.height = 600;
     }
+    this.options.classes = [...this.options.classes, this.getTypeSpecificCSSClasses()];
   }
 
   /** @override */
@@ -62,6 +63,10 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
     context.effects = prepareActiveEffectCategories(this.item.effects);
     return context;
+  }
+
+  getTypeSpecificCSSClasses() {
+    return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
   }
 
   /**
@@ -155,7 +160,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         buttons: {
           cancel: { label: "Close" }
         },
-      }, { height: 1000, width: 1000, classes: ["dialog", "solar-background"] }).render(true);
+      }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
     });
 
     html.find(".formula-help").click(async ev => {
@@ -166,7 +171,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         buttons: {
           cancel: { label: "Close" }
         },
-      }, { classes: ["dialog", "solar-background"] }).render(true);
+      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
     });
 
     html.find(".embeded-item-delete").on("click", (event) => {

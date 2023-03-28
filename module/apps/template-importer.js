@@ -39,7 +39,7 @@ export default class TemplateImporter extends Application {
           buttons: {
             cancel: { label: "Close", callback: () => confirmed = false }
           }
-        }, { classes: ["dialog", "solar-background"] }).render(true);
+        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
       },
     };
     buttons = [helpButton, ...buttons];

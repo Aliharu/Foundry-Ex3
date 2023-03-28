@@ -614,5 +614,8 @@
     "Ex3.SiderealMartialArt": "Sidereal Martial Art",
     "Ex3.MartialArtsMastery": "Martial Arts Mastery",
     "Ex3.Mastery": "Mastery",
-    "Ex3.SMAEnlightenment": "SMA Enlightenment"
+    "Ex3.SMAEnlightenment": "SMA Enlightenment",
+
+    "Ex3.SheetStyle": "Sheet Style",
+    "Ex3.SheetStyleDescription": "The background image used on exalted sheets"
 }

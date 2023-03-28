@@ -592,7 +592,7 @@ export class RollForm extends FormApplication {
                                 }
                             }
                         }
-                    }, { classes: ["dialog", "solar-background"] }).render(true);
+                    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
                 },
             };
             buttons = [settingsButton, ...buttons];
@@ -668,7 +668,7 @@ export class RollForm extends FormApplication {
 
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            classes: ["dialog", `solar-background`],
+            classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
             popOut: true,
             template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
             id: "roll-form",
@@ -740,7 +740,7 @@ export class RollForm extends FormApplication {
                     },
                 }
             }
-        }, { classes: ["dialog", "solar-background"] }).render(true);
+        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
     }
 
     getData() {

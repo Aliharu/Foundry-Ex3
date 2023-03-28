@@ -887,11 +887,15 @@ export class ExaltedCombat extends Combat {
   async toggleTurnOver(id) {
     const combatant = this.getEmbeddedDocument("Combatant", id);
     await combatant?.toggleCombatantTurnOver();
+    return this.setCharacterTurn(id);
+    // return this.nextTurn();
+  }
+
+  async setCharacterTurn(id) {
     const turn = this.turns.findIndex(t => t.id === id);
     return this.update({ turn });
     // return this.nextTurn();
   }
-
 
   async rollInitiative(ids, formulaopt, updateTurnopt, messageOptionsopt) {
     const combatant = this.combatants.get(ids[0]);

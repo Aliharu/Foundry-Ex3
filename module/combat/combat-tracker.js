@@ -37,6 +37,10 @@ export class ExaltedCombatTracker extends CombatTracker {
             .find(".toggle-turn-over")
             .on("click", this._toggleTurnOver.bind(this));
 
+        html
+            .find(".set-character-turn")
+            .on("click", this._setCharacterTurn.bind(this));
+
         html.find(".init-combatant-control").click(ev => this._initCombatantControl(ev));
     }
     async _toggleTurnOver(event) {
@@ -47,6 +51,16 @@ export class ExaltedCombatTracker extends CombatTracker {
         if (!id)
             return;
         await this.viewed.toggleTurnOver(id);
+    }
+
+    async _setCharacterTurn(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const btn = event.currentTarget;
+        const id = btn.closest(".combatant")?.dataset.combatantId;
+        if (!id)
+            return;
+        await this.viewed.setCharacterTurn(id);
     }
 
     async _initCombatantControl(event) {
