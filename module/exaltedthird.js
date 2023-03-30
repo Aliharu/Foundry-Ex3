@@ -203,7 +203,7 @@ async function handleSocket({ type, id, data, actorId, crasherId=null }) {
   if (type === 'addOnslaught') {
     if (data.knockdownTriggered) {
       const token = game.canvas.tokens.get(id)
-      const isProne = token.actor.effects.find(i => i.label == "Prone");
+      const isProne = token.actor.effects.find(e => e.getFlag("core", "statusId") === 'prone');
       if (!isProne) {
         const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
         await token.toggleEffect(newProneEffect);
@@ -308,18 +308,18 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
       if (currentCombatant?.actor) {
         const actorData = duplicate(currentCombatant.actor);
-        const onslaught = currentCombatant.actor.effects.find(i => i.label == "Onslaught");
+        const onslaught = currentCombatant.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
         if (onslaught) {
           if (!actorData.system.dontresetonslaught) {
             onslaught.delete();
           }
         }
         actorData.system.dontresetonslaught = false;
-        const fullDefense = currentCombatant.actor.effects.find(i => i.label == "Full Defense");
+        const fullDefense = currentCombatant.actor.effects.find(e => e.getFlag("core", "statusId") === "fulldefense");
         if (fullDefense) {
           fullDefense.delete();
         }
-        const defensePenalty = currentCombatant.actor.effects.find(i => i.label == "Defense Penalty");
+        const defensePenalty = currentCombatant.actor.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
         if (defensePenalty) {
           defensePenalty.delete();
         }

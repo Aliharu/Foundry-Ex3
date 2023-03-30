@@ -212,56 +212,158 @@
 {{/ifNotEquals}}
 
 {{#ifEquals data.rollType 'social'}}
-{{#if data.targetIntimacies}}
-<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
-    <div class="resource-label">
-        {{localize "Ex3.TargetIntimacies"}}
+    {{#if data.hasDifficulty}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
+                <select name="object.supportedIntimacy" value="{{data.supportedIntimacy}}" data-type="String">
+                    {{#select data.supportedIntimacy}}
+                    <option value="0">{{localize "Ex3.None"}}</option>
+                    <option value="1">{{localize "Ex3.Minor"}}</option>
+                    <option value="2">{{localize "Ex3.Major"}}</option>
+                    <option value="3">{{localize "Ex3.Defining"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
+                <select name="object.opposedIntimacy" value="{{data.opposedIntimacy}}" data-type="String">
+                    {{#select data.opposedIntimacy}}
+                    <option value="0">{{localize "Ex3.None"}}</option>
+                    <option value="2">{{localize "Ex3.Minor"}}</option>
+                    <option value="3">{{localize "Ex3.Major"}}</option>
+                    <option value="4">{{localize "Ex3.Defining"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.ApplyAppearance"}}</div>
+                <input type="checkbox" name="object.applyAppearance" {{checked data.applyAppearance}}>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
+                <input type="number" name="object.appearanceBonus" value="{{data.appearanceBonus}}">
+            </div>
+        </div>
+    {{else}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <div class="resource-label">{{localize "Ex3.ApplyAppearance"}}</div>
+                <input type="checkbox" name="object.applyAppearance" {{checked data.applyAppearance}}>
+            </div>
+        </div>
+            {{#ifGreater data.showTargets 1}}
+            <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+                <div class="resource-label">
+                    {{localize "Ex3.Targets"}}
+                </div>
+                <div>
+                    <i class="fas fa-caret-down"></i>
+                </div>
+            </div>
+            <div id="targetsDropdown" {{#if data.targetsDropdown}} {{else}} style="display:none;" {{/if}}>
+            {{/ifGreater}}
+            {{#each data.targets as |target id|}}
+            <div style="margin-bottom: 10px;">
+                <div class="d-flex resource flex-center">
+                    <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24"
+                            height="24" /></div>
+                    <div class="resource-label">{{target.actor.name}}</div>
+                </div>
+                {{#if target.rollData.targetIntimacies}}
+                <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+                    <div class="resource-label">
+                        {{localize "Ex3.TargetIntimacies"}}
+                    </div>
+                    <div>
+                        <i class="fas fa-caret-down"></i>
+                    </div>
+                </div>
+                <div style="display:none;">
+                    {{#each target.rollData.targetIntimacies as |intimacy key|}}
+                    <div>
+                        <span style="text-transform: capitalize;font-weight: bold;">{{intimacy.system.strength}}</span>: {{intimacy.name}}
+                    </div>
+                    <hr>
+                    {{/each}}
+                </div>
+                {{/if}}
+                <div class="resource grid grid-2col flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
+                        <select name="object.targets.{{id}}.rollData.supportedIntimacy" value="{{target.rollData.supportedIntimacy}}" data-type="String">
+                            {{#select target.rollData.supportedIntimacy}}
+                            <option value="0">{{localize "Ex3.None"}}</option>
+                            <option value="1">{{localize "Ex3.Minor"}}</option>
+                            <option value="2">{{localize "Ex3.Major"}}</option>
+                            <option value="3">{{localize "Ex3.Defining"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
+                        <select name="object.targets.{{id}}.rollData.opposedIntimacy" value="{{target.rollData.opposedIntimacy}}" data-type="String">
+                            {{#select target.rollData.opposedIntimacy}}
+                            <option value="0">{{localize "Ex3.None"}}</option>
+                            <option value="2">{{localize "Ex3.Minor"}}</option>
+                            <option value="3">{{localize "Ex3.Major"}}</option>
+                            <option value="4">{{localize "Ex3.Defining"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.appearanceBonus" value="{{target.rollData.appearanceBonus}}">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.resolve" value="{{target.rollData.resolve}}">
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        {{#ifGreater data.showTargets 1}}
+        </div>
+        {{/ifGreater}}
+    {{/if}}
+{{/ifEquals}}
+
+{{#ifEquals data.rollType 'readIntentions'}}
+{{#if data.hasDifficulty}}
+{{else}}
+    {{#ifGreater data.showTargets 1}}
+    <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+        <div class="resource-label">
+            {{localize "Ex3.Targets"}}
+        </div>
+        <div>
+            <i class="fas fa-caret-down"></i>
+        </div>
     </div>
-    <div>
-        <i class="fas fa-caret-down"></i>
+    <div id="targetsDropdown" {{#if data.targetsDropdown}} {{else}} style="display:none;" {{/if}}>
+    {{/ifGreater}}
+    {{#each data.targets as |target id|}}
+    <div style="margin-bottom: 10px;">
+        <div class="d-flex resource flex-center">
+            <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24"
+                    height="24" /></div>
+            <div class="resource-label">{{target.actor.name}}</div>
+        </div>
+        <div class="resource flex-center">
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Guile"}}
+                </div>
+                <input type="number" name="object.targets.{{id}}.rollData.guile"
+                    value="{{target.rollData.guile}}">
+            </div>
+        </div>
     </div>
-</div>
-<div style="display:none;">
-    {{#each data.targetIntimacies as |intimacy key|}}
-    <div>
-        <span style="text-transform: capitalize;font-weight: bold;">{{intimacy.system.strength}}</span>: {{intimacy.name}}
-    </div>
-    <hr>
     {{/each}}
+{{#ifGreater data.showTargets 1}}
 </div>
+{{/ifGreater}}
 {{/if}}
-<div class="resource grid grid-2col flex-center">
-    <div>
-        <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
-        <select name="object.supportedIntimacy" value="{{data.supportedIntimacy}}" data-type="String">
-            {{#select data.supportedIntimacy}}
-            <option value="0">{{localize "Ex3.None"}}</option>
-            <option value="1">{{localize "Ex3.Minor"}}</option>
-            <option value="2">{{localize "Ex3.Major"}}</option>
-            <option value="3">{{localize "Ex3.Defining"}}</option>
-            {{/select}}
-        </select>
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
-        <select name="object.opposedIntimacy" value="{{data.opposedIntimacy}}" data-type="String">
-            {{#select data.opposedIntimacy}}
-            <option value="0">{{localize "Ex3.None"}}</option>
-            <option value="2">{{localize "Ex3.Minor"}}</option>
-            <option value="3">{{localize "Ex3.Major"}}</option>
-            <option value="4">{{localize "Ex3.Defining"}}</option>
-            {{/select}}
-        </select>
-    </div>
-    <div>
-        <div class="resource-label">{{localize "Ex3.ApplyAppearance"}}</div>
-        <input type="checkbox" name="object.applyAppearance" {{checked data.applyAppearance}}>
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
-        <input type="number" name="object.appearanceBonus" value="{{data.appearanceBonus}}">
-    </div>
-</div>
 {{/ifEquals}}
 
 {{#ifEquals data.rollType 'working'}}

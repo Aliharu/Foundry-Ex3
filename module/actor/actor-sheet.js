@@ -26,7 +26,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.position.height = this.position.height = game.settings.get("exaltedthird", "compactSheetsNPC") ? 620 : 1061;
     }
     this.options.classes = [...this.options.classes, this.getTypeSpecificCSSClasses()];
-
   }
 
   /**
@@ -177,7 +176,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       else if (i.type === 'charm') {
-        if(i.system.active) {
+        if (i.system.active) {
           activeCharms.push(i);
         }
       }
@@ -785,7 +784,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command', pool: 'command' }).render(true);
       }
       else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command'}).render(true);
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command' }).render(true);
       }
     });
 

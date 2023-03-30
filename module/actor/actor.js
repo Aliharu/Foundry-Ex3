@@ -622,7 +622,7 @@ export async function addDefensePenalty(actor, label = "Defense Penalty") {
     icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
     statusId = 'onslaught';
   }
-  const existingPenalty = actor.effects.find(i => i.label == label);
+  const existingPenalty = actor.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
   if (existingPenalty) {
     let changes = duplicate(existingPenalty.changes);
     changes[0].value = changes[0].value - 1;
@@ -666,7 +666,7 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
     icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
     statusId = 'onslaught';
   }
-  const existingPenalty = actor.effects.find(i => i.label == label);
+  const existingPenalty = actor.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
   if (existingPenalty) {
     let changes = duplicate(existingPenalty.changes);
     if (changes[0].value < -1) {
