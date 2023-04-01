@@ -828,28 +828,18 @@ export class RollForm extends FormApplication {
         }
         this.object.rerollNumber += this._getFormulaValue(item.system.diceroller.rerolldice);
         this.object.diceToSuccesses += this._getFormulaValue(item.system.diceroller.diceToSuccesses);
-        if (this._isAttackRoll()) {
-            if (this.object.showTargets) {
-                const targetValues = Object.values(this.object.targets);
-                for (const target of targetValues) {
-                    target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                }
-            }
-            else {
-                this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+
+        if (this.object.showTargets) {
+            const targetValues = Object.values(this.object.targets);
+            for (const target of targetValues) {
+                target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
             }
         }
         else {
-            if (this.object.showTargets && (this.object.rollType === 'social' || this.object.rollType === 'readIntentions')) {
-                const targetValues = Object.values(this.object.targets);
-                for (const target of targetValues) {
-                    target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                    target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                }
-            }
-            else {
-                this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-            }
+            this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+            this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
         }
 
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
@@ -1331,21 +1321,19 @@ export class RollForm extends FormApplication {
                 }
                 this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
                 this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
-
-                if (this._isAttackRoll()) {
-                    if (this.object.showTargets) {
-                        const targetValues = Object.values(this.object.targets);
-                        for (const target of targetValues) {
-                            target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        }
-                    }
-                    else {
-                        this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                if (this.object.showTargets) {
+                    const targetValues = Object.values(this.object.targets);
+                    for (const target of targetValues) {
+                        target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                     }
                 }
                 else {
                     this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                    this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                 }
+
 
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
                     if (rerollValue) {
@@ -2059,35 +2047,33 @@ export class RollForm extends FormApplication {
         if (this.object.attribute == null) {
             this.object.attribute = this.actor.type === "npc" ? null : this._getHighestAttribute();
         }
-        if (this.object.rollType === 'social') {
+        if (!this.object.showTargets && this.object.rollType === 'social') {
             this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
         }
-        let goalNumberLeft = 0;
+        let goalNumberLeft = this.object.goalNumber;
         await this._baseAbilityDieRoll();
         let resultString = ``;
+        let extendedTest = ``;
 
         if (this.object.rollType === "joinBattle") {
             resultString = `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
         }
-        if (this.object.hasthis.object.difficulty) {
-            let extendedTest = ``;
-            const threshholdSuccesses = this.object.total - this.object.difficulty;
-            goalNumberLeft = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
-            if (this.object.goalNumber > 0) {
-                extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
-            }
+        if (this.object.hasDifficulty) {
+            const threshholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
             if (this.object.total < this.object.difficulty) {
-                resultString = `<h4 class="dice-total dice-total-middle">difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>${extendedTest}`;
-                for (let dice of this.object.roll.dice[0].results) {
-                    if (dice.result === 1 && this.object.total === 0) {
-                        resultString = `<h4 class="dice-total dice-total-middle">difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>${extendedTest}`;
-                    }
+                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
+                if (this.object.total === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
+                    resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
                 }
             }
             else {
-                resultString = `<h4 class="dice-total dice-total-middle">difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
+                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>`;
+                goalNumberLeft = Math.max(goalNumberLeft - threshholdSuccesses - 1, 0);
             }
-            this.object.goalNumber = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
+            if (this.object.goalNumber > 0) {
+                extendedTest = `<h4 class="dice-total dice-total-middle" style="margin-top:5px">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
+            }
+            this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
                 const actorData = duplicate(this.actor);
                 actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
@@ -2111,6 +2097,7 @@ export class RollForm extends FormApplication {
                     </div>
                     <h4 class="dice-total dice-total-middle">${this.object.total} Successes</h4>
                     ${resultString}
+                    ${extendedTest}
                 </div>
             </div>`
         let chatCardTitle = 'Ability Roll';
@@ -2849,18 +2836,16 @@ export class RollForm extends FormApplication {
         let craftSuccess = false;
         let goalNumberLeft = this.object.goalNumber;
         let extendedTest = ``;
-        const threshholdSuccesses = this.object.total - this.object.difficulty;
+        const threshholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
         if (this.object.goalNumber > 0) {
             extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
         }
         if (this.object.total < this.object.difficulty) {
             resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>${extendedTest}`;
-            for (let dice of this.object.roll.dice[0].results) {
-                if (dice.result === 1 && this.object.total === 0) {
-                    this.object.finished = true;
-                    resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
-                    craftFailed = true;
-                }
+            if (this.object.total === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
+                this.object.finished = true;
+                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
+                craftFailed = true;
             }
         }
         else {

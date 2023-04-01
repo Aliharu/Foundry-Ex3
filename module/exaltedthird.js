@@ -172,7 +172,7 @@ Hooks.once('init', async function () {
 //   console.log(updateData);
 // });
 
-async function handleSocket({ type, id, data, actorId, crasherId=null }) {
+async function handleSocket({ type, id, data, actorId, crasherId = null }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
@@ -352,7 +352,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       var previousCombatant = combat.combatants.get(combat.previous.combatantId);
       if (previousCombatant?.actor) {
         const previousActorData = duplicate(previousCombatant.actor);
-        if(previousActorData.system.battlegroup) {
+        if (previousActorData.system.battlegroup) {
           previousActorData.system.commandbonus.value = 0;
         }
         const endTurnCharms = previousCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endturn');
@@ -407,6 +407,100 @@ Hooks.on("deleteCombat", (entity, deleted) => {
         combatant.actor.update(previousActorData);
       }
     }
+  }
+});
+
+Hooks.on("chatMessage", (html, content, msg) => {
+  let regExp;
+  regExp = /(\S+)/g;
+  let commands = content.match(regExp);
+  let command = commands[0];
+
+  if (command === "/info") {
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+    };
+    ChatMessage.create(chatData);
+    return false;
+  }
+  if (command === "/xp") {
+    if(isNaN(parseInt(commands[1]))){
+      const chatData = {
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        content: `Invalid number input`,
+      };
+      ChatMessage.create(chatData);
+      return false;
+    }
+    const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
+
+    actors.forEach((actor) => {
+      const newStandardValue = (parseInt(actor.system.experience.standard.total) || 0) + parseInt(commands[1] || 0);
+      actor.update({ "system.experience.standard.total": Math.ceil(newStandardValue) });
+    });
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: `${parseInt(commands[1] || 0)} experience granted`,
+    };
+    ChatMessage.create(chatData);
+    return false;
+  }
+  if (command === "/exaltxp") {
+    if(isNaN(parseInt(commands[1]))){
+      const chatData = {
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        content: `Invalid number input`,
+      };
+      ChatMessage.create(chatData);
+      return false;
+    }
+    const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
+
+    actors.forEach((actor) => {
+      const newExaltValue = (parseInt(actor.system.experience.exalt.total) || 0) + parseInt(commands[1] || 0);
+      actor.update({ "system.experience.exalt.total": Math.ceil(newExaltValue) });
+    });
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: `${parseInt(commands[1] || 0)} exalt experience granted`,
+    };
+    ChatMessage.create(chatData);
+    return false;
+  }
+  if (command === "/newscene") {
+    const tokens = canvas.scene.tokens;
+    for (const token of tokens) {
+      if (token.actor) {
+        const actorData = duplicate(token.actor);
+        const endSceneCharms = token.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endscene');
+        for (const charm of endSceneCharms) {
+          charm.update({
+            [`system.active`]: false,
+          });
+          if (actorData.system.settings.charmmotepool === 'personal') {
+            if (charm.system.cost.commitmotes > 0) {
+              actorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          else {
+            if (charm.system.cost.commitmotes > 0) {
+              actorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+            }
+          }
+          for (var effect of token.actor.effects.filter((effect => effect._sourceName === charm.name))) {
+            effect.update({ disabled: true });
+          }
+        }
+        token.actor.update(actorData);
+      }
+    }
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: 'New Scene',
+    };
+    ChatMessage.create(chatData);
+    return false;
   }
 });
 
@@ -536,6 +630,15 @@ Hooks.once("ready", async function () {
     }
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     ui.notifications.notify(`Migration Complete`);
+  }
+
+  if (isNewerVersion("1.9.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+    };
+    ChatMessage.create(chatData);
+    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
   // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {
@@ -823,20 +926,20 @@ export class ExaltedCombat extends Combat {
     return this.update({ round: 1, turn: null });
   }
 
-  async setInitiative(id, value, crasherId=null) {
-    const combatant = this.combatants.get(id, {strict: true});
+  async setInitiative(id, value, crasherId = null) {
+    const combatant = this.combatants.get(id, { strict: true });
     const newVal = {
       initiative: value
     };
-    if(value <= 0 && combatant.initiative && combatant.initiative > 0 && crasherId) {
+    if (value <= 0 && combatant.initiative && combatant.initiative > 0 && crasherId) {
       newVal[`flags.crashedBy`] = crasherId;
     }
-    if(value > 0) {
+    if (value > 0) {
       newVal[`flags.crashedBy`] = null;
     }
     await combatant.update(newVal);
   }
-  
+
   // _sortCombatants(a,b) {
   //   const ia = (Number.isNumeric(a.initiative) && !a.flags.acted) ? a.initiative : -Infinity;
   //   const ib = (Number.isNumeric(b.initiative) && !b.flags.acted) ? b.initiative : -Infinity;
