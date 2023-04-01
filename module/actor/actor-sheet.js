@@ -596,10 +596,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.setSpendPool('personal');
     });
 
-    html.find('.calculate-personal-motes').mousedown(ev => {
-      this.calculateMotes('personal');
-    });
-
     html.find('.calculate-personal-commit').mousedown(ev => {
       this.calculateCommitMotes('personal');
     });
@@ -608,8 +604,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateCommitMotes('peripheral');
     });
 
-    html.find('.calculate-peripheral-motes').mousedown(ev => {
-      this.calculateMotes('peripheral');
+    html.find('.calculate-motes').mousedown(ev => {
+      this.calculateMotes();
     });
 
     html.find('.calculate-soak').mousedown(ev => {
@@ -1107,54 +1103,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       data.guile.value = Math.ceil((data.attributes.manipulation.value + data.abilities.socialize.value) / 2);
     }
     if (type === 'resonance') {
-      const resonanceChart = {
-        "abyssal": ['soulsteel'],
-        "alchemical": [],
-        "dragonblooded": ['blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
-        "dreamsouled": [],
-        "getimian": ['starmetal'],
-        "hearteater": ['adamant'],
-        "infernal": ['orichalcum'],
-        "liminal": [],
-        "lunar": ['moonsilver'],
-        "sidereal": ['starmetal'],
-        "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
-        "umbral": ['soulsteel'],
-      }
-      const dissonanceChart = {
-        "abyssal": [],
-        "alchemical": [],
-        "dragonblooded": ['soulsteel'],
-        "dreamsouled": ['adamant', 'orichalcum', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
-        "getimian": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
-        "hearteater": [],
-        "infernal": [],
-        "liminal": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
-        "lunar": "",
-        "sidereal": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
-        "solar": [],
-        "umbral": [],
-      }
-
-      if (data.details.exalt === 'exigent') {
-        if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-          data.traits.resonance.value = ['orichalcum', 'greenjade'];
-          data.traits.dissonance.value = ['soulsteel'];
-        }
-        if (data.details.caste.toLowerCase() === 'sovereign') {
-          data.traits.resonance.value = [];
-          data.traits.dissonance.value = ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
-        }
-        if (data.details.caste.toLowerCase() === 'puppeteer') {
-          data.traits.resonance.value = [];
-          data.traits.resonance.custom = 'Artifact Puppets';
-          data.traits.dissonance.value = ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
-        }
-      }
-      else {
-        data.traits.resonance.value = resonanceChart[data.details.exalt];
-        data.traits.dissonance.value = dissonanceChart[data.details.exalt];
-      }
+      data.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);
+      data.traits.dissonance = this.actor.calculateDissonance(this.actor.system.details.exalt);
     }
     this.actor.update(actorData);
   }
@@ -1177,72 +1127,22 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this.actor.update(actorData);
   }
 
-  async calculateMotes(type) {
+  async calculateMotes() {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
 
     if (data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) {
       data.motes.personal.max = 10 * data.essence.value;
-      if (data.creaturetype === 'god' || data.creaturetype === 'undead') {
+      if (data.creaturetype === 'god' || data.creaturetype === 'undead' || data.creaturetype === 'demon') {
         data.motes.personal.max += 50;
       }
       data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
     }
     else {
-      if (type === 'personal') {
-        if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
-          data.motes.personal.max = 10 + (data.essence.value * 3);
-        }
-        if (data.details.exalt === 'dragonblooded') {
-          data.motes.personal.max = 11 + data.essence.value;
-        }
-        if (data.details.exalt === 'lunar') {
-          data.motes.personal.max = 15 + data.essence.value;
-        }
-        if (data.details.exalt === 'exigent') {
-          data.motes.personal.max = 11 + data.essence.value;
-        }
-        if (data.details.exalt === 'sidereal') {
-          data.motes.personal.max = 9 + (data.essence.value * 2);
-        }
-        if (data.details.exalt === 'liminal') {
-          data.motes.personal.max = 10 + (data.essence.value * 3);
-        }
-        if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
-          data.motes.personal.max = 11 + data.essence.value;
-        }
-        if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-          data.motes.personal.max = 11 + (data.essence.value * 2);
-        }
-        data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
-      }
-      else {
-        if (data.details.exalt === 'solar' || data.details.exalt === 'abyssal') {
-          data.motes.peripheral.max = 26 + (data.essence.value * 7);
-        }
-        if (data.details.exalt === 'dragonblooded') {
-          data.motes.peripheral.max = 23 + (data.essence.value * 4);
-        }
-        if (data.details.exalt === 'lunar') {
-          data.motes.peripheral.max = 34 + (data.essence.value * 4);
-        }
-        if (data.details.exalt === 'exigent') {
-          data.motes.peripheral.max = 23 + (data.essence.value * 4);
-        }
-        if (data.details.exalt === 'sidereal') {
-          data.motes.peripheral.max = 25 + (data.essence.value * 6);
-        }
-        if (data.details.exalt === 'liminal') {
-          data.motes.peripheral.max = 23 + (data.essence.value * 4);
-        }
-        if (data.details.exalt === 'dreamsouled' || data.details.caste.toLowerCase() === 'sovereign' || data.details.caste.toLowerCase() === 'architect' || data.details.caste.toLowerCase() === 'puppeteer') {
-          data.motes.peripheral.max = 23 + (data.essence.value * 4);
-        }
-        if (data.details.caste.toLowerCase() === 'janest' || data.details.caste.toLowerCase() === 'strawmaiden' || data.details.exalt === 'hearteater' || data.details.exalt === 'umbral') {
-          data.motes.peripheral.max = 27 + (data.essence.value * 6);
-        }
-        data.motes.peripheral.value = (data.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
-      }
+      data.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
+      data.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+      data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
+      data.motes.peripheral.value = (data.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
     }
     this.actor.update(actorData);
   }

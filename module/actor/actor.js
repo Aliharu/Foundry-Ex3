@@ -19,6 +19,69 @@ export class ExaltedThirdActor extends Actor {
     this._prepareCharacterData(actorData);
   }
 
+  async _preUpdate(updateData, options, user) {
+    await super._preUpdate(updateData, options, user);
+    const exalt = updateData.system?.details?.exalt || this.system.details.exalt;
+    const essenceLevel = updateData.system?.essence?.value || this.system.essence.value;
+    if (updateData.system?.battlegroup && !this.system.battlegroup) {
+      updateData.system.health = {
+        "levels": {
+          "zero": {
+            "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.four.value + 1,
+          }
+        }
+      };
+    }
+    if (updateData.system?.creaturetype) {
+      var personalMotes = essenceLevel * 10;
+      var peripheralmotes = 0;
+      if (updateData.system?.creaturetype === 'god' || updateData.system?.creaturetype === 'undead'  || updateData.system?.creaturetype === 'demon') {
+        personalMotes += 50;
+      }
+      if(updateData.system?.creaturetype === 'exalt') {
+        peripheralmotes = this.calculateMaxExaltedMotes('peripheral', this.system.details.exalt, this.system.essence.value)
+      }
+      updateData.system.motes = {
+        personal: {
+          max: personalMotes,
+          value: (personalMotes  - this.system.motes.personal.committed),
+        },
+        peripheral: {
+          max: peripheralmotes,
+          value: (peripheralmotes - this.system.motes.peripheral.committed),
+        }
+      };
+    }
+    if ((updateData.system?.details?.exalt || (updateData.system?.essence?.value && this.type === 'character')) && !updateData.system?.creaturetype) {
+      updateData.system.motes = {
+        personal: {
+          max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
+          value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel)  - this.system.motes.personal.committed),
+        },
+        peripheral: {
+          max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
+          value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
+        }
+      };
+      updateData.system.motes = {
+        personal: {
+          max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
+          value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel)  - this.system.motes.personal.committed),
+        },
+        peripheral: {
+          max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
+          value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
+        }
+      };
+      if(this.type === 'character' && updateData.system?.details?.exalt) {
+        updateData.system.traits = {
+          resonance: this.calculateResonance(updateData.system?.details?.exalt),
+          dissonance: this.calculateDissonance(updateData.system?.details?.exalt),
+        };
+      }
+    }
+  }
+
   async displayEmbeddedItem(itemId) {
     // Render the chat card template
     let item = this.items.find(x => x.id === itemId);
@@ -44,6 +107,141 @@ export class ExaltedThirdActor extends Actor {
 
     // Create the Chat Message or return its data
     return ChatMessage.create(chatData);
+  }
+
+  calculateMaxExaltedMotes(moteType, exaltType, essenceLevel) {
+    var maxMotes = 0;
+    if (moteType === 'personal') {
+      if (exaltType === 'solar' || exaltType === 'abyssal') {
+        maxMotes = 10 + (essenceLevel * 3);
+      }
+      if (exaltType === 'dragonblooded') {
+        maxMotes = 11 + essenceLevel;
+      }
+      if (exaltType === 'lunar') {
+        maxMotes = 15 + essenceLevel;
+      }
+      if (exaltType === 'exigent') {
+        maxMotes = 11 + essenceLevel;
+      }
+      if (exaltType === 'sidereal') {
+        maxMotes = 9 + (essenceLevel * 2);
+      }
+      if (exaltType === 'liminal') {
+        maxMotes = 10 + (essenceLevel * 3);
+      }
+      if (exaltType === 'other') {
+        maxMotes = 10 * essenceLevel;
+      }
+      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'sovereign' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
+        maxMotes = 11 + essenceLevel;
+      }
+      if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+        maxMotes = 11 + (essenceLevel * 2);
+      }
+    }
+    else {
+      if (exaltType === 'solar' || exaltType === 'abyssal') {
+        maxMotes = 26 + (essenceLevel * 7);
+      }
+      if (exaltType === 'dragonblooded') {
+        maxMotes = 23 + (essenceLevel * 4);
+      }
+      if (exaltType === 'lunar') {
+        maxMotes = 34 + (essenceLevel * 4);
+      }
+      if (exaltType === 'exigent') {
+        maxMotes = 23 + (essenceLevel * 4);
+      }
+      if (exaltType === 'sidereal') {
+        maxMotes = 25 + (essenceLevel * 6);
+      }
+      if (exaltType === 'liminal') {
+        maxMotes = 23 + (essenceLevel * 4);
+      }
+      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'sovereign' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
+        maxMotes = 23 + (essenceLevel * 4);
+      }
+      if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+        maxMotes = 27 + (essenceLevel * 6);
+      }
+    }
+    return maxMotes
+  }
+
+  calculateResonance(exaltType) {
+    var resonance = {
+      value: [],
+      custom: "",
+    }
+    const resonanceChart = {
+      "abyssal": ['soulsteel'],
+      "alchemical": [],
+      "dragonblooded": ['blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "dreamsouled": [],
+      "getimian": ['starmetal'],
+      "hearteater": ['adamant'],
+      "infernal": ['orichalcum'],
+      "liminal": [],
+      "lunar": ['moonsilver'],
+      "sidereal": ['starmetal'],
+      "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "umbral": ['soulsteel'],
+    }
+
+    if (exaltType === 'exigent') {
+      if (this.system.details.caste.toLowerCase() === 'janest' || this.system.details.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+        resonance.value = ['orichalcum', 'greenjade'];
+      }
+      if (this.system.details.caste.toLowerCase() === 'sovereign') {
+        resonance.value = [];
+      }
+      if (this.system.details.caste.toLowerCase() === 'puppeteer') {
+        resonance.value = [];
+        resonance.custom = 'Artifact Puppets';
+      }
+    }
+    else {
+      resonance.value = resonanceChart[exaltType];
+    }
+    return resonance;
+  }
+
+  calculateDissonance(exaltType) {
+    var dissonance = {
+      value: [],
+      custom: "",
+    }
+    const dissonanceChart = {
+      "abyssal": [],
+      "alchemical": [],
+      "dragonblooded": ['soulsteel'],
+      "dreamsouled": ['adamant', 'orichalcum', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "getimian": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "hearteater": [],
+      "infernal": [],
+      "liminal": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "lunar": "",
+      "sidereal": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "solar": [],
+      "umbral": [],
+    }
+
+    if (exaltType === 'exigent') {
+      if (this.system.caste.toLowerCase() === 'janest' || this.system.details.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+        dissonance.value = ['soulsteel'];
+      }
+      if (this.system.caste.toLowerCase() === 'sovereign') {
+        dissonance.value = ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
+      }
+      if (this.system.caste.toLowerCase() === 'puppeteer') {
+        dissonance.value = ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
+      }
+    }
+    else {
+      dissonance.value = dissonanceChart[exaltType];
+    }
+    return dissonance;
   }
 
   async rollEmbeddedItem(itemId, personal = false) {
@@ -503,21 +701,6 @@ export class ExaltedThirdActor extends Actor {
 
     return "";
   }
-
-
-  async _preUpdate(updateData, options, user) {
-    await super._preUpdate(updateData, options, user);
-    if (updateData.system?.battlegroup && !this.system.battlegroup) {
-      updateData.system.health = {
-        "levels": {
-          "zero": {
-            "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.four.value + 1,
-          }
-        }
-      };
-    }
-  }
-
 
   /**
    * Override getRollData() that's supplied to rolls.
