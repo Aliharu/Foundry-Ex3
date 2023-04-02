@@ -32,51 +32,44 @@ export class ExaltedThirdActor extends Actor {
         }
       };
     }
-    if (updateData.system?.creaturetype) {
-      var personalMotes = essenceLevel * 10;
-      var peripheralmotes = 0;
-      if (updateData.system?.creaturetype === 'god' || updateData.system?.creaturetype === 'undead'  || updateData.system?.creaturetype === 'demon') {
-        personalMotes += 50;
+    if(updateData.system?.details?.exalt || updateData.system?.essence?.value || updateData.system?.creaturetype) {
+      if(this.type === 'character') {
+        updateData.system.motes = {
+          personal: {
+            max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
+            value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel)  - this.system.motes.personal.committed),
+          },
+          peripheral: {
+            max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
+            value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
+          }
+        };
+        if(updateData.system?.details?.exalt) {
+          updateData.system.traits = {
+            resonance: this.calculateResonance(updateData.system?.details?.exalt),
+            dissonance: this.calculateDissonance(updateData.system?.details?.exalt),
+          };
+        }
       }
-      if(updateData.system?.creaturetype === 'exalt') {
-        peripheralmotes = this.calculateMaxExaltedMotes('peripheral', this.system.details.exalt, this.system.essence.value)
-      }
-      updateData.system.motes = {
-        personal: {
-          max: personalMotes,
-          value: (personalMotes  - this.system.motes.personal.committed),
-        },
-        peripheral: {
-          max: peripheralmotes,
-          value: (peripheralmotes - this.system.motes.peripheral.committed),
+      else {
+        var personalMotes = essenceLevel * 10;
+        var peripheralmotes = 0;
+        if (updateData.system?.creaturetype === 'god' || updateData.system?.creaturetype === 'undead'  || updateData.system?.creaturetype === 'demon') {
+          personalMotes += 50;
         }
-      };
-    }
-    if ((updateData.system?.details?.exalt || (updateData.system?.essence?.value && this.type === 'character')) && !updateData.system?.creaturetype) {
-      updateData.system.motes = {
-        personal: {
-          max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
-          value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel)  - this.system.motes.personal.committed),
-        },
-        peripheral: {
-          max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
-          value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
+        if((updateData.system?.creaturetype || this.system.creaturetype) === 'exalt') {
+          peripheralmotes = this.calculateMaxExaltedMotes('peripheral', this.system.details.exalt, essenceLevel);
+          personalMotes = this.calculateMaxExaltedMotes('personal', this.system.details.exalt, essenceLevel);
         }
-      };
-      updateData.system.motes = {
-        personal: {
-          max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
-          value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel)  - this.system.motes.personal.committed),
-        },
-        peripheral: {
-          max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
-          value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
-        }
-      };
-      if(this.type === 'character' && updateData.system?.details?.exalt) {
-        updateData.system.traits = {
-          resonance: this.calculateResonance(updateData.system?.details?.exalt),
-          dissonance: this.calculateDissonance(updateData.system?.details?.exalt),
+        updateData.system.motes = {
+          personal: {
+            max: personalMotes,
+            value: (personalMotes  - this.system.motes.personal.committed),
+          },
+          peripheral: {
+            max: peripheralmotes,
+            value: (peripheralmotes - this.system.motes.peripheral.committed),
+          }
         };
       }
     }

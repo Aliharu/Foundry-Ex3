@@ -159,6 +159,7 @@
         },
         "details": {
           "exalt": "other",
+          "creaturesubtype": "other",
           "caste": "",
           "color": "#000000",
           "animacolor": "#FFFFFF",
