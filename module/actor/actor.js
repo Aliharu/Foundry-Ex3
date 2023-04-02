@@ -183,13 +183,13 @@ export class ExaltedThirdActor extends Actor {
     }
 
     if (exaltType === 'exigent') {
-      if (this.system.details.caste.toLowerCase() === 'janest' || this.system.details.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      if (this.system.details.caste?.toLowerCase() === 'janest' || this.system.details.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         resonance.value = ['orichalcum', 'greenjade'];
       }
-      if (this.system.details.caste.toLowerCase() === 'sovereign') {
+      if (this.system.details.caste?.toLowerCase() === 'sovereign') {
         resonance.value = [];
       }
-      if (this.system.details.caste.toLowerCase() === 'puppeteer') {
+      if (this.system.details.caste?.toLowerCase() === 'puppeteer') {
         resonance.value = [];
         resonance.custom = 'Artifact Puppets';
       }
@@ -221,13 +221,13 @@ export class ExaltedThirdActor extends Actor {
     }
 
     if (exaltType === 'exigent') {
-      if (this.system.caste.toLowerCase() === 'janest' || this.system.details.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         dissonance.value = ['soulsteel'];
       }
-      if (this.system.caste.toLowerCase() === 'sovereign') {
+      if (this.system.details?.caste?.toLowerCase() === 'sovereign') {
         dissonance.value = ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
       }
-      if (this.system.caste.toLowerCase() === 'puppeteer') {
+      if (this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         dissonance.value = ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
       }
     }
