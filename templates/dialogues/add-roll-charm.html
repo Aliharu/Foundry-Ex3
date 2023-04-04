@@ -37,7 +37,7 @@
     </li>
     <li class="item-description">
         <div>
-            <b>Cost</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.system.cost.commitmotes 0}}{{ item.system.cost.commitmotes }}cm,{{/ifGreater}}
+            <b>{{localize "Ex3.Cost"}}</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}} {{#ifGreater item.system.cost.commitmotes 0}}{{ item.system.cost.commitmotes }}cm,{{/ifGreater}}
             {{#ifGreater
             item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater
             item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}
@@ -61,10 +61,10 @@
             <b>Type</b>: {{item.system.type}}
         </div>
         <div>
-            <b>Keywords</b>: {{item.system.keywords}}
+            <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
         </div>
         <div>
-            <b>Duration</b>: {{item.system.duration}}
+            <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
         </div>
         <div>
             {{{item.enritchedHTML}}}
