@@ -23,7 +23,15 @@
                 <option value="mastery">{{localize "Ex3.Mastery"}}</option>
                 {{/select}}
             </select>
-            <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
+            <label className="resource-label">{{localize "Ex3.SheetBackground"}}:</label>
+            <select id="sheetBackground" name="settings.sheetbackground" data-type="String">
+                {{#select settings.sheetbackground}}
+                <option value="default">{{localize "Ex3.Default"}}</option>
+                <option value="solar">{{localize "Ex3.Solar"}}</option>
+                <option value="lunar">{{localize "Ex3.Lunar"}}</option>
+                <option value="db">{{localize "Ex3.Dragonblooded"}}</option>
+                {{/select}}
+            </select>            <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
             <input id="smaEnlightenment" name="settings.smaenlightenment" type="checkbox" {{checked settings.smaenlightenment}}>
             <label className="resource-label">{{localize "Ex3.ShowWarstrider"}}:</label>
             <input id="showWarstrider" name="settings.showwarstrider" type="checkbox" {{checked settings.showwarstrider}}>

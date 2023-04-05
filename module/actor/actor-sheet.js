@@ -49,7 +49,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   getTypeSpecificCSSClasses() {
-    return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
+    if(this.actor.system.settings.sheetbackground === 'default') {
+      return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
+    }
+    return `${this.actor.system.settings.sheetbackground}-background`;
   }
 
   /* -------------------------------------------- */
@@ -1379,6 +1382,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (confirmed) {
           data.settings.charmmotepool = html.find('#charmMotePool').val();
           data.settings.martialartsmastery = html.find('#martialArtsMastery').val();
+          data.settings.sheetbackground = html.find('#sheetBackground').val();
           data.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
           data.anima.max = parseInt(html.find('#maxAnima').val());
           data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");

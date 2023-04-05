@@ -192,6 +192,7 @@
           "iscrafter": true,
           "usedotsvalues": true,
           "showanima": true,
+          "sheetbackground": "default",
           "rollsettings": {
             "attacks": {
               "attribute": "dexterity",
