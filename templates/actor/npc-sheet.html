@@ -197,6 +197,13 @@
                         value="{{system.details.penumbra.value}}" />
                 </div>
                 {{/ifEquals}}
+                {{#ifEquals actor.type 'npc'}}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.SpeedBonus"}}</label>
+                    <input type="number" name="system.speed.value" value="{{system.speed.value}}"
+                        data-dtype="Number" />
+                </div>
+                {{/ifEquals}}
             </div>
             <div>
                 <textarea type="text" name="system.qualities" rows="12">{{system.qualities}}</textarea>
