@@ -1506,9 +1506,9 @@ export default class TemplateImporter extends Application {
               newItem = false;
             }
             if (itemType === 'charm') {
-              var titleArray = (textArray[index] + textArray[index + 1]).split('(');
-              itemName = titleArray[0].trim();
-              var contentArray = titleArray[1].split('):');
+              var titleArray = textArray[index] + textArray[index + 1];
+              itemName = titleArray.substring(0, titleArray.indexOf('('));
+              var contentArray = titleArray.substring(titleArray.indexOf('(') + 1).split('):');
               var charmDataArray = contentArray[0].trim().split(';');
               itemDescription += contentArray[1].trim();
               var costArray = charmDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
@@ -2165,7 +2165,7 @@ export default class TemplateImporter extends Application {
 }
 
 Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.CharmImport")}(BETA)</button>`);
+  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.CharmImport")}</button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
@@ -2175,7 +2175,7 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 })
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.NPCImport")}(BETA)</button>`);
+  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.NPCImport")}</button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
