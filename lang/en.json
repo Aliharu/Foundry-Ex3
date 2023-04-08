@@ -620,5 +620,11 @@
     "Ex3.SMAEnlightenment": "SMA Enlightenment",
 
     "Ex3.SheetStyle": "Sheet Style",
-    "Ex3.SheetStyleDescription": "The background image used on exalted sheets"
+    "Ex3.SheetStyleDescription": "The background image used on exalted sheets",
+
+    "Ex3.GenerateNPCs": "Generate NPCs",
+    "Ex3.Custom": "Custom",
+    "Ex3.Socialite": "Socialite",
+    "Ex3.MasterSwordsman": "Master Swordsman",
+    "Ex3.Generate": "Generate"
 }

@@ -16,6 +16,7 @@ import TemplateImporter from "./apps/template-importer.js";
 import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
 import { ExaltedCombatant } from "./combat/combat.js";
 import ExaltedActiveEffect from "./active-effect.js";
+import NPCGenerator from "./apps/npc-generator.js";
 
 Hooks.once('init', async function () {
 
@@ -23,6 +24,7 @@ Hooks.once('init', async function () {
 
   game.exaltedthird = {
     applications: {
+      NPCGenerator,
       TraitSelector,
       ItemSearch,
       TemplateImporter,
@@ -422,6 +424,10 @@ Hooks.on("chatMessage", (html, content, msg) => {
       content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
     };
     ChatMessage.create(chatData);
+    return false;
+  }
+  if(command === '/npc') {
+    new NPCGenerator(null, { }, {}, { }).render(true);
     return false;
   }
   if (command === "/xp") {
