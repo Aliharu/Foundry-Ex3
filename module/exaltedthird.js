@@ -442,8 +442,9 @@ Hooks.on("chatMessage", (html, content, msg) => {
     const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
 
     actors.forEach((actor) => {
-      const newStandardValue = (parseInt(actor.system.experience.standard.total) || 0) + parseInt(commands[1] || 0);
-      actor.update({ "system.experience.standard.total": Math.ceil(newStandardValue) });
+      const newStandardValue = (parseInt(actor.system.experience.standard.value) || 0) + parseInt(commands[1] || 0);
+      const newStandardTotal = (parseInt(actor.system.experience.standard.total) || 0) + parseInt(commands[1] || 0);
+      actor.update({ "system.experience.standard.value": Math.ceil(newStandardValue), "system.experience.standard.total": Math.ceil(newStandardTotal) });
     });
     const chatData = {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
@@ -464,8 +465,9 @@ Hooks.on("chatMessage", (html, content, msg) => {
     const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
 
     actors.forEach((actor) => {
-      const newExaltValue = (parseInt(actor.system.experience.exalt.total) || 0) + parseInt(commands[1] || 0);
-      actor.update({ "system.experience.exalt.total": Math.ceil(newExaltValue) });
+      const newExaltValue = (parseInt(actor.system.experience.exalt.value) || 0) + parseInt(commands[1] || 0);
+      const newExaltTotal = (parseInt(actor.system.experience.exalt.total) || 0) + parseInt(commands[1] || 0);
+      actor.update({ "system.experience.exalt.value": Math.ceil(newExaltValue), "system.experience.exalt.total": Math.ceil(newExaltTotal) });
     });
     const chatData = {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
