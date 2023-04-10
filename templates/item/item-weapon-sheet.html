@@ -228,6 +228,14 @@
                         <input type="text" name="system.attackeffect" value="{{system.attackeffect}}"
                             placeholder="jb2a.quarterstaff.melee.01.white" />
                     </div>
+                    <div class="resource-label list-section-header d-flex flex-between">
+                        <div>
+                            {{localize "Ex3.AttackMacro"}}
+                        </div>
+                    </div>
+                    <div class="flex-group-center d-flex flex-col">
+                        <textarea type="text" name="system.attackmacro" rows="16" placeholder='{{localize "Ex3.AttackMacroHint"}}'>{{system.attackmacro}}</textarea>
+                    </div>
                 </div>
             </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}

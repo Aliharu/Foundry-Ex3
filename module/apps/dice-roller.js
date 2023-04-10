@@ -269,6 +269,7 @@ export class RollForm extends FormApplication {
                     this.object.weaponType = data.weapon.weapontype || "melee";
                     this.object.attackEffectPreset = data.weapon.attackeffectpreset || "none";
                     this.object.attackEffect = data.weapon.attackeffect || "";
+                    this.object.weaponMacro = data.weapon.attackmacro || "";
                 }
                 this.object.difficultyString = 'Ex3.Difficulty';
                 if (this.object.rollType === 'readIntentions') {
@@ -3636,6 +3637,15 @@ export class RollForm extends FormApplication {
                     .atLocation(actorToken)
                     .stretchTo(this.object.target)
                     .play()
+            }
+        }
+        if(this.object.weaponMacro) {
+            let macro = new Function(this.object.weaponMacro);
+            try {
+                macro.call(this);
+            } catch (e) {
+                ui.notifications.error(`<p>There was an error in your macro syntax for the weapon macro:</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+                console.error(e);
             }
         }
     }
