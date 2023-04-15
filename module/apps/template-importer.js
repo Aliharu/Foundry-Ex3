@@ -1924,17 +1924,33 @@ export default class TemplateImporter extends Application {
         }
       }
       this.errorSection = 'Attacks';
+      const weaponTags = CONFIG.exaltedthird.weapontags;
       while (textArray[index].includes('Attack')) {
         var attackString = textArray[index];
         if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat')) {
           attackString += textArray[index + 1];
           index++;
         }
+        var itemTags = [];
+        if(attackString.includes('Tags:')) {
+          var tagString = attackString.match(/Tags:(.*$)/)[1] || ''; 
+          var tagSplit = tagString.split(/,|;/);
+          for(let tag of tagSplit) {
+            if(tag.includes('(')) {
+              var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim().toLowerCase();
+              if(weaponTags[rangeTag]) {
+                itemTags.push(rangeTag);
+              }
+              tag = tag.replace(/\(([^)]+)\)/g, '');
+            }
+            tag = tag.replace(/\s+/g, '').replace('-', '').trim().toLowerCase();
+            if(weaponTags[tag]) {
+              itemTags.push(tag);
+            }
+          }
+        }
         var weaponDescription = ''
         var tagSplit = attackString.replace('Attack ', '').split(';');
-        if (tagSplit[1]) {
-          weaponDescription = tagSplit[1].trim();
-        }
         var attackArray = tagSplit[0].split(':');
         var attackName = attackArray[0].replace('(', '').replace(')', '');
         var damage = 1;
@@ -1977,6 +1993,12 @@ export default class TemplateImporter extends Application {
               overwhelming: overwhelming,
               ability: "none",
               attribute: "none",
+              traits: {
+                weapontags: {
+                  value: itemTags,
+                  custom: "",
+                }
+              }
             }
           }
         );
