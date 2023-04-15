@@ -611,8 +611,6 @@ export default class NPCGenerator extends FormApplication {
     }
 
     actorData.items = itemData;
-    console.log(itemData);
-    console.log(actorData);
     await Actor.create(actorData);
   }
 
