@@ -200,8 +200,7 @@
                 {{#ifEquals actor.type 'npc'}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.SpeedBonus"}}</label>
-                    <input type="number" name="system.speed.value" value="{{system.speed.value}}"
-                        data-dtype="Number" />
+                    <input type="number" name="system.speed.value" value="{{system.speed.value}}" data-dtype="Number" />
                 </div>
                 {{/ifEquals}}
             </div>
@@ -219,18 +218,18 @@
             <ol class="items-list">
                 {{#if system.settings.showanima}}
                 <li>
-                  <div class="resource-label list-section-header mb-2">
-                    {{localize "Ex3.Anima"}}
-                  </div>
+                    <div class="resource-label list-section-header mb-2">
+                        {{localize "Ex3.Anima"}}
+                    </div>
                 </li>
                 <li>
-                  <textarea type="text" name="system.anima.passive" rows="4">{{system.anima.passive}}</textarea>
+                    <textarea type="text" name="system.anima.passive" rows="4">{{system.anima.passive}}</textarea>
                 </li>
                 <li>
-                  <textarea type="text" name="system.anima.active" rows="4">{{system.anima.active}}</textarea>
+                    <textarea type="text" name="system.anima.active" rows="4">{{system.anima.active}}</textarea>
                 </li>
                 <li>
-                  <textarea type="text" name="system.anima.iconic" rows="4">{{system.anima.iconic}}</textarea>
+                    <textarea type="text" name="system.anima.iconic" rows="4">{{system.anima.iconic}}</textarea>
                 </li>
                 {{/if}}
                 {{> systems/exaltedthird/templates/actor/charm-list.html}}
@@ -274,6 +273,14 @@
                             width="24" height="24" />
                     </div>
                     <h4 class="item-name">{{item.name}}</h4>
+                    {{#if item.system.points}}
+                    <div class="resource-value-static" data-value="{{item.system.points}}"
+                        data-name="items.{{item._id}}">
+                        {{#numLoop 5}}
+                        <span class="resource-value-static-step" data-index="{{this}}"></span>
+                        {{/numLoop}}
+                    </div>
+                    {{/if}}
                     <div class="item-controls">
                         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
                         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

@@ -39,8 +39,12 @@
             <input id="showShip" name="settings.showship" type="checkbox" {{checked settings.showship}}>
             <label className="resource-label">{{localize "Ex3.ShowEscort"}}:</label>
             <input id="showEscort" name="settings.showescort" type="checkbox" {{checked settings.showescort}}>
+            {{#ifEquals actorType 'character'}}
             <label className="resource-label">{{localize "Ex3.UseTenForAttributes"}}:</label>
             <input id="useTenAttributes" name="settings.usetenattributes" type="checkbox" {{checked settings.usetenattributes}}>
+            <label className="resource-label">{{localize "Ex3.UseTenForAbilities"}}:</label>
+            <input id="useTenAbilities" name="settings.usetenabilities" type="checkbox" {{checked settings.usetenabilities}}>
+            {{/ifEquals}}
             <label className="resource-label">{{localize "Ex3.DefaultRollStunts"}}:</label>
             <input id="rollStunts" name="settings.rollStunts" type="checkbox" {{checked settings.rollStunts}}>
             <label className="resource-label">{{localize "Ex3.DefaultDefenseStunt"}}:</label>

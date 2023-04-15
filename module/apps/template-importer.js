@@ -1855,6 +1855,9 @@ export default class TemplateImporter extends Application {
             trimmedName = abilitySpecificArray[0].trim().toLowerCase();
             var value = parseInt(abilitySpecificArray[1].replace(/[^0-9]/g, ''));
           }
+          if (value > 5) {
+            actorData.system.settings.usetenabilities = true;
+          }
           actorData.system.abilities[trimmedName].value = value;
           if (createSpecialty) {
             itemData.push(

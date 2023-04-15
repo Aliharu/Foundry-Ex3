@@ -1,0 +1,278 @@
+[
+    {
+        "name": "Articulated Plate",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "soak": 7,
+        "penalty": 2,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Breastplate",
+        "attunement": 0,
+        "weighttype": "light",
+        "soak": 3,
+        "penalty": 0,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Buff Jacket",
+        "attunement": 0,
+        "weighttype": "light",
+        "soak": 3,
+        "penalty": 0,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Chain Shirt",
+        "attunement": 0,
+        "weighttype": "light",
+        "soak": 3,
+        "penalty": 0,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [
+                    "concealable"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Hauberk",
+        "attunement": 0,
+        "weighttype": "medium",
+        "soak": 5,
+        "penalty": 1,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Lamellar",
+        "attunement": 0,
+        "weighttype": "medium",
+        "soak": 5,
+        "penalty": 1,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Plate-and-Chain",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "soak": 7,
+        "penalty": 2,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Reinforced Breastplate",
+        "attunement": 0,
+        "weighttype": "medium",
+        "soak": 5,
+        "penalty": 1,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Reinforced Buff Jacket",
+        "attunement": 0,
+        "weighttype": "medium",
+        "soak": 5,
+        "penalty": 1,
+        "hardness": 0,
+        "traits": {
+            "armortags": {
+                "value": [
+                    "silent"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Silk Armor",
+        "attunement": 4,
+        "weighttype": "light",
+        "soak": 4,
+        "penalty": 0,
+        "hardness": 4,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Articulated Plate",
+        "attunement": 6,
+        "weighttype": "heavy",
+        "soak": 11,
+        "penalty": 2,
+        "hardness": 10,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Breastplate",
+        "attunement": 4,
+        "weighttype": "light",
+        "soak": 5,
+        "penalty": 0,
+        "hardness": 4,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Buff Jacket",
+        "attunement": 4,
+        "weighttype": "light",
+        "soak": 5,
+        "penalty": 0,
+        "hardness": 4,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Chain Shirt",
+        "attunement": 4,
+        "weighttype": "light",
+        "soak": 5,
+        "penalty": 0,
+        "hardness": 4,
+        "traits": {
+            "armortags": {
+                "value": [
+                    "artifact",
+                    "concealable"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Hauberk",
+        "attunement": 5,
+        "weighttype": "medium",
+        "soak": 8,
+        "penalty": 1,
+        "hardness": 7,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Lamellar",
+        "attunement": 5,
+        "weighttype": "medium",
+        "soak": 8,
+        "penalty": 1,
+        "hardness": 7,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Plate-and-Chain",
+        "attunement": 6,
+        "weighttype": "heavy",
+        "soak": 11,
+        "penalty": 2,
+        "hardness": 10,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Reinforced Breastplate",
+        "attunement": 5,
+        "weighttype": "medium",
+        "soak": 8,
+        "penalty": 1,
+        "hardness": 7,
+        "traits": {
+            "armortags": {
+                "value": ["artifact"],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Reinforced Buff Jacket",
+        "attunement": 5,
+        "weighttype": "medium",
+        "soak": 8,
+        "penalty": 1,
+        "hardness": 7,
+        "traits": {
+            "armortags": {
+                "value": [
+                    "artifact",
+                    "silent"
+                ],
+                "custom": ""
+            }
+        }
+    }
+]

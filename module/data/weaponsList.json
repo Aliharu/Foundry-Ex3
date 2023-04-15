@@ -1,0 +1,1839 @@
+[
+    {
+        "name": "Axe/Hatchet",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "short",
+                    "thrown",
+                    "chopping"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Ballista",
+        "attunement": 0,
+        "weighttype": "siege",
+        "witheringaccuracy": -3,
+        "witheringdamage": 15,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "long",
+                    "piercing",
+                    "slow",
+                    "siege"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Catapult",
+        "attunement": 0,
+        "weighttype": "siege",
+        "witheringaccuracy": -3,
+        "witheringdamage": 15,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "bombard",
+                    "long",
+                    "slow",
+                    "siege",
+                    "smashing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Cestus",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "brawl",
+                    "smashing",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Chakram",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 3,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "medium",
+                    "thrown",
+                    "cutting",
+                    "mounted"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Chopping Sword",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "chopping"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Club/Cudgel/Baton",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "melee",
+                    "smashing",
+                    "short",
+                    "improvised"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Composite Bow",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 4,
+        "witheringdamage": 9,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "long",
+                    "archery",
+                    "mounted"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Crossbow",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 4,
+        "witheringdamage": 9,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "long",
+                    "archery",
+                    "crossbow",
+                    "piercing",
+                    "powerful",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Dart",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 3,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "medium",
+                    "thrown",
+                    "concealable",
+                    "mounted",
+                    "poisonable"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Fighting Chain",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "martialarts",
+                    "disarming",
+                    "flexible",
+                    "grappling",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Fire Cannon",
+        "attunement": 0,
+        "weighttype": "siege",
+        "witheringaccuracy": -3,
+        "witheringdamage": 15,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bombard",
+                    "lethal",
+                    "medium",
+                    "slow",
+                    "siege"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Fire Projector",
+        "attunement": 0,
+        "weighttype": "siege",
+        "witheringaccuracy": -3,
+        "witheringdamage": 15,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "short",
+                    "siege"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Firewand",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "witheringaccuracy": 4,
+        "witheringdamage": 11,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "short",
+                    "archery",
+                    "flame",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Flame Piece",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 4,
+        "witheringdamage": 9,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "short",
+                    "archery",
+                    "flame",
+                    "mounted",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Garrote",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "lethal",
+                    "brawl",
+                    "concealable",
+                    "flexible",
+                    "grappling",
+                    "twohanded",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Great Axe/Scythe",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "witheringaccuracy": 0,
+        "witheringdamage": 11,
+        "defense": -1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "chopping",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Great Sword",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "witheringaccuracy": 0,
+        "witheringdamage": 11,
+        "defense": -1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "balanced",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Hand Crossbow",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "medium",
+                    "archery",
+                    "crossbow",
+                    "mounted",
+                    "piercing",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Hand Needle/Kakute",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "martialarts",
+                    "concealable",
+                    "grappling",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Harbor Cannon",
+        "attunement": 0,
+        "weighttype": "siege",
+        "witheringaccuracy": -3,
+        "witheringdamage": 15,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bombard",
+                    "extreme",
+                    "lethal",
+                    "slow",
+                    "siege"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Hook Sword",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "martialarts",
+                    "disarming"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Iron Boots",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "brawl",
+                    "smashing",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Javelin",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "medium",
+                    "thrown"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Kama/Sickle",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "disarming",
+                    "piercing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Khatar",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "brawl",
+                    "piercing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Knife",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "short",
+                    "thrown"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Kusarigama",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "martialarts",
+                    "disarming",
+                    "flexible",
+                    "grappling",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Lance",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "witheringaccuracy": 0,
+        "witheringdamage": 11,
+        "defense": -1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "piercing",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Long Bow",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 4,
+        "witheringdamage": 9,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "long",
+                    "archery"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Mace/Hammer",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "melee",
+                    "smashing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Meteor Hammer/Rope Dart",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "flexible",
+                    "lethal",
+                    "martialarts",
+                    "special",
+                    "short",
+                    "thrown",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Needle",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 3,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "subtle",
+                    "short",
+                    "thrown",
+                    "concealable",
+                    "poisonable"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Nunchaku",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "martialarts",
+                    "disarming",
+                    "flexible"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Poleaxe/Halberd",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "witheringaccuracy": 0,
+        "witheringdamage": 11,
+        "defense": -1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "chopping",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Sai",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "disarming"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Self Bow",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "long",
+                    "archery",
+                    "mounted"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Seven-Section Staff",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "martialarts",
+                    "disarming",
+                    "flexible"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Shield",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 7,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "melee",
+                    "shield"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Short Spear",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "short",
+                    "thrown",
+                    "piercing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Short Sword",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "balanced"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Shuriken",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 3,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "short",
+                    "thrown",
+                    "concealable",
+                    "mounted",
+                    "poisonable"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Slashing Sword",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "balanced"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Sledge/Tetsubo",
+        "attunement": 0,
+        "weighttype": "heavy",
+        "witheringaccuracy": 0,
+        "witheringdamage": 11,
+        "defense": -1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "melee",
+                    "reaching",
+                    "smashing",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Sling",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 3,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "medium",
+                    "thrown",
+                    "concealable",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Spear",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "piercing",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Staff",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "melee",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Staff Sling",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 9,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "medium",
+                    "thrown",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Straight Sword",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 2,
+        "witheringdamage": 9,
+        "defense": 1,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "melee",
+                    "balanced"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Tiger Claws",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "brawl",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Unarmed",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "brawl",
+                    "grappling",
+                    "natural"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "War Boomerang",
+        "attunement": 0,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 9,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "medium",
+                    "thrown",
+                    "cutting",
+                    "mounted",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Whip",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 4,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "bashing",
+                    "melee",
+                    "disarming",
+                    "flexible",
+                    "grappling",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Wind and Fire Wheel/War Fan",
+        "attunement": 0,
+        "weighttype": "light",
+        "witheringaccuracy": 3,
+        "witheringdamage": 7,
+        "defense": 0,
+        "overwhelming": 1,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "lethal",
+                    "martialarts",
+                    "disarming"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Daiklave",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "balanced"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Devil Caster",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 5,
+        "witheringdamage": 12,
+        "defense": 0,
+        "overwhelming": 4,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "archery",
+                    "artifact",
+                    "flame",
+                    "lethal",
+                    "mounted",
+                    "short",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Dire Chain",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "martialarts",
+                    "disarming",
+                    "flexible",
+                    "grappling",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Direlance",
+        "attunement": 5,
+        "weighttype": "heavy",
+        "witheringaccuracy": 1,
+        "witheringdamage": 14,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "piercing",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Direlash",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "disarming",
+                    "grappling",
+                    "flexible",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Dragon Sigh Wand",
+        "attunement": 5,
+        "weighttype": "heavy",
+        "witheringaccuracy": 1,
+        "witheringdamage": 14,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "short",
+                    "archery",
+                    "flame",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Glorious Staff Sling",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "long",
+                    "thrown"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "God Kicking Boots",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "brawl",
+                    "smashing",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Goremaul",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "melee",
+                    "smashing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Grand Daiklave",
+        "attunement": 5,
+        "weighttype": "heavy",
+        "witheringaccuracy": 1,
+        "witheringdamage": 14,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "balanced",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Grand Goremaul",
+        "attunement": 5,
+        "weighttype": "heavy",
+        "witheringaccuracy": 1,
+        "witheringdamage": 14,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "melee",
+                    "reaching",
+                    "smashing",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Grand Grimcleaver",
+        "attunement": 5,
+        "weighttype": "heavy",
+        "witheringaccuracy": 1,
+        "witheringdamage": 14,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "chopping",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Grimcleaver",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "chopping"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Grimscythe",
+        "attunement": 5,
+        "weighttype": "heavy",
+        "witheringaccuracy": 1,
+        "witheringdamage": 14,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "piercing",
+                    "reaching",
+                    "twohanded"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Infinite Chakram",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "medium",
+                    "thrown",
+                    "cutting",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Longfang",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "short",
+                    "thrown",
+                    "piercing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Powerbow",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "long",
+                    "archery"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Razor Claws",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "brawl",
+                    "concealable",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Reaper Daiklave",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "balanced"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Reaver Daiklave",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "chopping"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Serpent-Sting Staff",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "martialarts",
+                    "disarming",
+                    "flexible",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Short Daiklave",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "melee",
+                    "balanced"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Short Powerbow",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "long",
+                    "archery",
+                    "mounted"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Siege Crossbow",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "ranged",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "long",
+                    "archery",
+                    "crossbow",
+                    "piercing",
+                    "powerful",
+                    "slow"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Skycutter",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "long",
+                    "thrown",
+                    "cutting",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Slayer Khatar",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "brawl",
+                    "piercing"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Sling of Distant Surprise",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "thrown",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "long",
+                    "thrown",
+                    "concealable",
+                    "special"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Smashfist",
+        "attunement": 5,
+        "weighttype": "light",
+        "witheringaccuracy": 5,
+        "witheringdamage": 10,
+        "defense": 0,
+        "overwhelming": 3,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "brawl",
+                    "grappling",
+                    "smashing",
+                    "worn"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Thunderbolt Shield",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "melee",
+                    "shield"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Wrackstaff",
+        "attunement": 5,
+        "weighttype": "medium",
+        "witheringaccuracy": 3,
+        "witheringdamage": 12,
+        "defense": 1,
+        "overwhelming": 4,
+        "weapontype": "melee",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "bashing",
+                    "melee",
+                    "reaching"
+                ],
+                "custom": ""
+            }
+        }
+    }
+]

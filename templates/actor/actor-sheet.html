@@ -204,6 +204,12 @@
               {{#numLoop 5}}
               <span class="resource-value-step" data-index="{{this}}"></span>
               {{/numLoop}}
+              {{#if ../system.settings.usetenabilities}}
+              <div></div>
+              {{#numLoopCertainStart 5 5}}
+              <span class="resource-value-step" data-index="{{this}}"></span>
+              {{/numLoopCertainStart}}
+              {{/if}}
             </div>
             {{else}}
             <input class="list-input" type="number" name="system.abilities.{{key}}.value" value="{{ability.value}}"
@@ -239,6 +245,12 @@
             {{#numLoop 5}}
             <span class="resource-value-static-step" data-index="{{this}}"></span>
             {{/numLoop}}
+            {{#if ../system.settings.usetenabilities}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+            {{/if}}
           </div>
           {{else}}
           <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
@@ -255,6 +267,12 @@
             {{#numLoop 5}}
             <span class="resource-value-static-step" data-index="{{this}}"></span>
             {{/numLoop}}
+            {{#if ../system.settings.usetenabilities}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+            {{/if}}
           </div>
           {{else}}
           <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
@@ -301,6 +319,12 @@
             {{#numLoop 5}}
             <span class="resource-value-static-step" data-index="{{this}}"></span>
             {{/numLoop}}
+            {{#if ../system.settings.usetenabilities}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+            {{/if}}
           </div>
           {{else}}
           <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
@@ -326,6 +350,12 @@
             {{#numLoop 5}}
             <span class="resource-value-static-step" data-index="{{this}}"></span>
             {{/numLoop}}
+            {{#if ../system.settings.usetenabilities}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+            {{/if}}
           </div>
           {{else}}
           <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"

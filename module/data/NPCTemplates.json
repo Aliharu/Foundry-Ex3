@@ -1,0 +1,914 @@
+{
+  "assassin": {
+    "name": "Assassin",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "exceptional"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "weak"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "skilled"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "skilled"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "weak"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "skilled"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "random",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "random",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": true
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": true
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
+  "detective": {
+    "name": "Detective",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "skilled"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "weak"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "weak"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "exceptional"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "exceptional"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "skilled"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "none",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "none",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "none",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
+  "merchant": {
+    "name": "Merchant",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "weak"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "weak"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "weak"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "skilled"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "skilled"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "exceptional"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "none",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "none",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": true
+      }
+    }
+  },
+  "mortalSorcerer": {
+    "name": "Mortal Sorcerer",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "weak"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "weak"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "weak"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "skilled"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "exceptional"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "weak"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "exceptional"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "none",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "random",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "terrestrial",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 3
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
+  "eliteWarrior": {
+    "name": "Elite Warrior",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "skilled"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "exceptional"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "exceptional"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "skilled"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "weak"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "weak"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "skilled"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "random",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "random",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
+  "socialite": {
+    "name": "Socialite",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "weak"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "weak"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "weak"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "skilled"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "skilled"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "exceptional"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "none",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "none",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": true
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": true
+      }
+    }
+  },
+  "trainedSoldier": {
+    "name": "Trained Soldier",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "skilled"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "skilled"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "skilled"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "weak"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "weak"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "weak"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "skilled"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "random",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "random",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
+  "wyldMutantWarrior": {
+    "name": "Wyld Mutant",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "skilled"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "exceptional"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "skilled"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "weak"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "weak"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "weak"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "random",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "random",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 3
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  }
+}

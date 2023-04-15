@@ -1370,7 +1370,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = duplicate(this.actor);
     const data = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { settings: data.settings, 'maxAnima': data.anima.max });
+    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: data.settings, 'maxAnima': data.anima.max });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1389,6 +1389,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           data.settings.showship = html.find('#showShip').is(":checked");
           data.settings.showescort = html.find('#showEscort').is(":checked");
           data.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
+          data.settings.usetenabilities = html.find('#useTenAbilities').is(":checked");
           data.settings.rollStunts = html.find('#rollStunts').is(":checked");
           data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
           data.settings.showanima = html.find('#showAnima').is(":checked");

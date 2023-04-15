@@ -185,6 +185,7 @@
           "showship": false,
           "showescort": false,
           "usetenattributes": false,
+          "usetenabilities": false,
           "rollStunts": false,
           "defenseStunts": false,
           "editmode": true,

@@ -421,7 +421,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/info") {
     const chatData = {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/npc</b> NPC creator</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
     };
     ChatMessage.create(chatData);
     return false;
@@ -644,6 +644,28 @@ Hooks.once("ready", async function () {
     const chatData = {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+    };
+    ChatMessage.create(chatData);
+    for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
+      try {
+        let updateData = duplicate(actor);
+        if(updateData.system.creaturetype !== 'exalt') {
+          updateData.system.details.creaturesubtype = updateData.system.details.exalt;
+          updateData.system.details.exalt = 'other';
+          await actor.update(updateData, { enforceTypes: false });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+  }
+
+  if (isNewerVersion("1.10.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: 'New Command: /npc',
     };
     ChatMessage.create(chatData);
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
