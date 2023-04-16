@@ -99,10 +99,10 @@ export class ExaltedThirdItem extends Item {
         },
       };
       if (this.type === 'weapon') {
-        if(updateData.system?.weighttype === 'bolt') {
+        if (updateData.system?.weighttype === 'bolt') {
           updateData.system.witheringaccuracy = 4;
           updateData.system.damageattribute = 'none';
-          if(this.actor) {
+          if (this.actor) {
             updateData.system.witheringdamage = this.actor.system.essence.value + 10;
             updateData.system.overwhelming = this.actor.system.essence.value + 1;
           }
@@ -120,7 +120,7 @@ export class ExaltedThirdItem extends Item {
             updateData.system.overwhelming = equipmentChart[updateData.system?.weighttype].overwhelming;
             updateData.system.attunement = 0;
           }
-          if(this.system.weapontype === 'ranged') {
+          if (this.system.weapontype === 'ranged') {
             updateData.system.defense = 0;
             if (this.system.traits.weapontags?.value?.includes('artifact')) {
               updateData.system.witheringaccuracy = artifactEquipmentChart['light'].accuracy;
@@ -129,7 +129,7 @@ export class ExaltedThirdItem extends Item {
               updateData.system.witheringaccuracy = equipmentChart['light'].accuracy;
             }
           }
-          else if (this.system.weapontype === 'thrown'){
+          else if (this.system.weapontype === 'thrown') {
             updateData.system.defense = 0;
             if (this.system.traits.weapontags?.value?.includes('artifact')) {
               updateData.system.witheringaccuracy = 4;
@@ -149,11 +149,11 @@ export class ExaltedThirdItem extends Item {
         }
       }
       if (this.type === 'armor') {
-        if(this.system.traits.armortags?.value?.includes('artifact')) {
-          if(updateData.system?.weighttype === 'light'){
+        if (this.system.traits.armortags?.value?.includes('artifact')) {
+          if (updateData.system?.weighttype === 'light') {
             updateData.system.attunement = 4;
           }
-          else if(updateData.system?.weighttype === 'heavy') {
+          else if (updateData.system?.weighttype === 'heavy') {
             updateData.system.attunement = 6;
           }
           else {
@@ -207,19 +207,19 @@ export class ExaltedThirdItem extends Item {
     return "icons/svg/item-bag.svg";
   }
 
-    /**
-   * Prepare a data object which is passed to any Roll formulas which are created related to this Item
-   * @private
-   */
-    getRollData() {
-      // If present, return the actor's roll data.
-      if ( !this.actor ) return null;
-      const rollData = this.actor.getRollData();
-      // Grab the item's system data as well.
-      rollData.item = foundry.utils.deepClone(this.system);
-  
-      return rollData;
-    }
+  /**
+ * Prepare a data object which is passed to any Roll formulas which are created related to this Item
+ * @private
+ */
+  getRollData() {
+    // If present, return the actor's roll data.
+    if (!this.actor) return null;
+    const rollData = this.actor.getRollData();
+    // Grab the item's system data as well.
+    rollData.item = foundry.utils.deepClone(this.system);
+
+    return rollData;
+  }
 }
 
 export function prepareItemTraits(type, i) {
