@@ -1,6 +1,124 @@
 {
+  "custom": {
+    "defaultName": "New NPC",
+    "npcType": "mortal",
+    "exalt": "other",
+    "essence": 1,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "weak"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "weak"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "weak"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "weak"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "weak"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "weak"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "weak"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "weak"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "any",
+        "weight": "any",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "random",
+        "weaponType": "any",
+        "weight": "any",
+        "artifact": false
+      },
+      "armor": {
+        "type": "random",
+        "weight": "any",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": false
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": false
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
   "assassin": {
-    "name": "Assassin",
+    "defaultName": "Assassin",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -93,6 +211,10 @@
       },
       "martialArtist": {
         "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "motePool": {
+        "label": "Ex3.MotePool",
         "value": false
       },
       "spirit": {
@@ -114,7 +236,7 @@
     }
   },
   "detective": {
-    "name": "Detective",
+    "defaultName": "Detective",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -209,6 +331,10 @@
         "label": "Ex3.MartialArtist",
         "value": false
       },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": false
+      },
       "spirit": {
         "label": "Ex3.Spirit",
         "value": false
@@ -228,7 +354,7 @@
     }
   },
   "merchant": {
-    "name": "Merchant",
+    "defaultName": "Merchant",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -323,6 +449,10 @@
         "label": "Ex3.MartialArtist",
         "value": false
       },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": false
+      },
       "spirit": {
         "label": "Ex3.Spirit",
         "value": false
@@ -342,7 +472,7 @@
     }
   },
   "mortalSorcerer": {
-    "name": "Mortal Sorcerer",
+    "defaultName": "Mortal Sorcerer",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -437,6 +567,10 @@
         "label": "Ex3.MartialArtist",
         "value": false
       },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": false
+      },
       "spirit": {
         "label": "Ex3.Spirit",
         "value": false
@@ -456,7 +590,7 @@
     }
   },
   "eliteWarrior": {
-    "name": "Elite Warrior",
+    "defaultName": "Elite Warrior",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -549,6 +683,10 @@
       },
       "martialArtist": {
         "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "motePool": {
+        "label": "Ex3.MotePool",
         "value": false
       },
       "spirit": {
@@ -570,7 +708,7 @@
     }
   },
   "socialite": {
-    "name": "Socialite",
+    "defaultName": "Socialite",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -665,6 +803,10 @@
         "label": "Ex3.MartialArtist",
         "value": false
       },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": false
+      },
       "spirit": {
         "label": "Ex3.Spirit",
         "value": false
@@ -684,7 +826,7 @@
     }
   },
   "trainedSoldier": {
-    "name": "Trained Soldier",
+    "defaultName": "Trained Soldier",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -779,6 +921,10 @@
         "label": "Ex3.MartialArtist",
         "value": false
       },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": false
+      },
       "spirit": {
         "label": "Ex3.Spirit",
         "value": false
@@ -798,7 +944,7 @@
     }
   },
   "wyldMutantWarrior": {
-    "name": "Wyld Mutant",
+    "defaultName": "Wyld Mutant",
     "npcType": "mortal",
     "exalt": "other",
     "essence": 1,
@@ -891,6 +1037,10 @@
       },
       "martialArtist": {
         "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "motePool": {
+        "label": "Ex3.MotePool",
         "value": false
       },
       "spirit": {

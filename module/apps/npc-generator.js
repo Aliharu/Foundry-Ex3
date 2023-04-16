@@ -4,7 +4,8 @@ export default class NPCGenerator extends FormApplication {
     this.object.template = 'custom';
     this.object.poolNumbers = 'mid';
     this.object.character = {
-      name: 'New NPC',
+      name: '',
+      defaultName: 'New NPC',
       npcType: "mortal",
       exalt: "other",
       essence: 1,
@@ -78,6 +79,7 @@ export default class NPCGenerator extends FormApplication {
         legendarySize: { label: 'Ex3.LegendarySize', value: false },
         poisoner: { label: 'Ex3.Poisoner', value: false },
         martialArtist: { label: 'Ex3.MartialArtist', value: false },
+        motePool: { label: 'Ex3.MotePool', value: false },
         spirit: { label: 'Ex3.Spirit', value: false },
         strikingAppearance: { label: 'Ex3.StrikingAppearance', value: false },
         stealthy: { label: 'Ex3.Stealthy', value: false },
@@ -138,7 +140,9 @@ export default class NPCGenerator extends FormApplication {
 
     html.on("change", "#template", async ev => {
       const templateNPCs = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/NPCTemplates.json', {}, { int: 30000 });
+      var oldName = this.object.character.name;
       this.object.character = templateNPCs[this.object.template];
+      this.object.character.name = oldName;
       this.render();
     });
 
@@ -242,23 +246,25 @@ export default class NPCGenerator extends FormApplication {
     //Weak, Skilled, Exceptional, Legendary 
     var actorData = this._getBaseStatBlock();
 
-    actorData.name = this.object.character.name;
+    actorData.name = this.object.character.name || this.object.character.defaultName;
     actorData.system.essence.value = this.object.character.essence;
     actorData.system.creaturetype = this.object.character.npcType;
     actorData.system.details.exalt = this.object.character.exalt;
 
     //Do Motes
-    actorData.system.motes.personal.max = actorData.system.essence.value * 10;
-    actorData.system.motes.personal.value = actorData.system.essence.value * 10;
-    if (this.object.character.traits.spirit.value) {
-      actorData.system.motes.personal.value += 50;
-      actorData.system.motes.personal.max += 50;
-    }
-    if (this.object.character.npcType === 'exalt') {
-      actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
-      actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
-      actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
-      actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
+    if(this.object.character.traits.motePool.value) {
+      actorData.system.motes.personal.max = actorData.system.essence.value * 10;
+      actorData.system.motes.personal.value = actorData.system.essence.value * 10;
+      if (this.object.character.traits.spirit.value) {
+        actorData.system.motes.personal.value += 50;
+        actorData.system.motes.personal.max += 50;
+      }
+      if (this.object.character.npcType === 'exalt') {
+        actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
+        actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
+        actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
+        actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
+      }
     }
     if (this.object.character.traits.commander.value) {
       actorData.system.pools.command.value = this._getCharacterPool(this.object.character.skills.combat.value);
@@ -478,6 +484,10 @@ export default class NPCGenerator extends FormApplication {
       itemData.push(
         armor
       );
+      actorData.system.soak.value = armor.system.soak;
+      actorData.system.armoredsoak.value = armor.system.soak;
+      actorData.system.evasion.value -= armor.system.penalty;
+      actorData.system.hardness.value = armor.system.hardness;
     }
     itemData.push(
       {
@@ -513,10 +523,6 @@ export default class NPCGenerator extends FormApplication {
         }
       }
     );
-    actorData.system.soak.value = armor.system.soak;
-    actorData.system.armoredsoak.value = armor.system.soak;
-    actorData.system.evasion.value -= armor.system.penalty;
-    actorData.system.hardness.value = armor.system.hardness;
     actorData.system.soak.value += attributeAbilityMap[this.object.character.skills.body.value];
     actorData.system.naturalsoak.value = attributeAbilityMap[this.object.character.skills.body.value];
 
