@@ -15,6 +15,75 @@ export const exaltedthird = {};
 //     "localtongue": "Ex3.LocalTongue",
 // };
 
+// "pools": {
+//     "command": {
+//       "name": "Ex3.Command",
+//       "value": 0
+//     },
+//     "grapple": {
+//       "name": "Ex3.GrappleControl",
+//       "value": 0
+//     },
+//     "joinbattle": {
+//       "name": "Ex3.JoinBattle",
+//       "value": 0
+//     },
+//     "movement": {
+//       "name": "Ex3.Movement",
+//       "value": 0
+//     },
+//     "readintentions": {
+//       "name": "Ex3.ReadIntentions",
+//       "value": 0
+//     },
+//     "social": {
+//       "name": "Ex3.Social",
+//       "value": 0
+//     },
+//     "sorcery": {
+//       "name": "Ex3.Sorcery",
+//       "value": 0
+//     }
+
+exaltedthird.npcpools = {
+    command: 'Ex3.Command',
+    grapple: 'Ex3.GrappleControl',
+    joinbattle: 'Ex3.JoinBattle',
+    movement: 'Ex3.Movement',
+    readintentions: 'Ex3.ReadIntentions',
+    social: 'Ex3.Social',
+    sorcery: 'Ex3.Sorcery',
+};
+
+exaltedthird.abilities = {
+    archery: 'Ex3.Archery',
+    athletics: 'Ex3.Athletics',
+    awareness: 'Ex3.Awareness',
+    brawl: 'Ex3.Brawl',
+    bureaucracy: 'Ex3.Bureaucracy',
+    craft: 'Ex3.Craft',
+    dodge: 'Ex3.Dodge',
+    integrity: 'Ex3.Integrity',
+    investigation: 'Ex3.Investigation',
+    larceny: 'Ex3.Larceny',
+    linguistics: 'Ex3.Linguistics',
+    lore: 'Ex3.Lore',
+    martialarts: 'Ex3.MartialArts',
+    medicine: 'Ex3.Medicine',
+    melee: 'Ex3.Melee',
+    occult: 'Ex3.Occult',
+    performance: 'Ex3.Performance',
+    presence: 'Ex3.Presence',
+    resistance: 'Ex3.Resistance',
+    ride: 'Ex3.Ride',
+    sail: 'Ex3.Sail',
+    socialize: 'Ex3.Socialize',
+    stealth: 'Ex3.Stealth',
+    survival: 'Ex3.Survival',
+    thrown: 'Ex3.Thrown',
+    war: 'Ex3.War',
+};
+
 exaltedthird.charmabilities = {
     offensive: 'Ex3.Offensive',
     offsensive: 'Ex3.Offensive',

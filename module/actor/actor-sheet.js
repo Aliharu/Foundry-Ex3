@@ -106,6 +106,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const activeCharms = [];
 
     const charms = {};
+    const rollCharms = {};
+    const defenseCharms = {};
 
     const siderealMaidenCharms = {
       archery: 'battles',
@@ -226,18 +228,42 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (siderealMaidenCharms[i.system.ability]) {
         sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
       }
-      if (i.system.listingname) {
-        if (charms[i.system.listingname]) {
+      if(i.system.diceroller.enabled) {
+        if (i.system.listingname) {
+          if (!rollCharms[i.system.listingname]) {
+            rollCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+          }
+          rollCharms[i.system.listingname].list.push(i);
         }
         else {
+          if (!rollCharms[i.system.ability]) {
+            rollCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+          }
+          rollCharms[i.system.ability].list.push(i);
+        }
+      }
+      if(i.system.diceroller.opposedbonuses.enabled) {
+        if (i.system.listingname) {
+          if (!defenseCharms[i.system.listingname]) {
+            defenseCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+          }
+          defenseCharms[i.system.listingname].list.push(i);
+        }
+        else {
+          if (!defenseCharms[i.system.ability]) {
+            defenseCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+          }
+          defenseCharms[i.system.ability].list.push(i);
+        }
+      }
+      if (i.system.listingname) {
+        if (!charms[i.system.listingname]) {
           charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
         }
         charms[i.system.listingname].list.push(i);
       }
       else {
-        if (charms[i.system.ability]) {
-        }
-        else {
+        if (!charms[i.system.ability]) {
           charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
         }
         charms[i.system.ability].list.push(i);
@@ -256,6 +282,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.intimacies = intimacies;
     actorData.specialties = specialties;
     actorData.charms = charms;
+    actorData.rollcharms = rollCharms;
+    actorData.defensecharms = defenseCharms;
     actorData.spells = spells;
     actorData.specialabilities = specialAbilities;
     actorData.projects = craftProjects;

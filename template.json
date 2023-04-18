@@ -833,6 +833,7 @@
         "initiative": 0
       },
       "diceroller": {
+        "enabled": true,
         "bonusdice": 0,
         "bonussuccesses": 0,
         "doublesuccess": 11,

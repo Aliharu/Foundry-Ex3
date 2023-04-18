@@ -367,7 +367,7 @@ export class RollForm extends FormApplication {
                 this._setBattlegroupBonuses();
             }
             if (this.object.charmList === undefined) {
-                this.object.charmList = this.actor.charms;
+                this.object.charmList = this.actor.rollcharms;
                 for (var charmlist of Object.values(this.object.charmList)) {
                     for (const charm of charmlist.list) {
                         this.getEnritchedHTML(charm);
@@ -600,7 +600,7 @@ export class RollForm extends FormApplication {
                 id: "add-charm",
                 icon: 'fas fa-bolt',
                 onclick: (ev) => {
-                    this.object.charmList = this.actor.charms;
+                    this.object.charmList = this.actor.rollcharms;
                     for (var charmlist of Object.values(this.object.charmList)) {
                         for (const charm of charmlist.list) {
                             if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
@@ -763,7 +763,7 @@ export class RollForm extends FormApplication {
             this.object.addedCharms.push(item);
         }
         for (var charmlist of Object.values(this.object.charmList)) {
-            for (const charm of charmlist.list) {
+            for (const charm of charmlist.list.filter(charm => charm.system.diceroller.enabled)) {
                 var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
                 if (existingAddedCharm) {
                     charm.charmAdded = true;

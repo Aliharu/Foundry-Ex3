@@ -234,7 +234,8 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
-                    <input type="number" name="system.restore.willpower" value="{{system.restore.willpower}}" data-dtype="Number" />
+                    <input type="number" name="system.restore.willpower" value="{{system.restore.willpower}}"
+                        data-dtype="Number" />
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Health"}}</div>
@@ -250,17 +251,27 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="bonuses">
-            <div class="resource flex-center" style="font-size: 17px;">
-                <label class="resource-label">{{localize "Ex3.DiceRollModifiers"}} <a><i class="formula-help fas fa-info-circle"></i></label></a></label>
+            <div class="resource flex-center mb-1" style="font-size: 17px;">
+                <label class="resource-label">{{localize "Ex3.DiceRollModifiers"}} <a><i
+                            class="formula-help fas fa-info-circle"></i></label></a></label>
+            </div>
+            <div class="d-flex flex-center resource-label">
+                <div class="resource-label">{{localize "Ex3.DiceRollBonus"}}</div>
+                <input name="system.diceroller.enabled" value="system.diceroller.enabled" type="checkbox" {{checked
+                    system.diceroller.enabled}}>
             </div>
             <div>
                 <div class="resource grid grid-3col flex-center">
                     <div>
-                        <label class="resource-label"><a class="toggle-charm-dice"><i class="fa-solid fa-circle-check non-charm-dice" title="Toggle Non-Charm"></i></a> {{localize "Ex3.DiceBonus"}}*</label>
+                        <label class="resource-label"><a class="toggle-charm-dice"><i
+                                    class="fa-solid fa-circle-check non-charm-dice" title="Toggle Non-Charm"></i></a>
+                            {{localize "Ex3.DiceBonus"}}*</label>
                         <input name="system.diceroller.bonusdice" value="{{system.diceroller.bonusdice}}" type="text">
                     </div>
                     <div>
-                        <label class="resource-label"><a class="toggle-charm-successes"><i class="fa-solid fa-circle-check non-charm-successes" title="Toggle Non-Charm"></i></a> {{localize "Ex3.SuccessBonus"}}*</label>
+                        <label class="resource-label"><a class="toggle-charm-successes"><i
+                                    class="fa-solid fa-circle-check non-charm-successes"
+                                    title="Toggle Non-Charm"></i></a> {{localize "Ex3.SuccessBonus"}}*</label>
                         <input name="system.diceroller.bonussuccesses" value="{{system.diceroller.bonussuccesses}}"
                             type="text">
                     </div>
@@ -277,8 +288,7 @@
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.RerollNumDice"}}*</label>
-                        <input name="system.diceroller.rerolldice" value="{{system.diceroller.rerolldice}}"
-                            type="text">
+                        <input name="system.diceroller.rerolldice" value="{{system.diceroller.rerolldice}}" type="text">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}}*</label>
@@ -803,7 +813,8 @@
                 </div>
             </div>
             <div class="flex-group-center d-flex flex-col">
-                <textarea type="text" name="system.prerollmacro" rows="16" placeholder='{{localize "Ex3.PreRollMacroHint"}}'>{{system.prerollmacro}}</textarea>
+                <textarea type="text" name="system.prerollmacro" rows="16"
+                    placeholder='{{localize "Ex3.PreRollMacroHint"}}'>{{system.prerollmacro}}</textarea>
             </div>
             <div class="resource-label list-section-header d-flex flex-between">
                 <div>
@@ -811,7 +822,8 @@
                 </div>
             </div>
             <div class="flex-group-center d-flex flex-col">
-                <textarea type="text" name="system.macro" rows="16" placeholder='{{localize "Ex3.MacroHint"}}'>{{system.macro}}</textarea>
+                <textarea type="text" name="system.macro" rows="16"
+                    placeholder='{{localize "Ex3.MacroHint"}}'>{{system.macro}}</textarea>
             </div>
             <div class="resource-label list-section-header d-flex flex-between">
                 <div>
@@ -819,7 +831,8 @@
                 </div>
             </div>
             <div class="flex-group-center d-flex flex-col flex-fill">
-                <textarea class="flex-fill" type="text" name="system.damagemacro" rows="16" placeholder='{{localize "Ex3.DamageMacroHint"}}'>{{system.damagemacro}}</textarea>
+                <textarea class="flex-fill" type="text" name="system.damagemacro" rows="16"
+                    placeholder='{{localize "Ex3.DamageMacroHint"}}'>{{system.damagemacro}}</textarea>
             </div>
         </div>
 

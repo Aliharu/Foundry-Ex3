@@ -22,16 +22,6 @@
             <b>{{localize "Ex3.Action"}}: </b>{{actionName}}
         </div>
         {{/ifEquals}}
-        {{#ifEquals rollData.rollType 'martialArt'}}
-        <div>
-            <b>{{localize "Ex3.MartialArt"}}: </b>{{martialArtName}}
-        </div>
-        {{/ifEquals}}
-        {{#ifEquals rollData.rollType 'craftAbilityRoll'}}
-        <div>
-            <b>{{localize "Ex3.Craft"}}: </b>{{craftRollName}}
-        </div>
-        {{/ifEquals}}
         <div>
             {{#if rollData.pool}}<b>{{localize "Ex3.Action"}}: </b>{{rollData.pool}}{{/if}}
         </div>
