@@ -1835,5 +1835,47 @@
                 "custom": ""
             }
         }
+    },
+    {
+        "name": "Lightning Balista",
+        "attunement": 5,
+        "weighttype": "siege",
+        "witheringaccuracy": -2,
+        "witheringdamage": 20,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "siege",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "lethal",
+                    "siege",
+                    "long"
+                ],
+                "custom": ""
+            }
+        }
+    },
+    {
+        "name": "Implosion Bow",
+        "attunement": 5,
+        "weighttype": "siege",
+        "witheringaccuracy": -2,
+        "witheringdamage": 20,
+        "defense": 0,
+        "overwhelming": 5,
+        "weapontype": "siege",
+        "traits": {
+            "weapontags": {
+                "value": [
+                    "artifact",
+                    "aggravated",
+                    "siege",
+                    "long"
+                ],
+                "custom": ""
+            }
+        }
     }
 ]

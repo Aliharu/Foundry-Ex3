@@ -721,7 +721,11 @@
         "exceptional": false
       },
       "artifact": {
-        "attunement": 0
+        "attunement": 0,
+        "hearthstones": {
+          "value": 0,
+          "max": 0
+        }
       },
       "summary": {
         "summary": ""

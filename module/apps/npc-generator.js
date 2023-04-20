@@ -375,10 +375,20 @@ export default class NPCGenerator extends FormApplication {
         }
       )
     }
+    const animaList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/animaEffectsList.json', {}, { int: 30000 });
     const weaponsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/weaponsList.json', {}, { int: 30000 });
     const mutationsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/mutations.json', {}, { int: 30000 });
     const armorList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/armorList.json', {}, { int: 30000 });
     const sorcerousRituals = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/sorcerousRituals.json', {}, { int: 30000 });
+
+    if(animaList[this.object.character.caste]) {
+      actorData.system.anima.passive = animaList[this.object.character.caste][0];
+      actorData.system.anima.active = animaList[this.object.character.caste][1];
+      actorData.system.anima.iconic = animaList[this.object.character.caste][2];
+    }
+    else {
+      actorData.system.settings.showanima = false;
+    }
 
     if (this.object.character.traits.martialArtist.value) {
       const randomMartialArts = martialArts[Math.floor(Math.random() * martialArts.length)]
