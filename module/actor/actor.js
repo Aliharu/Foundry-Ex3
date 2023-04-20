@@ -23,6 +23,71 @@ export class ExaltedThirdActor extends Actor {
     await super._preUpdate(updateData, options, user);
     const exalt = updateData.system?.details?.exalt || this.system.details.exalt;
     const essenceLevel = updateData.system?.essence?.value || this.system.essence.value;
+    const casteAbilitiesMap = {
+      'dawn': [
+        'archery', 'awareness', 'brawl', 'maritalarts', 'dodge', 'melee', 'resistance', 'thrown', 'war'
+      ],
+      'zenith': [
+        'athletics', 'integrity', 'performance', 'lore', 'presence', 'resistance', 'survival', 'war',
+      ],
+      'twilight': [
+        'bureaucracy', 'craft', 'integrity', 'investigation', 'linguistics', 'lore', 'medicine', 'occult'
+      ],
+      'night': [
+        'athletics', 'awareness', 'dodge', 'investigation', 'larceny', 'ride', 'stealth', 'socialize'
+      ],
+      'eclipse': [
+        'bureaucracy', 'larceny', 'linguistics', 'occult', 'presence', 'ride', 'sail', 'socialize'
+      ],
+      'air': [
+        'linguistics', 'lore', 'occult', 'stealth', 'thrown'
+      ],
+      'earth': [
+        'awareness', 'craft', 'integrity', 'resistance', 'war'
+      ],
+      'fire': [
+        'athletics', 'dodge', 'melee', 'presence', 'socialize'
+      ],
+      'water': [
+        'brawl', 'martialarts', 'bureaucracy', 'investigation', 'larceny', 'sail'
+      ],
+      'wood': [
+        'archery', 'medicine', 'performance', 'ride', 'survival'
+      ],
+      'fullmoon': [
+        'dexterity', 'stamina', 'strength'
+      ],
+      'changingmoon': [
+        'appearance', 'charisma', 'manipulation'
+      ],
+      'nomoon': [
+        'intelligence', 'perception', 'wits'
+      ],
+      'journeys': [
+        'resistance', 'ride', 'sail', 'survival', 'thrown', 'martialarts'
+      ],
+      'serenity': [
+        'craft', 'dodge', 'linguistics', 'performance', 'socialize', 'martialarts'
+      ],
+      'battles': [
+        'archery', 'brawl', 'melee', 'presence', 'war', 'martialarts'
+      ],
+      'secrets': [
+        'investigation', 'larceny', 'lore', 'occult', 'stealth', 'martialarts'
+      ],
+      'endings': [
+        'athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine', 'martialarts'
+      ],
+      'janest': [
+        'athletics', 'awareness', 'presence', 'resistance', 'survival'
+      ],
+      'strawmaiden': [
+        'athletics', 'awareness', 'presence', 'resistance', 'survival'
+      ],
+      'sovereign': [
+        'craft', 'integrity', 'performance', 'socialize', 'war'
+      ]
+    }
     if (updateData.system?.battlegroup && !this.system.battlegroup) {
       updateData.system.health = {
         "levels": {
@@ -32,19 +97,19 @@ export class ExaltedThirdActor extends Actor {
         }
       };
     }
-    if(updateData.system?.details?.exalt || updateData.system?.essence?.value || updateData.system?.creaturetype) {
-      if(this.type === 'character') {
+    if (updateData.system?.details?.exalt || updateData.system?.essence?.value || updateData.system?.creaturetype) {
+      if (this.type === 'character') {
         updateData.system.motes = {
           personal: {
             max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
-            value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel)  - this.system.motes.personal.committed),
+            value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel) - this.system.motes.personal.committed),
           },
           peripheral: {
             max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
             value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
           }
         };
-        if(updateData.system?.details?.exalt) {
+        if (updateData.system?.details?.exalt) {
           updateData.system.traits = {
             resonance: this.calculateResonance(updateData.system?.details?.exalt),
             dissonance: this.calculateDissonance(updateData.system?.details?.exalt),
@@ -54,17 +119,17 @@ export class ExaltedThirdActor extends Actor {
       else {
         var personalMotes = essenceLevel * 10;
         var peripheralmotes = 0;
-        if (updateData.system?.creaturetype === 'god' || updateData.system?.creaturetype === 'undead'  || updateData.system?.creaturetype === 'demon') {
+        if (updateData.system?.creaturetype === 'god' || updateData.system?.creaturetype === 'undead' || updateData.system?.creaturetype === 'demon') {
           personalMotes += 50;
         }
-        if((updateData.system?.creaturetype || this.system.creaturetype) === 'exalt') {
+        if ((updateData.system?.creaturetype || this.system.creaturetype) === 'exalt') {
           peripheralmotes = this.calculateMaxExaltedMotes('peripheral', this.system.details.exalt, essenceLevel);
           personalMotes = this.calculateMaxExaltedMotes('personal', this.system.details.exalt, essenceLevel);
         }
         updateData.system.motes = {
           personal: {
             max: personalMotes,
-            value: (personalMotes  - this.system.motes.personal.committed),
+            value: (personalMotes - this.system.motes.personal.committed),
           },
           peripheral: {
             max: peripheralmotes,
@@ -72,6 +137,27 @@ export class ExaltedThirdActor extends Actor {
           }
         };
       }
+    }
+    if (updateData.system?.details?.caste && this.type === 'character') {
+      const lowecaseCaste = updateData.system?.details?.caste.toLowerCase();
+      const attributes = {}
+      const abilities = {}
+      for (let [key, attribute] of Object.entries(this.system.attributes)) {
+        if(casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
+          attributes[key] = {
+            favored: true
+          }
+        }
+      }
+      for (let [key, ability] of Object.entries(this.system.abilities)) {
+        if(casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
+          abilities[key] = {
+            favored: true
+          }
+        }
+      }
+      updateData.system.attributes = attributes;
+      updateData.system.abilities = abilities;
     }
   }
 
@@ -546,7 +632,7 @@ export class ExaltedThirdActor extends Actor {
         armor.push(i);
       }
       else if (i.type === 'charm') {
-        if(i.system.active) {
+        if (i.system.active) {
           activeCharms.push(i);
         }
       }
@@ -596,7 +682,7 @@ export class ExaltedThirdActor extends Actor {
     });
 
     for (let i of actorCharms) {
-      if(i.system.diceroller.enabled) {
+      if (i.system.diceroller.enabled) {
         if (i.system.listingname) {
           if (!rollCharms[i.system.listingname]) {
             rollCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
@@ -610,7 +696,7 @@ export class ExaltedThirdActor extends Actor {
           rollCharms[i.system.ability].list.push(i);
         }
       }
-      if(i.system.diceroller.opposedbonuses.enabled) {
+      if (i.system.diceroller.opposedbonuses.enabled) {
         if (i.system.listingname) {
           if (!defenseCharms[i.system.listingname]) {
             defenseCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
@@ -730,7 +816,7 @@ export class ExaltedThirdActor extends Actor {
    * Override getRollData() that's supplied to rolls.
    */
   getRollData() {
-    const data = {...super.getRollData()};
+    const data = { ...super.getRollData() };
     var currentParryPenalty = 0;
     var currentEvasionPenalty = 0;
     var currentOnslaughtPenalty = 0;
@@ -783,11 +869,11 @@ export class ExaltedThirdActor extends Actor {
       currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
     }
 
-    data.woundpenalty = {'value': currentPenalty};
-    data.evasionpenalty = {'value': currentEvasionPenalty};
-    data.onslaught = {'value': currentOnslaughtPenalty};
-    data.parrypenalty = {'value': currentParryPenalty};
-    data.defensepenalty = {'value': currentDefensePenalty};
+    data.woundpenalty = { 'value': currentPenalty };
+    data.evasionpenalty = { 'value': currentEvasionPenalty };
+    data.onslaught = { 'value': currentOnslaughtPenalty };
+    data.parrypenalty = { 'value': currentParryPenalty };
+    data.defensepenalty = { 'value': currentDefensePenalty };
 
     // Prepare character roll data.
     this._getCharacterRollData(data);

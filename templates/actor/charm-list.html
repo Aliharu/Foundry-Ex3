@@ -43,7 +43,7 @@
     </div>
     {{/ifGreater}}
     <div>
-        <b>Mins</b>: <span style="text-transform: capitalize;">{{item.system.ability}}</span> {{item.system.requirement}}, {{localize "Ex3.Essence"}} {{item.system.essence}}
+        <b>Mins</b>: {{#if item.system.requirement}}<span style="text-transform: capitalize;">{{item.system.ability}}</span> {{item.system.requirement}},{{/if}} {{localize "Ex3.Essence"}} {{item.system.essence}}
     </div>
     <div>
         <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}

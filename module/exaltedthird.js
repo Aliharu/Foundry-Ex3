@@ -684,6 +684,22 @@ Hooks.once("ready", async function () {
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
+  if (isNewerVersion("1.11.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    for (let actor of game.actors) {
+      try {
+        let updateData = duplicate(actor);
+        if(updateData.system.details.exalt !== 'other' && updateData.system.details.exalt !== 'exigent') {
+          updateData.system.details.caste = updateData.system.details.caste.toLowerCase().replace(/\s+/g, "");
+          await actor.update(updateData, { enforceTypes: false });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+  }
+
   // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {
   //   let updateData = foundry.utils.deepClone(item.toObject());
   //   updateData.system.endtrigger = 'endscene';

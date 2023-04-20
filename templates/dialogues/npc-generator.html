@@ -35,7 +35,7 @@
     <div class="resource-content flexrow flex-center flex-between">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Description"}}</label>
     </div>
-    <div class="resource grid grid-3col flex-center">
+    <div class="resource grid grid-4col flex-center">
       <div>
         <div class="resource-label">{{localize "Ex3.NPCType"}}</div>
         <select name="object.character.npcType" data-type="String">
@@ -58,7 +58,7 @@
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
-        <select name="object.character.exalt" data-type="String">
+        <select id="exalt" name="object.character.exalt" data-type="String">
           {{#select data.character.exalt}}
           <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
           <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
@@ -77,6 +77,19 @@
           {{/select}}
         </select>
       </div>
+      {{#if data.availableCastes}}
+      <div>
+        <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
+        <select name="object.character.caste" data-type="String">
+          {{#select data.character.caste}}
+          {{#each data.availableCastes as |label caste|}}
+          <option value="{{caste}}">{{localize label}}</option>
+          {{/each}}
+          <option value="">{{localize "Ex3.None"}}</option>
+          {{/select}}
+        </select>
+      </div>
+      {{/if}}
       <div>
         <label class="resource-label">{{localize "Ex3.Essence"}} </label>
         <input name="object.character.essence" value="{{data.character.essence}}" type="number">

@@ -85,8 +85,19 @@
                         <option value="other">{{localize "Ex3.Other"}}</option>
                         {{/select}}
                     </select></h1>
+                {{#if availableCastes}}
+                <h1 class="charname"> <select name="system.details.caste" data-type="String">
+                        {{#select system.details.caste}}
+                        {{#each availableCastes as |label caste|}}
+                        <option value="{{caste}}">{{localize label}}</option>
+                        {{/each}}
+                        <option value="">{{localize "Ex3.None"}}</option>
+                        {{/select}}
+                    </select></h1>
+                {{else}}
                 <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
                         placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
+                {{/if}}
                 {{/ifEquals}}
 
                 {{#ifEquals system.creaturetype 'fae'}}

@@ -1284,32 +1284,32 @@ export default class TemplateImporter extends Application {
     if (!isAdversary) {
       actorData.system.creaturetype = 'exalt';
     }
-    actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').trim();
-    if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').toLowerCase().replace(/\s+/g, "").trim();
+    if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'dragonblooded';
     }
-    if (['no mood', 'full moon', 'changing moon', 'casteless'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['nomood', 'fullmoon', 'changingmoon', 'casteless'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'lunar';
     }
-    if (['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'solar';
     }
-    if (['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'sidereal';
     }
-    if (['dusk', 'midnight', 'daybreak', 'moonshadow', 'day'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['dusk', 'midnight', 'daybreak', 'moonshadow', 'day'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'abyssal';
     }
-    if (['adamant', 'jade', 'moonsilver', 'orichalcum', 'starmetal', 'soulsteel'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['adamant', 'jade', 'moonsilver', 'orichalcum', 'starmetal', 'soulsteel'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'alchemical';
     }
-    if (['spring', 'summer', 'fall', 'winter'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['spring', 'summer', 'fall', 'winter'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'getimian';
     }
-    if (['azimuth', 'ascendant', 'horizon', 'nadir', 'penumbra'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['azimuth', 'ascendant', 'horizon', 'nadir', 'penumbra'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'infernal';
     }
-    if (['blood', 'breath', 'flesh', 'marrow', 'soil'].includes(actorData.system.details.caste.toLocaleLowerCase())) {
+    if (['blood', 'breath', 'flesh', 'marrow', 'soil'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'liminal';
     }
   }

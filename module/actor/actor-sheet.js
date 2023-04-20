@@ -72,6 +72,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+    context.availableCastes = []
+    context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt]
     // Update traits
     this._prepareTraits(context.system.traits);
     // Prepare items.
@@ -303,6 +305,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           tertiary: 5,
         }
       }
+      if (sheetData.system.details.exalt === 'mortal') {
+        pointsAvailableMap = {
+          primary: 6,
+          secondary: 4,
+          tertiary: 3,
+        }
+      }
       sheetData.system.charcreation.available = {
         attributes: {
           physical: pointsAvailableMap[sheetData.system.charcreation.physical],
@@ -316,6 +325,20 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         merits: 10,
         intimacies: 4,
       }
+      if(sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
+        if(sheetData.system.essence.value >= 2) {
+          sheetData.system.charcreation.available.charms = 20;
+          sheetData.system.charcreation.available.merits = 13;
+          sheetData.system.charcreation.available.bonuspoints = 18;
+        }
+      }
+      if(sheetData.system.details.exalt === 'lunar') {
+        if(sheetData.system.essence.value >= 2) {
+          sheetData.system.charcreation.available.charms = 20;
+          sheetData.system.charcreation.available.merits = 13;
+          sheetData.system.charcreation.available.bonuspoints = 18;
+        }
+      }
       if (sheetData.system.details.exalt === 'dragonblooded') {
         sheetData.system.charcreation.available = {
           attributes: {
@@ -328,6 +351,33 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           charms: 20,
           specialties: 3,
           merits: 18,
+          intimacies: 4,
+        }
+        if(sheetData.system.essence.value === 1) {
+          sheetData.system.charcreation.available.charms = 15;
+          sheetData.system.charcreation.available.merits = 10;
+          sheetData.system.charcreation.available.bonuspoints = 15;
+        }
+      }
+      if (sheetData.system.details.exalt === 'sidereal') {
+        if(sheetData.system.essence.value >= 2) {
+          sheetData.system.charcreation.available.charms = 20;
+          sheetData.system.charcreation.available.merits = 13;
+          sheetData.system.charcreation.available.bonuspoints = 18;
+        }
+      }
+      if (sheetData.system.details.exalt === 'mortal') {
+        sheetData.system.charcreation.available = {
+          attributes: {
+            physical: pointsAvailableMap[sheetData.system.charcreation.physical],
+            social: pointsAvailableMap[sheetData.system.charcreation.social],
+            mental: pointsAvailableMap[sheetData.system.charcreation.mental],
+          },
+          abilities: 28,
+          bonuspoints: 21,
+          charms: 0,
+          specialties: 4,
+          merits: 7,
           intimacies: 4,
         }
       }
@@ -414,6 +464,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     else {
       sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheetsNPC");
     }
+
   }
 
   /**

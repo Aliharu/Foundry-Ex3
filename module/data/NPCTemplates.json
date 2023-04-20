@@ -83,6 +83,10 @@
         "label": "Ex3.Commander",
         "value": false
       },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
+        "value": false
+      },
       "legendarySize": {
         "label": "Ex3.LegendarySize",
         "value": false
@@ -199,6 +203,10 @@
     "traits": {
       "commander": {
         "label": "Ex3.Commander",
+        "value": false
+      },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
         "value": false
       },
       "legendarySize": {
@@ -319,6 +327,10 @@
         "label": "Ex3.Commander",
         "value": false
       },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
+        "value": false
+      },
       "legendarySize": {
         "label": "Ex3.LegendarySize",
         "value": false
@@ -435,6 +447,10 @@
     "traits": {
       "commander": {
         "label": "Ex3.Commander",
+        "value": false
+      },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
         "value": false
       },
       "legendarySize": {
@@ -555,6 +571,10 @@
         "label": "Ex3.Commander",
         "value": false
       },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
+        "value": false
+      },
       "legendarySize": {
         "label": "Ex3.LegendarySize",
         "value": false
@@ -671,6 +691,10 @@
     "traits": {
       "commander": {
         "label": "Ex3.Commander",
+        "value": false
+      },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
         "value": false
       },
       "legendarySize": {
@@ -791,6 +815,10 @@
         "label": "Ex3.Commander",
         "value": false
       },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
+        "value": false
+      },
       "legendarySize": {
         "label": "Ex3.LegendarySize",
         "value": false
@@ -909,6 +937,10 @@
         "label": "Ex3.Commander",
         "value": false
       },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
+        "value": false
+      },
       "legendarySize": {
         "label": "Ex3.LegendarySize",
         "value": false
@@ -1025,6 +1057,10 @@
     "traits": {
       "commander": {
         "label": "Ex3.Commander",
+        "value": false
+      },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
         "value": false
       },
       "legendarySize": {

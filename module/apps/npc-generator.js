@@ -3,11 +3,13 @@ export default class NPCGenerator extends FormApplication {
     super(object, options);
     this.object.template = 'custom';
     this.object.poolNumbers = 'mid';
+    this.object.availableCastes = {};
     this.object.character = {
       name: '',
       defaultName: 'New NPC',
       npcType: "mortal",
       exalt: "other",
+      caste: "",
       essence: 1,
       skills: {
         agility: {
@@ -76,6 +78,7 @@ export default class NPCGenerator extends FormApplication {
       },
       traits: {
         commander: { label: 'Ex3.Commander', value: false },
+        godOrDemon: { label: 'Ex3.God/Demon', value: false },
         legendarySize: { label: 'Ex3.LegendarySize', value: false },
         poisoner: { label: 'Ex3.Poisoner', value: false },
         martialArtist: { label: 'Ex3.MartialArtist', value: false },
@@ -137,6 +140,13 @@ export default class NPCGenerator extends FormApplication {
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.on("change", "#exalt", async ev => {
+      if(CONFIG.exaltedthird.castes[this.object.character.exalt]) {
+        this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
+      }
+      this.render();
+    });
 
     html.on("change", "#template", async ev => {
       const templateNPCs = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/NPCTemplates.json', {}, { int: 30000 });
@@ -614,6 +624,55 @@ export default class NPCGenerator extends FormApplication {
         }
         itemData.push(charm);
       }
+    }
+    if(this.object.character.traits.godOrDemon) {
+      itemData.push({
+        type: 'charm',
+        img: "icons/svg/explosion.svg",
+        name: "Hurry Home",
+        system: {
+          description: "The Spirit dissapear on their next turn, returns to a specific location such as their sactum or their summoners side.",
+          type: 'Simple',
+          duration: "Instant",
+          ability: "other",
+          essence: 1,
+          cost: {
+            motes: 10,
+            willpower: 1,
+          }
+        },
+      });
+      itemData.push({
+        type: 'charm',
+        img: "icons/svg/explosion.svg",
+        name: "Materialize",
+        system: {
+          description: "The spirit materializes.",
+          type: 'Simple',
+          duration: "Instant",
+          ability: "other",
+          essence: 1,
+          cost: {
+            motes: Math.floor(actorData.system.motes.personal.value / 2),
+            willpower: 1,
+          }
+        },
+      });
+      itemData.push({
+        type: 'charm',
+        img: "icons/svg/explosion.svg",
+        name: "Measure the Wind",
+        system: {
+          description: "The spirit discerns the nature of being based on a prequisite or when they take a certain action in the spririt's precense.",
+          type: 'Simple',
+          duration: "Instant",
+          ability: "other",
+          essence: 1,
+          cost: {
+            motes: 5,
+          }
+        },
+      });
     }
 
     actorData.items = itemData;

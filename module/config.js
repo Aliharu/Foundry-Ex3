@@ -55,6 +55,71 @@ exaltedthird.npcpools = {
     sorcery: 'Ex3.Sorcery',
 };
 
+exaltedthird.castes = {
+    solar: {
+        dawn: 'Ex3.Dawn',
+        zenith: 'Ex3.Zenith',
+        twilight: 'Ex3.Twilight',
+        night: 'Ex3.Night',
+        eclipse: 'Ex3.Eclipse',
+    },
+    lunar: {
+        fullmoon: 'Ex3.FullMoon',
+        changingmoon: 'Ex3.ChangingMoon',
+        nomoon: 'Ex3.NoMoon',
+        casteless: 'Ex3.Casteless',
+    },
+    dragonblooded: {
+        air: 'Ex3.Air',
+        earth: 'Ex3.Earth',
+        fire: 'Ex3.Fire',
+        water: 'Ex3.Water',
+        wood: 'Ex3.Wood',
+    },
+    sidereal: {
+        journeys: 'Ex3.Journeys',
+        serenity: 'Ex3.Serenity',
+        battles: 'Ex3.Battles',
+        secrets: 'Ex3.Secrets',
+        endings: 'Ex3.Endings',
+    },
+    abyssal: {
+        dusk: 'Ex3.Dusk',
+        midnight: 'Ex3.Midnight',
+        daybreak: 'Ex3.Daybreak',
+        day: 'Ex3.Day',
+        moonshadow: 'Ex3.Moonshadow',
+    },
+    alchemical: {
+        adamant: 'Ex3.Adamant',
+        jade: 'Ex3.Jade',
+        moonsilver: 'Ex3.Moonsilver',
+        orichalcum: 'Ex3.Orichalcum',
+        soulsteel: 'Ex3.Soulsteel',
+        starmetal: 'Ex3.Starmetal',
+    },
+    getimian: {
+        spring: 'Ex3.Spring',
+        summer: 'Ex3.Summer',
+        autumn: 'Ex3.Autumn',
+        winter: 'Ex3.Winter',
+    },
+    infernal: {
+        azimuth: 'Ex3.Azimuth',
+        ascendant: 'Ex3.Ascendant',
+        horizon: 'Ex3.Horizon',
+        nadir: 'Ex3.Nadir',
+        penumbra: 'Ex3.Penumbra',
+    },
+    liminal: {
+        blood: 'Ex3.Blood',
+        breath: 'Ex3.Breath',
+        flesh: 'Ex3.Flesh',
+        marrow: 'Ex3.Marrow',
+        soil: 'Ex3.Soil',
+    },
+};
+
 exaltedthird.abilities = {
     archery: 'Ex3.Archery',
     athletics: 'Ex3.Athletics',
@@ -187,7 +252,7 @@ exaltedthird.weapontags = {
     "chopping": "Chopping",
     "concealable": "Concealable",
     "crossbow": "Crossbow",
-    "cutting" : "Cutting",
+    "cutting": "Cutting",
     "disarming": "Disarming",
     "extreme": "Extreme Range",
     "flame": "Flame",
