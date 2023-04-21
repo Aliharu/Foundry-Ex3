@@ -6,7 +6,7 @@ export default class ItemSearch extends Application {
       type: {
         "charm": { display: "Charm", value: false },
         "spell": { display: "Spell", value: false },
-        "initiation": { display: "Initiation", value: false },
+        "ritual": { display: "Ritual", value: false },
         "merit": { display: "Merit", value: false },
       },
       attribute: {

@@ -178,40 +178,40 @@ Hooks.once('init', async function () {
 
   Handlebars.registerHelper("charmCostDisplay", function (cost) {
     let costString = '';
-    if(cost.motes > 0 || cost.commitmotes > 0) {
+    if (cost.motes > 0 || cost.commitmotes > 0) {
       costString += `${cost.motes || cost.commitmotes}m, `
     }
-    if(cost.willpower > 0) {
+    if (cost.willpower > 0) {
       costString += `${cost.willpower}wp, `
     }
-    if(cost.anima > 0) {
+    if (cost.anima > 0) {
       costString += `${cost.anima}a, `
     }
-    if(cost.initiative > 0) {
+    if (cost.initiative > 0) {
       costString += `${cost.initiative}i, `
     }
-    if(cost.health > 0) {
+    if (cost.health > 0) {
       costString += `${cost.health}`
-      if(cost.healthtype === 'bashing') {
+      if (cost.healthtype === 'bashing') {
         costString += `hl, `
       }
-      if(cost.healthtype === 'lethal') {
+      if (cost.healthtype === 'lethal') {
         costString += `lhl, `
       }
-      if(cost.healthtype === 'aggravated') {
+      if (cost.healthtype === 'aggravated') {
         costString += `ahl, `
       }
     }
-    if(cost.xp > 0) {
+    if (cost.xp > 0) {
       costString += `${cost.xp}xp, `
     }
-    if(cost.initiative > 0) {
+    if (cost.initiative > 0) {
       costString += `${cost.initiative}gxp, `
     }
-    if(cost.initiative > 0) {
+    if (cost.initiative > 0) {
       costString += `${cost.initiative}wxp, `
     }
-    if(costString !== '') {
+    if (costString !== '') {
       costString = `<b>${game.i18n.localize("Ex3.Cost")}</b>` + ": " + costString;
     }
     return costString;
@@ -475,12 +475,12 @@ Hooks.on("chatMessage", (html, content, msg) => {
     ChatMessage.create(chatData);
     return false;
   }
-  if(command === '/npc') {
-    new NPCGenerator(null, { }, {}, { }).render(true);
+  if (command === '/npc') {
+    new NPCGenerator(null, {}, {}, {}).render(true);
     return false;
   }
   if (command === "/xp") {
-    if(isNaN(parseInt(commands[1]))){
+    if (isNaN(parseInt(commands[1]))) {
       const chatData = {
         type: CONST.CHAT_MESSAGE_TYPES.OTHER,
         content: `Invalid number input`,
@@ -503,7 +503,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
     return false;
   }
   if (command === "/exaltxp") {
-    if(isNaN(parseInt(commands[1]))){
+    if (isNaN(parseInt(commands[1]))) {
       const chatData = {
         type: CONST.CHAT_MESSAGE_TYPES.OTHER,
         content: `Invalid number input`,
@@ -698,7 +698,7 @@ Hooks.once("ready", async function () {
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
         let updateData = duplicate(actor);
-        if(updateData.system.creaturetype !== 'exalt') {
+        if (updateData.system.creaturetype !== 'exalt') {
           updateData.system.details.creaturesubtype = updateData.system.details.exalt;
           updateData.system.details.exalt = 'other';
           await actor.update(updateData, { enforceTypes: false });
@@ -720,7 +720,7 @@ Hooks.once("ready", async function () {
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
         let updateData = duplicate(actor);
-        if(updateData.system.creaturetype !== 'exalt') {
+        if (updateData.system.creaturetype !== 'exalt') {
           updateData.system.details.creaturesubtype = updateData.system.details.exalt;
           updateData.system.details.exalt = 'other';
           await actor.update(updateData, { enforceTypes: false });
@@ -744,13 +744,13 @@ Hooks.once("ready", async function () {
         abilitytype: 'craft'
       }
     }
-    for(let item of game.items.filter((item) => item.type === 'martialart')) {
+    for (let item of game.items.filter((item) => item.type === 'martialart')) {
       await item.update({
         [`type`]: 'customability',
       });
       await item.update(martialArtData);
     }
-    for(let item of game.items.filter((item) => item.type === 'craft')) {
+    for (let item of game.items.filter((item) => item.type === 'craft')) {
       await item.update({
         [`type`]: 'customability',
       });
@@ -763,20 +763,25 @@ Hooks.once("ready", async function () {
     // }
     for (let actor of game.actors) {
       try {
-        for(let item of actor.items.filter((item) =>item.type === 'martialart')) {
+        for (let item of actor.items.filter((item) => item.type === 'martialart')) {
           await item.update({
             [`type`]: 'customability',
           });
           await item.update(martialArtData);
         }
-        for(let item of actor.items.filter((item) =>item.type === 'craft')) {
+        for (let item of actor.items.filter((item) => item.type === 'craft')) {
           await item.update({
             [`type`]: 'customability',
           });
           await item.update(craftData);
         }
+        for (let item of actor.items.filter((item) => item.type === 'initiation')) {
+          await item.update({
+            [`type`]: 'ritual',
+          });
+        }
         let updateData = duplicate(actor);
-        if(updateData.system.details.exalt !== 'other' && updateData.system.details.exalt !== 'exigent') {
+        if (updateData.system.details.exalt !== 'other' && updateData.system.details.exalt !== 'exigent') {
           updateData.system.details.caste = updateData.system.details.caste.toLowerCase().replace(/\s+/g, "");
           await actor.update(updateData, { enforceTypes: false });
         }
@@ -788,8 +793,19 @@ Hooks.once("ready", async function () {
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
+  for (let item of game.items.filter((item) => item.type === 'initiation')) {
+    await item.update({
+      [`type`]: 'ritual',
+    });
+  }
+
   for (let actor of game.actors) {
     try {
+      for (let item of actor.items.filter((item) => item.type === 'initiation')) {
+        await item.update({
+          [`type`]: 'ritual',
+        });
+      }
     } catch (error) {
       error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
       console.error(error);

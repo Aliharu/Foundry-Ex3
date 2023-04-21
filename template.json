@@ -707,7 +707,6 @@
       "item",
       "merit",
       "ritual",
-      "initiation",
       "specialability",
       "specialty",
       "spell",
@@ -964,11 +963,6 @@
       "points": 0
     },
     "ritual": {
-      "templates": [
-        "base"
-      ]
-    },
-    "initiation": {
       "templates": [
         "base"
       ]

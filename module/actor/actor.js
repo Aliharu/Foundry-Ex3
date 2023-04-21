@@ -595,7 +595,7 @@ export class ExaltedThirdActor extends Actor {
     const armor = [];
     const merits = [];
     const intimacies = [];
-    const initiations = [];
+    const rituals = [];
     const specialties = [];
     const specialAbilities = [];
     const craftProjects = [];
@@ -644,8 +644,8 @@ export class ExaltedThirdActor extends Actor {
       else if (i.type === 'intimacy') {
         intimacies.push(i);
       }
-      else if (i.type === 'initiation') {
-        initiations.push(i);
+      else if (i.type === 'ritual') {
+        rituals.push(i);
       }
       else if (i.type === 'specialty') {
         specialties.push(i);
@@ -731,7 +731,7 @@ export class ExaltedThirdActor extends Actor {
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;
-    actorData.initiations = initiations;
+    actorData.rituals = rituals;
     actorData.intimacies = intimacies;
     actorData.specialties = specialties;
     actorData.charms = charms;

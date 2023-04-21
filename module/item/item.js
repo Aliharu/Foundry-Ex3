@@ -180,7 +180,7 @@ export class ExaltedThirdItem extends Item {
     if (type === 'spell') {
       return "systems/exaltedthird/assets/icons/magic-swirl.svg";
     }
-    if (type === 'initiation') {
+    if (type === 'ritual') {
       return "icons/svg/book.svg";
     }
     if (type === 'merit') {

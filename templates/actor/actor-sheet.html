@@ -641,12 +641,12 @@
         {{#if system.settings.issorcerer}}
         <div class="resource-label list-section-header d-flex flex-between">
           <div>
-            {{localize "Ex3.Initiations"}}
+            {{localize "Ex3.ShapingRituals"}}
           </div>
-          <a class="item-control item-create" title="Create initiation" data-type="initiation"><i
-              class="fas fa-plus"></i>Add Initiation</a>
+          <a class="item-control item-create" title="Create ritual" data-type="ritual"><i
+              class="fas fa-plus"></i>Add Ritual</a>
         </div>
-        {{#each actor.initiations as |item id|}}
+        {{#each actor.rituals as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">
           <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
               height="24" /></div>

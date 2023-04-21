@@ -1475,7 +1475,7 @@ export default class TemplateImporter extends Application {
                 if (titleArray.length === 2) {
                   itemDescription += titleArray[1].trim();
                 }
-                itemType = 'initiation';
+                itemType = 'ritual';
               }
               else if (!(/\d+(\.\d+)?sm/g).test(textArray[index]) && !textArray[index].includes('Ritual')) {
                 itemType = 'charm';
@@ -1598,7 +1598,7 @@ export default class TemplateImporter extends Application {
           }
           newItem = true;
           // Create Items
-          if (itemType === 'specialability' || itemType === 'merit' || itemType === 'initiation') {
+          if (itemType === 'specialability' || itemType === 'merit' || itemType === 'ritual') {
             itemData.push(
               {
                 type: itemType,
@@ -1609,7 +1609,7 @@ export default class TemplateImporter extends Application {
                 }
               }
             );
-            if (itemType === 'initiation') {
+            if (itemType === 'ritual') {
               itemType = 'spell';
             }
           }
@@ -2112,7 +2112,7 @@ export default class TemplateImporter extends Application {
     if (type === 'spell') {
       return "systems/exaltedthird/assets/icons/magic-swirl.svg";
     }
-    if (type === 'initiation') {
+    if (type === 'ritual') {
       return "icons/svg/book.svg";
     }
     if (type === 'merit') {

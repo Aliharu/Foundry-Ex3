@@ -247,29 +247,28 @@
                 {{#if system.settings.issorcerer}}
                 <div class="resource-label list-section-header d-flex flex-between">
                     <div>
-                        {{localize "Ex3.Initiations"}}
+                      {{localize "Ex3.ShapingRituals"}}
                     </div>
-                    <a class="item-control item-create" title="Create initiation" data-type="initiation"><i
-                            class="fas fa-plus"></i>Add Initiation</a>
-                </div>
-                {{#each actor.initiations as |item id|}}
-                <li class="item flexrow item-row" data-item-id="{{item._id}}">
-                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
-                            width="24" height="24" />
-                    </div>
+                    <a class="item-control item-create" title="Create ritual" data-type="ritual"><i
+                        class="fas fa-plus"></i>Add Ritual</a>
+                  </div>
+                  {{#each actor.rituals as |item id|}}
+                  <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                        height="24" /></div>
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">
-                        <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-                        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                      <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                      <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                </li>
-                <li class="item-description">
+                  </li>
+                  <li class="item-description">
                     <div>
-                        {{{enrichedHTMLItems ../this "description" item._id}}}
+                      {{{enrichedHTMLItems ../this "description" item._id}}}
                     </div>
-                </li>
-                {{/each}}
+                  </li>
+                  {{/each}}
                 {{/if}}
                 <div class="resource-label list-section-header d-flex flex-between">
                     <div>

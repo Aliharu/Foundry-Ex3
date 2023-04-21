@@ -405,7 +405,7 @@ export default class NPCGenerator extends FormApplication {
 
 
     if (this.object.character.sorcerer !== 'none') {
-      const itemRituals = game.items.filter((item) => item.type === 'initiation');
+      const itemRituals = game.items.filter((item) => item.type === 'ritual');
 
       if (itemRituals) {
         var ritual = duplicate(itemRituals[Math.floor(Math.random() * itemRituals.length)]);
@@ -415,7 +415,7 @@ export default class NPCGenerator extends FormApplication {
         const randomRitual = sorcerousRituals[Math.floor(Math.random() * sorcerousRituals.length)];
         itemData.push(
           {
-            type: 'initiation',
+            type: 'ritual',
             name: randomRitual.name,
             description: `Page Reference ${randomRitual.pageref}`,
           }

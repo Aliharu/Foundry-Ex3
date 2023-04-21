@@ -98,7 +98,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const armor = [];
     const merits = [];
     const intimacies = [];
-    const initiations = [];
+    const rituals = [];
     const martialarts = [];
     const crafts = [];
     const specialties = [];
@@ -197,8 +197,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'craft') {
         crafts.push(i);
       }
-      else if (i.type === 'initiation') {
-        initiations.push(i);
+      else if (i.type === 'ritual') {
+        rituals.push(i);
       }
       else if (i.type === 'specialty') {
         specialties.push(i);
@@ -283,7 +283,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;
-    actorData.initiations = initiations;
+    actorData.rituals = rituals;
     actorData.intimacies = intimacies;
     actorData.specialties = specialties;
     actorData.charms = charms;
