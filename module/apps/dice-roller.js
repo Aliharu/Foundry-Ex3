@@ -208,12 +208,11 @@ export class RollForm extends FormApplication {
                     if (this.object.rollType === 'ability' && this.object.ability === 'craft') {
                         this.object.diceModifier += this.actor.system.settings.rollsettings['craft'].bonus;
                     }
-                    this.object.martialarts = this.actor.martialarts;
-                    this.object.crafts = this.actor.crafts;
-                    if (this.object.martialarts.some(ma => ma._id === this.object.ability)) {
+                    this.object.customabilities = this.actor.customabilities;
+                    if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
                         this.object.attribute = this.actor.system.abilities['martialarts'].prefattribute;
                     }
-                    if (this.object.crafts.some(craft => craft._id === this.object.ability)) {
+                    if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
                         this.object.attribute = this.actor.system.abilities['craft'].prefattribute;
                     }
                     this.object.appearance = this.actor.system.attributes.appearance.value;
@@ -343,11 +342,8 @@ export class RollForm extends FormApplication {
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             this.object.showTargets = 0;
-            if (this.actor.martialarts) {
-                this.object.martialarts = this.actor.martialarts;
-            }
-            if (this.actor.crafts) {
-                this.object.crafts = this.actor.crafts;
+            if (this.actor.customabilities) {
+                this.object.customAbilities = this.actor.customabilities;
             }
             if (this.object.craftId) {
                 this.object.ability = this.object.craftId;
@@ -1569,11 +1565,15 @@ export class RollForm extends FormApplication {
     }
 
     async _updateSpecialtyList() {
-        if (this.actor.martialarts.find(x => x._id === this.object.ability)) {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'martialarts');
-        }
-        else if (this.actor.crafts.find(x => x._id === this.object.ability)) {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'craft');
+        const customAbility = this.actor.customabilities.find(x => x._id === this.object.ability);
+        if (customAbility) {
+            if(customAbility.system.abilitytype === 'craft') {
+                this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'craft');
+
+            }
+            else if(customAbility.system.abilitytype === 'martialarts') {
+                this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'martialarts');
+            }
         }
         else {
             this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
@@ -1780,11 +1780,11 @@ export class RollForm extends FormApplication {
                 if (data.attributes[this.object.attribute]) {
                     dice += data.attributes[this.object.attribute]?.value || 0;
                 }
-                if (this.object.martialarts.some(ma => ma._id === this.object.ability)) {
-                    dice += this.actor.martialarts.find(x => x._id === this.object.ability).system.points;
+                if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
+                    dice += this.actor.customabilities.find(x => x._id === this.object.ability).system.points;
                 }
-                else if (this.object.crafts.some(craft => craft._id === this.object.ability)) {
-                    dice += this.actor.crafts.find(x => x._id === this.object.ability).system.points;
+                if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
+                    dice += this.actor.customabilities.find(x => x._id === this.object.ability).system.points;
                 }
                 else {
                     if (this.object.ability === 'willpower') {
@@ -3041,11 +3041,11 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'action') {
             actionName = this.actor.actions.find(x => x._id === this.object.actionId).name;
         }
-        if (this.object.martialarts && this.object.martialarts.some(ma => ma._id === this.object.ability)) {
-            abilityName = this.actor.martialarts.find(x => x._id === this.object.ability).name;
+        if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
+            abilityName = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'martialarts').name;
         }
-        else if (this.object.crafts && this.object.crafts.some(craft => craft._id === this.object.ability)) {
-            abilityName = this.actor.crafts.find(x => x._id === this.object.ability).name;
+        if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
+            abilityName = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'craft').name;
         }
         var showSpecialAttacks = false
         for (var specialAttack of this.object.specialAttacksList) {
@@ -3080,11 +3080,13 @@ export class RollForm extends FormApplication {
                     }
                 }
                 var abilityValue = 0;
-                if (this.object.martialarts && this.object.martialarts.some(ma => ma._id === this.object.ability)) {
-                    abilityValue = this.actor.martialarts.find(x => x._id === this.object.ability).system.points;
-                }
-                else if (this.object.crafts && this.object.crafts.some(craft => craft._id === this.object.ability)) {
-                    abilityValue = this.actor.crafts.find(x => x._id === this.object.ability).system.points;
+                if(this.object.customabilities) {
+                    if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
+                        abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'martialarts').system.points;
+                    }
+                    else if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
+                        abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability  && x.system.abilitytype === 'craft').system.points;
+                    }
                 }
                 else if (this.actor.system.abilities[this.object.ability]) {
                     abilityValue = this.actor.system.abilities[this.object.ability].value;

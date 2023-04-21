@@ -695,21 +695,21 @@
   },
   "Item": {
     "types": [
-      "item",
-      "weapon",
-      "armor",
-      "merit",
-      "initiation",
-      "charm",
-      "spell",
-      "intimacy",
-      "specialty",
-      "martialart",
-      "craft",
-      "specialability",
-      "craftproject",
       "action",
-      "destiny"
+      "armor",
+      "charm",
+      "craft",
+      "craftproject",
+      "customability",
+      "martialart",
+      "destiny",
+      "intimacy",
+      "item",
+      "merit",
+      "ritual",
+      "specialability",
+      "specialty",
+      "spell"
     ],
     "templates": {
       "base": {
@@ -747,6 +747,14 @@
         "equipment"
       ],
       "quantity": 1
+    },
+    "customability": {
+      "templates": [
+        "base",
+        "ability"
+      ],
+      "abilitytype": "other",
+      "siderealmartialart": false
     },
     "weapon": {
       "templates": [

@@ -21,10 +21,7 @@
         {{#each actor.system.abilities as |ability key|}}
         <option value="{{key}}">{{localize ability.name}}</option>
         {{/each}}
-        {{#each actor.martialarts as |action key|}}
-        <option value="{{action._id}}">{{action.name}}</option>
-        {{/each}}
-        {{#each actor.crafts as |action key|}}
+        {{#each actor.customabilities as |action key|}}
         <option value="{{action._id}}">{{action.name}}</option>
         {{/each}}
         <option value="willpower">{{localize "Ex3.Willpower"}}</option>

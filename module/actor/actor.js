@@ -589,14 +589,13 @@ export class ExaltedThirdActor extends Actor {
     data.currentDefensePenalty = currentDefensePenalty;
 
     // Initialize containers.
+    const customAbilities = [];
     const gear = [];
     const weapons = [];
     const armor = [];
     const merits = [];
     const intimacies = [];
     const initiations = [];
-    const martialarts = [];
-    const crafts = [];
     const specialties = [];
     const specialAbilities = [];
     const craftProjects = [];
@@ -623,6 +622,9 @@ export class ExaltedThirdActor extends Actor {
       if (i.type === 'item') {
         gear.push(i);
       }
+      else if (i.type === 'customability') {
+        customAbilities.push(i);
+      }
       else if (i.type === 'weapon') {
         prepareItemTraits('weapon', i);
         weapons.push(i);
@@ -641,12 +643,6 @@ export class ExaltedThirdActor extends Actor {
       }
       else if (i.type === 'intimacy') {
         intimacies.push(i);
-      }
-      else if (i.type === 'martialart') {
-        martialarts.push(i);
-      }
-      else if (i.type === 'craft') {
-        crafts.push(i);
       }
       else if (i.type === 'initiation') {
         initiations.push(i);
@@ -730,12 +726,11 @@ export class ExaltedThirdActor extends Actor {
 
     // Assign and return
     actorData.gear = gear;
+    actorData.customabilities = customAbilities;
     actorData.activecharms = activeCharms;
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;
-    actorData.martialarts = martialarts;
-    actorData.crafts = crafts;
     actorData.initiations = initiations;
     actorData.intimacies = intimacies;
     actorData.specialties = specialties;

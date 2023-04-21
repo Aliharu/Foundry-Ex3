@@ -195,7 +195,7 @@ export class ExaltedThirdItem extends Item {
     if (type === 'charm' || type === 'action') {
       return "icons/svg/explosion.svg";
     }
-    if (type === 'specialability') {
+    if (type === 'specialability' || type === 'customability') {
       return "icons/svg/aura.svg";
     }
     if (type === 'craftproject') {

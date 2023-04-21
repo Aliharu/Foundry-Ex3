@@ -57,13 +57,13 @@
           </select></h1>
         {{#if availableCastes}}
         <h1 class="charname"> <select name="system.details.caste" data-type="String">
-          {{#select system.details.caste}}
-          {{#each availableCastes as |label caste|}}
-          <option value="{{caste}}">{{localize label}}</option>
-          {{/each}}
-          <option value="">{{localize "Ex3.None"}}</option>
-          {{/select}}
-        </select></h1>
+            {{#select system.details.caste}}
+            {{#each availableCastes as |label caste|}}
+            <option value="{{caste}}">{{localize label}}</option>
+            {{/each}}
+            <option value="">{{localize "Ex3.None"}}</option>
+            {{/select}}
+          </select></h1>
         {{else}}
         <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
             placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
@@ -248,29 +248,7 @@
           {{/if}}
         </div>
         {{/each}}
-        {{#each actor.martialarts as |item id|}}
-        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
-          <input class="item-favored" name="system.favored" type="checkbox" {{checked item.system.favored}}>
-          <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
-          {{#if ../system.settings.usedotsvalues}}
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-            {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-            {{#if ../system.settings.usetenabilities}}
-            <div></div>
-            {{#numLoopCertainStart 5 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoopCertainStart}}
-            {{/if}}
-          </div>
-          {{else}}
-          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
-            data-dtype="Number" />
-          {{/if}}
-        </div>
-        {{/each}}
-        {{#each actor.crafts as |item id|}}
+        {{#each actor.customabilities as |item id|}}
         <div class="item flexrow flex-center" data-item-id="{{item._id}}">
           <input class="item-favored" name="system.favored" type="checkbox" {{checked item.system.favored}}>
           <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
@@ -295,7 +273,37 @@
       </div>
       {{#if system.settings.editmode}}
       <div style="margin-bottom:10px;">
-        Abilities: {{system.charcreation.spent.abilities}}/{{system.charcreation.available.abilities}}
+        <label class="resource-label">{{localize "Ex3.AdditionalAbilities"}}<a class="item-create"
+          title="Create customability" data-type="customability"><i class="fas fa-plus cursor-pointer"
+            style="margin-left:5px;"></i></a></label>
+      <div class="attributes grid grid-3col flex-group-center">
+        {{#each actor.customabilities as |item id|}}
+        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+          <div class="item-controls ability-item-edit">
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+          </div>
+          <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
+          {{#if ../system.settings.usedotsvalues}}
+          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+            {{#numLoop 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoop}}
+            {{#if ../system.settings.usetenabilities}}
+            <div></div>
+            {{#numLoopCertainStart 5 5}}
+            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            {{/numLoopCertainStart}}
+            {{/if}}
+          </div>
+          {{else}}
+          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
+            data-dtype="Number" />
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+      {{localize "Ex3.Abilities"}}: {{system.charcreation.spent.abilities}}/{{system.charcreation.available.abilities}}
         ({{system.charcreation.spent.abovethree}} above 3)
       </div>
       {{/if}}
@@ -316,67 +324,6 @@
       <div style="margin-bottom:10px;">
         Specialties: {{system.charcreation.spent.specialties}}/{{system.charcreation.available.specialties}}
       </div>
-      <label class="resource-label">{{localize "Ex3.MartialArts"}}<a class="item-create" title="Create martialart"
-          data-type="martialart"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
-      <div class="attributes grid grid-3col flex-group-center">
-        {{#each actor.martialarts as |item id|}}
-        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
-          <div class="item-controls ability-item-edit">
-            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
-            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-          </div>
-          <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
-          {{#if ../system.settings.usedotsvalues}}
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-            {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-            {{#if ../system.settings.usetenabilities}}
-            <div></div>
-            {{#numLoopCertainStart 5 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoopCertainStart}}
-            {{/if}}
-          </div>
-          {{else}}
-          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
-            data-dtype="Number" />
-          {{/if}}
-        </div>
-        {{/each}}
-      </div>
-      {{#if system.settings.iscrafter}}
-      <label class="resource-label">{{localize "Ex3.Craft"}}<a class="item-create" title="Create craft"
-          data-type="craft"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
-      <div class="attributes grid grid-3col flex-group-center">
-        {{#each actor.crafts as |item id|}}
-        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
-          <div class="item-controls ability-item-edit">
-            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
-            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-          </div>
-          <label class="resource-label roll-craft roll-hover" data-item-id="{{action._id}}">{{localize
-            item.name}}</label>
-          {{#if ../system.settings.usedotsvalues}}
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
-            {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoop}}
-            {{#if ../system.settings.usetenabilities}}
-            <div></div>
-            {{#numLoopCertainStart 5 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
-            {{/numLoopCertainStart}}
-            {{/if}}
-          </div>
-          {{else}}
-          <input class="list-ability list-input" type="number" name="item.system.points" value="{{item.system.points}}"
-            data-dtype="Number" />
-          {{/if}}
-        </div>
-        {{/each}}
-      </div>
-      {{/if}}
       {{/if}}
     </div>
 

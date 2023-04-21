@@ -685,8 +685,47 @@ Hooks.once("ready", async function () {
   }
 
   if (isNewerVersion("1.11.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    const martialArtData = {
+      system: {
+        abilitytype: 'martialart'
+      }
+    }
+    const craftData = {
+      system: {
+        abilitytype: 'craft'
+      }
+    }
+    for(let item of game.items.filter((item) => item.type === 'martialart')) {
+      await item.update({
+        [`type`]: 'customability',
+      });
+      await item.update(martialArtData);
+    }
+    for(let item of game.items.filter((item) => item.type === 'craft')) {
+      await item.update({
+        [`type`]: 'customability',
+      });
+      await item.update(craftData);
+    }
+    // for(let item of game.items.filter((item) => item.type === 'initiation')) {
+    //   await item.update({
+    //     [`type`]: 'ritual',
+    //   });
+    // }
     for (let actor of game.actors) {
       try {
+        for(let item of actor.items.filter((item) =>item.type === 'martialart')) {
+          await item.update({
+            [`type`]: 'customability',
+          });
+          await item.update(martialArtData);
+        }
+        for(let item of actor.items.filter((item) =>item.type === 'craft')) {
+          await item.update({
+            [`type`]: 'customability',
+          });
+          await item.update(craftData);
+        }
         let updateData = duplicate(actor);
         if(updateData.system.details.exalt !== 'other' && updateData.system.details.exalt !== 'exigent') {
           updateData.system.details.caste = updateData.system.details.caste.toLowerCase().replace(/\s+/g, "");
@@ -698,6 +737,14 @@ Hooks.once("ready", async function () {
       }
     }
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+  }
+
+  for (let actor of game.actors) {
+    try {
+    } catch (error) {
+      error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+      console.error(error);
+    }
   }
 
   // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {

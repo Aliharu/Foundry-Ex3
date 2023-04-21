@@ -93,6 +93,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     // Initialize containers.
     const gear = [];
+    const customAbilities = [];
     const weapons = [];
     const armor = [];
     const merits = [];
@@ -165,6 +166,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);
+      }
+      else if (i.type === 'customability') {
+        customAbilities.push(i);
       }
       else if (i.type === 'weapon') {
         prepareItemTraits('weapon', i);
@@ -274,12 +278,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     // Assign and return
     actorData.gear = gear;
+    actorData.customabilities = customAbilities;
     actorData.activecharms = activeCharms;
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;
-    actorData.martialarts = martialarts;
-    actorData.crafts = crafts;
     actorData.initiations = initiations;
     actorData.intimacies = intimacies;
     actorData.specialties = specialties;
@@ -419,25 +422,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
         threeOrBelow += Math.min(3, attr.value);
       }
-      for (let martialArt of actorData.martialarts) {
-        sheetData.system.charcreation.spent.abovethree += Math.max(0, (martialArt.system.points - 3));
-        if (sheetData.system.abilities['martialarts'].favored) {
-          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (martialArt.system.points - 3));
+      for (let customAbility of actorData.customabilities) {
+        sheetData.system.charcreation.spent.abovethree += Math.max(0, (customAbility.system.points - 3));
+        if (customAbility.system.favored) {
+          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (customAbility.system.points - 3));
         }
         else {
-          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (martialArt.system.points - 3))) * 2;
+          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (customAbility.system.points - 3))) * 2;
         }
-        threeOrBelow += Math.min(3, martialArt.system.points);
-      }
-      for (let craft of actorData.crafts) {
-        sheetData.system.charcreation.spent.abovethree += Math.max(0, (craft.system.points - 3));
-        if (sheetData.system.abilities['craft'].favored) {
-          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (craft.system.points - 3));
-        }
-        else {
-          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (craft.system.points - 3))) * 2;
-        }
-        threeOrBelow += Math.min(3, craft.system.points);
+        threeOrBelow += Math.min(3, customAbility.system.points);
       }
       sheetData.system.charcreation.spent.abilities = threeOrBelow;
       if (sheetData.system.details.exalt === 'lunar') {
