@@ -167,6 +167,55 @@ Hooks.once('init', async function () {
   Handlebars.registerHelper("enrichedHTMLItems", function (sheetData, type, itemID) {
     return sheetData.itemDescriptions[itemID];
   });
+
+  Handlebars.registerHelper("getAbilityDisplay", function (actor, abilityName) {
+    const customAbility = actor.items.find(ability => ability._id === abilityName);
+    if (customAbility) {
+      return customAbility.name;
+    }
+    return abilityName;
+  });
+
+  Handlebars.registerHelper("charmCostDisplay", function (cost) {
+    let costString = '';
+    if(cost.motes > 0 || cost.commitmotes > 0) {
+      costString += `${cost.motes || cost.commitmotes}m, `
+    }
+    if(cost.willpower > 0) {
+      costString += `${cost.willpower}wp, `
+    }
+    if(cost.anima > 0) {
+      costString += `${cost.anima}a, `
+    }
+    if(cost.initiative > 0) {
+      costString += `${cost.initiative}i, `
+    }
+    if(cost.health > 0) {
+      costString += `${cost.health}`
+      if(cost.healthtype === 'bashing') {
+        costString += `hl, `
+      }
+      if(cost.healthtype === 'lethal') {
+        costString += `lhl, `
+      }
+      if(cost.healthtype === 'aggravated') {
+        costString += `ahl, `
+      }
+    }
+    if(cost.xp > 0) {
+      costString += `${cost.xp}xp, `
+    }
+    if(cost.initiative > 0) {
+      costString += `${cost.initiative}gxp, `
+    }
+    if(cost.initiative > 0) {
+      costString += `${cost.initiative}wxp, `
+    }
+    if(costString !== '') {
+      costString = `<b>${game.i18n.localize("Ex3.Cost")}</b>` + ": " + costString;
+    }
+    return costString;
+  });
 });
 
 // Hooks.on("updateToken", (token, updateData, options) => {

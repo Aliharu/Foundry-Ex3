@@ -707,9 +707,11 @@
       "item",
       "merit",
       "ritual",
+      "initiation",
       "specialability",
       "specialty",
-      "spell"
+      "spell",
+      "weapon"
     ],
     "templates": {
       "base": {
@@ -960,6 +962,11 @@
       ],
       "merittype": "story",
       "points": 0
+    },
+    "ritual": {
+      "templates": [
+        "base"
+      ]
     },
     "initiation": {
       "templates": [

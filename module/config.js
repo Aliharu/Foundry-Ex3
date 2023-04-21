@@ -120,6 +120,18 @@ exaltedthird.castes = {
     },
 };
 
+exaltedthird.attributes = {
+    strength: 'Ex3.Strength',
+    dexterity: 'Ex3.Dexterity',
+    stamina: 'Ex3.Stamina',
+    charisma: 'Ex3.Charisma',
+    manipulation: 'Ex3.Manipulation',
+    appearance: 'Ex3.Appearance',
+    perception: 'Ex3.Perception',
+    intelligence: 'Ex3.Intelligence',
+    wits: 'Ex3.Wits',
+};
+
 exaltedthird.abilities = {
     archery: 'Ex3.Archery',
     athletics: 'Ex3.Athletics',
@@ -151,7 +163,6 @@ exaltedthird.abilities = {
 
 exaltedthird.charmabilities = {
     offensive: 'Ex3.Offensive',
-    offsensive: 'Ex3.Offensive',
     defensive: 'Ex3.Defensive',
     social: 'Ex3.Social',
     mobility: 'Ex3.Mobility',

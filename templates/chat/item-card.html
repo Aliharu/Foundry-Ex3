@@ -22,26 +22,13 @@
         {{/if}}
         {{#ifEquals item.type 'charm'}}
         <div>
-            <b>{{localize "Ex3.Cost"}}</b>: {{#ifGreater item.system.cost.motes 0}}{{ item.system.cost.motes }}m,{{/ifGreater}}
-            {{#ifGreater item.system.cost.commitmotes 0}}{{ item.system.cost.commitmotes }}cm,{{/ifGreater}}
-            {{#ifGreater item.system.cost.willpower 0}} {{ item.system.cost.willpower }}wp, {{/ifGreater}} {{#ifGreater
-            item.system.cost.anima 0}}{{ item.system.cost.anima }}a, {{/ifGreater}}
-            {{#ifGreater item.system.cost.initiative 0}}{{ item.system.cost.initiative }}i, {{/ifGreater}} {{#ifGreater
-            item.system.cost.silverxp 0}}{{ item.system.cost.silverxp }}sxp, {{/ifGreater}} {{#ifGreater
-            item.system.cost.goldxp 0}} {{
-            item.system.cost.goldxp }}gxp, {{/ifGreater}} {{#ifGreater item.system.cost.whitexp 0}}{{
-            item.system.cost.whitexp }}wxp; {{/ifGreater}}
-        </div>
-        {{#ifGreater item.system.cost.health 0}}
-        <div>
-            <b>Health cost</b>: {{ item.system.cost.health }} {{ item.system.cost.healthtype }}
-        </div>
-        {{/ifGreater}}
-        <div>
-            <b>Mins</b>: {{#if item.system.requirement}}<span style="text-transform: capitalize;">{{item.system.ability}}</span> {{item.system.requirement}}, {{/if}} Essence {{item.system.essence}}
+            {{{charmCostDisplay item.system.cost}}}
         </div>
         <div>
-            <b>Type</b>: {{item.system.type}}
+            <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span style="text-transform: capitalize;">{{getAbilityDisplay actor item.system.ability}}</span> {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
         </div>
         <div>
             <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
@@ -58,9 +45,11 @@
         <div>
             <b>{{localize "Ex3.Circle"}}</b>: {{item.system.circle}}
         </div>
+        {{#if item.system.keywords}}
         <div>
             <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
         </div>
+        {{/if}}
         <div>
             <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
         </div>

@@ -7,33 +7,9 @@
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="system.ability" data-type="String">
                     {{#select system.ability}}
-                        <option value="archery">{{localize "Ex3.Archery"}}</option>
-                        <option value="athletics">{{localize "Ex3.Athletics"}}</option>
-                        <option value="awareness">{{localize "Ex3.Awareness"}}</option>
-                        <option value="brawl">{{localize "Ex3.Brawl"}}</option>
-                        <option value="bureaucracy">{{localize "Ex3.Bureaucracy"}}</option>
-                        <option value="craft">{{localize "Ex3.Craft"}}</option>
-                        <option value="dodge">{{localize "Ex3.Dodge"}}</option>
-                        <option value="integrity">{{localize "Ex3.Integrity"}}</option>
-                        <option value="investigation">{{localize "Ex3.Investigation"}}</option>
-                        <option value="larceny">{{localize "Ex3.Larceny"}}</option>
-                        <option value="linguistics">{{localize "Ex3.Linguistics"}}</option>
-                        <option value="lore">{{localize "Ex3.Lore"}}</option>
-                        <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
-                        <option value="medicine">{{localize "Ex3.Medicine"}}</option>
-                        <option value="melee">{{localize "Ex3.Melee"}}</option>
-                        <option value="occult">{{localize "Ex3.Occult"}}</option>
-                        <option value="performance">{{localize "Ex3.Performance"}}</option>
-                        <option value="presence">{{localize "Ex3.Presence"}}</option>
-                        <option value="resistance">{{localize "Ex3.Resistance"}}</option>
-                        <option value="ride">{{localize "Ex3.Ride"}}</option>
-                        <option value="sail">{{localize "Ex3.Sail"}}</option>
-                        <option value="socialize">{{localize "Ex3.Socialize"}}</option>
-                        <option value="stealth">{{localize "Ex3.Stealth"}}</option>
-                        <option value="survival">{{localize "Ex3.Survival"}}</option>
-                        <option value="thrown">{{localize "Ex3.Thrown"}}</option>
-                        <option value="war">{{localize "Ex3.War"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
+                        {{#each abilityList as |label ability|}}
+                        <option value="{{ability}}">{{localize label}}</option>
+                        {{/each}}
                     {{/select}}
                 </select>
             </div>

@@ -49,7 +49,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   getTypeSpecificCSSClasses() {
-    if(this.actor.system.settings.sheetbackground === 'default') {
+    if (this.actor.system.settings.sheetbackground === 'default') {
       return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
     }
     return `${this.actor.system.settings.sheetbackground}-background`;
@@ -234,7 +234,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (siderealMaidenCharms[i.system.ability]) {
         sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
       }
-      if(i.system.diceroller.enabled) {
+      if (i.system.diceroller.enabled) {
         if (i.system.listingname) {
           if (!rollCharms[i.system.listingname]) {
             rollCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
@@ -248,7 +248,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           rollCharms[i.system.ability].list.push(i);
         }
       }
-      if(i.system.diceroller.opposedbonuses.enabled) {
+      if (i.system.diceroller.opposedbonuses.enabled) {
         if (i.system.listingname) {
           if (!defenseCharms[i.system.listingname]) {
             defenseCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
@@ -328,15 +328,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         merits: 10,
         intimacies: 4,
       }
-      if(sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
-        if(sheetData.system.essence.value >= 2) {
+      if (sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
+        if (sheetData.system.essence.value >= 2) {
           sheetData.system.charcreation.available.charms = 20;
           sheetData.system.charcreation.available.merits = 13;
           sheetData.system.charcreation.available.bonuspoints = 18;
         }
       }
-      if(sheetData.system.details.exalt === 'lunar') {
-        if(sheetData.system.essence.value >= 2) {
+      if (sheetData.system.details.exalt === 'lunar') {
+        if (sheetData.system.essence.value >= 2) {
           sheetData.system.charcreation.available.charms = 20;
           sheetData.system.charcreation.available.merits = 13;
           sheetData.system.charcreation.available.bonuspoints = 18;
@@ -356,14 +356,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           merits: 18,
           intimacies: 4,
         }
-        if(sheetData.system.essence.value === 1) {
+        if (sheetData.system.essence.value === 1) {
           sheetData.system.charcreation.available.charms = 15;
           sheetData.system.charcreation.available.merits = 10;
           sheetData.system.charcreation.available.bonuspoints = 15;
         }
       }
       if (sheetData.system.details.exalt === 'sidereal') {
-        if(sheetData.system.essence.value >= 2) {
+        if (sheetData.system.essence.value >= 2) {
           sheetData.system.charcreation.available.charms = 20;
           sheetData.system.charcreation.available.merits = 13;
           sheetData.system.charcreation.available.bonuspoints = 18;

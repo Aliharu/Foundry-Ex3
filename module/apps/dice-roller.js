@@ -3041,12 +3041,6 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === 'action') {
             actionName = this.actor.actions.find(x => x._id === this.object.actionId).name;
         }
-        if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
-            abilityName = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'martialarts').name;
-        }
-        if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
-            abilityName = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'craft').name;
-        }
         var showSpecialAttacks = false
         for (var specialAttack of this.object.specialAttacksList) {
             if (specialAttack.added) {
@@ -3059,8 +3053,6 @@ export class RollForm extends FormApplication {
             rollData: this.object,
             isAttack: this._isAttackRoll(),
             actionName: actionName,
-            martialArtName: martialArtName,
-            craftRollName: craftRollName,
             abilityName: abilityName,
             showSpecialAttacks: showSpecialAttacks,
             rollingActor: this.actor,

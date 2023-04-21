@@ -45,6 +45,15 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     const itemData = this.item.toObject(false);
     context.system = itemData.system;
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+    context.attributeList = CONFIG.exaltedthird.attributes;
+    context.charmAbilityList = CONFIG.exaltedthird.charmabilities;
+    context.abilityList = CONFIG.exaltedthird.abilities;
+    if(this.item.parent) {
+      for(const customAbility of this.item.parent.customabilities){
+        context.abilityList[customAbility._id] = customAbility.name;
+        context.charmAbilityList[customAbility._id] = customAbility.name;
+      }
+    }
 
     context.rollData = {};
     let actor = this.object?.parent ?? null;
