@@ -40,12 +40,12 @@
         "1/day, gain intimacy non-charm dice on a mental or social action to uphold a principle."
     ],
     "water": [
-        "5m (0 at Bonfire), cross surface of water like its land and ignore the difficulty terrain penalty.",
+        "5m (0m at Bonfire), cross surface of water like its land and ignore the difficulty terrain penalty.",
         "3m, Add a non charm success to desengage, withdraw, or grapple resistance.",
         "May breath underwater and suffers no penalties for being underwater"
     ],
     "wood": [
-        "5m (0 at Bonfire), become immune to plant based poisons, and DB 9s to resist all otehr points/diseases for the scene.",
+        "5m (0m at Bonfire), become immune to plant based poisons, and DB 9s to resist all otehr points/diseases for the scene.",
         "3m, Ignore 1 point of Evasion penalties or Essence poins of movement penalties for 1 instant.",
         "Anima flux adds a 2i, (Essnece + Stamina) rounds, -1 penalty poison to damaged characters."
     ],
@@ -55,12 +55,12 @@
         "1/day, 10m, 1wp, when reseting initative roll join battle and add physical attribute non-charm dice"
     ],
     "changingmoon": [
-        "5m (Mute, 0 at Bonfire), add (Essence/2) round up non-charm dice on an influence roll. Targets must hear out the exalt or pay 1WP.",
+        "5m (Mute, 0m at Bonfire), add (Essence/2) round up non-charm dice on an influence roll. Targets must hear out the exalt or pay 1WP.",
         "Dim anima: Gain +1 non-charm guile and add Essence/2 rounds up non charm dice to stealth/disguise rolls.",
         "1/day, 3m, 1wp, Ignore penalties for negative ties the target has towards the exalt.  Target cannot use these ties to boost resolve."
     ],
     "nomoon": [
-        "5m (0 at Bonfire), Until next turn targets take a -2 penalty on vision based actions against the exalt including attacks.",
+        "5m (0m at Bonfire), Until next turn targets take a -2 penalty on vision based actions against the exalt including attacks.",
         "3m, Sense the location of neaby places of power and add Mental Attribute to navigate towards it.",
         "1/day, 3a.  Reflexivly gain 1wp, add Essence + Mental Attribute sorcerous motes or add a Free Excellency to a non-JoinBattle mental roll."
     ],
@@ -71,27 +71,27 @@
     ],
     "journeys": [
         "1m, learn whether a journey would align with destiny.",
-        "5m (0 at Bonfire), Exalt+Allies gain (Essence max 5) non-charm dice on movement actions",
+        "5m (0m at Bonfire), Exalt+Allies gain (Essence max 5) non-charm dice on movement actions",
         "1/story, 20m, 1wp, Teleport exalt, circle, and EssenceX2 others within long range to anywhere she is familiar with.  Takes 1 turn and activates at the start of next turn if she hasn't move during that time."
     ],
     "serenity": [
         "1m. learn whether a persons relationship would align with destiny",
-        "5m (0 at Bonfire),",
+        "5m (0m at Bonfire), She and allies gain (Essence max 5) non charm dice on influence rolls for positive emotions and craft rolls for basic/major projects.  Resolve bonuses from postiive ties increase by one.",
         "1/story, 20m, 1wp (Psyche), Take her turn to cause all current participants in the battle to be unable to take hostile actions unless they cite a defining intimacy and spend (Sids Essence or 3) WP or make a hostile action in self defense."
     ],
     "battles": [
         "1m, learn whether a battle would align with desiny and who should win",
-        "5m (0 at Bonfire),",
+        "5m (0m at Bonfire), She and allies gain +1 non-charm defense and (Essence max 5) non charm dice on war rolls.",
         "1/story, 20m, 1wp, The sidereal takes her turn to roll Wits + Battles Ability and adds the successes in initative to her and her allies.  For the rest of the scene allies gain (Sids Essence) to base initiative and Battlegroups gain Might 2."
     ],
     "secrets": [
         "1m, learn whether concealing or revealing information aligns with destiny",
-        "5m (0 at Bonfire),",
+        "5m (0m at Bonfire), She and allies gain +1 non-charm guile and (Essence max 5) non charm dice on manupulation, larceny, and stealth",
         "1/story, 20m, 1wp, 1 Scene, Sidereal, allies, and EssenceX2 others are immune to effects opposing their guile and add (Sids Essence) to resolve.  Un-Exalted characters can't lie or refuse to answer questions unless they spend 1 WP.  Characters with Essence less than the sids cannot resist.  For the next Essence days.  Characters effected by this sign cannot be investigated or scryd."
     ],
     "endings": [
         "1m, learn whether an ending would align with destiny and how the ending should go.",
-        "5m (0 at Bonfire),",
+        "5m (0m at Bonfire),  Until next turn she and allies gain (Essence max 5) overwhelming and add 1 auto succes on decisive damage.",
         "1/story, 20m, 1wp, Take 1 turn for allies to gain -1 TN on damage, -2 on damage vs enemies of fate, and ignore hardness.  Un-Exalted characters cannot take crippling injurings and automatically fail rolls vs poison/disease/crippling effects.  Medicine treatments also fail.  Those slain pass unto Lethe (Exalts might still rise as hungry ghosts)."
     ]
 }
