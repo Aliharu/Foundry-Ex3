@@ -568,16 +568,15 @@ Hooks.on("renderChatLog", (app, html, data) => {
 //Martialart, craft, and initiation are deprecated but i don't want to delete them because it will break characters
 Hooks.on("renderDialog", (dialog, html) => {
   Array.from(html.find("#document-create option")).forEach(i => {
-      if (i.value == "martialrt" || i.value == "craft" || i.value == "initiation")
-      {
-          i.remove()
-      }
+    if (i.value == "martialrt" || i.value == "craft" || i.value == "initiation") {
+      i.remove()
+    }
   });
 })
 
 Hooks.on("renderTokenConfig", (dialog, html) => {
   Array.from(html.find(".bar-attribute option")).forEach(i => {
-    if(i.value.includes('savedRolls')) {
+    if (i.value.includes('savedRolls')) {
       i.remove()
     }
   });
@@ -593,6 +592,8 @@ Hooks.once("ready", async function () {
       return false;
     }
   });
+
+  const gameMigrationVersion = game.settings.get("exaltedthird", "systemMigrationVersion");
 
   if (isNewerVersion("1.4.1", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     for (let item of game.items) {
@@ -628,7 +629,6 @@ Hooks.once("ready", async function () {
         error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
         console.error(error);
       }
-      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     }
   }
 
@@ -644,12 +644,10 @@ Hooks.once("ready", async function () {
         error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
         console.error(error);
       }
-      await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     }
   }
 
   if (isNewerVersion("1.9.2", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 1.9.2, please wait`);
     for (let item of game.items) {
       try {
         if (item.type === 'charm') {
@@ -703,8 +701,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
-    ui.notifications.notify(`Migration Complete`);
   }
 
   if (isNewerVersion("1.9.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -726,7 +722,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
   if (isNewerVersion("1.10.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -748,10 +743,10 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
   if (isNewerVersion("1.11.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 1.11.0, please wait`);
     const chatData = {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: 'As of 1.11.0, you can now select if an ability has an excellency or not.  Doing so will determine whether the dice caps show up.  You can also change what attribute/ability informs static values.  Set this value in Character creation mode.',
@@ -872,6 +867,7 @@ Hooks.once("ready", async function () {
       await pack.configure({ locked: wasLocked });
     }
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    ui.notifications.notify(`Migration Complete`);
   }
 
   // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {
