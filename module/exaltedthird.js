@@ -810,61 +810,61 @@ Hooks.once("ready", async function () {
     }
     for (let pack of game.packs) {
       const type = pack.metadata.type;
-      if (!['Actor', 'Item'].includes(type))
-        return;
-      // Unlock the pack for editing
-      const wasLocked = pack.locked;
-      await pack.configure({ locked: false });
-      // Begin by requesting server-side data model migration and get the migrated content
-      await pack.migrate();
-      const documents = await pack.getDocuments();
-      // Iterate over compendium entries - applying fine-tuned migration functions
-      for (const doc of documents) {
-        let updateData = {};
-        try {
-          switch (type) {
-            case 'Actor':
-              for (let item of actor.items.filter((item) => item.type === 'martialart')) {
-                await item.update({
-                  [`type`]: 'customability',
-                });
-                await item.update(martialArtData);
-              }
-              for (let item of actor.items.filter((item) => item.type === 'craft')) {
-                await item.update({
-                  [`type`]: 'customability',
-                });
-                await item.update(craftData);
-              }
-              for (let item of doc.items.filter((item) => item.type === 'initiation')) {
-                await item.update({
-                  [`type`]: 'ritual',
-                });
-              }
-              break;
-            case 'Item':
-              if (doc.type === 'initiation') {
-                await doc.update({
-                  [`type`]: 'ritual',
-                });
-              }
-              if (doc.type === 'martialart' || doc.type === 'craft') {
-                await doc.update({
-                  [`type`]: 'customability',
-                });
-              }
-              break;
+      if (['Actor', 'Item'].includes(type)) {
+        // Unlock the pack for editing
+        const wasLocked = pack.locked;
+        await pack.configure({ locked: false });
+        // Begin by requesting server-side data model migration and get the migrated content
+        await pack.migrate();
+        const documents = await pack.getDocuments();
+        // Iterate over compendium entries - applying fine-tuned migration functions
+        for (const doc of documents) {
+          let updateData = {};
+          try {
+            switch (type) {
+              case 'Actor':
+                for (let item of actor.items.filter((item) => item.type === 'martialart')) {
+                  await item.update({
+                    [`type`]: 'customability',
+                  });
+                  await item.update(martialArtData);
+                }
+                for (let item of actor.items.filter((item) => item.type === 'craft')) {
+                  await item.update({
+                    [`type`]: 'customability',
+                  });
+                  await item.update(craftData);
+                }
+                for (let item of doc.items.filter((item) => item.type === 'initiation')) {
+                  await item.update({
+                    [`type`]: 'ritual',
+                  });
+                }
+                break;
+              case 'Item':
+                if (doc.type === 'initiation') {
+                  await doc.update({
+                    [`type`]: 'ritual',
+                  });
+                }
+                if (doc.type === 'martialart' || doc.type === 'craft') {
+                  await doc.update({
+                    [`type`]: 'customability',
+                  });
+                }
+                break;
+            }
+            if (foundry.utils.isEmpty(updateData))
+              continue;
           }
-          if (foundry.utils.isEmpty(updateData))
-            continue;
+          catch (err) {
+            // Handle migration failures
+            err.message = `Failed ex3 system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
+          }
         }
-        catch (err) {
-          // Handle migration failures
-          err.message = `Failed ex3 system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
-        }
+        // Apply the original locked status for the pack
+        await pack.configure({ locked: wasLocked });
       }
-      // Apply the original locked status for the pack
-      await pack.configure({ locked: wasLocked });
     }
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     ui.notifications.notify(`Migration Complete`);
