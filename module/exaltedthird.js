@@ -752,6 +752,11 @@ Hooks.once("ready", async function () {
   }
 
   if (isNewerVersion("1.11.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    const chatData = {
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: 'As of 1.11.0, you can now select if an ability has an excellency or not.  Doing so will determine whether the dice caps show up.  You can also change what attribute/ability informs static values.  Set this value in Character creation mode.',
+    };
+    ChatMessage.create(chatData);
     const martialArtData = {
       system: {
         abilitytype: 'martialart'

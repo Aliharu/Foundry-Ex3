@@ -30,9 +30,11 @@
         <div>
             <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
         </div>
+        {{#if item.system.keywords}}
         <div>
             <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
         </div>
+        {{/if}}
         <div>
             <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
         </div>

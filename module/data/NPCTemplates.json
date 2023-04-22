@@ -731,6 +731,128 @@
       }
     }
   },
+  "godOrDemon": {
+    "defaultName": "God or Demon",
+    "npcType": "god",
+    "exalt": "other",
+    "essence": 3,
+    "skills": {
+      "agility": {
+        "label": "Ex3.Agility",
+        "value": "skilled"
+      },
+      "body": {
+        "label": "Ex3.Body",
+        "value": "exceptional"
+      },
+      "combat": {
+        "label": "Ex3.Combat",
+        "value": "skilled"
+      },
+      "perception": {
+        "label": "Ex3.Perception",
+        "value": "skilled"
+      },
+      "mind": {
+        "label": "Ex3.Mind",
+        "value": "exceptional"
+      },
+      "social": {
+        "label": "Ex3.Social",
+        "value": "weak"
+      },
+      "strength": {
+        "label": "Ex3.Strength",
+        "value": "skilled"
+      },
+      "willpower": {
+        "label": "Ex3.Willpower",
+        "value": "skilled"
+      }
+    },
+    "equipment": {
+      "primaryWeapon": {
+        "type": "random",
+        "weaponType": "melee",
+        "weight": "light",
+        "artifact": false
+      },
+      "secondaryWeapon": {
+        "type": "random",
+        "weaponType": "thrown",
+        "weight": "light",
+        "artifact": false
+      },
+      "armor": {
+        "type": "none",
+        "weight": "light",
+        "artifact": false
+      }
+    },
+    "sorcerer": "none",
+    "battlegroup": false,
+    "battlegroupStats": {
+      "size": 1,
+      "might": 0,
+      "drill": 0
+    },
+    "numberTraits": {
+      "randomCharms": {
+        "label": "Ex3.RandomCharms",
+        "value": 0
+      },
+      "randomMutations": {
+        "label": "Ex3.RandomMutations",
+        "value": 0
+      },
+      "randomSpells": {
+        "label": "Ex3.RandomSpells",
+        "value": 0
+      }
+    },
+    "traits": {
+      "commander": {
+        "label": "Ex3.Commander",
+        "value": false
+      },
+      "godOrDemon": {
+        "label": "Ex3.God/Demon",
+        "value": true
+      },
+      "legendarySize": {
+        "label": "Ex3.LegendarySize",
+        "value": false
+      },
+      "poisoner": {
+        "label": "Ex3.Poisoner",
+        "value": false
+      },
+      "martialArtist": {
+        "label": "Ex3.MartialArtist",
+        "value": false
+      },
+      "motePool": {
+        "label": "Ex3.MotePool",
+        "value": true
+      },
+      "spirit": {
+        "label": "Ex3.Spirit",
+        "value": true
+      },
+      "strikingAppearance": {
+        "label": "Ex3.StrikingAppearance",
+        "value": false
+      },
+      "stealthy": {
+        "label": "Ex3.Stealthy",
+        "value": false
+      },
+      "wealthy": {
+        "label": "Ex3.Wealthy",
+        "value": false
+      }
+    }
+  },
   "socialite": {
     "defaultName": "Socialite",
     "npcType": "mortal",
