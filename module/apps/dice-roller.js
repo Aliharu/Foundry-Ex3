@@ -1567,11 +1567,11 @@ export class RollForm extends FormApplication {
     async _updateSpecialtyList() {
         const customAbility = this.actor.customabilities.find(x => x._id === this.object.ability);
         if (customAbility) {
-            if(customAbility.system.abilitytype === 'craft') {
+            if (customAbility.system.abilitytype === 'craft') {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'craft');
 
             }
-            else if(customAbility.system.abilitytype === 'martialarts') {
+            else if (customAbility.system.abilitytype === 'martialarts') {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'martialarts');
             }
         }
@@ -1857,7 +1857,7 @@ export class RollForm extends FormApplication {
             if (this.object.specialty) {
                 dice++;
             }
-            if(this.object.rollType === 'social') {
+            if (this.object.rollType === 'social') {
                 if (this.object.applyAppearance) {
                     dice += this.object.appearanceBonus;
                 }
@@ -2102,10 +2102,10 @@ export class RollForm extends FormApplication {
                 </div>
             </div>`
         let chatCardTitle = 'Ability Roll';
-        if(this.object.rollType === 'social') {
+        if (this.object.rollType === 'social') {
             chatCardTitle = `Social action ${this.object.target ? ` on ${this.object.target.name}` : ''}`;
         }
-        if(this.object.rollType === 'readIntentions') {
+        if (this.object.rollType === 'readIntentions') {
             chatCardTitle = `Read intentions action ${this.object.target ? ` on ${this.object.target.name}` : ''}`;
         }
         theContent = await this._createChatMessageContent(theContent, chatCardTitle)
@@ -3063,73 +3063,75 @@ export class RollForm extends FormApplication {
     _getDiceCap() {
         if (this.object.rollType !== "base") {
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
-                if (this.object.rollType === 'damage') {
-                    if (this.actor.system.details.exalt === "lunar") {
-                        return `${this.actor.system.attributes['strength'].value} - ${this.actor.system.attributes['strength'].value + 5}`;
-                    }
-                    else {
-                        return '';
-                    }
-                }
-                var abilityValue = 0;
-                if(this.object.customabilities) {
-                    if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
-                        abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'martialarts').system.points;
-                    }
-                    else if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
-                        abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability  && x.system.abilitytype === 'craft').system.points;
-                    }
-                }
-                else if (this.actor.system.abilities[this.object.ability]) {
-                    abilityValue = this.actor.system.abilities[this.object.ability].value;
-                }
-                if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
-                    return abilityValue + this.actor.system.attributes[this.object.attribute].value;
-                }
-                if (this.actor.system.details.exalt === "dragonblooded") {
-                    return abilityValue + (this.object.specialty ? 1 : 0);
-                }
-                if (this.actor.system.details.exalt === "lunar") {
-                    return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
-                }
-                if (this.actor.system.details.exalt === "sidereal") {
-                    var baseSidCap = Math.min(5, Math.max(3, this.actor.system.essence.value));
-                    var tnChange = "";
-                    if (abilityValue === 5) {
-                        if (this.actor.system.essence.value >= 3) {
-                            tnChange = " - TN -3";
+                if (this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
+                    if (this.object.rollType === 'damage') {
+                        if (this.actor.system.details.exalt === "lunar") {
+                            return `${this.actor.system.attributes['strength'].value} - ${this.actor.system.attributes['strength'].value + 5}`;
                         }
                         else {
-                            tnChange = " - TN -2";
+                            return '';
                         }
                     }
-                    else if (abilityValue >= 3) {
-                        tnChange = " - TN -1";
+                    var abilityValue = 0;
+                    if (this.object.customabilities) {
+                        if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
+                            abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'martialarts').system.points;
+                        }
+                        else if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
+                            abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability && x.system.abilitytype === 'craft').system.points;
+                        }
                     }
-                    return `${baseSidCap}${tnChange}`;
-                }
-                if (this.actor.system.details.exalt === "dreamsouled") {
-                    return `${abilityValue} or ${Math.min(10, abilityValue + this.actor.system.essence.value)} when upholding ideal`;
-                }
-                if (this.actor.system.details.exalt === "umbral") {
-                    return `${Math.min(10, abilityValue + this.actor.system.details.penumbra.value)}`;
-                }
-                if (this.actor.system.details.exalt === "liminal") {
-                    if (this.actor.system.anima.value > 1) {
-                        return `${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value}`;
+                    else if (this.actor.system.abilities[this.object.ability]) {
+                        abilityValue = this.actor.system.abilities[this.object.ability].value;
                     }
-                    else {
-                        return `${this.actor.system.attributes[this.object.attribute].value}`;
+                    if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                        return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                     }
-                }
-                if (this.actor.system.details.caste.toLowerCase() === "architect") {
-                    return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
-                }
-                if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
-                    return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
-                }
-                if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
-                    return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
+                    if (this.actor.system.details.exalt === "dragonblooded") {
+                        return abilityValue + (this.object.specialty ? 1 : 0);
+                    }
+                    if (this.actor.system.details.exalt === "lunar") {
+                        return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
+                    }
+                    if (this.actor.system.details.exalt === "sidereal") {
+                        var baseSidCap = Math.min(5, Math.max(3, this.actor.system.essence.value));
+                        var tnChange = "";
+                        if (abilityValue === 5) {
+                            if (this.actor.system.essence.value >= 3) {
+                                tnChange = " - TN -3";
+                            }
+                            else {
+                                tnChange = " - TN -2";
+                            }
+                        }
+                        else if (abilityValue >= 3) {
+                            tnChange = " - TN -1";
+                        }
+                        return `${baseSidCap}${tnChange}`;
+                    }
+                    if (this.actor.system.details.exalt === "dreamsouled") {
+                        return `${abilityValue} or ${Math.min(10, abilityValue + this.actor.system.essence.value)} when upholding ideal`;
+                    }
+                    if (this.actor.system.details.exalt === "umbral") {
+                        return `${Math.min(10, abilityValue + this.actor.system.details.penumbra.value)}`;
+                    }
+                    if (this.actor.system.details.exalt === "liminal") {
+                        if (this.actor.system.anima.value > 1) {
+                            return `${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value}`;
+                        }
+                        else {
+                            return `${this.actor.system.attributes[this.object.attribute].value}`;
+                        }
+                    }
+                    if (this.actor.system.details.caste.toLowerCase() === "architect") {
+                        return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
+                    }
+                    if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+                        return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+                    }
+                    if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
+                        return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
+                    }
                 }
             }
             else if (this.actor.system.creaturetype === 'exalt') {
@@ -3633,7 +3635,7 @@ export class RollForm extends FormApplication {
                     .play()
             }
         }
-        if(this.object.weaponMacro) {
+        if (this.object.weaponMacro) {
             let macro = new Function(this.object.weaponMacro);
             try {
                 macro.call(this);

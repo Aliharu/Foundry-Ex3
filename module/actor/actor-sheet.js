@@ -69,6 +69,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       secrets: this.document.isOwner,
       async: true
     });
+    context.attributeList = CONFIG.exaltedthird.attributes;
+    context.abilityList = CONFIG.exaltedthird.abilities;
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
@@ -1154,8 +1156,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
     if (type === 'parry') {
-      var highestAbility = Math.max(data.abilities.melee.value, data.abilities.brawl.value, data.abilities.martialarts.value);
-      data.parry.value = Math.ceil((data.attributes.dexterity.value + highestAbility) / 2);
+      data.parry.value = Math.ceil((data.attributes[data.settings.staticcapsettings.parry.attribute].value + data.abilities[data.settings.staticcapsettings.parry.ability].value) / 2);
       for (let weapon of this.actor.weapons) {
         if (weapon.system.equipped) {
           data.parry.value = data.parry.value + weapon.system.defense;
@@ -1163,7 +1164,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
     if (type === 'evasion') {
-      var newEvasionValue = Math.ceil((data.attributes.dexterity.value + data.abilities.dodge.value) / 2);
+      var newEvasionValue = Math.ceil((data.attributes[data.settings.staticcapsettings.parry.attribute].value + data.abilities[data.settings.staticcapsettings.evasion.ability].value) / 2);
       for (let armor of this.actor.armor) {
         if (armor.system.equipped) {
           newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
@@ -1172,10 +1173,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       data.evasion.value = newEvasionValue;
     }
     if (type === 'resolve') {
-      data.resolve.value = Math.ceil((data.attributes.wits.value + data.abilities.integrity.value) / 2);
+      data.resolve.value = Math.ceil((data.attributes[data.settings.staticcapsettings.resolve.attribute].value + data.abilities[data.settings.staticcapsettings.resolve.ability].value) / 2);
     }
     if (type === 'guile') {
-      data.guile.value = Math.ceil((data.attributes.manipulation.value + data.abilities.socialize.value) / 2);
+      data.guile.value = Math.ceil((data.attributes[data.settings.staticcapsettings.guile.attribute].value + data.abilities[data.settings.staticcapsettings.guile.ability].value) / 2);
     }
     if (type === 'resonance') {
       data.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);

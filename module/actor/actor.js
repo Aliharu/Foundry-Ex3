@@ -143,14 +143,14 @@ export class ExaltedThirdActor extends Actor {
       const attributes = {}
       const abilities = {}
       for (let [key, attribute] of Object.entries(this.system.attributes)) {
-        if(casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
+        if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           attributes[key] = {
             favored: true
           }
         }
       }
       for (let [key, ability] of Object.entries(this.system.abilities)) {
-        if(casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
+        if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           abilities[key] = {
             favored: true
           }
@@ -471,6 +471,10 @@ export class ExaltedThirdActor extends Actor {
         data.resolve.padding = false;
         data.socialCapPadding = true;
       }
+      if(actorData.type === "character" && data.attributes.stamina.excellency) {
+        var newValue = Math.floor(data.attributes.stamina.value / 2);
+        data.soak.cap = `(+${newValue} for ${newValue}m)`
+      }
     }
 
     if (data.battlegroup) {
@@ -746,6 +750,9 @@ export class ExaltedThirdActor extends Actor {
 
   _getStaticCap(actorData, type, value) {
     if (actorData.type === "character") {
+      if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability].excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute].excellency) {
+        return '';
+      }
       switch (actorData.system.details.exalt) {
         case 'dragonblooded':
           var newValue = Math.floor(value / 2);

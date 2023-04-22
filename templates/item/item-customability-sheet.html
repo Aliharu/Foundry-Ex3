@@ -29,12 +29,16 @@
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
+            <div class="d-flex flex-center">
+                <label class="resource-label">{{localize "Ex3.SiderealMartialArt"}}</label>
+                <input name="system.siderealmartialart" type="checkbox" value="system.siderealmartialart" {{checked system.siderealmartialart}}>
+                <label class="resource-label">{{localize "Ex3.Excellency"}}</label>
+                <input name="system.excellency" type="checkbox" value="system.excellency" {{checked system.excellency}}>
+            </div>
             {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
-            <label class="resource-label">{{localize "Ex3.SiderealMartialArt"}}</label>
-            <input name="system.siderealmartialart" type="checkbox" value="system.siderealmartialart" {{checked system.siderealmartialart}}>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

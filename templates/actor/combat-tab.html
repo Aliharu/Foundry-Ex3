@@ -98,7 +98,7 @@
                 <button class="roll-button disengage"><i class="fas fa-person-running"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
-            <div>
+            <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                 <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-armored-soak cursor-pointer" title="Auto Set Armored Soak"
@@ -108,7 +108,7 @@
                 <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
                     data-dtype="Number" />
             </div>
-            <div>
+            <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                 <label class="resource-label">{{localize "Ex3.NaturalSoak"}}
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
@@ -130,8 +130,9 @@
                     {{/ifEquals}}
                 </label>
                 <input type="number" name="system.soak.value" value="{{system.soak.value}}" data-dtype="Number" />
+                <label>{{system.soak.cap}}</label>
             </div>
-            <div>
+            <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                 <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
                 <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
                     data-dtype="Number" />
