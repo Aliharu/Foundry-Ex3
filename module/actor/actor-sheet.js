@@ -358,6 +358,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           specialties: 3,
           merits: 18,
           intimacies: 4,
+          willpower: 5,
         }
         if (sheetData.system.essence.value === 1) {
           sheetData.system.charcreation.available.charms = 15;
