@@ -329,6 +329,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         specialties: 4,
         merits: 10,
         intimacies: 4,
+        willpower: 5,
       }
       if (sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
         if (sheetData.system.essence.value >= 2) {
@@ -384,6 +385,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           specialties: 4,
           merits: 7,
           intimacies: 4,
+          willpower: 3,
         }
       }
       sheetData.system.charcreation.spent = {
@@ -448,10 +450,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       sheetData.system.charcreation.spent.charms = actorData.items.filter((item) => item.type === 'charm').length;
       sheetData.system.charcreation.spent.intimacies = actorData.items.filter((item) => item.type === 'intimacy').length;
       sheetData.system.charcreation.spent.charms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.willpower.max - 5))) * 2;
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.merits - 10)));
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - 4)));
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - 15))) * 4;
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 2;
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits)));
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties)));
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 4;
     }
     if (sheetData.actor.type === 'character') {
       sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
