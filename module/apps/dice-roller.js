@@ -3069,10 +3069,8 @@ export class RollForm extends FormApplication {
                         }
                     }
                     var abilityValue = 0;
-                    if (this.object.customabilities) {
-                        if (this.object.customabilities.some(ma => ma._id === this.object.ability)) {
-                            abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability).system.points;
-                        }
+                    if (this.object.customabilities && this.object.customabilities.some(ma => ma._id === this.object.ability)) {
+                        abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability).system.points;
                     }
                     else if (this.actor.system.abilities[this.object.ability]) {
                         abilityValue = this.actor.system.abilities[this.object.ability].value;
