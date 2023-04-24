@@ -206,10 +206,10 @@ Hooks.once('init', async function () {
       costString += `${cost.xp}xp, `
     }
     if (cost.initiative > 0) {
-      costString += `${cost.initiative}gxp, `
+      costString += `${cost.goldxp}gxp, `
     }
     if (cost.initiative > 0) {
-      costString += `${cost.initiative}wxp, `
+      costString += `${cost.whitexp}wxp, `
     }
     if (costString !== '') {
       costString = `<b>${game.i18n.localize("Ex3.Cost")}</b>` + ": " + costString;
