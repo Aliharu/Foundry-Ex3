@@ -49,6 +49,7 @@
     "Ex3.RollBonuses": "Roll Bonuses",
     "Ex3.Iconic": "Iconic",
     "Ex3.Animal": "Animal",
+    "Ex3.LunarAnimalForm": "Lunar Animal Form",
     "Ex3.Mortal": "Mortal",
     "Ex3.Elemental": "Elemental",
     "Ex3.Behemoth": "Behemoth",
@@ -715,5 +716,6 @@
     "Ex3.Flesh": "Flesh",
     "Ex3.Marrow": "Marrow",
     "Ex3.Soil": "Soil",
-    "Ex3.God/Demon": "God/Demon"
+    "Ex3.God/Demon": "God/Demon",
+    "Ex3.Sync": "Sync"
 }

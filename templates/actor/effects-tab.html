@@ -230,4 +230,27 @@
     {{/each}}
 </ol>
 {{/if}}
+{{#ifEquals actor.type 'npc'}}
+<div class="resource-label list-section-header d-flex flex-between">
+    <div>
+        {{localize "Ex3.LunarAnimalForm"}}
+    </div>
+</div>
+<div class="grid grid-2col flex-group-center">
+    <div class="d-flex flex-center">
+        <label class="resource-label">{{localize "Ex3.Lunar"}}:</label>
+        <select class="ml-1" name="system.lunarform.actorid" data-type="String">
+            {{#select system.lunarform.actorid}}
+            {{#each characterLunars as |actor id|}}
+            <option value="{{actor.id}}">{{actor.label}}</option>
+            {{/each}}
+            <option value="">{{localize "Ex3.None"}}</option>
+            {{/select}}
+        </select>
+        <div class="ml-1">
+             <button class="roll-button sync-animal-form"><i class="fa-solid fa-rotate"></i>{{localize "Ex3.Sync"}}</button>
+        </div>
+    </div>
+</div>
+{{/ifEquals}}
 {{> systems/exaltedthird/templates/actor/active-effects.html}}

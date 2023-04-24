@@ -75,10 +75,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.availableCastes = []
-    context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt]
-    // Update traits
+    context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
+    context.characterLunars = game.actors.filter(actor => actor.type === 'character' && actor.system.details.exalt === 'lunar').map((actor) => {
+      return {
+        id: actor.id,
+        label: actor.name
+      }
+    })
     this._prepareTraits(context.system.traits);
-    // Prepare items.
+    // this._prepareActorSheetData(context);
+    if(context.actor.type === 'character') {
+      this._prepareCharacterData(context);
+    }
+    if(context.actor.type === 'npc') {
+      this._prepareNPCData(context);
+    }
     this._prepareCharacterItems(context);
     context.itemDescriptions = {};
     for (let item of this.actor.items) {
@@ -87,6 +98,178 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     context.effects = prepareActiveEffectCategories(this.document.effects);
     return context;
+  }
+
+  // _prepareActorSheetData(sheetData) {
+  //   const actorData = sheetData.actor;
+  // }
+
+  _prepareCharacterData(sheetData){
+    const actorData = sheetData.actor;
+      var pointsAvailableMap = {
+        primary: 8,
+        secondary: 6,
+        tertiary: 4,
+      }
+      if (sheetData.system.details.exalt === 'lunar') {
+        pointsAvailableMap = {
+          primary: 9,
+          secondary: 7,
+          tertiary: 5,
+        }
+      }
+      if (sheetData.system.details.exalt === 'mortal') {
+        pointsAvailableMap = {
+          primary: 6,
+          secondary: 4,
+          tertiary: 3,
+        }
+      }
+      sheetData.system.charcreation.available = {
+        attributes: {
+          physical: pointsAvailableMap[sheetData.system.charcreation.physical],
+          social: pointsAvailableMap[sheetData.system.charcreation.social],
+          mental: pointsAvailableMap[sheetData.system.charcreation.mental],
+        },
+        abilities: 28,
+        bonuspoints: 15,
+        charms: 15,
+        specialties: 4,
+        merits: 10,
+        intimacies: 4,
+        willpower: 5,
+      }
+      if (sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
+        if (sheetData.system.essence.value >= 2) {
+          sheetData.system.charcreation.available.charms = 20;
+          sheetData.system.charcreation.available.merits = 13;
+          sheetData.system.charcreation.available.bonuspoints = 18;
+        }
+      }
+      if (sheetData.system.details.exalt === 'lunar') {
+        if (sheetData.system.essence.value >= 2) {
+          sheetData.system.charcreation.available.charms = 20;
+          sheetData.system.charcreation.available.merits = 13;
+          sheetData.system.charcreation.available.bonuspoints = 18;
+        }
+      }
+      if (sheetData.system.details.exalt === 'dragonblooded') {
+        sheetData.system.charcreation.available = {
+          attributes: {
+            physical: pointsAvailableMap[sheetData.system.charcreation.physical],
+            social: pointsAvailableMap[sheetData.system.charcreation.social],
+            mental: pointsAvailableMap[sheetData.system.charcreation.mental],
+          },
+          abilities: 28,
+          bonuspoints: 18,
+          charms: 20,
+          specialties: 3,
+          merits: 18,
+          intimacies: 4,
+          willpower: 5,
+        }
+        if (sheetData.system.essence.value === 1) {
+          sheetData.system.charcreation.available.charms = 15;
+          sheetData.system.charcreation.available.merits = 10;
+          sheetData.system.charcreation.available.bonuspoints = 15;
+        }
+      }
+      if (sheetData.system.details.exalt === 'sidereal') {
+        if (sheetData.system.essence.value >= 2) {
+          sheetData.system.charcreation.available.charms = 20;
+          sheetData.system.charcreation.available.merits = 13;
+          sheetData.system.charcreation.available.bonuspoints = 18;
+        }
+      }
+      if (sheetData.system.details.exalt === 'mortal') {
+        sheetData.system.charcreation.available = {
+          attributes: {
+            physical: pointsAvailableMap[sheetData.system.charcreation.physical],
+            social: pointsAvailableMap[sheetData.system.charcreation.social],
+            mental: pointsAvailableMap[sheetData.system.charcreation.mental],
+          },
+          abilities: 28,
+          bonuspoints: 21,
+          charms: 0,
+          specialties: 4,
+          merits: 7,
+          intimacies: 4,
+          willpower: 3,
+        }
+      }
+      sheetData.system.charcreation.spent = {
+        attributes: {
+          physical: 0,
+          social: 0,
+          mental: 0,
+        },
+        abilities: 0,
+        bonuspoints: 0,
+        charms: 0,
+        specialties: 0,
+        merits: 0,
+        abovethree: 0,
+        intimacies: 0,
+      }
+      for (let attr of Object.values(sheetData.system.attributes)) {
+        attr.isCheckbox = attr.dtype === "Boolean";
+        sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
+      }
+      for (let name of Object.keys(sheetData.system.charcreation.spent.attributes)) {
+        if (sheetData.system.charcreation[name] === 'tertiary' || sheetData.system.details.exalt === 'lunar') {
+          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 3);
+        }
+        else {
+          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 4);
+        }
+      }
+      var threeOrBelow = 0;
+      for (let attr of Object.values(sheetData.system.abilities)) {
+        attr.isCheckbox = attr.dtype === "Boolean";
+        sheetData.system.charcreation.spent.abovethree += Math.max(0, (attr.value - 3));
+        if (attr.favored) {
+          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (attr.value - 3));
+        }
+        else {
+          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (attr.value - 3))) * 2;
+        }
+        threeOrBelow += Math.min(3, attr.value);
+      }
+      for (let customAbility of actorData.customabilities) {
+        sheetData.system.charcreation.spent.abovethree += Math.max(0, (customAbility.system.points - 3));
+        if (customAbility.system.favored) {
+          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (customAbility.system.points - 3));
+        }
+        else {
+          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (customAbility.system.points - 3))) * 2;
+        }
+        threeOrBelow += Math.min(3, customAbility.system.points);
+      }
+      sheetData.system.charcreation.spent.abilities = threeOrBelow;
+      if (sheetData.system.details.exalt === 'lunar') {
+        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28))) * 2;
+      }
+      else {
+        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28)));
+      }
+      sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
+      for (let merit of actorData.merits) {
+        sheetData.system.charcreation.spent.merits += merit.system.points;
+      }
+      sheetData.system.charcreation.spent.charms = actorData.items.filter((item) => item.type === 'charm').length;
+      sheetData.system.charcreation.spent.intimacies = actorData.items.filter((item) => item.type === 'intimacy').length;
+      sheetData.system.charcreation.spent.charms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 2;
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits)));
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties)));
+      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 4;
+      sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
+    
+  }
+
+  _prepareNPCData(sheetData){
+    const actorData = sheetData.actor;
+    sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheetsNPC");
   }
 
 
@@ -296,173 +479,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorData.projects = craftProjects;
     actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
     actorData.destinies = destinies;
-
-    if (actorData.type === 'character') {
-      var pointsAvailableMap = {
-        primary: 8,
-        secondary: 6,
-        tertiary: 4,
-      }
-      if (sheetData.system.details.exalt === 'lunar') {
-        pointsAvailableMap = {
-          primary: 9,
-          secondary: 7,
-          tertiary: 5,
-        }
-      }
-      if (sheetData.system.details.exalt === 'mortal') {
-        pointsAvailableMap = {
-          primary: 6,
-          secondary: 4,
-          tertiary: 3,
-        }
-      }
-      sheetData.system.charcreation.available = {
-        attributes: {
-          physical: pointsAvailableMap[sheetData.system.charcreation.physical],
-          social: pointsAvailableMap[sheetData.system.charcreation.social],
-          mental: pointsAvailableMap[sheetData.system.charcreation.mental],
-        },
-        abilities: 28,
-        bonuspoints: 15,
-        charms: 15,
-        specialties: 4,
-        merits: 10,
-        intimacies: 4,
-        willpower: 5,
-      }
-      if (sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
-        if (sheetData.system.essence.value >= 2) {
-          sheetData.system.charcreation.available.charms = 20;
-          sheetData.system.charcreation.available.merits = 13;
-          sheetData.system.charcreation.available.bonuspoints = 18;
-        }
-      }
-      if (sheetData.system.details.exalt === 'lunar') {
-        if (sheetData.system.essence.value >= 2) {
-          sheetData.system.charcreation.available.charms = 20;
-          sheetData.system.charcreation.available.merits = 13;
-          sheetData.system.charcreation.available.bonuspoints = 18;
-        }
-      }
-      if (sheetData.system.details.exalt === 'dragonblooded') {
-        sheetData.system.charcreation.available = {
-          attributes: {
-            physical: pointsAvailableMap[sheetData.system.charcreation.physical],
-            social: pointsAvailableMap[sheetData.system.charcreation.social],
-            mental: pointsAvailableMap[sheetData.system.charcreation.mental],
-          },
-          abilities: 28,
-          bonuspoints: 18,
-          charms: 20,
-          specialties: 3,
-          merits: 18,
-          intimacies: 4,
-          willpower: 5,
-        }
-        if (sheetData.system.essence.value === 1) {
-          sheetData.system.charcreation.available.charms = 15;
-          sheetData.system.charcreation.available.merits = 10;
-          sheetData.system.charcreation.available.bonuspoints = 15;
-        }
-      }
-      if (sheetData.system.details.exalt === 'sidereal') {
-        if (sheetData.system.essence.value >= 2) {
-          sheetData.system.charcreation.available.charms = 20;
-          sheetData.system.charcreation.available.merits = 13;
-          sheetData.system.charcreation.available.bonuspoints = 18;
-        }
-      }
-      if (sheetData.system.details.exalt === 'mortal') {
-        sheetData.system.charcreation.available = {
-          attributes: {
-            physical: pointsAvailableMap[sheetData.system.charcreation.physical],
-            social: pointsAvailableMap[sheetData.system.charcreation.social],
-            mental: pointsAvailableMap[sheetData.system.charcreation.mental],
-          },
-          abilities: 28,
-          bonuspoints: 21,
-          charms: 0,
-          specialties: 4,
-          merits: 7,
-          intimacies: 4,
-          willpower: 3,
-        }
-      }
-      sheetData.system.charcreation.spent = {
-        attributes: {
-          physical: 0,
-          social: 0,
-          mental: 0,
-        },
-        abilities: 0,
-        bonuspoints: 0,
-        charms: 0,
-        specialties: 0,
-        merits: 0,
-        abovethree: 0,
-        intimacies: 0,
-      }
-      for (let attr of Object.values(sheetData.system.attributes)) {
-        attr.isCheckbox = attr.dtype === "Boolean";
-        sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
-      }
-      for (let name of Object.keys(sheetData.system.charcreation.spent.attributes)) {
-        if (sheetData.system.charcreation[name] === 'tertiary' || sheetData.system.details.exalt === 'lunar') {
-          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 3);
-        }
-        else {
-          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 4);
-        }
-      }
-      var threeOrBelow = 0;
-      for (let attr of Object.values(sheetData.system.abilities)) {
-        attr.isCheckbox = attr.dtype === "Boolean";
-        sheetData.system.charcreation.spent.abovethree += Math.max(0, (attr.value - 3));
-        if (attr.favored) {
-          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (attr.value - 3));
-        }
-        else {
-          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (attr.value - 3))) * 2;
-        }
-        threeOrBelow += Math.min(3, attr.value);
-      }
-      for (let customAbility of actorData.customabilities) {
-        sheetData.system.charcreation.spent.abovethree += Math.max(0, (customAbility.system.points - 3));
-        if (customAbility.system.favored) {
-          sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (customAbility.system.points - 3));
-        }
-        else {
-          sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (customAbility.system.points - 3))) * 2;
-        }
-        threeOrBelow += Math.min(3, customAbility.system.points);
-      }
-      sheetData.system.charcreation.spent.abilities = threeOrBelow;
-      if (sheetData.system.details.exalt === 'lunar') {
-        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28))) * 2;
-      }
-      else {
-        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28)));
-      }
-      sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
-      for (let merit of actorData.merits) {
-        sheetData.system.charcreation.spent.merits += merit.system.points;
-      }
-      sheetData.system.charcreation.spent.charms = actorData.items.filter((item) => item.type === 'charm').length;
-      sheetData.system.charcreation.spent.intimacies = actorData.items.filter((item) => item.type === 'intimacy').length;
-      sheetData.system.charcreation.spent.charms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 2;
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits)));
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties)));
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 4;
-    }
-    if (sheetData.actor.type === 'character') {
-      sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
-    }
-    else {
-      sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheetsNPC");
-    }
-
   }
 
   /**
@@ -1444,9 +1460,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async sheetSettings() {
     let confirmed = false;
     const actorData = duplicate(this.actor);
-    const data = actorData.system;
+    const system = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: data.settings, 'maxAnima': data.anima.max });
+    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: system.settings, 'maxAnima': system.anima.max, 'lunarFormEnabled': system.lunarform?.enabled });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1456,22 +1472,25 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       },
       close: html => {
         if (confirmed) {
-          data.settings.charmmotepool = html.find('#charmMotePool').val();
-          data.settings.martialartsmastery = html.find('#martialArtsMastery').val();
-          data.settings.sheetbackground = html.find('#sheetBackground').val();
-          data.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
-          data.anima.max = parseInt(html.find('#maxAnima').val());
-          data.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
-          data.settings.showship = html.find('#showShip').is(":checked");
-          data.settings.showescort = html.find('#showEscort').is(":checked");
-          data.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
-          data.settings.usetenabilities = html.find('#useTenAbilities').is(":checked");
-          data.settings.rollStunts = html.find('#rollStunts').is(":checked");
-          data.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
-          data.settings.showanima = html.find('#showAnima').is(":checked");
-          data.settings.editmode = html.find('#editMode').is(":checked");
-          data.settings.issorcerer = html.find('#isSorcerer').is(":checked");
-          data.settings.iscrafter = html.find('#isCrafter').is(":checked");
+          system.settings.charmmotepool = html.find('#charmMotePool').val();
+          system.settings.martialartsmastery = html.find('#martialArtsMastery').val();
+          system.settings.sheetbackground = html.find('#sheetBackground').val();
+          system.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
+          system.anima.max = parseInt(html.find('#maxAnima').val());
+          system.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
+          system.settings.showship = html.find('#showShip').is(":checked");
+          system.settings.showescort = html.find('#showEscort').is(":checked");
+          system.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
+          system.settings.usetenabilities = html.find('#useTenAbilities').is(":checked");
+          system.settings.rollStunts = html.find('#rollStunts').is(":checked");
+          system.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
+          system.settings.showanima = html.find('#showAnima').is(":checked");
+          system.settings.editmode = html.find('#editMode').is(":checked");
+          system.settings.issorcerer = html.find('#isSorcerer').is(":checked");
+          system.settings.iscrafter = html.find('#isCrafter').is(":checked");
+          if(actorData.type === 'npc') {
+            system.lunarform.enabled = html.find('#lunarFormEnabled').is(":checked");
+          }
           this.actor.update(actorData);
         }
       }

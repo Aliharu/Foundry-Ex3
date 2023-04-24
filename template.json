@@ -746,6 +746,10 @@
         "value": 0,
         "min": 0
       },
+      "lunarform": {
+        "enabled": false,
+        "actorid": ""
+      },
       "qualities": "",
       "escort": ""
     }
