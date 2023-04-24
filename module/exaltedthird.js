@@ -205,10 +205,10 @@ Hooks.once('init', async function () {
     if (cost.xp > 0) {
       costString += `${cost.xp}xp, `
     }
-    if (cost.initiative > 0) {
+    if (cost.goldxp > 0) {
       costString += `${cost.goldxp}gxp, `
     }
-    if (cost.initiative > 0) {
+    if (cost.whitexp > 0) {
       costString += `${cost.whitexp}wxp, `
     }
     if (costString !== '') {

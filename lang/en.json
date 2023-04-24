@@ -527,8 +527,11 @@
     "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack (and battlegroup witherings vs crashed characters and withering vs battlegroups).",
     "Ex3.AnimaTokenEffects": "Anima Token Effects",
     "Ex3.AnimaTokenEffectsDescription": "If enables changing anima levels will add Token Magix Fx to tokens, The default black color will not show up. (Do not enable without the TokenMagicFx Module)",
+    
     "Ex3.AttackEffects": "Add Effects on Successful Attacks",
     "Ex3.AttackEffectsDescription": "If enabled attacks will trigger certain animations based on a field on weapons set in the effects tab, can set a preset or copy paste a custom animation location. (Do not enable without Sequencer and JB2A Modules)",
+    "Ex3.SpendItemsChatCards": "Create a chat card on item spending",
+    "Ex3.SpendItemsChatCardsDescription": "When an item (charm/spell) is spend or activated it will display a chat card in the window.",
     "Ex3.FlatXP": "Flat XP",
     "Ex3.FlatXPDescription": "Show Flat XP in advancement dialogue",
     "Ex3.CompactSheets": "Compact Sheets (Character)",

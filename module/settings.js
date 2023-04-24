@@ -17,24 +17,6 @@ export function registerSettings() {
         config: true,
     });
 
-    game.settings.register('exaltedthird', 'animaTokenMagic', {
-        name: game.i18n.localize('Ex3.AnimaTokenEffects'),
-        hint: game.i18n.localize('Ex3.AnimaTokenEffectsDescription'),
-        default: false,
-        scope: 'world',
-        type: Boolean,
-        config: true,
-    });
-
-    game.settings.register('exaltedthird', 'attackEffects', {
-        name: game.i18n.localize('Ex3.AttackEffects'),
-        hint: game.i18n.localize('Ex3.AttackEffectsDescription'),
-        default: false,
-        scope: 'world',
-        type: Boolean,
-        config: true,
-    });
-
     game.settings.register("exaltedthird", "systemMigrationVersion", {
         name: "System Migration Version",
         scope: "world",
@@ -43,27 +25,9 @@ export function registerSettings() {
         default: ""
     });
 
-    game.settings.register("exaltedthird", "flatXP", {
-        name: game.i18n.localize('Ex3.FlatXP'),
-        hint: game.i18n.localize('Ex3.FlatXPDescription'),
-        scope: "world",
-        config: true,
-        type: Boolean,
-        default: false
-    });
-
     game.settings.register("exaltedthird", "compactSheets", {
         name: game.i18n.localize('Ex3.CompactSheets'),
         hint: game.i18n.localize('Ex3.CompactSheetsDescription'),
-        scope: "world",
-        config: true,
-        type: Boolean,
-        default: false
-    });
-
-    game.settings.register("exaltedthird", "compactSheetsNPC", {
-        name: game.i18n.localize('Ex3.CompactSheetsNPC'),
-        hint: game.i18n.localize('Ex3.CompactSheetsDescriptionNPC'),
         scope: "world",
         config: true,
         type: Boolean,
@@ -86,6 +50,16 @@ export function registerSettings() {
         type: Boolean,
         default: false
     });
+
+    game.settings.register("exaltedthird", "compactSheetsNPC", {
+        name: game.i18n.localize('Ex3.CompactSheetsNPC'),
+        hint: game.i18n.localize('Ex3.CompactSheetsDescriptionNPC'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+
     game.settings.register("exaltedthird", "sheetStyle", {
         name: "Ex3.SheetStyle",
         hint: "Ex3.SheetStyleDescription",
@@ -101,5 +75,41 @@ export function registerSettings() {
         onChange: (choice) => {
             window.location.reload();
         },
+    });
+
+    game.settings.register("exaltedthird", "flatXP", {
+        name: game.i18n.localize('Ex3.FlatXP'),
+        hint: game.i18n.localize('Ex3.FlatXPDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+    
+    game.settings.register('exaltedthird', 'animaTokenMagic', {
+        name: game.i18n.localize('Ex3.AnimaTokenEffects'),
+        hint: game.i18n.localize('Ex3.AnimaTokenEffectsDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
+
+    game.settings.register('exaltedthird', 'attackEffects', {
+        name: game.i18n.localize('Ex3.AttackEffects'),
+        hint: game.i18n.localize('Ex3.AttackEffectsDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
+
+    game.settings.register('exaltedthird', 'spendChatCards', {
+        name: game.i18n.localize('Ex3.SpendItemsChatCards'),
+        hint: game.i18n.localize('Ex3.SpendItemsChatCardsDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
     });
 }

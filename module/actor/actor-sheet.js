@@ -917,7 +917,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.item-chat').click(ev => {
-      this._displayCard(ev);
+      ev.preventDefault();
+      ev.stopPropagation();
+      // Render the chat card template
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      this._displayCard(item);
     });
 
     html.find('.craft-project').click(ev => {
@@ -1781,12 +1786,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 * @param {boolean} createMessage   Whether to automatically create a ChatMessage entity (if true), or only return
 *                                  the prepared message data (if false)
 */
-  async _displayCard(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    // Render the chat card template
-    let li = $(event.currentTarget).parents(".item");
-    let item = this.actor.items.get(li.data("item-id"));
+  async _displayCard(item) {
     const token = this.actor.token;
     const templateData = {
       actor: this.actor,
@@ -1803,8 +1803,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
     };
-
-
     // Create the Chat Message or return its data
     return ChatMessage.create(chatData);
   }
@@ -2002,6 +2000,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       actorData.system.sorcery.motes = 0;
     }
     this.actor.update(actorData);
+    if(game.settings.get("exaltedthird", "spendChatCards")) {
+      this._displayCard(item);
+    }
   }
 }
 
