@@ -245,7 +245,7 @@
         <div>
             <b>{{localize "Ex3.Conditions"}}: </b>
             {{#each rollData.conditions as |effect key|}}
-                {{effect.label}}
+                {{effect.name}}
                 {{#ifEquals effect.flags.core.statusId 'prone'}}
                 (-3 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
                 {{/ifEquals}}
@@ -345,8 +345,8 @@
             <div>
                 <b>{{localize "Ex3.Conditions"}}: </b>
                 {{#if rollData.taget.actor.token }}
-                    {{#each rollData.target.actor.token.actorData.effects as |effect key|}}
-                        {{effect.label}}
+                    {{#each rollData.target.actor.token.actor.effects as |effect key|}}
+                        {{effect.name}}
                         {{#ifEquals effect.flags.core.statusId 'lightcover'}}
                         (+1 {{localize "Ex3.Defense"}})
                         {{/ifEquals}}
@@ -369,7 +369,7 @@
                     {{/each}}
                 {{else}}
                     {{#each rollData.target.actor.effects as |effect key|}}
-                        {{effect.label}}
+                        {{effect.name}}
                         {{#ifEquals effect.flags.core.statusId 'lightcover'}}
                         (+1 {{localize "Ex3.Defense"}})
                         {{/ifEquals}}

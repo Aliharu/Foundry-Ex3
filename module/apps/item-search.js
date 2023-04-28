@@ -12,7 +12,7 @@ export default class ItemSearch extends Application {
       attribute: {
         name: "",
         description: "",
-        worldItems: true,
+        worldItems: false,
         lessThen: false,
         charmFilters: {
           ability: "",

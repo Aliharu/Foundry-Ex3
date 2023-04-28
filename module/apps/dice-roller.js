@@ -181,7 +181,7 @@ export class RollForm extends FormApplication {
                 this.object.characterType = this.actor.type;
 
                 if (this.actor.token) {
-                    this.object.conditions = (this.actor.token && this.actor.token.actorData.effects) ? this.actor.token.actorData.effects : [];
+                    this.object.conditions = (this.actor.token && this.actor.token.actor.effects) ? this.actor.token.actor.effects : [];
                 }
                 else {
                     this.object.conditions = this.actor.effects;

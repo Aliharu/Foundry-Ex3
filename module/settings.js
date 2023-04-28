@@ -71,6 +71,7 @@ export function registerSettings() {
             "solar": "Ex3.Solar",
             "lunar": "Ex3.Lunar",
             "db": "Ex3.Dragonblooded",
+            "tree": "Ex3.Tree",
         },
         onChange: (choice) => {
             window.location.reload();

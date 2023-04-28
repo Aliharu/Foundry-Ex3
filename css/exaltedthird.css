@@ -502,6 +502,11 @@
   background-size: cover;
 }
 
+.tree-background .window-content {
+  background: url("../assets/backgrounds/tree-background.jpg");
+  background-size: cover;
+}
+
 .exaltedthird .window-content .abilities,
 .exaltedthird.sheet.actor .window-content .abilities {
   border: none;
