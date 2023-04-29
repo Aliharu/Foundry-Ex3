@@ -1,4 +1,4 @@
-import { RollForm } from "../apps/dice-roller.js";
+import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
 
 /**
@@ -973,4 +973,175 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
       existingPenalty.delete();
     }
   }
+}
+
+export async function spendEmbeddedItem(actor, item) {
+  const actorData = duplicate(actor);
+
+  if (item.type === 'charm') {
+    if (item.system.active) {
+      item.update({
+        [`system.active`]: false,
+      });
+      if (actorData.system.settings.charmmotepool === 'personal') {
+        if (item.system.cost.commitmotes > 0) {
+          actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+        }
+      }
+      else {
+        if (item.system.cost.commitmotes > 0) {
+          actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+        }
+      }
+      for (var effect of actor.effects.filter((effect => effect._sourceName === item.name))) {
+        effect.update({ disabled: true });
+      }
+    }
+    else {
+      var newLevel = actorData.system.anima.level;
+      var newValue = actorData.system.anima.value;
+      if (item.system.cost.anima > 0) {
+        for (var i = 0; i < item.system.cost.anima; i++) {
+          if (newLevel === "Transcendent") {
+            newLevel = "Bonfire";
+            newValue = 3;
+          }
+          else if (newLevel === "Bonfire") {
+            newLevel = "Burning";
+            newValue = 2;
+          }
+          else if (newLevel === "Burning") {
+            newLevel = "Glowing";
+            newValue = 1;
+          }
+          if (newLevel === "Glowing") {
+            newLevel = "Dim";
+            newValue = 0;
+          }
+        }
+      }
+      if (item.system.cost.motes > 0 || item.system.cost.commitmotes > 0) {
+        var spendingMotes = item.system.cost.motes + item.system.cost.commitmotes;
+        var spentPersonal = 0;
+        var spentPeripheral = 0;
+        if (actorData.system.settings.charmmotepool === 'personal') {
+          var remainingPersonal = actorData.system.motes.personal.value - spendingMotes;
+          if (remainingPersonal < 0) {
+            spentPersonal = spendingMotes + remainingPersonal;
+            spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
+          }
+          else {
+            spentPersonal = spendingMotes;
+          }
+          if (item.system.cost.commitmotes > 0) {
+            actorData.system.motes.personal.committed += item.system.cost.commitmotes;
+          }
+        }
+        else {
+          var remainingPeripheral = actorData.system.motes.peripheral.value - spendingMotes;
+          if (remainingPeripheral < 0) {
+            spentPeripheral = spendingMotes + remainingPeripheral;
+            spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+          }
+          else {
+            spentPeripheral = spendingMotes;
+          }
+          if (item.system.cost.commitmotes > 0) {
+            actorData.system.motes.peripheral.committed += item.system.cost.commitmotes;
+          }
+        }
+        actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+        actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
+
+        if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
+          for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+            if (newLevel === "Dim") {
+              newLevel = "Glowing";
+              newValue = 1;
+            }
+            else if (newLevel === "Glowing") {
+              newLevel = "Burning";
+              newValue = 2;
+            }
+            else if (newLevel === "Burning") {
+              newLevel = "Bonfire";
+              newValue = 3;
+            }
+            else if (actorData.system.anima.max === 4) {
+              newLevel = "Transcendent";
+              newValue = 4;
+            }
+          }
+        }
+        if (item.system.cost.commitmotes > 0) {
+          item.update({
+            [`system.active`]: true,
+          });
+          for (var effect of actor.effects.filter((effect => effect._sourceName === item.name))) {
+            effect.update({ disabled: false });
+          }
+        }
+      }
+      actorData.system.anima.level = newLevel;
+      actorData.system.anima.value = newValue;
+      actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - item.system.cost.willpower);
+      if (actor.type === 'character') {
+        actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - item.system.cost.silverxp);
+        actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - item.system.cost.goldxp);
+        actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - item.system.cost.whitexp);
+      }
+      if (actorData.system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
+        actorData.system.details.aura = "none";
+      }
+      if (item.system.cost.health > 0) {
+        let totalHealth = 0;
+        for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
+          totalHealth += health_level.value;
+        }
+        if (item.system.cost.healthtype === 'bashing') {
+          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + item.system.cost.health);
+        }
+        else if (item.system.cost.healthtype === 'lethal') {
+          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + item.system.cost.health);
+        }
+        else {
+          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + item.system.cost.health);
+        }
+      }
+      if (actorData.system.settings.charmmotepool === 'personal') {
+        actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + item.system.restore.motes);
+      }
+      else {
+        actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + item.system.restore.motes);
+      }
+      actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + item.system.restore.willpower);
+      if (item.system.restore.health > 0) {
+        const bashingHealed = item.system.restore.health - actorData.system.health.lethal;
+        actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - item.system.restore.health);
+        if (bashingHealed > 0) {
+          actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
+        }
+      }
+      const tokenId = actor.token?.id || actor.getActiveTokens()[0]?.id;
+      if (game.combat && tokenId) {
+        let combatant = game.combat.combatants.find(c => c?.tokenId === tokenId);
+        if (combatant) {
+          var newInitiative = combatant.initiative;
+          if (item.system.cost.initiative > 0) {
+            newInitiative -= item.system.cost.initiative;
+          }
+          if (combatant.initiative > 0 && newInitiative <= 0) {
+            newInitiative -= 5;
+          }
+          newInitiative += item.system.restore.initiative;
+          game.combat.setInitiative(combatant.id, newInitiative);
+        }
+      }
+      animaTokenMagic(actor, newValue);
+    }
+  }
+  if (item.type === 'spell') {
+    actorData.system.sorcery.motes = 0;
+  }
+  actor.update(actorData);
 }
