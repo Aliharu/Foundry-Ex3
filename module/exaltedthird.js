@@ -1,7 +1,7 @@
 // Import Modules
 import { exaltedthird } from "./config.js";
 
-import { addDefensePenalty, ExaltedThirdActor } from "./actor/actor.js";
+import { addDefensePenalty, ExaltedThirdActor, spendEmbeddedItem } from "./actor/actor.js";
 import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
 import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
@@ -205,10 +205,10 @@ Hooks.once('init', async function () {
     if (cost.xp > 0) {
       costString += `${cost.xp}xp, `
     }
-    if (cost.initiative > 0) {
+    if (cost.goldxp > 0) {
       costString += `${cost.goldxp}gxp, `
     }
-    if (cost.initiative > 0) {
+    if (cost.whitexp > 0) {
       costString += `${cost.whitexp}wxp, `
     }
     if (costString !== '') {
@@ -1039,7 +1039,7 @@ async function createItemMacro(data, slot) {
       command = `//Swtich withering with (decisive, gambit, withering-split, decisive-split, gambit-split) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
     }
     if (item.type === 'charm') {
-      command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\ngame.exaltedthird.triggerItem("${data.uuid}");`;
+      command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\n//If the charm user has no dice roller open it will instead Spend or activate the charm\ngame.exaltedthird.triggerItem("${data.uuid}");`;
     }
     let macro = game.macros.find(m => (m.name === item.name) && (m.command === command));
     if (!macro) {
@@ -1110,6 +1110,9 @@ function triggerItem(itemUuid) {
     }
     if (game.rollForm) {
       game.rollForm.addCharm(item);
+    }
+    else {
+      spendEmbeddedItem(item.parent, item);
     }
     if (item.system.diceroller.opposedbonuses.enabled) {
       game.socket.emit('system.exaltedthird', {
