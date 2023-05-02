@@ -204,6 +204,9 @@ export class ExaltedThirdItem extends Item {
     if (type === 'destiny') {
       return "systems/exaltedthird/assets/icons/spy.svg";
     }
+    if (type === 'shape') {
+      return "icons/svg/mystery-man.svg";
+    }
     if (type === 'martialart') {
       return "systems/exaltedthird/assets/icons/punch-blast.svg";
     }

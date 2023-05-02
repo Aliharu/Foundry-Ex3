@@ -29,18 +29,7 @@
         {{/select}}
     </select>
 
-    <label class="resource-label">{{localize "Ex3.Specialty"}}</label>
-    <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">
-        {{#select data.specialty}}
-        <option value=""></option>
-        {{#each data.specialtyList as |item id|}}
-        <option value="{{id}}">{{item.name}}</option>
-        {{/each}}
-        {{/select}}
-    </select>
-
     {{/ifEquals}}
-
 
     {{#if data.showPool}}
     {{#ifEquals data.characterType 'npc'}}
@@ -59,6 +48,17 @@
     {{/ifEquals}}
     {{/if}}
 
+    {{#if data.specialtyList}}
+    <label class="resource-label">{{localize "Ex3.Specialty"}}</label>
+    <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">
+        {{#select data.specialty}}
+        <option value=""></option>
+        {{#each data.specialtyList as |item id|}}
+        <option value="{{id}}">{{item.name}}</option>
+        {{/each}}
+        {{/select}}
+    </select>
+    {{/if}}
 
     <label class="resource-label">{{localize "Ex3.StuntLevel"}}</label>
     <select name="object.stunt" value="{{data.stunt}}" data-type="String">

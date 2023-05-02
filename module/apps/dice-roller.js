@@ -71,6 +71,7 @@ export class RollForm extends FormApplication {
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
             this.object.diceModifier = 0;
+            this.object.weaponAccuracy = 0;
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
@@ -202,7 +203,7 @@ export class RollForm extends FormApplication {
                         this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                     }
                     else {
-                        this.object.attribute = data.attribute || this._getHighestAttribute();
+                        this.object.attribute = data.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.ability || "archery";
                     }
                     if (this.object.rollType === 'ability' && this.object.ability === 'craft') {
@@ -231,11 +232,12 @@ export class RollForm extends FormApplication {
                     this.object.weaponTags = data.weapon.traits?.weapontags?.selected || {};
                     this.object.damage.resetInit = data.weapon.resetinitiative;
                     if (this.actor.type === 'character') {
-                        this.object.attribute = data.weapon.attribute || this._getHighestAttribute();
+                        this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.weapon.ability || "archery";
                     }
                     if (this.object.attackType === 'withering' || this.actor.type === "npc") {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
+                        this.object.weaponAccuracy = data.weapon.witheringaccuracy || 0;
                         if (this.object.attackType === 'withering') {
                             this.object.damage.damageDice += data.weapon.witheringdamage || 0;
                             if (this.actor.type === 'character') {
@@ -1575,7 +1577,12 @@ export class RollForm extends FormApplication {
             }
         }
         else {
-            this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
+            if (this.actor.type === 'npc') {
+                this.object.specialtyList = this.actor.specialties;
+            }
+            else {
+                this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
+            }
         }
     }
 
@@ -2042,7 +2049,7 @@ export class RollForm extends FormApplication {
 
     async _abilityRoll() {
         if (this.object.attribute == null) {
-            this.object.attribute = this.actor.type === "npc" ? null : this._getHighestAttribute();
+            this.object.attribute = this.actor.type === "npc" ? null : this._getHighestAttribute(this.actor.system.attributes);
         }
         if (!this.object.showTargets && this.object.rollType === 'social') {
             this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
@@ -3082,7 +3089,7 @@ export class RollForm extends FormApplication {
                         return abilityValue + (this.object.specialty ? 1 : 0);
                     }
                     if (this.actor.system.details.exalt === "lunar") {
-                        return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + 5}`;
+                        return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + this._getHighestAttributeNumber(this.actor.system.attributes, true)}`;
                     }
                     if (this.actor.system.details.exalt === "sidereal") {
                         var baseSidCap = Math.min(5, Math.max(3, this.actor.system.essence.value));
@@ -3125,7 +3132,77 @@ export class RollForm extends FormApplication {
                     }
                 }
             }
-            else if (this.actor.system.creaturetype === 'exalt') {
+            else if (this.actor.system.lunarform?.enabled) {
+                const lunar = game.actors.get(this.actor.system.lunarform.actorid);
+                let diceCap = 'Connected Lunar could not be found';
+                if (lunar) {
+                    let lunarPool = 0;
+                    let animalPool = 0;
+                    let lunarAttributeValue = 0;
+                    let lunarHasExcellency = false;
+                    const action = this.object.actions.find(action => action._id === this.object.pool);
+                    if (action) {
+                        lunarPool = lunar.system.attributes[action.system.lunarstats.attribute].value + lunar.system.abilities[action.system.lunarstats.ability].value;
+                        lunarAttributeValue = lunar.system.attributes[action.system.lunarstats.attribute].value;
+                        lunarHasExcellency = lunar.system.attributes[action.system.lunarstats.attribute].excellency;
+                    }
+                    else if (this._isAttackRoll()) {
+                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute].value + lunar.system.abilities.brawl.value;
+                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute].value;
+                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute].excellency;
+                    }
+                    else if (this.object.pool === 'grapple') {
+                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.grapplecontrol.ability].value;
+                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value;
+                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].excellency;
+                    }
+                    else if (this.object.rollType === 'disengage') {
+                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.disengage.ability].value;
+                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute].value;
+                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute].excellency;
+                    }
+                    else if (this.object.pool === 'movement') {
+                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.rush.ability].value;
+                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value;
+                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].excellency;
+                    }
+                    else {
+                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings[this.object.pool].ability].value;
+                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute].value;
+                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute].excellency;
+                    }
+                    if (this.object.specialty) {
+                        lunarPool++;
+                    }
+                    if (this.object.actions.some(action => action._id === this.object.pool)) {
+                        animalPool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
+                    }
+                    else if (this._isAttackRoll()) {
+                        animalPool = this.object.weaponAccuracy || 0;
+                    }
+                    else {
+                        animalPool = this.actor.system.pools[this.object.pool].value;
+                    }
+                    let currentCharmDice = 0;
+                    for (const charm of this.object.addedCharms) {
+                        if (charm.system.diceroller.settings.noncharmdice) {
+                            currentCharmDice += this._getFormulaValue(charm.system.diceroller.bonusdice);
+                        }
+                        if (charm.system.diceroller.settings.noncharmsuccesses) {
+                            currentCharmDice += (this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2);
+                        }
+                    }
+                    this.object.charmDiceAdded = Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
+                    if(lunarHasExcellency) {
+                        diceCap = `${lunarAttributeValue} - ${lunarAttributeValue + this._getHighestAttributeNumber(lunar.system.attributes, true)}`;
+                    }
+                    else {
+                        diceCap = '';
+                    }
+                }
+                return diceCap;
+            }
+            else if (this.actor.type === "npc" && this.actor.system.creaturetype === 'exalt') {
                 var dicePool = 0;
                 if (this.object.actions && this.object.actions.some(action => action._id === this.object.pool)) {
                     dicePool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
@@ -3202,6 +3279,17 @@ export class RollForm extends FormApplication {
         return "";
     }
 
+    _getDamageCap() {
+        if (this._isAttackRoll() && this.object.attackType === 'withering') {
+            if(this.actor.type === 'character' && this.actor.system.attributes.strength.excellency) {
+                var newValueLow = Math.floor(this.actor.system.attributes.strength.value / 2);
+                var newValueHigh = Math.floor((this.actor.system.attributes.strength.value + this._getHighestAttributeNumber(this.actor.system.attributes)) / 2);
+                return `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
+            }
+        }
+        return '';
+    }
+
     _setBattlegroupBonuses() {
         this.object.diceModifier += this.actor.system.commandbonus.value;
         if (this._isAttackRoll()) {
@@ -3212,16 +3300,29 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _getHighestAttribute() {
+    _getHighestAttribute(attributes, syncedLunar=false) {
         var highestAttributeNumber = 0;
         var highestAttribute = "strength";
-        for (let [name, attribute] of Object.entries(this.actor.system.attributes)) {
-            if (attribute.value > highestAttributeNumber) {
+        for (let [name, attribute] of Object.entries(attributes)) {
+            if (attribute.value > highestAttributeNumber && (!syncedLunar || name !== this.object.attribute)) {
                 highestAttributeNumber = attribute.value;
                 highestAttribute = name;
             }
         }
         return highestAttribute;
+    }
+
+    
+    _getHighestAttributeNumber(attributes, syncedLunar=false) {
+        var highestAttributeNumber = 0;
+        var highestAttribute = "strength";
+        for (let [name, attribute] of Object.entries(attributes)) {
+            if (attribute.value > highestAttributeNumber && (!syncedLunar || name !== this.object.attribute)) {
+                highestAttributeNumber = attribute.value;
+                highestAttribute = name;
+            }
+        }
+        return highestAttributeNumber;
     }
 
     _migrateNewData(data) {
@@ -3353,6 +3454,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();
+        }
+        if (this.object.damageDiceCap === undefined) {
+            this.object.damageDiceCap = this._getDamageCap();
         }
         if (this.object.diceToSuccesses === undefined) {
             this.object.diceToSuccesses = 0;

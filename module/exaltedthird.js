@@ -1111,15 +1111,18 @@ function triggerItem(itemUuid) {
     if (game.rollForm) {
       game.rollForm.addCharm(item);
     }
-    else {
-      spendEmbeddedItem(item.parent, item);
-    }
-    if (item.system.diceroller.opposedbonuses.enabled) {
+    else if (item.system.diceroller.opposedbonuses.enabled) {
       game.socket.emit('system.exaltedthird', {
         type: 'addOpposingCharm',
         data: item,
         actorId: item.actor._id,
       });
+      if(item.system.cost.commitmotes > 0 && !item.system.active) {
+        spendEmbeddedItem(item.parent, item);
+      }
+    }
+    else {
+      spendEmbeddedItem(item.parent, item);
     }
   });
 }

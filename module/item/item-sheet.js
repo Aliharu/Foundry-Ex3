@@ -33,7 +33,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   /** @override */
   get template() {
     const path = "systems/exaltedthird/templates/item";
-    if (this.item.type === 'destiny') return `${path}/item-sheet.html`
+    if (this.item.type === 'destiny' || this.item.type === 'shape') return `${path}/item-sheet.html`;
     return `${path}/item-${this.item.type}-sheet.html`;
   }
 
