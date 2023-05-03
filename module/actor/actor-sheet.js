@@ -76,7 +76,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
-    context.characterLunars = game.actors.filter(actor => actor.type === 'character' && actor.system.details.exalt === 'lunar').map((actor) => {
+    context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
       return {
         id: actor.id,
         label: actor.name
@@ -1889,7 +1889,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             actorData.system.resolve = lunar.system.resolve;
             actorData.system.guile = lunar.system.guile;
             actorData.system.anima = lunar.system.anima;
-            actorData.system.appearance.value = lunar.system.attributes.appearance.value;
+            if(lunar.type === 'npc'){
+              actorData.system.appearance.value = actorData.system.appearance.value;
+            }
+            else {
+              actorData.system.appearance.value = lunar.system.attributes.appearance.value;
+            }
             actorData.system.evasion.value = Math.max(lunar.system.evasion.value, actorData.system.evasion.value);
             actorData.system.parry.value = Math.max(lunar.system.parry.value, actorData.system.parry.value);
             actorData.system.soak.value = Math.max(lunar.system.soak.value, actorData.system.soak.value);
@@ -1901,23 +1906,39 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
             for (let [key, pool] of Object.entries(actorData.system.pools)) {
               let lunarPool = 0;
-              if (key === 'grapple') {
-                lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.grapplecontrol.ability].value;
-              }
-              else if (key === 'movement') {
-                lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.rush.ability].value;
+              if(lunar.type === 'npc'){
+                lunarPool = lunar.system.pools[key].value;
               }
               else {
-                lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings[key].ability].value;
+                if (key === 'grapple') {
+                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
+                }
+                else if (key === 'movement') { 
+                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
+                }
+                else {
+                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[key].ability);
+                }
               }
+
               pool.value = Math.max(pool.value, lunarPool);
             }
             for (let item of this.actor.items.filter(item => item.type === 'action')) {
-              if (item.system.lunarstats.attribute !== 'none' && item.system.lunarstats.ability !== 'none') {
-                let lunarActionPool = lunar.system.attributes[item.system.lunarstats.attribute].value + lunar.system.abilities[item.system.lunarstats.ability].value;
-                item.update({
-                  [`system.value`]: Math.max(item.system.value, lunarActionPool),
-                });
+              if(lunar.type === 'character') {
+                if (item.system.lunarstats.attribute !== 'none' && item.system.lunarstats.ability !== 'none') {
+                  let lunarActionPool = lunar.system.attributes[item.system.lunarstats.attribute].value + lunar.system.abilities[item.system.lunarstats.ability].value;
+                  item.update({
+                    [`system.value`]: Math.max(item.system.value, lunarActionPool),
+                  });
+                }
+              }
+              else {
+                const lunarAction = lunar.items.filter(item => item.type === 'action').find(lunarActionItem => lunarActionItem.name === item.name);
+                if(lunarAction) {
+                  item.update({
+                    [`system.value`]: Math.max(item.system.value, lunarAction.system.value),
+                  });
+                }
               }
             }
 
@@ -1949,6 +1970,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       ui.notifications.error(`<p>Linked Lunar not found</p>`);
     }
   }
+}
+
+function getCharacterAbilityValue(actor, ability) {
+  if (actor.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
+      return actor.customabilities.find(x => x._id === ability).system.points;
+  }
+  if (actor.system.abilities[ability]) {
+      return actor.system.abilities[ability]?.value || 0;
+  }
+  if (ability === 'willpower') {
+      return actor.system.willpower.max;
+  }
+  return 0;
 }
 
 

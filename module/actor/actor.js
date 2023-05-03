@@ -450,9 +450,9 @@ export class ExaltedThirdActor extends Actor {
       const lunar = game.actors.get(actorData.system.lunarform?.actorid);
       if(lunar) {
         staticActorData = lunar;
+        data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
+        data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
       }
-      data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
-      data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
     }
     if (staticActorData.type === "character" || staticActorData.system.creaturetype === 'exalt') {
       data.parry.cap = this._getStaticCap(staticActorData, 'parry', data.parry.value);

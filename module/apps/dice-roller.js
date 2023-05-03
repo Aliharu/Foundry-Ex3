@@ -93,7 +93,7 @@ export class RollForm extends FormApplication {
             this.object.range = 'close';
 
             this.object.isFlurry = false;
-            this.object.armorPenalty = false;
+            this.object.armorPenalty = (this.object.rollType === 'rush' || this.object.rollType === 'disengage');
             this.object.willpower = false;
 
             this.object.supportedIntimacy = 0;
@@ -235,7 +235,7 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.weapon.ability || "archery";
                     }
-                    if (this.object.attackType === 'withering' || this.actor.type === "npc") {
+                    if (this.object.attackType === 'withering' || this.actor.type === "npc" || (data.weapon.ability === 'none' && data.weapon.attribute === 'none')) {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
                         this.object.weaponAccuracy = data.weapon.witheringaccuracy || 0;
                         if (this.object.attackType === 'withering') {
@@ -1786,17 +1786,7 @@ export class RollForm extends FormApplication {
                 if (data.attributes[this.object.attribute]) {
                     dice += data.attributes[this.object.attribute]?.value || 0;
                 }
-                if (this.object.customabilities.some(ma => ma._id === this.object.ability)) {
-                    dice += this.actor.customabilities.find(x => x._id === this.object.ability).system.points;
-                }
-                else {
-                    if (this.object.ability === 'willpower') {
-                        dice += this.actor.system.willpower.max;
-                    }
-                    else if (data.abilities[this.object.ability]) {
-                        dice += data.abilities[this.object.ability]?.value || 0;
-                    }
-                }
+                dice += this._getCharacterAbilityValue(this.actor, this.object.ability);
             }
             else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
                 if (this.object.actions.some(action => action._id === this.object.pool)) {
@@ -3076,12 +3066,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                     var abilityValue = 0;
-                    if (this.object.customabilities && this.object.customabilities.some(ma => ma._id === this.object.ability)) {
-                        abilityValue = this.actor.customabilities.find(x => x._id === this.object.ability).system.points;
-                    }
-                    else if (this.actor.system.abilities[this.object.ability]) {
-                        abilityValue = this.actor.system.abilities[this.object.ability].value;
-                    }
+                    abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
                     if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
                         return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                     }
@@ -3140,39 +3125,55 @@ export class RollForm extends FormApplication {
                     let animalPool = 0;
                     let lunarAttributeValue = 0;
                     let lunarHasExcellency = false;
-                    const action = this.object.actions.find(action => action._id === this.object.pool);
-                    if (action) {
-                        lunarPool = lunar.system.attributes[action.system.lunarstats.attribute].value + lunar.system.abilities[action.system.lunarstats.ability].value;
-                        lunarAttributeValue = lunar.system.attributes[action.system.lunarstats.attribute].value;
-                        lunarHasExcellency = lunar.system.attributes[action.system.lunarstats.attribute].excellency;
-                    }
-                    else if (this._isAttackRoll()) {
-                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute].value + lunar.system.abilities.brawl.value;
-                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute].value;
-                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute].excellency;
-                    }
-                    else if (this.object.pool === 'grapple') {
-                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.grapplecontrol.ability].value;
-                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value;
-                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].excellency;
-                    }
-                    else if (this.object.rollType === 'disengage') {
-                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.disengage.ability].value;
-                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute].value;
-                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute].excellency;
-                    }
-                    else if (this.object.pool === 'movement') {
-                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings.rush.ability].value;
-                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value;
-                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].excellency;
+                    const action = this.object.actions.find(action => action._id === this.object.pool); 
+                    if(lunar.type === 'npc') {
+                        if (action) {
+                            const lunarAction = lunar.items.filter(item => item.type === 'action').find(lunarActionItem => lunarActionItem.name === action.name);
+                            if(lunarAction) {
+                                lunarPool = lunarAction.system.value;
+                            }
+                        }
+                        else if (this._isAttackRoll()) {
+                            lunarPool = 0;
+                        }
+                        else {
+                            lunarPool = lunar.system.pools[this.object.pool].value;
+                        }
                     }
                     else {
-                        lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute].value + lunar.system.abilities[lunar.system.settings.rollsettings[this.object.pool].ability].value;
-                        lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute].value;
-                        lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute].excellency;
-                    }
-                    if (this.object.specialty) {
-                        lunarPool++;
+                        if (action) {
+                            lunarPool = (lunar.system.attributes[action.system.lunarstats.attribute]?.value || 0) + this._getCharacterAbilityValue(lunar, action.system.lunarstats.ability);
+                            lunarAttributeValue = lunar.system.attributes[action.system.lunarstats.attribute]?.value;
+                            lunarHasExcellency = lunar.system.attributes[action.system.lunarstats.attribute]?.excellency;
+                        }
+                        else if (this._isAttackRoll()) {
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value + this._getCharacterAbilityValue(lunar, 'brawl');
+                            lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value;
+                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.excellency;
+                        }
+                        else if (this.object.pool === 'grapple') { 
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
+                            lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value;
+                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.excellency;
+                        }
+                        else if (this.object.rollType === 'disengage') { 
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.disengage.ability);
+                            lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value;
+                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.excellency;
+                        }
+                        else if (this.object.pool === 'movement') {
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
+                            lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value;
+                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.excellency;
+                        }
+                        else { 
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[this.object.pool].ability);
+                            lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value;
+                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.excellency;
+                        }
+                        if (this.object.specialty) {
+                            lunarPool++;
+                        }
                     }
                     if (this.object.actions.some(action => action._id === this.object.pool)) {
                         animalPool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
@@ -3279,11 +3280,28 @@ export class RollForm extends FormApplication {
         return "";
     }
 
+    _getCharacterAbilityValue(actor, ability) {
+        if (actor.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
+            return actor.customabilities.find(x => x._id === ability).system.points;
+        }
+        if (actor.system.abilities[ability]) {
+            return actor.system.abilities[ability]?.value || 0;
+        }
+        if (ability === 'willpower') {
+            return actor.system.willpower.max;
+        }
+        return 0;
+    }
+    
     _getDamageCap() {
         if (this._isAttackRoll() && this.object.attackType === 'withering') {
-            if(this.actor.type === 'character' && this.actor.system.attributes.strength.excellency) {
-                var newValueLow = Math.floor(this.actor.system.attributes.strength.value / 2);
-                var newValueHigh = Math.floor((this.actor.system.attributes.strength.value + this._getHighestAttributeNumber(this.actor.system.attributes)) / 2);
+            let actorData = this.actor;
+            if(this.actor.system.lunarform?.enabled && this.actor.system.lunarform?.actorid){
+                actorData = game.actors.get(this.actor.system.lunarform.actorid) || actorData;
+            }
+            if(actorData.type === 'character' && actorData.system.attributes.strength.excellency) {
+                var newValueLow = Math.floor(actorData.system.attributes.strength.value / 2);
+                var newValueHigh = Math.floor((actorData.system.attributes.strength.value + this._getHighestAttributeNumber(actorData.system.attributes)) / 2);
                 return `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
             }
         }
