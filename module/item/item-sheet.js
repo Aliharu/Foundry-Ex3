@@ -139,7 +139,6 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     html.find('.trait-selector').click(this._onTraitSelector.bind(this));
 
     html.find(".effect-control").click(ev => {
-      if (this.item.isOwned) return ui.notifications.warn("Managing Active Effects within an Owned Item is not currently supported and will be added in a subsequent update.");
       onManageActiveEffect(ev, this.item);
     });
 

@@ -448,7 +448,7 @@ export class ExaltedThirdActor extends Actor {
 
     if (actorData.system.lunarform?.enabled) {
       const lunar = game.actors.get(actorData.system.lunarform?.actorid);
-      if(lunar) {
+      if (lunar) {
         staticActorData = lunar;
         data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
         data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
@@ -1007,13 +1007,12 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
 }
 
 export async function spendEmbeddedItem(actor, item) {
-  const actorData = duplicate(actor);
+  const actorData = await duplicate(actor);
+  let updateActive = null;
 
   if (item.type === 'charm') {
     if (item.system.active) {
-      item.update({
-        [`system.active`]: false,
-      });
+      updateActive = false;
       if (actorData.system.settings.charmmotepool === 'personal') {
         if (item.system.cost.commitmotes > 0) {
           actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
@@ -1023,9 +1022,6 @@ export async function spendEmbeddedItem(actor, item) {
         if (item.system.cost.commitmotes > 0) {
           actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
         }
-      }
-      for (var effect of actor.effects.filter((effect => effect._sourceName === item.name))) {
-        effect.update({ disabled: true });
       }
     }
     else {
@@ -1105,12 +1101,7 @@ export async function spendEmbeddedItem(actor, item) {
           }
         }
         if (item.system.cost.commitmotes > 0) {
-          item.update({
-            [`system.active`]: true,
-          });
-          for (var effect of actor.effects.filter((effect => effect._sourceName === item.name))) {
-            effect.update({ disabled: false });
-          }
+          updateActive = true;
         }
       }
       actorData.system.anima.level = newLevel;
@@ -1168,11 +1159,32 @@ export async function spendEmbeddedItem(actor, item) {
           game.combat.setInitiative(combatant.id, newInitiative);
         }
       }
-      animaTokenMagic(actor, newValue);
+      await animaTokenMagic(actor, newValue);
     }
   }
-  if (item.type === 'spell') {
-    actorData.system.sorcery.motes = 0;
+  else if (item.type === 'spell') {
+    if(item.system.active) {
+      updateActive = false;
+    }
+    else {
+      if(item.system.activatable) {
+        updateActive = true;
+      }
+      actorData.system.sorcery.motes = 0;
+    }
   }
-  actor.update(actorData);
+  else {
+    updateActive = !item.system.active;
+  }
+  await actor.update(actorData);
+  if (updateActive !== null) {
+    await item.update({
+      [`system.active`]: updateActive,
+    });
+    for (const effect of actor.allApplicableEffects()) {
+      if(effect.origin === item.uuid){
+        effect.update({ disabled: !updateActive });
+      }
+    }
+  }
 }

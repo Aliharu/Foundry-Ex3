@@ -52,6 +52,26 @@
                 <label class="resource-label">{{localize "Ex3.Summary"}}</label>
                 <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
             </div>
+            <div class="grid grid-2col flex-group-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Activatable"}}</label>
+                    <div>
+                        <input name="system.activatable" type="checkbox" value="system.activatable" {{checked
+                            system.activatable}}>
+                    </div>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
+                    <select name="system.endtrigger" data-type="String">
+                        {{#select system.endtrigger}}
+                        <option value="none">{{localize "Ex3.None"}}</option>
+                        <option value="startturn">{{localize "Ex3.StartTurn"}}</option>
+                        <option value="endturn">{{localize "Ex3.EndTurn"}}</option>
+                        <option value="endscene">{{localize "Ex3.EndScene"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

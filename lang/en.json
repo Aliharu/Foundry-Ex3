@@ -725,5 +725,6 @@
     "Ex3.Soil": "Soil",
     "Ex3.God/Demon": "God/Demon",
     "Ex3.Tree": "Tree",
-    "Ex3.Sync": "Sync"
+    "Ex3.Sync": "Sync",
+    "Ex3.Activatable": "Activatable"
 }

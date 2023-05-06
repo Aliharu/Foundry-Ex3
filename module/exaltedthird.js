@@ -60,6 +60,7 @@ Hooks.once('init', async function () {
   CONFIG.Combatant.documentClass = ExaltedCombatant;
   CONFIG.ui.combat = ExaltedCombatTracker;
   CONFIG.ActiveEffect.documentClass = ExaltedActiveEffect;
+  CONFIG.ActiveEffect.legacyTransferral = false;
 
   game.socket.on('system.exaltedthird', handleSocket);
 
@@ -377,23 +378,25 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
           actorData.system.grapplecontrolrounds.value -= 1;
         }
-        const startTurnCharms = currentCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'startturn');
-        for (const charm of startTurnCharms) {
-          charm.update({
-            [`system.active`]: false,
-          });
-          if (actorData.system.settings.charmmotepool === 'personal') {
-            if (charm.system.cost.commitmotes > 0) {
-              actorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+        const startTurnItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'startturn');
+        for (const item of startTurnItems) {
+          item.system.active = false;
+          if(item.type === 'charm') {
+            if (actorData.system.settings.charmmotepool === 'personal') {
+              if (item.system.cost.commitmotes > 0) {
+                actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+              }
+            }
+            else {
+              if (item.system.cost.commitmotes > 0) {
+                actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+              }
             }
           }
-          else {
-            if (charm.system.cost.commitmotes > 0) {
-              actorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+          for (const effect of currentCombatant.actor.allApplicableEffects()) {
+            if(effect.origin === item.uuid){
+              effect.update({ disabled: true });
             }
-          }
-          for (var effect of currentCombatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
-            effect.update({ disabled: true });
           }
         }
         currentCombatant.actor.update(actorData);
@@ -406,23 +409,25 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (previousActorData.system.battlegroup) {
           previousActorData.system.commandbonus.value = 0;
         }
-        const endTurnCharms = previousCombatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endturn');
-        for (const charm of endTurnCharms) {
-          charm.update({
-            [`system.active`]: false,
-          });
-          if (previousActorData.system.settings.charmmotepool === 'personal') {
-            if (charm.system.cost.commitmotes > 0) {
-              previousActorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+        const endTurnItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endturn');
+        for (const item of endTurnItems) {
+          item.system.active = false;
+          if(item.type === 'charm') {
+            if (previousActorData.system.settings.charmmotepool === 'personal') {
+              if (item.system.cost.commitmotes > 0) {
+                previousActorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+              }
+            }
+            else {
+              if (item.system.cost.commitmotes > 0) {
+                previousActorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+              }
             }
           }
-          else {
-            if (charm.system.cost.commitmotes > 0) {
-              previousActorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+          for (const effect of previousCombatant.actor.allApplicableEffects()) {
+            if(effect.origin === item.uuid){
+              effect.update({ disabled: true });
             }
-          }
-          for (var effect of previousCombatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
-            effect.update({ disabled: true });
           }
         }
         previousCombatant.actor.update(previousActorData);
@@ -434,25 +439,27 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
 Hooks.on("deleteCombat", (entity, deleted) => {
   for (const combatant of entity.combatants) {
     if (combatant?.actor) {
-      const endSceneCharms = combatant.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endscene');
-      if (endSceneCharms?.length) {
-        const previousActorData = duplicate(combatant.actor);
-        for (const charm of endSceneCharms) {
-          charm.update({
-            [`system.active`]: false,
-          });
-          if (previousActorData.system.settings.charmmotepool === 'personal') {
-            if (charm.system.cost.commitmotes > 0) {
-              previousActorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+      const previousActorData = duplicate(combatant.actor);
+      const endSceneItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene');
+      if (endSceneItems?.length) {
+        for (const item of endSceneItems) {
+          item.system.active = false;
+          if(item.type === 'charm') {
+            if (previousActorData.system.settings.charmmotepool === 'personal') {
+              if (item.system.cost.commitmotes > 0) {
+                previousActorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+              }
+            }
+            else {
+              if (item.system.cost.commitmotes > 0) {
+                previousActorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+              }
             }
           }
-          else {
-            if (charm.system.cost.commitmotes > 0) {
-              previousActorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+          for (const effect of combatant.actor.allApplicableEffects()) {
+            if(effect.origin === item.uuid){
+              effect.update({ disabled: true });
             }
-          }
-          for (var effect of combatant.actor.effects.filter((effect => effect._sourceName === charm.name))) {
-            effect.update({ disabled: true });
           }
         }
         combatant.actor.update(previousActorData);
@@ -526,27 +533,29 @@ Hooks.on("chatMessage", (html, content, msg) => {
     return false;
   }
   if (command === "/newscene") {
-    const tokens = canvas.scene.tokens;
+    const tokens = canvas.scene?.tokens;
     for (const token of tokens) {
       if (token.actor) {
         const actorData = duplicate(token.actor);
-        const endSceneCharms = token.actor.items.filter((item) => item.type === 'charm' && item.system.active && item.system.endtrigger === 'endscene');
-        for (const charm of endSceneCharms) {
-          charm.update({
-            [`system.active`]: false,
-          });
-          if (actorData.system.settings.charmmotepool === 'personal') {
-            if (charm.system.cost.commitmotes > 0) {
-              actorData.system.motes.personal.committed -= charm.system.cost.commitmotes;
+        const endSceneItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene');
+        for (const item of endSceneItems) {
+          item.system.active = false;
+          if(item.type === 'charm') {
+            if (actorData.system.settings.charmmotepool === 'personal') {
+              if (item.system.cost.commitmotes > 0) {
+                actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+              }
+            }
+            else {
+              if (item.system.cost.commitmotes > 0) {
+                actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+              }
             }
           }
-          else {
-            if (charm.system.cost.commitmotes > 0) {
-              actorData.system.motes.peripheral.committed -= charm.system.cost.commitmotes;
+          for (const effect of token.actor.allApplicableEffects()) {
+            if(effect.origin === item.uuid){
+              effect.update({ disabled: true });
             }
-          }
-          for (var effect of token.actor.effects.filter((effect => effect._sourceName === charm.name))) {
-            effect.update({ disabled: true });
           }
         }
         token.actor.update(actorData);

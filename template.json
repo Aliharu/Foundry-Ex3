@@ -796,6 +796,11 @@
           "max": 0
         }
       },
+      "activatable": {
+        "activatable": false,
+        "active": false,
+        "endtrigger": "none"
+      },
       "summary": {
         "summary": ""
       },
@@ -880,7 +885,8 @@
       "templates": [
         "base",
         "summary",
-        "macro"
+        "macro",
+        "activatable"
       ],
       "prerequisites": "",
       "charmprerequisites": [],
@@ -892,8 +898,6 @@
       "listingname": "",
       "requirement": 0,
       "essence": 0,
-      "active": false,
-      "endtrigger": "none",
       "cost": {
         "motes": 0,
         "commitmotes": 0,
@@ -1026,14 +1030,16 @@
     },
     "merit": {
       "templates": [
-        "base"
+        "base",
+        "activatable"
       ],
       "merittype": "story",
       "points": 0
     },
     "ritual": {
       "templates": [
-        "base"
+        "base",
+        "activatable"
       ]
     },
     "initiation": {
@@ -1044,7 +1050,8 @@
     "spell": {
       "templates": [
         "base",
-        "summary"
+        "summary",
+        "activatable"
       ],
       "circle": "terrestrial",
       "keywords": "",
@@ -1081,7 +1088,8 @@
     },
     "specialability": {
       "templates": [
-        "base"
+        "base",
+        "activatable"
       ]
     },
     "craftproject": {
