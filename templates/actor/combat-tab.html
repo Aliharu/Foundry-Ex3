@@ -73,7 +73,7 @@
                     <a><i class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
                         style="margin-left:3px;"></i></a>
                     {{/if}}
-                    {{/ifEquals}}</label>
+                    {{/ifEquals}}{{#if system.aboveParryCap}} ({{system.aboveParryCap}} {{localize "Ex3.AboveLunars"}}){{/if}}</label>
                 <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
                 <label>{{system.parry.cap}}</label>
             </div>
@@ -84,7 +84,7 @@
                     <a><i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
                         style="margin-left:3px;"></i></a>
                     {{/if}}
-                    {{/ifEquals}}</label>
+                    {{/ifEquals}} {{#if system.aboveEvasionCap}} ({{system.aboveEvasionCap}} {{localize "Ex3.AboveLunars"}}){{/if}}</label>
                 <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
                 <label>{{system.evasion.cap}}</label>
             </div>

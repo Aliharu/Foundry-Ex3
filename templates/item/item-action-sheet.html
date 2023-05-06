@@ -1,8 +1,8 @@
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
             <label class="resource-label">{{localize "Ex3.Value"}}: </label>
             <input type="number" name="system.value" value="{{system.value}}" />
         </div>
@@ -21,6 +21,35 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="effects">
+            <div class="resource-label list-section-header d-flex flex-between">
+                <div>
+                    {{localize "Ex3.LunarFormSettings"}}
+                </div>
+            </div>
+            <div class="grid grid-3col flex-group-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
+                    <select name="system.lunarstats.attribute" data-type="String">
+                        {{#select system.lunarstats.attribute}}
+                        {{#each attributeList as |label attribute|}}
+                        <option value="{{attribute}}">{{localize label}}</option>
+                        {{/each}}
+                        <option value="none">{{localize "Ex3.None"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Ability"}}</div>
+                    <select name="system.lunarstats.ability" data-type="String">
+                        {{#select system.lunarstats.ability}}
+                        {{#each abilityList as |label ability|}}
+                        <option value="{{ability}}">{{localize label}}</option>
+                        {{/each}}
+                        <option value="none">{{localize "Ex3.None"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

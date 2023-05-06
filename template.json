@@ -294,6 +294,11 @@
               "name": "Ex3.Guile",
               "attribute": "manipulation",
               "ability": "socialize"
+            },
+            "soak": {
+              "name": "Ex3.Soak",
+              "attribute": "stamina",
+              "ability": "none"
             }
           }
         },
@@ -746,6 +751,10 @@
         "value": 0,
         "min": 0
       },
+      "lunarform": {
+        "enabled": false,
+        "actorid": ""
+      },
       "qualities": "",
       "escort": ""
     }
@@ -765,6 +774,7 @@
       "merit",
       "ritual",
       "initiation",
+      "shape",
       "specialability",
       "specialty",
       "spell",
@@ -1085,10 +1095,19 @@
       "templates": [
         "base"
       ],
+      "lunarstats": {
+        "attribute": "none",
+        "ability": "none"
+      },
       "value": 0,
       "oldKey": ""
     },
     "destiny": {
+      "templates": [
+        "base"
+      ]
+    },
+    "shape": {
       "templates": [
         "base"
       ]

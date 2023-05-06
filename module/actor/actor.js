@@ -1,4 +1,4 @@
-import { RollForm } from "../apps/dice-roller.js";
+import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
 
 /**
@@ -123,17 +123,17 @@ export class ExaltedThirdActor extends Actor {
           personalMotes += 50;
         }
         if ((updateData.system?.creaturetype || this.system.creaturetype) === 'exalt') {
-          peripheralmotes = this.calculateMaxExaltedMotes('peripheral', this.system.details.exalt, essenceLevel);
-          personalMotes = this.calculateMaxExaltedMotes('personal', this.system.details.exalt, essenceLevel);
+          peripheralmotes = this.calculateMaxExaltedMotes('peripheral', updateData.system?.details?.exalt || this.system.details.exalt, essenceLevel);
+          personalMotes = this.calculateMaxExaltedMotes('personal', updateData.system?.details?.exalt || this.system.details.exalt, essenceLevel);
         }
         updateData.system.motes = {
           personal: {
             max: personalMotes,
-            value: (personalMotes - this.system.motes.personal.committed),
+            value: (personalMotes - (updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed)),
           },
           peripheral: {
             max: peripheralmotes,
-            value: (peripheralmotes - this.system.motes.peripheral.committed),
+            value: (peripheralmotes - (updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed)),
           }
         };
       }
@@ -444,13 +444,23 @@ export class ExaltedThirdActor extends Actor {
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
 
-    if (actorData.type === "character" || actorData.system.creaturetype === 'exalt') {
-      data.parry.cap = this._getStaticCap(actorData, 'parry', data.parry.value);
+    let staticActorData = actorData;
+
+    if (actorData.system.lunarform?.enabled) {
+      const lunar = game.actors.get(actorData.system.lunarform?.actorid);
+      if(lunar) {
+        staticActorData = lunar;
+        data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
+        data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
+      }
+    }
+    if (staticActorData.type === "character" || staticActorData.system.creaturetype === 'exalt') {
+      data.parry.cap = this._getStaticCap(staticActorData, 'parry', data.parry.value);
       if (data.parry.cap !== '') {
         data.evasion.padding = true;
         data.defenseCapPadding = true;
       }
-      data.evasion.cap = this._getStaticCap(actorData, 'evasion', data.evasion.value);
+      data.evasion.cap = this._getStaticCap(staticActorData, 'evasion', data.evasion.value);
       if (data.evasion.cap !== '') {
         data.evasion.padding = false;
         if (data.parry.cap === '') {
@@ -458,12 +468,12 @@ export class ExaltedThirdActor extends Actor {
         }
         data.defenseCapPadding = true;
       }
-      data.guile.cap = this._getStaticCap(actorData, 'parry', data.guile.value);
+      data.guile.cap = this._getStaticCap(staticActorData, 'parry', data.guile.value);
       if (data.guile.cap !== '') {
         data.resolve.padding = true;
         data.socialCapPadding = true;
       }
-      data.resolve.cap = this._getStaticCap(actorData, 'resolve', data.resolve.value);
+      data.resolve.cap = this._getStaticCap(staticActorData, 'resolve', data.resolve.value);
       if (data.resolve.cap !== '') {
         if (data.guile.cap === '') {
           data.guile.padding = true;
@@ -471,10 +481,19 @@ export class ExaltedThirdActor extends Actor {
         data.resolve.padding = false;
         data.socialCapPadding = true;
       }
-      if(actorData.type === "character" && data.attributes.stamina.excellency) {
-        var newValue = Math.floor(data.attributes.stamina.value / 2);
-        data.soak.cap = `(+${newValue} for ${newValue}m)`
-      }
+      data.soak.cap = this._getStaticCap(staticActorData, 'soak', actorData.type === "character" ? data.attributes.stamina.value : data.soak.value);
+
+      // if (staticActorData.type === "character" && data.attributes.stamina.excellency) {
+      // var newValueLow = Math.floor(data.attributes.stamina.value / 2);
+      // var highestAttributeNumber = 1;
+      // for (let [name, attribute] of Object.entries(staticActorData.system.attributes)) {
+      //   if (attribute.value > highestAttributeNumber) {
+      //     highestAttributeNumber = attribute.value;
+      //   }
+      // }
+      // var newValueHigh = Math.floor((data.attributes.stamina.value + highestAttributeNumber) / 2);
+      // data.soak.cap = `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
+      // }
     }
 
     if (data.battlegroup) {
@@ -605,6 +624,7 @@ export class ExaltedThirdActor extends Actor {
     const craftProjects = [];
     const actions = [];
     const destinies = [];
+    const shapes = [];
     const activeCharms = [];
     const charms = {};
     const rollCharms = {};
@@ -662,6 +682,9 @@ export class ExaltedThirdActor extends Actor {
       }
       else if (i.type === 'destiny') {
         destinies.push(i);
+      }
+      else if (i.type === 'shape') {
+        shapes.push(i);
       }
       else if (i.type === 'spell') {
         if (i.system.circle !== undefined) {
@@ -746,11 +769,12 @@ export class ExaltedThirdActor extends Actor {
     actorData.projects = craftProjects;
     actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
     actorData.destinies = destinies;
+    actorData.shapes = shapes;
   }
 
   _getStaticCap(actorData, type, value) {
     if (actorData.type === "character") {
-      if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability].excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute].excellency) {
+      if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
         return '';
       }
       switch (actorData.system.details.exalt) {
@@ -765,8 +789,15 @@ export class ExaltedThirdActor extends Actor {
         case 'abyssal':
           return `(+${value} for ${value * 2}m)`
         case 'lunar':
-          var newValue = Math.floor(value / 2);
-          return `(+${newValue} for ${newValue * 2}m)`
+          var highestAttributeNumber = 0;
+          for (let [name, attribute] of Object.entries(actorData.system.attributes)) {
+            if (attribute.value > highestAttributeNumber) {
+              highestAttributeNumber = attribute.value;
+            }
+          }
+          var newValueLow = Math.floor(value / 2);
+          var newValueHigh = Math.floor((value + highestAttributeNumber) / 2);
+          return `(+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m)`
         case 'liminal':
           var newValue = Math.floor(value / 2);
           return `(+${newValue} for ${newValue * 2}m)`
@@ -778,10 +809,10 @@ export class ExaltedThirdActor extends Actor {
       let caps
       let bonus = 0
       if (actorData.system.details.exalt === 'lunar') {
-        if (value <= 1) return `(+0 for 0m; +1 for 2m)`
-        else if (value <= 3) return `(+1 for 2m; +2 for 4m)`
-        else if (value <= 5) return `(+2 for 4m; +4 for 8m)`
-        else return `(+2 for 4m; +5 for 10m)`
+        if (value <= 1) return `(+0 for 0m; +1 for ${type === 'soak' ? 1 : 2}m)`
+        else if (value <= 3) return `(+1 for ${type === 'soak' ? 1 : 2}m; +2 for ${type === 'soak' ? 2 : 4}m)`
+        else if (value <= 5) return `(+2 for ${type === 'soak' ? 2 : 4}m; +4 for ${type === 'soak' ? 4 : 8}m)`
+        else return `(+2 for ${type === 'soak' ? 2 : 4}m; +5 for ${type === 'soak' ? 5 : 10}m)`
       }
       else {
         switch (actorData.system.details.exalt) {
@@ -973,4 +1004,175 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
       existingPenalty.delete();
     }
   }
+}
+
+export async function spendEmbeddedItem(actor, item) {
+  const actorData = duplicate(actor);
+
+  if (item.type === 'charm') {
+    if (item.system.active) {
+      item.update({
+        [`system.active`]: false,
+      });
+      if (actorData.system.settings.charmmotepool === 'personal') {
+        if (item.system.cost.commitmotes > 0) {
+          actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
+        }
+      }
+      else {
+        if (item.system.cost.commitmotes > 0) {
+          actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
+        }
+      }
+      for (var effect of actor.effects.filter((effect => effect._sourceName === item.name))) {
+        effect.update({ disabled: true });
+      }
+    }
+    else {
+      var newLevel = actorData.system.anima.level;
+      var newValue = actorData.system.anima.value;
+      if (item.system.cost.anima > 0) {
+        for (var i = 0; i < item.system.cost.anima; i++) {
+          if (newLevel === "Transcendent") {
+            newLevel = "Bonfire";
+            newValue = 3;
+          }
+          else if (newLevel === "Bonfire") {
+            newLevel = "Burning";
+            newValue = 2;
+          }
+          else if (newLevel === "Burning") {
+            newLevel = "Glowing";
+            newValue = 1;
+          }
+          if (newLevel === "Glowing") {
+            newLevel = "Dim";
+            newValue = 0;
+          }
+        }
+      }
+      if (item.system.cost.motes > 0 || item.system.cost.commitmotes > 0) {
+        var spendingMotes = item.system.cost.motes + item.system.cost.commitmotes;
+        var spentPersonal = 0;
+        var spentPeripheral = 0;
+        if (actorData.system.settings.charmmotepool === 'personal') {
+          var remainingPersonal = actorData.system.motes.personal.value - spendingMotes;
+          if (remainingPersonal < 0) {
+            spentPersonal = spendingMotes + remainingPersonal;
+            spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
+          }
+          else {
+            spentPersonal = spendingMotes;
+          }
+          if (item.system.cost.commitmotes > 0) {
+            actorData.system.motes.personal.committed += item.system.cost.commitmotes;
+          }
+        }
+        else {
+          var remainingPeripheral = actorData.system.motes.peripheral.value - spendingMotes;
+          if (remainingPeripheral < 0) {
+            spentPeripheral = spendingMotes + remainingPeripheral;
+            spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+          }
+          else {
+            spentPeripheral = spendingMotes;
+          }
+          if (item.system.cost.commitmotes > 0) {
+            actorData.system.motes.peripheral.committed += item.system.cost.commitmotes;
+          }
+        }
+        actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+        actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
+
+        if (spentPeripheral > 4 && !item.system.keywords.toLowerCase().includes('mute')) {
+          for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+            if (newLevel === "Dim") {
+              newLevel = "Glowing";
+              newValue = 1;
+            }
+            else if (newLevel === "Glowing") {
+              newLevel = "Burning";
+              newValue = 2;
+            }
+            else if (newLevel === "Burning") {
+              newLevel = "Bonfire";
+              newValue = 3;
+            }
+            else if (actorData.system.anima.max === 4) {
+              newLevel = "Transcendent";
+              newValue = 4;
+            }
+          }
+        }
+        if (item.system.cost.commitmotes > 0) {
+          item.update({
+            [`system.active`]: true,
+          });
+          for (var effect of actor.effects.filter((effect => effect._sourceName === item.name))) {
+            effect.update({ disabled: false });
+          }
+        }
+      }
+      actorData.system.anima.level = newLevel;
+      actorData.system.anima.value = newValue;
+      actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - item.system.cost.willpower);
+      if (actor.type === 'character') {
+        actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - item.system.cost.silverxp);
+        actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - item.system.cost.goldxp);
+        actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - item.system.cost.whitexp);
+      }
+      if (actorData.system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
+        actorData.system.details.aura = "none";
+      }
+      if (item.system.cost.health > 0) {
+        let totalHealth = 0;
+        for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
+          totalHealth += health_level.value;
+        }
+        if (item.system.cost.healthtype === 'bashing') {
+          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + item.system.cost.health);
+        }
+        else if (item.system.cost.healthtype === 'lethal') {
+          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + item.system.cost.health);
+        }
+        else {
+          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + item.system.cost.health);
+        }
+      }
+      if (actorData.system.settings.charmmotepool === 'personal') {
+        actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + item.system.restore.motes);
+      }
+      else {
+        actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + item.system.restore.motes);
+      }
+      actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + item.system.restore.willpower);
+      if (item.system.restore.health > 0) {
+        const bashingHealed = item.system.restore.health - actorData.system.health.lethal;
+        actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - item.system.restore.health);
+        if (bashingHealed > 0) {
+          actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
+        }
+      }
+      const tokenId = actor.token?.id || actor.getActiveTokens()[0]?.id;
+      if (game.combat && tokenId) {
+        let combatant = game.combat.combatants.find(c => c?.tokenId === tokenId);
+        if (combatant) {
+          var newInitiative = combatant.initiative;
+          if (item.system.cost.initiative > 0) {
+            newInitiative -= item.system.cost.initiative;
+          }
+          if (combatant.initiative > 0 && newInitiative <= 0) {
+            newInitiative -= 5;
+          }
+          newInitiative += item.system.restore.initiative;
+          game.combat.setInitiative(combatant.id, newInitiative);
+        }
+      }
+      animaTokenMagic(actor, newValue);
+    }
+  }
+  if (item.type === 'spell') {
+    actorData.system.sorcery.motes = 0;
+  }
+  actor.update(actorData);
 }

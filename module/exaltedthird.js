@@ -1,7 +1,7 @@
 // Import Modules
 import { exaltedthird } from "./config.js";
 
-import { addDefensePenalty, ExaltedThirdActor } from "./actor/actor.js";
+import { addDefensePenalty, ExaltedThirdActor, spendEmbeddedItem } from "./actor/actor.js";
 import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
 import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
@@ -1039,7 +1039,7 @@ async function createItemMacro(data, slot) {
       command = `//Swtich withering with (decisive, gambit, withering-split, decisive-split, gambit-split) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
     }
     if (item.type === 'charm') {
-      command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\ngame.exaltedthird.triggerItem("${data.uuid}");`;
+      command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\n//If the charm user has no dice roller open it will instead Spend or activate the charm\ngame.exaltedthird.triggerItem("${data.uuid}");`;
     }
     let macro = game.macros.find(m => (m.name === item.name) && (m.command === command));
     if (!macro) {
@@ -1111,12 +1111,18 @@ function triggerItem(itemUuid) {
     if (game.rollForm) {
       game.rollForm.addCharm(item);
     }
-    if (item.system.diceroller.opposedbonuses.enabled) {
+    else if (item.system.diceroller.opposedbonuses.enabled) {
       game.socket.emit('system.exaltedthird', {
         type: 'addOpposingCharm',
         data: item,
         actorId: item.actor._id,
       });
+      if(item.system.cost.commitmotes > 0 && !item.system.active) {
+        spendEmbeddedItem(item.parent, item);
+      }
+    }
+    else {
+      spendEmbeddedItem(item.parent, item);
     }
   });
 }

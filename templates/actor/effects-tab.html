@@ -230,4 +230,42 @@
     {{/each}}
 </ol>
 {{/if}}
+{{#ifEquals actor.type 'npc'}}
+{{#if actor.system.lunarform.enabled}}
+<div class="resource-label list-section-header d-flex flex-between">
+    <div>
+        {{localize "Ex3.LunarAnimalForm"}}
+    </div>
+</div>
+<div class="grid grid-2col flex-group-center">
+    <div class="d-flex flex-center">
+        <label class="resource-label">{{localize "Ex3.Lunar"}}:</label>
+        <select class="ml-1" name="system.lunarform.actorid" data-type="String">
+            {{#select system.lunarform.actorid}}
+            {{#each characterLunars as |actor id|}}
+            <option value="{{actor.id}}">{{actor.label}}</option>
+            {{/each}}
+            <option value="">{{localize "Ex3.None"}}</option>
+            {{/select}}
+        </select>
+        <div class="ml-1">
+             <button class="roll-button lunar-sync"><i class="fa-solid fa-rotate"></i>{{localize "Ex3.Sync"}}</button>
+        </div>
+    </div>
+</div>
+<label class="resource-label">{{localize "Ex3.Specialties"}}<a class="item-create" title="Create specialty"
+    data-type="specialty"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
+<div class="attributes grid grid-3col flex-group-center">
+  {{#each actor.specialties as |item id|}}
+  <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+    <div class="item-controls ability-item-edit">
+      <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
+      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+    </div>
+    <label class="resource-label">{{localize item.name}} ({{getAbilityDisplay ../this item.system.ability}})</label>
+  </div>
+  {{/each}}
+</div>
+{{/if}}
+{{/ifEquals}}
 {{> systems/exaltedthird/templates/actor/active-effects.html}}
