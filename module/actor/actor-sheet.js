@@ -290,7 +290,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actions = [];
     const destinies = [];
     const shapes = [];
-    const activeCharms = [];
+    const activeItems = [];
 
     const charms = {};
     const rollCharms = {};
@@ -370,11 +370,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           intimacies.push(i);
         }
       }
-      else if (i.type === 'charm') {
-        if (i.system.active) {
-          activeCharms.push(i);
-        }
-      }
       else if (i.type === 'martialart') {
         martialarts.push(i);
       }
@@ -407,6 +402,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       else if (i.type === 'action') {
         actions.push(i);
+      }
+      if(i.system.active) {
+        activeItems.push(i);
       }
     }
 
@@ -466,7 +464,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Assign and return
     actorData.gear = gear;
     actorData.customabilities = customAbilities;
-    actorData.activecharms = activeCharms;
+    actorData.activeitems = activeItems;
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;

@@ -625,7 +625,7 @@ export class ExaltedThirdActor extends Actor {
     const actions = [];
     const destinies = [];
     const shapes = [];
-    const activeCharms = [];
+    const activeItems = [];
     const charms = {};
     const rollCharms = {};
     const defenseCharms = {};
@@ -641,7 +641,6 @@ export class ExaltedThirdActor extends Actor {
 
     // Iterate through items, allocating to containers
     for (let i of actorData.items) {
-
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);
@@ -656,11 +655,6 @@ export class ExaltedThirdActor extends Actor {
       else if (i.type === 'armor') {
         prepareItemTraits('armor', i);
         armor.push(i);
-      }
-      else if (i.type === 'charm') {
-        if (i.system.active) {
-          activeCharms.push(i);
-        }
       }
       else if (i.type === 'merit') {
         merits.push(i);
@@ -694,6 +688,9 @@ export class ExaltedThirdActor extends Actor {
       }
       else if (i.type === 'action') {
         actions.push(i);
+      }
+      if(i.system.active) {
+        activeItems.push(i);
       }
     }
 
@@ -754,7 +751,7 @@ export class ExaltedThirdActor extends Actor {
     // Assign and return
     actorData.gear = gear;
     actorData.customabilities = customAbilities;
-    actorData.activecharms = activeCharms;
+    actorData.activeitems = activeItems;
     actorData.weapons = weapons;
     actorData.armor = armor;
     actorData.merits = merits;
@@ -1182,7 +1179,7 @@ export async function spendEmbeddedItem(actor, item) {
       [`system.active`]: updateActive,
     });
     for (const effect of actor.allApplicableEffects()) {
-      if(effect.name === item.uuid){
+      if(effect._sourceName === item.name){
         effect.update({ disabled: !updateActive });
       }
     }

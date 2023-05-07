@@ -381,7 +381,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         const startTurnItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'startturn');
         for (const item of startTurnItems) {
           item.system.active = false;
-          if(item.type === 'charm') {
+          if (item.type === 'charm') {
             if (actorData.system.settings.charmmotepool === 'personal') {
               if (item.system.cost.commitmotes > 0) {
                 actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
@@ -394,9 +394,14 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
           for (const effect of currentCombatant.actor.allApplicableEffects()) {
-            if(effect.origin === item.uuid){
+            if (effect._sourceName === item.name) {
               effect.update({ disabled: true });
             }
+          }
+        }
+        for (const effectItem of currentCombatant.actor.items.filter((item) => item.system.endtrigger === 'startturn')) {
+          for (const effect of effectItem.effects) {
+            effect.update({ disabled: true });
           }
         }
         currentCombatant.actor.update(actorData);
@@ -412,7 +417,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         const endTurnItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endturn');
         for (const item of endTurnItems) {
           item.system.active = false;
-          if(item.type === 'charm') {
+          if (item.type === 'charm') {
             if (previousActorData.system.settings.charmmotepool === 'personal') {
               if (item.system.cost.commitmotes > 0) {
                 previousActorData.system.motes.personal.committed -= item.system.cost.commitmotes;
@@ -425,9 +430,14 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
           for (const effect of previousCombatant.actor.allApplicableEffects()) {
-            if(effect.origin === item.uuid){
+            if (effect._sourceName === item.name) {
               effect.update({ disabled: true });
             }
+          }
+        }
+        for (const effectItem of previousCombatant.actor.items.filter((item) => item.system.endtrigger === 'endturn')) {
+          for (const effect of effectItem.effects) {
+            effect.update({ disabled: true });
           }
         }
         previousCombatant.actor.update(previousActorData);
@@ -444,7 +454,7 @@ Hooks.on("deleteCombat", (entity, deleted) => {
       if (endSceneItems?.length) {
         for (const item of endSceneItems) {
           item.system.active = false;
-          if(item.type === 'charm') {
+          if (item.type === 'charm') {
             if (previousActorData.system.settings.charmmotepool === 'personal') {
               if (item.system.cost.commitmotes > 0) {
                 previousActorData.system.motes.personal.committed -= item.system.cost.commitmotes;
@@ -457,12 +467,17 @@ Hooks.on("deleteCombat", (entity, deleted) => {
             }
           }
           for (const effect of combatant.actor.allApplicableEffects()) {
-            if(effect.origin === item.uuid){
+            if (effect._sourceName === item.name) {
               effect.update({ disabled: true });
             }
           }
         }
         combatant.actor.update(previousActorData);
+      }
+      for (const effectItem of combatant.actor.items.filter((item) => item.system.endtrigger === 'endscene')) {
+        for (const effect of effectItem.effects) {
+          effect.update({ disabled: true });
+        }
       }
     }
   }
@@ -540,7 +555,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
         const endSceneItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene');
         for (const item of endSceneItems) {
           item.system.active = false;
-          if(item.type === 'charm') {
+          if (item.type === 'charm') {
             if (actorData.system.settings.charmmotepool === 'personal') {
               if (item.system.cost.commitmotes > 0) {
                 actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
@@ -553,9 +568,14 @@ Hooks.on("chatMessage", (html, content, msg) => {
             }
           }
           for (const effect of token.actor.allApplicableEffects()) {
-            if(effect.origin === item.uuid){
+            if (effect._sourceName === item.name) {
               effect.update({ disabled: true });
             }
+          }
+        }
+        for (const effectItem of token.actor.items.filter((item) => item.system.endtrigger === 'endscene')) {
+          for (const effect of effectItem.effects) {
+            effect.update({ disabled: true });
           }
         }
         token.actor.update(actorData);
@@ -1126,7 +1146,7 @@ function triggerItem(itemUuid) {
         data: item,
         actorId: item.actor._id,
       });
-      if(item.system.cost.commitmotes > 0 && !item.system.active) {
+      if (item.system.cost.commitmotes > 0 && !item.system.active) {
         spendEmbeddedItem(item.parent, item);
       }
     }

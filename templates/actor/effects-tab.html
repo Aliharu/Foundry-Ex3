@@ -201,14 +201,14 @@
 </div>
 {{/if}}
 {{/ifEquals}}
-{{#if actor.activecharms}}
+{{#if actor.activeitems}}
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
-        {{localize "Ex3.ActiveCharms"}}</a>
+        {{localize "Ex3.ActiveItems"}}</a>
     </div>
 </div>
 <ol class="items-list">
-    {{#each actor.activecharms as |item id|}}
+    {{#each actor.activeitems as |item id|}}
     <li class="item flexrow item-row" data-item-id="{{item._id}}">
         <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" />
