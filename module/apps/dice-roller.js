@@ -2680,7 +2680,7 @@ export class RollForm extends FormApplication {
                         }
                         else {
                             await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
-                                label: 'Onslaught',
+                                name: 'Onslaught',
                                 icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                                 origin: this.object.target.actor.uuid,
                                 disabled: false,
@@ -2739,7 +2739,7 @@ export class RollForm extends FormApplication {
             }
             else {
                 this.actor.createEmbeddedDocuments('ActiveEffect', [{
-                    label: 'Defense Penalty',
+                    name: 'Defense Penalty',
                     icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
                     origin: this.actor.uuid,
                     disabled: false,

@@ -1951,7 +1951,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               }
             }
             for (let effect of lunar.effects) {
-              if (!this.actor.effects.find(actorEffect => actorEffect.label === effect.label)) {
+              if (!this.actor.effects.find(actorEffect => actorEffect.name === effect.label)) {
                 newEffects.push(duplicate(effect));
               }
             }

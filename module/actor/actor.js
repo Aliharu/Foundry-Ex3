@@ -957,7 +957,7 @@ export async function addDefensePenalty(actor, label = "Defense Penalty") {
   }
   else {
     actor.createEmbeddedDocuments('ActiveEffect', [{
-      label: label,
+      name: label,
       icon: icon,
       origin: actor.uuid,
       disabled: false,
@@ -1182,9 +1182,12 @@ export async function spendEmbeddedItem(actor, item) {
       [`system.active`]: updateActive,
     });
     for (const effect of actor.allApplicableEffects()) {
-      if(effect.origin === item.uuid){
+      if(effect.name === item.uuid){
         effect.update({ disabled: !updateActive });
       }
+    }
+    for (const effect of item.effects) {
+      effect.update({ disabled: !updateActive });
     }
   }
 }
