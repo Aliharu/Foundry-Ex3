@@ -45,6 +45,11 @@ export const exaltedthird = {};
 //       "value": 0
 //     }
 
+exaltedthird.activeEffectChanges = {
+    "system.parry.value": 'Ex3.Parry',
+    "system.evasion.value": 'Ex3.Evasion',
+};
+
 exaltedthird.npcpools = {
     command: 'Ex3.Command',
     grapple: 'Ex3.GrappleControl',

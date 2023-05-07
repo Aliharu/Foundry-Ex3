@@ -727,5 +727,8 @@
     "Ex3.God/Demon": "God/Demon",
     "Ex3.Tree": "Tree",
     "Ex3.Sync": "Sync",
-    "Ex3.Activatable": "Activatable"
+    "Ex3.Activatable": "Activatable",
+
+    "Ex3.UseActiveEffectsDropdown": "Use Active Effects Dropdown",
+    "Ex3.UseActiveEffectsDropdownDescription": "Use a dropdown list for the key in active effects rather than an open input"
 }

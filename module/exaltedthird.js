@@ -16,6 +16,7 @@ import TemplateImporter from "./apps/template-importer.js";
 import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
 import { ExaltedCombatant } from "./combat/combat.js";
 import ExaltedActiveEffect from "./active-effect.js";
+import ExaltedActiveEffectConfig from "./active-effect-config.js";
 import NPCGenerator from "./apps/npc-generator.js";
 
 Hooks.once('init', async function () {
@@ -60,6 +61,9 @@ Hooks.once('init', async function () {
   CONFIG.Combatant.documentClass = ExaltedCombatant;
   CONFIG.ui.combat = ExaltedCombatTracker;
   CONFIG.ActiveEffect.documentClass = ExaltedActiveEffect;
+  DocumentSheetConfig.registerSheet(ActiveEffect, "exaltedthird", ExaltedActiveEffectConfig, {makeDefault :true});
+
+  CONFIG.ActiveEffect.sheetClass = ExaltedActiveEffectConfig;
   CONFIG.ActiveEffect.legacyTransferral = false;
 
   game.socket.on('system.exaltedthird', handleSocket);
@@ -601,7 +605,7 @@ Hooks.on("renderDialog", (dialog, html) => {
       i.remove()
     }
   });
-})
+});
 
 Hooks.on("renderTokenConfig", (dialog, html) => {
   Array.from(html.find(".bar-attribute option")).forEach(i => {

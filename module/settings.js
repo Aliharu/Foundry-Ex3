@@ -1,4 +1,31 @@
 export function registerSettings() {
+    game.settings.register("exaltedthird", "sheetStyle", {
+        name: "Ex3.SheetStyle",
+        hint: "Ex3.SheetStyleDescription",
+        scope: "world",
+        config: true,
+        default: "solar",
+        type: String,
+        choices: {
+            "solar": "Ex3.Solar",
+            "lunar": "Ex3.Lunar",
+            "db": "Ex3.Dragonblooded",
+            "tree": "Ex3.Tree",
+        },
+        onChange: (choice) => {
+            window.location.reload();
+        },
+    });
+
+    game.settings.register('exaltedthird', 'useActiveEffectsDropdown', {
+        name: game.i18n.localize('Ex3.UseActiveEffectsDropdown'),
+        hint: game.i18n.localize('Ex3.UseActiveEffectsDropdownDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
+
     game.settings.register('exaltedthird', 'calculateOnslaught', {
         name: game.i18n.localize('Ex3.Onslaught'),
         hint: game.i18n.localize('Ex3.ShowOnslaughtDescription'),
@@ -58,24 +85,6 @@ export function registerSettings() {
         config: true,
         type: Boolean,
         default: false
-    });
-
-    game.settings.register("exaltedthird", "sheetStyle", {
-        name: "Ex3.SheetStyle",
-        hint: "Ex3.SheetStyleDescription",
-        scope: "world",
-        config: true,
-        default: "solar",
-        type: String,
-        choices: {
-            "solar": "Ex3.Solar",
-            "lunar": "Ex3.Lunar",
-            "db": "Ex3.Dragonblooded",
-            "tree": "Ex3.Tree",
-        },
-        onChange: (choice) => {
-            window.location.reload();
-        },
     });
 
     game.settings.register("exaltedthird", "flatXP", {
