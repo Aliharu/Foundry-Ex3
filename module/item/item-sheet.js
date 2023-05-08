@@ -46,10 +46,10 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.system = itemData.system;
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.attributeList = CONFIG.exaltedthird.attributes;
-    context.charmAbilityList = CONFIG.exaltedthird.charmabilities;
-    context.abilityList = CONFIG.exaltedthird.abilities;
-    if(this.item.parent) {
-      for(const customAbility of this.item.parent.customabilities){
+    context.charmAbilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities));
+    context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
+    if(this.object?.parent) {
+      for(const customAbility of this.object.parent.customabilities){
         context.abilityList[customAbility._id] = customAbility.name;
         context.charmAbilityList[customAbility._id] = customAbility.name;
       }
