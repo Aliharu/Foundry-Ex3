@@ -144,13 +144,10 @@
     "Ex3.Battles": "Battles",
     "Ex3.Secrets": "Secrets",
     "Ex3.Endings": "Endings",
-    "Ex3.Administration": "Administration",
     "Ex3.Command": "Command",
     "Ex3.Movement": "Movement",
     "Ex3.ReadIntentions": "Read Intentions",
     "Ex3.SocialInfluence": "Social Influence",
-    "Ex3.ResistPoison": "Resist Disease/Poison",
-    "Ex3.Senses": "Senses",
     "Ex3.Social": "Social",
     "Ex3.Strategy": "Strategy",
     "Ex3.Tracking": "Tracking",
@@ -730,5 +727,32 @@
     "Ex3.Activatable": "Activatable",
 
     "Ex3.UseActiveEffectsDropdown": "Use Active Effects Dropdown",
-    "Ex3.UseActiveEffectsDropdownDescription": "Use a dropdown list for the key in active effects rather than an open input"
+    "Ex3.UseActiveEffectsDropdownDescription": "Use a dropdown list for the key in active effects rather than an open input",
+
+    "Ex3.Command(NPC)": "Command (NPC Only)",
+    "Ex3.GrappleControl(NPC)": "Grapple Control (NPC Only)",
+    "Ex3.Movement(NPC)": "Movement (NPC Only)",
+    "Ex3.JoinBattle(NPC)": "Join Battle (NPC Only)",
+    "Ex3.ReadIntentions(NPC)": "Read Intentions (NPC Only)",
+    "Ex3.SocialInfluence(NPC)": "Social Influence (NPC Only)",
+    "Ex3.Social(NPC)": "Social (NPC Only)",
+    "Ex3.Sorcery(NPC)": "Sorcery (NPC Only)",
+
+
+    "Ex3.Command(PC)": "Command (PC Only)",
+    "Ex3.Craft(PC)": "Craft (PC Only)",
+    "Ex3.Disengage(PC)": "Disengage (PC Only)",
+    "Ex3.Rush(PC)": "Rush (PC Only)",
+    "Ex3.GrappleControl(PC)": "Grapple Control (PC Only)",
+    "Ex3.Movement(PC)": "Movement (PC Only)",
+    "Ex3.JoinBattle(PC)": "Join Battle (PC Only)",
+    "Ex3.ReadIntentions(PC)": "Read Intentions (PC Only)",
+    "Ex3.SocialInfluence(PC)": "Social Influence (PC Only)",
+    "Ex3.Social(PC)": "Social (PC Only)",
+    "Ex3.Sorcery(PC)": "Sorcery (PC Only)",
+
+    "Ex3.Attacks(PC)": "Attacks (PC Only)",
+    "Ex3.WitheringAttacks(PC)": "Withering Attacks (PC Only)",
+    "Ex3.DecisiveAttacks(PC)": "Decisive Attacks (PC Only)",
+    "Ex3.Gambits(PC)": "Gambits (PC Only)"
 }

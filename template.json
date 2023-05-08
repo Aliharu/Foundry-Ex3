@@ -133,7 +133,7 @@
         "turnorderinitiative": {
           "value": 0
         },
-        "dicepenalty": {
+        "dicemodifier": {
           "value": 0,
           "min": 0
         },

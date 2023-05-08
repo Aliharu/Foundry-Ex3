@@ -590,15 +590,15 @@ export class ExaltedThirdActor extends Actor {
         currentDefensePenalty += (effect.changes[0].value * -1);
       }
     }
-    if (actorData.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+    if (actorData.effects.some(e => e.statuses.has('prone'))) {
       currentParryPenalty += 1;
       currentEvasionPenalty += 2;
     }
-    if (actorData.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+    if (actorData.effects.some(e => e.statuses.has('surprised'))) {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
-    if (actorData.effects.some(e => e.flags?.core?.statusId === 'grappled') || actorData.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+    if (actorData.effects.some(e => e.statuses.has('grappled')) || actorData.effects.some(e => e.statuses.has('grappling'))) {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
@@ -882,15 +882,15 @@ export class ExaltedThirdActor extends Actor {
         currentDefensePenalty += (effect.changes[0].value * -1);
       }
     }
-    if (this.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+    if (this.effects.some(e => e.statuses.has('prone'))) {
       currentParryPenalty += 1;
       currentEvasionPenalty += 2;
     }
-    if (this.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+    if (this.effects.some(e => e.statuses.has('surprised'))) {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
-    if (this.effects.some(e => e.flags?.core?.statusId === 'grappled') || this.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+    if (this.effects.some(e => e.statuses.has('grappled') || this.effects.some(e => e.statuses.has('grappling')))) {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }

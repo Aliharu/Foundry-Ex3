@@ -373,8 +373,8 @@ export class RollForm extends FormApplication {
                 }
             }
             this._updateSpecialtyList();
-            if (this.actor.system.dicepenalty.value) {
-                this.object.diceModifier -= this.actor.system.dicepenalty.value;
+            if (this.actor.system.dicemodifier.value) {
+                this.object.diceModifier += this.actor.system.dicemodifier.value;
             }
             let combat = game.combat;
             if (combat) {
@@ -481,35 +481,35 @@ export class RollForm extends FormApplication {
             let effectiveEvasion = target.actor.system.evasion.value;
 
             if (target.actor.effects) {
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'lightcover')) {
+                if (target.actor.effects.some(e => e.statuses.has('lightcover'))) {
                     effectiveParry += 1;
                     effectiveEvasion += 1;
                 }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'heavycover')) {
+                if (target.actor.effects.some(e => e.statuses.has('heavycover'))) {
                     effectiveParry += 2;
                     effectiveEvasion += 3;
                 }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fullcover')) {
+                if (target.actor.effects.some(e => e.statuses.has('fullcover'))) {
                     effectiveParry += 3;
                     effectiveEvasion += 3;
                 }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'fulldefense') && !this.object.weaponTags['flexible']) {
+                if (target.actor.effects.some(e => e.statuses.has('fulldefense')) && !this.object.weaponTags['flexible']) {
                     effectiveParry += 2;
                     effectiveEvasion += 2;
                 }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'surprised')) {
+                if (target.actor.effects.some(e => e.statuses.has('surprised'))) {
                     effectiveParry -= 2;
                     effectiveEvasion -= 2;
                 }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'grappled') || target.actor.effects.some(e => e.flags?.core?.statusId === 'grappling')) {
+                if (target.actor.effects.some(e => e.statuses.has('grappled')) || target.actor.effects.some(e => e.statuses.has('grappling'))) {
                     effectiveParry -= 2;
                     effectiveEvasion -= 2;
                 }
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                if (target.actor.effects.some(e => e.statuses.has('prone'))) {
                     effectiveParry -= 1;
                 }
                 effectiveParry += Math.min(target.actor.system.negateparrypenalty.value, target.actor.getRollData().currentParryPenalty);
-                if (target.actor.effects.some(e => e.flags?.core?.statusId === 'prone')) {
+                if (target.actor.effects.some(e => e.statuses.has('prone'))) {
                     effectiveEvasion -= 2;
                 }
                 effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
