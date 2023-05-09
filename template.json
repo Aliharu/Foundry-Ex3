@@ -855,6 +855,14 @@
       "decisivedamagetype": "initiative",
       "staticdamage": 0,
       "resetinitiative": true,
+      "poison": {
+        "name": "",
+        "apply": false,
+        "damage": 0,
+        "penalty": 0,
+        "difficulty": 0,
+        "damagetype": "none"
+      },
       "traits": {
         "weapontags": {
           "value": [],

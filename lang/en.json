@@ -13,6 +13,9 @@
     "Ex3.FocusWill": "Focus Will",
     "Ex3.Willpower": "Willpower",
     "Ex3.Initiative": "Initiative",
+    "Ex3.InitiativeBashing": "Initiative (Bashing)",
+    "Ex3.InitiativeLethal": "Initiative (Lethal)",
+    "Ex3.InitiativeAggravated": "Initiative (Aggravated)",
     "Ex3.Limit": "Limit",
     "Ex3.LimitTrigger": "Limit Trigger",
     "Ex3.Health": "Health",
@@ -278,6 +281,7 @@
     "Ex3.Destinies": "Destinies",
     "Ex3.Rituals": "Rituals",
     "Ex3.Initiations": "Initiations",
+    "Ex3.ShapingRitual": "Shaping Ritual",
     "Ex3.ShapingRituals": "Shaping Rituals",
     "Ex3.Ventures": "Ventures",
     "Ex3.Equipment": "Equipment",
@@ -754,5 +758,7 @@
     "Ex3.Attacks(PC)": "Attacks (PC Only)",
     "Ex3.WitheringAttacks(PC)": "Withering Attacks (PC Only)",
     "Ex3.DecisiveAttacks(PC)": "Decisive Attacks (PC Only)",
-    "Ex3.Gambits(PC)": "Gambits (PC Only)"
+    "Ex3.Gambits(PC)": "Gambits (PC Only)",
+    "Ex3.Poison": "Poison",
+    "Ex3.PoisonRoundTrigger": "Poison (Triggers End of Round)"
 }
