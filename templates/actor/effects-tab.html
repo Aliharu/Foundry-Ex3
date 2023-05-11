@@ -82,7 +82,6 @@
     <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
         "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
 </div>
-{{#ifEquals data.type 'character'}}
 {{#if system.settings.editmode}}
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
@@ -95,6 +94,7 @@
         <div>
             <label class="resource-label">{{localize roll.name}}</label>
         </div>
+        {{#ifEquals ../data.type 'character'}}
         <div class="flexrow flex-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Attribute"}} </label>
@@ -120,11 +120,6 @@
                 {{/select}}
             </select>
         </div>
-        <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
-            <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}"
-                data-dtype="Number" />
-        </div>
         {{#if roll.appearanceattribute}}
         <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.Appearance"}} </label>
@@ -138,6 +133,12 @@
             </select>
         </div>
         {{/if}}
+        {{/ifEquals}}
+        <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
+            <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}"
+                data-dtype="Number" />
+        </div>
     </div>
     {{/each}}
     {{#each system.settings.attackrollsettings as |roll key|}}
@@ -158,6 +159,7 @@
     </div>
     {{/each}}
 </div>
+{{#ifEquals data.type 'character'}}
 <div>
     <div class="resource-label list-section-header d-flex flex-between">
         <div>
@@ -199,8 +201,8 @@
         {{/each}}
     </div>
 </div>
-{{/if}}
 {{/ifEquals}}
+{{/if}}
 {{#if actor.activeitems}}
 <div class="resource-label list-section-header d-flex flex-between">
     <div>

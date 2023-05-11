@@ -61,7 +61,7 @@ Hooks.once('init', async function () {
   CONFIG.Combatant.documentClass = ExaltedCombatant;
   CONFIG.ui.combat = ExaltedCombatTracker;
   CONFIG.ActiveEffect.documentClass = ExaltedActiveEffect;
-  DocumentSheetConfig.registerSheet(ActiveEffect, "exaltedthird", ExaltedActiveEffectConfig, {makeDefault :true});
+  DocumentSheetConfig.registerSheet(ActiveEffect, "exaltedthird", ExaltedActiveEffectConfig, { makeDefault: true });
 
   CONFIG.ActiveEffect.sheetClass = ExaltedActiveEffectConfig;
   CONFIG.ActiveEffect.legacyTransferral = false;
@@ -324,7 +324,6 @@ $(document).ready(() => {
 
 Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   // Handle non-gm users.
-
   if (!game.user.isGM) return;
 
   if (combat.current === undefined) {
@@ -356,7 +355,61 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       actorData.system.motes.personal.value += restorePersonal;
       actorData.system.motes.peripheral.value += restorePeripheral;
       actorData.system.shieldinitiative.value = actorData.system.shieldinitiative.max;
-      combatant.actor.update(actorData);
+      let totalHealth = 0;
+      let bashingDamage = 0;
+      let lethalDamage = 0;
+      let aggravatedDamage = 0;
+      let initiativeDamage = 0;
+      let crasherId = null;
+      let currentCombatantInitiative = combatant.initiative;
+      for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
+        totalHealth += health_level.value;
+      }
+      for (const activeEffect of combatant.actor.allApplicableEffects()) {
+        if(activeEffect.duration.remaining > 0 && !activeEffect.disabled) {
+          for(const change of activeEffect.changes) {
+            if(change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') {
+              if(currentCombatantInitiative !== null && (currentCombatantInitiative - parseInt(change.value)) <= 0 && currentCombatantInitiative > 0) {
+                crasherId = activeEffect.flags?.exaltedthird?.poisonerCombatantId;
+              }
+              currentCombatantInitiative -= parseInt(change.value);
+              initiativeDamage += parseInt(change.value);
+              if(combatant.initiative !== null && combatant.initiative <= 0) {
+                if(change.key === 'system.damage.round.initiative.bashing') {
+                  bashingDamage += parseInt(change.value);
+                }
+                else {
+                  lethalDamage += parseInt(change.value);
+                }
+              }
+            }
+            if(change.key === 'system.damage.round.bashing') {
+              bashingDamage += parseInt(change.value);
+            }
+            if(change.key === 'system.damage.round.lethal') {
+              lethalDamage += parseInt(change.value);
+            }
+            if(change.key === 'system.damage.round.aggravated') {
+              aggravatedDamage += parseInt(change.value);
+            }
+          }
+        }
+      }
+      if (bashingDamage || lethalDamage || aggravatedDamage) {
+        actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + aggravatedDamage);
+        actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + lethalDamage);
+        actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + bashingDamage);
+      }
+      if(combatant.initiative !== null && combatant.initiative > 0 && initiativeDamage) {
+        game.combat.setInitiative(combatant.id, currentCombatantInitiative, crasherId);
+        if(crasherId) {
+          const crasher = game.combat.combatants.get(crasherId);
+          if(crasher && crasher.initiative) {
+            game.combat.setInitiative(crasherId, crasher.initiative + 5);
+          }
+        }
+      }
+      await combatant.actor.update(actorData);
     }
   }
   if (update && (update.round !== undefined || update.turn !== undefined)) {
@@ -408,7 +461,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             effect.update({ disabled: true });
           }
         }
-        currentCombatant.actor.update(actorData);
+        await currentCombatant.actor.update(actorData);
       }
     }
     if (combat.previous.combatantId) {
@@ -444,7 +497,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             effect.update({ disabled: true });
           }
         }
-        previousCombatant.actor.update(previousActorData);
+        await previousCombatant.actor.update(previousActorData);
       }
     }
   }

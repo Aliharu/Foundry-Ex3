@@ -733,6 +733,7 @@
     "Ex3.UseActiveEffectsDropdown": "Use Active Effects Dropdown",
     "Ex3.UseActiveEffectsDropdownDescription": "Use a dropdown list for the key in active effects rather than an open input",
 
+    "Ex3.Appearance(NPC)": "Appearance (NPC Only)",
     "Ex3.Command(NPC)": "Command (NPC Only)",
     "Ex3.GrappleControl(NPC)": "Grapple Control (NPC Only)",
     "Ex3.Movement(NPC)": "Movement (NPC Only)",
@@ -742,23 +743,13 @@
     "Ex3.Social(NPC)": "Social (NPC Only)",
     "Ex3.Sorcery(NPC)": "Sorcery (NPC Only)",
 
-
-    "Ex3.Command(PC)": "Command (PC Only)",
-    "Ex3.Craft(PC)": "Craft (PC Only)",
-    "Ex3.Disengage(PC)": "Disengage (PC Only)",
-    "Ex3.Rush(PC)": "Rush (PC Only)",
-    "Ex3.GrappleControl(PC)": "Grapple Control (PC Only)",
-    "Ex3.Movement(PC)": "Movement (PC Only)",
-    "Ex3.JoinBattle(PC)": "Join Battle (PC Only)",
-    "Ex3.ReadIntentions(PC)": "Read Intentions (PC Only)",
-    "Ex3.SocialInfluence(PC)": "Social Influence (PC Only)",
-    "Ex3.Social(PC)": "Social (PC Only)",
-    "Ex3.Sorcery(PC)": "Sorcery (PC Only)",
-
-    "Ex3.Attacks(PC)": "Attacks (PC Only)",
-    "Ex3.WitheringAttacks(PC)": "Withering Attacks (PC Only)",
-    "Ex3.DecisiveAttacks(PC)": "Decisive Attacks (PC Only)",
-    "Ex3.Gambits(PC)": "Gambits (PC Only)",
     "Ex3.Poison": "Poison",
-    "Ex3.PoisonRoundTrigger": "Poison (Triggers End of Round)"
+    "Ex3.PoisonRoundTrigger": "Poison (Triggers End of Round)",
+
+    "Ex3.InitiativeDamageRoundBashing": "Initiative Damage (Per Round, B)",
+    "Ex3.InitiativeDamageRoundLethal": "Initiative Damage (Per Round, L)",
+    "Ex3.BashingDamageRound": "Bashing Damage (Per Round)",
+    "Ex3.LethalDamageRound": "Lethal Damage (Per Round)",
+    "Ex3.AggravatedDamageRound": "Aggravated Damage (Per Round)"
+
 }

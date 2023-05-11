@@ -860,6 +860,7 @@
         "apply": false,
         "damage": 0,
         "penalty": 0,
+        "duration": 0,
         "difficulty": 0,
         "damagetype": "none"
       },

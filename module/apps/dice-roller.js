@@ -152,6 +152,7 @@ export class RollForm extends FormApplication {
                 decisiveDamageType: 'initiative',
                 decisiveDamageCalculation: 'evenSplit'
             };
+            this.object.poison = null;
             this.object.settings = {
                 doubleSucccessCaps: {
                     sevens: 0,
@@ -191,16 +192,10 @@ export class RollForm extends FormApplication {
                     if (this._isAttackRoll()) {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
-                        this.object.diceModifier += this.actor.system.settings.rollsettings['attacks'].bonus;
-                        if (this.actor.system.settings.attackrollsettings[this.object.attackType]) {
-                            this.object.diceModifier += this.actor.system.settings.attackrollsettings[this.object.attackType].bonus;
-                            this.object.damage.damageDice += this.actor.system.settings.attackrollsettings[this.object.attackType].damage;
-                        }
                     }
                     else if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
                         this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].ability;
-                        this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                     }
                     else {
                         this.object.attribute = data.attribute || this._getHighestAttribute(this.actor.system.attributes);
@@ -218,6 +213,16 @@ export class RollForm extends FormApplication {
                     }
                     this.object.appearance = this.actor.system.attributes.appearance.value;
                 }
+                if (this._isAttackRoll()) {
+                    this.object.diceModifier += this.actor.system.settings.rollsettings['attacks'].bonus;
+                    if (this.actor.system.settings.attackrollsettings[this.object.attackType]) {
+                        this.object.diceModifier += this.actor.system.settings.attackrollsettings[this.object.attackType].bonus;
+                        this.object.damage.damageDice += this.actor.system.settings.attackrollsettings[this.object.attackType].damage;
+                    }
+                }
+                else if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
+                    this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
+                }
 
                 if (this.actor.system.settings.rollStunts) {
                     this.object.stunt = "one";
@@ -231,6 +236,7 @@ export class RollForm extends FormApplication {
                 if (data.weapon) {
                     this.object.weaponTags = data.weapon.traits?.weapontags?.selected || {};
                     this.object.damage.resetInit = data.weapon.resetinitiative;
+                    this.object.poison = data.weapon.poison;
                     if (this.actor.type === 'character') {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.weapon.ability || "archery";
@@ -1768,10 +1774,17 @@ export class RollForm extends FormApplication {
         };
     }
 
-    _testMacro(rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) {
-        let { results, roll, total } = rollResult;
-        return { results, roll, total };
-    }
+    // _testMacro(rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) {
+    //     let combatant = this._getActorCombatant();
+    //     if (combatant && combatant.initiative != null && combatant.initiative >= 15) {
+    //         this.object.damage.damageDice += this.actor.system.attributes.dexterity;
+    //     }
+    //     else {
+    //         this.object.damage.damageDice += Math.ceil(this.actor.system.attributes.dexterity / 2);
+    //     }
+    //     let { results, roll, total } = rollResult;
+    //     return { results, roll, total };
+    // }
 
     async _baseAbilityDieRoll() {
         let dice = 0;
@@ -2448,6 +2461,7 @@ export class RollForm extends FormApplication {
         }
         let soakResult = ``;
         let typeSpecificResults = ``;
+        this.object.attackSuccess = true;
 
         if (this._damageRollType('decisive')) {
             typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
@@ -2458,10 +2472,9 @@ export class RollForm extends FormApplication {
             this.dealHealthDamage(total);
         }
         else if (this._damageRollType('gambit')) {
-            this.object.gambitSuccess = true;
             var resultsText = `<h4 class="dice-total">Gambit Success</h4>`;
             if (this.object.gambitDifficulty > total) {
-                this.object.gambitSuccess = false;
+                this.object.attackSuccess = false;
                 resultsText = `<h4 class="dice-total">Gambit Failed</h4>`
             }
             typeSpecificResults = `<h4 class="dice-formula">${total} Successes vs ${this.object.gambitDifficulty} Difficulty!</h4>${resultsText}`;
@@ -2622,6 +2635,7 @@ export class RollForm extends FormApplication {
     async _addAttackEffects() {
         var knockdownTriggered = false;
         var onslaughtTriggered = false;
+        var poisonAdded = null;
         var triggerGambit = 'none';
         const gambitChart = {
             'leech': 'bleeding',
@@ -2643,7 +2657,7 @@ export class RollForm extends FormApplication {
                     knockdownTriggered = true;
                 }
             }
-            if (this.object.gambitSuccess) {
+            if (this.object.attackSuccess) {
                 if (this.object.gambit !== 'none' && gambitChart[this.object.gambit]) {
                     triggerGambit = gambitChart[this.object.gambit];
                     if (game.user.isGM) {
@@ -2665,6 +2679,40 @@ export class RollForm extends FormApplication {
                         await actorToken.toggleEffect(newStatusEffect);
                     }
                 }
+            }
+        }
+        if(this.object.attackType === 'decisive' && this.object.attackSuccess && this.object.poison && this.object.poison.apply && this.object.poison.damagetype !== 'none') {
+            if (game.user.isGM) {
+                await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
+                    name: this.object.poison.name || "Poison",
+                    icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
+                    origin: this.actor.uuid,
+                    disabled: false,
+                    duration: {
+                        rounds: this.object.poison.duration,
+                    },
+                    flags: {
+                        "exaltedthird": {
+                            poisonerCombatantId: this._getActorCombatant()?._id || null,
+                            lowerDurationPerRound: true,
+                        }
+                    },
+                    changes: [
+                        {
+                            "key": `data.damage.round.${this.object.poison.damagetype}`,
+                            "value": this.object.poison.damage,
+                            "mode": 0
+                        },
+                        {
+                            "key": `data.dicemodifier.value`,
+                            "value": this.object.poison.penalty * -1,
+                            "mode": 2
+                        },
+                    ]
+                }]);
+            }
+            else {
+                poisonAdded = this.object.poison;
             }
         }
         if (this.object.target) {
@@ -2712,16 +2760,16 @@ export class RollForm extends FormApplication {
                         game.socket.emit('system.exaltedthird', {
                             type: 'addOnslaught',
                             id: this.object.target.id,
-                            data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit },
+                            data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit, 'poisonAdded': poisonAdded },
                         });
                     }
                 }
             }
-            if (!onslaughtTriggered && (knockdownTriggered || triggerGambit !== 'none')) {
+            if (!onslaughtTriggered && (knockdownTriggered || triggerGambit !== 'none' || poisonAdded)) {
                 game.socket.emit('system.exaltedthird', {
                     type: 'triggerEffect',
                     id: this.object.target.id,
-                    data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit },
+                    data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit, 'poisonAdded': poisonAdded },
                 });
             }
             if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {

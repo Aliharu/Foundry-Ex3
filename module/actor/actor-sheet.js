@@ -749,15 +749,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.pickColor();
     });
 
-    html.find('#recoveryScene').mousedown(ev => {
+    html.find('#healDamage').mousedown(ev => {
       this.recoverHealth();
     });
 
-    html.find('#recoverySceneWarstrider').mousedown(ev => {
+    html.find('#healDamageWarstrider').mousedown(ev => {
       this.recoverHealth('warstrider');
     });
 
-    html.find('#recoverySceneShip').mousedown(ev => {
+    html.find('#healDamageShip').mousedown(ev => {
       this.recoverHealth('ship');
     });
 
@@ -931,6 +931,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('#anima-down').click(ev => {
       this._updateAnima("down");
+    });
+
+    html.find('.toggle-poison').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      // Render the chat card template
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      item.update({
+        [`system.poison.apply`]: !item.system.poison.apply,
+      });
     });
 
     html.find('.item-chat').click(ev => {
@@ -1393,7 +1404,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       data.health.lethal = 0;
       data.health.aggravated = 0;
     }
-    this.actor.update(actorData);
+    await this.actor.update(actorData);
   }
 
   async showDialogue(type) {
