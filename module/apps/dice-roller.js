@@ -2712,7 +2712,14 @@ export class RollForm extends FormApplication {
                 }]);
             }
             else {
-                poisonAdded = this.object.poison;
+                poisonAdded = {
+                    poisonerId: this.actor.uuid,
+                    poison: this.object.poison,
+                    flags: {
+                        poisonerCombatantId: this._getActorCombatant()?._id || null,
+                        lowerDurationPerRound: true,
+                    }
+                };
             }
         }
         if (this.object.target) {

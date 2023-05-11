@@ -247,13 +247,14 @@ async function handleSocket({ type, id, data, actorId, crasherId = null }) {
 
   if (!isResponsibleGM) return;
 
+  const targetedActor = game.canvas.tokens.get(id)?.actor;
+
   if (type === 'updateInitiative') {
     game.combat.setInitiative(id, data, crasherId);
   }
   if (type === 'updateTargetData') {
-    const targetedActor = game.canvas.tokens.get(id).actor;
     if (targetedActor) {
-      targetedActor.update(data);
+      await targetedActor.update(data);
     }
   }
   if (type === 'addOnslaught') {
@@ -273,8 +274,9 @@ async function handleSocket({ type, id, data, actorId, crasherId = null }) {
         await token.toggleEffect(newStatusEffect);
       }
     }
-    const targetedActor = game.canvas.tokens.get(id).actor;
-    addDefensePenalty(targetedActor, 'Onslaught');
+    if (targetedActor) {
+      await addDefensePenalty(targetedActor, 'Onslaught');
+    }
   }
   if (type === 'triggerEffect') {
     const token = game.canvas.tokens.get(id);
@@ -290,6 +292,34 @@ async function handleSocket({ type, id, data, actorId, crasherId = null }) {
         const newStatusEffect = CONFIG.statusEffects.find(e => e.id === data.triggerGambit);
         await token.toggleEffect(newStatusEffect);
       }
+    }
+  }
+  if (data.poisonAdded) {
+    if (targetedActor) {
+      await targetedActor.createEmbeddedDocuments('ActiveEffect', [{
+        name: data.poisonAdded.poison.name || "Poison",
+        icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
+        origin: data.poisonAdded.poisonerId,
+        disabled: false,
+        duration: {
+          rounds: data.poisonAdded.poison.duration,
+        },
+        flags: {
+          "exaltedthird": data.poisonAdded.flags
+        },
+        changes: [
+          {
+            "key": `data.damage.round.${data.poisonAdded.poison.damagetype}`,
+            "value": data.poisonAdded.poison.damage,
+            "mode": 0
+          },
+          {
+            "key": `data.dicemodifier.value`,
+            "value": data.poisonAdded.poison.penalty * -1,
+            "mode": 2
+          },
+        ]
+      }]);
     }
   }
 }
@@ -366,16 +396,16 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         totalHealth += health_level.value;
       }
       for (const activeEffect of combatant.actor.allApplicableEffects()) {
-        if(activeEffect.duration.remaining > 0 && !activeEffect.disabled) {
-          for(const change of activeEffect.changes) {
-            if(change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') {
-              if(currentCombatantInitiative !== null && (currentCombatantInitiative - parseInt(change.value)) <= 0 && currentCombatantInitiative > 0) {
+        if (activeEffect.duration.remaining > 0 && !activeEffect.disabled) {
+          for (const change of activeEffect.changes) {
+            if (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') {
+              if (currentCombatantInitiative !== null && (currentCombatantInitiative - parseInt(change.value)) <= 0 && currentCombatantInitiative > 0) {
                 crasherId = activeEffect.flags?.exaltedthird?.poisonerCombatantId;
               }
               currentCombatantInitiative -= parseInt(change.value);
               initiativeDamage += parseInt(change.value);
-              if(combatant.initiative !== null && combatant.initiative <= 0) {
-                if(change.key === 'system.damage.round.initiative.bashing') {
+              if (combatant.initiative !== null && combatant.initiative <= 0) {
+                if (change.key === 'system.damage.round.initiative.bashing') {
                   bashingDamage += parseInt(change.value);
                 }
                 else {
@@ -383,13 +413,13 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
                 }
               }
             }
-            if(change.key === 'system.damage.round.bashing') {
+            if (change.key === 'system.damage.round.bashing') {
               bashingDamage += parseInt(change.value);
             }
-            if(change.key === 'system.damage.round.lethal') {
+            if (change.key === 'system.damage.round.lethal') {
               lethalDamage += parseInt(change.value);
             }
-            if(change.key === 'system.damage.round.aggravated') {
+            if (change.key === 'system.damage.round.aggravated') {
               aggravatedDamage += parseInt(change.value);
             }
           }
@@ -400,11 +430,11 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + lethalDamage);
         actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + bashingDamage);
       }
-      if(combatant.initiative !== null && combatant.initiative > 0 && initiativeDamage) {
+      if (combatant.initiative !== null && combatant.initiative > 0 && initiativeDamage) {
         game.combat.setInitiative(combatant.id, currentCombatantInitiative, crasherId);
-        if(crasherId) {
+        if (crasherId) {
           const crasher = game.combat.combatants.get(crasherId);
-          if(crasher && crasher.initiative) {
+          if (crasher && crasher.initiative) {
             game.combat.setInitiative(crasherId, crasher.initiative + 5);
           }
         }

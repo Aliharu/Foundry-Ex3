@@ -18,17 +18,19 @@
 // }
 
 .tabs {
-  height: 40px;
-  border-top: 1px solid #AAA;
+  height: 30px;
+  border-top: none !important;
   border-bottom: 1px solid #AAA;
 
   .item {
-    line-height: 40px;
+    line-height: 30px;
+    padding: 0px 13px !important;
     font-weight: bold;
   }
 
   .item.active {
-    text-decoration: underline;
     text-shadow: none;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px 5px 0px 0px;
   }
 }
