@@ -548,6 +548,16 @@ export class RollForm extends FormApplication {
             this.object.target = target;
             this.object.newTargetData = duplicate(target.actor);
             this.object.updateTargetActorData = false;
+            if(this.object.rollType === 'command') {
+                if (target.actor.system.battlegroup) {
+                    if (target.actor.system.drill.value === '0') {
+                        this.object.diceModifier -= 2;
+                    }
+                    if (target.actor.system.drill.value === '2') {
+                        this.object.diceModifier += 2;
+                    }
+                }
+            }
         }
     }
 
