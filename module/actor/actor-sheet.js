@@ -403,7 +403,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'action') {
         actions.push(i);
       }
-      if(i.system.active) {
+      if (i.system.active) {
         activeItems.push(i);
       }
     }
@@ -1128,16 +1128,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   _updateAnima(direction) {
     const actorData = duplicate(this.actor);
-    const data = actorData.system;
-    let newLevel = data.anima.level;
-    let newValue = data.anima.value;
+    let newAnima = this.actor.system.anima;
+    let newLevel = this.actor.system.anima.level;
+    let newValue = this.actor.system.anima.value;
     if (direction === "up") {
-      if (data.anima.level !== "Transcendent") {
-        if (data.anima.level === "Dim") {
+      if (this.actor.system.anima.level !== "Transcendent") {
+        if (this.actor.system.anima.level === "Dim") {
           newLevel = "Glowing";
           newValue = 1;
         }
-        else if (data.anima.level === "Glowing") {
+        else if (this.actor.system.anima.level === "Glowing") {
           newLevel = "Burning";
           newValue = 2;
         }
@@ -1146,41 +1146,40 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           newValue = 3;
         }
       }
-      if (data.anima.level === 'Bonfire' && data.anima.max === 4) {
+      if (this.actor.system.anima.level === 'Bonfire' && this.actor.system.anima.max === 4) {
         newLevel = "Transcendent";
         newValue = 4;
       }
     }
     else {
-      if (data.anima.level === "Transcendent") {
+      if (this.actor.system.anima.level === "Transcendent") {
         newLevel = "Bonfire";
         newValue = 3;
       }
-      else if (data.anima.level === "Bonfire") {
+      else if (this.actor.system.anima.level === "Bonfire") {
         newLevel = "Burning";
         newValue = 2;
       }
-      else if (data.anima.level === "Burning") {
+      else if (this.actor.system.anima.level === "Burning") {
         newLevel = "Glowing";
         newValue = 1;
       }
-      else if (data.anima.level === "Glowing") {
+      else if (this.actor.system.anima.level === "Glowing") {
         newLevel = "Dim";
         newValue = 0;
       }
     }
-    data.anima.level = newLevel;
-    data.anima.value = newValue;
+    newAnima.level = newLevel;
+    newAnima.value = newValue;
     animaTokenMagic(this.actor, newValue);
-    this.actor.update(actorData);
+    this.actor.update({ [`system.anima`]: newAnima });
   }
 
   async calculateDerivedStats(type) {
     const actorData = duplicate(this.actor);
-    const data = actorData.system;
     var armoredSoakValue = 0;
     if (type === 'natural-soak') {
-      data.naturalsoak.value = data.attributes[data.settings.staticcapsettings.soak.attribute].value;
+      actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value;
     }
     if (type === 'soak' || type === 'armored-soak') {
       for (let armor of this.actor.armor) {
@@ -1189,126 +1188,129 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       if (type === 'armored-soak') {
-        data.armoredsoak.value = armoredSoakValue;
+        actorData.system.armoredsoak.value = armoredSoakValue;
       }
       if (type === 'soak') {
-        data.soak.value = data.attributes[data.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
+        actorData.system.soak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
       }
     }
     if (type === 'parry') {
-      data.parry.value = Math.ceil((data.attributes[data.settings.staticcapsettings.parry.attribute].value + data.abilities[data.settings.staticcapsettings.parry.ability].value) / 2);
+      actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value) / 2);
       for (let weapon of this.actor.weapons) {
         if (weapon.system.equipped) {
-          data.parry.value = data.parry.value + weapon.system.defense;
+          actorData.system.parry.value = actorData.system.parry.value + weapon.system.defense;
         }
       }
     }
     if (type === 'evasion') {
-      var newEvasionValue = Math.ceil((data.attributes[data.settings.staticcapsettings.parry.attribute].value + data.abilities[data.settings.staticcapsettings.evasion.ability].value) / 2);
+      var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value) / 2);
       for (let armor of this.actor.armor) {
         if (armor.system.equipped) {
           newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
         }
       }
-      data.evasion.value = newEvasionValue;
+      actorData.system.evasion.value = newEvasionValue;
     }
     if (type === 'resolve') {
-      data.resolve.value = Math.ceil((data.attributes[data.settings.staticcapsettings.resolve.attribute].value + data.abilities[data.settings.staticcapsettings.resolve.ability].value) / 2);
+      actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value) / 2);
     }
     if (type === 'guile') {
-      data.guile.value = Math.ceil((data.attributes[data.settings.staticcapsettings.guile.attribute].value + data.abilities[data.settings.staticcapsettings.guile.ability].value) / 2);
+      actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value) / 2);
     }
     if (type === 'resonance') {
-      data.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);
-      data.traits.dissonance = this.actor.calculateDissonance(this.actor.system.details.exalt);
+      actorData.system.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);
+      actorData.system.traits.dissonance = this.actor.calculateDissonance(this.actor.system.details.exalt);
     }
     this.actor.update(actorData);
   }
 
   async setSpendPool(type) {
-    const actorData = duplicate(this.actor);
-    actorData.system.settings.charmmotepool = type;
-    this.actor.update(actorData);
+    this.actor.update({ [`system.settings.charmmotepool`]: type });
   }
 
   async calculateCommitMotes(type) {
-    const actorData = duplicate(this.actor);
     var commitMotes = 0;
     for (const item of this.actor.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
       if (item.type === 'item' || item.system.equipped) {
         commitMotes += item.system.attunement;
       }
     }
-    actorData.system.motes[type].committed = commitMotes;
-    this.actor.update(actorData);
+    this.actor.update({ [`system.motes.${type}.committed`]: commitMotes });
   }
 
   async calculateMotes() {
-    const actorData = duplicate(this.actor);
-    const data = actorData.system;
+    const system = this.actor.system;
 
-    if (data.details.exalt === 'other' || (actorData.type === 'npc' && data.creaturetype !== 'exalt')) {
-      data.motes.personal.max = 10 * data.essence.value;
-      if (data.creaturetype === 'god' || data.creaturetype === 'undead' || data.creaturetype === 'demon') {
-        data.motes.personal.max += 50;
+    if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
+      system.motes.personal.max = 10 * system.essence.value;
+      if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon') {
+        system.motes.personal.max += 50;
       }
-      data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
+      system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
     }
     else {
-      data.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
-      data.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
-      data.motes.personal.value = (data.motes.personal.max - this.actor.system.motes.personal.committed);
-      data.motes.peripheral.value = (data.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
+      system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
+      system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+      system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
+      system.motes.peripheral.value = (system.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
     }
-    this.actor.update(actorData);
+    this.actor.update({ [`system.motes`]: system.motes });
   }
 
   async calculateHealth(healthType = 'person') {
     let confirmed = false;
-    const actorData = duplicate(this.actor);
-    const data = actorData.system;
-
     var oxBodyText = '';
 
-    if (actorData.type !== 'npc') {
-      if (data.details.exalt === 'solar') {
-        if (data.attributes.stamina.value > 3) {
+    if (this.actor.type !== 'npc') {
+      if (this.actor.system.details.exalt === 'solar') {
+        if (this.actor.system.attributes.stamina.value > 3) {
           oxBodyText = 'Ox Body: One -1 and one -2 level.';
         }
-        else if (data.attributes.stamina.value > 5) {
+        else if (this.actor.system.attributes.stamina.value > 5) {
           oxBodyText = 'Ox Body: One -1 and two -2 levels.';
         }
         else {
           oxBodyText = 'Ox Body: One -0, one -1, and one -2 level';
         }
       }
-      if (data.details.exalt === 'dragonblooded') {
-        if (data.attributes.stamina.value > 3) {
-          oxBodyText = 'Ox Body: Two −2 levels';
+      if (this.actor.system.details.exalt === 'dragonblooded') {
+        if (this.actor.system.attributes.stamina.value > 3) {
+          oxBodyText = 'Ox Body: Two -2 levels';
         }
-        else if (data.attributes.stamina.value > 5) {
-          oxBodyText = 'Ox Body: One −1 and one −2 level';
+        else if (this.actor.system.attributes.stamina.value > 5) {
+          oxBodyText = 'Ox Body: One -1 and one -2 level';
         }
         else {
-          oxBodyText = 'Ox Body: One −1 and two −2 levels';
+          oxBodyText = 'Ox Body: One -1 and two -2 levels';
         }
       }
-      if (data.details.exalt === 'lunar') {
-        if (data.attributes.stamina.value > 3) {
-          oxBodyText = 'Ox Body: Two −2 levels.';
+      if (this.actor.system.details.exalt === 'lunar') {
+        if (this.actor.system.attributes.stamina.value > 3) {
+          oxBodyText = 'Ox Body: Two -2 levels.';
         }
-        else if (data.attributes.stamina.value > 5) {
-          oxBodyText = 'Ox Body: Two −2 levels and one −4 level';
+        else if (this.actor.system.attributes.stamina.value > 5) {
+          oxBodyText = 'Ox Body: Two -2 levels and one -4 level';
         }
         else {
-          oxBodyText = 'Ox Body: Two −2 levels and two −4 levels';
+          oxBodyText = 'Ox Body: Two -2 levels and two -4 levels';
+        }
+      }
+      else if (this.actor.system.details.exalt === 'sidereal') {
+        if (this.actor.system.attributes.stamina.value > 3) {
+          oxBodyText = 'Ox Body: One -0 level.';
+        }
+        else if (this.actor.system.attributes.stamina.value > 5) {
+          oxBodyText = 'Ox Body: One -0 level and one -1 level';
+        }
+        else {
+          oxBodyText = 'Ox Body: Two -0 levels';
         }
       }
     }
 
 
     var template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
-    if (data.battlegroup && healthType === 'person') {
+    if (this.actor.system.battlegroup && healthType === 'person') {
       template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
     }
 
@@ -1317,23 +1319,23 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       'healthType': healthType,
     }
     if (healthType === 'warstrider') {
-      templateData.zero = data.warstrider.health.levels.zero.value;
-      templateData.one = data.warstrider.health.levels.one.value;
-      templateData.two = data.warstrider.health.levels.two.value;
-      templateData.four = data.warstrider.health.levels.four.value;
+      templateData.zero = this.actor.system.warstrider.health.levels.zero.value;
+      templateData.one = this.actor.system.warstrider.health.levels.one.value;
+      templateData.two = this.actor.system.warstrider.health.levels.two.value;
+      templateData.four = this.actor.system.warstrider.health.levels.four.value;
     }
     else if (healthType === 'ship') {
-      templateData.zero = data.ship.health.levels.zero.value;
-      templateData.one = data.ship.health.levels.one.value;
-      templateData.two = data.ship.health.levels.two.value;
-      templateData.four = data.ship.health.levels.four.value;
+      templateData.zero = this.actor.system.ship.health.levels.zero.value;
+      templateData.one = this.actor.system.ship.health.levels.one.value;
+      templateData.two = this.actor.system.ship.health.levels.two.value;
+      templateData.four = this.actor.system.ship.health.levels.four.value;
     }
     else {
-      templateData.zero = data.health.levels.zero.value;
-      templateData.one = data.health.levels.one.value;
-      templateData.two = data.health.levels.two.value;
-      templateData.four = data.health.levels.four.value;
-      templateData.penaltyMod = data.health.penaltymod;
+      templateData.zero = this.actor.system.health.levels.zero.value;
+      templateData.one = this.actor.system.health.levels.one.value;
+      templateData.two = this.actor.system.health.levels.two.value;
+      templateData.four = this.actor.system.health.levels.four.value;
+      templateData.penaltyMod = this.actor.system.health.penaltymod;
     }
 
     const html = await renderTemplate(template, templateData);
@@ -1352,59 +1354,49 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           let two = parseInt(html.find('#two').val()) || 0;
           let four = parseInt(html.find('#four').val()) || 0;
           let penaltyMod = parseInt(html.find('#penaltyMod').val()) || 0;
-          if (healthType === 'warstrider') {
-            data.warstrider.health.bashing = 0;
-            data.warstrider.health.lethal = 0;
-            data.warstrider.health.aggravated = 0;
-            data.warstrider.health.levels.zero.value = zero;
-            data.warstrider.health.levels.one.value = one;
-            data.warstrider.health.levels.two.value = two;
-            data.warstrider.health.levels.four.value = four;
+          let healthData = {
+            levels: {
+              zero: {
+                value: zero,
+              },
+              one: {
+                value: one,
+              },
+              two: {
+                value: two,
+              },
+              four: {
+                value: four,
+              },
+            },
+            penaltymod: penaltyMod,
+            bashing: 0,
+            lethal: 0,
+            aggravated: 0,
           }
-          else if (healthType === 'ship') {
-            data.ship.health.bashing = 0;
-            data.ship.health.lethal = 0;
-            data.ship.health.aggravated = 0;
-            data.ship.health.levels.zero.value = zero;
-            data.ship.health.levels.one.value = one;
-            data.ship.health.levels.two.value = two;
-            data.ship.health.levels.four.value = four;
+          if (healthType === 'person') {
+            this.actor.update({ [`system.health`]: healthData });
           }
           else {
-            data.health.bashing = 0;
-            data.health.lethal = 0;
-            data.health.aggravated = 0;
-            data.health.levels.zero.value = zero;
-            data.health.levels.one.value = one;
-            data.health.levels.two.value = two;
-            data.health.levels.four.value = four;
-            data.health.penaltymod = penaltyMod;
+            this.actor.update({ [`system.${healthType}.health`]: healthData });
           }
-          this.actor.update(actorData);
         }
       }
     }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
   async recoverHealth(healthType = 'person') {
-    const actorData = duplicate(this.actor);
-    const data = actorData.system;
-    if (healthType === 'warstrider') {
-      data.warstrider.health.bashing = 0;
-      data.warstrider.health.lethal = 0;
-      data.warstrider.health.aggravated = 0;
+    let newDamage = {
+      bashing: 0,
+      lethal: 0,
+      aggravated: 0,
     }
-    else if (healthType === 'ship') {
-      data.ship.health.bashing = 0;
-      data.ship.health.lethal = 0;
-      data.ship.health.aggravated = 0;
+    if (healthType === 'person') {
+      this.actor.update({ [`system.health`]: newDamage });
     }
     else {
-      data.health.bashing = 0;
-      data.health.lethal = 0;
-      data.health.aggravated = 0;
+      this.actor.update({ [`system.${healthType}.health`]: newDamage });
     }
-    await this.actor.update(actorData);
   }
 
   async showDialogue(type) {
@@ -1480,10 +1472,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async sheetSettings() {
     let confirmed = false;
-    const actorData = duplicate(this.actor);
-    const system = actorData.system;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: system.settings, 'maxAnima': system.anima.max, 'lunarFormEnabled': system.lunarform?.enabled });
+    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1493,26 +1483,27 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       },
       close: html => {
         if (confirmed) {
-          system.settings.charmmotepool = html.find('#charmMotePool').val();
-          system.settings.martialartsmastery = html.find('#martialArtsMastery').val();
-          system.settings.sheetbackground = html.find('#sheetBackground').val();
-          system.settings.smaenlightenment = html.find('#smaEnlightenment').is(":checked");
-          system.anima.max = parseInt(html.find('#maxAnima').val());
-          system.settings.showwarstrider = html.find('#showWarstrider').is(":checked");
-          system.settings.showship = html.find('#showShip').is(":checked");
-          system.settings.showescort = html.find('#showEscort').is(":checked");
-          system.settings.usetenattributes = html.find('#useTenAttributes').is(":checked");
-          system.settings.usetenabilities = html.find('#useTenAbilities').is(":checked");
-          system.settings.rollStunts = html.find('#rollStunts').is(":checked");
-          system.settings.defenseStunts = html.find('#defenseStunts').is(":checked");
-          system.settings.showanima = html.find('#showAnima').is(":checked");
-          system.settings.editmode = html.find('#editMode').is(":checked");
-          system.settings.issorcerer = html.find('#isSorcerer').is(":checked");
-          system.settings.iscrafter = html.find('#isCrafter').is(":checked");
-          if (actorData.type === 'npc') {
-            system.lunarform.enabled = html.find('#lunarFormEnabled').is(":checked");
+          let newSettings = {
+            charmmotepool: html.find('#charmMotePool').val(),
+            martialartsmastery: html.find('#martialArtsMastery').val(),
+            sheetbackground: html.find('#sheetBackground').val(),
+            smaenlightenment: html.find('#smaEnlightenment').is(":checked"),
+            showwarstrider: html.find('#showWarstrider').is(":checked"),
+            showship: html.find('#showShip').is(":checked"),
+            showescort: html.find('#showEscort').is(":checked"),
+            usetenattributes: html.find('#useTenAttributes').is(":checked"),
+            usetenabilities: html.find('#useTenAbilities').is(":checked"),
+            rollStunts: html.find('#rollStunts').is(":checked"),
+            defenseStunts: html.find('#defenseStunts').is(":checked"),
+            showanima: html.find('#showAnima').is(":checked"),
+            editmode: html.find('#editMode').is(":checked"),
+            issorcerer: html.find('#isSorcerer').is(":checked"),
+            iscrafter: html.find('#isCrafter').is(":checked"),
           }
-          this.actor.update(actorData);
+          if (this.actor.type === 'npc') {
+            this.actor.update({ [`system.lunarform.enabled`]: html.find('#lunarFormEnabled').is(":checked")});
+          }
+          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(html.find('#maxAnima').val())});
         }
       }
     }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
@@ -1898,7 +1889,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             actorData.system.resolve = lunar.system.resolve;
             actorData.system.guile = lunar.system.guile;
             actorData.system.anima = lunar.system.anima;
-            if(lunar.type === 'npc'){
+            if (lunar.type === 'npc') {
               actorData.system.appearance.value = actorData.system.appearance.value;
             }
             else {
@@ -1915,14 +1906,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
             for (let [key, pool] of Object.entries(actorData.system.pools)) {
               let lunarPool = 0;
-              if(lunar.type === 'npc'){
+              if (lunar.type === 'npc') {
                 lunarPool = lunar.system.pools[key].value;
               }
               else {
                 if (key === 'grapple') {
                   lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
                 }
-                else if (key === 'movement') { 
+                else if (key === 'movement') {
                   lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
                 }
                 else {
@@ -1933,7 +1924,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               pool.value = Math.max(pool.value, lunarPool);
             }
             for (let item of this.actor.items.filter(item => item.type === 'action')) {
-              if(lunar.type === 'character') {
+              if (lunar.type === 'character') {
                 if (item.system.lunarstats.attribute !== 'none' && item.system.lunarstats.ability !== 'none') {
                   let lunarActionPool = lunar.system.attributes[item.system.lunarstats.attribute].value + lunar.system.abilities[item.system.lunarstats.ability].value;
                   item.update({
@@ -1943,7 +1934,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               }
               else {
                 const lunarAction = lunar.items.filter(item => item.type === 'action').find(lunarActionItem => lunarActionItem.name === item.name);
-                if(lunarAction) {
+                if (lunarAction) {
                   item.update({
                     [`system.value`]: Math.max(item.system.value, lunarAction.system.value),
                   });
@@ -1983,13 +1974,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
 function getCharacterAbilityValue(actor, ability) {
   if (actor.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
-      return actor.customabilities.find(x => x._id === ability).system.points;
+    return actor.customabilities.find(x => x._id === ability).system.points;
   }
   if (actor.system.abilities[ability]) {
-      return actor.system.abilities[ability]?.value || 0;
+    return actor.system.abilities[ability]?.value || 0;
   }
   if (ability === 'willpower') {
-      return actor.system.willpower.max;
+    return actor.system.willpower.max;
   }
   return 0;
 }

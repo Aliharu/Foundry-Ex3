@@ -301,6 +301,7 @@ async function handleSocket({ type, id, data, actorId, crasherId = null }) {
         icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
         origin: data.poisonAdded.poisonerId,
         disabled: false,
+        description: `Difficulty ${this.object.poison.difficulty}`,
         duration: {
           rounds: data.poisonAdded.poison.duration,
         },

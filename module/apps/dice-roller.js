@@ -2688,6 +2688,7 @@ export class RollForm extends FormApplication {
                     icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
                     origin: this.actor.uuid,
                     disabled: false,
+                    description: `Difficulty ${this.object.poison.difficulty}`,
                     duration: {
                         rounds: this.object.poison.duration,
                     },
