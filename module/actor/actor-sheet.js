@@ -1263,10 +1263,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     if (this.actor.type !== 'npc') {
       if (this.actor.system.details.exalt === 'solar') {
-        if (this.actor.system.attributes.stamina.value > 3) {
+        if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: One -1 and one -2 level.';
         }
-        else if (this.actor.system.attributes.stamina.value > 5) {
+        else if (this.actor.system.attributes.stamina.value < 5) {
           oxBodyText = 'Ox Body: One -1 and two -2 levels.';
         }
         else {
@@ -1274,10 +1274,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       if (this.actor.system.details.exalt === 'dragonblooded') {
-        if (this.actor.system.attributes.stamina.value > 3) {
+        if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: Two -2 levels';
         }
-        else if (this.actor.system.attributes.stamina.value > 5) {
+        else if (this.actor.system.attributes.stamina.value < 5) {
           oxBodyText = 'Ox Body: One -1 and one -2 level';
         }
         else {
@@ -1285,10 +1285,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       if (this.actor.system.details.exalt === 'lunar') {
-        if (this.actor.system.attributes.stamina.value > 3) {
+        if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: Two -2 levels.';
         }
-        else if (this.actor.system.attributes.stamina.value > 5) {
+        else if (this.actor.system.attributes.stamina.value < 5) {
           oxBodyText = 'Ox Body: Two -2 levels and one -4 level';
         }
         else {
@@ -1296,10 +1296,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       }
       else if (this.actor.system.details.exalt === 'sidereal') {
-        if (this.actor.system.attributes.stamina.value > 3) {
+        if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: One -0 level.';
         }
-        else if (this.actor.system.attributes.stamina.value > 5) {
+        else if (this.actor.system.attributes.stamina.value < 5) {
           oxBodyText = 'Ox Body: One -0 level and one -1 level';
         }
         else {
