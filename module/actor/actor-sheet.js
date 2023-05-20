@@ -576,8 +576,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
     html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
 
-    html.find('.augment-attribute').click(this._toggleAugment.bind(this));
-
     // Update Inventory Item
     html.find('.item-edit').click(ev => {
       ev.stopPropagation();
@@ -1127,7 +1125,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _updateAnima(direction) {
-    const actorData = duplicate(this.actor);
     let newAnima = this.actor.system.anima;
     let newLevel = this.actor.system.anima.level;
     let newValue = this.actor.system.anima.value;
@@ -1444,9 +1441,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async pickColor() {
     let confirmed = false;
-    const actorData = duplicate(this.actor);
-    const data = actorData.system;
-    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': data.details.color, 'animaColor': data.details.animacolor });
+    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor });
     new Dialog({
       title: `Pick Color`,
       content: html,
@@ -1459,12 +1454,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           let color = html.find('#color').val();
           let animaColor = html.find('#animaColor').val();
           if (isColor(color)) {
-            data.details.color = color;
+            this.actor.update({ [`system.details.color`]: color });
           }
           if (isColor(animaColor)) {
-            data.details.animacolor = animaColor;
+            this.actor.update({ [`system.details.animacolor`]: animaColor });
           }
-          this.actor.update(actorData);
         }
       }
     }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
@@ -1686,7 +1680,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const value = Number(this.dataset.value);
       $(this).find('.resource-value-step').each(function (i) {
         if (i + 1 <= value) {
-          $(this).addClass('active')
+          $(this).addClass('active');
           $(this).css("background-color", actorData.system.details.color);
         }
       });
@@ -1695,7 +1689,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const value = Number(this.dataset.value)
       $(this).find('.resource-value-static-step').each(function (i) {
         if (i + 1 <= value) {
-          $(this).addClass('active')
+          $(this).addClass('active');
           $(this).css("background-color", actorData.system.details.color);
         }
       })
@@ -1725,16 +1719,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         }
       });
     });
-  }
-
-  _toggleAugment(event) {
-    event.preventDefault()
-    const element = event.currentTarget
-    const attribute = element.dataset.name
-    const actorData = duplicate(this.actor)
-    var augStatus = actorData.system.attributes[attribute].aug;
-    actorData.system.attributes[attribute].aug = !augStatus;
-    this.actor.update(actorData);
   }
 
   /**
