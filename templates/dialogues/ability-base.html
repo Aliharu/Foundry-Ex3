@@ -193,15 +193,15 @@
     {{#each data.conditions as |condition key|}}
     <div>
         {{condition.name}}
-        {{#ifEquals condition.flags.core.statusId 'prone'}}
+        {{#ifInSet 'prone' condition.statuses}}
         (-3 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
-        {{/ifEquals}}
-        {{#ifEquals condition.flags.core.statusId 'blind'}}
+        {{/ifInSet}}
+        {{#ifInSet 'blind' condition.statuses}}
         (-3 {{localize "Ex3.Dice"}})
-        {{/ifEquals}}
-        {{#ifEquals condition.flags.core.statusId 'grappled'}}
+        {{/ifInSet}}
+        {{#ifInSet 'grappled' condition.statuses}}
         (-1 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
-        {{/ifEquals}}
+        {{/ifInSet}}
     </div>
     {{/each}}
 </div>

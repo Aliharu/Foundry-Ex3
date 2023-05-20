@@ -334,10 +334,10 @@ export class RollForm extends FormApplication {
                     this.object.diceModifier -= 3;
                 }
                 if (this._isAttackRoll()) {
-                    if (this.object.conditions.some(e => e.name === 'prone')) {
+                    if (this.object.conditions.some(e => e.statuses.has('prone'))) {
                         this.object.diceModifier -= 3;
                     }
-                    if (this.object.conditions.some(e => e.name === 'grappled')) {
+                    if (this.object.conditions.some(e => e.statuses.has('grappled'))) {
                         this.object.diceModifier -= 1;
                     }
                 }

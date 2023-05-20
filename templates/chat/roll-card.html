@@ -246,15 +246,15 @@
             <b>{{localize "Ex3.Conditions"}}: </b>
             {{#each rollData.conditions as |effect key|}}
                 {{effect.name}}
-                {{#ifEquals effect.flags.core.statusId 'prone'}}
+                {{#ifInSet 'prone' effect.statuses}}
                 (-3 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
-                {{/ifEquals}}
-                {{#ifEquals effect.flags.core.statusId 'blind'}}
+                {{/ifInSet}}
+                {{#ifInSet 'blind' effect.statuses}}
                 (-3 {{localize "Ex3.Dice"}})
-                {{/ifEquals}}
-                {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                {{/ifInSet}}
+                {{#ifInSet 'grappled' effect.statuses}}
                 (-1 {{localize "Ex3.Attack"}} {{localize "Ex3.Dice"}})
-                {{/ifEquals}},
+                {{/ifInSet}},
             {{/each}}
         </div>
         <div class="roll-card-header">

@@ -181,6 +181,10 @@ Hooks.once('init', async function () {
     return abilityName;
   });
 
+  Handlebars.registerHelper('ifInSet', function(elem, list, options) {
+    return (list.has(elem)) ? options.fn(this) : options.inverse(this);
+  });
+
   Handlebars.registerHelper("charmCostDisplay", function (cost) {
     let costString = '';
     if (cost.motes > 0 || cost.commitmotes > 0) {
