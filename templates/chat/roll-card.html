@@ -347,47 +347,47 @@
                 {{#if rollData.taget.actor.token }}
                     {{#each rollData.target.actor.token.actor.effects as |effect key|}}
                         {{effect.name}}
-                        {{#ifEquals effect.flags.core.statusId 'lightcover'}}
+                        {{#ifInSet 'lightcover' effect.statuses}}
                         (+1 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'heavycover'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'heavycover' effect.statuses}}
                         (+2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'fullcover'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'fullcover' effect.statuses}}
                         (+3 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'fulldefense'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'fulldefense' effect.statuses}}
                         (+2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'surprised'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'surprised' effect.statuses}}
                         (-2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'grappled' effect.statuses}}
                         (-2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
+                        {{/ifInSet}}
                         ,
                     {{/each}}
                 {{else}}
                     {{#each rollData.target.actor.effects as |effect key|}}
                         {{effect.name}}
-                        {{#ifEquals effect.flags.core.statusId 'lightcover'}}
+                        {{#ifInSet 'lightcover' effect.statuses}}
                         (+1 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'heavycover'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'heavycover' effect.statuses}}
                         (+2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'fullcover'}}
+                        {{/ifInSet}}
+                        {{#ifInSet  'fullcover' effect.statuses}}
                         (+3 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'fulldefense'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'fulldefense' effect.statuses}}
                         (+2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'surprised'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'surprised' effect.statuses}}
                         (-2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
-                        {{#ifEquals effect.flags.core.statusId 'grappled'}}
+                        {{/ifInSet}}
+                        {{#ifInSet 'grappled' effect.statuses}}
                         (-2 {{localize "Ex3.Defense"}})
-                        {{/ifEquals}}
+                        {{/ifInSet}}
                         ,
                     {{/each}}
                 {{/if}}

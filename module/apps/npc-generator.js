@@ -252,6 +252,9 @@ export default class NPCGenerator extends FormApplication {
       "exceptional": 7,
       "legendary": 10,
     }
+
+    const itemData = [
+    ];
     //Skills
     //Weak, Skilled, Exceptional, Legendary 
     var actorData = this._getBaseStatBlock();
@@ -269,11 +272,113 @@ export default class NPCGenerator extends FormApplication {
         actorData.system.motes.personal.value += 50;
         actorData.system.motes.personal.max += 50;
       }
-      if (this.object.character.npcType === 'exalt') {
-        actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
-        actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
-        actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
-        actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
+    }
+    if (this.object.character.npcType === 'exalt') {
+      actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
+      actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
+      actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
+      actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
+      itemData.push({
+        type: 'charm',
+        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        name: 'Dice Excellency',
+        system: {
+          description: 'Add 1 die to a roll for 1 mote.',
+          ability: 'universal',
+          listingname: 'Excellency',
+          essence: 1,
+          requirement: 1,
+          cost: {
+            motes: 1
+          },
+          diceroller: {
+            bonusdice: 1
+          }
+        }
+      });
+      itemData.push({
+        type: 'charm',
+        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        name: 'Success Excellency',
+        system: {
+          description: 'Add 1 success to a roll for 2 motes.',
+          ability: 'universal',
+          listingname: 'Excellency',
+          requirement: 1,
+          essence: 1,
+          cost: {
+            motes: 2
+          },
+          diceroller: {
+            bonussuccesses: 1
+          }
+        }
+      });
+      itemData.push({
+        type: 'charm',
+        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        name: 'Static Excellency',
+        system: {
+          description: 'Add 1 to a static value for 2 motes.',
+          ability: 'universal',
+          listingname: 'Excellency',
+          requirement: 1,
+          essence: 1,
+          cost: {
+            motes: 2
+          },
+          diceroller: {
+            opposedbonuses: {
+              enabled: true,
+              defense: 1,
+              resolve: 1,
+              guile: 1,
+            }
+          }
+        }
+      });
+      if(this.object.character.exalt === 'lunar') {
+        itemData.push({
+          type: 'charm',
+          img: 'icons/magic/light/explosion-star-large-orange.webp',
+          name: 'Soak Excellency',
+          system: {
+            description: 'Add 1 to a soak for 1 mote.',
+            ability: 'universal',
+            listingname: 'Excellency',
+            requirement: 1,
+            essence: 1,
+            cost: {
+              motes: 1
+            },
+            diceroller: {
+              opposedbonuses: {
+                enabled: true,
+                soak: 1,
+              }
+            }
+          }
+        });
+        itemData.push({
+          type: 'charm',
+          img: 'icons/magic/light/explosion-star-large-orange.webp',
+          name: 'Damage Excellency',
+          system: {
+            description: 'Add 1 damage to an attack for 1 mote.',
+            ability: 'universal',
+            listingname: 'Excellency',
+            requirement: 1,
+            essence: 1,
+            cost: {
+              motes: 1
+            },
+            diceroller: {
+              damage: {
+                bonusdice: 1,
+              }
+            }
+          }
+        });
       }
     }
     if (this.object.character.traits.commander.value) {
@@ -323,8 +428,6 @@ export default class NPCGenerator extends FormApplication {
     actorData.system.drill.value = this.object.character.battlegroupStats.drill;
     actorData.system.size.value = this.object.character.battlegroupStats.size;
 
-    const itemData = [
-    ];
     itemData.push(
       {
         type: 'action',
@@ -417,7 +520,9 @@ export default class NPCGenerator extends FormApplication {
           {
             type: 'ritual',
             name: randomRitual.name,
-            description: `Page Reference ${randomRitual.pageref}`,
+            system: {
+              description: `Page Reference ${randomRitual.pageref}`,
+            }
           }
         )
       }
@@ -635,7 +740,7 @@ export default class NPCGenerator extends FormApplication {
         itemData.push(charm);
       }
     }
-    if(this.object.character.traits.godOrDemon) {
+    if(this.object.character.traits.godOrDemon.value) {
       itemData.push({
         type: 'charm',
         img: "icons/svg/explosion.svg",

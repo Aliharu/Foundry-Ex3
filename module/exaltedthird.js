@@ -181,7 +181,7 @@ Hooks.once('init', async function () {
     return abilityName;
   });
 
-  Handlebars.registerHelper('ifInSet', function(elem, list, options) {
+  Handlebars.registerHelper('ifInSet', function (elem, list, options) {
     return (list.has(elem)) ? options.fn(this) : options.inverse(this);
   });
 
@@ -232,7 +232,7 @@ Hooks.once('init', async function () {
 //   console.log(updateData);
 // });
 
-async function handleSocket({ type, id, data, actorId, crasherId = null }) {
+async function handleSocket({ type, id, data, actorId, crasherId = null, addStatuses = [] }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
@@ -259,72 +259,13 @@ async function handleSocket({ type, id, data, actorId, crasherId = null }) {
   if (type === 'updateTargetData') {
     if (targetedActor) {
       await targetedActor.update(data);
-    }
-  }
-  if (type === 'addOnslaught') {
-    if (data.knockdownTriggered) {
-      const token = game.canvas.tokens.get(id)
-      const isProne = token.actor.effects.find(e => e.getFlag("core", "statusId") === 'prone');
-      if (!isProne) {
-        const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
-        await token.toggleEffect(newProneEffect);
+      for (const status of addStatuses) {
+        const effectExists = targetedActor.effects.find(e => e.statuses.has(status));
+        if (!effectExists) {
+          const effect = CONFIG.statusEffects.find(e => e.id === status);
+          await game.canvas.tokens.get(id).toggleEffect(effect);
+        }
       }
-    }
-    if (data.triggerGambit && data.triggerGambit !== 'none') {
-      const token = game.canvas.tokens.get(id);
-      const conditionExists = (token.actor?.effects.find(e => e.getFlag("core", "statusId") === data.triggerGambit));
-      if (!conditionExists) {
-        const newStatusEffect = CONFIG.statusEffects.find(e => e.id === data.triggerGambit);
-        await token.toggleEffect(newStatusEffect);
-      }
-    }
-    if (targetedActor) {
-      await addDefensePenalty(targetedActor, 'Onslaught');
-    }
-  }
-  if (type === 'triggerEffect') {
-    const token = game.canvas.tokens.get(id);
-    const isProne = (token.actor?.effects.find(e => e.getFlag("core", "statusId") === 'prone'));
-    if (!isProne) {
-      const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
-      await token.toggleEffect(newProneEffect);
-    }
-    if (data.triggerGambit && data.triggerGambit !== 'none') {
-      const token = game.canvas.tokens.get(id);
-      const conditionExists = (token.actor?.effects.find(e => e.getFlag("core", "statusId") === data.triggerGambit));
-      if (!conditionExists) {
-        const newStatusEffect = CONFIG.statusEffects.find(e => e.id === data.triggerGambit);
-        await token.toggleEffect(newStatusEffect);
-      }
-    }
-  }
-  if (data.poisonAdded) {
-    if (targetedActor) {
-      await targetedActor.createEmbeddedDocuments('ActiveEffect', [{
-        name: data.poisonAdded.poison.name || "Poison",
-        icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
-        origin: data.poisonAdded.poisonerId,
-        disabled: false,
-        description: `Difficulty ${this.object.poison.difficulty}`,
-        duration: {
-          rounds: data.poisonAdded.poison.duration,
-        },
-        flags: {
-          "exaltedthird": data.poisonAdded.flags
-        },
-        changes: [
-          {
-            "key": `data.damage.round.${data.poisonAdded.poison.damagetype}`,
-            "value": data.poisonAdded.poison.damage,
-            "mode": 0
-          },
-          {
-            "key": `data.dicemodifier.value`,
-            "value": data.poisonAdded.poison.penalty * -1,
-            "mode": 2
-          },
-        ]
-      }]);
     }
   }
 }

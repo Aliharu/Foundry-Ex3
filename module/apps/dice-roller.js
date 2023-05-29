@@ -175,6 +175,7 @@ export class RollForm extends FormApplication {
                 }
             }
             this.object.activateAura = 'none';
+            this.object.addStatuses = [];
             this.object.craft = {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
@@ -548,7 +549,7 @@ export class RollForm extends FormApplication {
             this.object.target = target;
             this.object.newTargetData = duplicate(target.actor);
             this.object.updateTargetActorData = false;
-            if(this.object.rollType === 'command') {
+            if (this.object.rollType === 'command') {
                 if (target.actor.system.battlegroup) {
                     if (target.actor.system.drill.value === '0') {
                         this.object.diceModifier -= 2;
@@ -2643,158 +2644,6 @@ export class RollForm extends FormApplication {
     }
 
     async _addAttackEffects() {
-        var knockdownTriggered = false;
-        var onslaughtTriggered = false;
-        var poisonAdded = null;
-        var triggerGambit = 'none';
-        const gambitChart = {
-            'leech': 'bleeding',
-            'unhorse': 'knockdown',
-            'grapple': 'grappled',
-            'disarm': 'disarmed',
-            'entangle': 'entangled',
-        }
-        if (this.object.target) {
-            if (this.object.triggerKnockdown && this.object.thereshholdSuccesses >= 0) {
-                if (game.user.isGM) {
-                    const isProne = (this.object.target.actor?.effects.find(e => e.getFlag("core", "statusId") === 'prone'));
-                    if (!isProne) {
-                        const newProneEffect = CONFIG.statusEffects.find(e => e.id === 'prone');
-                        await this.object.target.toggleEffect(newProneEffect);
-                    }
-                }
-                else {
-                    knockdownTriggered = true;
-                }
-            }
-            if (this.object.attackSuccess) {
-                if (this.object.gambit !== 'none' && gambitChart[this.object.gambit]) {
-                    triggerGambit = gambitChart[this.object.gambit];
-                    if (game.user.isGM) {
-                        const conditionExists = (this.object.target.actor?.effects.find(e => e.getFlag("core", "statusId") === triggerGambit));
-                        if (!conditionExists) {
-                            const newStatusEffect = CONFIG.statusEffects.find(e => e.id === triggerGambit);
-                            await this.object.target.toggleEffect(newStatusEffect);
-                        }
-                    }
-                }
-                if (this.object.gambit === 'leech') {
-                    this.dealHealthDamage(1);
-                }
-                if (this.object.gambit === 'grapple') {
-                    const grapplingExists = (this.actor?.effects.find(e => e.getFlag("core", "statusId") === 'grappling'));
-                    if (!grapplingExists) {
-                        var actorToken = this._getActorToken();
-                        const newStatusEffect = CONFIG.statusEffects.find(e => e.id === 'grappling');
-                        await actorToken.toggleEffect(newStatusEffect);
-                    }
-                }
-            }
-        }
-        if(this.object.attackType === 'decisive' && this.object.attackSuccess && this.object.poison && this.object.poison.apply && this.object.poison.damagetype !== 'none') {
-            if (game.user.isGM) {
-                await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
-                    name: this.object.poison.name || "Poison",
-                    icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
-                    origin: this.actor.uuid,
-                    disabled: false,
-                    description: `Difficulty ${this.object.poison.difficulty}`,
-                    duration: {
-                        rounds: this.object.poison.duration,
-                    },
-                    flags: {
-                        "exaltedthird": {
-                            poisonerCombatantId: this._getActorCombatant()?._id || null,
-                            lowerDurationPerRound: true,
-                        }
-                    },
-                    changes: [
-                        {
-                            "key": `data.damage.round.${this.object.poison.damagetype}`,
-                            "value": this.object.poison.damage,
-                            "mode": 0
-                        },
-                        {
-                            "key": `data.dicemodifier.value`,
-                            "value": this.object.poison.penalty * -1,
-                            "mode": 2
-                        },
-                    ]
-                }]);
-            }
-            else {
-                poisonAdded = {
-                    poisonerId: this.actor.uuid,
-                    poison: this.object.poison,
-                    flags: {
-                        poisonerCombatantId: this._getActorCombatant()?._id || null,
-                        lowerDurationPerRound: true,
-                    }
-                };
-            }
-        }
-        if (this.object.target) {
-            if (game.settings.get("exaltedthird", "calculateOnslaught")) {
-                if (!this._useLegendarySize('onslaught')) {
-                    if (game.user.isGM) {
-                        const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
-                        if (onslaught) {
-                            let changes = duplicate(onslaught.changes);
-                            changes[0].value = changes[0].value - 1;
-                            changes[1].value = changes[1].value - 1;
-                            onslaught.update({ changes });
-                        }
-                        else {
-                            await this.object.target.actor.createEmbeddedDocuments('ActiveEffect', [{
-                                name: 'Onslaught',
-                                icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
-                                origin: this.object.target.actor.uuid,
-                                disabled: false,
-                                duration: {
-                                    rounds: 10,
-                                },
-                                flags: {
-                                    "exaltedthird": {
-                                        statusId: 'onslaught',
-                                    }
-                                },
-                                changes: [
-                                    {
-                                        "key": "data.evasion.value",
-                                        "value": -1,
-                                        "mode": 2
-                                    },
-                                    {
-                                        "key": "data.parry.value",
-                                        "value": -1,
-                                        "mode": 2
-                                    }
-                                ]
-                            }]);
-                        }
-                    }
-                    else {
-                        onslaughtTriggered = true;
-                        game.socket.emit('system.exaltedthird', {
-                            type: 'addOnslaught',
-                            id: this.object.target.id,
-                            data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit, 'poisonAdded': poisonAdded },
-                        });
-                    }
-                }
-            }
-            if (!onslaughtTriggered && (knockdownTriggered || triggerGambit !== 'none' || poisonAdded)) {
-                game.socket.emit('system.exaltedthird', {
-                    type: 'triggerEffect',
-                    id: this.object.target.id,
-                    data: { 'knockdownTriggered': knockdownTriggered, 'triggerGambit': triggerGambit, 'poisonAdded': poisonAdded },
-                });
-            }
-            if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
-                this.object.newTargetData.system.grapplecontrolrounds.value = Math.max(0, this.object.newTargetData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2 : 1));
-                this.object.updateTargetActorData = true;
-            }
-        }
         if (this.object.triggerSelfDefensePenalty > 0) {
             const existingPenalty = this.actor.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
             if (existingPenalty) {
@@ -2830,6 +2679,114 @@ export class RollForm extends FormApplication {
                         }
                     ]
                 }]);
+            }
+        }
+        if (this.object.target) {
+            if (game.settings.get("exaltedthird", "calculateOnslaught")) {
+                this._addOnslaught(1);
+            }
+            if (this.object.attackType === 'decisive' && this.object.attackSuccess && this.object.poison && this.object.poison.apply && this.object.poison.damagetype !== 'none') {
+                this.object.updateTargetActorData = true;
+                this.object.newTargetData.effects.push({
+                    name: this.object.poison.name || "Poison",
+                    icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
+                    origin: this.actor.uuid,
+                    disabled: false,
+                    description: `Difficulty ${this.object.poison.difficulty}`,
+                    duration: {
+                        rounds: this.object.poison.duration,
+                    },
+                    flags: {
+                        "exaltedthird": {
+                            poisonerCombatantId: this._getActorCombatant()?._id || null,
+                            lowerDurationPerRound: true,
+                        }
+                    },
+                    changes: [
+                        {
+                            "key": `data.damage.round.${this.object.poison.damagetype}`,
+                            "value": this.object.poison.damage,
+                            "mode": 0
+                        },
+                        {
+                            "key": `data.dicemodifier.value`,
+                            "value": this.object.poison.penalty * -1,
+                            "mode": 2
+                        },
+                    ]
+                });
+            }
+            if (this.object.triggerKnockdown && this.object.thereshholdSuccesses >= 0) {
+                this.object.updateTargetActorData = true;
+                this.object.addStatuses.push('prone');
+            }
+            if (this.object.attackSuccess) {
+                this.object.updateTargetActorData = true;
+                var triggerGambit = 'none';
+                const gambitChart = {
+                    'leech': 'bleeding',
+                    'unhorse': 'knockdown',
+                    'grapple': 'grappled',
+                    'disarm': 'disarmed',
+                    'entangle': 'entangled',
+                }
+                if (this.object.gambit !== 'none' && gambitChart[this.object.gambit]) {
+                    triggerGambit = gambitChart[this.object.gambit];
+                    this.object.addStatuses.push(triggerGambit);
+                }
+                if (this.object.gambit === 'leech') {
+                    this.dealHealthDamage(1);
+                }
+                if (this.object.gambit === 'grapple') {
+                    const grapplingExists = this.actor?.effects.find(e => e.statuses.has('grappling'));
+                    if (!grapplingExists) {
+                        var actorToken = this._getActorToken();
+                        const grappling = CONFIG.statusEffects.find(e => e.id === 'grappling');
+                        await actorToken.toggleEffect(grappling);
+                    }
+                }
+            }
+            if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
+                this.object.newTargetData.system.grapplecontrolrounds.value = Math.max(0, this.object.newTargetData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2 : 1));
+            }
+        }
+    }
+
+    _addOnslaught(number = 1) {
+        if (!this._useLegendarySize('onslaught')) {
+            this.object.updateTargetActorData = true;
+            const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
+            if (onslaught) {
+                onslaught.changes[0].value = onslaught.changes[0].value - number;
+                onslaught.changes[1].value = onslaught.changes[1].value - number;
+            }
+            else {
+                this.object.newTargetData.effects.push({
+                    name: 'Onslaught',
+                    icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
+                    origin: this.object.target.actor.uuid,
+                    disabled: false,
+                    duration: {
+                        rounds: 10,
+                    },
+                    flags: {
+                        "exaltedthird": {
+                            statusId: 'onslaught',
+                        }
+                    },
+                    changes: [
+                        {
+                            "key": "data.evasion.value",
+                            "value": number * -1,
+                            "mode": 2
+                        },
+                        {
+                            "key": "data.parry.value",
+                            "value": number * -1,
+                            "mode": 2
+                        }
+                    ]
+                });
             }
         }
     }
@@ -2875,15 +2832,23 @@ export class RollForm extends FormApplication {
         return 0;
     }
 
-    _updateTargetActor() {
+    async _updateTargetActor() {
         if (game.user.isGM) {
-            this.object.target.actor.update(this.object.newTargetData);
+            await this.object.target.actor.update(this.object.newTargetData);
+            for (const status of this.object.addStatuses) {
+                const effectExists = this.object.target.actor.effects.find(e => e.statuses.has(status));
+                if (!effectExists) {
+                    const effect = CONFIG.statusEffects.find(e => e.id === status);
+                    await this.object.target.toggleEffect(effect);
+                }
+            }
         }
         else {
             game.socket.emit('system.exaltedthird', {
                 type: 'updateTargetData',
                 id: this.object.target.id,
                 data: this.object.newTargetData,
+                addStatuses: this.object.addStatuses
             });
         }
     }
@@ -3191,11 +3156,11 @@ export class RollForm extends FormApplication {
                     let animalPool = 0;
                     let lunarAttributeValue = 0;
                     let lunarHasExcellency = false;
-                    const action = this.object.actions.find(action => action._id === this.object.pool); 
-                    if(lunar.type === 'npc') {
+                    const action = this.object.actions.find(action => action._id === this.object.pool);
+                    if (lunar.type === 'npc') {
                         if (action) {
                             const lunarAction = lunar.items.filter(item => item.type === 'action').find(lunarActionItem => lunarActionItem.name === action.name);
-                            if(lunarAction) {
+                            if (lunarAction) {
                                 lunarPool = lunarAction.system.value;
                             }
                         }
@@ -3217,12 +3182,12 @@ export class RollForm extends FormApplication {
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.excellency;
                         }
-                        else if (this.object.pool === 'grapple') { 
+                        else if (this.object.pool === 'grapple') {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.excellency;
                         }
-                        else if (this.object.rollType === 'disengage') { 
+                        else if (this.object.rollType === 'disengage') {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.disengage.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.excellency;
@@ -3232,7 +3197,7 @@ export class RollForm extends FormApplication {
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.excellency;
                         }
-                        else { 
+                        else {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[this.object.pool].ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.excellency;
@@ -3260,7 +3225,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                     this.object.charmDiceAdded = Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
-                    if(lunarHasExcellency) {
+                    if (lunarHasExcellency) {
                         diceCap = `${lunarAttributeValue} - ${lunarAttributeValue + this._getHighestAttributeNumber(lunar.system.attributes, true)}`;
                     }
                     else {
@@ -3358,14 +3323,14 @@ export class RollForm extends FormApplication {
         }
         return 0;
     }
-    
+
     _getDamageCap() {
         if (this._isAttackRoll() && this.object.attackType === 'withering') {
             let actorData = this.actor;
-            if(this.actor.system.lunarform?.enabled && this.actor.system.lunarform?.actorid){
+            if (this.actor.system.lunarform?.enabled && this.actor.system.lunarform?.actorid) {
                 actorData = game.actors.get(this.actor.system.lunarform.actorid) || actorData;
             }
-            if(actorData.type === 'character' && actorData.system.attributes.strength.excellency) {
+            if (actorData.type === 'character' && actorData.system.attributes.strength.excellency) {
                 var newValueLow = Math.floor(actorData.system.attributes.strength.value / 2);
                 var newValueHigh = Math.floor((actorData.system.attributes.strength.value + this._getHighestAttributeNumber(actorData.system.attributes)) / 2);
                 return `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
@@ -3384,7 +3349,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _getHighestAttribute(attributes, syncedLunar=false) {
+    _getHighestAttribute(attributes, syncedLunar = false) {
         var highestAttributeNumber = 0;
         var highestAttribute = "strength";
         for (let [name, attribute] of Object.entries(attributes)) {
@@ -3396,8 +3361,8 @@ export class RollForm extends FormApplication {
         return highestAttribute;
     }
 
-    
-    _getHighestAttributeNumber(attributes, syncedLunar=false) {
+
+    _getHighestAttributeNumber(attributes, syncedLunar = false) {
         var highestAttributeNumber = 0;
         var highestAttribute = "strength";
         for (let [name, attribute] of Object.entries(attributes)) {
@@ -3470,6 +3435,9 @@ export class RollForm extends FormApplication {
             this.object.damage.decisiveDamageType = 'initiative';
             this.object.damage.decisiveDamageCalculation = 'evenSplit';
             this.object.gambit = 'none';
+        }
+        if (this.object.addStatuses === undefined) {
+            this.object.addStatuses = [];
         }
         else {
             for (const addedCharm of this.object.addedCharms) {
