@@ -31,6 +31,13 @@
       "flags": {}
     }
   ],
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/exaltedthird/assets/logo.jpg",
+      "thumbnail": "systems/exaltedthird/assets/logo.jpg"
+    }
+  ],
   "relationships": [],
   "manifest": "https://raw.githubusercontent.com/Aliharu/Foundry-Ex3/master/system.json",
   "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v2.0.1/release2.0.1.zip",
