@@ -34,8 +34,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "systems/exaltedthird/assets/logo.jpg",
-      "thumbnail": "systems/exaltedthird/assets/logo.jpg"
+      "url": "systems/exaltedthird/assets/logo.webp",
+      "thumbnail": "systems/exaltedthird/assets/logo.webp"
     }
   ],
   "relationships": [],
