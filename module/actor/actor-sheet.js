@@ -1191,8 +1191,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         actorData.system.soak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
       }
     }
+    let specialtyBonus = actorData.system?.settings?.staticcapsettings[type]?.specialty ? 1 : 0;
     if (type === 'parry') {
-      actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value) / 2);
+      actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value + specialtyBonus) / 2);
       for (let weapon of this.actor.weapons) {
         if (weapon.system.equipped) {
           actorData.system.parry.value = actorData.system.parry.value + weapon.system.defense;
@@ -1200,7 +1201,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     }
     if (type === 'evasion') {
-      var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value) / 2);
+      var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value + specialtyBonus) / 2);
       for (let armor of this.actor.armor) {
         if (armor.system.equipped) {
           newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
@@ -1209,10 +1210,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       actorData.system.evasion.value = newEvasionValue;
     }
     if (type === 'resolve') {
-      actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value) / 2);
+      actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value + specialtyBonus) / 2);
     }
     if (type === 'guile') {
-      actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value) / 2);
+      actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value + specialtyBonus) / 2);
     }
     if (type === 'resonance') {
       actorData.system.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);

@@ -278,27 +278,32 @@
             "parry": {
               "name": "Ex3.Parry",
               "attribute": "dexterity",
-              "ability": "melee"
+              "ability": "melee",
+              "specialty": false
             },
             "evasion": {
               "name": "Ex3.Evasion",
               "attribute": "dexterity",
-              "ability": "dodge"
+              "ability": "dodge",
+              "specialty": false
             },
             "resolve": {
               "name": "Ex3.Resolve",
               "attribute": "wits",
-              "ability": "integrity"
+              "ability": "integrity",
+              "specialty": false
             },
             "guile": {
               "name": "Ex3.Guile",
               "attribute": "manipulation",
-              "ability": "socialize"
+              "ability": "socialize",
+              "specialty": false
             },
             "soak": {
               "name": "Ex3.Soak",
               "attribute": "stamina",
-              "ability": "none"
+              "ability": "none",
+              "specialty": false
             }
           }
         },
