@@ -103,10 +103,12 @@ export class ExaltedThirdActor extends Actor {
           personal: {
             max: this.calculateMaxExaltedMotes('personal', exalt, essenceLevel),
             value: (this.calculateMaxExaltedMotes('personal', exalt, essenceLevel) - this.system.motes.personal.committed),
+            committed: this.system.motes.personal.committed
           },
           peripheral: {
             max: this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel),
             value: (this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel) - this.system.motes.peripheral.committed),
+            committed: this.system.motes.peripheral.committed
           }
         };
         if (updateData.system?.details?.exalt) {
@@ -130,30 +132,28 @@ export class ExaltedThirdActor extends Actor {
           personal: {
             max: personalMotes,
             value: (personalMotes - (updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed)),
+            committed: updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed
           },
           peripheral: {
             max: peripheralmotes,
             value: (peripheralmotes - (updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed)),
+            committed: updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed
           }
         };
       }
     }
     if (updateData.system?.details?.caste && this.type === 'character') {
       const lowecaseCaste = updateData.system?.details?.caste.toLowerCase();
-      const attributes = {}
-      const abilities = {}
+      const attributes = updateData.system?.attributes || this.system.attributes;
+      const abilities = updateData.system?.abilities || this.system.abilities;
       for (let [key, attribute] of Object.entries(this.system.attributes)) {
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
-          attributes[key] = {
-            favored: true
-          }
+          attributes[key].favored = true;
         }
       }
       for (let [key, ability] of Object.entries(this.system.abilities)) {
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
-          abilities[key] = {
-            favored: true
-          }
+          abilities[key].favored = true;
         }
       }
       updateData.system.attributes = attributes;
@@ -481,7 +481,8 @@ export class ExaltedThirdActor extends Actor {
         data.resolve.padding = false;
         data.socialCapPadding = true;
       }
-      data.soak.cap = this._getStaticCap(staticActorData, 'soak', actorData.type === "character" ? data.attributes.stamina.value : data.soak.value);
+      data.soak.cap = this._getStaticCap(staticActorData, 'soak', actorData.type === "character" ? (data.attributes?.stamina?.value || 0) : data.soak.value);
+
 
       // if (staticActorData.type === "character" && data.attributes.stamina.excellency) {
       // var newValueLow = Math.floor(data.attributes.stamina.value / 2);
