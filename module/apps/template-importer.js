@@ -99,6 +99,7 @@ export default class TemplateImporter extends Application {
           charmtype: charmType,
           cost: {
             "motes": 0,
+            "commitmotes": 0,
             "initiative": 0,
             "anima": 0,
             "willpower": 0,
@@ -125,6 +126,10 @@ export default class TemplateImporter extends Application {
       }
       if(charmData.system.duration.toLowerCase() === 'one turn' || charmData.system.duration.toLowerCase() === 'until next turn') {
         charmData.system.endtrigger = 'startturn';
+      }
+      if(charmData.system.duration.toLowerCase() !== 'permanent' && charmData.system.duration.toLowerCase() !== 'instant') {
+        charmData.system.cost.commitmotes = charmData.system.cost.motes;
+        charmData.system.cost.motes = 0;
       }
 
       var description = '';
