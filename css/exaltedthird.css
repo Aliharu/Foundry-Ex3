@@ -538,11 +538,6 @@
   border-radius: 50%;
 }
 
-.exaltedthird .augment-attribute {
-  margin-left: 5px;
-  cursor: pointer;
-}
-
 .exaltedthird .augment-attribute-active {
   color: #147c14;
 }

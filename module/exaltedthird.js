@@ -298,6 +298,18 @@ $(document).ready(() => {
   });
 });
 
+Hooks.on("renderChatMessage", (message, html, data) => {
+  html[0]
+    .querySelectorAll('.apply-decisive-damage')
+    .forEach((target) => {
+      target.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        await applyDecisiveDamage(message);
+      });
+    });
+});
+
 Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   // Handle non-gm users.
   if (!game.user.isGM) return;
@@ -392,25 +404,25 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
     if (combat.current.combatantId) {
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
       if (currentCombatant?.actor) {
-        const actorData = duplicate(currentCombatant.actor);
         const onslaught = currentCombatant.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
         if (onslaught) {
-          if (!actorData.system.dontresetonslaught) {
-            onslaught.delete();
+          if (!currentCombatant.actor.system.dontresetonslaught) {
+            await onslaught.delete();
           }
         }
-        actorData.system.dontresetonslaught = false;
-        const fullDefense = currentCombatant.actor.effects.find(e => e.getFlag("core", "statusId") === "fulldefense");
+        const fullDefense = currentCombatant.actor.effects.find(e => e.statuses.has('fulldefense'));
         if (fullDefense) {
-          fullDefense.delete();
+          await fullDefense.delete();
         }
         const defensePenalty = currentCombatant.actor.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
         if (defensePenalty) {
-          defensePenalty.delete();
+          await defensePenalty.delete();
         }
+        const actorData = duplicate(currentCombatant.actor);
         if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
           actorData.system.grapplecontrolrounds.value -= 1;
         }
+        actorData.system.dontresetonslaught = false;
         const startTurnItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'startturn');
         for (const item of startTurnItems) {
           item.system.active = false;
@@ -966,14 +978,17 @@ Hooks.once("ready", async function () {
   //             'Might': 'icons/magic/control/buff-strength-muscle-damage-orange.webp',
   //             'Mobility': 'icons/skills/movement/feet-winged-boots-glowing-yellow.webp',
   //             'Special': 'icons/magic/light/explosion-beam-impact-silhouette.webp',
-  //             'Speed': 'icons/skills/movement/feet-winged-boots-glowing-yellow.webp',
+  //             'Speed': 'modules/ex3-golden-calibration/icons/speed.webp',
   //           };
   //           break;
   //         case 'awareness':
   //           image = 'icons/magic/control/hypnosis-mesmerism-eye-tan.webp'
+  //           imageMap = { 
+  //             'Special': 'modules/ex3-golden-calibration/icons/awareness-special.webp',
+  //           };
   //           break;
   //         case 'brawl':
-  //           image = 'icons/skills/melee/unarmed-punch-fist-yellow-red.webp'
+  //           image = 'modules/ex3-golden-calibration/icons/brawl.webp'
   //           imageMap = { 
   //             'Grappling': 'icons/skills/melee/strike-chain-whip-blue.webp',
   //           };
@@ -985,10 +1000,10 @@ Hooks.once("ready", async function () {
   //           image = 'icons/skills/trades/smithing-anvil-silver-red.webp'
   //           break;
   //         case 'dodge':
-  //           image = 'icons/magic/movement/trail-streak-zigzag-yellow.webp'
+  //           image = 'modules/ex3-golden-calibration/icons/dodge.webp'
   //           break;
   //         case 'integrity':
-  //           image = 'icons/magic/holy/meditation-chi-focus-blue.webp'
+  //           image = 'modules/ex3-golden-calibration/icons/integrity.webp'
   //           break;
   //         case 'investigation':
   //           image = 'icons/skills/trades/academics-investigation-study-blue.webp'
@@ -1000,7 +1015,7 @@ Hooks.once("ready", async function () {
   //           image = 'icons/skills/trades/academics-scribe-quill-gray.webp'
   //           break;
   //         case 'lore':
-  //           image = 'icons/skills/trades/academics-study-reading-book.webp'
+  //           image = 'modules/ex3-golden-calibration/icons/lore.webp'
   //           break;
   //         case 'medicine':
   //           image = 'icons/tools/cooking/mortar-stone-yellow.webp'
@@ -1011,7 +1026,8 @@ Hooks.once("ready", async function () {
   //         case 'melee':
   //           image = 'icons/skills/melee/weapons-crossed-swords-yellow.webp'
   //           imageMap = { 
-  //             'Defense': 'icons/skills/melee/shield-block-gray-orange.webp',
+  //             'Defense': 'modules/ex3-golden-calibration/icons/melee-defense.webp',
+  //             'Weaponry': 'modules/ex3-golden-calibration/icons/melee-weaponry.webp',
   //           };
   //           break;
   //         case 'occult':
@@ -1021,13 +1037,21 @@ Hooks.once("ready", async function () {
   //           image = 'icons/skills/trades/music-notes-sound-blue.webp';
   //           break;
   //         case 'presence':
-  //           image = 'icons/magic/control/silhouette-aura-energy.webp'
+  //           image = 'modules/ex3-golden-calibration/icons/presence.webp'
   //           imageMap = {
-  //             'Seduction': 'icons/magic/life/heart-glowing-red.webp'
+  //             'Seduction': 'icons/magic/life/heart-glowing-red.webp',
+  //             'Fear': 'icons/magic/control/silhouette-aura-energy.webp'
   //           };
   //           break;
   //         case 'resistance':
   //           image = 'icons/magic/defensive/shield-barrier-deflect-gold.webp'
+  //           imageMap = {
+  //             'Armor': 'modules/ex3-golden-calibration/icons/resistance-armor.webp',
+  //             'Defense': 'modules/ex3-golden-calibration/icons/resistance-defense.webp',
+  //             'Fury': 'modules/ex3-golden-calibration/icons/resistance-fury.webp',
+  //             'Vitality': 'modules/ex3-golden-calibration/icons/resistance-vitality.webp',
+  //             'Wellness': 'modules/ex3-golden-calibration/icons/resistance-wellness.webp',
+  //           };
   //           break;
   //         case 'ride':
   //           image = 'icons/environment/creatures/horse-brown.webp'
@@ -1035,7 +1059,9 @@ Hooks.once("ready", async function () {
   //         case 'sail':
   //           image = 'icons/skills/trades/profession-sailing-ship.webp';
   //           imageMap = {
-  //             'Navigation': 'icons/tools/navigation/map-marked-blue.webp'
+  //             'Navigation': 'icons/tools/navigation/map-marked-blue.webp',
+  //             'Piloting': 'modules/ex3-golden-calibration/icons/sail-pilot.webp',
+  //             'Sailor': 'modules/ex3-golden-calibration/icons/sailor.webp',
   //           };
   //           break;
   //         case 'socialize':
@@ -1047,7 +1073,8 @@ Hooks.once("ready", async function () {
   //         case 'survival':
   //           image = 'icons/magic/nature/wolf-paw-glow-large-green.webp';
   //           imageMap = {
-  //             'Wilderness': 'icons/magic/nature/plant-bamboo-green.webp'
+  //             'Husbandry': 'modules/ex3-golden-calibration/icons/husbandry.webp',
+  //             'Wilderness': 'icons/magic/nature/plant-bamboo-green.webp',
   //           };
   //           break;
   //         case 'thrown':
@@ -1059,6 +1086,9 @@ Hooks.once("ready", async function () {
   //         case 'universal':
   //           image = 'icons/magic/light/explosion-star-large-orange.webp';
   //           break;
+  //       }
+  //       if(updateData.name === 'Blazing Solar Bolt') {
+  //         image =  'modules/ex3-golden-calibration/icons/solar-bolt.webp';
   //       }
   //       if(imageMap[item.folder.name]) {
   //         image = imageMap[item.folder.name];
@@ -1138,6 +1168,93 @@ async function createItemMacro(data, slot) {
     game.user.assignHotbarMacro(macro, slot);
   }
   return false;
+}
+
+function applyDecisiveDamage(message) {
+  const controlledTokens = game?.canvas?.tokens?.controlled;
+  // If there are not any controlled tokens, issue a warning.
+  if (!controlledTokens?.length) {
+    // If no targets selected, issue warning notification.
+    return ui.notifications.warn('Ex3.NoTargetsSelected', {
+      localize: true,
+    });
+  }
+  // Get the damage and ap from the roll data
+  const damageContext = {
+    value: message?.flags?.exaltedthird?.damage?.total || 0,
+    type: message?.flags?.exaltedthird?.damage?.type || 'lethal',
+    attackerTokenId: message?.flags?.exaltedthird?.attackerTokenId,
+  };
+  // For each token controlled...
+  for (const token of controlledTokens) {
+    // Get the actor from the token data.
+    const actor = token.actor;
+    // Trigger calculation of Wounds
+    applyDamageDialogue(actor.uuid, damageContext);
+  }
+}
+
+async function applyDamageDialogue(targetUuid, damageContext) {
+  const target = (await fromUuid(targetUuid));
+  // If the target document is a Token, change the actor value to target.actor, otherwise use the target document itself.
+  const actor = target?.documentName === 'Token' ? target?.actor : target;
+
+  const template = "systems/exaltedthird/templates/dialogues/damage-dialogue.html"
+  const html = await renderTemplate(template, { 'damageContext': damageContext });
+  let confirmed = false
+  new Dialog({
+    title: `Apply Damage to ${actor.name}`,
+    content: html,
+    buttons: {
+      save: { label: "Confirm", callback: () => confirmed = true },
+      cancel: { label: "Cancel", callback: () => confirmed = false }
+    },
+    close: html => {
+      if (confirmed) {
+        const actorData = duplicate(actor);
+        let totalHealth = 0;
+        let sizeDamaged = 0;
+        let characterDamage = Number(html.find('#damageValue').val());
+        let damageType = html.find('#damageType').val();
+        if (actor.system.battlegroup) {
+            totalHealth = actorData.system.health.levels.zero.value + actorData.system.size.value;
+        }
+        else {
+            for (let [key, healthLevel] of Object.entries(actorData.system.health.levels)) {
+                totalHealth += healthLevel.value;
+            }
+        }
+        if (actor.system.battlegroup) {
+            var remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+            while (remainingHealth <= characterDamage && actorData.system.size.value > 0) {
+                actorData.system.health.bashing = 0;
+                actorData.system.health.lethal = 0;
+                actorData.system.health.aggravated = 0;
+                characterDamage -= remainingHealth;
+                remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+                actorData.system.size.value -= 1;
+                sizeDamaged++;
+            }
+        }
+        if (damageType === 'bashing') {
+            actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + characterDamage);
+        }
+        if (damageType === 'lethal') {
+            actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + characterDamage);
+        }
+        if (damageType === 'aggravated') {
+            actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + characterDamage);
+        }
+        if(damageContext.attackerTokenId && sizeDamaged) {
+          const combatant = game.combat?.combatants.find(c => c.tokenId === damageContext.attackerTokenId);
+          if(combatant) {
+            game.combat.setInitiative(combatant.id, combatant.initiative + (5 * sizeDamaged));
+          }
+        }
+        actor.update(actorData);
+      }
+    }
+  }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
 }
 
 function weaponAttack(itemUuid, attackType = 'withering') {

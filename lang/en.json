@@ -531,9 +531,11 @@
     "Ex3.DefenseOnDamage": "Defense on Damage",
     "Ex3.DefenseOnDamageDescription": "Use Defense values and attack success values on damage rolls, use this when you need abilities to alter defense after accuracy is rolled.  To use set defense to 0 on accuracy roll then input success result and defense value into damage roll.",
     "Ex3.AutoDecisiveDamage": "Auto Decisive Damage",
-    "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack (and battlegroup witherings vs crashed characters and withering vs battlegroups).",
+    "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack.",
+    "Ex3.AutoWitheringDamage": "Auto Withering Damage",
+    "Ex3.AutoWitheringDescription": "Initiative damage and initiative gain will automatically be applied on withering attacks against targets.",
     "Ex3.AnimaTokenEffects": "Anima Token Effects",
-    "Ex3.AnimaTokenEffectsDescription": "If enables changing anima levels will add Token Magix Fx to tokens, The default black color will not show up. (Do not enable without the TokenMagicFx Module)",
+    "Ex3.AnimaTokenEffectsDescription": "If enables changing anima levels will  add Token Magix Fx to tokens, The default black color will not show up. (Do not enable without the TokenMagicFx Module)",
     
     "Ex3.AttackEffects": "Add Effects on Successful Attacks",
     "Ex3.AttackEffectsDescription": "If enabled attacks will trigger certain animations based on a field on weapons set in the effects tab, can set a preset or copy paste a custom animation location. (Do not enable without Sequencer and JB2A Modules)",
@@ -562,6 +564,10 @@
     "Ex3.IsCrafter": "Show craft fields",
     "Ex3.UseDotValues": "Use dot values",
     "Ex3.ShowAnima": "Show Anima",
+    "Ex3.ApplyDecisiveDamage": "Apply Decisive Damage",
+
+    "Ex3.NoTargetsSelected": "No Targets Selected",
+
 
     
     "Ex3.FeatsofStrength": "Feats of Strength",

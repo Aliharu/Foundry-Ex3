@@ -1,0 +1,16 @@
+<form>
+    <div class="sheet-body exaltedthird">
+      <div class="resource flex-center grid grid-2col">
+        <label class="resource-label">{{localize "Ex3.Damage"}} </label>
+        <input id="damageValue" type="number" name="damageContext.value" value="{{damageContext.value}}">
+        <label class="resource-label">{{localize "Ex3.DamageType"}}</label>
+        <select id="damageType" value="{{damageContext.type}}" data-type="String">
+            {{#select damageContext.type}}
+            <option value="bashing">{{localize "Ex3.Bashing"}}</option>
+            <option value="lethal">{{localize "Ex3.Lethal"}}</option>
+            <option value="aggravated">{{localize "Ex3.Aggravated"}}</option>
+            {{/select}}
+        </select>
+    </div>
+    </div>
+</form>

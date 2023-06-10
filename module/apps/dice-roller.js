@@ -2477,10 +2477,23 @@ export class RollForm extends FormApplication {
         if (this._damageRollType('decisive')) {
             typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             if (this._useLegendarySize('decisive')) {
-                typeSpecificResults = typeSpecificResults + `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value} + Charm damage levels</h4>`;
+                typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value} + Charm damage levels</h4>`;
                 total = Math.min(total, 3 + this.actor.system.attributes.strength.value);
             }
-            this.dealHealthDamage(total);
+            typeSpecificResults += `
+            <button
+                type='button'
+                class='apply-decisive-damage'
+                data-tooltip='${game.i18n.localize('Ex3.ApplyDecisiveDamage')}'
+                aria-label='${game.i18n.localize('Ex3.ApplyDecisiveDamage')}'
+            >
+                <i class='fa-solid fa-meter-droplet'></i>
+                ${game.i18n.localize('Ex3.ApplyDecisiveDamage')}
+            </button>
+            `;
+            if (game.settings.get("exaltedthird", "automaticDecisiveDamage")) {
+                this.dealHealthDamage(total);
+            }
         }
         else if (this._damageRollType('gambit')) {
             var resultsText = `<h4 class="dice-total">Gambit Success</h4>`;
@@ -2622,11 +2635,13 @@ export class RollForm extends FormApplication {
                     total: this.object.total,
                     defense: this.object.defense,
                     threshholdSuccesses: this.object.thereshholdSuccesses,
+                    attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
                     damage: {
                         dice: baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
                         soak: this.object.soak,
-                        totalDamage: total,
+                        total: total,
+                        type: this.object.damage.type,
                         crashed: this.object.crashed
                     }
                 }
@@ -2793,7 +2808,7 @@ export class RollForm extends FormApplication {
 
     dealHealthDamage(characterDamage, targetBattlegroup = false) {
         let sizeDamaged = 0;
-        if (this.object.target && game.combat && game.settings.get("exaltedthird", "autoDecisiveDamage") && characterDamage > 0) {
+        if (this.object.target && game.combat && characterDamage > 0) {
             this.object.updateTargetActorData = true;
             let totalHealth = 0;
             if (targetBattlegroup) {
@@ -2999,14 +3014,14 @@ export class RollForm extends FormApplication {
 
     _getActorCombatant() {
         if (game.combat && (this.actor.token || this.actor.getActiveTokens()[0])) {
-            const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+            const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
             return game.combat.combatants.find(c => c.tokenId === tokenId);
         }
     }
 
     _getActorToken() {
         if (this.actor.token || this.actor.getActiveTokens()[0]) {
-            const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0].id;
+            const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
             return canvas.tokens.placeables.filter(x => x.id === tokenId)[0];
         }
     }

@@ -36,14 +36,23 @@ export function registerSettings() {
         config: true,
     });
 
-    game.settings.register('exaltedthird', 'autoDecisiveDamage', {
+    game.settings.register('exaltedthird', 'automaticDecisiveDamage', {
         name: game.i18n.localize('Ex3.AutoDecisiveDamage'),
         hint: game.i18n.localize('Ex3.AutoDecisiveDamageDescription'),
-        default: true,
+        default: false,
         scope: 'world',
         type: Boolean,
         config: true,
     });
+
+    // game.settings.register('exaltedthird', 'automaticWitheringDamage', {
+    //     name: game.i18n.localize('Ex3.AutoWitheringDamage'),
+    //     hint: game.i18n.localize('Ex3.AutoWitheringDamageDescription'),
+    //     default: false,
+    //     scope: 'world',
+    //     type: Boolean,
+    //     config: true,
+    // });
 
     game.settings.register("exaltedthird", "systemMigrationVersion", {
         name: "System Migration Version",
