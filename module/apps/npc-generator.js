@@ -93,7 +93,7 @@ export default class NPCGenerator extends FormApplication {
 
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["dialog"],
+      classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       popOut: true,
       template: "systems/exaltedthird/templates/dialogues/npc-generator.html",
       id: "ex3-npc-generator",
@@ -483,6 +483,15 @@ export default class NPCGenerator extends FormApplication {
     const mutationsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/mutations.json', {}, { int: 30000 });
     const armorList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/armorList.json', {}, { int: 30000 });
     const sorcerousRituals = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/sorcerousRituals.json', {}, { int: 30000 });
+
+    let bigString = '';
+
+    for(const ritual of sorcerousRituals) {
+      bigString += ritual.name;
+      bigString += '\n';
+      bigString += ritual.pageref;
+      bigString += '\n\n';
+    }
 
     if(animaList[this.object.character.caste]) {
       actorData.system.anima.passive = animaList[this.object.character.caste][0];
