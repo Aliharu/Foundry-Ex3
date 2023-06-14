@@ -373,7 +373,8 @@ export class RollForm extends FormApplication {
             }
             if (this.object.charmList === undefined) {
                 this.object.charmList = this.actor.rollcharms;
-                for (var charmlist of Object.values(this.object.charmList)) {
+                for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
+                    charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
                     for (const charm of charmlist.list) {
                         this.getEnritchedHTML(charm);
                     }
@@ -615,10 +616,12 @@ export class RollForm extends FormApplication {
                 id: "add-charm",
                 icon: 'fas fa-bolt',
                 onclick: (ev) => {
-                    this.object.charmList = this.actor.rollcharms;
-                    for (var charmlist of Object.values(this.object.charmList)) {
+                    // this.object.charmList = this.actor.rollcharms;
+                    for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
+                        charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
                         for (const charm of charmlist.list) {
                             if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                                charmlist.collapse = false;
                                 var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
                                 charm.charmAdded = true;
                                 charm.timesAdded = addedCharm.timesAdded || 1;
@@ -992,7 +995,7 @@ export class RollForm extends FormApplication {
             if (this.object.target?.actor) {
                 forumlaActor = this.object.target?.actor;
             }
-            else if (this.object.targets) {
+            else if (Object.values(this.object.targets)[0]) {
                 const targetValues = Object.values(this.object.targets);
                 forumlaActor = targetValues[0].actor;
             }
@@ -1501,6 +1504,14 @@ export class RollForm extends FormApplication {
             const li = $(ev.currentTarget).next();
             if (li.attr('id')) {
                 this.object[li.attr('id')] = li.is(":hidden");
+            }
+            li.toggle("fast");
+        });
+
+        html.find('.charm-list-collapsable').click(ev => {
+            const li = $(ev.currentTarget).next();
+            if (li.attr('id')) {
+                this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
             }
             li.toggle("fast");
         });

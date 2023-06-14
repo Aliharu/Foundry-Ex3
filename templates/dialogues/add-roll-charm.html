@@ -1,63 +1,77 @@
 <ol class="items-list">
     {{#if data.showSpecialAttacks}}
-    <li class="item flexrow item-header flex-center">
-        <div class="item-name">{{localize "Ex3.SpecialAttacks"}}</div>
-    </li>
-    {{#each data.specialAttacksList as |attack id|}}
-    {{#if attack.show}}
-    <li class="item flexrow item-row collapsable" data-item-id="{{attack.id}}">
-        <div class="item-image"><img class="list-item-image" src="{{attack.img}}" title="{{attack.name}}" width="24"
-                height="24" /></div>
-        <h4 class="item-name">{{attack.name}}</h4>
-        <div class="item-controls">
-            {{#if attack.added}} <a class="item-control remove-special-attack" title="Remove Attack"><i
-                    class="fas fa-trash"></i></a> {{else}} <a class="item-control add-special-attack"
-                title="Add Attack"><i class="fas fa-plus"></i></a> {{/if}}
-    </li>
-    <li class="item-description">
-        {{attack.description}}
-    </li>
-    {{/if}}
-    {{/each}}
+    <div class="item d-flex flex-between mb-1 collapsable cursor-pointer">
+        <li class="flexrow item-header">
+            <div class="item-name">{{localize "Ex3.SpecialAttacks"}}</div>
+        </li>
+        <div>
+            <i class="fas fa-caret-down"></i>
+        </div>
+    </div>
+    <div id="specialAttackList" {{#if data.specialAttackList}} {{else}} style="display:none;" {{/if}}>
+        {{#each data.specialAttacksList as |attack id|}}
+        {{#if attack.show}}
+        <li class="item flexrow item-row collapsable" data-item-id="{{attack.id}}">
+            <div class="item-image"><img class="list-item-image" src="{{attack.img}}" title="{{attack.name}}" width="24"
+                    height="24" /></div>
+            <h4 class="item-name">{{attack.name}}</h4>
+            <div class="item-controls">
+                {{#if attack.added}} <a class="item-control remove-special-attack" title="Remove Attack"><i
+                        class="fas fa-trash"></i></a> {{else}} <a class="item-control add-special-attack"
+                    title="Add Attack"><i class="fas fa-plus"></i></a> {{/if}}
+        </li>
+        <li class="item-description">
+            {{attack.description}}
+        </li>
+        {{/if}}
+        {{/each}}
+    </div>
     {{/if}}
     {{#each data.charmList as |charm ability|}}
     {{#if charm.visible}}
-    <li class="item flexrow item-header flex-center">
-        <div class="item-name">{{localize charm.name}}</div>
-    </li>
-    {{#each charm.list as |item id|}}
-    <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
-        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-                height="24" /></div>
-        <h4 class="item-name">{{item.name}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
-        <div class="item-controls">
-            {{#if item.charmAdded}} <a class="item-control remove-charm" title="Remove Charm"><i
-                    class="fas fa-minus"></i></a> {{/if}} <a class="item-control add-charm" title="Add Charm"><i
-                    class="fas fa-plus"></i></a> 
-    </li>
-    <li class="item-description">
+    <div class="item d-flex flex-between mb-1 charm-list-collapsable cursor-pointer">
+        <li class="flexrow item-header">
+            <div class="item-name">{{localize charm.name}}</div>
+        </li>
         <div>
-            {{{charmCostDisplay item.system.cost}}}
+            <i class="fas fa-caret-down"></i>
         </div>
-        <div>
-            <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span style="text-transform: capitalize;">{{getAbilityDisplay ../../this.actor item.system.ability}}</span> {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
-        </div>
-        <div>
-            <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
-        </div>
-        {{#if item.system.keywords}}
-        <div>
-            <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
-        </div>
-        {{/if}}
-        <div>
-            <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
-        </div>
-        <div>
-            {{{item.enritchedHTML}}}
-        </div>
-    </li>
-    {{/each}}
+    </div>
+    <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
+        {{#each charm.list as |item id|}}
+        <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+            <h4 class="item-name">{{item.name}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
+            <div class="item-controls">
+                {{#if item.charmAdded}} <a class="item-control remove-charm" title="Remove Charm"><i
+                        class="fas fa-minus"></i></a> {{/if}} <a class="item-control add-charm" title="Add Charm"><i
+                        class="fas fa-plus"></i></a> 
+        </li>
+        <li class="item-description">
+            <div>
+                {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+                <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span style="text-transform: capitalize;">{{getAbilityDisplay ../../this.actor item.system.ability}}</span> {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+                <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+                <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+                <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+                {{{item.enritchedHTML}}}
+            </div>
+        </li>
+        {{/each}}
+    </div>
     {{/if}}
     {{/each}}
 </ol>
