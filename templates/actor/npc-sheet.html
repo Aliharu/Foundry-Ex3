@@ -14,7 +14,7 @@
                     <div>{{system.anima.level}}</div>
                 </div>
                 {{/ifEquals}}
-                {{#ifEquals system.details.exalt 'dragonblooded'}}
+                {{#if system.settings.hasaura}}
                 <div>
                     <div class="resource-label">{{localize "Ex3.Aura"}}</div>
                     <select name="system.details.aura" data-type="String">
@@ -28,7 +28,7 @@
                         {{/select}}
                     </select>
                 </div>
-                {{/ifEquals}}
+                {{/if}}
             </div>
 
         </div>

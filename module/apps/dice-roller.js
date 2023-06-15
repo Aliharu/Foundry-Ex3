@@ -618,8 +618,13 @@ export class RollForm extends FormApplication {
                 onclick: (ev) => {
                     // this.object.charmList = this.actor.rollcharms;
                     for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
-                        charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
+                        if(charmlist.collapse === undefined) {
+                            charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
+                        }
                         for (const charm of charmlist.list) {
+                            if(charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute) {
+                                charmlist.collapse = false;
+                            }
                             if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
                                 charmlist.collapse = false;
                                 var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);

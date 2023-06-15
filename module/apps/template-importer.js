@@ -1292,6 +1292,7 @@ export default class TemplateImporter extends Application {
     actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').toLowerCase().replace(/\s+/g, "").trim();
     if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'dragonblooded';
+      actorData.system.settings.hasaura = true;
     }
     if (['nomood', 'fullmoon', 'changingmoon', 'casteless'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'lunar';

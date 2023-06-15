@@ -33,19 +33,23 @@
                 <option value="tree">{{localize "Ex3.Tree"}}</option>
                 <option value="leaves">{{localize "Ex3.Leaves"}}</option>
                 {{/select}}
-            </select>            <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
-            <input id="smaEnlightenment" name="settings.smaenlightenment" type="checkbox" {{checked settings.smaenlightenment}}>
+            </select> <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
+            <input id="smaEnlightenment" name="settings.smaenlightenment" type="checkbox" {{checked
+                settings.smaenlightenment}}>
             <label className="resource-label">{{localize "Ex3.ShowWarstrider"}}:</label>
-            <input id="showWarstrider" name="settings.showwarstrider" type="checkbox" {{checked settings.showwarstrider}}>
+            <input id="showWarstrider" name="settings.showwarstrider" type="checkbox" {{checked
+                settings.showwarstrider}}>
             <label className="resource-label">{{localize "Ex3.ShowShip"}}:</label>
             <input id="showShip" name="settings.showship" type="checkbox" {{checked settings.showship}}>
             <label className="resource-label">{{localize "Ex3.ShowEscort"}}:</label>
             <input id="showEscort" name="settings.showescort" type="checkbox" {{checked settings.showescort}}>
             {{#ifEquals actorType 'character'}}
             <label className="resource-label">{{localize "Ex3.UseTenForAttributes"}}:</label>
-            <input id="useTenAttributes" name="settings.usetenattributes" type="checkbox" {{checked settings.usetenattributes}}>
+            <input id="useTenAttributes" name="settings.usetenattributes" type="checkbox" {{checked
+                settings.usetenattributes}}>
             <label className="resource-label">{{localize "Ex3.UseTenForAbilities"}}:</label>
-            <input id="useTenAbilities" name="settings.usetenabilities" type="checkbox" {{checked settings.usetenabilities}}>
+            <input id="useTenAbilities" name="settings.usetenabilities" type="checkbox" {{checked
+                settings.usetenabilities}}>
             {{/ifEquals}}
             {{#ifEquals actorType 'npc'}}
             <label className="resource-label">{{localize "Ex3.LunarAnimalForm"}}:</label>
@@ -61,6 +65,8 @@
             <input id="isSorcerer" name="settings.issorcerer" type="checkbox" {{checked settings.issorcerer}}>
             <label className="resource-label">{{localize "Ex3.IsCrafter"}}:</label>
             <input id="isCrafter" name="settings.iscrafter" type="checkbox" {{checked settings.iscrafter}}>
+            <label className="resource-label">{{localize "Ex3.HasAura"}}:</label>
+            <input id="hasAura" name="settings.hasaura" type="checkbox" {{checked settings.hasaura}}>
             <label className="resource-label">{{localize "Ex3.EditMode"}}:</label>
             <input id="editMode" name="settings.editmode" type="checkbox" {{checked settings.editmode}}>
         </div>

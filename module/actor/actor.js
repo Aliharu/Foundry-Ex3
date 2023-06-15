@@ -141,6 +141,20 @@ export class ExaltedThirdActor extends Actor {
           }
         };
       }
+      if(updateData.system?.details?.exalt) {
+        let hasAura = false;
+        if(updateData.system?.details?.exalt === 'dragonblooded') {
+          hasAura = true;
+        }
+        if(updateData.system?.settings) {
+          updateData.system.settings.hasaura = hasAura;
+        }
+        else {
+          updateData.system.settings = {
+            hasaura: hasAura
+          }
+        }
+      }
     }
     if (updateData.system?.details?.caste && this.type === 'character') {
       const lowecaseCaste = updateData.system?.details?.caste.toLowerCase();

@@ -1492,6 +1492,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             defenseStunts: html.find('#defenseStunts').is(":checked"),
             showanima: html.find('#showAnima').is(":checked"),
             editmode: html.find('#editMode').is(":checked"),
+            hasaura: html.find('#hasAura').is(":checked"),
             issorcerer: html.find('#isSorcerer').is(":checked"),
             iscrafter: html.find('#isCrafter').is(":checked"),
           }

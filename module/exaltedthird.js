@@ -780,7 +780,7 @@ Hooks.once("ready", async function () {
   if (isNewerVersion("1.9.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     const chatData = {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div><b>/npc</b> NPC creator</div>',
     };
     ChatMessage.create(chatData);
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
@@ -799,11 +799,6 @@ Hooks.once("ready", async function () {
   }
 
   if (isNewerVersion("1.10.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: 'New Command: /npc',
-    };
-    ChatMessage.create(chatData);
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
         let updateData = duplicate(actor);
@@ -820,12 +815,6 @@ Hooks.once("ready", async function () {
   }
 
   if (isNewerVersion("1.11.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 1.11.0, please wait`);
-    const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: 'As of 1.11.0, you can now select if an ability has an excellency or not.  Doing so will determine whether the dice caps show up.  You can also change what attribute/ability informs static values.  Set this value in Character creation mode.',
-    };
-    ChatMessage.create(chatData);
     const martialArtData = {
       system: {
         abilitytype: 'martialart'
@@ -940,10 +929,26 @@ Hooks.once("ready", async function () {
         await pack.configure({ locked: wasLocked });
       }
     }
-    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
-    ui.notifications.notify(`Migration Complete`);
   }
 
+  if (isNewerVersion("2.0.3", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.0.3, please wait`);
+    for (let actor of game.actors) {
+      try {
+        if (actor.system.details.exalt === 'dragonblooded') {
+          await actor.update({ [`system.settings.hasaura`]: true});
+        }
+        else {
+          await actor.update({ [`system.settings.hasaura`]: false});
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    ui.notifications.notify(`Migration Complete`);
+    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+  }
   // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {
   //   let updateData = foundry.utils.deepClone(item.toObject());
   //   updateData.system.endtrigger = 'endscene';

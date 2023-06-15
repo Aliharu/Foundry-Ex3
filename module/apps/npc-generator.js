@@ -278,6 +278,9 @@ export default class NPCGenerator extends FormApplication {
       actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
       actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
       actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
+      if(actorData.system.details.exalt === 'dragonblooded') {
+        actorData.system.settings.hasaura = true;
+      }
       itemData.push({
         type: 'charm',
         img: 'icons/magic/light/explosion-star-large-orange.webp',
@@ -1294,6 +1297,7 @@ export default class NPCGenerator extends FormApplication {
           "showescort": false,
           "usetenattributes": false,
           "editmode": false,
+          "hasaura": false,
         },
       }
     };

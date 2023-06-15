@@ -193,6 +193,7 @@
           "iscrafter": true,
           "usedotsvalues": true,
           "showanima": true,
+          "hasaura": false,
           "sheetbackground": "default",
           "rollsettings": {
             "attacks": {
