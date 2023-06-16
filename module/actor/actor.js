@@ -749,7 +749,7 @@ export class ExaltedThirdActor extends Actor {
         if (charms[i.system.listingname]) {
         }
         else {
-          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: this.charms ? this.charms[i.system.listingname]?.collapse : true };
         }
         charms[i.system.listingname].list.push(i);
       }
@@ -757,7 +757,7 @@ export class ExaltedThirdActor extends Actor {
         if (charms[i.system.ability]) {
         }
         else {
-          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: this.charms ? this.charms[i.system.ability]?.collapse : true };
         }
         charms[i.system.ability].list.push(i);
       }

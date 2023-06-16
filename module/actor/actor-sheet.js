@@ -449,13 +449,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       if (i.system.listingname) {
         if (!charms[i.system.listingname]) {
-          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: this.actor?.charms ? this.actor?.charms[i.system.listingname]?.collapse : true };
         }
         charms[i.system.listingname].list.push(i);
       }
       else {
         if (!charms[i.system.ability]) {
-          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: this.actor?.charms ? this.actor?.charms[i.system.ability]?.collapse : true };
         }
         charms[i.system.ability].list.push(i);
       }
@@ -576,6 +576,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
     html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
 
+    html.find('.charm-list-collapsable').click(ev => {
+      const li = $(ev.currentTarget).next();
+      if (li.attr('id')) {
+        this.actor.charms[li.attr('id')].collapse = !li.is(":hidden");
+      }
+      li.toggle("fast");
+    });
+
     // Update Inventory Item
     html.find('.item-edit').click(ev => {
       ev.stopPropagation();
@@ -681,11 +689,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.showDialogue('craft');
     });
 
-
     html.find('.set-pool-peripheral').mousedown(ev => {
       this.setSpendPool('peripheral');
     });
-
 
     html.find('.set-pool-personal').mousedown(ev => {
       this.setSpendPool('personal');
@@ -1497,9 +1503,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             iscrafter: html.find('#isCrafter').is(":checked"),
           }
           if (this.actor.type === 'npc') {
-            this.actor.update({ [`system.lunarform.enabled`]: html.find('#lunarFormEnabled').is(":checked")});
+            this.actor.update({ [`system.lunarform.enabled`]: html.find('#lunarFormEnabled').is(":checked") });
           }
-          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(html.find('#maxAnima').val())});
+          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(html.find('#maxAnima').val()) });
         }
       }
     }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
