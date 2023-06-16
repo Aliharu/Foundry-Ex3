@@ -646,12 +646,12 @@ export class ExaltedThirdActor extends Actor {
     const defenseCharms = {};
 
     const spells = {
-      terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
-      celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
-      solar: { name: 'Ex3.Solar', visible: false, list: [] },
-      ivory: { name: 'Ex3.Ivory', visible: false, list: [] },
-      shadow: { name: 'Ex3.Shadow', visible: false, list: [] },
-      void: { name: 'Ex3.Void', visible: false, list: [] },
+      terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [], collapse: true },
+      celestial: { name: 'Ex3.Celestial', visible: false, list: [], collapse: true },
+      solar: { name: 'Ex3.Solar', visible: false, list: [], collapse: true },
+      ivory: { name: 'Ex3.Ivory', visible: false, list: [], collapse: true },
+      shadow: { name: 'Ex3.Shadow', visible: false, list: [], collapse: true },
+      void: { name: 'Ex3.Void', visible: false, list: [], collapse: true },
     }
 
     // Iterate through items, allocating to containers
@@ -699,6 +699,7 @@ export class ExaltedThirdActor extends Actor {
         if (i.system.circle !== undefined) {
           spells[i.system.circle].list.push(i);
           spells[i.system.circle].visible = true;
+          spells[i.system.circle].collapse = this.spells ? this.spells[i.system.circle].collapse : true;
         }
       }
       else if (i.type === 'action') {

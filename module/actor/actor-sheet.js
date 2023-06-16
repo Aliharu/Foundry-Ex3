@@ -398,6 +398,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (i.system.circle !== undefined) {
           spells[i.system.circle].list.push(i);
           spells[i.system.circle].visible = true;
+          spells[i.system.circle].collapse = this.actor.spells ? this.actor.spells[i.system.circle].collapse : true;
         }
       }
       else if (i.type === 'action') {
@@ -580,6 +581,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).next();
       if (li.attr('id')) {
         this.actor.charms[li.attr('id')].collapse = !li.is(":hidden");
+      }
+      li.toggle("fast");
+    });
+
+    html.find('.spell-list-collapsable').click(ev => {
+      const li = $(ev.currentTarget).next();
+      if (li.attr('id')) {
+        this.actor.spells[li.attr('id')].collapse = !li.is(":hidden");
       }
       li.toggle("fast");
     });
