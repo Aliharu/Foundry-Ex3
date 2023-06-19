@@ -107,7 +107,7 @@ export default class JournalCascadeGenerator extends FormApplication {
       4: [],
       5: [],
     };
-    const noPrereqs = charms.filter(charm => !charm.system.prerequisites || charm.system.prerequisites === 'None');
+    // const noPrereqs = charms.filter(charm => !charm.system.prerequisites || charm.system.prerequisites === 'None');
     charms.forEach(charm => {
       charmsMap[charm.system.essence].push(charm);
     });

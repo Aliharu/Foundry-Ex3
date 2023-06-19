@@ -70,18 +70,21 @@
                             class="fas fa-info-circle charms-cheat-sheet cursor-pointer"></i></a></div>
             </div>
             <input type="text" name="system.keywords" value="{{system.keywords}}" />
-            <!-- <div class="flex-center mt-1">
+            <div class="flex-center mt-1">
                 <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
             </div>
-            <div class="embeded-item-list-wrapper" {{#if options.editable}}style="border: 1px solid var(--color-border-light-tertiary);"{{/if}}>
+            <div class="embeded-item-list-wrapper" {{#if
+                options.editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
                 <div class="flex-group-center embeded-item-list">
                     <ul>
                         {{#if options.editable}}
                         {{#each system.charmprerequisites as |item id|}}
-                        <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">
-                            {{item.name}}
-                            <i class="fas fa-trash embeded-item-delete"></i>
-                        </li>
+                        <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}" data-item-name="{{item.name}}" data-item-index="{{id}}">
+                            <li data-item-index="{{id}}">
+                                {{item.name}}
+                                <i class="fas fa-trash embeded-item-delete"></i>
+                            </li>
+                        </a>
                         {{/each}}
                         {{else}}
                         {{#each system.charmprerequisites as |item id|}}
@@ -92,7 +95,7 @@
                         {{/if}}
                     </ul>
                 </div>
-            </div> -->
+            </div>
             <div class="flex-center mt-1">
                 <div class="resource-label">{{localize "Ex3.Prerequisites"}}</div>
             </div>
