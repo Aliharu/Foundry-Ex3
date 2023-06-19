@@ -823,3 +823,54 @@
 .chat-control-icon .fas.fa-dice-d20:hover:before {
   cursor: pointer;
 }
+
+.journal-charm-cards .card-wrapper {
+  background: #fbf7e1;
+}
+
+.journal-charm-cards .card-wrapper .charm-card {
+  margin: 10px;
+  text-align: center;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content {
+  margin-top: 17px;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .dot {
+  height: 20px;
+  width: 20px;
+  border: 1px solid black;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .full-essence-dot {
+  background-color: #ffff00;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .full-ability-dot {
+  background-color: #d90000;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-name {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-prerequisites {
+  margin-top: 5px;
+}
+
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-description {
+  margin-bottom: 6px;
+  margin-top: 5px;
+}

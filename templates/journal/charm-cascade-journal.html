@@ -1,0 +1,32 @@
+<div class="card-wrapper">
+    <div class="charm-card">
+        <div class="charm-card-content-wrapper">
+            <div class="charm-content">
+                <div>
+                    {{#numLoop 5}}
+                    {{#ifGreater ../charm.system.essence this}}
+                    <span class="full-essence-dot dot">&nbsp;</span>
+                    {{else}}
+                    <span class="dot">&nbsp;</span>
+                    {{/ifGreater}}
+                    &nbsp;
+                    {{/numLoop}}
+                </div>
+                <div class="charm-name"><h3>{{charm.name}}</h3></div>
+                <div>@UUID[{{charm.uuid}}]</div>
+                <div class="charm-prerequisites"><b>{{localize "Ex3.Prerequisites"}}:</b> {{charm.system.prerequisites}}</div>
+                <div class="charm-description">{{#ifEquals descriptionText 'summary'}}{{charm.system.summary}}{{else}}{{{charm.system.description}}}{{/ifEquals}}</div>
+                <div>
+                    {{#numLoop 5}}
+                    {{#ifGreater ../charm.system.requirement this}}
+                    <span class="full-ability-dot dot">&nbsp;</span>
+                    {{else}}
+                    <span class="dot">&nbsp;</span>
+                    {{/ifGreater}}
+                    &nbsp;
+                    {{/numLoop}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

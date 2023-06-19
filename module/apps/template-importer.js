@@ -14,10 +14,11 @@ export default class TemplateImporter extends Application {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
+    options.classes = ["dialog", `leaves-background`];
     options.id = "ex3-template-importer";
     options.template = "systems/exaltedthird/templates/dialogues/template-importer.html"
     options.resizable = true;
-    options.height = 900;
+    options.height = 915;
     options.width = 860;
     options.minimizable = true;
     options.title = "Template Importer"

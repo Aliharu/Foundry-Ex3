@@ -440,6 +440,7 @@
     "Ex3.Momentum": "Momentum",
     "Ex3.Speed": "Speed",
     "Ex3.SpeedBonus": "Speed Bonus",
+    "Ex3.HomebrewContent": "Homebrew Content",
     "Ex3.SpecialAbilities": "Special Abilities",
     "Ex3.SpecialAttacks": "Special Attacks",
     "Ex3.Difficulty": "Difficulty",
@@ -758,6 +759,10 @@
     "Ex3.InitiativeDamageRoundLethal": "Initiative Damage (Per Round, L)",
     "Ex3.BashingDamageRound": "Bashing Damage (Per Round)",
     "Ex3.LethalDamageRound": "Lethal Damage (Per Round)",
-    "Ex3.AggravatedDamageRound": "Aggravated Damage (Per Round)"
+    "Ex3.AggravatedDamageRound": "Aggravated Damage (Per Round)",
 
+    "Ex3.CharmCardJournals": "Charm Card Journals",
+    "Ex3.Folders": "Folders",
+    "Ex3.All": "All",
+    "Ex3.MainText": "Main Text"
 }

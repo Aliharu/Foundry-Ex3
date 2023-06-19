@@ -45,6 +45,9 @@ export default class NPCGenerator extends FormApplication {
           value: "weak"
         },
       },
+      homebrew: {
+        specialAbilities: 0,
+      },
       equipment: {
         primaryWeapon: {
           "type": "random",
@@ -98,7 +101,7 @@ export default class NPCGenerator extends FormApplication {
       template: "systems/exaltedthird/templates/dialogues/npc-generator.html",
       id: "ex3-npc-generator",
       title: `Random NPC Generator`,
-      width: 651,
+      width: 750,
       height: 1100,
       resizable: true,
       submitOnChange: true,

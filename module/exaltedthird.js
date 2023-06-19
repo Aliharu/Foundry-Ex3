@@ -18,6 +18,7 @@ import { ExaltedCombatant } from "./combat/combat.js";
 import ExaltedActiveEffect from "./active-effect.js";
 import ExaltedActiveEffectConfig from "./active-effect-config.js";
 import NPCGenerator from "./apps/npc-generator.js";
+import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
 
 Hooks.once('init', async function () {
 
@@ -30,6 +31,7 @@ Hooks.once('init', async function () {
       ItemSearch,
       TemplateImporter,
       Importer,
+      JournalCascadeGenerator,
     },
     entities: {
       ExaltedThirdActor,
@@ -153,7 +155,7 @@ Hooks.once('init', async function () {
     let ret = ''
 
     for (let i = 0, j = num; i < j; i++) {
-      ret = ret + options.fn(i)
+      ret = ret + options?.fn(i)
     }
 
     return ret

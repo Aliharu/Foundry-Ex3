@@ -3,7 +3,8 @@
     <div class="resource grid grid-3col flex-center mb-2 mt-2">
       <div>
         <label class="resource-label">{{localize "Ex3.Name"}} </label>
-        <input name="object.character.name" value="{{data.character.name}}" type="text" placeholder="{{data.character.defaultName}}">
+        <input name="object.character.name" value="{{data.character.name}}" type="text"
+          placeholder="{{data.character.defaultName}}">
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.Template"}}</div>
@@ -99,7 +100,7 @@
     <div class="resource-content flexrow flex-center flex-between mt-2">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Skills"}}</label>
     </div>
-    <div class="resource grid grid-3col flex-center">
+    <div class="resource grid grid-4col flex-center">
       {{#each data.character.skills as |skill key|}}
       <div>
         <div class="resource-label">{{localize skill.label}}</div>
@@ -117,7 +118,7 @@
     <div class="resource-content flexrow flex-center flex-between mt-2">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Traits"}}</label>
     </div>
-    <div class="resource grid grid-3col flex-center">
+    <div class="resource grid grid-4col flex-center">
       <div>
         <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
         <select name="object.character.sorcerer" data-type="String">
@@ -140,7 +141,8 @@
       {{/each}}
       <div>
         <div class="resource-label">{{localize "Ex3.Battlegroup"}}</div>
-        <input class="rerender" name="object.character.battlegroup" type="checkbox" {{checked data.character.battlegroup}}>
+        <input class="rerender" name="object.character.battlegroup" type="checkbox" {{checked
+          data.character.battlegroup}}>
       </div>
       {{#each data.character.traits as |trait key|}}
       <div>
@@ -153,11 +155,11 @@
     <div class="resource-content flexrow flex-center flex-between mt-2">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Battlegroup"}}</label>
     </div>
-    <div class="resource grid grid-3col flex-center">
+    <div class="resource grid grid-4col flex-center">
       <div>
         <label class="resource-label">{{localize "Ex3.Drill"}}</label>
-        <div class="charname"> <select name="object.character.battlegroupStats.drill" value="{{data.character.battlegroupStats.drill}}"
-            data-type="String">
+        <div class="charname"> <select name="object.character.battlegroupStats.drill"
+            value="{{data.character.battlegroupStats.drill}}" data-type="String">
             {{#select data.character.battlegroupStats.drill}}
             <option value="0">{{localize "Ex3.Poor"}}</option>
             <option value="1">{{localize "Ex3.Average"}}</option>
@@ -167,16 +169,26 @@
       </div>
       <div>
         <label class="resource-label">{{localize "Ex3.Size"}}</label>
-        <input type="number" name="object.character.battlegroupStats.size" value="{{data.character.battlegroupStats.size}}"
-          data-dtype="Number" />
+        <input type="number" name="object.character.battlegroupStats.size"
+          value="{{data.character.battlegroupStats.size}}" data-dtype="Number" />
       </div>
       <div>
         <label class="resource-label">{{localize "Ex3.Might"}}</label>
-        <input type="number" name="object.character.battlegroupStats.might" value="{{data.character.battlegroupStats.might}}"
-          data-dtype="Number" />
+        <input type="number" name="object.character.battlegroupStats.might"
+          value="{{data.character.battlegroupStats.might}}" data-dtype="Number" />
       </div>
     </div>
     {{/if}}
+    <!-- <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.HomebrewContent"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+      <div>
+        <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
+        <input name="object.character.homebew.specialAbilities" value="{{data.character.homebrew.specialAbilities}}"
+          type="number">
+      </div>
+    </div> -->
     <div class="resource-content flexrow flex-center flex-between mt-2">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.PrimaryWeapon"}}</label>
     </div>
