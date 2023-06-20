@@ -321,12 +321,14 @@
 }
 
 .embeded-item-list-wrapper {
-  height: 60px;
+  height: 40px;
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.05);
 
   .embeded-item-list {
     padding: 0;
     border: 0;
+
     .embeded-item-pill {
       list-style-type: none;
       padding: 0 5px;
@@ -350,7 +352,7 @@
   font-style: normal;
   font-size: 12px;
 
-  .roll-card-header{
+  .roll-card-header {
     font-size: 16px;
     border-bottom: 1px solid black;
   }
@@ -442,53 +444,61 @@
 
 .journal-charm-cards {
   .card-wrapper {
-      background:#fbf7e1;
+    background: #fbf7e1;
 
-      .charm-card {
-          margin: 10px;
-          text-align: center;
-      }
+    .charm-card {
+      margin: 10px;
+      text-align: center;
+    }
 
-      .charm-card-content-wrapper {
+    .charm-card-content-wrapper {
+      display: inline-block;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+
+      .charm-content {
+        margin-top: 17px;
+        margin-bottom: 17px;
+
+        .dot {
+          height: 20px;
+          width: 20px;
+          border: 1px solid black;
           display: inline-block;
-          overflow: hidden;
-          position: relative;
-          width: 100%;
+          border-radius: 50%;
+        }
 
-          .charm-content {
-              margin-top: 17px;
+        .full-essence-dot {
+          background-color: #ffff00;
+        }
 
-              .dot {
-                  height: 20px; 
-                  width: 20px; 
-                  border: 1px solid black; 
-                  display: inline-block;
-                  border-radius: 50%;
-              }
-              
-              .full-essence-dot {
-                  background-color: #ffff00;  
-              }
-              
-              .full-ability-dot {
-                  background-color: #d90000;  
-              }
+        .full-ability-dot {
+          background-color: #d90000;
+        }
 
-              .charm-name {
-                  font-size: 22px;
-                  font-weight: bold;
-                  margin-bottom:5px;
-              }
+        .charm-name {
+          font-size: 22px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          margin-top: 10px;
+        }
 
-              .charm-prerequisites {
-                margin-top:5px;
-              }
+        .charm-prerequisites {
+          margin-top: 5px;
+        }
 
-              .charm-description {
-                  margin-bottom: 6px;
-                  margin-top: 5px;
-              }
-          }
+        .charm-leads-to {
+          margin-bottom: 10px;
+        }
+
+
+        .charm-description {
+          margin-bottom: 6px;
+          margin-top: 5px;
+          text-align: start;
+        }
       }
+    }
   }
 }

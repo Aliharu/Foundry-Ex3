@@ -764,5 +764,8 @@
     "Ex3.CharmCardJournals": "Charm Card Journals",
     "Ex3.Folders": "Folders",
     "Ex3.All": "All",
-    "Ex3.MainText": "Main Text"
+    "Ex3.MainText": "Main Text",
+    "Ex3.LeadsTo": "Leads to",
+
+    "Ex3.FilterByPrerequisiteCharms": "Filter By Prerequisite Charms"
 }

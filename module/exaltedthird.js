@@ -938,10 +938,10 @@ Hooks.once("ready", async function () {
     for (let actor of game.actors) {
       try {
         if (actor.system.details.exalt === 'dragonblooded') {
-          await actor.update({ [`system.settings.hasaura`]: true});
+          await actor.update({ [`system.settings.hasaura`]: true });
         }
         else {
-          await actor.update({ [`system.settings.hasaura`]: false});
+          await actor.update({ [`system.settings.hasaura`]: false });
         }
       } catch (error) {
         error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
@@ -951,6 +951,33 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
+
+  // for (let item of game.items.filter((item) => item.type === 'charm' && item.system.prerequisites && item.system.prerequisites !== 'None')) {
+  //   let updateData = foundry.utils.deepClone(item.toObject());
+    
+  //   if (!foundry.utils.isEmpty(updateData)) {
+  //     const splitPrereqs = item.system.prerequisites.split(',');
+  //     const newPrereqs = [];
+  //     for(const prereq of splitPrereqs) {
+  //       const existingCharm = game.items.filter(item => item.type === 'charm' && item.system.charmtype === updateData.system.charmtype && item.name.trim() === prereq.trim())[0];
+  //       if(existingCharm) {
+  //         updateData.system.charmprerequisites.push(
+  //           {
+  //             id: existingCharm.id,
+  //             name: existingCharm.name
+  //           }
+  //         );
+  //       }
+  //       else {
+  //         newPrereqs.push(prereq);
+  //       }
+  //     }
+  //     if(updateData.system.charmprerequisites) {
+  //       updateData.system.prerequisites = newPrereqs.join(", ");
+  //       await item.update(updateData, { enforceTypes: false });
+  //     }
+  //   }
+  // }
   // for(let item of game.items.filter((item) => item.system.duration.trim() === 'One scene')) {
   //   let updateData = foundry.utils.deepClone(item.toObject());
   //   updateData.system.endtrigger = 'endscene';
@@ -1224,37 +1251,37 @@ async function applyDamageDialogue(targetUuid, damageContext) {
         let characterDamage = Number(html.find('#damageValue').val());
         let damageType = html.find('#damageType').val();
         if (actor.system.battlegroup) {
-            totalHealth = actorData.system.health.levels.zero.value + actorData.system.size.value;
+          totalHealth = actorData.system.health.levels.zero.value + actorData.system.size.value;
         }
         else {
-            for (let [key, healthLevel] of Object.entries(actorData.system.health.levels)) {
-                totalHealth += healthLevel.value;
-            }
+          for (let [key, healthLevel] of Object.entries(actorData.system.health.levels)) {
+            totalHealth += healthLevel.value;
+          }
         }
         if (actor.system.battlegroup) {
-            var remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
-            while (remainingHealth <= characterDamage && actorData.system.size.value > 0) {
-                actorData.system.health.bashing = 0;
-                actorData.system.health.lethal = 0;
-                actorData.system.health.aggravated = 0;
-                characterDamage -= remainingHealth;
-                remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
-                actorData.system.size.value -= 1;
-                sizeDamaged++;
-            }
+          var remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+          while (remainingHealth <= characterDamage && actorData.system.size.value > 0) {
+            actorData.system.health.bashing = 0;
+            actorData.system.health.lethal = 0;
+            actorData.system.health.aggravated = 0;
+            characterDamage -= remainingHealth;
+            remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+            actorData.system.size.value -= 1;
+            sizeDamaged++;
+          }
         }
         if (damageType === 'bashing') {
-            actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + characterDamage);
+          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + characterDamage);
         }
         if (damageType === 'lethal') {
-            actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + characterDamage);
+          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + characterDamage);
         }
         if (damageType === 'aggravated') {
-            actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + characterDamage);
+          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + characterDamage);
         }
-        if(damageContext.attackerTokenId && sizeDamaged) {
+        if (damageContext.attackerTokenId && sizeDamaged) {
           const combatant = game.combat?.combatants.find(c => c.tokenId === damageContext.attackerTokenId);
-          if(combatant) {
+          if (combatant) {
             game.combat.setInitiative(combatant.id, combatant.initiative + (5 * sizeDamaged));
           }
         }

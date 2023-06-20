@@ -703,7 +703,8 @@
 }
 
 .embeded-item-list-wrapper {
-  height: 60px;
+  height: 40px;
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.05);
 }
 
@@ -842,6 +843,7 @@
 
 .journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content {
   margin-top: 17px;
+  margin-bottom: 17px;
 }
 
 .journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .dot {
@@ -863,14 +865,20 @@
 .journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-name {
   font-size: 22px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-prerequisites {
   margin-top: 5px;
 }
 
+.journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-leads-to {
+  margin-bottom: 10px;
+}
+
 .journal-charm-cards .card-wrapper .charm-card-content-wrapper .charm-content .charm-description {
   margin-bottom: 6px;
   margin-top: 5px;
+  text-align: start;
 }
