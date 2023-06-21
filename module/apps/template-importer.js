@@ -93,6 +93,7 @@ export default class TemplateImporter extends Application {
     }
 
     var index = 0;
+    const charmsList = [];
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var charmData = {
         type: 'charm',
@@ -155,8 +156,38 @@ export default class TemplateImporter extends Application {
       if(folder) {
         charmData.folder = folder;
       }
-      await Item.create(charmData);
+      charmsList.push(await Item.create(charmData));
       index++;
+    }
+    if(charmsList) {
+      this.updatePrereqs(charmsList);
+    }
+  }
+
+  async updatePrereqs(charmsList) {
+    const filteredCharms = charmsList.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None');
+    for(const charm of filteredCharms) {
+      const charmData = duplicate(charm);
+      const splitPrereqs = charm.system.prerequisites.split(',');
+      const newPrereqs = [];
+      for(const prereq of splitPrereqs) {
+        const existingCharm = game.items.filter(item => item.type === 'charm' && item.system.charmtype === charm.system.charmtype && item.name.trim() === prereq.trim())[0];
+        if(existingCharm) {
+          charmData.system.charmprerequisites.push(
+            {
+              id: existingCharm.id,
+              name: existingCharm.name
+            }
+          );
+        }
+        else {
+          newPrereqs.push(prereq);
+        }
+      }
+      if(charm.system.charmprerequisites) {
+        charmData.system.prerequisites = newPrereqs.join(", ");
+        await charm.update(charmData);
+      }
     }
   }
 

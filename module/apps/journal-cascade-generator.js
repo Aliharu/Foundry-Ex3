@@ -3,8 +3,8 @@ export default class JournalCascadeGenerator extends FormApplication {
     super(object, options);
     this.object.folders = game.folders.filter(folder => folder.type === 'Item');
     this.object.characters = game.actors.filter(actor => actor.type === 'character');
-    this.object.folder = 'uhrIqGPkdbjVIBNK';
-    this.object.character = 'nTPDVqWdPI5PEjJW';
+    this.object.folder = '';
+    this.object.character = '';
     this.object.mainText = 'description';
     this.object.type = 'character';
     this.object.filterByPrerequisiteCharms = false;

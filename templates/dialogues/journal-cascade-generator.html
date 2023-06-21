@@ -52,6 +52,16 @@
         {{/select}}
       </select>
     </div>
+    <ul>
+      {{#ifEquals data.type 'character'}}
+        <li>Makes cards for all charms of the characters exalt type that they meet the ability/essence prerequisites for.</li>
+        <li>Will make an additional journal for charms the character currently has</li>
+      {{/ifEquals}}
+      {{#ifEquals data.type 'folder'}}
+        <li>Makes cards for all charms in the folder and any charms in any subfolders</li>
+      {{/ifEquals}}
+      <li>Creates journals for each ability, sorts by the lowest requirement charm first.</li>
+    </ul>
     <button type="button" id="generate">{{localize "Ex3.Generate"}}</button>
   </form>
 </div>
