@@ -209,10 +209,12 @@ export default class JournalCascadeGenerator extends FormApplication {
 }
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
-  const button = $(`<button class="item-search"><i class="fas fa-suitcase"></i>${game.i18n.localize("Ex3.CharmCardJournals")}</button>`);
-  html.find(".directory-footer").append(button);
-
-  button.click(ev => {
-    game.journalCascade = new JournalCascadeGenerator().render(true);
-  })
+  if(game.user.isGM) {
+    const button = $(`<button class="item-search"><i class="fas fa-suitcase"></i>${game.i18n.localize("Ex3.CharmCardJournals")}</button>`);
+    html.find(".directory-footer").append(button);
+  
+    button.click(ev => {
+      game.journalCascade = new JournalCascadeGenerator().render(true);
+    })
+  }
 })
