@@ -133,7 +133,12 @@
                 <label>{{system.soak.cap}}</label>
             </div>
             <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
-                <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
+                <label class="resource-label">{{localize "Ex3.Hardness"}}{{#ifEquals data.type 'character'}}
+                    {{#if system.settings.editmode}}
+                    <a><i class="fas fa-calculator calculate-hardness cursor-pointer" title="Auto Set Hardness"
+                        style="margin-left:3px;"></i></a>
+                    {{/if}}
+                    {{/ifEquals}}</label>
                 <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
                     data-dtype="Number" />
             </div>

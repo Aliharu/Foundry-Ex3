@@ -171,6 +171,27 @@ export class ExaltedThirdItem extends Item {
         }
       }
     }
+    if (this.type === 'weapon' || this.type === 'armor') {
+      if(updateData.system?.equipped !== undefined) {
+        if(this.type === 'weapon') {
+          if(this.actor) {
+            let defenseChange = updateData.system?.defense || this.system.defense;
+            defenseChange = defenseChange * (updateData.system.equipped ? 1 : -1);
+            await this.actor.update({[`system.parry.value`]: this.actor.system.parry.value + defenseChange});
+          }
+        }
+        if(this.type === 'armor') {
+          if(this.actor) {
+            let defenseChange = updateData.system?.penalty || this.system.penalty;
+            if(defenseChange < 0) {
+              defenseChange *= -1;
+            }
+            defenseChange = defenseChange * (updateData.system.equipped ? -1 : 1);
+            await this.actor.update({[`system.evasion.value`]: this.actor.system.evasion.value + defenseChange});
+          }
+        }
+      }
+    }
   }
 
   getImageUrl(type) {

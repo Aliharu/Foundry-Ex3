@@ -750,6 +750,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.calculateDerivedStats('guile');
     });
 
+    html.find('.calculate-hardness').mousedown(ev => {
+      this.calculateDerivedStats('hardness');
+    });
+
     html.find('#calculate-warstrider-health').mousedown(ev => {
       this.calculateHealth('warstrider');
     });
@@ -954,6 +958,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       let item = this.actor.items.get(li.data("item-id"));
       item.update({
         [`system.poison.apply`]: !item.system.poison.apply,
+      });
+    });
+
+    html.find('.toggle-equipped').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      // Render the chat card template
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      item.update({
+        [`system.equipped`]: !item.system.equipped,
       });
     });
 
@@ -1233,6 +1248,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     if (type === 'resonance') {
       actorData.system.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);
       actorData.system.traits.dissonance = this.actor.calculateDissonance(this.actor.system.details.exalt);
+    }
+    if (type === 'hardness') {
+      let hardness = 0
+      for (let armor of this.actor.armor) {
+        if (armor.system.equipped) {
+          if(armor.system.hardness > hardness) {
+            hardness = armor.system.hardness;
+          }
+        }
+        actorData.system.hardness.value = hardness;
+      }
     }
     this.actor.update(actorData);
   }
