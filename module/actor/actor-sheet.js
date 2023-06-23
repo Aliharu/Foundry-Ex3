@@ -972,6 +972,17 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       });
     });
 
+    html.find('.toggle-visible').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      // Render the chat card template
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      item.update({
+        [`system.visible`]: !item.system.visible,
+      });
+    });
+
     html.find('.item-chat').click(ev => {
       ev.preventDefault();
       ev.stopPropagation();
