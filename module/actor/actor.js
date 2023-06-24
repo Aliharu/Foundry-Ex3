@@ -141,12 +141,12 @@ export class ExaltedThirdActor extends Actor {
           }
         };
       }
-      if(updateData.system?.details?.exalt) {
+      if (updateData.system?.details?.exalt) {
         let hasAura = false;
-        if(updateData.system?.details?.exalt === 'dragonblooded') {
+        if (updateData.system?.details?.exalt === 'dragonblooded') {
           hasAura = true;
         }
-        if(updateData.system?.settings) {
+        if (updateData.system?.settings) {
           updateData.system.settings.hasaura = hasAura;
         }
         else {
@@ -705,7 +705,7 @@ export class ExaltedThirdActor extends Actor {
       else if (i.type === 'action') {
         actions.push(i);
       }
-      if(i.system.active) {
+      if (i.system.active) {
         activeItems.push(i);
       }
     }
@@ -1176,11 +1176,11 @@ export async function spendEmbeddedItem(actor, item) {
     }
   }
   else if (item.type === 'spell') {
-    if(item.system.active) {
+    if (item.system.active) {
       updateActive = false;
     }
     else {
-      if(item.system.activatable) {
+      if (item.system.activatable) {
         updateActive = true;
       }
       actorData.system.sorcery.motes = 0;
@@ -1195,7 +1195,7 @@ export async function spendEmbeddedItem(actor, item) {
       [`system.active`]: updateActive,
     });
     for (const effect of actor.allApplicableEffects()) {
-      if(effect._sourceName === item.name){
+      if (effect._sourceName === item.name) {
         effect.update({ disabled: !updateActive });
       }
     }
