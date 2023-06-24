@@ -1,7 +1,7 @@
-export default class TemplateImporter extends Application {
-  constructor(app, options, object, data) {
-    super(app)
-    this.type = 'charm';
+export default class TemplateImporter extends FormApplication {
+  constructor(type) {
+    super(type)
+    this.type = type;
     this.charmType = 'other';
     this.spellCircle = 'terrestrial';
     this.itemType = 'armor';
@@ -2226,28 +2226,3 @@ export default class TemplateImporter extends Application {
     });
   }
 }
-
-Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.CharmImport")}</button>`);
-  html.find(".directory-footer").append(button);
-
-  button.click(ev => {
-    game.templateImporter.type = "charm";
-    game.templateImporter.render(true);
-  })
-})
-
-Hooks.on("renderActorDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer">${game.i18n.localize("Ex3.NPCImport")}</button>`);
-  html.find(".directory-footer").append(button);
-
-  button.click(ev => {
-    game.templateImporter.type = "qc";
-    game.templateImporter.render(true);
-  })
-})
-
-Hooks.on('init', () => {
-  if (!game.templateImporter)
-    game.templateImporter = new TemplateImporter();
-})

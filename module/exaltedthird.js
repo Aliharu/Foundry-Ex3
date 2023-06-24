@@ -300,6 +300,51 @@ $(document).ready(() => {
   });
 });
 
+Hooks.on("renderItemDirectory", (app, html, data) => {
+  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"></i>${game.i18n.localize("Ex3.CharmImport")}</button>`);
+  html.find(".directory-footer").append(button);
+
+  button.click(ev => {
+    game.templateImporter = new TemplateImporter("charm").render(true);
+  })
+});
+
+Hooks.on("renderActorDirectory", (app, html, data) => {
+  if (game.user.isGM) {
+    const button = $(`<button class="tempalte-importer"><i class="fas fa-user"></i>${game.i18n.localize("Ex3.NPC")}</button>`);
+    html.find(".directory-footer").append(button);
+    button.click(ev => {
+      new Dialog({
+        title: `NPC`,
+        content: ``,
+        buttons: {
+          save: {
+            label: game.i18n.localize("Ex3.Import"), callback: () => {
+              game.templateImporter = new TemplateImporter("qc").render(true);
+            }
+          },
+          cancel: {
+            label:  game.i18n.localize("Ex3.Generate"), callback: () => {
+              new NPCGenerator(null, {}, {}, {}).render(true);
+            }
+          }
+        }
+      }, { classes: ["dialog", `solar-background`] }).render(true);
+    });
+  }
+});
+
+Hooks.on("renderJournalDirectory", (app, html, data) => {
+  if (game.user.isGM) {
+    const button = $(`<button class="item-search"><i class="fas fa-book-open"></i>${game.i18n.localize("Ex3.CharmCardJournals")}</button>`);
+    html.find(".directory-footer").append(button);
+
+    button.click(ev => {
+      game.journalCascade = new JournalCascadeGenerator().render(true);
+    })
+  }
+});
+
 Hooks.on("renderChatMessage", (message, html, data) => {
   html[0]
     .querySelectorAll('.apply-decisive-damage')
@@ -954,7 +999,7 @@ Hooks.once("ready", async function () {
 
   // for (let item of game.items.filter((item) => item.type === 'charm' && item.system.prerequisites && item.system.prerequisites !== 'None')) {
   //   let updateData = foundry.utils.deepClone(item.toObject());
-    
+
   //   if (!foundry.utils.isEmpty(updateData)) {
   //     const splitPrereqs = item.system.prerequisites.split(',');
   //     const newPrereqs = [];
