@@ -1306,38 +1306,3 @@ export default class NPCGenerator extends FormApplication {
     };
   }
 }
-
-    // const weapons = game.items.filter((item) => item.type === 'weapon').map(({name, system})=> ({name: name, system: system}));
-    // const weaponsJson = [];
-    // for(const weapon of weapons) {
-    //   weaponsJson.push(
-    //     {
-    //       name: weapon.name,
-    //       attunement: weapon.system.attunement,
-    //       weighttype: weapon.system.weighttype,
-    //       witheringaccuracy: weapon.system.witheringaccuracy,
-    //       witheringdamage: weapon.system.witheringdamage,
-    //       defense: weapon.system.defense,
-    //       overwhelming: weapon.system.overwhelming,
-    //       weapontype: weapon.system.weapontype,
-    //       traits: weapon.system.traits
-    //     }
-    //   );
-    // }
-
-    // const armors = game.items.filter((item) => item.type === 'armor').map(({ name, system }) => ({ name: name, system: system }));
-    // const armorJson = [];
-    // for (const armor of armors) {
-    //   armorJson.push(
-    //     {
-    //       name: armor.name,
-    //       attunement: armor.system.attunement,
-    //       weighttype: armor.system.weighttype,
-    //       soak: armor.system.soak,
-    //       penalty: armor.system.penalty,
-    //       hardness: armor.system.hardness,
-    //       traits: armor.system.traits
-    //     }
-    //   );
-    // }
-    // console.log(JSON.stringify(armorJson));

@@ -1133,7 +1133,8 @@
     "shape": {
       "templates": [
         "base"
-      ]
+      ],
+      "actorid": ""
     }
   }
 }
