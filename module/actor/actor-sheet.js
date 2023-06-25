@@ -1657,10 +1657,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   _onDotCounterChange(event) {
     event.preventDefault()
-    const actorData = duplicate(this.actor)
+    const color = this.actor.system.details.color;
     const element = event.currentTarget
     const dataset = element.dataset
     const index = Number(dataset.index)
+    const itemID = dataset.id;
     const parent = $(element.parentNode)
     const fieldStrings = parent[0].dataset.name
     const fields = fieldStrings.split('.')
@@ -1673,10 +1674,29 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     steps.each(function (i) {
       if (i <= index) {
         // $(this).addClass('active')
-        $(this).css("background-color", actorData.system.details.color);
+        $(this).css("background-color", color);
       }
     })
-    this._assignToActorField(fields, index + 1)
+    if(itemID) {
+      const item = this.actor.items.get(itemID);
+      let newVal = index + 1;
+      if(index === 0 && item.system.points === 1) {
+        newVal = 0;
+      }
+      if(item) {
+        this.actor.updateEmbeddedDocuments('Item', [
+          {
+            _id: itemID,
+            system: {
+              points: newVal,
+            },
+          }
+        ]);
+      }
+    }
+    else {
+      this._assignToActorField(fields, index + 1);
+    }
   }
 
   _assignToActorField(fields, value) {

@@ -259,14 +259,14 @@
           <input class="item-favored" name="system.favored" type="checkbox" {{checked item.system.favored}}>
           <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}" style="text-align:start;">{{localize item.name}}</label>
           {{#if ../system.settings.usedotsvalues}}
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+          <div class="resource-value" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
             {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            <span class="resource-value-step" data-id="{{item._id}}" data-index="{{this}}"></span>
             {{/numLoop}}
             {{#if ../system.settings.usetenabilities}}
             <div></div>
             {{#numLoopCertainStart 5 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            <span class="resource-value-step" data-item="true" data-index="{{this}}"></span>
             {{/numLoopCertainStart}}
             {{/if}}
           </div>
@@ -291,14 +291,14 @@
           </div>
           <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize item.name}}</label>
           {{#if ../system.settings.usedotsvalues}}
-          <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+          <div class="resource-value" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
             {{#numLoop 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            <span class="resource-value-step" data-id="{{item._id}}" data-index="{{this}}"></span>
             {{/numLoop}}
             {{#if ../system.settings.usetenabilities}}
             <div></div>
             {{#numLoopCertainStart 5 5}}
-            <span class="resource-value-static-step" data-index="{{this}}"></span>
+            <span class="resource-value-step" data-id="{{item._id}}" data-index="{{this}}"></span>
             {{/numLoopCertainStart}}
             {{/if}}
           </div>
