@@ -1,5 +1,5 @@
 import TraitSelector from "../apps/trait-selector.js";
-import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
+import { animaTokenMagic, Prophecy, RollForm } from "../apps/dice-roller.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import Importer from "../apps/importer.js";
 import { prepareItemTraits } from "../item/item.js";
@@ -81,7 +81,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         id: actor.id,
         label: actor.name
       }
-    })
+    });
     this._prepareTraits(context.system.traits);
     // this._prepareActorSheetData(context);
     this._prepareCharacterItems(context);
@@ -601,6 +601,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       item.sheet.render(true);
     });
 
+    html.find('.shape-edit').click(ev => {
+      ev.stopPropagation();
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("itemId"));
+      const formActor = game.actors.get(item.system.actorid);
+      if(formActor) {
+        formActor.sheet.render(true);
+      }
+    });
+
     html.find('.item-favored').on('click', async (ev) => {
       const li = $(ev.currentTarget).parents('.item');
       const itemID = li.data('itemId');
@@ -800,6 +810,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.rollAbility').mousedown(ev => {
       game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability' }).render(true);
+    });
+
+    html.find('.prophecy').mousedown(ev => {
+      new Prophecy(this.actor, {}, {}, {}).render(true);
     });
 
     html.find('.roll-ability').mousedown(ev => {

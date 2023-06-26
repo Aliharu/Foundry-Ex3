@@ -1,0 +1,122 @@
+<div class="exaltedthird">
+  <form>
+    <div class="resource">
+      <div>
+        <label class="resource-label">{{localize "Ex3.Sign"}}:</label>
+        <select class="sign-select" name="object.sign" data-type="String">
+          {{#select data.sign}}
+          <optgroup label="Journeys">
+            <option value="captain">{{localize "Ex3.Captain"}}</option>
+            <option value="gull">{{localize "Ex3.Gull"}}</option>
+            <option value="mast">{{localize "Ex3.Messenger"}}</option>
+            <option value="shipswheel">{{localize "Ex3.ShipsWheel"}}</option>
+          </optgroup>
+          <optgroup label="Serenity">
+            <option value="bind">{{localize "Ex3.Ewer"}}</option>
+            <option value="detonate">{{localize "Ex3.Lovers"}}</option>
+            <option value="musician">{{localize "Ex3.Musician"}}</option>
+            <option value="peacock">{{localize "Ex3.Peacock"}}</option>
+            <option value="pillar">{{localize "Ex3.Pillar"}}</option>
+          </optgroup>
+          <optgroup label="Battles">
+            <option value="banner">{{localize "Ex3.Banner"}}</option>
+            <option value="gauntlet">{{localize "Ex3.Gauntlet"}}</option>
+            <option value="shield">{{localize "Ex3.Shield"}}</option>
+            <option value="spear">{{localize "Ex3.Spear"}}</option>
+          </optgroup>
+          <optgroup label="Secrets">
+            <option value="gaurdians">{{localize "Ex3.Gaurdians"}}</option>
+            <option value="key">{{localize "Ex3.Key"}}</option>
+            <option value="mask">{{localize "Ex3.Mask"}}</option>
+            <option value="sorcerer">{{localize "Ex3.Sorcerer"}}</option>
+            <option value="treasuretrove">{{localize "Ex3.TreasureTrove"}}</option>
+          </optgroup>
+          <optgroup label="Endings">
+            <option value="corpse">{{localize "Ex3.Corpse"}}</option>
+            <option value="crow">{{localize "Ex3.Crow"}}</option>
+            <option value="haywain">{{localize "Ex3.Haywain"}}</option>
+            <option value="risingsmoke">{{localize "Ex3.RisingSmoke"}}</option>
+            <option value="sword">{{localize "Ex3.Sword"}}</option>
+          </optgroup>
+          <option value="">{{localize "Ex3.None"}}</option>
+          {{/select}}
+        </select>
+      </div>
+    </div>
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Ambition"}} ({{data.totalUsedAmbition}}/{{data.maxTotalAmbition}})</label>
+    </div>
+    <div class="resource">
+      {{#each data.ambitions as |ambition key|}}
+      <div>
+        <label class="resource-label">{{localize ambition.label}}:</label>
+        <select id="{{key}}" class="ambition-rerender" name="object.ambitions.{{key}}.value">
+            {{#select ambition.value}}
+            {{#numLoopCertainStart 5 1}}
+            <option value="{{this}}">{{this}}</option>
+            {{/numLoopCertainStart}}
+            {{/select}}
+        </select>
+        <label>{{localize "Ex3.Max"}}: {{../data.maxAmbition}}</label>
+        <div>
+          {{ambition.text}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Means"}}</label>
+    </div>
+    <div>
+      <div class="resource">
+        <div>
+          <label class="resource-label">{{localize data.means.cooperation.label}}:</label>
+          <select id="cooperation" class="means-rerender" name="object.means.cooperation.value" data-type="String">
+              {{#select data.means.cooperation.value}}
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              {{/select}}
+          </select>
+          <div>
+            {{data.means.cooperation.text}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="resource">
+      <div>
+        <label class="resource-label">{{localize data.means.cosignatories.label}}:</label>
+        <select id="cosignatories" class="means-rerender" name="object.means.cosignatories.value" data-type="String">
+            {{#select data.means.cosignatories.value}}
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            {{/select}}
+        </select>
+        <div>
+          {{data.means.cosignatories.text}}
+        </div>
+      </div>
+    </div>
+    <div class="resource">
+      <div>
+        <label class="resource-label">{{localize data.means.intervalTime.label}}:</label>
+        <select name="object.means.intervalTime.value" data-type="String">
+            {{#select data.means.intervalTime.value}}
+            <option value="0">{{localize "Ex3.OneWeek"}}</option>
+            <option value="1">{{localize "Ex3.OneMonth"}}</option>
+            <option value="2">{{localize "Ex3.ThreeMonths"}}</option>
+            {{/select}}
+        </select>
+      </div>
+    </div>
+    <div class="d-flex" style="align-items:center;">
+      <label class="resource-label">{{localize data.trappings.label}}:</label>
+      <input type="checkbox" name="object.trappings.value" {{ checked data.trappings.value }}/>
+    </div>
+  </form>
+  <div>
+    <button type="button" id="roll">{{localize "Ex3.Roll"}}</button>
+  </div>
+</div>

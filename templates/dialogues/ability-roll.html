@@ -4,26 +4,20 @@
         {{> systems/exaltedthird/templates/dialogues/add-roll-charm.html}}
         {{else}}  
         {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
-        {{#ifEquals data.rollType 'craft'}}
+        {{#if data.hasIntervals}}
         <div class="resource grid grid-2col flex-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.Intervals"}}</label>
                 <input type="number" name="object.intervals" value="{{data.intervals}}" >
             </div>
+            {{#ifEquals data.rollType 'craft'}}
             <div>
                 <label class="resource-label">{{localize "Ex3.ObjectivesCompleted"}} </label>
                 <input type="number" name="object.objectivesCompleted" value="{{data.objectivesCompleted}}" >
             </div>
+            {{/ifEquals}}
         </div>
-        {{/ifEquals}}
-        {{#ifEquals data.rollType 'working'}}
-        <div class="resource flex-center mb-2">
-            <div>
-                <label class="resource-label">{{localize "Ex3.Intervals"}}</label>
-                <input type="number" name="object.intervals" value="{{data.intervals}}" >
-            </div>
-        </div>
-        {{/ifEquals}}
+        {{/if}}
         <div class="d-flex">
             <button type="button" id="roll-button">Roll</button>
             <button type="button" id="cancel">Cancel</button>

@@ -59,7 +59,8 @@ export class RollForm extends FormApplication {
             };
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
-            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage'].indexOf(data.rollType) !== -1);
+            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy'].indexOf(data.rollType) !== -1);
+            this.object.hasIntervals = (['craft', 'prophecy', 'working',].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -318,9 +319,14 @@ export class RollForm extends FormApplication {
                 this.object.ambition = 5;
 
                 if (this.object.rollType === 'working') {
-                    this.object.difficulty = 1;
                     this.object.intervals = 5;
                     this.object.goalNumber = 5;
+                    this.object.difficulty = 1;
+                }
+                if (this.object.rollType === 'prophecy') {
+                    this.object.intervals = 5 + data.bonusIntervals;
+                    this.object.goalNumber = data.prophecyAmbition * 5;
+                    this.object.difficulty = 3;
                 }
                 if (this.object.rollType === 'rout') {
                     this.object.difficulty = 1;
@@ -618,11 +624,11 @@ export class RollForm extends FormApplication {
                 onclick: (ev) => {
                     // this.object.charmList = this.actor.rollcharms;
                     for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
-                        if(charmlist.collapse === undefined) {
+                        if (charmlist.collapse === undefined) {
                             charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
                         }
                         for (const charm of charmlist.list) {
-                            if(charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute) {
+                            if (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute) {
                                 charmlist.collapse = false;
                             }
                             if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
@@ -1562,7 +1568,7 @@ export class RollForm extends FormApplication {
         else if (this.object.rollType === 'base') {
             await this._diceRoll();
         }
-        else if (this.object.rollType === 'craft' || this.object.rollType === 'working') {
+        else if (this.object.hasIntervals) {
             this.object.intervals -= 1;
             await this._completeCraftProject();
         }
@@ -2903,6 +2909,9 @@ export class RollForm extends FormApplication {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
                 craftFailed = true;
             }
+            if (this.object.rollType === 'prophecy') {
+                resultString += `<h4 class="dice-total" style="margin-top:5px;">Complication</h4>`;
+            }
         }
         else {
             if (this.object.goalNumber > 0) {
@@ -2980,6 +2989,14 @@ export class RollForm extends FormApplication {
                 projectStatus = `<h4 class="dice-total">Working Success</h4>`;
             }
         }
+        if (this.object.rollType === 'prophecy') {
+            if (craftFailed) {
+                projectStatus += `<h4 class="dice-total">Prophecy Failed</h4>`;
+            }
+            if (craftSuccess) {
+                projectStatus += `<h4 class="dice-total">Prophecy Success</h4>`;
+            }
+        }
 
 
         let messageContent = `
@@ -2999,7 +3016,7 @@ export class RollForm extends FormApplication {
         `
 
         this.object.finished = craftFailed || craftSuccess;
-        messageContent = await this._createChatMessageContent(messageContent, 'Craft Roll');
+        messageContent = await this._createChatMessageContent(messageContent, `${this.object.rollType.capitalize()} Roll`);
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -4011,5 +4028,185 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                 }
             }
         }
+    }
+}
+
+export class Prophecy extends FormApplication {
+    constructor(actor, options, object, data) {
+        super(object, options);
+        this.actor = actor;
+        this.object.sign = '';
+        this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
+        this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
+        this.object.totalUsedAmbition = 4;
+        this.object.ambitions = {
+            duration: {
+                label: 'Ex3.Duration',
+                value: 1,
+                text: 'One month',
+            },
+            frequency: {
+                label: 'Ex3.Frequency',
+                value: 1,
+                text: 'Once per story',
+            },
+            power: {
+                label: 'Ex3.Power',
+                value: 1,
+                text: 'Effects only mortals and trivial characters.',
+            },
+            scope: {
+                label: 'Ex3.Scope',
+                value: 1,
+                text: 'Up to 10 people/Household',
+            }
+        }
+        this.object.means = {
+            cooperation: {
+                label: 'Ex3.Cooperation',
+                value: 0,
+                text: 'No Cooperation',
+            },
+            cosignatories: {
+                label: 'Ex3.Cosignatories',
+                value: 0,
+                text: 'No Cosignatories',
+            },
+            intervalTime: {
+                label: 'Ex3.IntervalTime',
+                value: 0,
+            },
+
+        }
+        this.object.trappings = {
+            label: 'Ex3.Trappings',
+            value: false,
+        }
+    }
+
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+            popOut: true,
+            template: "systems/exaltedthird/templates/dialogues/prophecy.html",
+            id: "prophecy",
+            title: `Prophecy`,
+            resizable: true,
+            width: 400,
+            submitOnChange: true,
+            closeOnSubmit: false
+        });
+    }
+
+    getData() {
+        return {
+            data: this.object,
+        };
+    }
+
+    async _updateObject(event, formData) {
+        mergeObject(this, formData);
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        html.find("#roll").on("click", async (event) => {
+            let bonusIntervals = 0;
+            for(const mean of Object.values(this.object.means)) {
+                bonusIntervals += parseInt(mean.value);
+            }
+            if(this.object.trappings.value) {
+                bonusIntervals += 1;
+            }
+
+            const intervalTime = {
+                "0": "One Week",
+                "1": "One Month",
+                "2": "Three Months",
+            };
+
+            const sign = `The ${this.object.sign.capitalize()}`;
+
+            let intervalTimeString = intervalTime[this.object.means.intervalTime.value];
+
+            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", {'data': this.object, intervalTimeString: intervalTimeString, sign: sign});
+
+            ChatMessage.create({
+                user: game.user.id,
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                content: cardContent,
+                type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            });
+            game.rollForm = new RollForm(this.actor, {}, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
+            this.close();
+        });
+
+        html.on("change", ".ambition-rerender", ev => {
+            const valueMap = {
+                duration: {
+                    1: 'One month',
+                    2: 'One season',
+                    3: 'One year',
+                    4: 'Ten years',
+                    5: 'One hundred years',
+                },
+                frequency: {
+                    1: 'Once per story',
+                    2: 'Once per week',
+                    3: 'Once per day',
+                    4: 'Once per scene',
+                    5: 'No limit',
+                },
+                power: {
+                    1: 'Effects only mortals and trivial characters',
+                    2: 'Can affect non-exalts with Essence 1',
+                    3: 'Can affect un-exalted characters with essence 3 or less',
+                    4: 'Can affect any character with less or equal to Sidereal\'s (Essence or 3)',
+                    5: 'All characters',
+                },
+                scope: {
+                    1: 'Up to 10 people/Household',
+                    2: 'Up to 25 people/Hamlet',
+                    3: 'Up to 100 people/Village',
+                    4: 'Up to 1,000 people/Town or City neightborhood',
+                    5: 'Up to 10,000 people/small city, large city district',
+                },
+            }
+            let prophecyAmbition = 0;
+            for(const ambition of Object.values(this.object.ambitions)) {
+                prophecyAmbition += parseInt(ambition.value);
+            }
+            this.object.totalUsedAmbition = prophecyAmbition;
+            this.object.ambitions[ev.target.id].text = valueMap[ev.target.id][ev.target.value];
+            this.render();
+        });
+
+        html.on("change", ".means-rerender", ev => {
+            const valueMap = {
+                cooperation: {
+                    0: 'No Cooperation',
+                    1: 'Another sidereal or a god with thematically related powers.',
+                    2: 'More than a single circle of sidereals',
+                },
+                cosignatories: {
+                    0: 'No Cosignatory',
+                    1: 'Another sidereal or Bureau god',
+                    2: 'An Essence 6+ god or sidereal',
+                },
+            }
+            this.object.means[ev.target.id].text = valueMap[ev.target.id][ev.target.value];
+            this.render();
+        });
+
+        html.on("change", ".sign-select", ev => {
+            this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
+            this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
+            if(ev.target.value === this.actor.system.details.exaltsign || ev.target.value === this.actor.system.details.birthsign) {
+                this.object.maxAmbition++;
+                this.object.maxTotalAmbition += 5;
+            }
+            this.render();
+        });
     }
 }

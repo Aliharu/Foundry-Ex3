@@ -7,7 +7,7 @@ import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
 import * as Chat from "./chat.js";
 
-import { RollForm } from "./apps/dice-roller.js";
+import { Prophecy, RollForm } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
@@ -32,6 +32,7 @@ Hooks.once('init', async function () {
       TemplateImporter,
       Importer,
       JournalCascadeGenerator,
+      Prophecy
     },
     entities: {
       ExaltedThirdActor,
@@ -283,6 +284,10 @@ Handlebars.registerHelper('ifNotEquals', function (arg1, arg2, options) {
 
 Handlebars.registerHelper('ifGreater', function (arg1, arg2, options) {
   return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
+});
+
+Handlebars.registerHelper('ifGreaterEquals', function (arg1, arg2, options) {
+  return (arg1 >= arg2) ? options.fn(this) : options.inverse(this);
 });
 
 Handlebars.registerHelper('le', function (a, b) {
