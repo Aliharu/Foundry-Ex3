@@ -13,7 +13,7 @@
           </optgroup>
           <optgroup label="Serenity">
             <option value="bind">{{localize "Ex3.Ewer"}}</option>
-            <option value="detonate">{{localize "Ex3.Lovers"}}</option>
+            <option value="lovers">{{localize "Ex3.Lovers"}}</option>
             <option value="musician">{{localize "Ex3.Musician"}}</option>
             <option value="peacock">{{localize "Ex3.Peacock"}}</option>
             <option value="pillar">{{localize "Ex3.Pillar"}}</option>
@@ -114,6 +114,9 @@
     <div class="d-flex" style="align-items:center;">
       <label class="resource-label">{{localize data.trappings.label}}:</label>
       <input type="checkbox" name="object.trappings.value" {{ checked data.trappings.value }}/>
+    </div>
+    <div>
+      {{data.signTrappings}}
     </div>
   </form>
   <div>

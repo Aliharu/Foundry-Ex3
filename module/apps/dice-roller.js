@@ -4036,6 +4036,7 @@ export class Prophecy extends FormApplication {
         super(object, options);
         this.actor = actor;
         this.object.sign = '';
+        this.object.signTrappings = '';
         this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
         this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
         this.object.totalUsedAmbition = 4;
