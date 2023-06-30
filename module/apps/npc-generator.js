@@ -740,18 +740,17 @@ export default class NPCGenerator extends FormApplication {
     if (this.object.character.exalt !== 'other') {
       charms = charms.filter((charm) => charm.system.charmtype === this.object.character.exalt);
     }
+    const charmIds = [];
     if (charms) {
-      var loopBreaker = 0;
       for (var i = 0; i < this.object.character.numberTraits.randomCharms.value; i++) {
-        loopBreaker = 0;
-        if (i === charms.length) {
+        const availableCharms = charms.filter(charm => {
+          return charm.system.charmprerequisites.length === 0 || charmIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => charmIds.includes(prerequisite.id));
+        });
+        if(availableCharms.length === 0) {
           break;
         }
-        var charm = duplicate(charms[Math.floor(Math.random() * charms.length)]);
-        while (itemData.find(e => e.name === charm.name) && loopBreaker < 50) {
-          charm = duplicate(charms[Math.floor(Math.random() * charms.length)]);
-          loopBreaker++;
-        }
+        var charm = duplicate(availableCharms[Math.floor(Math.random() * availableCharms.length)]);
+        charmIds.push(charm._id);
         itemData.push(charm);
       }
     }

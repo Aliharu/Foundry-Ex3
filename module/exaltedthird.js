@@ -1002,6 +1002,16 @@ Hooks.once("ready", async function () {
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
+  // for (let actor of game.actors.filter(actor => actor.type === 'character')) {
+  //   try {
+  //     await actor.update({ [`system.settings.editmode`]: false });
+  //   } catch (error) {
+  //     error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+  //     console.error(error);
+  //   }
+  // }
+
+
   // for (let item of game.items.filter((item) => item.type === 'charm' && item.system.prerequisites && item.system.prerequisites !== 'None')) {
   //   let updateData = foundry.utils.deepClone(item.toObject());
 
