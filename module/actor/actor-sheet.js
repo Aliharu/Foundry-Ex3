@@ -939,8 +939,36 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
 
-    html.find('#import-stuff').mousedown(ev => {
+    html.find('#import-stuff').mousedown(async ev => {
       new Importer().render(true);
+      // const weaponChart = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/bonfire_weapons.json', {}, { int: 30000 });
+
+      // const weaponTotal = {};
+      // for(const weapon of weaponChart) {
+      //   let valTotal = 0;
+      //   for(let i = 0; i < 10000; i++) {
+      //     var roll = new Roll(weapon.formula).evaluate({ async: false });
+      //     let rollTotal = roll.total / weapon.speed;
+      //     valTotal += rollTotal;
+      //   }
+      //   valTotal /= 10000;
+      //   console.log(`${weapon.name}:${valTotal}`);
+      //   weaponTotal[weapon.name] = valTotal;        
+      // }
+      // const weaponTotal = {};
+      // for(const dieRoll of [2,3,4,6,8,10,12,20]) {
+      //   let valTotal = 0;
+      //   for(let i = 0; i < 10000; i++) {
+      //     var roll = new Roll(`1d${dieRoll}x${dieRoll}`).evaluate({ async: false });
+      //     let rollTotal = roll.total;
+      //     valTotal += rollTotal;
+      //   }
+      //   valTotal /= 10000;
+      //   weaponTotal[dieRoll] = valTotal;    
+      // }
+      // console.log(
+      //   weaponTotal
+      // );
     });
 
     html.find('.weapon-roll').click(ev => {
