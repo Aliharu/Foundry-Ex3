@@ -329,7 +329,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
             }
           },
           cancel: {
-            label:  game.i18n.localize("Ex3.Generate"), callback: () => {
+            label: game.i18n.localize("Ex3.Generate"), callback: () => {
               new NPCGenerator(null, {}, {}, {}).render(true);
             }
           }
@@ -1001,6 +1001,34 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
+
+  // const charms = game.items.filter(item => item.type === 'charm');
+  // for (const charm of charms.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None')) {
+    // console.log(`${charm.name} - ${charm.system.prerequisites}`);
+    // const foundCharms = charms.filter(findCharm => findCharm.system.description.includes(charm.system.prerequisites.trim()) === true);
+    // if(foundCharms.length === 1) {
+    //   console.log(`${charm.name} - ${charm.system.prerequisites}`);
+    //   const charmPrereqs = [
+    //     {
+    //       name: charm.system.prerequisites,
+    //       id: foundCharms[0].id
+    //     }
+    //   ]
+    //   charm.update({ [`system.prerequisites`]: '' });
+    //   charm.update({ [`system.charmprerequisites`]: charmPrereqs });
+    // }
+  // }
+
+  // const charmTest = game.items.find(item => item.name === 'Immanent Solar Glory');
+  // charmTest.update({
+  //   [`system.charmprerequisites`]: [{
+  //     name: 'Surging Essence Flow',
+  //     id: 'Sz3iAvz0325bInWw'
+  //   }, {
+  //     name: 'Fire-Eating Fist',
+  //     id: 'Essence-Twining Method'
+  //   }]
+  // });
 
   // for (let actor of game.actors.filter(actor => actor.type === 'character')) {
   //   try {
