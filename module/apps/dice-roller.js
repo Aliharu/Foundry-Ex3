@@ -2732,6 +2732,7 @@ export class RollForm extends FormApplication {
                     description: `Difficulty ${this.object.poison.difficulty}`,
                     duration: {
                         rounds: this.object.poison.duration,
+                        startRound: game.combat?.round || 0
                     },
                     flags: {
                         "exaltedthird": {
@@ -2792,7 +2793,7 @@ export class RollForm extends FormApplication {
     _addOnslaught(number = 1) {
         if (!this._useLegendarySize('onslaught')) {
             this.object.updateTargetActorData = true;
-            const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
+            const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
             if (onslaught) {
                 onslaught.changes[0].value = onslaught.changes[0].value - number;
                 onslaught.changes[1].value = onslaught.changes[1].value - number;
