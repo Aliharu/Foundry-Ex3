@@ -2570,8 +2570,8 @@ export class RollForm extends FormApplication {
         if (this._damageRollType('decisive')) {
             typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             if (this._useLegendarySize('decisive')) {
-                typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value} + Charm damage levels</h4>`;
-                total = Math.min(total, 3 + this.actor.system.attributes.strength.value);
+                typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
+                total = Math.min(total, 3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier);
             }
             typeSpecificResults += `
             <button
@@ -2847,8 +2847,8 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _addOnslaught(number = 1) {
-        if (!this._useLegendarySize('onslaught')) {
+    _addOnslaught(number = 1, magicInflicted=false) {
+        if (!this.object.target?.actor?.system?.legendarysize && !magicInflicted) {
             this.object.updateTargetActorData = true;
             const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
             if (onslaught) {
