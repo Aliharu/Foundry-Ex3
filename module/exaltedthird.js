@@ -434,6 +434,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
         }
+        if(activeEffect.flags?.exaltedthird?.weaponInflictedPosion && activeEffect.duration.remaining === 0) {
+          await activeEffect.delete();
+        }
       }
       if (bashingDamage || lethalDamage || aggravatedDamage) {
         actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + aggravatedDamage);

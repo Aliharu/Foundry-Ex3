@@ -1442,6 +1442,9 @@ export class RollForm extends FormApplication {
                     this.object.settings.triggerOnTens = 'none';
                 }
                 this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
+                if (item.system.diceroller.damage.triggerontens !== 'none') {
+                    this.object.settings.damage.triggerOnTens = 'none';
+                }
                 this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
                 this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
             }
@@ -2791,7 +2794,7 @@ export class RollForm extends FormApplication {
                     flags: {
                         "exaltedthird": {
                             poisonerCombatantId: this._getActorCombatant()?._id || null,
-                            lowerDurationPerRound: true,
+                            weaponInflictedPosion: true,
                         }
                     },
                     changes: [
