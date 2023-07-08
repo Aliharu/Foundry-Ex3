@@ -945,6 +945,8 @@
         "rerollfailed": false,
         "rolltwice": false,
         "activateAura": "none",
+        "triggerontens": "none",
+        "triggertenscap": 0,
         "settings": {
           "noncharmdice": false,
           "noncharmsuccesses": false
@@ -993,6 +995,8 @@
           "ignoresoak": 0,
           "threshholdtodamage": false,
           "doublerolleddamage": false,
+          "triggerontens": "none",
+          "triggertenscap": 0,
           "reroll": {
             "one": false,
             "two": false,
@@ -1039,7 +1043,7 @@
           "resolve": 0,
           "guile": 0,
           "triggeronones": "none",
-          "triggerontens": "none"
+          "triggeronescap": 0
         }
       }
     },

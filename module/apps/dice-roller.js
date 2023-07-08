@@ -140,6 +140,8 @@ export class RollForm extends FormApplication {
                     nine: { status: false, number: 9, cap: 0 },
                     ten: { status: false, number: 10, cap: 0 },
                 },
+                triggerOnTens: 'none',
+                triggerTensCap: 0,
                 type: 'lethal',
                 threshholdToDamage: false,
                 resetInit: true,
@@ -151,7 +153,7 @@ export class RollForm extends FormApplication {
                 rollTwice: false,
                 rerollNumber: 0,
                 decisiveDamageType: 'initiative',
-                decisiveDamageCalculation: 'evenSplit'
+                decisiveDamageCalculation: 'evenSplit',
             };
             this.object.poison = null;
             this.object.settings = {
@@ -163,7 +165,9 @@ export class RollForm extends FormApplication {
                 },
                 excludeOnesFromRerolls: false,
                 triggerOnOnes: 'none',
+                triggerOnesCap: 0,
                 triggerOnTens: 'none',
+                triggerTensCap: 0,
                 damage: {
                     doubleSucccessCaps: {
                         sevens: 0,
@@ -172,7 +176,8 @@ export class RollForm extends FormApplication {
                         tens: 0
                     },
                     excludeOnesFromRerolls: false,
-                    triggerOnOnes: 'none'
+                    triggerOnOnes: 'none',
+                    triggerTensCap: 0,
                 }
             }
             this.object.activateAura = 'none';
@@ -556,6 +561,7 @@ export class RollForm extends FormApplication {
             this.object.target = target;
             this.object.newTargetData = duplicate(target.actor);
             this.object.updateTargetActorData = false;
+            this.object.updateTargetInitiative = false;
             if (this.object.rollType === 'command') {
                 if (target.actor.system.battlegroup) {
                     if (target.actor.system.drill.value === '0') {
@@ -597,11 +603,15 @@ export class RollForm extends FormApplication {
                                 this.object.settings.triggerOnOnes = html.find('#triggerOnOnes').val() || 'none';
                                 this.object.settings.triggerOnTens = html.find('#triggerOnTens').val() || 'none';
 
+                                this.object.settings.triggerTensCap = parseInt(html.find('#triggerTensCap').val() || 0);
+                                this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
+
                                 this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.nines = parseInt(html.find('#damageNinesCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.tens = parseInt(html.find('#damageTensCap').val() || 0);
                                 this.object.settings.damage.excludeOnesFromRerolls = html.find('#damageExcludeOnesFromRerolls').is(":checked");
+                                this.object.settings.damage.triggerTensCap = parseInt(html.find('#damageTriggerTensCap').val() || 0);
 
                                 for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
                                     this.object.reroll[rerollKey].cap = parseInt(html.find(`#reroll-${this.object.reroll[rerollKey].number}-cap`).val() || 0);
@@ -937,7 +947,15 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.triggerontens !== 'none') {
             this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
         }
+        this.object.settings.triggerTensCap += this._getFormulaValue(item.system.diceroller.triggertenscap);
 
+        if (item.system.diceroller.damage.triggerontens !== 'none') {
+            this.object.settings.damage.triggerOnTens = item.system.diceroller.damage.triggerontens;
+        }
+        this.object.settings.damage.triggerTensCap += this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
+        if (item.system.diceroller.triggerontens !== 'none') {
+            this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
+        }
         this.render();
     }
 
@@ -1084,6 +1102,7 @@ export class RollForm extends FormApplication {
         if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
             this.object.settings.triggerOnOnes = charm.system.diceroller.opposedbonuses.triggeronones;
         }
+        this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
         this.render();
     }
 
@@ -1422,6 +1441,9 @@ export class RollForm extends FormApplication {
                 if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
                     this.object.settings.triggerOnTens = 'none';
                 }
+                this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
+                this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
+                this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
             }
             this.render();
         });
@@ -1486,6 +1508,7 @@ export class RollForm extends FormApplication {
                 if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
                     this.object.settings.triggerOnOnes = 'none';
                 }
+                this.object.settings.triggerOnesCap -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
             }
             this.render();
         });
@@ -1538,9 +1561,16 @@ export class RollForm extends FormApplication {
                     this.object.target = target;
                     this.object.newTargetData = duplicate(target.actor);
                     this.object.updateTargetActorData = false;
+                    this.object.updateTargetInitiative = false;
                     if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
                         const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
                         this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                        if(this.object.targetCombatant?.initiative) {
+                            this.object.newTargetInitiative = this.object.targetCombatant.initiative;
+                        }
+                        else {
+                            this.object.newTargetInitiative = null;
+                        }
                     }
                     else {
                         this.object.targetCombatant = null;
@@ -1555,12 +1585,18 @@ export class RollForm extends FormApplication {
                     if (this.object.updateTargetActorData) {
                         this._updateTargetActor();
                     }
+                    if(this.object.updateTargetInitiative) {
+                        this._updateTargetInitiative();
+                    }
                 }
             }
             else {
                 await this._attackRoll();
                 if (this.object.updateTargetActorData) {
                     this._updateTargetActor();
+                }
+                if(this.object.updateTargetInitiative) {
+                    this._updateTargetInitiative();
                 }
             }
             this._postAttackResults();
@@ -1628,6 +1664,7 @@ export class RollForm extends FormApplication {
     // Dovie'andi se tovya sagain.
     _rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled) {
         var total = 0;
+        var tensTriggered = 0;
         var results = null;
         const numbersChart = {
             1: 'one',
@@ -1681,8 +1718,9 @@ export class RollForm extends FormApplication {
                     doublesRolled[dice.result] += 1;
                 }
             }
-            if (dice.result === 10 && diceModifiers.settings.triggerOnTens === 'rerolllDie') {
+            if (dice.result === 10 && diceModifiers.settings.triggerOnTens === 'rerolllDie' && (diceModifiers.settings.triggerTensCap === 0 || diceModifiers.settings.triggerTensCap > tensTriggered)) {
                 diceModifiers.rerollNumber += 1;
+                tensTriggered += 1;
             }
         }
 
@@ -2018,6 +2056,9 @@ export class RollForm extends FormApplication {
                 tensRolled++;
             }
         }
+        if(this.object.settings.triggerOnesCap) {
+            onesRolled = Math.min(onesRolled, this.object.settings.triggerOnesCap);
+        }
         if (onesRolled > 0 && this.object.settings.triggerOnOnes !== 'none') {
             switch (this.object.settings.triggerOnOnes) {
                 case 'soak':
@@ -2037,6 +2078,9 @@ export class RollForm extends FormApplication {
             }
         }
 
+        if(this.object.settings.triggerTensCap) {
+            tensRolled = Math.min(tensRolled, this.object.settings.triggerTensCap);
+        }
         if (tensRolled > 0 && this.object.settings.triggerOnTens !== 'none') {
             switch (this.object.settings.triggerOnTens) {
                 case 'damage':
@@ -2492,6 +2536,30 @@ export class RollForm extends FormApplication {
         if (this.object.damage.doubleRolledDamage) {
             total *= 2;
         }
+
+        let tensRolled = 0;
+        for (let dice of diceRollResults.diceRoll) {
+            if (!dice.rerolled && dice.result === 10) {
+                tensRolled++;
+            }
+        }
+        
+        if(this.object.settings.damage.triggerTensCap) {
+            tensRolled = Math.min(tensRolled, this.object.settings.triggerTensCap);
+        }
+        if (tensRolled > 0 && this.object.settings.damage.triggerOnTens !== 'none') {
+            switch (this.object.settings.damage.triggerOnTens) {
+                case 'subtractTargetInitiative':
+                    if(this.object.newTargetInitiative) {
+                        this.object.updateTargetInitiative = true;
+                        this.object.newTargetInitiative--;
+                        if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
+                            this.object.crashed = true;
+                        }
+                    }
+                    break;
+            }
+        }
         let soakResult = ``;
         let typeSpecificResults = ``;
         this.object.attackSuccess = true;
@@ -2528,10 +2596,10 @@ export class RollForm extends FormApplication {
         else {
             let targetResults = ``;
             if (this.object.target && game.combat) {
-                if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
+                if (this.object.targetCombatant && this.object.newTargetInitiative !== null) {
                     this.object.targetHit = true;
                     if (this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) {
-                        let newInitative = this.object.targetCombatant.initiative;
+                        let newInitative = this.object.newTargetInitiative;
                         this.object.gainedInitiative = Math.max(total, this.object.gainedInitiative);
                         var subractTotal = total;
                         if (this.object.useShieldInitiative && this.object.shieldInitiative > 0) {
@@ -2555,22 +2623,8 @@ export class RollForm extends FormApplication {
                                 }
                             }
                         }
-                        let crasherId = null;
-                        if (this.object.crashed) {
-                            crasherId = attackerCombatant.id;
-                        }
-                        this.object.newTargetInitative = newInitative;
-                        if (game.user.isGM) {
-                            game.combat.setInitiative(this.object.targetCombatant.id, newInitative, crasherId);
-                        }
-                        else {
-                            game.socket.emit('system.exaltedthird', {
-                                type: 'updateInitiative',
-                                id: this.object.targetCombatant.id,
-                                data: newInitative,
-                                crasherId: crasherId,
-                            });
-                        }
+                        this.object.newTargetInitiative = newInitative;
+                        this.object.updateTargetInitiative = true;
                     }
                     else if (this.object.targetCombatant.actor.system.battlegroup) {
                         var sizeDamaged = this.dealHealthDamage(total, true);
@@ -2793,7 +2847,7 @@ export class RollForm extends FormApplication {
     _addOnslaught(number = 1) {
         if (!this._useLegendarySize('onslaught')) {
             this.object.updateTargetActorData = true;
-            const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
+            const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
             if (onslaught) {
                 onslaught.changes[0].value = onslaught.changes[0].value - number;
                 onslaught.changes[1].value = onslaught.changes[1].value - number;
@@ -2887,6 +2941,25 @@ export class RollForm extends FormApplication {
                 id: this.object.target.id,
                 data: this.object.newTargetData,
                 addStatuses: this.object.addStatuses
+            });
+        }
+    }
+
+    async _updateTargetInitiative() {
+        var attackerCombatant = this._getActorCombatant();
+        let crasherId = null;
+        if (this.object.crashed) {
+            crasherId = attackerCombatant.id;
+        }
+        if (game.user.isGM) {
+            game.combat.setInitiative(this.object.targetCombatant.id, this.object.newTargetInitiative, crasherId);
+        }
+        else {
+            game.socket.emit('system.exaltedthird', {
+                type: 'updateInitiative',
+                id: this.object.targetCombatant.id,
+                data: this.object.newTargetInitiative,
+                crasherId: crasherId,
             });
         }
     }
@@ -3514,7 +3587,9 @@ export class RollForm extends FormApplication {
                 },
                 excludeOnesFromRerolls: false,
                 triggerOnOnes: 'none',
+                triggerOnesCap: 0,
                 triggerOnTens: 'none',
+                triggerTensCap: 0,
                 damage: {
                     doubleSucccessCaps: {
                         sevens: 0,
@@ -3523,12 +3598,15 @@ export class RollForm extends FormApplication {
                         tens: 0
                     },
                     excludeOnesFromRerolls: false,
-                    triggerOnOnes: 'none'
+                    triggerOnTens: 'none',
+                    triggerTensCap: 0,
                 }
             }
             this.object.damage.rerollNumber = 0;
             this.object.damage.rerollFailed = false;
             this.object.damage.rollTwice = false;
+            this.object.damage.triggerOnTens = 'none';
+            this.object.damage.triggerTensCap = 'none';
             this.object.activateAura = 'none';
             for (var rerollValue in this.object.reroll) {
                 this.object.reroll[rerollValue].cap = 0;

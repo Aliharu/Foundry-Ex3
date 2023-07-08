@@ -34,28 +34,40 @@
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}} <i title="Effects 'Reroll Failed' and 'Reroll Num dice'" class="fas fa-info-circle"></i></label>
         <input id="excludeOnesFromRerolls" type="checkbox" name="settings.excludeOnesFromRerolls" value="{{settings.excludeOnesFromRerolls}}" {{checked settings.excludeOnesFromRerolls}}>
-        <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
-        <select id="triggerOnOnes" name="settings.triggerOnOnes" data-type="String">
-            {{#select settings.triggerOnOnes}}
-            <option value="none">{{localize "Ex3.Nothing"}}</option>
-            <option value="soak">{{localize "Ex3.IncreaseEnemySoak"}}</option>
-            <option value="defense">{{localize "Ex3.IncreaseEnemyDefense"}}</option>
-            <option value="subtractInitiative">{{localize "Ex3.SubtractInitiative"}}</option>
-            <option value="subtractSuccesses">{{localize "Ex3.SubtractSuccesses"}}</option>
-            {{/select}}
-        </select>
-        <label class="resource-label">{{localize "Ex3.TriggerOnTens"}}</label>
-        <select id="triggerOnTens" name="settings.triggerOnTens" data-type="String">
-            {{#select settings.triggerOnTens}}
-            <option value="none">{{localize "Ex3.Nothing"}}</option>
-            <option value="damage">{{localize "Ex3.Damage"}}</option>
-            <option value="extraSuccess">{{localize "Ex3.ExtraSuccess"}}</option>
-            <option value="ignoreHardness">{{localize "Ex3.IgnoreHardness"}}</option>
-            <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
-            <option value="rerolllDie">{{localize "Ex3.RerollDie"}}</option>
-            <option value="restoreMote">{{localize "Ex3.RestoreMote"}}</option>
-            {{/select}}
-        </select>
+        <div>
+            <div class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</div>
+            <select id="triggerOnOnes" name="settings.triggerOnOnes" data-type="String">
+                {{#select settings.triggerOnOnes}}
+                <option value="none">{{localize "Ex3.Nothing"}}</option>
+                <option value="soak">{{localize "Ex3.IncreaseEnemySoak"}}</option>
+                <option value="defense">{{localize "Ex3.IncreaseEnemyDefense"}}</option>
+                <option value="subtractInitiative">{{localize "Ex3.SubtractInitiative"}}</option>
+                <option value="subtractSuccesses">{{localize "Ex3.SubtractSuccesses"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.TriggerOnesCap"}}</label>
+            <input id="triggerOnesCap" name="settings.triggerOnesCap" value="{{settings.triggerOnesCap}}" type="number">
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
+            <select id="triggerOnTens" name="settings.triggerOnTens" data-type="String">
+                {{#select settings.triggerOnTens}}
+                <option value="none">{{localize "Ex3.Nothing"}}</option>
+                <option value="damage">{{localize "Ex3.Damage"}}</option>
+                <option value="extraSuccess">{{localize "Ex3.ExtraSuccess"}}</option>
+                <option value="ignoreHardness">{{localize "Ex3.IgnoreHardness"}}</option>
+                <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
+                <option value="rerolllDie">{{localize "Ex3.RerollDie"}}</option>
+                <option value="restoreMote">{{localize "Ex3.RestoreMote"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.TriggerTensCap"}}</label>
+            <input id="triggerTensCap" name="settings.triggerTensCap" value="{{settings.triggerTensCap}}" type="number">
+        </div>
     </div>
     {{#if isAttack}}
     <div class="resource flex-center">
@@ -98,6 +110,21 @@
         <input id="damageExcludeOnesFromRerolls" type="checkbox" name="settings.damage.excludeOnesFromRerolls" value="{{settings.damage.excludeOnesFromRerolls}}" {{checked settings.damage.excludeOnesFromRerolls}}>
         <!-- <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</label>
         <input id="triggerOnOnes" type="checkbox" name="settings.triggerOnOnes" value="{{settings.triggerOnOnes}}" {{checked settings.triggerOnOnes}}> -->
+    </div>
+    <div class="resource grid grid-2col flex-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
+            <select id="DamageTriggerOnTens" name="settings.damage.triggerOnTens" data-type="String">
+                {{#select settings.damage.triggerOnTens}}
+                <option value="none">{{localize "Ex3.Nothing"}}</option>
+                <option value="subtractTargetInitiative">{{localize "Ex3.SubtractTargetInitiative"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.TriggerTensCap"}}</label>
+            <input id="damageTriggerTensCap" name="settings.damage.triggerTensCap" value="{{settings.damage.triggerTensCap}}" type="number">
+        </div>
     </div>
     {{/if}}
 </div>

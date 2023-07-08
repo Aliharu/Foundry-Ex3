@@ -79,7 +79,8 @@
                     <ul>
                         {{#if options.editable}}
                         {{#each system.charmprerequisites as |item id|}}
-                        <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}" data-item-name="{{item.name}}" data-item-index="{{id}}">
+                        <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}"
+                            data-item-name="{{item.name}}" data-item-index="{{id}}">
                             <li data-item-index="{{id}}">
                                 {{item.name}}
                                 <i class="fas fa-trash embeded-item-delete"></i>
@@ -420,13 +421,7 @@
             </div>
             <div class="resource grid grid-2col flex-center">
                 <div>
-                    <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
-                    <input name="system.diceroller.excludeonesfromrerolls"
-                        value="system.diceroller.excludeonesfromrerolls" type="checkbox" {{checked
-                        system.diceroller.excludeonesfromrerolls}}>
-                </div>
-                <div>
-                    <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}: </div>
+                    <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
                     <select name="system.diceroller.triggerontens" data-type="String">
                         {{#select system.diceroller.triggerontens}}
                         <option value="none">{{localize "Ex3.Nothing"}}</option>
@@ -438,6 +433,17 @@
                         <option value="restoreMote">{{localize "Ex3.RestoreMote"}}</option>
                         {{/select}}
                     </select>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.TriggerTensCap"}}</div>
+                    <input name="system.diceroller.triggertenscap" value="{{system.diceroller.triggertenscap}}"
+                        type="text">
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
+                    <input name="system.diceroller.excludeonesfromrerolls"
+                        value="system.diceroller.excludeonesfromrerolls" type="checkbox" {{checked
+                        system.diceroller.excludeonesfromrerolls}}>
                 </div>
             </div>
             <div class="flex-center resource-label" style="font-weight: bold;font-size:17px;">
@@ -660,6 +666,20 @@
                 </div>
                 <div class="resource grid grid-2col flex-center">
                     <div>
+                        <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
+                        <select name="system.diceroller.damage.triggerontens" data-type="String">
+                            {{#select system.diceroller.damage.triggerontens}}
+                            <option value="none">{{localize "Ex3.Nothing"}}</option>
+                            <option value="subtractTargetInitiative">{{localize "Ex3.SubtractTargetInitiative"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.TriggerTensCap"}}</div>
+                        <input name="system.diceroller.damage.triggertenscap" value="{{system.diceroller.damage.triggertenscap}}"
+                            type="text">
+                    </div>
+                    <div>
                         <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
                         <input name="system.diceroller.damage.excludeonesfromrerolls"
                             value="system.diceroller.damage.excludeonesfromrerolls" type="checkbox" {{checked
@@ -753,17 +773,24 @@
                             value="{{system.diceroller.opposedbonuses.increasegambitdifficulty}}" type="text">
                     </div>
                 </div>
-                <div style="padding-bottom:20px;">
-                    <label class="resource-label">{{localize "Ex3.TriggerOnOnes"}}: </label>
-                    <select name="system.diceroller.opposedbonuses.triggeronones" data-type="String">
-                        {{#select system.diceroller.opposedbonuses.triggeronones}}
-                        <option value="none">{{localize "Ex3.Nothing"}}</option>
-                        <option value="soak">{{localize "Ex3.IncreaseSoak"}}</option>
-                        <option value="defense">{{localize "Ex3.IncreaseDefense"}}</option>
-                        <option value="subtractInitiative">{{localize "Ex3.SubtractEnemyInitiative"}}</option>
-                        <option value="subtractSuccesses">{{localize "Ex3.SubtractEnemySuccesses"}}</option>
-                        {{/select}}
-                    </select>
+                <div class="resource grid grid-2col flex-center" style="padding-bottom:20px;">
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</div>
+                        <select name="system.diceroller.opposedbonuses.triggeronones" data-type="String">
+                            {{#select system.diceroller.opposedbonuses.triggeronones}}
+                            <option value="none">{{localize "Ex3.Nothing"}}</option>
+                            <option value="soak">{{localize "Ex3.IncreaseSoak"}}</option>
+                            <option value="defense">{{localize "Ex3.IncreaseDefense"}}</option>
+                            <option value="subtractInitiative">{{localize "Ex3.SubtractEnemyInitiative"}}</option>
+                            <option value="subtractSuccesses">{{localize "Ex3.SubtractEnemySuccesses"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.TriggerOnesCap"}}*</label>
+                        <input name="system.diceroller.opposedbonuses.triggeronescap"
+                            value="{{system.diceroller.opposedbonuses.triggeronescap}}" type="text">
+                    </div>
                 </div>
             </div>
         </div>
