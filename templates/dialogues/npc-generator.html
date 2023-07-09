@@ -1,6 +1,6 @@
 <div class="exaltedthird">
   <form>
-    <div class="resource grid grid-2col flex-center mb-2 mt-2">
+    <div class="resource flex-center mb-2 mt-2">
       <div>
         <label class="resource-label">{{localize "Ex3.Name"}} <a><i id="randomName"
           class="fas fa-dice cursor-pointer"></i></a></label>
@@ -122,13 +122,13 @@
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Abilities"}}</label>
     </div>
     <div class="resource grid grid-4col flex-center">
-      {{#each data.character.abilities as |ability key|}}
+      {{#each data.playerCharacter.abilities as |ability key|}}
       <div>
-        <div class="resource-label flexrow flex-center">{{localize ability.name}}<input name="object.character.abilities.{{key}}.favored" type="checkbox" {{checked ability.favored}}></div>
-        <input type="number" name="object.character.abilities.{{key}}.value" value="{{ability.value}}"
+        <div class="resource-label flexrow flex-center">{{localize ability.name}}<input name="object.playerCharacter.abilities.{{key}}.favored" type="checkbox" {{checked ability.favored}}></div>
+        <input type="number" name="object.playerCharacter.abilities.{{key}}.value" value="{{ability.value}}"
         data-dtype="Number" />
-        <div class="resource-label flexrow flex-center">{{localize "Ex3.Charms"}}<input name="object.character.abilities.{{key}}.excellency" type="checkbox" {{checked ability.excellency}}></div>
-        <input type="number" name="object.character.abilities.{{key}}.charms" value="{{ability.charms}}"
+        <div class="resource-label flexrow flex-center">{{localize "Ex3.Charms"}}</div>
+        <input type="number" name="object.playerCharacter.abilities.{{key}}.charms" value="{{ability.charms}}"
         data-dtype="Number" />
       </div>
       {{/each}}

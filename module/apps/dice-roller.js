@@ -2789,12 +2789,13 @@ export class RollForm extends FormApplication {
                     description: `Difficulty ${this.object.poison.difficulty}`,
                     duration: {
                         rounds: this.object.poison.duration,
-                        startRound: game.combat?.round || 0
+                        startRound: game.combat?.round || 0,
                     },
                     flags: {
                         "exaltedthird": {
                             poisonerCombatantId: this._getActorCombatant()?._id || null,
                             weaponInflictedPosion: true,
+                            difficulty: this.object.poison.difficulty
                         }
                     },
                     changes: [

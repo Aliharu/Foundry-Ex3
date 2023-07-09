@@ -406,7 +406,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         totalHealth += health_level.value;
       }
       for (const activeEffect of combatant.actor.allApplicableEffects()) {
-        if (activeEffect.duration.remaining > 0 && !activeEffect.disabled) {
+        if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
           for (const change of activeEffect.changes) {
             if (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') {
               if (currentCombatantInitiative !== null && (currentCombatantInitiative - parseInt(change.value)) <= 0 && currentCombatantInitiative > 0) {

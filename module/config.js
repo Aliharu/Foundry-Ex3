@@ -484,6 +484,11 @@ exaltedthird.statusEffects = [
         name: 'entangled'
     },
     {
+        icon: 'systems/exaltedthird/assets/icons/hidden.svg',
+        id: 'Hidden',
+        label: 'Ex3.Hidden',
+    },
+    {
         icon: 'icons/svg/skull.svg',
         id: 'incapacitated',
         label: 'Ex3.Incapacitated',
