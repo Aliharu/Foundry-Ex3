@@ -2305,7 +2305,7 @@ export class RollForm extends FormApplication {
                     this.object.characterInitiative = this.object.characterInitiative - 3;
                 }
             }
-            if (this.object.attackType === 'decisive' && this.object.damage.resetInit) {
+            if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
                 this.object.characterInitiative = this.actor.system.baseinitiative.value;
             }
             if (this.object.attackType === 'gambit') {
