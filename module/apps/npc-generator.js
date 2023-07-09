@@ -3,6 +3,7 @@ export default class NPCGenerator extends FormApplication {
     super(object, options);
     this.object.template = 'custom';
     this.object.poolNumbers = 'mid';
+    this.object.characterType = 'npc';
     this.object.availableCastes = {};
     this.object.character = {
       name: '',
@@ -11,6 +12,255 @@ export default class NPCGenerator extends FormApplication {
       exalt: "other",
       caste: "",
       essence: 1,
+      attributes: {
+        strength: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Strength',
+        },
+        charisma: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Charisma',
+        },
+        perception: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Perception',
+        },
+        dexterity: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Dexterity',
+        },
+        manipulation: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Manipulation',
+        },
+        intelligence: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Intelligence',
+        },
+        stamina: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Stamina',
+        },
+        appearance: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Appearance',
+        },
+        wits: {
+          favored: false,
+          excellency: false,
+          value: 1,
+          charms: 0,
+          name: 'Ex3.Wits',
+        }
+      },
+      abilities: {
+        archery: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Archery",
+        },
+        athletics: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Athletics",
+        },
+        awareness: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Awareness",
+        },
+        brawl: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Brawl",
+        },
+        bureaucracy: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Bureaucracy",
+        },
+        craft: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Craft",
+        },
+        dodge: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Dodge",
+        },
+        integrity: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Integrity",
+        },
+        investigation: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Investigation",
+        },
+        larceny: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Larceny",
+        },
+        linguistics: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Linguistics",
+        },
+        lore: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Lore",
+        },
+        martialarts: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.MartialArts",
+        },
+        medicine: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Medicine",
+        },
+        melee: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Melee",
+        },
+        occult: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Occult",
+        },
+        performance: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Performance",
+        },
+        presence: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Presence",
+        },
+        resistance: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Resistance",
+        },
+        ride: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Ride",
+        },
+        sail: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Sail",
+        },
+        socialize: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Socialize",
+        },
+        stealth: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Stealth",
+        },
+        survival: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Survival",
+        },
+        thrown: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.Thrown",
+        },
+        war: {
+          favored: false,
+          excellency: false,
+          value: 0,
+          charms: 0,
+          name: "Ex3.War",
+        }
+      },
       skills: {
         agility: {
           label: 'Ex3.Agility',
@@ -167,7 +417,6 @@ export default class NPCGenerator extends FormApplication {
       this.randomName();
     });
 
-
     html.find("#generate").on("click", async (event) => {
       this.createNPC();
     });
@@ -205,12 +454,18 @@ export default class NPCGenerator extends FormApplication {
         break;
       }
     }
+    if(this.object.character.exalt === 'abyssal') {
+      selectedOption = 'abyssal';
+    }
     switch (selectedOption) {
       case "common":
         this.object.character.name = await this.getCommonName();
         break;
       case "dynast":
         this.object.character.name = await this.getDynastName();
+        break;
+      case "abyssal":
+        this.object.character.name = await this.getAbyssalName();
         break;
     }
     this.render();
@@ -323,32 +578,8 @@ export default class NPCGenerator extends FormApplication {
   }
 
   async getAbyssalName() {
-    let newName = '';
     const randomName = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/randomAbyssalTitles.json', {}, { int: 30000 });
-    const nameFormats = [
-      { option: 1, weight: 1 },
-      { option: 2, weight: 2 },
-      { option: 3, weight: 3 },
-      { option: 4, weight: 3 },
-    ];
-    const totalWeight = nameFormats.reduce((acc, option) => acc + option.weight, 0);
-    const randomWeight = Math.random() * totalWeight;
-    let cumulativeWeight = 0;
-    let selectedOption;
-    let optionsSection;
-    let optionsSectionIndex;
-    for (const option of nameFormats) {
-      cumulativeWeight += option.weight;
-      if (randomWeight <= cumulativeWeight) {
-        selectedOption = option.option;
-        break;
-      }
-    }
-    switch (selectedOption) {
-      case 1:
-        break;
-    }
-    return newName;
+    return `The ${randomName.name1[Math.floor(Math.random() * randomName.name1.length)]} ${randomName.name2[Math.floor(Math.random() * randomName.name2.length)]} ${randomName.name3[Math.floor(Math.random() * randomName.name3.length)]} ${randomName.name4[Math.floor(Math.random() * randomName.name4.length)]}`;
   }
 
   async createNPC() {
