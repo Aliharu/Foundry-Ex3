@@ -145,7 +145,7 @@ export default class NPCGenerator extends FormApplication {
     super.activateListeners(html);
 
     html.on("change", "#exalt", async ev => {
-      if(CONFIG.exaltedthird.castes[this.object.character.exalt]) {
+      if (CONFIG.exaltedthird.castes[this.object.character.exalt]) {
         this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
       }
       this.render();
@@ -163,10 +163,192 @@ export default class NPCGenerator extends FormApplication {
       this.render();
     });
 
+    html.find("#randomName").on("click", async (event) => {
+      this.randomName();
+    });
+
 
     html.find("#generate").on("click", async (event) => {
       this.createNPC();
     });
+  }
+
+  async randomName() {
+    const nameFormats = [
+      { option: "common", weight: 10 },
+    ];
+    if(this.object.character.exalt === 'dragonblooded') {
+      nameFormats.push(
+        {
+          option: "dynast", weight: 20
+        }
+      );
+    }
+    else {
+      nameFormats.push(
+        {
+          option: "dynast", weight: 3
+        }
+      );
+    }
+    const totalWeight = nameFormats.reduce((acc, option) => acc + option.weight, 0);
+    // Generate a random number between 0 and the total weight
+    const randomWeight = Math.random() * totalWeight;
+
+    // Iterate over the nameFormats until the cumulative weight surpasses the random weight
+    let cumulativeWeight = 0;
+    let selectedOption;
+    for (const option of nameFormats) {
+      cumulativeWeight += option.weight;
+      if (randomWeight <= cumulativeWeight) {
+        selectedOption = option.option;
+        break;
+      }
+    }
+    switch (selectedOption) {
+      case "common":
+        this.object.character.name = await this.getCommonName();
+        break;
+      case "dynast":
+        this.object.character.name = await this.getDynastName();
+        break;
+    }
+    this.render();
+  }
+
+
+  async getCommonName() {
+    let newName = '';
+    const randomName = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/randomNames.json', {}, { int: 30000 });
+    const nameFormats = [
+      { option: 1, weight: 4 },
+      { option: 2, weight: 16 },
+      { option: 3, weight: 8 },
+      { option: 4, weight: 4 },
+      { option: 5, weight: 2 },
+      { option: 6, weight: 1 },
+      { option: 7, weight: 8 },
+    ];
+    const totalWeight = nameFormats.reduce((acc, option) => acc + option.weight, 0);
+
+    // Generate a random number between 0 and the total weight
+    const randomWeight = Math.random() * totalWeight;
+
+    // Iterate over the nameFormats until the cumulative weight surpasses the random weight
+    let cumulativeWeight = 0;
+    let selectedOption;
+    let optionsSection;
+    let optionsSectionIndex;
+    for (const option of nameFormats) {
+      cumulativeWeight += option.weight;
+      if (randomWeight <= cumulativeWeight) {
+        selectedOption = option.option;
+        break;
+      }
+    }
+    switch (selectedOption) {
+      case 1:
+        optionsSection = randomName.noun[Math.floor(Math.random() * randomName.noun.length)];
+        newName = optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        break;
+      case 2:
+        optionsSection = randomName.adjective[Math.floor(Math.random() * randomName.adjective.length)];
+        newName += optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        optionsSection = randomName.noun[Math.floor(Math.random() * randomName.noun.length)];
+        newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        break;
+      case 3:
+        optionsSection = randomName.adjective[Math.floor(Math.random() * randomName.adjective.length)];
+        newName += optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        for (let i = 0; i < 2; i++) {
+          optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+          optionsSection = randomName.noun[optionsSectionIndex];
+          newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+          randomName.noun.splice(optionsSectionIndex, 1);
+        }
+        break;
+      case 4:
+        optionsSection = randomName.adjective[Math.floor(Math.random() * randomName.adjective.length)];
+        newName += optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        randomName.noun.splice(optionsSectionIndex, 1);
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' of the ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        break;
+      case 5:
+        optionsSection = randomName.adjective[Math.floor(Math.random() * randomName.adjective.length)];
+        newName += optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        randomName.noun.splice(optionsSectionIndex, 1);
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' of the ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        randomName.noun.splice(optionsSectionIndex, 1);
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        break;
+      case 6:
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        randomName.noun.splice(optionsSectionIndex, 1);
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' and ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        randomName.noun.splice(optionsSectionIndex, 1);
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        break;
+      case 7:
+        optionsSection = randomName.verb[Math.floor(Math.random() * randomName.verb.length)];
+        newName += optionsSection[Math.floor(Math.random() * optionsSection.length)];
+        optionsSectionIndex = Math.floor(Math.random() * randomName.noun.length);
+        optionsSection = randomName.noun[optionsSectionIndex];
+        newName += (' ' + optionsSection[Math.floor(Math.random() * optionsSection.length)]);
+        break;
+    }
+    return newName;
+  }
+
+  async getDynastName() {
+    const randomName = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/randomDynastNames.json', {}, { int: 30000 });
+    return `${randomName.house[Math.floor(Math.random() * randomName.house.length)]} ${randomName.name1[Math.floor(Math.random() * randomName.name1.length)]}${randomName.name2[Math.floor(Math.random() * randomName.name2.length)]}`;
+  }
+
+  async getAbyssalName() {
+    let newName = '';
+    const randomName = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/randomAbyssalTitles.json', {}, { int: 30000 });
+    const nameFormats = [
+      { option: 1, weight: 1 },
+      { option: 2, weight: 2 },
+      { option: 3, weight: 3 },
+      { option: 4, weight: 3 },
+    ];
+    const totalWeight = nameFormats.reduce((acc, option) => acc + option.weight, 0);
+    const randomWeight = Math.random() * totalWeight;
+    let cumulativeWeight = 0;
+    let selectedOption;
+    let optionsSection;
+    let optionsSectionIndex;
+    for (const option of nameFormats) {
+      cumulativeWeight += option.weight;
+      if (randomWeight <= cumulativeWeight) {
+        selectedOption = option.option;
+        break;
+      }
+    }
+    switch (selectedOption) {
+      case 1:
+        break;
+    }
+    return newName;
   }
 
   async createNPC() {
@@ -268,7 +450,7 @@ export default class NPCGenerator extends FormApplication {
     actorData.system.details.exalt = this.object.character.exalt;
 
     //Do Motes
-    if(this.object.character.traits.motePool.value) {
+    if (this.object.character.traits.motePool.value) {
       actorData.system.motes.personal.max = actorData.system.essence.value * 10;
       actorData.system.motes.personal.value = actorData.system.essence.value * 10;
       if (this.object.character.traits.spirit.value) {
@@ -281,7 +463,7 @@ export default class NPCGenerator extends FormApplication {
       actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
       actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
       actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
-      if(actorData.system.details.exalt === 'dragonblooded') {
+      if (actorData.system.details.exalt === 'dragonblooded') {
         actorData.system.settings.hasaura = true;
       }
       itemData.push({
@@ -343,7 +525,7 @@ export default class NPCGenerator extends FormApplication {
           }
         }
       });
-      if(this.object.character.exalt === 'lunar') {
+      if (this.object.character.exalt === 'lunar') {
         itemData.push({
           type: 'charm',
           img: 'icons/magic/light/explosion-star-large-orange.webp',
@@ -492,14 +674,14 @@ export default class NPCGenerator extends FormApplication {
 
     let bigString = '';
 
-    for(const ritual of sorcerousRituals) {
+    for (const ritual of sorcerousRituals) {
       bigString += ritual.name;
       bigString += '\n';
       bigString += ritual.pageref;
       bigString += '\n\n';
     }
 
-    if(animaList[this.object.character.caste]) {
+    if (animaList[this.object.character.caste]) {
       actorData.system.anima.passive = animaList[this.object.character.caste][0];
       actorData.system.anima.active = animaList[this.object.character.caste][1];
       actorData.system.anima.iconic = animaList[this.object.character.caste][2];
@@ -552,16 +734,16 @@ export default class NPCGenerator extends FormApplication {
 
     if (this.object.character.equipment.primaryWeapon.type === 'random') {
       var primaryWeaponList = weaponsList;
-      if(this.object.character.equipment.primaryWeapon.artifact) {
+      if (this.object.character.equipment.primaryWeapon.artifact) {
         primaryWeaponList = primaryWeaponList.filter(weapon => weapon.attunement > 0);
       }
       else {
         primaryWeaponList = primaryWeaponList.filter(weapon => weapon.attunement === 0);
       }
-      if(this.object.character.equipment.primaryWeapon.weight !== 'any') {
+      if (this.object.character.equipment.primaryWeapon.weight !== 'any') {
         primaryWeaponList = primaryWeaponList.filter(weapon => weapon.weighttype === this.object.character.equipment.primaryWeapon.weight);
       }
-      if(this.object.character.equipment.primaryWeapon.weaponType !== 'any') {
+      if (this.object.character.equipment.primaryWeapon.weaponType !== 'any') {
         primaryWeaponList = primaryWeaponList.filter(weapon => weapon.weapontype === this.object.character.equipment.primaryWeapon.weaponType);
       }
       var weapon = this._getRandomWeapon(primaryWeaponList);
@@ -577,16 +759,16 @@ export default class NPCGenerator extends FormApplication {
     }
     if (this.object.character.equipment.secondaryWeapon.type === 'random') {
       var secondaryWeaponList = weaponsList;
-      if(this.object.character.equipment.secondaryWeapon.artifact) {
+      if (this.object.character.equipment.secondaryWeapon.artifact) {
         secondaryWeaponList = secondaryWeaponList.filter(weapon => weapon.attunement > 0);
       }
       else {
         secondaryWeaponList = secondaryWeaponList.filter(weapon => weapon.attunement === 0);
       }
-      if(this.object.character.equipment.secondaryWeapon.weight !== 'any') {
+      if (this.object.character.equipment.secondaryWeapon.weight !== 'any') {
         secondaryWeaponList = secondaryWeaponList.filter(weapon => weapon.weighttype === this.object.character.equipment.secondaryWeapon.weight);
       }
-      if(this.object.character.equipment.secondaryWeapon.weaponType !== 'any') {
+      if (this.object.character.equipment.secondaryWeapon.weaponType !== 'any') {
         secondaryWeaponList = secondaryWeaponList.filter(weapon => weapon.weapontype === this.object.character.equipment.secondaryWeapon.weaponType);
       }
       itemData.push(
@@ -601,13 +783,13 @@ export default class NPCGenerator extends FormApplication {
     var armor;
     if (this.object.character.equipment.armor.type === 'random') {
       var filteredArmorList = armorList;
-      if(this.object.character.equipment.armor.artifact) {
+      if (this.object.character.equipment.armor.artifact) {
         filteredArmorList = filteredArmorList.filter(armor => armor.attunement > 0);
       }
       else {
         filteredArmorList = filteredArmorList.filter(armor => armor.attunement === 0);
       }
-      if(this.object.character.equipment.armor.weight !== 'any') {
+      if (this.object.character.equipment.armor.weight !== 'any') {
         filteredArmorList = filteredArmorList.filter(armor => armor.weighttype === this.object.character.equipment.armor.weight);
       }
       armor = this._getRandomArmor(filteredArmorList)
@@ -746,7 +928,7 @@ export default class NPCGenerator extends FormApplication {
         const availableCharms = charms.filter(charm => {
           return charm.system.charmprerequisites.length === 0 || charmIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => charmIds.includes(prerequisite.id));
         });
-        if(availableCharms.length === 0) {
+        if (availableCharms.length === 0) {
           break;
         }
         var charm = duplicate(availableCharms[Math.floor(Math.random() * availableCharms.length)]);
@@ -754,7 +936,7 @@ export default class NPCGenerator extends FormApplication {
         itemData.push(charm);
       }
     }
-    if(this.object.character.traits.godOrDemon.value) {
+    if (this.object.character.traits.godOrDemon.value) {
       itemData.push({
         type: 'charm',
         img: "icons/svg/explosion.svg",

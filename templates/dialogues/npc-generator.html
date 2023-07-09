@@ -2,7 +2,8 @@
   <form>
     <div class="resource grid grid-3col flex-center mb-2 mt-2">
       <div>
-        <label class="resource-label">{{localize "Ex3.Name"}} </label>
+        <label class="resource-label">{{localize "Ex3.Name"}} <a><i id="randomName"
+          class="fas fa-dice cursor-pointer"></i></a></label>
         <input name="object.character.name" value="{{data.character.name}}" type="text"
           placeholder="{{data.character.defaultName}}">
       </div>
