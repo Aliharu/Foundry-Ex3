@@ -91,6 +91,10 @@
           "value": 0,
           "min": 0
         },
+        "stuntdice": {
+          "value": 0,
+          "min": 0
+        },
         "resolve": {
           "value": 0
         },

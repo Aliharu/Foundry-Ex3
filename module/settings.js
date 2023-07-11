@@ -79,27 +79,10 @@ export function registerSettings() {
         type: Boolean,
         default: true
     });
-    game.settings.register("exaltedthird", "useShieldInitiative", {
-        name: game.i18n.localize('Ex3.ShieldInitiativeSetting'),
-        hint: game.i18n.localize('Ex3.ShieldInitiativeSettingDescription'),
-        scope: "world",
-        config: true,
-        type: Boolean,
-        default: false
-    });
 
     game.settings.register("exaltedthird", "compactSheetsNPC", {
         name: game.i18n.localize('Ex3.CompactSheetsNPC'),
         hint: game.i18n.localize('Ex3.CompactSheetsDescriptionNPC'),
-        scope: "world",
-        config: true,
-        type: Boolean,
-        default: false
-    });
-
-    game.settings.register("exaltedthird", "flatXP", {
-        name: game.i18n.localize('Ex3.FlatXP'),
-        hint: game.i18n.localize('Ex3.FlatXPDescription'),
         scope: "world",
         config: true,
         type: Boolean,
@@ -131,5 +114,32 @@ export function registerSettings() {
         scope: 'world',
         type: Boolean,
         config: true,
+    });
+
+    game.settings.register("exaltedthird", "flatXP", {
+        name: game.i18n.localize('Ex3.FlatXP'),
+        hint: game.i18n.localize('Ex3.FlatXPDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+
+    game.settings.register("exaltedthird", "useShieldInitiative", {
+        name: game.i18n.localize('Ex3.ShieldInitiativeSetting'),
+        hint: game.i18n.localize('Ex3.ShieldInitiativeSettingDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+
+    game.settings.register("exaltedthird", "bankableStunts", {
+        name: game.i18n.localize('Ex3.BankableStunts'),
+        hint: game.i18n.localize('Ex3.BankableStuntsDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
     });
 }

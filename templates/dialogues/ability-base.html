@@ -63,10 +63,14 @@
     <label class="resource-label">{{localize "Ex3.StuntLevel"}}</label>
     <select name="object.stunt" value="{{data.stunt}}" data-type="String">
         {{#select data.stunt}}
-        <option value="none">None</option>
-        <option value="one">One</option>
-        <option value="two">Two</option>
-        <option value="three">Three</option>
+        <option value="none">{{localize "Ex3.None"}}</option>
+        <option value="one">{{localize "Ex3.One"}}</option>
+        {{#if data.bankableStunts}}
+        <option value="bank">{{localize "Ex3.Bank"}}</option>
+        {{else}}
+        <option value="two">{{localize "Ex3.Two"}}</option>
+        <option value="three">{{localize "Ex3.Three"}}</option>
+        {{/if}}
         {{/select}}
     </select>
 </div>

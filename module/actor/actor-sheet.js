@@ -73,6 +73,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.abilityList = CONFIG.exaltedthird.abilities;
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
+    context.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];

@@ -359,6 +359,7 @@ export class RollForm extends FormApplication {
         this.object.showSpecialAttacks = false;
         this.object.missedAttacks = 0;
         this.object.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+        this.object.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             this.object.showTargets = 0;
@@ -1897,7 +1898,7 @@ export class RollForm extends FormApplication {
                 this.object.successModifier++;
                 this.object.cost.willpower++;
             }
-            if (this.object.stunt !== 'none') {
+            if (this.object.stunt !== 'none' && this.object.stunt !== 'bank') {
                 dice += 2;
             }
             if (this.object.stunt === 'two') {
@@ -3785,6 +3786,9 @@ export class RollForm extends FormApplication {
             if (bashingHealed > 0) {
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
+        }
+        if(this.object.stunt === 'bank') {
+            actorData.system.stuntdice.value += 2;
         }
         if (game.combat) {
             let combatant = this._getActorCombatant();

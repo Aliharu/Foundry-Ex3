@@ -240,6 +240,7 @@
     "Ex3.Excellency": "Excellency",
     "Ex3.HasExcellency": "Has Excellency",
     "Ex3.Stunt": "Stunt",
+    "Ex3.StuntDice": "Stunt Dice",
     "Ex3.StuntLevel": "Stunt Level",
     "Ex3.Dice": "Dice",
     "Ex3.DiceCap": "Dice Cap",
@@ -560,6 +561,9 @@
     "Ex3.ShowFullAttackButtonsDescriptions": "Show full attack buttons on weapons (top row).",
     "Ex3.ShieldInitiativeSetting": "Enable shield initiative",
     "Ex3.ShieldInitiativeSettingDescription": "Shield initiative is temporary initiative you get at the start of each round.  Its lost before regular initiative is lost and does not count towards turn order or decisive damage.",
+    "Ex3.BankableStunts": "Bankable Stunts",
+    "Ex3.BankableStuntsDescription": "Changes stunts to work like how they do in Exalted Essence.  Stunts are limited to 1 level and can now be banked.",
+
     "Ex3.MaxAnima": "Max Anima",
     "Ex3.ShowWarstrider": "Show Warstrider",
     "Ex3.ShowShip": "Show Ship",
@@ -814,5 +818,10 @@
     "Ex3.OneMonth": "One Month",
     "Ex3.ThreeMonths": "Three Months",
     "Ex3.Max": "Max",
-    "Ex3.Sign": "Sign"
+    "Ex3.Sign": "Sign",
+
+    "Ex3.One": "One",
+    "Ex3.Two": "Two",
+    "Ex3.Three": "Three",
+    "Ex3.Bank": "Bank"
 }

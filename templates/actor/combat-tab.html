@@ -1,14 +1,14 @@
 <div class="resource flex-group-center d-flex">
-    <div {{#if system.battlegroup}}{{else}}style="margin-right:20px;"{{/if}}>
+    <div {{#if system.battlegroup}}{{else}}style="margin-right:20px;" {{/if}}>
         <div class="flexrow">
             <label for="system.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
-                id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i></a> {{#if
+                        id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i></a> {{#if
                 system.battlegroup}}
                 {{localize "Ex3.Magnitude"}}
                 {{else}}
                 {{localize "Ex3.Health"}}
                 {{/if}}<a><i id="healDamage" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
-                    style="margin-left:3px;"></i></a></label>
+                        style="margin-left:3px;"></i></a></label>
         </div>
         <div class="resource-content flexrow flex-center flex-between">
             <div class="resource-counter" data-states="/:bashing,x:lethal,*:aggravated" data-max="{{system.health.max}}"
@@ -39,9 +39,8 @@
     {{/if}}
 </div>
 <div class="resource-content flexrow flex-center flex-between mt-1">
-    <label class="resource-label"><a><i id="rollAbility"
-        class="fas fa-dice-d10 cursor-pointer rollAbility"></i></a> {{localize "Ex3.Combat"}} <a><i
-        class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
+    <label class="resource-label"><a><i id="rollAbility" class="fas fa-dice-d10 cursor-pointer rollAbility"></i></a>
+        {{localize "Ex3.Combat"}} <a><i class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
 </div>
 <div class="grid grid-3col flex-group-center">
     <button class="roll-button join-battle"><i class="fas fa-play"></i>{{localize "Ex3.JoinBattle"}}</button>
@@ -61,7 +60,8 @@
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.GrappleControlRounds"}} </label>
-        <input type="number" name="system.grapplecontrolrounds.value" value="{{system.grapplecontrolrounds.value}}" data-dtype="Number" />
+        <input type="number" name="system.grapplecontrolrounds.value" value="{{system.grapplecontrolrounds.value}}"
+            data-dtype="Number" />
     </div>
 </div>
 <div>
@@ -71,9 +71,10 @@
                 <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
-                        style="margin-left:3px;"></i></a>
+                            style="margin-left:3px;"></i></a>
                     {{/if}}
-                    {{/ifEquals}}{{#if system.aboveParryCap}} ({{system.aboveParryCap}} {{localize "Ex3.AboveLunars"}}){{/if}}</label>
+                    {{/ifEquals}}{{#if system.aboveParryCap}} ({{system.aboveParryCap}} {{localize
+                    "Ex3.AboveLunars"}}){{/if}}</label>
                 <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
                 <label>{{system.parry.cap}}</label>
             </div>
@@ -82,9 +83,10 @@
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
-                        style="margin-left:3px;"></i></a>
+                            style="margin-left:3px;"></i></a>
                     {{/if}}
-                    {{/ifEquals}} {{#if system.aboveEvasionCap}} ({{system.aboveEvasionCap}} {{localize "Ex3.AboveLunars"}}){{/if}}</label>
+                    {{/ifEquals}} {{#if system.aboveEvasionCap}} ({{system.aboveEvasionCap}} {{localize
+                    "Ex3.AboveLunars"}}){{/if}}</label>
                 <input type="number" name="system.evasion.value" value="{{system.evasion.value}}" data-dtype="Number" />
                 <label>{{system.evasion.cap}}</label>
             </div>
@@ -102,7 +104,7 @@
                 <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-armored-soak cursor-pointer" title="Auto Set Armored Soak"
-                        style="margin-left:3px;"></i></a>
+                            style="margin-left:3px;"></i></a>
                     {{/if}}
                 </label>
                 <input type="number" name="system.armoredsoak.value" value="{{system.armoredsoak.value}}"
@@ -113,7 +115,7 @@
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-natural-soak cursor-pointer" title="Auto Set Natural Soak"
-                        style="margin-left:3px;"></i></a>
+                            style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}
                 </label>
@@ -125,7 +127,7 @@
                     {{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
-                        style="margin-left:3px;"></i></a>
+                            style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}
                 </label>
@@ -136,12 +138,18 @@
                 <label class="resource-label">{{localize "Ex3.Hardness"}}{{#ifEquals data.type 'character'}}
                     {{#if system.settings.editmode}}
                     <a><i class="fas fa-calculator calculate-hardness cursor-pointer" title="Auto Set Hardness"
-                        style="margin-left:3px;"></i></a>
+                            style="margin-left:3px;"></i></a>
                     {{/if}}
                     {{/ifEquals}}</label>
                 <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
                     data-dtype="Number" />
             </div>
+            {{#if bankableStunts}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.StuntDice"}}</label>
+                <input type="number" name="system.stuntdice.value" value="{{system.stuntdice.value}}" data-dtype="Number" />
+            </div>
+            {{/if}}
         </div>
         {{#if system.settings.issorcerer}}
         <div class="grid grid-3col flex-group-center">
@@ -184,11 +192,12 @@
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.CommandBonus"}}</label>
-                <input type="number" name="system.commandbonus.value" value="{{system.commandbonus.value}}" data-dtype="Number" />
+                <input type="number" name="system.commandbonus.value" value="{{system.commandbonus.value}}"
+                    data-dtype="Number" />
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Rout"}} <a><i
-                    class="fas fa-info-circle rout-modifiers cursor-pointer"></i></a></label>
+                            class="fas fa-info-circle rout-modifiers cursor-pointer"></i></a></label>
                 <button class="roll-button rout-check"><i class="fas fa-swords"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
