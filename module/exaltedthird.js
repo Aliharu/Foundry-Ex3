@@ -1033,7 +1033,7 @@ Hooks.once("ready", async function () {
   //   }]
   // });
 
-  // for (let actor of game.actors.filter(actor => actor.type === 'character')) {
+  // for (let actor of game.actors) {
   //   try {
   //     await actor.update({ [`system.settings.editmode`]: false });
   //   } catch (error) {

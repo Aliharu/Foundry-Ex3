@@ -458,23 +458,23 @@ export class ExaltedThirdActor extends Actor {
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
 
-    let staticActorData = actorData;
+    let staticActorData = actorData._source;
 
     if (actorData.system.lunarform?.enabled) {
       const lunar = game.actors.get(actorData.system.lunarform?.actorid);
       if (lunar) {
-        staticActorData = lunar;
+        staticActorData = lunar._source;
         data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
         data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
       }
     }
     if (staticActorData.type === "character" || staticActorData.system.creaturetype === 'exalt') {
-      data.parry.cap = this._getStaticCap(staticActorData, 'parry', data.parry.value);
+      data.parry.cap = this._getStaticCap(staticActorData, 'parry', staticActorData.system.parry.value);
       if (data.parry.cap !== '') {
         data.evasion.padding = true;
         data.defenseCapPadding = true;
       }
-      data.evasion.cap = this._getStaticCap(staticActorData, 'evasion', data.evasion.value);
+      data.evasion.cap = this._getStaticCap(staticActorData, 'evasion', staticActorData.system.evasion.value);
       if (data.evasion.cap !== '') {
         data.evasion.padding = false;
         if (data.parry.cap === '') {
@@ -482,12 +482,12 @@ export class ExaltedThirdActor extends Actor {
         }
         data.defenseCapPadding = true;
       }
-      data.guile.cap = this._getStaticCap(staticActorData, 'parry', data.guile.value);
+      data.guile.cap = this._getStaticCap(staticActorData, 'parry', staticActorData.system.guile.value);
       if (data.guile.cap !== '') {
         data.resolve.padding = true;
         data.socialCapPadding = true;
       }
-      data.resolve.cap = this._getStaticCap(staticActorData, 'resolve', data.resolve.value);
+      data.resolve.cap = this._getStaticCap(staticActorData, 'resolve', staticActorData.system.resolve.value);
       if (data.resolve.cap !== '') {
         if (data.guile.cap === '') {
           data.guile.padding = true;
@@ -495,7 +495,7 @@ export class ExaltedThirdActor extends Actor {
         data.resolve.padding = false;
         data.socialCapPadding = true;
       }
-      data.soak.cap = this._getStaticCap(staticActorData, 'soak', actorData.type === "character" ? (data.attributes?.stamina?.value || 0) : data.soak.value);
+      data.soak.cap = this._getStaticCap(staticActorData, 'soak', actorData.type === "character" ? (data.attributes?.stamina?.value || 0) : staticActorData.system.soak.value);
 
 
       // if (staticActorData.type === "character" && data.attributes.stamina.excellency) {
