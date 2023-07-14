@@ -201,6 +201,7 @@
     "Ex3.Static": "Static",
     "Ex3.IgnoreArmorSoak": "Ignore Armor Soak",
     "Ex3.IgnoreSoak": "Ignore Soak",
+    "Ex3.GainInitiative": "Gain Initiative",
     "Ex3.IgnoreHardness": "Ignore Hardness",
     "Ex3.Ranged": "Ranged",
     "Ex3.Armor": "Armor",
@@ -271,6 +272,7 @@
     "Ex3.Character": "Character",
     "Ex3.CharacterType": "Character Type",
     "Ex3.PlayerCharacter": "Player Character",
+    "Ex3.NoSpecialty": "No Specialty",
     "Ex3.Specialty": "Specialty",
     "Ex3.Specialties": "Specialties",
     "Ex3.Resonance": "Resonance",
@@ -543,7 +545,7 @@
     "Ex3.AutoDecisiveDamage": "Auto Decisive Damage",
     "Ex3.AutoDecisiveDamageDescription": "Health damage will be automatically added to characeters hit by decisive attack.",
     "Ex3.AutoWitheringDamage": "Auto Withering Damage",
-    "Ex3.AutoWitheringDescription": "Initiative damage and initiative gain will automatically be applied on withering attacks against targets.",
+    "Ex3.AutoWitheringDamageDescription": "Initiative damage and initiative gain will automatically be applied on withering attacks against targets.",
     "Ex3.AnimaTokenEffects": "Anima Token Effects",
     "Ex3.AnimaTokenEffectsDescription": "If enables changing anima levels will  add Token Magix Fx to tokens, The default black color will not show up. (Do not enable without the TokenMagicFx Module)",
     
@@ -578,11 +580,14 @@
     "Ex3.UseDotValues": "Use dot values",
     "Ex3.ShowAnima": "Show Anima",
     "Ex3.ApplyDecisiveDamage": "Apply Decisive Damage",
+    "Ex3.ApplyWitheringDamage": "Apply Withering Damage",
+    "Ex3.GainAttackInitiative": "Gain Attack Initiative",
 
     "Ex3.NoTargetsSelected": "No Targets Selected",
+    "Ex3.NoCurrentCombat": "No Current Combat",
+    "Ex3.NoCombatant": "No Combatant",
+    "Ex3.CombatantHasNoInitiative": "Combatant Has No Initiative",
 
-
-    
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.EffectiveStrength": "Effective Strength",
     "Ex3.CharacterNotes": "Character Notes",
@@ -826,5 +831,11 @@
     "Ex3.One": "One",
     "Ex3.Two": "Two",
     "Ex3.Three": "Three",
-    "Ex3.Bank": "Bank"
+    "Ex3.Bank": "Bank",
+
+    "Ex3.NoStunt": "No Stunt",
+    "Ex3.LevelOneStunt": "Level One Stunt",
+    "Ex3.LevelTwoStunt": "Level Two Stunt",
+    "Ex3.LevelThreeStunt": "Level Three Stunt",
+    "Ex3.BankStunt": "BankStunt"
 }

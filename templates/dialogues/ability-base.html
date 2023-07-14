@@ -5,7 +5,7 @@
 <div class="resource grid grid-2col flex-center">
     {{#ifEquals data.characterType 'character'}}
 
-    <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
+    <!-- <label class="resource-label">{{localize "Ex3.Attribute"}}</label> -->
     <select class="update-roller" name="object.attribute" value="{{data.attribute}}" data-type="String">
         {{#select data.attribute}}
         {{#each actor.system.attributes as |attribute key|}}
@@ -15,7 +15,7 @@
         {{/select}}
     </select>
 
-    <label class="resource-label">{{localize "Ex3.Ability"}}</label>
+    <!-- <label class="resource-label">{{localize "Ex3.Ability"}}</label> -->
     <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
         {{#select data.ability}}
         {{#each actor.system.abilities as |ability key|}}
@@ -49,10 +49,10 @@
     {{/if}}
 
     {{#if data.specialtyList}}
-    <label class="resource-label">{{localize "Ex3.Specialty"}}</label>
+    <!-- <label class="resource-label">{{localize "Ex3.Specialty"}}</label> -->
     <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">
         {{#select data.specialty}}
-        <option value=""></option>
+        <option value="">{{localize "Ex3.NoSpecialty"}}</option>
         {{#each data.specialtyList as |item id|}}
         <option value="{{id}}">{{item.name}}</option>
         {{/each}}
@@ -60,16 +60,16 @@
     </select>
     {{/if}}
 
-    <label class="resource-label">{{localize "Ex3.StuntLevel"}}</label>
+    <!-- <label class="resource-label">{{localize "Ex3.StuntLevel"}}</label> -->
     <select name="object.stunt" value="{{data.stunt}}" data-type="String">
         {{#select data.stunt}}
-        <option value="none">{{localize "Ex3.None"}}</option>
-        <option value="one">{{localize "Ex3.One"}}</option>
+        <option value="none">{{localize "Ex3.NoStunt"}}</option>
+        <option value="one">{{localize "Ex3.LevelOneStunt"}}</option>
         {{#if data.bankableStunts}}
-        <option value="bank">{{localize "Ex3.Bank"}}</option>
+        <option value="bank">{{localize "Ex3.BankStunt"}}</option>
         {{else}}
-        <option value="two">{{localize "Ex3.Two"}}</option>
-        <option value="three">{{localize "Ex3.Three"}}</option>
+        <option value="two">{{localize "Ex3.LevelTwoStunt"}}</option>
+        <option value="three">{{localize "Ex3.LevelThreeStunt"}}</option>
         {{/if}}
         {{/select}}
     </select>

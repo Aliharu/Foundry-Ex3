@@ -146,6 +146,9 @@ export class ExaltedThirdItem extends Item {
               updateData.system.defense = equipmentChart[updateData.system?.weighttype].defense;
             }
           }
+          if(updateData.system?.weighttype === 'siege') {
+            updateData.system.weapontype = 'siege';
+          }
         }
       }
       if (this.type === 'armor') {

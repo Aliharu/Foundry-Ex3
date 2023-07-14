@@ -148,6 +148,7 @@ export class RollForm extends FormApplication {
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
                 ignoreSoak: 0,
+                gainInitiative: true,
                 multiTargetMinimumInitiative: 0,
                 rerollFailed: false,
                 rollTwice: false,
@@ -1569,7 +1570,7 @@ export class RollForm extends FormApplication {
                     if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
                         const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
                         this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
-                        if(this.object.targetCombatant?.initiative) {
+                        if (this.object.targetCombatant?.initiative) {
                             this.object.newTargetInitiative = this.object.targetCombatant.initiative;
                         }
                         else {
@@ -1589,7 +1590,7 @@ export class RollForm extends FormApplication {
                     if (this.object.updateTargetActorData) {
                         this._updateTargetActor();
                     }
-                    if(this.object.updateTargetInitiative) {
+                    if (this.object.updateTargetInitiative) {
                         this._updateTargetInitiative();
                     }
                 }
@@ -1599,7 +1600,7 @@ export class RollForm extends FormApplication {
                 if (this.object.updateTargetActorData) {
                     this._updateTargetActor();
                 }
-                if(this.object.updateTargetInitiative) {
+                if (this.object.updateTargetInitiative) {
                     this._updateTargetInitiative();
                 }
             }
@@ -2060,7 +2061,7 @@ export class RollForm extends FormApplication {
                 tensRolled++;
             }
         }
-        if(this.object.settings.triggerOnesCap) {
+        if (this.object.settings.triggerOnesCap) {
             onesRolled = Math.min(onesRolled, this.object.settings.triggerOnesCap);
         }
         if (onesRolled > 0 && this.object.settings.triggerOnOnes !== 'none') {
@@ -2082,7 +2083,7 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if(this.object.settings.triggerTensCap) {
+        if (this.object.settings.triggerTensCap) {
             tensRolled = Math.min(tensRolled, this.object.settings.triggerTensCap);
         }
         if (tensRolled > 0 && this.object.settings.triggerOnTens !== 'none') {
@@ -2288,14 +2289,14 @@ export class RollForm extends FormApplication {
     async _postAttackResults() {
         if (this.object.rollType !== 'accuracy' || !this.object.splitAttack) {
             await this._updateCharacterResources();
-            if (this.object.gainedInitiative) {
-                this.object.characterInitiative += this.object.gainedInitiative;
-            }
             if (this.object.targetHit) {
-                this.object.characterInitiative += 1;
+                this.object.gainedInitiative += 1;
             }
             if (this.object.crashed) {
-                this.object.characterInitiative += 5;
+                this.object.gainedInitiative += 5;
+            }
+            if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
+                this.object.characterInitiative += this.object.gainedInitiative;
             }
             const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets)
             if (triggerMissedAttack && this.object.rollType !== 'withering' && this.object.damage.resetInit) {
@@ -2547,14 +2548,14 @@ export class RollForm extends FormApplication {
                 tensRolled++;
             }
         }
-        
-        if(this.object.settings.damage.triggerTensCap) {
+
+        if (this.object.settings.damage.triggerTensCap) {
             tensRolled = Math.min(tensRolled, this.object.settings.triggerTensCap);
         }
         if (tensRolled > 0 && this.object.settings.damage.triggerOnTens !== 'none') {
             switch (this.object.settings.damage.triggerOnTens) {
                 case 'subtractTargetInitiative':
-                    if(this.object.newTargetInitiative) {
+                    if (this.object.newTargetInitiative) {
                         this.object.updateTargetInitiative = true;
                         this.object.newTargetInitiative--;
                         if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
@@ -2599,14 +2600,14 @@ export class RollForm extends FormApplication {
         }
         else {
             let targetResults = ``;
+            let crashed = false;
             if (this.object.target && game.combat) {
                 if (this.object.targetCombatant && this.object.newTargetInitiative !== null) {
                     this.object.targetHit = true;
                     if (this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) {
                         let newInitative = this.object.newTargetInitiative;
-                        this.object.gainedInitiative = Math.max(total, this.object.gainedInitiative);
                         var subractTotal = total;
-                        if (this.object.useShieldInitiative && this.object.shieldInitiative > 0) {
+                        if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.useShieldInitiative && this.object.shieldInitiative > 0) {
                             var newShieldInitiative = Math.max(0, this.object.shieldInitiative - total);
                             this.object.newTargetData.system.shieldinitiative.value = newShieldInitiative;
                             this.object.updateTargetActorData = true;
@@ -2620,6 +2621,7 @@ export class RollForm extends FormApplication {
                             }
                             else {
                                 this.object.crashed = true;
+                                crashed = true;
                                 targetResults = `<h4 class="dice-total" style="margin-top: 5px;">Target Crashed!</h4>`;
                                 if (this.object.targetCombatant.id === attackerCombatant.flags?.crashedBy) {
                                     this.object.initiativeShift = true
@@ -2627,23 +2629,48 @@ export class RollForm extends FormApplication {
                                 }
                             }
                         }
-                        this.object.newTargetInitiative = newInitative;
-                        this.object.updateTargetInitiative = true;
-                    }
-                    else if (this.object.targetCombatant.actor.system.battlegroup) {
-                        var sizeDamaged = this.dealHealthDamage(total, true);
-                        if (sizeDamaged) {
-                            targetResults = `<h4 class="dice-total dice-total-middle">${sizeDamaged} Size Damage!</h4>`;
-                            this.object.characterInitiative += (5 * sizeDamaged);
+                        if(game.settings.get("exaltedthird", "automaticWitheringDamage")) {
+                            this.object.newTargetInitiative = newInitative;
+                            this.object.updateTargetInitiative = true;
+                            this.object.gainedInitiative = Math.max(total, this.object.gainedInitiative);
                         }
+                    }
+                }
+                if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.targetCombatant?.actor?.system?.battlegroup) {
+                    var sizeDamaged = this.dealHealthDamage(total, true);
+                    if (sizeDamaged) {
+                        targetResults = `<h4 class="dice-total dice-total-middle">${sizeDamaged} Size Damage!</h4>`;
+                        this.object.gainedInitiative += (5 * sizeDamaged);
                     }
                 }
             }
             soakResult = `<h4 class="dice-formula">${this.object.soak} Soak! (Ignoring ${this.object.damage.ignoreSoak})</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>`;
+            var fullInitiative = total + 1;
+            if (crashed) {
+                fullInitiative += 5;
+            }
             typeSpecificResults = `
                                     <h4 class="dice-formula">${total} Damage!</h4>
                                     <h4 class="dice-total">${total} Total Damage!</h4>
                                     ${targetResults}
+                                    <button
+                                        type='button'
+                                        class='apply-withering-damage'
+                                        data-tooltip='${game.i18n.localize('Ex3.ApplyWitheringDamage')}'
+                                        aria-label='${game.i18n.localize('Ex3.ApplyWitheringDamage')}'
+                                    >
+                                        <i class='fa-solid fa-swords'></i>
+                                        ${game.i18n.localize('Ex3.ApplyWitheringDamage')} (${total})
+                                    </button>
+                                    ${this.object.damage.gainInitiative && `<button
+                                        type='button'
+                                        class='gain-attack-initiative'
+                                        data-tooltip='${game.i18n.localize('Ex3.GainAttackInitiative')}'
+                                        aria-label='${game.i18n.localize('Ex3.GainAttackInitiative')}'
+                                    >
+                                        <i class='fa-solid fa-arrow-up'></i>
+                                        ${game.i18n.localize('Ex3.GainAttackInitiative')} (${fullInitiative})
+                                    </button>`}
                                     `;
 
         }
@@ -2716,13 +2743,16 @@ export class RollForm extends FormApplication {
                     defense: this.object.defense,
                     threshholdSuccesses: this.object.thereshholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
+                    attackerCombatantId: this._getActorCombatant()?._id || null,
                     damage: {
                         dice: baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
                         soak: this.object.soak,
                         total: total,
                         type: this.object.damage.type,
-                        crashed: this.object.crashed
+                        crashed: this.object.crashed,
+                        targetHit: this.object.targetHit,
+                        gainedInitiative: fullInitiative,
                     }
                 }
             }
@@ -2849,7 +2879,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _addOnslaught(number = 1, magicInflicted=false) {
+    _addOnslaught(number = 1, magicInflicted = false) {
         if (!this.object.target?.actor?.system?.legendarysize && !magicInflicted) {
             this.object.updateTargetActorData = true;
             const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
@@ -3552,6 +3582,9 @@ export class RollForm extends FormApplication {
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
         }
+        if (this.object.damage.gainInitiative === undefined) {
+            this.object.damage.gainInitiative = true;
+        }
         if (this.object.addedCharms === undefined) {
             this.object.addedCharms = [];
         }
@@ -3787,7 +3820,7 @@ export class RollForm extends FormApplication {
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
         }
-        if(this.object.stunt === 'bank') {
+        if (this.object.stunt === 'bank') {
             actorData.system.stuntdice.value += 2;
         }
         if (game.combat) {
@@ -4201,10 +4234,10 @@ export class Prophecy extends FormApplication {
 
         html.find("#roll").on("click", async (event) => {
             let bonusIntervals = 0;
-            for(const mean of Object.values(this.object.means)) {
+            for (const mean of Object.values(this.object.means)) {
                 bonusIntervals += parseInt(mean.value);
             }
-            if(this.object.trappings.value) {
+            if (this.object.trappings.value) {
                 bonusIntervals += 1;
             }
 
@@ -4218,7 +4251,7 @@ export class Prophecy extends FormApplication {
 
             let intervalTimeString = intervalTime[this.object.means.intervalTime.value];
 
-            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", {'data': this.object, intervalTimeString: intervalTimeString, sign: sign});
+            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, intervalTimeString: intervalTimeString, sign: sign });
 
             ChatMessage.create({
                 user: game.user.id,
@@ -4262,7 +4295,7 @@ export class Prophecy extends FormApplication {
                 },
             }
             let prophecyAmbition = 0;
-            for(const ambition of Object.values(this.object.ambitions)) {
+            for (const ambition of Object.values(this.object.ambitions)) {
                 prophecyAmbition += parseInt(ambition.value);
             }
             this.object.totalUsedAmbition = prophecyAmbition;
@@ -4290,7 +4323,7 @@ export class Prophecy extends FormApplication {
         html.on("change", ".sign-select", ev => {
             this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
             this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
-            if(ev.target.value === this.actor.system.details.exaltsign || ev.target.value === this.actor.system.details.birthsign) {
+            if (ev.target.value === this.actor.system.details.exaltsign || ev.target.value === this.actor.system.details.birthsign) {
                 this.object.maxAmbition++;
                 this.object.maxTotalAmbition += 5;
             }

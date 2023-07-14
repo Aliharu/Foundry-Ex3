@@ -360,6 +360,24 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         await applyDecisiveDamage(message);
       });
     });
+  html[0]
+    .querySelectorAll('.apply-withering-damage')
+    .forEach((target) => {
+      target.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        await applyWitheringDamage(message);
+      });
+    });
+  html[0]
+    .querySelectorAll('.gain-attack-initiative')
+    .forEach((target) => {
+      target.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        await gainAttackInitiative(message);
+      });
+    });
 });
 
 Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
@@ -434,7 +452,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
         }
-        if(activeEffect.flags?.exaltedthird?.weaponInflictedPosion && activeEffect.duration.remaining === 0) {
+        if (activeEffect.flags?.exaltedthird?.weaponInflictedPosion && activeEffect.duration.remaining === 0) {
           await activeEffect.delete();
         }
       }
@@ -1007,19 +1025,19 @@ Hooks.once("ready", async function () {
 
   // const charms = game.items.filter(item => item.type === 'charm');
   // for (const charm of charms.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None')) {
-    // console.log(`${charm.name} - ${charm.system.prerequisites}`);
-    // const foundCharms = charms.filter(findCharm => findCharm.system.description.includes(charm.system.prerequisites.trim()) === true);
-    // if(foundCharms.length === 1) {
-    //   console.log(`${charm.name} - ${charm.system.prerequisites}`);
-    //   const charmPrereqs = [
-    //     {
-    //       name: charm.system.prerequisites,
-    //       id: foundCharms[0].id
-    //     }
-    //   ]
-    //   charm.update({ [`system.prerequisites`]: '' });
-    //   charm.update({ [`system.charmprerequisites`]: charmPrereqs });
-    // }
+  // console.log(`${charm.name} - ${charm.system.prerequisites}`);
+  // const foundCharms = charms.filter(findCharm => findCharm.system.description.includes(charm.system.prerequisites.trim()) === true);
+  // if(foundCharms.length === 1) {
+  //   console.log(`${charm.name} - ${charm.system.prerequisites}`);
+  //   const charmPrereqs = [
+  //     {
+  //       name: charm.system.prerequisites,
+  //       id: foundCharms[0].id
+  //     }
+  //   ]
+  //   charm.update({ [`system.prerequisites`]: '' });
+  //   charm.update({ [`system.charmprerequisites`]: charmPrereqs });
+  // }
   // }
 
   // const charmTest = game.items.find(item => item.name === 'Immanent Solar Glory');
@@ -1319,6 +1337,86 @@ function applyDecisiveDamage(message) {
   }
 }
 
+function applyWitheringDamage(message) {
+  const controlledTokens = game?.canvas?.tokens?.controlled;
+  // If there are not any controlled tokens, issue a warning.
+  if (!controlledTokens?.length) {
+    // If no targets selected, issue warning notification.
+    return ui.notifications.warn('Ex3.NoTargetsSelected', {
+      localize: true,
+    });
+  }
+  if (!game?.combat) {
+    return ui.notifications.warn('Ex3.NoCurrentCombat', {
+      localize: true,
+    });
+  }
+  // For each token controlled...
+  for (const token of controlledTokens) {
+    // Get the actor from the token data.
+    const actor = token.actor;
+
+    const combatant = game.combat?.combatants?.find(c => c.tokenId === token.id) || null;
+    if (!combatant) {
+      ui.notifications.warn('Ex3.NoCombatant', {
+        localize: true,
+      });
+    }
+    else if (!combatant?.initiative) {
+      ui.notifications.warn('Ex3.CombatantHasNoInitiative', {
+        localize: true,
+      });
+    }
+    if (combatant?.initiative) {
+      var initiativeDamage = message?.flags?.exaltedthird?.damage?.total;
+      if (actor.type !== 'npc' || actor.system.battlegroup === false) {
+        if (game.settings.get("exaltedthird", "useShieldInitiative") && actor.system.newShieldInitiative.value > 0) {
+          var newShieldInitiative = Math.max(0, actor.system.newShieldInitiative.value - message?.flags?.exaltedthird?.damage?.total);
+          initiativeDamage = Math.max(0, message?.flags?.exaltedthird?.damage?.total - actor.system.newShieldInitiative.value);
+          this.actor.update({ [`system.newShieldInitiative.value`]: newShieldInitiative });
+        }
+        game.combat.setInitiative(combatant.id, combatant.initiative - initiativeDamage, message?.flags?.exaltedthird?.attackerCombatantId);
+      }
+    }
+    if (actor.system?.battlegroup) {
+      dealHealthDamage(actor, message?.flags?.exaltedthird?.damage?.total, message?.flags?.exaltedthird?.damage?.type || 'lethal');
+    }
+  }
+}
+
+function gainAttackInitiative(message) {
+  const controlledTokens = game?.canvas?.tokens?.controlled;
+  // If there are not any controlled tokens, issue a warning.
+  if (!controlledTokens?.length) {
+    // If no targets selected, issue warning notification.
+    return ui.notifications.warn('Ex3.NoTargetsSelected', {
+      localize: true,
+    });
+  }
+  if (!game?.combat) {
+    return ui.notifications.warn('Ex3.NoCurrentCombat', {
+      localize: true,
+    });
+  }
+  // For each token controlled...
+  for (const token of controlledTokens) {
+    const combatant = game.combat?.combatants?.find(c => c.tokenId === token.id) || null;
+    if (!combatant) {
+      ui.notifications.warn('Ex3.NoCombatant', {
+        localize: true,
+      });
+    }
+    else if (!combatant?.initiative) {
+      ui.notifications.warn('Ex3.CombatantHasNoInitiative', {
+        localize: true,
+      });
+    }
+    if (combatant?.initiative) {
+      game.combat.setInitiative(combatant.id, combatant.initiative + message?.flags?.exaltedthird?.damage?.gainedInitiative);
+    }
+  }
+}
+
 async function applyDamageDialogue(targetUuid, damageContext) {
   const target = (await fromUuid(targetUuid));
   // If the target document is a Token, change the actor value to target.actor, otherwise use the target document itself.
@@ -1336,50 +1434,55 @@ async function applyDamageDialogue(targetUuid, damageContext) {
     },
     close: html => {
       if (confirmed) {
-        const actorData = duplicate(actor);
-        let totalHealth = 0;
-        let sizeDamaged = 0;
         let characterDamage = Number(html.find('#damageValue').val());
         let damageType = html.find('#damageType').val();
-        if (actor.system.battlegroup) {
-          totalHealth = actorData.system.health.levels.zero.value + actorData.system.size.value;
-        }
-        else {
-          for (let [key, healthLevel] of Object.entries(actorData.system.health.levels)) {
-            totalHealth += healthLevel.value;
-          }
-        }
-        if (actor.system.battlegroup) {
-          var remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
-          while (remainingHealth <= characterDamage && actorData.system.size.value > 0) {
-            actorData.system.health.bashing = 0;
-            actorData.system.health.lethal = 0;
-            actorData.system.health.aggravated = 0;
-            characterDamage -= remainingHealth;
-            remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
-            actorData.system.size.value -= 1;
-            sizeDamaged++;
-          }
-        }
-        if (damageType === 'bashing') {
-          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + characterDamage);
-        }
-        if (damageType === 'lethal') {
-          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + characterDamage);
-        }
-        if (damageType === 'aggravated') {
-          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + characterDamage);
-        }
-        if (damageContext.attackerTokenId && sizeDamaged) {
-          const combatant = game.combat?.combatants.find(c => c.tokenId === damageContext.attackerTokenId);
-          if (combatant) {
-            game.combat.setInitiative(combatant.id, combatant.initiative + (5 * sizeDamaged));
-          }
-        }
-        actor.update(actorData);
+        dealHealthDamage(actor, characterDamage, damageType);
       }
     }
   }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+}
+
+async function dealHealthDamage(actor, damageValue, damageType) {
+  const actorData = duplicate(actor);
+  let totalHealth = 0;
+  let sizeDamaged = 0;
+
+  if (actor.system.battlegroup) {
+    totalHealth = actorData.system.health.levels.zero.value + actorData.system.size.value;
+  }
+  else {
+    for (let [key, healthLevel] of Object.entries(actorData.system.health.levels)) {
+      totalHealth += healthLevel.value;
+    }
+  }
+  if (actor.system.battlegroup) {
+    var remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+    while (remainingHealth <= damageValue && actorData.system.size.value > 0) {
+      actorData.system.health.bashing = 0;
+      actorData.system.health.lethal = 0;
+      actorData.system.health.aggravated = 0;
+      damageValue -= remainingHealth;
+      remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+      actorData.system.size.value -= 1;
+      sizeDamaged++;
+    }
+  }
+  if (damageType === 'bashing') {
+    actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + damageValue);
+  }
+  if (damageType === 'lethal') {
+    actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + damageValue);
+  }
+  if (damageType === 'aggravated') {
+    actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + damageValue);
+  }
+  if (damageValue.attackerTokenId && sizeDamaged) {
+    const combatant = game.combat?.combatants.find(c => c.tokenId === damageValue.attackerTokenId);
+    if (combatant) {
+      game.combat.setInitiative(combatant.id, combatant.initiative + (5 * sizeDamaged));
+    }
+  }
+  actor.update(actorData);
 }
 
 function weaponAttack(itemUuid, attackType = 'withering') {
