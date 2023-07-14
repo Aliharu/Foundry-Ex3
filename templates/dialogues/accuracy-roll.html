@@ -40,8 +40,24 @@
             </div>
         </div>
         <!-- </div> -->
+        {{#if data.splitAttack}}
+        {{else}}
+        {{#ifEquals data.rollType 'accuracy'}}
+        <div class="resource grid grid-2col flex-center">
+            <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
+            <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
+                {{#select data.attackType}}
+                <option value="withering">{{localize "Ex3.Withering"}}</option>
+                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
+                <option value="gambit">{{localize "Ex3.Gambit"}}</option>
+                {{/select}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{/if}}
         {{#ifEquals data.rollType 'accuracy'}}
         {{#if data.showTargets}}
+        {{#ifGreater data.showTargets 1}}
         <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
             <div class="resource-label">
                 {{localize "Ex3.Targets"}}
@@ -58,7 +74,7 @@
                             height="24" /></div>
                     <div class="resource-label">{{target.actor.name}}</div>
                 </div>
-                <div class="resource flex-center">
+                <div class="resource grid grid-2col flex-center">
                     <div>
                         <div class="flex-center resource-label">
                             {{localize "Ex3.DiceModifier"}}
@@ -66,26 +82,45 @@
                         <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
                             value="{{target.rollData.diceModifier}}">
                     </div>
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.SuccessModifier"}}
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.successModifier"
+                            value="{{target.rollData.successModifier}}">
+                    </div>
                 </div>
             </div>
             {{/each}}
         </div>
-        {{/if}}
-        {{/ifEquals}}
-        {{#if data.splitAttack}}
         {{else}}
-        {{#ifEquals data.rollType 'accuracy'}}
-        <div class="resource grid grid-2col flex-center">
-            <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
-            <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
-                {{#select data.attackType}}
-                <option value="withering">{{localize "Ex3.Withering"}}</option>
-                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
-                <option value="gambit">{{localize "Ex3.Gambit"}}</option>
-                {{/select}}
-            </select>
+        {{#each data.targets as |target id|}}
+        <div style="margin-bottom: 10px;">
+            <div class="d-flex resource flex-center">
+                <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24"
+                        height="24" /></div>
+                <div class="resource-label">{{target.actor.name}}</div>
+            </div>
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.DiceModifier"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
+                        value="{{target.rollData.diceModifier}}">
+                </div>
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.SuccessModifier"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.successModifier"
+                        value="{{target.rollData.successModifier}}">
+                </div>
+            </div>
         </div>
-        {{/ifEquals}}
+        {{/each}}
+        {{/ifGreater}}
         {{/if}}
+        {{/ifEquals}}
     </div>
 </div>

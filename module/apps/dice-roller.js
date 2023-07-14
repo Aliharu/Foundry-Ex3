@@ -13,6 +13,8 @@ export class RollForm extends FormApplication {
             this.object.skipDialog = data.skipDialog || true;
             this.object.crashed = false;
             this.object.dice = data.dice || 0;
+            this.object.diceModifier = 0;
+            this.object.successes = data.successModifier || 0;
             this.object.successModifier = data.successModifier || 0;
             this.object.craftType = data.craftType || 0;
             this.object.craftRating = data.craftRating || 0;
@@ -71,7 +73,6 @@ export class RollForm extends FormApplication {
             this.object.isMagic = data.isMagic || false;
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
-            this.object.diceModifier = 0;
             this.object.weaponAccuracy = 0;
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
@@ -457,6 +458,7 @@ export class RollForm extends FormApplication {
                 soak: 0,
                 shieldInitiative: 0,
                 diceModifier: 0,
+                successModifier: 0,
                 damageModifier: 0,
             }
             target.rollData.guile = target.actor.system.guile.value;
@@ -1069,6 +1071,7 @@ export class RollForm extends FormApplication {
                 targetValues[0].rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                 targetValues[0].rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                 targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                targetValues[0].rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                 targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
             }
             else {
@@ -1081,6 +1084,7 @@ export class RollForm extends FormApplication {
                         target.rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                         target.rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                         target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                        target.rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                     }
                 }
@@ -1092,10 +1096,11 @@ export class RollForm extends FormApplication {
             this.object.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
             this.object.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
             this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+            this.object.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
             this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
             if (this.object.rollType === 'readIntentions') {
                 this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-            }
+            } 
             if (this.object.rollType === 'social') {
                 this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
             }
@@ -1478,6 +1483,7 @@ export class RollForm extends FormApplication {
                         targetValues[0].rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                         targetValues[0].rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                         targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                        targetValues[0].rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                     }
                     else {
@@ -1490,6 +1496,7 @@ export class RollForm extends FormApplication {
                                 target.rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                                 target.rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                                 target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                                target.rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                                 target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                             }
                         }
@@ -1501,6 +1508,7 @@ export class RollForm extends FormApplication {
                     this.object.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                     this.object.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
                     this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                    this.object.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                     this.object.damage.damageDice -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
                     if (this.object.rollType === 'readIntentions') {
                         this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
@@ -1585,6 +1593,7 @@ export class RollForm extends FormApplication {
                     this.object.hardness = target.rollData.hardness;
                     this.object.defense = target.rollData.defense;
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
+                    this.object.targetSpecificSuccessMod = target.rollData.successModifier;
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
                     await this._attackRoll();
                     if (this.object.updateTargetActorData) {
@@ -1864,9 +1873,11 @@ export class RollForm extends FormApplication {
 
     async _baseAbilityDieRoll() {
         let dice = 0;
+        let successes = 0;
 
         if (this.object.rollType === 'base') {
             dice = this.object.dice;
+            successes = this.object.successModifier;
         }
         else {
             const data = this.actor.system;
@@ -1896,7 +1907,7 @@ export class RollForm extends FormApplication {
                 }
             }
             if (this.object.willpower) {
-                this.object.successModifier++;
+                successes++;
                 this.object.cost.willpower++;
             }
             if (this.object.stunt !== 'none' && this.object.stunt !== 'bank') {
@@ -1909,14 +1920,14 @@ export class RollForm extends FormApplication {
                 else if (actorData.system.willpower.value < actorData.system.willpower.max) {
                     actorData.system.willpower.value++;
                 }
-                this.object.successModifier++;
+                successes++;
             }
             if (this.object.stunt === 'three') {
                 actorData.system.willpower.value += 2;
-                this.object.successModifier += 2;
+                successes += 2;
             }
             if (this.object.diceToSuccesses > 0) {
-                this.object.successModifier += Math.min(dice, this.object.diceToSuccesses);
+                successes += Math.min(dice, this.object.diceToSuccesses);
                 dice = Math.max(0, dice - this.object.diceToSuccesses);
             }
             if (this.object.woundPenalty && data.health.penalty !== 'inc') {
@@ -1933,8 +1944,14 @@ export class RollForm extends FormApplication {
             if (this.object.diceModifier) {
                 dice += this.object.diceModifier;
             }
+            if (this.object.successModifier) {
+                successes += this.object.successModifier;
+            }
             if (this.object.targetSpecificDiceMod) {
                 dice += this.object.targetSpecificDiceMod;
+            }
+            if (this.object.targetSpecificSuccessMod) {
+                successes += this.object.targetSpecificSuccessMod;
             }
             if (this.object.specialty) {
                 dice++;
@@ -1959,9 +1976,11 @@ export class RollForm extends FormApplication {
             dice = 0;
         }
         this.object.dice = dice;
+        this.object.successes = successes;
+
 
         var rollModifiers = {
-            successModifier: this.object.successModifier,
+            successModifier: this.object.successes,
             doubleSuccess: this.object.doubleSuccess,
             targetNumber: this.object.targetNumber,
             reroll: this.object.reroll,
@@ -2116,7 +2135,7 @@ export class RollForm extends FormApplication {
         let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes
                 </h4>
                 <div class="dice-tooltip">
                     <div class="dice">
@@ -2178,7 +2197,7 @@ export class RollForm extends FormApplication {
         let theContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                     <div class="dice-tooltip">
                         <div class="dice">
                             <ol class="dice-rolls">${this.object.displayDice}</ol>
@@ -2206,6 +2225,7 @@ export class RollForm extends FormApplication {
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
+                    successes: this.object.successes,
                     successModifier: this.object.successModifier,
                     total: this.object.total
                 }
@@ -2253,7 +2273,7 @@ export class RollForm extends FormApplication {
             var messageContent = `
                             <div class="dice-roll">
                                 <div class="dice-result">
-                                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                                     <div class="dice-tooltip">
                                         <div class="dice">
                                             <ol class="dice-rolls">${this.object.displayDice}</ol>
@@ -2272,6 +2292,7 @@ export class RollForm extends FormApplication {
                 flags: {
                     "exaltedthird": {
                         dice: this.object.dice,
+                        successes: this.object.successes,
                         successModifier: this.object.successModifier,
                         total: this.object.total,
                         defense: this.object.defense,
@@ -2341,7 +2362,7 @@ export class RollForm extends FormApplication {
             var messageContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                     <div class="dice-tooltip">
                         <div class="dice">
                             <ol class="dice-rolls">${this.object.displayDice || ''}</ol>
@@ -2361,6 +2382,7 @@ export class RollForm extends FormApplication {
                 flags: {
                     "exaltedthird": {
                         dice: this.object.dice,
+                        successes: this.object.successes,
                         successModifier: this.object.successModifier,
                         total: this.object.total || 0,
                         defense: this.object.defense,
@@ -2391,7 +2413,7 @@ export class RollForm extends FormApplication {
         let accuracyContent = '';
         if (this.object.rollType !== 'damage') {
             accuracyContent = `
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                 <div class="dice-tooltip">
                     <div class="dice">
                         <ol class="dice-rolls">${this.object.displayDice}</ol>
@@ -2700,7 +2722,7 @@ export class RollForm extends FormApplication {
         var messageContent = '';
         if (this.object.rollType !== 'damage') {
             accuracyContent = `
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                 <div class="dice-tooltip">
                     <div class="dice">
                         <ol class="dice-rolls">${this.object.displayDice}</ol>
@@ -2738,6 +2760,7 @@ export class RollForm extends FormApplication {
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
+                    successes: this.object.successes,
                     successModifier: this.object.successModifier,
                     total: this.object.total,
                     defense: this.object.defense,
@@ -3111,7 +3134,7 @@ export class RollForm extends FormApplication {
         let messageContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successModifier} successes</h4>
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                     <div class="dice-tooltip">
                         <div class="dice">
                             <ol class="dice-rolls">${this.object.displayDice}</ol>
@@ -3135,6 +3158,7 @@ export class RollForm extends FormApplication {
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
+                    successes: this.object.successes,
                     successModifier: this.object.successModifier,
                     total: this.object.total
                 }

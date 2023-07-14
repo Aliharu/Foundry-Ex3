@@ -1,6 +1,7 @@
 <div class="sheet-body exaltedthird">
     <div class="flex-center resource-label">
-        {{#ifEquals data.attackType 'gambit'}}{{localize "Ex3.Initiative"}}{{else}}{{localize "Ex3.Damage"}}{{/ifEquals}}
+        {{#ifEquals data.attackType 'gambit'}}{{localize "Ex3.Initiative"}}{{else}}{{localize
+        "Ex3.Damage"}}{{/ifEquals}}
     </div>
     {{#ifEquals data.rollType 'damage'}}
     {{> systems/exaltedthird/templates/dialogues/added-charm-list.html}}
@@ -159,81 +160,18 @@
         </div>
 
         {{#if data.showTargets}}
-            {{#ifGreater data.showTargets 1}}
-            <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
-                <div class="resource-label">
-                    {{localize "Ex3.Targets"}}
-                </div>
-                <div>
-                    <i class="fas fa-caret-down"></i>
-                </div>
+        {{#ifGreater data.showTargets 1}}
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.Targets"}}
             </div>
-            <div id="targetsDropdown" {{#if data.targetsDropdown}} {{else}} style="display:none;" {{/if}}>
-                {{#each data.targets as |target id|}}
-                <div style="border-bottom: 1px solid black;margin-bottom: 10px;">
-                    <div class="d-flex resource flex-center">
-                        <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24"
-                                height="24" /></div>
-                        <div class="resource-label">{{target.actor.name}}</div>
-                    </div>
-                    <div class="resource grid grid-2col flex-center">
-                        <div>
-                            <label class="resource-label">{{localize "Ex3.Defense"}}
-                                ({{target.rollData.defenseType}})</label>
-                            <input type="number" name="object.targets.{{id}}.rollData.defense"
-                                value="{{target.rollData.defense}}">
-                        </div>
-                        {{#ifEquals ../data.attackType 'withering'}}
-                        <div>
-                            <div class="flex-center resource-label">
-                                {{localize "Ex3.Soak"}} (AS: {{target.rollData.armoredSoak}},
-                                NS:{{target.rollData.naturalSoak}})
-                            </div>
-                            <input type="number" name="object.targets.{{id}}.rollData.soak"
-                                value="{{target.rollData.soak}}">
-                        </div>
-                        {{#if ../data.useShieldInitiative}}
-                        <div>
-                            <div class="flex-center resource-label">
-                                {{localize "Ex3.ShieldInitiative"}}
-                            </div>
-                            <input type="number" name="object.targets.{{id}}.rollData.shieldInitiative"
-                                value="{{target.rollData.shieldInitiative}}">
-                        </div>
-                        {{/if}}
-                        {{/ifEquals}}
-                        {{#ifEquals ../data.attackType 'decisive'}}
-                        <div>
-                            <div class="flex-center resource-label">
-                                {{localize "Ex3.Hardness"}}
-                            </div>
-                            <input type="number" name="object.targets.{{id}}.rollData.hardness"
-                                value="{{target.rollData.hardness}}">
-                        </div>
-                        {{/ifEquals}}
-                        {{#ifNotEquals ../data.rollType 'damage'}}
-                        <div>
-                            <div class="flex-center resource-label">
-                                {{localize "Ex3.DiceModifier"}}
-                            </div>
-                            <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
-                                value="{{target.rollData.diceModifier}}">
-                        </div>
-                        {{/ifNotEquals}}
-                        <div>
-                            <div class="flex-center resource-label">
-                                {{localize "Ex3.DamageModifier"}}
-                            </div>
-                            <input type="number" name="object.targets.{{id}}.rollData.damageModifier"
-                                value="{{target.rollData.damageModifier}}">
-                        </div>
-                    </div>
-                </div>
-                {{/each}}
+            <div>
+                <i class="fas fa-caret-down"></i>
             </div>
-        {{else}}
+        </div>
+        <div id="targetsDropdown" {{#if data.targetsDropdown}} {{else}} style="display:none;" {{/if}}>
             {{#each data.targets as |target id|}}
-            <div style="margin-bottom: 10px;">
+            <div style="border-bottom: 1px solid black;margin-bottom: 10px;">
                 <div class="d-flex resource flex-center">
                     <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24"
                             height="24" /></div>
@@ -282,6 +220,13 @@
                         <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
                             value="{{target.rollData.diceModifier}}">
                     </div>
+                    <div>
+                        <div class="flex-center resource-label">
+                            {{localize "Ex3.SuccessModifier"}}
+                        </div>
+                        <input type="number" name="object.targets.{{id}}.rollData.successModifier"
+                            value="{{target.rollData.successModifier}}">
+                    </div>
                     {{/ifNotEquals}}
                     <div>
                         <div class="flex-center resource-label">
@@ -293,7 +238,76 @@
                 </div>
             </div>
             {{/each}}
-            {{/ifGreater}}
+        </div>
+        {{else}}
+        {{#each data.targets as |target id|}}
+        <div style="margin-bottom: 10px;">
+            <div class="d-flex resource flex-center">
+                <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24"
+                        height="24" /></div>
+                <div class="resource-label">{{target.actor.name}}</div>
+            </div>
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Defense"}}
+                        ({{target.rollData.defenseType}})</label>
+                    <input type="number" name="object.targets.{{id}}.rollData.defense"
+                        value="{{target.rollData.defense}}">
+                </div>
+                {{#ifEquals ../data.attackType 'withering'}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.Soak"}} (AS: {{target.rollData.armoredSoak}},
+                        NS:{{target.rollData.naturalSoak}})
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.soak" value="{{target.rollData.soak}}">
+                </div>
+                {{#if ../data.useShieldInitiative}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.ShieldInitiative"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.shieldInitiative"
+                        value="{{target.rollData.shieldInitiative}}">
+                </div>
+                {{/if}}
+                {{/ifEquals}}
+                {{#ifEquals ../data.attackType 'decisive'}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.Hardness"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.hardness"
+                        value="{{target.rollData.hardness}}">
+                </div>
+                {{/ifEquals}}
+                {{#ifNotEquals ../data.rollType 'damage'}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.DiceModifier"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
+                        value="{{target.rollData.diceModifier}}">
+                </div>
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.SuccessModifier"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.successModifier"
+                        value="{{target.rollData.successModifier}}">
+                </div>
+                {{/ifNotEquals}}
+                <div>
+                    <div class="flex-center resource-label">
+                        {{localize "Ex3.DamageModifier"}}
+                    </div>
+                    <input type="number" name="object.targets.{{id}}.rollData.damageModifier"
+                        value="{{target.rollData.damageModifier}}">
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        {{/ifGreater}}
         {{else}}
         <div class="resource grid grid-2col flex-center">
             <div>
@@ -312,8 +326,7 @@
                 <div class="flex-center resource-label">
                     {{localize "Ex3.ShieldInitiative"}}
                 </div>
-                <input type="number" name="object.shieldInitiative"
-                    value="{{data.shieldInitiative}}">
+                <input type="number" name="object.shieldInitiative" value="{{data.shieldInitiative}}">
             </div>
             {{/if}}
             {{/ifEquals}}
