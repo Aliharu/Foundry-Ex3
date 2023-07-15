@@ -2645,7 +2645,7 @@ export class RollForm extends FormApplication {
                                 this.object.crashed = true;
                                 crashed = true;
                                 targetResults = `<h4 class="dice-total" style="margin-top: 5px;">Target Crashed!</h4>`;
-                                if (this.object.targetCombatant.id === attackerCombatant.flags?.crashedBy) {
+                                if (attackerCombatant && this.object.targetCombatant.id === attackerCombatant.flags?.crashedBy) {
                                     this.object.initiativeShift = true
                                     targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Initiative Shift!</h4>';
                                 }
@@ -3006,7 +3006,7 @@ export class RollForm extends FormApplication {
     async _updateTargetInitiative() {
         var attackerCombatant = this._getActorCombatant();
         let crasherId = null;
-        if (this.object.crashed) {
+        if (attackerCombatant && this.object.crashed) {
             crasherId = attackerCombatant.id;
         }
         if (game.user.isGM) {
