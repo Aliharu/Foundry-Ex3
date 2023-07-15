@@ -185,7 +185,10 @@ Hooks.once('init', async function () {
   });
 
   Handlebars.registerHelper('ifInSet', function (elem, list, options) {
-    return (list.has(elem)) ? options.fn(this) : options.inverse(this);
+    if(list instanceof Set) {
+      return (list.has(elem)) ? options.fn(this) : options.inverse(this);
+    }
+    return false;
   });
 
   Handlebars.registerHelper("charmCostDisplay", function (cost) {

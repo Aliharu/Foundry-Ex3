@@ -191,12 +191,6 @@ export class RollForm extends FormApplication {
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
-                if (this.actor.token) {
-                    this.object.conditions = (this.actor.token && this.actor.token.actor.effects) ? this.actor.token.actor.effects : [];
-                }
-                else {
-                    this.object.conditions = this.actor.effects;
-                }
                 if (this.actor.type === 'character') {
                     if (this._isAttackRoll()) {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
@@ -344,17 +338,6 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'command') {
                     this.object.difficulty = 1;
                 }
-                if (this.object.conditions.some(e => e.name === 'blind')) {
-                    this.object.diceModifier -= 3;
-                }
-                if (this._isAttackRoll()) {
-                    if (this.object.conditions.some(e => e.statuses.has('prone'))) {
-                        this.object.diceModifier -= 3;
-                    }
-                    if (this.object.conditions.some(e => e.statuses.has('grappled'))) {
-                        this.object.diceModifier -= 1;
-                    }
-                }
             }
         }
         this.object.addingCharms = false;
@@ -419,6 +402,23 @@ export class RollForm extends FormApplication {
                 }
                 else {
                     this._setupSingleTarget(Array.from(game.user.targets)[0]);
+                }
+            }
+            if (this.actor.token) {
+                this.object.conditions = (this.actor.token && this.actor.token.actor.effects) ? this.actor.token.actor.effects : [];
+            }
+            else {
+                this.object.conditions = this.actor.effects;
+            }
+            if (this.object.conditions.some(e => e.name === 'blind')) {
+                this.object.diceModifier -= 3;
+            }
+            if (this._isAttackRoll()) {
+                if (this.object.conditions.some(e => e.statuses.has('prone'))) {
+                    this.object.diceModifier -= 3;
+                }
+                if (this.object.conditions.some(e => e.statuses.has('grappled'))) {
+                    this.object.diceModifier -= 1;
                 }
             }
         }
@@ -768,6 +768,9 @@ export class RollForm extends FormApplication {
                         rollData.name = results;
                         rollData.id = uniqueId;
                         rollData.target = null;
+                        rollData.target = null;
+                        rollData.showTargets = false;
+                        rollData.targets = null;
 
                         let updates = {
                             "data.savedRolls": {
