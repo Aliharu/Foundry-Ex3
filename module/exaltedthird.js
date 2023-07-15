@@ -1317,13 +1317,18 @@ async function createItemMacro(data, slot) {
 }
 
 function applyDecisiveDamage(message) {
-  const controlledTokens = game?.canvas?.tokens?.controlled;
+  let targetedTokens = Array.from(game.user.targets);
   // If there are not any controlled tokens, issue a warning.
-  if (!controlledTokens?.length) {
-    // If no targets selected, issue warning notification.
-    return ui.notifications.warn('Ex3.NoTargetsSelected', {
-      localize: true,
-    });
+  if (!targetedTokens?.length) {
+    const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.targetId);
+    if(targetToken) {
+      targetedTokens = [targetToken];
+    }
+    else {
+      return ui.notifications.warn('Ex3.NoTargets', {
+        localize: true,
+      });
+    }
   }
   // Get the damage and ap from the roll data
   const damageContext = {
@@ -1332,7 +1337,7 @@ function applyDecisiveDamage(message) {
     attackerTokenId: message?.flags?.exaltedthird?.attackerTokenId,
   };
   // For each token controlled...
-  for (const token of controlledTokens) {
+  for (const token of targetedTokens) {
     // Get the actor from the token data.
     const actor = token.actor;
     // Trigger calculation of Wounds
@@ -1341,13 +1346,18 @@ function applyDecisiveDamage(message) {
 }
 
 function applyWitheringDamage(message) {
-  const controlledTokens = game?.canvas?.tokens?.controlled;
+  let targetedTokens = Array.from(game.user.targets);
   // If there are not any controlled tokens, issue a warning.
-  if (!controlledTokens?.length) {
-    // If no targets selected, issue warning notification.
-    return ui.notifications.warn('Ex3.NoTargetsSelected', {
-      localize: true,
-    });
+  if (!targetedTokens?.length) {
+    const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.targetId);
+    if(targetToken) {
+      targetedTokens = [targetToken];
+    }
+    else {
+      return ui.notifications.warn('Ex3.NoTargets', {
+        localize: true,
+      });
+    }
   }
   if (!game?.combat) {
     return ui.notifications.warn('Ex3.NoCurrentCombat', {
@@ -1355,7 +1365,7 @@ function applyWitheringDamage(message) {
     });
   }
   // For each token controlled...
-  for (const token of controlledTokens) {
+  for (const token of targetedTokens) {
     // Get the actor from the token data.
     const actor = token.actor;
 
@@ -1388,13 +1398,18 @@ function applyWitheringDamage(message) {
 }
 
 function gainAttackInitiative(message) {
-  const controlledTokens = game?.canvas?.tokens?.controlled;
+  let targetedTokens = Array.from(game.user.targets);
   // If there are not any controlled tokens, issue a warning.
-  if (!controlledTokens?.length) {
-    // If no targets selected, issue warning notification.
-    return ui.notifications.warn('Ex3.NoTargetsSelected', {
-      localize: true,
-    });
+  if (!targetedTokens?.length) {
+    const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.attackerTokenId);
+    if(targetToken) {
+      targetedTokens = [targetToken];
+    }
+    else {
+      return ui.notifications.warn('Ex3.NoTargets', {
+        localize: true,
+      });
+    }
   }
   if (!game?.combat) {
     return ui.notifications.warn('Ex3.NoCurrentCombat', {
@@ -1402,7 +1417,7 @@ function gainAttackInitiative(message) {
     });
   }
   // For each token controlled...
-  for (const token of controlledTokens) {
+  for (const token of targetedTokens) {
     const combatant = game.combat?.combatants?.find(c => c.tokenId === token.id) || null;
     if (!combatant) {
       ui.notifications.warn('Ex3.NoCombatant', {

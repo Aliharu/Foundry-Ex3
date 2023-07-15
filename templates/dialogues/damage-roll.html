@@ -137,6 +137,8 @@
             <div class="resource grid grid-2col flex-center">
                 <label class="resource-label">{{localize "Ex3.RerollNumDice"}} </label>
                 <input name="object.damage.rerollNumber" value="{{data.damage.rerollNumber}}" type="number">
+                <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}} </label>
+                <input type="number" name="object.damage.diceToSuccesses" value="{{data.damage.diceToSuccesses}}">
                 <label class="resource-label">{{localize "Ex3.RerollFailed"}} </label>
                 <input type="checkbox" name="object.damage.rerollFailed" {{checked data.damage.rerollFailed}}>
                 <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}} </label>

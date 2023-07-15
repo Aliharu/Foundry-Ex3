@@ -920,6 +920,12 @@ export class ExaltedThirdActor extends Actor {
     data.onslaught = { 'value': currentOnslaughtPenalty };
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
+    if(!data.size){
+      data.size = {
+        value: 0,
+        min: 0,
+      }
+    }
 
     // Prepare character roll data.
     this._getCharacterRollData(data);

@@ -156,6 +156,7 @@ export class RollForm extends FormApplication {
                 rerollNumber: 0,
                 decisiveDamageType: 'initiative',
                 decisiveDamageCalculation: 'evenSplit',
+                diceToSuccesses: 0,
             };
             this.object.poison = null;
             this.object.settings = {
@@ -911,6 +912,7 @@ export class RollForm extends FormApplication {
         this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
         this.object.overwhelming += this._getFormulaValue(item.system.diceroller.damage.overwhelming);
         this.object.damage.postSoakDamage += this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
+        this.object.damage.diceToSuccesses += this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
             if (rerollValue) {
                 this.object.damage.reroll[rerollKey].status = true;
@@ -1413,6 +1415,7 @@ export class RollForm extends FormApplication {
                 this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
                 this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
                 this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
+                this.object.damage.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                     if (rerollValue) {
                         this.object.damage.reroll[rerollKey].status = false;
@@ -2323,12 +2326,12 @@ export class RollForm extends FormApplication {
                 this.object.characterInitiative += this.object.gainedInitiative;
             }
             const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets)
-            if (triggerMissedAttack && this.object.rollType !== 'withering' && this.object.damage.resetInit) {
+            if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit) {
                 if (this.object.characterInitiative < 11) {
-                    this.object.characterInitiative = this.object.characterInitiative - 2;
+                    this.object.characterInitiative -= 2;
                 }
                 else {
-                    this.object.characterInitiative = this.object.characterInitiative - 3;
+                    this.object.characterInitiative -= 3;
                 }
             }
             if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
@@ -2474,19 +2477,18 @@ export class RollForm extends FormApplication {
         if (this.object.targetSpecificDamageMod) {
             dice += this.object.targetSpecificDamageMod;
         }
-        let baseDamage = dice;
         var damageResults = ``;
-
         if (this._damageRollType('decisive')) {
-            if (this.object.target && game.combat) {
-                if (this.object.targetCombatant !== null) {
-                    if (this.object.targetCombatant.actor.type === 'npc' && this.object.targetCombatant.actor.system.battlegroup) {
-                        dice += Math.floor(dice / 4);
-                        baseDamage = dice;
+            if (this.object.target) {
+                if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
+                    this.object.damage.damageSuccessModifier += Math.ceil(dice / 4);
+                    if(this.object.doubleBGDecisiveDamageBonus) {
+                        this.object.damage.damageSuccessModifier += Math.ceil(dice / 4);
                     }
                 }
             }
         }
+        let baseDamage = dice;
         if (this._damageRollType('withering')) {
             dice -= Math.max(0, this.object.soak - this.object.damage.ignoreSoak);
             if (dice < this.object.overwhelming) {
@@ -2502,6 +2504,10 @@ export class RollForm extends FormApplication {
         }
         if (dice < 0) {
             dice = 0;
+        }
+        if (this.object.damage.diceToSuccesses > 0) {
+            this.object.damage.damageSuccessModifier += Math.min(dice, this.object.damage.diceToSuccesses);
+            dice = Math.max(0, dice - this.object.damage.diceToSuccesses);
         }
         if (this.object.attackType === 'decisive' && dice <= this.object.hardness) {
             return this._failedDecisive(dice);
@@ -2675,8 +2681,8 @@ export class RollForm extends FormApplication {
                 fullInitiative += 5;
             }
             typeSpecificResults = `
-                                    <h4 class="dice-formula">${total} Damage!</h4>
-                                    <h4 class="dice-total">${total} Total Damage!</h4>
+                                    <h4 class="dice-total dice-total-middle">${total} Total Damage!</h4>
+                                    ${this.object.damage.gainInitiative && `<h4 class="dice-total">${fullInitiative} Initiative Gained!</h4>`}
                                     ${targetResults}
                                     <button
                                         type='button'
@@ -2715,7 +2721,7 @@ export class RollForm extends FormApplication {
                                                 </div>${typeSpecificResults}`;
 
         var title = "Decisive Attack";
-        if (this.object.rollType === 'withering') {
+        if (this.object.attackType === 'withering') {
             title = "Withering Attack";
         }
         if (this._damageRollType('gambit')) {
@@ -2770,6 +2776,7 @@ export class RollForm extends FormApplication {
                     threshholdSuccesses: this.object.thereshholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
                     attackerCombatantId: this._getActorCombatant()?._id || null,
+                    targetId: this.object.target?.id || null,
                     damage: {
                         dice: baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
@@ -2785,8 +2792,7 @@ export class RollForm extends FormApplication {
         });
 
         if (this.actor.system.battlegroup) {
-            let combat = game.combat;
-            if (this.object.target && combat) {
+            if (this.object.target && game.combat) {
                 if (this.object.targetCombatant && this.object.targetCombatant.initiative != null && this.object.targetCombatant.initiative <= 0) {
                     this.dealHealthDamage(total);
                 }
@@ -3704,6 +3710,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.diceToSuccesses === undefined) {
             this.object.diceToSuccesses = 0;
+        }
+        if (this.object.damage.diceToSuccesses === undefined) {
+            this.object.damage.diceToSuccesses = 0;
         }
         if (this.object.rollTwice === undefined) {
             this.object.rollTwice = false;
