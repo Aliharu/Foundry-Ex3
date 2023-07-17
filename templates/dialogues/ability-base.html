@@ -208,6 +208,28 @@
         {{/ifInSet}}
     </div>
     {{/each}}
+    {{#if data.weaponTags}}
+    {{#each data.weaponTags as |tag key|}}
+    <div>
+        {{tag}}
+        {{#ifEquals 'flame' key}}
+        ({{localize "Ex3.Damage"}} = 4, +2 {{localize "Ex3.Accuracy"}} at {{localize "Ex3.CloseRange"}})
+        {{/ifEquals}}
+        {{#ifEquals 'crossbow' key}}
+        ({{localize "Ex3.Damage"}} = 4)
+        {{/ifEquals}}
+        {{#ifEquals 'improvised' key}}
+        ({{localize "Ex3.Initiative"}} {{localize "Ex3.Cost"}} +1)
+        {{/ifEquals}}
+        {{#ifEquals 'flexible' key}}
+        ({{localize "Ex3.Ignore"}} {{localize "Ex3.FullDefense"}})
+        {{/ifEquals}}
+        {{#ifEquals 'bombard' key}}
+        (-4 {{localize "Ex3.Dice"}} {{localize "Ex3.VsNonBattlegroups"}})
+        {{/ifEquals}}
+    </div>
+    {{/each}}
+    {{/if}}
 </div>
 {{/if}}
 {{/ifNotEquals}}
