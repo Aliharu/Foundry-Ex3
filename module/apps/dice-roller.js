@@ -146,6 +146,7 @@ export class RollForm extends FormApplication {
                 type: 'lethal',
                 threshholdToDamage: false,
                 resetInit: true,
+                maxInitiativeGain: null,
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
                 ignoreSoak: 0,
@@ -1105,7 +1106,7 @@ export class RollForm extends FormApplication {
             this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
             if (this.object.rollType === 'readIntentions') {
                 this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-            } 
+            }
             if (this.object.rollType === 'social') {
                 this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
             }
@@ -2482,7 +2483,7 @@ export class RollForm extends FormApplication {
             if (this.object.target) {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
                     this.object.damage.damageSuccessModifier += Math.ceil(dice / 4);
-                    if(this.object.doubleBGDecisiveDamageBonus) {
+                    if (this.object.doubleBGDecisiveDamageBonus) {
                         this.object.damage.damageSuccessModifier += Math.ceil(dice / 4);
                     }
                 }
@@ -2660,10 +2661,13 @@ export class RollForm extends FormApplication {
                                 }
                             }
                         }
-                        if(game.settings.get("exaltedthird", "automaticWitheringDamage")) {
+                        if (game.settings.get("exaltedthird", "automaticWitheringDamage")) {
                             this.object.newTargetInitiative = newInitative;
                             this.object.updateTargetInitiative = true;
                             this.object.gainedInitiative = Math.max(total, this.object.gainedInitiative);
+                            if (this.object.damage.maxInitiativeGain) {
+                                this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
+                            }
                         }
                     }
                 }
@@ -2677,6 +2681,10 @@ export class RollForm extends FormApplication {
             }
             soakResult = `<h4 class="dice-formula">${this.object.soak} Soak! (Ignoring ${this.object.damage.ignoreSoak})</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>`;
             var fullInitiative = total + 1;
+            if (this.object.damage.maxInitiativeGain) {
+                fullInitiative = Math.min(this.object.damage.maxInitiativeGain, fullInitiative);
+            }
+            fullInitiative++
             if (crashed) {
                 fullInitiative += 5;
             }
@@ -2816,7 +2824,8 @@ export class RollForm extends FormApplication {
                     origin: this.actor.uuid,
                     disabled: false,
                     duration: {
-                        rounds: 10,
+                        rounds: 20,
+                        // startRound: game.combat?.round || 0,
                     },
                     flags: {
                         "exaltedthird": {
@@ -2926,7 +2935,8 @@ export class RollForm extends FormApplication {
                     origin: this.object.target.actor.uuid,
                     disabled: false,
                     duration: {
-                        rounds: 10,
+                        rounds: 5,
+                        // startRound: game.combat?.round || 0,
                     },
                     flags: {
                         "exaltedthird": {
@@ -3609,6 +3619,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.damage.doubleRolledDamage === undefined) {
             this.object.damage.doubleRolledDamage = false;
+        }
+        if (this.object.damage.maxInitiative === undefined) {
+            this.object.damage.maxInitiative = 0;
         }
         if (this.object.damage.ignoreSoak === undefined) {
             this.object.damage.ignoreSoak = 0;

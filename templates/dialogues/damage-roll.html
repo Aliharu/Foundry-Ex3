@@ -114,7 +114,9 @@
                 {{/ifEquals}}
                 {{/ifEquals}}
                 {{#ifEquals data.attackType 'withering'}}
-                <label class="resource-label">{{localize "Ex3.IgnoreSoak"}} </label>
+                <label class="resource-label">{{localize "Ex3.MaxInitiativeGain"}}</label>
+                <input type="number" name="object.damage.maxInitiativeGain" value="{{data.damage.maxInitiativeGain}}">
+                <label class="resource-label">{{localize "Ex3.IgnoreSoak"}}</label>
                 <input type="number" name="object.damage.ignoreSoak" value="{{data.damage.ignoreSoak}}">
                 <label class="resource-label">{{localize "Ex3.GainInitiative"}} </label>
                 <div>
