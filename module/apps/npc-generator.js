@@ -3,11 +3,12 @@ export default class NPCGenerator extends FormApplication {
     super(object, options);
     this.object.template = 'custom';
     this.object.poolNumbers = 'mid';
-    this.object.characterType = 'npc';
+    this.object.characterType = 'character';
     this.object.availableCastes = {};
+    this.object.abilityList = CONFIG.exaltedthird.abilities;
     this.object.character = {
       name: '',
-      defaultName: 'New NPC',
+      defaultName: 'New Character',
       npcType: "mortal",
       exalt: "other",
       caste: "",
@@ -45,6 +46,228 @@ export default class NPCGenerator extends FormApplication {
           label: 'Ex3.Willpower',
           value: "weak"
         },
+      },
+      playerCharacter: {
+        willpower: 5,
+        attributes: {
+          strength: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Strength',
+          },
+          charisma: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Charisma',
+          },
+          perception: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Perception',
+          },
+          dexterity: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Dexterity',
+          },
+          manipulation: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Manipulation',
+          },
+          intelligence: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Intelligence',
+          },
+          stamina: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Stamina',
+          },
+          appearance: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Appearance',
+          },
+          wits: {
+            excellency: false,
+            value: 1,
+            charms: 0,
+            name: 'Ex3.Wits',
+          }
+        },
+        abilities: {
+          archery: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Archery",
+          },
+          athletics: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Athletics",
+          },
+          awareness: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Awareness",
+          },
+          brawl: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Brawl",
+          },
+          bureaucracy: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Bureaucracy",
+          },
+          craft: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Craft",
+          },
+          dodge: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Dodge",
+          },
+          integrity: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Integrity",
+          },
+          investigation: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Investigation",
+          },
+          larceny: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Larceny",
+          },
+          linguistics: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Linguistics",
+          },
+          lore: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Lore",
+          },
+          martialarts: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.MartialArts",
+          },
+          medicine: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Medicine",
+          },
+          melee: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Melee",
+          },
+          occult: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Occult",
+          },
+          performance: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Performance",
+          },
+          presence: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Presence",
+          },
+          resistance: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Resistance",
+          },
+          ride: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Ride",
+          },
+          sail: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Sail",
+          },
+          socialize: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Socialize",
+          },
+          stealth: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Stealth",
+          },
+          survival: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Survival",
+          },
+          thrown: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.Thrown",
+          },
+          war: {
+            excellency: false,
+            value: 0,
+            charms: 0,
+            name: "Ex3.War",
+          }
+        },
+        specialties: {},
+        merits: {},
+        crafts: {},
+        martialarts: {},
+        spells: 0,
       },
       homebrew: {
         specialAbilities: 0,
@@ -92,222 +315,6 @@ export default class NPCGenerator extends FormApplication {
         stealthy: { label: 'Ex3.Stealthy', value: false },
         wealthy: { label: 'Ex3.Wealthy', value: false },
       }
-    }
-    this.object.playerCharacter = {
-      attributes: {
-        strength: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Strength',
-        },
-        charisma: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Charisma',
-        },
-        perception: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Perception',
-        },
-        dexterity: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Dexterity',
-        },
-        manipulation: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Manipulation',
-        },
-        intelligence: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Intelligence',
-        },
-        stamina: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Stamina',
-        },
-        appearance: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Appearance',
-        },
-        wits: {
-          excellency: false,
-          value: 1,
-          charms: 0,
-          name: 'Ex3.Wits',
-        }
-      },
-      abilities: {
-        archery: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Archery",
-        },
-        athletics: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Athletics",
-        },
-        awareness: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Awareness",
-        },
-        brawl: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Brawl",
-        },
-        bureaucracy: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Bureaucracy",
-        },
-        craft: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Craft",
-        },
-        dodge: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Dodge",
-        },
-        integrity: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Integrity",
-        },
-        investigation: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Investigation",
-        },
-        larceny: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Larceny",
-        },
-        linguistics: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Linguistics",
-        },
-        lore: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Lore",
-        },
-        martialarts: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.MartialArts",
-        },
-        medicine: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Medicine",
-        },
-        melee: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Melee",
-        },
-        occult: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Occult",
-        },
-        performance: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Performance",
-        },
-        presence: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Presence",
-        },
-        resistance: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Resistance",
-        },
-        ride: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Ride",
-        },
-        sail: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Sail",
-        },
-        socialize: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Socialize",
-        },
-        stealth: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Stealth",
-        },
-        survival: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Survival",
-        },
-        thrown: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.Thrown",
-        },
-        war: {
-          excellency: false,
-          value: 0,
-          charms: 0,
-          name: "Ex3.War",
-        }
-      },
     }
   }
 
@@ -387,13 +394,30 @@ export default class NPCGenerator extends FormApplication {
     html.find("#generate").on("click", async (event) => {
       this.createNPC();
     });
+
+    html.find(".add-item").on("click", async (event) => {
+      const type = event.currentTarget.dataset.type;
+      if (type === 'specialties') {
+        this.object.character.playerCharacter.specialties[Object.entries(this.object.character.playerCharacter['specialties']).length] = {
+          name: 'Specialty',
+          ability: 'archery',
+        };
+      }
+      else {
+        this.object.character.playerCharacter[type][Object.entries(this.object.character.playerCharacter[type]).length] = {
+          name: 'Name',
+          value: 0,
+        };
+      }
+      this.render();
+    });
   }
 
   async randomName() {
     const nameFormats = [
       { option: "common", weight: 10 },
     ];
-    if(this.object.character.exalt === 'dragonblooded') {
+    if (this.object.character.exalt === 'dragonblooded') {
       nameFormats.push(
         {
           option: "dynast", weight: 20
@@ -421,7 +445,7 @@ export default class NPCGenerator extends FormApplication {
         break;
       }
     }
-    if(this.object.character.exalt === 'abyssal') {
+    if (this.object.character.exalt === 'abyssal') {
       selectedOption = 'abyssal';
     }
     switch (selectedOption) {
@@ -640,14 +664,255 @@ export default class NPCGenerator extends FormApplication {
     ];
     //Skills
     //Weak, Skilled, Exceptional, Legendary 
-    var actorData = this._getBaseStatBlock();
+    var actorData = this._getBaseNPCStatBlock();
 
+    await this.getbaseCharacterData(actorData, itemData);
+
+    if (this.object.character.traits.commander.value) {
+      actorData.system.pools.command.value = this._getCharacterPool(this.object.character.skills.combat.value);
+    }
+    actorData.system.pools.grapple.value = this._getCharacterPool(this.object.character.skills.strength.value);
+    actorData.system.pools.joinbattle.value = this._getCharacterPool(this.object.character.skills.perception.value);
+    actorData.system.pools.movement.value = this._getCharacterPool(this.object.character.skills.agility.value);
+    actorData.system.pools.readintentions.value = this._getCharacterPool(this.object.character.skills.perception.value);
+    actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
+    if (this.object.character.sorcerer !== 'none') {
+      actorData.system.pools.sorcery.value = this._getCharacterPool(this.object.character.skills.mind.value);
+    }
+    actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
+
+    actorData.system.parry.value = this._getStaticValue(this.object.character.skills.combat.value);
+    actorData.system.evasion.value = this._getStaticValue(this.object.character.skills.agility.value);
+    actorData.system.resolve.value = this._getStaticValue(this.object.character.skills.mind.value);
+    actorData.system.guile.value = this._getStaticValue(this.object.character.skills.social.value);
+
+    actorData.system.willpower.max = willpowerMap[this.object.character.skills.willpower.value];
+    actorData.system.willpower.value = willpowerMap[this.object.character.skills.willpower.value];
+    actorData.system.legendarysize = this.object.character.traits.legendarySize.value;
+
+    actorData.system.appearance.value = 2;
+    if (this.object.character.traits.strikingAppearance.value) {
+      actorData.system.appearance.value = 4;
+    }
+    if (this.object.character.traits.poisoner.value) {
+      actorData.system.qualities = `Poison: ${poisons[Math.floor(Math.random() * poisons.length)]}`;
+    }
+
+    if (this.object.character.skills.body.value === 'weak') {
+      actorData.system.health.levels.one.value = 1;
+    }
+    if (this.object.character.skills.body.value === 'exceptional' || this.object.character.skills.body.value === 'legendary') {
+      actorData.system.health.levels.one.value = 3;
+    }
+    if (this.object.character.skills.body.value === 'legendary') {
+      actorData.system.health.levels.zero.value = 2;
+    }
+    actorData.system.battlegroup = this.object.character.battlegroup;
+    if (this.object.character.battlegroup) {
+      actorData.system.health.levels.zero.value = actorData.system.health.levels.zero.value + actorData.system.health.levels.one.value + actorData.system.health.levels.two.value + actorData.system.health.levels.four.value + this.object.character.battlegroupStats.size;
+    }
+    actorData.system.might.value = this.object.character.battlegroupStats.might;
+    actorData.system.drill.value = this.object.character.battlegroupStats.drill;
+    actorData.system.size.value = this.object.character.battlegroupStats.size;
+
+    if (this.object.character.traits.martialArtist.value) {
+      const randomMartialArts = martialArts[Math.floor(Math.random() * martialArts.length)]
+      itemData.push(
+        {
+          type: 'action',
+          name: randomMartialArts,
+          system: {
+            value: this._getCharacterPool(this.object.character.skills.combat.value)
+          }
+        }
+      )
+    }
+
+    itemData.push(
+      {
+        type: 'action',
+        name: 'Senses',
+        system: {
+          value: this._getCharacterPool(this.object.character.skills.perception.value)
+        }
+      }
+    )
+    itemData.push(
+      {
+        type: 'action',
+        name: 'Resistance',
+        system: {
+          value: this._getCharacterPool(this.object.character.skills.body.value)
+        }
+      }
+    )
+    itemData.push(
+      {
+        type: 'action',
+        name: 'Mental Resistance',
+        system: {
+          value: this._getCharacterPool(this.object.character.skills.mind.value)
+        }
+      }
+    )
+    if (this.object.character.traits.stealthy.value) {
+      itemData.push(
+        {
+          type: 'action',
+          name: 'Stealth',
+          system: {
+            value: this._getCharacterPool(this.object.character.skills.agility.value)
+          }
+        }
+      )
+    }
+    if (this.object.character.traits.martialArtist.value) {
+      const randomMartialArts = martialArts[Math.floor(Math.random() * martialArts.length)]
+      itemData.push(
+        {
+          type: 'action',
+          name: randomMartialArts,
+          system: {
+            value: this._getCharacterPool(this.object.character.skills.combat.value)
+          }
+        }
+      )
+    }
+    const mutationsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/mutations.json', {}, { int: 30000 });
+
+    for (var i = 0; i < this.object.character.numberTraits.randomMutations.value; i++) {
+      var mutation = mutationsList[Math.floor(Math.random() * mutationsList.length)];
+      var meritRating = mutation.dotValues[Math.floor(Math.random() * mutation.dotValues.length)]
+      itemData.push(
+        {
+          type: 'merit',
+          img: "icons/svg/aura.svg",
+          name: mutation.name,
+          system: {
+            description: mutation.pageref,
+            points: meritRating,
+          }
+        }
+      );
+    }
+    if (this.object.character.traits.wealthy.value) {
+      itemData.push(
+        {
+          type: 'merit',
+          img: "icons/svg/coins.svg",
+          name: 'Resources',
+          system: {
+            points: 3,
+          }
+        }
+      );
+    }
+
+    actorData.system.soak.value += attributeAbilityMap[this.object.character.skills.body.value];
+    actorData.system.naturalsoak.value = attributeAbilityMap[this.object.character.skills.body.value];
+
+    var charms = game.items.filter((charm) => charm.type === 'charm'
+      && charm.system.ability !== 'evocation'
+      && charm.system.charmtype !== 'martialarts'
+      && this.object.character.skills[charmToPoolMap[charm.system.ability]]?.value !== 'weak'
+      && charm.system.essence <= this.object.character.essence && charm.system.requirement <= (attributeAbilityMap[this.object.character.skills[charmToPoolMap[charm.system.ability]]?.value] || 0));
+
+    charms = charms.filter(charm => (charm.system.ability !== 'thrown' || itemData.find(item => item.system.weapontype === 'thrown')));
+    charms = charms.filter(charm => (charm.system.ability !== 'melee' || itemData.find(item => item.system.weapontype === 'melee')));
+    charms = charms.filter(charm => (charm.system.ability !== 'archery' || itemData.find(item => item.system.weapontype === 'ranged')));
+    if (this.object.character.exalt !== 'other') {
+      charms = charms.filter((charm) => charm.system.charmtype === this.object.character.exalt);
+    }
+    const charmIds = [];
+    if (charms) {
+      for (var i = 0; i < this.object.character.numberTraits.randomCharms.value; i++) {
+        const availableCharms = charms.filter(charm => {
+          return charm.system.charmprerequisites.length === 0 || charmIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => charmIds.includes(prerequisite.id));
+        });
+        if (availableCharms.length === 0) {
+          break;
+        }
+        var charm = duplicate(availableCharms[Math.floor(Math.random() * availableCharms.length)]);
+        charmIds.push(charm._id);
+        itemData.push(charm);
+      }
+    }
+    if (this.object.character.traits.godOrDemon.value) {
+      itemData.push({
+        type: 'charm',
+        img: "icons/svg/explosion.svg",
+        name: "Hurry Home",
+        system: {
+          description: "The Spirit dissapear on their next turn, returns to a specific location such as their sactum or their summoners side.",
+          type: 'Simple',
+          duration: "Instant",
+          ability: "other",
+          essence: 1,
+          cost: {
+            motes: 10,
+            willpower: 1,
+          }
+        },
+      });
+      itemData.push({
+        type: 'charm',
+        img: "icons/svg/explosion.svg",
+        name: "Materialize",
+        system: {
+          description: "The spirit materializes.",
+          type: 'Simple',
+          duration: "Instant",
+          ability: "other",
+          essence: 1,
+          cost: {
+            motes: Math.floor(actorData.system.motes.personal.value / 2),
+            willpower: 1,
+          }
+        },
+      });
+      itemData.push({
+        type: 'charm',
+        img: "icons/svg/explosion.svg",
+        name: "Measure the Wind",
+        system: {
+          description: "The spirit discerns the nature of being based on a prequisite or when they take a certain action in the spririt's precense.",
+          type: 'Simple',
+          duration: "Instant",
+          ability: "other",
+          essence: 1,
+          cost: {
+            motes: 5,
+          }
+        },
+      });
+    }
+
+    actorData.items = itemData;
+    await Actor.create(actorData);
+  }
+
+  async getbaseCharacterData(actorData, itemData) {
+    const attributeAbilityMap = {
+      "weak": 1,
+      "skilled": 3,
+      "exceptional": 4,
+      "legendary": 5,
+    }
     actorData.name = this.object.character.name || this.object.character.defaultName;
     actorData.system.essence.value = this.object.character.essence;
     actorData.system.creaturetype = this.object.character.npcType;
     actorData.system.details.exalt = this.object.character.exalt;
 
-    //Do Motes
+    const animaList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/animaEffectsList.json', {}, { int: 30000 });
+    if (animaList[this.object.character.caste]) {
+      actorData.system.anima.passive = animaList[this.object.character.caste][0];
+      actorData.system.anima.active = animaList[this.object.character.caste][1];
+      actorData.system.anima.iconic = animaList[this.object.character.caste][2];
+    }
+    else {
+      actorData.system.settings.showanima = false;
+    }
+
     if (this.object.character.traits.motePool.value) {
       actorData.system.motes.personal.max = actorData.system.essence.value * 10;
       actorData.system.motes.personal.value = actorData.system.essence.value * 10;
@@ -767,107 +1032,6 @@ export default class NPCGenerator extends FormApplication {
         });
       }
     }
-    if (this.object.character.traits.commander.value) {
-      actorData.system.pools.command.value = this._getCharacterPool(this.object.character.skills.combat.value);
-    }
-    actorData.system.pools.grapple.value = this._getCharacterPool(this.object.character.skills.strength.value);
-    actorData.system.pools.joinbattle.value = this._getCharacterPool(this.object.character.skills.perception.value);
-    actorData.system.pools.movement.value = this._getCharacterPool(this.object.character.skills.agility.value);
-    actorData.system.pools.readintentions.value = this._getCharacterPool(this.object.character.skills.perception.value);
-    actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
-    if (this.object.character.sorcerer !== 'none') {
-      actorData.system.pools.sorcery.value = this._getCharacterPool(this.object.character.skills.mind.value);
-    }
-    actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
-
-    actorData.system.parry.value = this._getStaticValue(this.object.character.skills.combat.value);
-    actorData.system.evasion.value = this._getStaticValue(this.object.character.skills.agility.value);
-    actorData.system.resolve.value = this._getStaticValue(this.object.character.skills.mind.value);
-    actorData.system.guile.value = this._getStaticValue(this.object.character.skills.social.value);
-
-    actorData.system.willpower.max = willpowerMap[this.object.character.skills.willpower.value];
-    actorData.system.willpower.value = willpowerMap[this.object.character.skills.willpower.value];
-    actorData.system.legendarysize = this.object.character.traits.legendarySize.value;
-
-    actorData.system.appearance.value = 2;
-    if (this.object.character.traits.strikingAppearance.value) {
-      actorData.system.appearance.value = 4;
-    }
-    if (this.object.character.traits.poisoner.value) {
-      actorData.system.qualities = `Poison: ${poisons[Math.floor(Math.random() * poisons.length)]}`;
-    }
-
-    if (this.object.character.skills.body.value === 'weak') {
-      actorData.system.health.levels.one.value = 1;
-    }
-    if (this.object.character.skills.body.value === 'exceptional' || this.object.character.skills.body.value === 'legendary') {
-      actorData.system.health.levels.one.value = 3;
-    }
-    if (this.object.character.skills.body.value === 'legendary') {
-      actorData.system.health.levels.zero.value = 2;
-    }
-    actorData.system.battlegroup = this.object.character.battlegroup;
-    if (this.object.character.battlegroup) {
-      actorData.system.health.levels.zero.value = actorData.system.health.levels.zero.value + actorData.system.health.levels.one.value + actorData.system.health.levels.two.value + actorData.system.health.levels.four.value + this.object.character.battlegroupStats.size;
-    }
-    actorData.system.might.value = this.object.character.battlegroupStats.might;
-    actorData.system.drill.value = this.object.character.battlegroupStats.drill;
-    actorData.system.size.value = this.object.character.battlegroupStats.size;
-
-    itemData.push(
-      {
-        type: 'action',
-        name: 'Senses',
-        system: {
-          value: this._getCharacterPool(this.object.character.skills.perception.value)
-        }
-      }
-    )
-    itemData.push(
-      {
-        type: 'action',
-        name: 'Resistance',
-        system: {
-          value: this._getCharacterPool(this.object.character.skills.body.value)
-        }
-      }
-    )
-    itemData.push(
-      {
-        type: 'action',
-        name: 'Mental Resistance',
-        system: {
-          value: this._getCharacterPool(this.object.character.skills.mind.value)
-        }
-      }
-    )
-    if (this.object.character.traits.stealthy.value) {
-      itemData.push(
-        {
-          type: 'action',
-          name: 'Stealth',
-          system: {
-            value: this._getCharacterPool(this.object.character.skills.agility.value)
-          }
-        }
-      )
-    }
-    if (this.object.character.traits.martialArtist.value) {
-      const randomMartialArts = martialArts[Math.floor(Math.random() * martialArts.length)]
-      itemData.push(
-        {
-          type: 'action',
-          name: randomMartialArts,
-          system: {
-            value: this._getCharacterPool(this.object.character.skills.combat.value)
-          }
-        }
-      )
-    }
-    const animaList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/animaEffectsList.json', {}, { int: 30000 });
-    const weaponsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/weaponsList.json', {}, { int: 30000 });
-    const mutationsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/mutations.json', {}, { int: 30000 });
-    const armorList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/armorList.json', {}, { int: 30000 });
     const sorcerousRituals = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/sorcerousRituals.json', {}, { int: 30000 });
 
     let bigString = '';
@@ -878,31 +1042,7 @@ export default class NPCGenerator extends FormApplication {
       bigString += ritual.pageref;
       bigString += '\n\n';
     }
-
-    if (animaList[this.object.character.caste]) {
-      actorData.system.anima.passive = animaList[this.object.character.caste][0];
-      actorData.system.anima.active = animaList[this.object.character.caste][1];
-      actorData.system.anima.iconic = animaList[this.object.character.caste][2];
-    }
-    else {
-      actorData.system.settings.showanima = false;
-    }
-
-    if (this.object.character.traits.martialArtist.value) {
-      const randomMartialArts = martialArts[Math.floor(Math.random() * martialArts.length)]
-      itemData.push(
-        {
-          type: 'action',
-          name: randomMartialArts,
-          system: {
-            value: this._getCharacterPool(this.object.character.skills.combat.value)
-          }
-        }
-      )
-    }
-
-
-    if (this.object.character.sorcerer !== 'none') {
+    if (this.object.character.sorcerer !== 'none' && this.object.characterType === 'npc') {
       const itemRituals = game.items.filter((item) => item.type === 'ritual');
 
       if (itemRituals) {
@@ -922,6 +1062,42 @@ export default class NPCGenerator extends FormApplication {
         )
       }
     }
+    var spells = game.items.filter((spell) => spell.type === 'spell');
+    if (this.object.character.sorcerer === 'terrestrial') {
+      spells = spells.filter((spell) => spell.system.circle === 'terrestrial');
+    }
+    if (this.object.character.sorcerer === 'celestial') {
+      spells = spells.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial');
+    }
+    if (this.object.character.sorcerer === 'solar') {
+      spells = spells.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial' || spell.system.circle === 'solar');
+    }
+    if (this.object.character.sorcerer === 'ivory') {
+      spells = spells.filter((spell) => spell.system.circle === 'ivory');
+    }
+    if (this.object.character.sorcerer === 'shadow') {
+      spells = spells.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow');
+    }
+    if (this.object.character.sorcerer === 'void') {
+      spells = spells.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow' || spell.system.circle === 'void');
+    }
+    if (spells) {
+      var loopBreaker = 0;
+      for (var i = 0; i < this.object.character.numberTraits.randomSpells.value; i++) {
+        loopBreaker = 0;
+        if (i === spells.length) {
+          break;
+        }
+        var spell = duplicate(spells[Math.floor(Math.random() * spells.length)]);
+        while (itemData.find(e => e.name === spell.name) && loopBreaker < 50) {
+          spell = duplicate(spells[Math.floor(Math.random() * spells.length)]);
+          loopBreaker++;
+        }
+        itemData.push(spell);
+      }
+    }
+    const weaponsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/weaponsList.json', {}, { int: 30000 });
+    const armorList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/armorList.json', {}, { int: 30000 });
 
     if (this.object.character.equipment.primaryWeapon.weight === 'medium') {
       actorData.system.parry.value++;
@@ -1015,177 +1191,37 @@ export default class NPCGenerator extends FormApplication {
         img: "icons/svg/sword.svg",
         name: 'Unarmed',
         system: {
-          witheringaccuracy: 4 + this._getCharacterPool(this.object.character.skills.combat.value),
-          witheringdamage: 7 + attributeAbilityMap[this.object.character.skills.strength.value],
+          witheringaccuracy: 4 + (this.object.characterType === 'npc' ? this._getCharacterPool(this.object.character.skills.combat.value) : 0),
+          witheringdamage: 7 + (this.object.characterType === 'npc' ? attributeAbilityMap[this.object.character.skills.strength.value] : 0),
           overwhelming: 1,
           defense: 0,
           weapontype: 'melee',
           weighttype: 'light',
-          ability: "none",
-          attribute: "none",
+          ability: (this.object.characterType === 'npc' ? "none" : "melee"),
+          attribute: (this.object.characterType === 'npc' ? "none" : "dexterity"),
         }
       }
     );
-    itemData.push(
-      {
-        type: 'weapon',
-        img: "icons/svg/sword.svg",
-        name: 'Grapple',
-        system: {
-          witheringaccuracy: 4 + this._getCharacterPool(this.object.character.skills.combat.value),
-          witheringdamage: 0,
-          overwhelming: 0,
-          defense: 0,
-          weapontype: 'melee',
-          weighttype: 'light',
-          ability: "none",
-          attribute: "none",
-        }
-      }
-    );
-    actorData.system.soak.value += attributeAbilityMap[this.object.character.skills.body.value];
-    actorData.system.naturalsoak.value = attributeAbilityMap[this.object.character.skills.body.value];
-
-    for (var i = 0; i < this.object.character.numberTraits.randomMutations.value; i++) {
-      var mutation = mutationsList[Math.floor(Math.random() * mutationsList.length)];
-      var meritRating = mutation.dotValues[Math.floor(Math.random() * mutation.dotValues.length)]
+    if (this.object.characterType === 'npc') {
       itemData.push(
         {
-          type: 'merit',
-          img: "icons/svg/aura.svg",
-          name: mutation.name,
+          type: 'weapon',
+          img: "icons/svg/sword.svg",
+          name: 'Grapple',
           system: {
-            description: mutation.pageref,
-            points: meritRating,
+            witheringaccuracy: 4 + this._getCharacterPool(this.object.character.skills.combat.value),
+            witheringdamage: 0,
+            overwhelming: 0,
+            defense: 0,
+            weapontype: 'melee',
+            weighttype: 'light',
+            ability: "none",
+            attribute: "none",
           }
         }
       );
     }
-    if (this.object.character.traits.wealthy.value) {
-      itemData.push(
-        {
-          type: 'merit',
-          img: "icons/svg/coins.svg",
-          name: 'Resources',
-          system: {
-            points: 3,
-          }
-        }
-      );
-    }
-    var spells = game.items.filter((spell) => spell.type === 'spell');
-    if (this.object.character.sorcerer === 'terrestrial') {
-      spells = spells.filter((spell) => spell.system.circle === 'terrestrial');
-    }
-    if (this.object.character.sorcerer === 'celestial') {
-      spells = spells.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial');
-    }
-    if (this.object.character.sorcerer === 'solar') {
-      spells = spells.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial' || spell.system.circle === 'solar');
-    }
-    if (this.object.character.sorcerer === 'ivory') {
-      spells = spells.filter((spell) => spell.system.circle === 'ivory');
-    }
-    if (this.object.character.sorcerer === 'shadow') {
-      spells = spells.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow');
-    }
-    if (this.object.character.sorcerer === 'void') {
-      spells = spells.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow' || spell.system.circle === 'void');
-    }
-    if (spells) {
-      var loopBreaker = 0;
-      for (var i = 0; i < this.object.character.numberTraits.randomSpells.value; i++) {
-        loopBreaker = 0;
-        if (i === spells.length) {
-          break;
-        }
-        var spell = duplicate(spells[Math.floor(Math.random() * spells.length)]);
-        while (itemData.find(e => e.name === spell.name) && loopBreaker < 50) {
-          spell = duplicate(spells[Math.floor(Math.random() * spells.length)]);
-          loopBreaker++;
-        }
-        itemData.push(spell);
-      }
-    }
 
-    var charms = game.items.filter((charm) => charm.type === 'charm'
-      && charm.system.ability !== 'evocation'
-      && charm.system.charmtype !== 'martialarts'
-      && this.object.character.skills[charmToPoolMap[charm.system.ability]]?.value !== 'weak'
-      && charm.system.essence <= this.object.character.essence && charm.system.requirement <= (attributeAbilityMap[this.object.character.skills[charmToPoolMap[charm.system.ability]]?.value] || 0));
-
-    charms = charms.filter(charm => (charm.system.ability !== 'thrown' || itemData.find(item => item.system.weapontype === 'thrown')));
-    charms = charms.filter(charm => (charm.system.ability !== 'melee' || itemData.find(item => item.system.weapontype === 'melee')));
-    charms = charms.filter(charm => (charm.system.ability !== 'archery' || itemData.find(item => item.system.weapontype === 'ranged')));
-    if (this.object.character.exalt !== 'other') {
-      charms = charms.filter((charm) => charm.system.charmtype === this.object.character.exalt);
-    }
-    const charmIds = [];
-    if (charms) {
-      for (var i = 0; i < this.object.character.numberTraits.randomCharms.value; i++) {
-        const availableCharms = charms.filter(charm => {
-          return charm.system.charmprerequisites.length === 0 || charmIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => charmIds.includes(prerequisite.id));
-        });
-        if (availableCharms.length === 0) {
-          break;
-        }
-        var charm = duplicate(availableCharms[Math.floor(Math.random() * availableCharms.length)]);
-        charmIds.push(charm._id);
-        itemData.push(charm);
-      }
-    }
-    if (this.object.character.traits.godOrDemon.value) {
-      itemData.push({
-        type: 'charm',
-        img: "icons/svg/explosion.svg",
-        name: "Hurry Home",
-        system: {
-          description: "The Spirit dissapear on their next turn, returns to a specific location such as their sactum or their summoners side.",
-          type: 'Simple',
-          duration: "Instant",
-          ability: "other",
-          essence: 1,
-          cost: {
-            motes: 10,
-            willpower: 1,
-          }
-        },
-      });
-      itemData.push({
-        type: 'charm',
-        img: "icons/svg/explosion.svg",
-        name: "Materialize",
-        system: {
-          description: "The spirit materializes.",
-          type: 'Simple',
-          duration: "Instant",
-          ability: "other",
-          essence: 1,
-          cost: {
-            motes: Math.floor(actorData.system.motes.personal.value / 2),
-            willpower: 1,
-          }
-        },
-      });
-      itemData.push({
-        type: 'charm',
-        img: "icons/svg/explosion.svg",
-        name: "Measure the Wind",
-        system: {
-          description: "The spirit discerns the nature of being based on a prequisite or when they take a certain action in the spririt's precense.",
-          type: 'Simple',
-          duration: "Instant",
-          ability: "other",
-          essence: 1,
-          cost: {
-            motes: 5,
-          }
-        },
-      });
-    }
-
-    actorData.items = itemData;
-    await Actor.create(actorData);
   }
 
   _getRandomWeapon(weaponList) {
@@ -1201,8 +1237,8 @@ export default class NPCGenerator extends FormApplication {
       img: "icons/svg/sword.svg",
       name: weapon.name,
       system: {
-        witheringaccuracy: weapon.witheringaccuracy + this._getCharacterPool(this.object.character.skills.combat.value),
-        witheringdamage: weapon.witheringdamage + ((weapon.traits.weapontags.value.includes('flame') || weapon.traits.weapontags.value.includes('crossbow')) ? 4 : attributeAbilityMap[this.object.character.skills.strength.value]),
+        witheringaccuracy: weapon.witheringaccuracy + (this.object.characterType === 'npc' ? this._getCharacterPool(this.object.character.skills.combat.value) : 0),
+        witheringdamage: weapon.witheringdamage + ((weapon.traits.weapontags.value.includes('flame') || weapon.traits.weapontags.value.includes('crossbow')) ? 4 : (this.object.characterType === 'npc' ? attributeAbilityMap[this.object.character.skills.strength.value] : 0)),
         overwhelming: weapon.overwhelming,
         defense: weapon.defense,
         traits: weapon.traits,
@@ -1504,7 +1540,7 @@ export default class NPCGenerator extends FormApplication {
     return maxMotes
   }
 
-  _getBaseStatBlock() {
+  _getBaseNPCStatBlock() {
     return {
       type: 'npc',
       system: {

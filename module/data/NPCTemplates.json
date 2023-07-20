@@ -38,6 +38,223 @@
         "value": "weak"
       }
     },
+    "playerCharacter": {
+      
+      "attributes": {
+        "strength": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Strength"
+        },
+        "charisma": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Charisma"
+        },
+        "perception": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Perception"
+        },
+        "dexterity": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Dexterity"
+        },
+        "manipulation": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Manipulation"
+        },
+        "intelligence": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Intelligence"
+        },
+        "stamina": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Stamina"
+        },
+        "appearance": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Appearance"
+        },
+        "wits": {
+          "excellency": false,
+          "value": 1,
+          "charms": 0,
+          "name": "Ex3.Wits"
+        }
+      },
+      "abilities": {
+        "archery": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Archery"
+        },
+        "athletics": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Athletics"
+        },
+        "awareness": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Awareness"
+        },
+        "brawl": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Brawl"
+        },
+        "bureaucracy": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Bureaucracy"
+        },
+        "craft": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Craft"
+        },
+        "dodge": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Dodge"
+        },
+        "integrity": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Integrity"
+        },
+        "investigation": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Investigation"
+        },
+        "larceny": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Larceny"
+        },
+        "linguistics": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Linguistics"
+        },
+        "lore": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Lore"
+        },
+        "martialarts": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.MartialArts"
+        },
+        "medicine": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Medicine"
+        },
+        "melee": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Melee"
+        },
+        "occult": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Occult"
+        },
+        "performance": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Performance"
+        },
+        "presence": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Presence"
+        },
+        "resistance": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Resistance"
+        },
+        "ride": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Ride"
+        },
+        "sail": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Sail"
+        },
+        "socialize": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Socialize"
+        },
+        "stealth": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Stealth"
+        },
+        "survival": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Survival"
+        },
+        "thrown": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.Thrown"
+        },
+        "war": {
+          "excellency": false,
+          "value": 0,
+          "charms": 0,
+          "name": "Ex3.War"
+        }
+      }
+    },
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -160,6 +377,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -282,6 +501,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "none",
@@ -404,6 +625,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -526,6 +749,8 @@
         "value": "exceptional"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -648,6 +873,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -770,6 +997,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -892,6 +1121,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -1014,6 +1245,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
@@ -1136,6 +1369,8 @@
         "value": "skilled"
       }
     },
+    
+ 
     "equipment": {
       "primaryWeapon": {
         "type": "random",
