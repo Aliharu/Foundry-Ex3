@@ -482,7 +482,7 @@ export class ExaltedThirdActor extends Actor {
         }
         data.defenseCapPadding = true;
       }
-      data.guile.cap = this._getStaticCap(staticActorData, 'parry', staticActorData.system.guile.value);
+      data.guile.cap = this._getStaticCap(staticActorData, 'guile', staticActorData.system.guile.value);
       if (data.guile.cap !== '') {
         data.resolve.padding = true;
         data.socialCapPadding = true;
@@ -790,10 +790,13 @@ export class ExaltedThirdActor extends Actor {
       if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
         return '';
       }
+      const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
+      const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
+      value = Math.floor(((attributeValue) + (abilityValue)) / 2);
       switch (actorData.system.details.exalt) {
         case 'dragonblooded':
-          var newValue = Math.floor(value / 2);
-          return `(+${newValue} for ${newValue * 2}m)`
+          value = Math.floor(((abilityValue) + (actorData.system.settings.staticcapsettings[type]?.specialty || 0)) / 2);
+          return `(+${value} for ${value * 2}m)`
         case 'sidereal':
           var baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
           return `(+${baseSidCap} for ${baseSidCap * 2}m)`
@@ -808,12 +811,24 @@ export class ExaltedThirdActor extends Actor {
               highestAttributeNumber = attribute.value;
             }
           }
-          var newValueLow = Math.floor(value / 2);
-          var newValueHigh = Math.floor((value + highestAttributeNumber) / 2);
+          var newValueLow = Math.floor(attributeValue / 2);
+          var newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
+          if(type === 'soak') {
+            return `(+${newValueLow} for ${newValueLow * 2}m)`
+          }
           return `(+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m)`
         case 'liminal':
-          var newValue = Math.floor(value / 2);
-          return `(+${newValue} for ${newValue * 2}m)`
+          value = Math.floor(((actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0) + (actorData.system.anima.value > 0 ? actorData.system.essence.value : 0)) / 2);
+          return `(+${value} for ${value * 2}m)`
+        case 'hearteater':
+          value = Math.floor((abilityValue + 1) / 2);
+          return `(+${value} for ${value * 2}m)`;
+        case 'dreamsouled':
+          value = Math.floor(abilityValue / 2);
+          return `(+${value} for ${value * 2}m)`;
+        case 'umbral':
+          value = Math.floor(Math.min(10, abilityValue + actorData.system.details.penumbra.value) / 2);
+          return `(+${value} for ${value * 2}m)`
         default:
           return ''
       }
@@ -920,7 +935,7 @@ export class ExaltedThirdActor extends Actor {
     data.onslaught = { 'value': currentOnslaughtPenalty };
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
-    if(!data.size){
+    if (!data.size) {
       data.size = {
         value: 0,
         min: 0,
