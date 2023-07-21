@@ -790,7 +790,7 @@ export class ExaltedThirdActor extends Actor {
       if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
         return '';
       }
-      const attributeValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
+      const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
       const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
       value = Math.floor(((attributeValue) + (abilityValue)) / 2);
       switch (actorData.system.details.exalt) {
@@ -813,12 +813,15 @@ export class ExaltedThirdActor extends Actor {
           }
           var newValueLow = Math.floor(attributeValue / 2);
           var newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
+          if(type === 'soak') {
+            return `(+${newValueLow} for ${newValueLow * 2}m)`
+          }
           return `(+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m)`
         case 'liminal':
           value = Math.floor(((actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0) + (actorData.system.anima.value > 0 ? actorData.system.essence.value : 0)) / 2);
           return `(+${value} for ${value * 2}m)`
         case 'hearteater':
-          value = Math.floor((abilityValue + 1 || 1) / 2);
+          value = Math.floor((abilityValue + 1) / 2);
           return `(+${value} for ${value * 2}m)`;
         case 'dreamsouled':
           value = Math.floor(abilityValue / 2);
