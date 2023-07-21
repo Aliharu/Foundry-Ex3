@@ -3329,8 +3329,11 @@ export class RollForm extends FormApplication {
                     if (this.actor.system.details.exalt === "umbral") {
                         return `${Math.min(10, abilityValue + this.actor.system.details.penumbra.value)}`;
                     }
+                    if (this.actor.system.details.exalt === "hearteater") {
+                        return `${abilityValue + 1} + Intimacy`;
+                    }
                     if (this.actor.system.details.exalt === "liminal") {
-                        if (this.actor.system.anima.value > 1) {
+                        if (this.actor.system.anima.value >= 1) {
                             return `${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value}`;
                         }
                         else {
