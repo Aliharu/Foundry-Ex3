@@ -152,7 +152,7 @@ export default class TemplateImporter extends FormApplication {
           break;
         }
       }
-      charmData.system.description = description;
+      charmData.system.description = description.replace('- ', '');
       if(folder) {
         charmData.folder = folder;
       }
