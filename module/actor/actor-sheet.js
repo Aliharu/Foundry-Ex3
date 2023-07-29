@@ -730,39 +730,39 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.calculate-soak').mousedown(ev => {
-      this.calculateDerivedStats('soak');
+      this.actor.calculateDerivedStats('soak');
     });
 
     html.find('.calculate-natural-soak').mousedown(ev => {
-      this.calculateDerivedStats('natural-soak');
+      this.actor.calculateDerivedStats('natural-soak');
     });
 
     html.find('.calculate-armored-soak').mousedown(ev => {
-      this.calculateDerivedStats('armored-soak');
+      this.actor.calculateDerivedStats('armored-soak');
     });
 
     html.find('.calculate-parry').mousedown(ev => {
-      this.calculateDerivedStats('parry');
+      this.actor.calculateDerivedStats('parry');
     });
 
     html.find('.calculate-resonance').mousedown(ev => {
-      this.calculateDerivedStats('resonance');
+      this.actor.calculateDerivedStats('resonance');
     });
 
     html.find('.calculate-evasion').mousedown(ev => {
-      this.calculateDerivedStats('evasion');
+      this.actor.calculateDerivedStats('evasion');
     });
 
     html.find('.calculate-resolve').mousedown(ev => {
-      this.calculateDerivedStats('resolve');
+      this.actor.calculateDerivedStats('resolve');
     });
 
     html.find('.calculate-guile').mousedown(ev => {
-      this.calculateDerivedStats('guile');
+      this.actor.calculateDerivedStats('guile');
     });
 
     html.find('.calculate-hardness').mousedown(ev => {
-      this.calculateDerivedStats('hardness');
+      this.actor.calculateDerivedStats('hardness');
     });
 
     html.find('#calculate-warstrider-health').mousedown(ev => {
@@ -1254,67 +1254,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     newAnima.value = newValue;
     animaTokenMagic(this.actor, newValue);
     this.actor.update({ [`system.anima`]: newAnima });
-  }
-
-  async calculateDerivedStats(type) {
-    const actorData = duplicate(this.actor);
-    var armoredSoakValue = 0;
-    if (type === 'natural-soak') {
-      actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value;
-    }
-    if (type === 'soak' || type === 'armored-soak') {
-      for (let armor of this.actor.armor) {
-        if (armor.system.equipped) {
-          armoredSoakValue = armoredSoakValue + armor.system.soak;
-        }
-      }
-      if (type === 'armored-soak') {
-        actorData.system.armoredsoak.value = armoredSoakValue;
-      }
-      if (type === 'soak') {
-        actorData.system.soak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
-      }
-    }
-    let specialtyBonus = actorData.system?.settings?.staticcapsettings[type]?.specialty ? 1 : 0;
-    if (type === 'parry') {
-      actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value + specialtyBonus) / 2);
-      for (let weapon of this.actor.weapons) {
-        if (weapon.system.equipped) {
-          actorData.system.parry.value = actorData.system.parry.value + weapon.system.defense;
-        }
-      }
-    }
-    if (type === 'evasion') {
-      var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value + specialtyBonus) / 2);
-      for (let armor of this.actor.armor) {
-        if (armor.system.equipped) {
-          newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
-        }
-      }
-      actorData.system.evasion.value = newEvasionValue;
-    }
-    if (type === 'resolve') {
-      actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value + specialtyBonus) / 2);
-    }
-    if (type === 'guile') {
-      actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value + specialtyBonus) / 2);
-    }
-    if (type === 'resonance') {
-      actorData.system.traits.resonance = this.actor.calculateResonance(this.actor.system.details.exalt);
-      actorData.system.traits.dissonance = this.actor.calculateDissonance(this.actor.system.details.exalt);
-    }
-    if (type === 'hardness') {
-      let hardness = 0
-      for (let armor of this.actor.armor) {
-        if (armor.system.equipped) {
-          if(armor.system.hardness > hardness) {
-            hardness = armor.system.hardness;
-          }
-        }
-        actorData.system.hardness.value = hardness;
-      }
-    }
-    this.actor.update(actorData);
   }
 
   async setSpendPool(type) {

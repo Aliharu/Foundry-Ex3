@@ -23,71 +23,7 @@ export class ExaltedThirdActor extends Actor {
     await super._preUpdate(updateData, options, user);
     const exalt = updateData.system?.details?.exalt || this.system.details.exalt;
     const essenceLevel = updateData.system?.essence?.value || this.system.essence.value;
-    const casteAbilitiesMap = {
-      'dawn': [
-        'archery', 'awareness', 'brawl', 'maritalarts', 'dodge', 'melee', 'resistance', 'thrown', 'war'
-      ],
-      'zenith': [
-        'athletics', 'integrity', 'performance', 'lore', 'presence', 'resistance', 'survival', 'war',
-      ],
-      'twilight': [
-        'bureaucracy', 'craft', 'integrity', 'investigation', 'linguistics', 'lore', 'medicine', 'occult'
-      ],
-      'night': [
-        'athletics', 'awareness', 'dodge', 'investigation', 'larceny', 'ride', 'stealth', 'socialize'
-      ],
-      'eclipse': [
-        'bureaucracy', 'larceny', 'linguistics', 'occult', 'presence', 'ride', 'sail', 'socialize'
-      ],
-      'air': [
-        'linguistics', 'lore', 'occult', 'stealth', 'thrown'
-      ],
-      'earth': [
-        'awareness', 'craft', 'integrity', 'resistance', 'war'
-      ],
-      'fire': [
-        'athletics', 'dodge', 'melee', 'presence', 'socialize'
-      ],
-      'water': [
-        'brawl', 'martialarts', 'bureaucracy', 'investigation', 'larceny', 'sail'
-      ],
-      'wood': [
-        'archery', 'medicine', 'performance', 'ride', 'survival'
-      ],
-      'fullmoon': [
-        'dexterity', 'stamina', 'strength'
-      ],
-      'changingmoon': [
-        'appearance', 'charisma', 'manipulation'
-      ],
-      'nomoon': [
-        'intelligence', 'perception', 'wits'
-      ],
-      'journeys': [
-        'resistance', 'ride', 'sail', 'survival', 'thrown', 'martialarts'
-      ],
-      'serenity': [
-        'craft', 'dodge', 'linguistics', 'performance', 'socialize', 'martialarts'
-      ],
-      'battles': [
-        'archery', 'brawl', 'melee', 'presence', 'war', 'martialarts'
-      ],
-      'secrets': [
-        'investigation', 'larceny', 'lore', 'occult', 'stealth', 'martialarts'
-      ],
-      'endings': [
-        'athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine', 'martialarts'
-      ],
-      'janest': [
-        'athletics', 'awareness', 'presence', 'resistance', 'survival'
-      ],
-      'strawmaiden': [
-        'athletics', 'awareness', 'presence', 'resistance', 'survival'
-      ],
-      'sovereign': [
-        'craft', 'integrity', 'performance', 'socialize', 'war'
-      ]
-    }
+    const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;
     if (updateData.system?.battlegroup && !this.system.battlegroup) {
       updateData.system.health = {
         "levels": {
@@ -260,6 +196,67 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     return maxMotes
+  }
+
+  async calculateDerivedStats(type) {
+    const actorData = duplicate(this);
+    var armoredSoakValue = 0;
+    if (type === 'natural-soak') {
+      actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value;
+    }
+    if (type === 'soak' || type === 'armored-soak') {
+      for (let armor of this.armor) {
+        if (armor.system.equipped) {
+          armoredSoakValue = armoredSoakValue + armor.system.soak;
+        }
+      }
+      if (type === 'armored-soak') {
+        actorData.system.armoredsoak.value = armoredSoakValue;
+      }
+      if (type === 'soak') {
+        actorData.system.soak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
+      }
+    }
+    let specialtyBonus = actorData.system?.settings?.staticcapsettings[type]?.specialty ? 1 : 0;
+    if (type === 'parry') {
+      actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value + specialtyBonus) / 2);
+      for (let weapon of this.weapons) {
+        if (weapon.system.equipped) {
+          actorData.system.parry.value = actorData.system.parry.value + weapon.system.defense;
+        }
+      }
+    }
+    if (type === 'evasion') {
+      var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value + specialtyBonus) / 2);
+      for (let armor of this.armor) {
+        if (armor.system.equipped) {
+          newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
+        }
+      }
+      actorData.system.evasion.value = newEvasionValue;
+    }
+    if (type === 'resolve') {
+      actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value + specialtyBonus) / 2);
+    }
+    if (type === 'guile') {
+      actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value + specialtyBonus) / 2);
+    }
+    if (type === 'resonance') {
+      actorData.system.traits.resonance = this.calculateResonance(this.system.details.exalt);
+      actorData.system.traits.dissonance = this.calculateDissonance(this.system.details.exalt);
+    }
+    if (type === 'hardness') {
+      let hardness = 0
+      for (let armor of this.armor) {
+        if (armor.system.equipped) {
+          if(armor.system.hardness > hardness) {
+            hardness = armor.system.hardness;
+          }
+        }
+        actorData.system.hardness.value = hardness;
+      }
+    }
+    this.update(actorData);
   }
 
   calculateResonance(exaltType) {

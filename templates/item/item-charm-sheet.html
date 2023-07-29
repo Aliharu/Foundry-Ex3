@@ -845,26 +845,9 @@
                     <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
                     <select name="system.charmtype" data-type="String">
                         {{#select system.charmtype}}
-                        <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-                        <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-                        <option value="architect">{{localize "Ex3.Architect"}}</option>
-                        <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-                        <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-                        <option value="eclipse">{{localize "Ex3.Eclipse"}}</option>
-                        <option value="evocation">{{localize "Ex3.Evocation"}}</option>
-                        <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-                        <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-                        <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-                        <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-                        <option value="janest">{{localize "Ex3.Janest"}}</option>
-                        <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-                        <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-                        <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
-                        <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-                        <option value="solar">{{localize "Ex3.Solar"}}</option>
-                        <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-                        <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
+                        {{#each charmExaltType as |label type|}}
+                        <option value="{{type}}">{{localize label}}</option>
+                        {{/each}}
                         {{/select}}
                     </select>
                 </div>

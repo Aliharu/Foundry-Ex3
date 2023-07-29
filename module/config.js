@@ -102,6 +102,8 @@ exaltedthird.activeEffectChanges = {
     "system.settings.rollsettings.rush.bonus": "Ex3.Rush",
     "system.settings.rollsettings.social.bonus": "Ex3.Social",
     "system.settings.rollsettings.sorcery.bonus": "Ex3.Sorcery",
+    "system.resolve.value": 'Ex3.Resolve',
+    "system.guile.value": 'Ex3.Guile',
     "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
     "system.parry.value": 'Ex3.Parry',
     "system.evasion.value": 'Ex3.Evasion',
@@ -129,6 +131,30 @@ exaltedthird.npcpools = {
     readintentions: 'Ex3.ReadIntentions',
     social: 'Ex3.Social',
     sorcery: 'Ex3.Sorcery',
+};
+
+exaltedthird.exaltcharmtypes = {
+    abyssal: "Ex3.Abyssal",
+    alchemical: "Ex3.Alchemical",
+    architect: "Ex3.Architect",
+    dragonblooded: "Ex3.Dragonblooded",
+    dreamsouled: "Ex3.DreamSouled",
+    eclipse: "Ex3.Eclipse",
+    evocation: "Ex3.Evocation",
+    exigent: "Ex3.Exigent",
+    getimian: "Ex3.Getimian",
+    hearteater: "Ex3.Hearteater",
+    infernal: "Ex3.Infernal",
+    janest: "Ex3.Janest",
+    liminal: "Ex3.Liminal",
+    lunar: "Ex3.Lunar",
+    martialarts: "Ex3.MartialArts",
+    puppeteer: "Ex3.Puppeteer",
+    sidereal: "Ex3.Sidereal",
+    solar: "Ex3.Solar",
+    sovereign: "Ex3.Sovereign",
+    umbral: "Ex3.Umbral",
+    other: "Ex3.Other"
 };
 
 exaltedthird.castes = {
@@ -379,6 +405,101 @@ exaltedthird.armortags = {
     "concealable": "Concealable",
     "silent": "Silent",
 };
+
+exaltedthird.martialarts = [
+  "Snake Style",
+  "Tiger Style",
+  "Single Point Shining Into the Void Style",
+  "White Reaper Style",
+  "Ebon Shadow Style",
+  "Crane Style",
+  "Silver-Voiced Nightingale Style",
+  "Righteous Devil Style",
+  "Black Claw Style",
+  "Dreaming Pearl Courtesan Style",
+  "Steel Devil Style",
+  "Air Dragon Style",
+  "Earth Dragon Style",
+  "Fire Dragon Style",
+  "Water Dragon Style",
+  "Wood Dragon Style",
+  "Golden Janissary Style",
+  "Mantis Style",
+  "White Veil Style",
+  "Centipede Style",
+  "Falcon Style",
+  "Laughing Monster Style",
+  "Swaying Grass Style",
+  "Throne Shadow Style",
+  "Violet Bier of Sorrows Style"
+];
+
+
+exaltedthird.casteabilitiesmap = {
+    'dawn': [
+      'archery', 'awareness', 'brawl', 'martialarts', 'dodge', 'melee', 'resistance', 'thrown', 'war'
+    ],
+    'zenith': [
+      'athletics', 'integrity', 'performance', 'lore', 'presence', 'resistance', 'survival', 'war',
+    ],
+    'twilight': [
+      'bureaucracy', 'craft', 'integrity', 'investigation', 'linguistics', 'lore', 'medicine', 'occult'
+    ],
+    'night': [
+      'athletics', 'awareness', 'dodge', 'investigation', 'larceny', 'ride', 'stealth', 'socialize'
+    ],
+    'eclipse': [
+      'bureaucracy', 'larceny', 'linguistics', 'occult', 'presence', 'ride', 'sail', 'socialize'
+    ],
+    'air': [
+      'linguistics', 'lore', 'occult', 'stealth', 'thrown'
+    ],
+    'earth': [
+      'awareness', 'craft', 'integrity', 'resistance', 'war'
+    ],
+    'fire': [
+      'athletics', 'dodge', 'melee', 'presence', 'socialize'
+    ],
+    'water': [
+      'brawl', 'martialarts', 'bureaucracy', 'investigation', 'larceny', 'sail'
+    ],
+    'wood': [
+      'archery', 'medicine', 'performance', 'ride', 'survival'
+    ],
+    'fullmoon': [
+      'dexterity', 'stamina', 'strength'
+    ],
+    'changingmoon': [
+      'appearance', 'charisma', 'manipulation'
+    ],
+    'nomoon': [
+      'intelligence', 'perception', 'wits'
+    ],
+    'journeys': [
+      'resistance', 'ride', 'sail', 'survival', 'thrown', 'martialarts'
+    ],
+    'serenity': [
+      'craft', 'dodge', 'linguistics', 'performance', 'socialize', 'martialarts'
+    ],
+    'battles': [
+      'archery', 'brawl', 'melee', 'presence', 'war', 'martialarts'
+    ],
+    'secrets': [
+      'investigation', 'larceny', 'lore', 'occult', 'stealth', 'martialarts'
+    ],
+    'endings': [
+      'athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine', 'martialarts'
+    ],
+    'janest': [
+      'athletics', 'awareness', 'presence', 'resistance', 'survival'
+    ],
+    'strawmaiden': [
+      'athletics', 'awareness', 'presence', 'resistance', 'survival'
+    ],
+    'sovereign': [
+      'craft', 'integrity', 'performance', 'socialize', 'war'
+    ]
+  };
 
 exaltedthird.statusEffects = [
     {

@@ -412,11 +412,14 @@
     "Ex3.EffectPassive": "Effect Passive",
     "Ex3.EffectInactive": "Effect Inactive",
     "Ex3.Add": "Add",
+    "Ex3.Create": "Create",
     "Ex3.EffectCreate": "Effect Create",
     "Ex3.EffectToggle": "Effect Toggle",
     "Ex3.EffectEdit": "Effect Edit",
     "Ex3.EffectDelete": "Effect Delete",
     "Ex3.Duration": "Duration",
+    "Ex3.PrerequisiteCharms": "Prerequisite Charms",
+
     "Ex3.StartTurn": "Start Turn",
     "Ex3.EndTurn": "End Turn",
     "Ex3.EndScene": "End Scene",
@@ -843,5 +846,14 @@
     "Ex3.LevelOneStunt": "Level One Stunt",
     "Ex3.LevelTwoStunt": "Level Two Stunt",
     "Ex3.LevelThreeStunt": "Level Three Stunt",
-    "Ex3.BankStunt": "BankStunt"
+    "Ex3.BankStunt": "Bank Stunt",
+
+    "Ex3.Overview": "Overview",
+    "Ex3.Section": "Section",
+    "Ex3.Available": "Available",
+
+    "Ex3.PhysicalAttributes": "Physical Attributes",
+    "Ex3.SocialAttributes": "Social Attributes",
+    "Ex3.MentalAttributes": "Mental Attributes",
+    "Ex3.Total": "Total"
 }

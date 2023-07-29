@@ -19,6 +19,7 @@ import ExaltedActiveEffect from "./active-effect.js";
 import ExaltedActiveEffectConfig from "./active-effect-config.js";
 import NPCGenerator from "./apps/npc-generator.js";
 import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
+import CharacterBuilder from "./apps/character-builder.js";
 
 Hooks.once('init', async function () {
 
@@ -185,7 +186,7 @@ Hooks.once('init', async function () {
   });
 
   Handlebars.registerHelper('ifInSet', function (elem, list, options) {
-    if(list instanceof Set) {
+    if (list instanceof Set) {
       return (list.has(elem)) ? options.fn(this) : options.inverse(this);
     }
     return false;
@@ -318,28 +319,35 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
+  let buttons = {
+    character: {
+      label: game.i18n.localize("Ex3.Character"), callback: () => {
+        new CharacterBuilder(null, {}, {}, {}).render(true);
+      }
+    },
+  };
   if (game.user.isGM) {
-    const button = $(`<button class="tempalte-importer"><i class="fas fa-user"></i>${game.i18n.localize("Ex3.NPC")}</button>`);
-    html.find(".directory-footer").append(button);
-    button.click(ev => {
-      new Dialog({
-        title: `NPC`,
-        content: ``,
-        buttons: {
-          save: {
-            label: game.i18n.localize("Ex3.Import"), callback: () => {
-              game.templateImporter = new TemplateImporter("qc").render(true);
-            }
-          },
-          cancel: {
-            label: game.i18n.localize("Ex3.Generate"), callback: () => {
-              new NPCGenerator(null, {}, {}, {}).render(true);
-            }
-          }
-        }
-      }, { classes: ["dialog", `solar-background`] }).render(true);
-    });
+    buttons['save'] = {
+      label: game.i18n.localize("Ex3.Import"), callback: () => {
+        game.templateImporter = new TemplateImporter("qc").render(true);
+      }
+    };
+
+    buttons['npc'] = {
+      label: game.i18n.localize("Ex3.NPC"), callback: () => {
+        new NPCGenerator(null, {}, {}, {}).render(true);
+      }
+    };
   }
+  const button = $(`<button class="tempalte-importer"><i class="fas fa-user"></i>${game.i18n.localize("Ex3.Create")}</button>`);
+  html.find(".directory-footer").append(button);
+  button.click(ev => {
+    new Dialog({
+      title: game.i18n.localize("Ex3.Create"),
+      content: ``,
+      buttons: buttons
+    }, { classes: ["dialog", `solar-background`] }).render(true);
+  });
 });
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
@@ -1274,7 +1282,7 @@ async function createItemMacro(data, slot) {
     const item = await Item.fromDropData(data);
     let command = `Hotbar.toggleDocumentSheet("${data.uuid}");`;
     if (item.type === 'weapon') {
-      command = `//Swtich withering with (decisive, gambit, withering-split, decisive-split, gambit-split) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
+      command = `//Switch withering with (decisive, gambit, withering-split, decisive-split, gambit-split) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
     }
     if (item.type === 'charm') {
       command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\n//If the charm user has no dice roller open it will instead Spend or activate the charm\ngame.exaltedthird.triggerItem("${data.uuid}");`;
@@ -1321,7 +1329,7 @@ function applyDecisiveDamage(message) {
   // If there are not any controlled tokens, issue a warning.
   if (!targetedTokens?.length) {
     const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.targetId);
-    if(targetToken) {
+    if (targetToken) {
       targetedTokens = [targetToken];
     }
     else {
@@ -1350,7 +1358,7 @@ function applyWitheringDamage(message) {
   // If there are not any controlled tokens, issue a warning.
   if (!targetedTokens?.length) {
     const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.targetId);
-    if(targetToken) {
+    if (targetToken) {
       targetedTokens = [targetToken];
     }
     else {
@@ -1402,7 +1410,7 @@ function gainAttackInitiative(message) {
   // If there are not any controlled tokens, issue a warning.
   if (!targetedTokens?.length) {
     const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.attackerTokenId);
-    if(targetToken) {
+    if (targetToken) {
       targetedTokens = [targetToken];
     }
     else {

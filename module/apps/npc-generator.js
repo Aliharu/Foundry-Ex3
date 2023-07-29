@@ -3,12 +3,12 @@ export default class NPCGenerator extends FormApplication {
     super(object, options);
     this.object.template = 'custom';
     this.object.poolNumbers = 'mid';
-    this.object.characterType = 'character';
+    this.object.characterType = 'npc';
     this.object.availableCastes = {};
     this.object.abilityList = CONFIG.exaltedthird.abilities;
     this.object.character = {
       name: '',
-      defaultName: 'New Character',
+      defaultName: 'New NPC',
       npcType: "mortal",
       exalt: "other",
       caste: "",
@@ -46,228 +46,6 @@ export default class NPCGenerator extends FormApplication {
           label: 'Ex3.Willpower',
           value: "weak"
         },
-      },
-      playerCharacter: {
-        willpower: 5,
-        attributes: {
-          strength: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Strength',
-          },
-          charisma: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Charisma',
-          },
-          perception: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Perception',
-          },
-          dexterity: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Dexterity',
-          },
-          manipulation: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Manipulation',
-          },
-          intelligence: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Intelligence',
-          },
-          stamina: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Stamina',
-          },
-          appearance: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Appearance',
-          },
-          wits: {
-            excellency: false,
-            value: 1,
-            charms: 0,
-            name: 'Ex3.Wits',
-          }
-        },
-        abilities: {
-          archery: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Archery",
-          },
-          athletics: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Athletics",
-          },
-          awareness: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Awareness",
-          },
-          brawl: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Brawl",
-          },
-          bureaucracy: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Bureaucracy",
-          },
-          craft: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Craft",
-          },
-          dodge: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Dodge",
-          },
-          integrity: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Integrity",
-          },
-          investigation: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Investigation",
-          },
-          larceny: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Larceny",
-          },
-          linguistics: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Linguistics",
-          },
-          lore: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Lore",
-          },
-          martialarts: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.MartialArts",
-          },
-          medicine: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Medicine",
-          },
-          melee: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Melee",
-          },
-          occult: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Occult",
-          },
-          performance: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Performance",
-          },
-          presence: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Presence",
-          },
-          resistance: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Resistance",
-          },
-          ride: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Ride",
-          },
-          sail: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Sail",
-          },
-          socialize: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Socialize",
-          },
-          stealth: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Stealth",
-          },
-          survival: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Survival",
-          },
-          thrown: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.Thrown",
-          },
-          war: {
-            excellency: false,
-            value: 0,
-            charms: 0,
-            name: "Ex3.War",
-          }
-        },
-        specialties: {},
-        merits: {},
-        crafts: {},
-        martialarts: {},
-        spells: 0,
       },
       homebrew: {
         specialAbilities: 0,
@@ -574,33 +352,8 @@ export default class NPCGenerator extends FormApplication {
   }
 
   async createNPC() {
-    const martialArts = [
-      "Snake Style",
-      "Tiger Style",
-      "Single Point Shining Into the Void Style",
-      "White Reaper Style",
-      "Ebon Shadow Style",
-      "Crane Style",
-      "Silver-Voiced Nightingale Style",
-      "Righteous Devil Style",
-      "Black Claw Style",
-      "Dreaming Pearl Courtesan Style",
-      "Steel Devil Style",
-      "Air Dragon Style",
-      "Earth Dragon Style",
-      "Fire Dragon Style",
-      "Water Dragon Style",
-      "Wood Dragon Style",
-      "Golden Janissary Style",
-      "Mantis Style",
-      "White Veil Style",
-      "Centipede Style",
-      "Falcon Style",
-      "Laughing Monster Style",
-      "Swaying Grass Style",
-      "Throne Shadow Style",
-      "Violet Bier of Sorrows Style"
-    ];
+    const martialArts = CONFIG.exaltedthird.martialarts;
+
     const poisons = [
       '3i/round, (L in Crash) 5 rounds, -2, Damage or ingestion',
       '2L/day, 7 days -0, Ingestion',

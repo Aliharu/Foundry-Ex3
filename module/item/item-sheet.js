@@ -48,6 +48,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.attributeList = CONFIG.exaltedthird.attributes;
     context.charmAbilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities));
     context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
+    context.charmExaltType = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes));
     context.lunarForms = game.actors.filter(actor => actor.type === 'npc' && actor.system.lunarform.enabled).map((actor) => {
       return {
         id: actor.id,
