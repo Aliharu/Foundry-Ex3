@@ -997,6 +997,7 @@
           "overwhelming": 0,
           "postsoakdamage": 0,
           "ignoresoak": 0,
+          "ignorehardness": 0,
           "dicetosuccesses": 0,
           "threshholdtodamage": false,
           "doublerolleddamage": false,

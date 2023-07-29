@@ -150,6 +150,7 @@ export class RollForm extends FormApplication {
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
                 ignoreSoak: 0,
+                ignoreHardness: 0,
                 gainInitiative: true,
                 multiTargetMinimumInitiative: 0,
                 rerollFailed: false,
@@ -936,6 +937,7 @@ export class RollForm extends FormApplication {
             this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
         }
         this.object.damage.ignoreSoak += this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+        this.object.damage.ignoreHardness += this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
 
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
             if (rerollValue) {
@@ -1417,6 +1419,10 @@ export class RollForm extends FormApplication {
                 this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
                 this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
                 this.object.damage.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
+
+                this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+                this.object.damage.ignoreHardness -= this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
+
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
                     if (rerollValue) {
                         this.object.damage.reroll[rerollKey].status = false;
@@ -2124,7 +2130,7 @@ export class RollForm extends FormApplication {
                     this.object.total += tensRolled;
                     break;
                 case 'ignoreHardness':
-                    this.object.hardness = Math.max(0, this.object.hardness - tensRolled);
+                    this.object.damage.ignoreHardness += tensRolled;
                     break;
                 case 'restoreMote':
                     this.object.restore.motes += tensRolled;
@@ -2434,7 +2440,7 @@ export class RollForm extends FormApplication {
         <div class="dice-roll">
             <div class="dice-result">
                 ${accuracyContent}
-                <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness</h4>
+                <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4>
                 <h4 class="dice-total">Hardness Stopped Decisive!</h4>
             </div>
         </div>`;
@@ -2510,7 +2516,7 @@ export class RollForm extends FormApplication {
             this.object.damage.damageSuccessModifier += Math.min(dice, this.object.damage.diceToSuccesses);
             dice = Math.max(0, dice - this.object.damage.diceToSuccesses);
         }
-        if (this.object.attackType === 'decisive' && dice <= this.object.hardness) {
+        if (this.object.attackType === 'decisive' && dice <= (this.object.hardness - this.object.damage.ignoreHardness)) {
             return this._failedDecisive(dice);
         }
         var rollModifiers = {
@@ -2598,11 +2604,12 @@ export class RollForm extends FormApplication {
             }
         }
         let soakResult = ``;
+        let hardnessResult = ``;
         let typeSpecificResults = ``;
         this.object.attackSuccess = true;
 
         if (this._damageRollType('decisive')) {
-            typeSpecificResults = `<h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
+            typeSpecificResults = `<h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4><h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             if (this._useLegendarySize('decisive')) {
                 typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
                 total = Math.min(total, 3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier);
@@ -3630,6 +3637,9 @@ export class RollForm extends FormApplication {
             this.object.damage.ignoreSoak = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
+        }
+        if (this.object.damage.ignoreHardness === undefined) {
+            this.object.damage.ignoreHardness = 0;
         }
         if (this.object.damage.gainInitiative === undefined) {
             this.object.damage.gainInitiative = true;

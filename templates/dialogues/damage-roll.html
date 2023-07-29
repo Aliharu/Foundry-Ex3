@@ -123,6 +123,10 @@
                     <input type="checkbox" name="object.damage.gainInitiative" {{checked data.damage.gainInitiative}}>
                 </div>
                 {{/ifEquals}}
+                {{#ifEquals data.attackType 'decisive'}}
+                <label class="resource-label">{{localize "Ex3.IgnoreHardness"}}</label>
+                <input type="number" name="object.damage.ignoreHardness" value="{{data.damage.ignoreHardness}}">
+                {{/ifEquals}}
             </div>
 
         </div>
