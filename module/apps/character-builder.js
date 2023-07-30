@@ -601,7 +601,7 @@ export default class CharacterBuilder extends FormApplication {
                 this.object.character.abilities[item.system.ability].charms[Object.entries(this.object.character.abilities[item.system.ability].charms).length] = item;
               }
               if (this.object.character.attributes[item.system.ability]) {
-                this.object.character.attributes[item.system.ability].charms[Object.entries(this.object.character[type]).length] = item;
+                this.object.character.attributes[item.system.ability].charms[Object.entries(this.object.character.attributes[item.system.ability].charms).length] = item;
               }
             }
             this.onChange(ev);
@@ -655,6 +655,99 @@ export default class CharacterBuilder extends FormApplication {
     html.find('.item-row').click(ev => {
       const li = $(ev.currentTarget).next();
       li.toggle("fast");
+    });
+
+    const itemToItemAssociation = new DragDrop({
+      dragSelector: null,
+      dropSelector: null,
+      permissions: { dragstart: true, drop: true },
+      callbacks: { drop: this._onDropItem.bind(this) },
+    });
+    itemToItemAssociation.bind(html[0]);
+  }
+
+  async _onDropItem(event) {
+    let data;
+    const obj = this.object;
+    const li = event.currentTarget;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    data.id = data.uuid.split('.')[1];
+    if (data.uuid.includes('Compendium')) {
+      return ui.notifications.error(`Error: You cannot drop compendium items into box.`);
+      // let tmp = data.uuid.split('.');
+      // data.pack = tmp[1] + '.' + tmp[2];
+      // data.id = tmp[4];
+    }
+
+    let itemObject;
+    if (data.pack) {
+      // Case 1 - Import from a Compendium pack
+      itemObject = await this.importItemFromCollection(data.pack, data.id);
+      if (!itemObject) {
+        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
+      };
+    }
+    else {
+      // Case 2 - Import from World entity
+      itemObject = await game.items.get(data.id);
+      if (!itemObject) {
+        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
+      };
+    }
+
+    switch (itemObject.type) {
+      case 'charm':
+        if(itemObject.system.charmtype === 'evocation'){
+          this.object.character.evocations[Object.entries(this.object.character.evocations).length] = itemObject;
+        }
+        else {
+          this.object.character.charms[Object.entries(this.object.character.charms).length] = itemObject;
+          if (this.object.character.abilities[itemObject.system.ability]) {
+            this.object.character.abilities[itemObject.system.ability].charms[Object.entries(this.object.character.abilities[itemObject.system.ability].charms).length] = itemObject;
+          }
+          if (this.object.character.attributes[itemObject.system.ability]) {
+            this.object.character.attributes[itemObject.system.ability].charms[Object.entries(this.object.character.attributes[itemObject.system.ability].charms).length] = itemObject;
+          }
+        }
+
+        break;
+      case 'spell':
+        this.object.character.spells[Object.entries(this.object.character.spells).length] = itemObject;
+        break;
+      case 'merit':
+        this.object.character.merits[Object.entries(this.object.character.merits).length] = itemObject;
+        break;
+      case 'weapon':
+        this.object.character.weapons[Object.entries(this.object.character.weapons).length] = itemObject;
+        break;
+      case 'armor':
+        this.object.character.armors[Object.entries(this.object.character.armors).length] = itemObject;
+        break;
+      case 'customability':
+        if (itemObject.system.abilitytype === 'martialart') {
+          this.object.character.martialArts[Object.entries(this.object.character.martialArts).length] = itemObject;
+        }
+        if (itemObject.system.abilitytype === 'craft') {
+          this.object.character.crafts[Object.entries(this.object.character.crafts).length] = itemObject;
+        }
+        break;
+    }
+
+    this.onChange(null);
+  }
+
+  importItemFromCollection(collection, entryId) {
+    const pack = game.packs.get(collection);
+    if (pack.documentName !== "Item") return;
+    return pack.getDocument(entryId).then((ent) => {
+      return ent;
     });
   }
 
