@@ -724,8 +724,8 @@
         <div class="resource grid grid-3col flex-center">
           <div>
             <div class="resource-label">{{localize "Ex3.Type"}}</div>
-            <select name="object.character.equipment.armor.type" data-type="String">
-              {{#select data.character.equipment.armor.type}}
+            <select name="object.character.armor.type" data-type="String">
+              {{#select data.character.armor.type}}
               <option value="random">{{localize "Ex3.Random"}}</option>
               <option value="set">{{localize "Ex3.Set"}}</option>
               <option value="none">{{localize "Ex3.None"}}</option>
@@ -734,8 +734,8 @@
           </div>
           <div>
             <div class="resource-label">{{localize "Ex3.Weight"}}</div>
-            <select name="object.character.equipment.armor.weight" data-type="String">
-              {{#select data.character.equipment.armor.weight}}
+            <select name="object.character.armor.weight" data-type="String">
+              {{#select data.character.armor.weight}}
               <option value="any">{{localize "Ex3.Any"}}</option>
               <option value="light">{{localize "Ex3.Light"}}</option>
               <option value="medium">{{localize "Ex3.Medium"}}</option>
@@ -745,8 +745,8 @@
           </div>
           <div>
             <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
-            <input name="object.character.equipment.armor.artifact" type="checkbox" {{checked
-              data.character.equipment.armor.artifact}}>
+            <input name="object.character.armor.artifact" type="checkbox" {{checked
+              data.character.armor.artifact}}>
           </div>
         </div>
       </div>

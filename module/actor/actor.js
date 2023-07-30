@@ -198,27 +198,53 @@ export class ExaltedThirdActor extends Actor {
     return maxMotes
   }
 
+  async calculateCommitMotes(type) {
+    var commitMotes = 0;
+    for (const item of this.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
+      if (item.type === 'item' || item.system.equipped) {
+        commitMotes += item.system.attunement;
+      }
+    }
+    this.update({ [`system.motes.${type}.committed`]: commitMotes });
+  }
+
+  async calculateCharacterMotes() {
+    await this.calculateCommitMotes('personal');
+    await this.calculateCommitMotes('peripheral');
+    const actorData = duplicate(this);
+    actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
+    actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
+    actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
+    actorData.system.motes.peripheral.max = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value);
+    this.update(actorData);
+  }
+
+  async calculateAllDerivedStats() {
+    await this.calculateCharacterMotes();
+    await this.calculateDerivedStats('all');
+  }
+
   async calculateDerivedStats(type) {
     const actorData = duplicate(this);
     var armoredSoakValue = 0;
     if (type === 'natural-soak') {
       actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value;
     }
-    if (type === 'soak' || type === 'armored-soak') {
+    if (type === 'soak' || type === 'armored-soak' || type === 'all') {
       for (let armor of this.armor) {
         if (armor.system.equipped) {
           armoredSoakValue = armoredSoakValue + armor.system.soak;
         }
       }
-      if (type === 'armored-soak') {
+      if (type === 'armored-soak' || type === 'all') {
         actorData.system.armoredsoak.value = armoredSoakValue;
       }
-      if (type === 'soak') {
+      if (type === 'soak' || type === 'all') {
         actorData.system.soak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
       }
     }
     let specialtyBonus = actorData.system?.settings?.staticcapsettings[type]?.specialty ? 1 : 0;
-    if (type === 'parry') {
+    if (type === 'parry' || type === 'all') {
       actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value + specialtyBonus) / 2);
       for (let weapon of this.weapons) {
         if (weapon.system.equipped) {
@@ -226,7 +252,7 @@ export class ExaltedThirdActor extends Actor {
         }
       }
     }
-    if (type === 'evasion') {
+    if (type === 'evasion' || type === 'all') {
       var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value + specialtyBonus) / 2);
       for (let armor of this.armor) {
         if (armor.system.equipped) {
@@ -235,21 +261,21 @@ export class ExaltedThirdActor extends Actor {
       }
       actorData.system.evasion.value = newEvasionValue;
     }
-    if (type === 'resolve') {
+    if (type === 'resolve' || type === 'all') {
       actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value + specialtyBonus) / 2);
     }
-    if (type === 'guile') {
+    if (type === 'guile' || type === 'all') {
       actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value + specialtyBonus) / 2);
     }
-    if (type === 'resonance') {
+    if (type === 'resonance' || type === 'all') {
       actorData.system.traits.resonance = this.calculateResonance(this.system.details.exalt);
       actorData.system.traits.dissonance = this.calculateDissonance(this.system.details.exalt);
     }
-    if (type === 'hardness') {
+    if (type === 'hardness' || type === 'all') {
       let hardness = 0
       for (let armor of this.armor) {
         if (armor.system.equipped) {
-          if(armor.system.hardness > hardness) {
+          if (armor.system.hardness > hardness) {
             hardness = armor.system.hardness;
           }
         }
@@ -810,7 +836,7 @@ export class ExaltedThirdActor extends Actor {
           }
           var newValueLow = Math.floor(attributeValue / 2);
           var newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
-          if(type === 'soak') {
+          if (type === 'soak') {
             return `(+${newValueLow} for ${newValueLow * 2}m)`
           }
           return `(+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m)`
