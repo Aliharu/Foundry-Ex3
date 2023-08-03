@@ -1502,12 +1502,6 @@ async function dealHealthDamage(actor, damageValue, damageType) {
   if (damageType === 'aggravated') {
     actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + damageValue);
   }
-  if (damageValue.attackerTokenId && sizeDamaged) {
-    const combatant = game.combat?.combatants.find(c => c.tokenId === damageValue.attackerTokenId);
-    if (combatant) {
-      game.combat.setInitiative(combatant.id, combatant.initiative + (5 * sizeDamaged));
-    }
-  }
   actor.update(actorData);
 }
 

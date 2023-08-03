@@ -151,7 +151,7 @@ export class RollForm extends FormApplication {
                 doublePreRolledDamage: false,
                 ignoreSoak: 0,
                 ignoreHardness: 0,
-                gainInitiative: true,
+                gainInitiative: !this.actor?.system?.battlegroup,
                 multiTargetMinimumInitiative: 0,
                 rerollFailed: false,
                 rollTwice: false,
@@ -2606,6 +2606,7 @@ export class RollForm extends FormApplication {
         let soakResult = ``;
         let hardnessResult = ``;
         let typeSpecificResults = ``;
+        var sizeDamaged = 0;
         this.object.attackSuccess = true;
 
         if (this._damageRollType('decisive')) {
@@ -2678,11 +2679,18 @@ export class RollForm extends FormApplication {
                         }
                     }
                 }
-                if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.targetCombatant?.actor?.system?.battlegroup) {
-                    var sizeDamaged = this.dealHealthDamage(total, true);
-                    if (sizeDamaged) {
+                if (this.object.targetCombatant?.actor?.system?.battlegroup) {
+                    if(game.settings.get("exaltedthird", "automaticWitheringDamage")) {
+                        sizeDamaged = this.dealHealthDamage(total, true);
+                        if (sizeDamaged) {
+                            this.object.gainedInitiative += (5 * sizeDamaged);
+                        }
+                    }
+                    else {
+                        sizeDamaged = this.calculateSizeDamage(total);
+                    }
+                    if(sizeDamaged) {
                         targetResults = `<h4 class="dice-total dice-total-middle">${sizeDamaged} Size Damage!</h4>`;
-                        this.object.gainedInitiative += (5 * sizeDamaged);
                     }
                 }
             }
@@ -2691,13 +2699,15 @@ export class RollForm extends FormApplication {
             if (this.object.damage.maxInitiativeGain) {
                 fullInitiative = Math.min(this.object.damage.maxInitiativeGain, fullInitiative);
             }
-            fullInitiative++
             if (crashed) {
                 fullInitiative += 5;
             }
+            if(this.object.targetCombatant?.actor?.system?.battlegroup) {
+                fullInitiative = (5 * sizeDamaged) + 1;
+            }
             typeSpecificResults = `
                                     <h4 class="dice-total dice-total-middle">${total} Total Damage!</h4>
-                                    ${this.object.damage.gainInitiative && `<h4 class="dice-total">${fullInitiative} Initiative Gained!</h4>`}
+                                    ${this.object.damage.gainInitiative ? `<h4 class="dice-total">${fullInitiative} Initiative Gained!</h4>` : ''}
                                     ${targetResults}
                                     <button
                                         type='button'
@@ -2708,7 +2718,7 @@ export class RollForm extends FormApplication {
                                         <i class='fa-solid fa-swords'></i>
                                         ${game.i18n.localize('Ex3.ApplyWitheringDamage')} (${total})
                                     </button>
-                                    ${this.object.damage.gainInitiative && `<button
+                                    ${this.object.damage.gainInitiative ? `<button
                                         type='button'
                                         class='gain-attack-initiative'
                                         data-tooltip='${game.i18n.localize('Ex3.GainAttackInitiative')}'
@@ -2716,7 +2726,7 @@ export class RollForm extends FormApplication {
                                     >
                                         <i class='fa-solid fa-arrow-up'></i>
                                         ${game.i18n.localize('Ex3.GainAttackInitiative')} (${fullInitiative})
-                                    </button>`}
+                                    </button>` : ''}
                                     `;
 
         }
@@ -3007,6 +3017,18 @@ export class RollForm extends FormApplication {
         }
         return 0;
     }
+
+    calculateSizeDamage(damage) {
+        if(this.object.target) {
+            let totalHealth = this.object.newTargetData.system.health.levels.zero.value + this.object.newTargetData.system.size.value;
+            var currentHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
+            const remainingHealth = Math.max(0, currentHealth - damage);
+            const totalDamageTaken = totalHealth - remainingHealth;
+            const filledHealthBars = Math.ceil(totalDamageTaken / totalHealth);
+            return filledHealthBars;
+        }
+        return 0;
+      }
 
     async _updateTargetActor() {
         if (game.user.isGM) {
