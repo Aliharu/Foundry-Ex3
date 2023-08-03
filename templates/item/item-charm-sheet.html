@@ -875,6 +875,27 @@
                     </select>
                 </div>
             </div>
+            {{#if parentItemList}}
+            <div>
+                {{#ifEquals system.ability 'evocation'}}
+                <div class="flex-center">
+                    <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+                </div>
+                {{else}}
+                <div class="flex-center">
+                    <div class="resource-label">{{localize "Ex3.MartialArt"}}</div>
+                </div>
+                {{/ifEquals}}
+                <select name="system.parentitemid" data-type="String">
+                    {{#select system.parentitemid}}
+                    <option value="">{{localize "Ex3.None"}}</option>
+                    {{#each parentItemList as |item|}}
+                    <option value="{{item._id}}">{{item.name}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+            </div>
+            {{/if}}
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

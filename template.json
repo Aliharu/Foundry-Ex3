@@ -800,6 +800,7 @@
         "exceptional": false
       },
       "artifact": {
+        "hasevocations": false,
         "attunement": 0,
         "hearthstones": {
           "value": 0,
@@ -830,6 +831,7 @@
         "artifact",
         "equipment"
       ],
+      "itemtype": "item",
       "quantity": 1
     },
     "customability": {
@@ -905,7 +907,8 @@
         "base",
         "summary",
         "macro",
-        "activatable"
+        "activatable",
+        "itemparent"
       ],
       "prerequisites": "",
       "charmprerequisites": [],
@@ -917,6 +920,7 @@
       "listingname": "",
       "requirement": 0,
       "essence": 0,
+      "parentitemid": "",
       "cost": {
         "motes": 0,
         "commitmotes": 0,

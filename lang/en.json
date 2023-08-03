@@ -470,6 +470,8 @@
     "Ex3.LegendarySize": "Legendary Size",
     "Ex3.Siege": "Siege",
     "Ex3.Artifact": "Artifact",
+    "Ex3.Artifacts": "Artifacts",
+    "Ex3.Hearthstone": "Hearthstone",
     "Ex3.Range": "Range",
     "Ex3.AttackType": "Attack Type",
     "Ex3.WeaponType": "Weapon Type",
@@ -855,5 +857,17 @@
     "Ex3.PhysicalAttributes": "Physical Attributes",
     "Ex3.SocialAttributes": "Social Attributes",
     "Ex3.MentalAttributes": "Mental Attributes",
-    "Ex3.Total": "Total"
+    "Ex3.Total": "Total",
+
+    "Ex3.HasEvocations": "Has Evocations",
+
+    "Ex3.MundaneLight": "Mundane Light",
+    "Ex3.MundaneMedium": "Mundane Medium",
+    "Ex3.MundaneHeavy": "Mundane Heavy",
+    "Ex3.MundaneSiege": "Mundane Siege",
+
+    "Ex3.ArtifactLight": "Artifact Light",
+    "Ex3.ArtifactMedium": "Artifact Medium",
+    "Ex3.ArtifactHeavy": "Artifact Heavy",
+    "Ex3.ArtifactSiege": "Artifact Siege"
 }

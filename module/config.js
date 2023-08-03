@@ -498,6 +498,9 @@ exaltedthird.casteabilitiesmap = {
     ],
     'sovereign': [
       'craft', 'integrity', 'performance', 'socialize', 'war'
+    ],
+    'puppeteer': [
+      'craft', 'larceny', 'performance'
     ]
   };
 

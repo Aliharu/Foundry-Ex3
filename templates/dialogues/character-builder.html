@@ -193,7 +193,7 @@
           </tr>
           <tr>
             <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
-            <td>8, 10 per non-favored</td>
+            <td>4, 5 per non-favored</td>
             <td>{{data.creationData.spent.bonusPoints.charms}}</td>
           </tr>
           <tr>
@@ -265,12 +265,12 @@
             <div class="resource-label flexrow flex-center"><span>{{localize "Ex3.RandomCharms"}} <a
                   class="item-control import-item" title="Import charm" data-type="charms" data-item="charm"
                   data-ability="{{key}}"><i class="fas fa-edit"></i></a></span></div>
-            <input type="number" name="object.character.attributes.{{key}}.randomCharms" value="{{attribute.randomCharms}}"
-              data-dtype="Number" />
+            <input type="number" name="object.character.attributes.{{key}}.randomCharms"
+              value="{{attribute.randomCharms}}" data-dtype="Number" />
             {{/if}}
             <ol class="items-list" style="align-items:start;max-height:150px;">
               {{#each attribute.charms as |item index|}}
-              <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+              <li class="item flexrow item-row" data-item-id="{{item._id}}">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
                 <h4 class="item-name">{{item.name}}</h4>
@@ -296,7 +296,8 @@
                   <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
                 </div>
                 <div>
-                  <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+                  <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+                  id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
                 </div>
                 <div>
                   {{{item.enritchedHTML}}}
@@ -316,6 +317,13 @@
             {{data.creationData.spent.attributes.mental}}/{{data.creationData.available.attributes.mental}}
           </div>
         </div>
+        <div>
+          {{#if data.character.showAttributeCharms}}
+          <div>
+            {{data.creationData.spent.favoredAttributes}}/{{data.creationData.available.favoredAttributes}} Favored
+          </div>
+          {{/if}}
+        </div>
       </div>
       <div class="tab flex-center" data-group="primary" data-tab="abilities">
         <div class="resource-content flexrow flex-center flex-between mt-2">
@@ -324,6 +332,7 @@
         </div>
         <div class="resource grid grid-3col flex-center" style="align-items:start">
           {{#each data.character.abilities as |ability key|}}
+          {{#ifNotEquals key 'martialarts'}}
           <div>
             <div class="resource-label flexrow flex-center">{{localize ability.name}}<input
                 name="object.character.abilities.{{key}}.favored" type="checkbox" {{checked ability.favored}}></div>
@@ -346,7 +355,7 @@
             {{/if}}
             <ol class="items-list" style="align-items:start;max-height:150px;">
               {{#each ability.charms as |item index|}}
-              <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+              <li class="item flexrow item-row" data-item-id="{{item._id}}">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
                 <h4 class="item-name">{{item.name}}</h4>
@@ -372,7 +381,8 @@
                   <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
                 </div>
                 <div>
-                  <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+                  <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+                  id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
                 </div>
                 <div>
                   {{{item.enritchedHTML}}}
@@ -381,8 +391,14 @@
               {{/each}}
             </ol>
           </div>
+          {{/ifNotEquals}}
           {{/each}}
         </div>
+        {{#if data.character.showAbilityCharms}}
+        <div>
+          {{data.creationData.spent.favoredAbilities}}/{{data.creationData.available.favoredAbilities}} Favored
+        </div>
+        {{/if}}
         <div>
           {{data.creationData.spent.abilities}}/{{data.creationData.available.abilities}}
           ({{data.creationData.spent.abovethree}} Above 3)
@@ -394,22 +410,25 @@
         <div class="resource grid grid-3col flex-center">
           {{#each data.character.crafts as |craft index|}}
           <input name="object.character.crafts.{{index}}.name" type="text" value="{{craft.name}}" />
-          <input name="object.character.crafts.{{index}}.system.value" type="number" value="{{craft.system.value}}" />
+          <input name="object.character.crafts.{{index}}.system.points" type="number" value="{{craft.system.points}}" />
           <a class="item-control delete-item" title="Delete" data-type="crafts" data-index="{{index}}"><i
               class="fas fa-trash"></i></a>
           {{/each}}
         </div>
         <div class="resource-content flex-center mt-2" style="font-size: 24px;">
-          <label class="resource-label">{{localize "Ex3.MartialArts"}}</label>
+          <label class="resource-label"><input
+            name="object.character.abilities.martialarts.favored" type="checkbox" {{checked data.character.abilities.martialarts.favored}}>{{localize "Ex3.MartialArts"}}</label>
           <a class="item-control add-item" title="Create Martial Art" data-type="martialArts"><i
               class="fas fa-plus"></i></a>
+          <a class="item-control import-item" title="Import" data-type="martialArts" data-item="customability"><i
+              class="fas fa-edit"></i></a>
         </div>
         <div class="resource grid grid-3col flex-center">
           {{#each data.character.martialArts as |martialart index|}}
           <input name="object.character.martialArts.{{index}}.name" type="text" type="text"
             value="{{martialart.name}}" />
-          <input name="object.character.martialArts.{{index}}.system.value" type="text" type="number"
-            value="{{martialart.system.value}}" />
+          <input name="object.character.martialArts.{{index}}.system.points" type="text" type="number"
+            value="{{martialart.system.points}}" />
           <a class="item-control delete-item" title="Delete" data-type="martialArts" data-index="{{index}}"><i
               class="fas fa-trash"></i></a>
           {{/each}}
@@ -470,7 +489,7 @@
         </div>
         <ol class="items-list" style="text-align:start;">
           {{#each data.character.charms as |item index|}}
-          <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
@@ -498,7 +517,140 @@
               <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
             </div>
             <div>
-              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Evocations"}}
+            <a class="item-control import-item" title="Import evocation" data-type="evocations" data-item="evocation"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.evocations as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="evocations"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.MartialArts"}} {{localize "Ex3.Charms"}}
+            <a class="item-control import-item" title="Import charm" data-type="martialArtsCharms" data-item="martialArtCharm"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.martialArtsCharms as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="martialArtsCharms"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Other"}}/{{localize "Ex3.Eclipse"}} {{localize "Ex3.Charms"}}
+            <a class="item-control import-item" title="Import evocation" data-type="otherCharms" data-item="otherCharm"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.otherCharms as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="otherCharms"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
             </div>
             <div>
               {{{item.enritchedHTML}}}
@@ -536,7 +688,7 @@
         </div>
         <ol class="items-list" style="text-align:start;">
           {{#each data.character.spells as |item index|}}
-          <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
@@ -592,14 +744,35 @@
       </div>
       <div class="tab flex-center" data-group="primary" data-tab="equipment">
         <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Items"}}
+            <a class="item-control import-item" title="Import item" data-type="items" data-item="item"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.items as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" title="Remove item" data-type="items"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description">
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Weapons"}}
-            <a class="item-control add-item" title="Add weapon" data-type="weapons" ><i class="fas fa-plus"></i></a>
+            <a class="item-control add-item" title="Add weapon" data-type="weapons"><i class="fas fa-plus"></i></a>
             <a class="item-control import-item" title="Import weapon" data-type="weapons" data-item="weapon"><i
                 class="fas fa-edit"></i></a></label>
         </div>
         <ol class="items-list" style="text-align:start;">
           {{#each data.character.weapons as |item index|}}
-          <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
@@ -658,56 +831,13 @@
           {{/each}}
         </div>
         <div class="resource-content flexrow flex-center flex-between mt-2">
-          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Evocations"}}
-            <a class="item-control import-item" title="Import evocation" data-type="evocations" data-item="evocation"><i
-                class="fas fa-edit"></i></a></label>
-        </div>
-        <ol class="items-list" style="text-align:start;">
-          {{#each data.character.evocations as |item index|}}
-          <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
-            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-                height="24" /></div>
-            <h4 class="item-name">{{item.name}}</h4>
-            <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="evocations"
-              data-index="{{index}}"><i class="fas fa-trash"></i></a>
-          </li>
-          <li class="item-description">
-            <div>
-              {{{charmCostDisplay item.system.cost}}}
-            </div>
-            <div>
-              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
-                style="text-transform: capitalize;">{{item.system.ability}}</span>
-              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
-            </div>
-            <div>
-              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
-            </div>
-            {{#if item.system.keywords}}
-            <div>
-              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
-            </div>
-            {{/if}}
-            <div>
-              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
-            </div>
-            <div>
-              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
-            </div>
-            <div>
-              {{{item.enritchedHTML}}}
-            </div>
-          </li>
-          {{/each}}
-        </ol>
-        <div class="resource-content flexrow flex-center flex-between mt-2">
-          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Armor"}} 
-          <a class="item-control import-item" title="Import armor" data-type="armors" data-item="armor"><i
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Armor"}}
+            <a class="item-control import-item" title="Import armor" data-type="armors" data-item="armor"><i
                 class="fas fa-edit"></i></a></label>
         </div>
         <ol class="items-list" style="text-align:start;">
           {{#each data.character.armors as |item index|}}
-          <li class="item flexrow item-row collapsable" data-item-id="{{item._id}}">
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
@@ -745,8 +875,7 @@
           </div>
           <div>
             <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
-            <input name="object.character.armor.artifact" type="checkbox" {{checked
-              data.character.armor.artifact}}>
+            <input name="object.character.armor.artifact" type="checkbox" {{checked data.character.armor.artifact}}>
           </div>
         </div>
       </div>
