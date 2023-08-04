@@ -260,6 +260,16 @@ async function handleSocket({ type, id, data, actorId, crasherId = null, addStat
 
   const targetedActor = game.canvas.tokens.get(id)?.actor;
 
+  if (type === 'createGeneratedCharacter') {
+    var actor = await Actor.create(data);
+    actor.update({
+      permission: {
+        default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+        [id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+      },
+    });
+    actor.calculateAllDerivedStats();
+  }
   if (type === 'updateInitiative') {
     game.combat.setInitiative(id, data, crasherId);
   }
@@ -387,6 +397,16 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         ev.preventDefault();
         ev.stopPropagation();
         await gainAttackInitiative(message);
+      });
+    });
+  html[0]
+    .querySelectorAll('.resume-character')
+    .forEach((target) => {
+      target.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        console.log(message);
+        new CharacterBuilder(null, {}, {}, message.flags?.exaltedthird?.character).render(true);
       });
     });
 });

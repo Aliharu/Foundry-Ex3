@@ -115,11 +115,11 @@ export default class NPCGenerator extends FormApplication {
     let buttons = super._getHeaderButtons();
     const helpButton = {
       label: game.i18n.localize('Ex3.Help'),
-      class: 'npc-generator-help',
+      class: 'generator-help',
       icon: 'fas fa-question',
       onclick: async () => {
         let confirmed = false;
-        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/npc-generator-help.html");
+        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dialog-help.html", { 'link': 'https://github.com/Aliharu/Foundry-Ex3/wiki/NPC-Generator' });
         new Dialog({
           title: `ReadMe`,
           content: html,
