@@ -416,8 +416,8 @@
           {{/each}}
         </div>
         <div class="resource-content flex-center mt-2" style="font-size: 24px;">
-          <label class="resource-label"><input
-            name="object.character.abilities.martialarts.favored" type="checkbox" {{checked data.character.abilities.martialarts.favored}}>{{localize "Ex3.MartialArts"}}</label>
+          <label class="resource-label"><input name="object.character.abilities.martialarts.favored" type="checkbox"
+              {{checked data.character.abilities.martialarts.favored}}>{{localize "Ex3.MartialArts"}}</label>
           <a class="item-control add-item" title="Create Martial Art" data-type="martialArts"><i
               class="fas fa-plus"></i></a>
           <a class="item-control import-item" title="Import" data-type="martialArts" data-item="customability"><i
@@ -468,7 +468,15 @@
           {{#each data.character.merits as |merit index|}}
           <div>
             <input name="object.character.merits.{{index}}.name" type="text" value="{{merit.name}}" />
-            <div style="text-align:start;">
+            <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+              <li class="flexrow item-header">
+                <div class="item-name">{{localize "Ex3.Description"}}</div>
+              </li>
+              <div>
+                <i class="fas fa-caret-down"></i>
+              </div>
+            </div>
+            <div style="display:none;text-align:start;">
               {{{merit.enritchedHTML}}}
             </div>
           </div>
@@ -571,9 +579,10 @@
           {{/each}}
         </ol>
         <div class="resource-content flexrow flex-center flex-between mt-2">
-          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.MartialArts"}} {{localize "Ex3.Charms"}}
-            <a class="item-control import-item" title="Import charm" data-type="martialArtsCharms" data-item="martialArtCharm"><i
-                class="fas fa-edit"></i></a></label>
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.MartialArts"}} {{localize
+            "Ex3.Charms"}}
+            <a class="item-control import-item" title="Import charm" data-type="martialArtsCharms"
+              data-item="martialArtCharm"><i class="fas fa-edit"></i></a></label>
         </div>
         <ol class="items-list" style="text-align:start;">
           {{#each data.character.martialArtsCharms as |item index|}}
@@ -581,8 +590,8 @@
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
             <h4 class="item-name">{{item.name}}</h4>
-            <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="martialArtsCharms"
-                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+            <div class="item-controls"><a class="item-control delete-item" title="Remove Charm"
+                data-type="martialArtsCharms" data-index="{{index}}"><i class="fas fa-trash"></i></a>
           </li>
           <li class="item-description" style="    text-align: start;">
             <div>
@@ -615,9 +624,10 @@
           {{/each}}
         </ol>
         <div class="resource-content flexrow flex-center flex-between mt-2">
-          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Other"}}/{{localize "Ex3.Eclipse"}} {{localize "Ex3.Charms"}}
-            <a class="item-control import-item" title="Import evocation" data-type="otherCharms" data-item="otherCharm"><i
-                class="fas fa-edit"></i></a></label>
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Other"}}/{{localize "Ex3.Eclipse"}}
+            {{localize "Ex3.Charms"}}
+            <a class="item-control import-item" title="Import evocation" data-type="otherCharms"
+              data-item="otherCharm"><i class="fas fa-edit"></i></a></label>
         </div>
         <ol class="items-list" style="text-align:start;">
           {{#each data.character.otherCharms as |item index|}}
