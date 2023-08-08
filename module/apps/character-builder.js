@@ -342,6 +342,9 @@ export default class CharacterBuilder extends FormApplication {
           },
           intimacies: {},
           sorcerer: 'none',
+          ritual: {
+            name: '',
+          },
           randomSpells: 0,
         }
     }
@@ -779,6 +782,12 @@ export default class CharacterBuilder extends FormApplication {
           }
         }
       }
+      else if (itemType === 'ritual') {
+        sectionList['rituals'] = {
+          name: game.i18n.localize("Ex3.Rituals"),
+          list: items
+        }
+      }
       else {
         for (const charm of items.sort(function (a, b) {
           const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
@@ -814,15 +823,21 @@ export default class CharacterBuilder extends FormApplication {
             let item = items.find((item) => item._id === li.data("item-id"));
             const newItem = duplicate(item);
             this.getEnritchedHTML(newItem);
-            this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-            if (item.type === 'charm') {
-              if (this.object.character.abilities[item.system.ability]) {
-                this.object.character.abilities[item.system.ability].charms[Object.entries(this.object.character.abilities[item.system.ability].charms).length] = newItem;
-              }
-              if (this.object.character.attributes[item.system.ability]) {
-                this.object.character.attributes[item.system.ability].charms[Object.entries(this.object.character.attributes[item.system.ability].charms).length] = newItem;
+            if (item.type === 'ritual') {
+              this.object.character.ritual = newItem;
+            }
+            else {
+              this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
+              if (item.type === 'charm') {
+                if (this.object.character.abilities[item.system.ability]) {
+                  this.object.character.abilities[item.system.ability].charms[Object.entries(this.object.character.abilities[item.system.ability].charms).length] = newItem;
+                }
+                if (this.object.character.attributes[item.system.ability]) {
+                  this.object.character.attributes[item.system.ability].charms[Object.entries(this.object.character.attributes[item.system.ability].charms).length] = newItem;
+                }
               }
             }
+
             this.onChange(ev);
             html.find('.closeImportItem').trigger('click');
           });
@@ -865,8 +880,15 @@ export default class CharacterBuilder extends FormApplication {
 
     html.find(".delete-item").on("click", async (event) => {
       const type = event.currentTarget.dataset.type;
-      const index = event.currentTarget.dataset.index;
-      delete this.object.character[type][index];
+      if(type === 'ritual') {
+        this.object.character.ritual = {
+          name: '',
+        }
+      }
+      else {
+        const index = event.currentTarget.dataset.index;
+        delete this.object.character[type][index];
+      }
       await this.onChange(event);
     });
 
@@ -1786,6 +1808,19 @@ export default class CharacterBuilder extends FormApplication {
   }
 
   async _getCharacterSpells(actorData, itemData) {
+    if (this.object.character.ritual.name) {
+      if (this.object.character.ritual._id) {
+        itemData.push(await duplicate(this.object.character.ritual));
+      }
+      else {
+        itemData.push(
+          {
+            name: this.object.character.ritual.name,
+            type: 'ritual',
+          }
+        );
+      }
+    }
     for (const spell of Object.values(this.object.character.spells)) {
       itemData.push(await duplicate(spell));
     }

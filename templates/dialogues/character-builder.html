@@ -671,7 +671,7 @@
         <div class="resource-content flexrow flex-center flex-between mt-2" style="font-size: 24px;">
           <label class="resource-label">{{localize "Ex3.Sorcery"}}</label>
         </div>
-        <div class="resource grid grid-2col flex-center">
+        <div class="resource grid grid-3col">
           <div>
             <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
             <select name="object.character.sorcerer" data-type="String">
@@ -685,6 +685,26 @@
               <option value="void">{{localize "Ex3.Void"}}</option>
               {{/select}}
             </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Ritual"}} <a class="item-control import-item" title="Import ritual" data-type="rituals"
+              data-item="ritual"><i class="fas fa-edit"></i></a>
+              <a class="item-control delete-item" title="Remove ritual" data-type="ritual"><i class="fas fa-trash"></i></a>
+            </div>
+            <input name="object.character.ritual.name" value="{{data.character.ritual.name}}" type="text">
+            {{#if data.character.ritual.enritchedHTML}}
+            <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+              <li class="flexrow item-header">
+                <div class="item-name">{{localize "Ex3.Description"}}</div>
+              </li>
+              <div>
+                <i class="fas fa-caret-down"></i>
+              </div>
+            </div>
+            <div style="display:none;text-align:start;">
+              {{{data.character.ritual.enritchedHTML}}}
+            </div>
+            {{/if}}
           </div>
           <div>
             <div class="resource-label">{{localize "Ex3.RandomSpells"}}</div>

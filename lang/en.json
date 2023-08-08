@@ -856,6 +856,10 @@
     "Ex3.Section": "Section",
     "Ex3.Available": "Available",
 
+    "Ex3.Story": "Story",
+    "Ex3.Purchased": "Purchased",
+    "Ex3.Innate": "Innate",
+
     "Ex3.PhysicalAttributes": "Physical Attributes",
     "Ex3.SocialAttributes": "Social Attributes",
     "Ex3.MentalAttributes": "Mental Attributes",

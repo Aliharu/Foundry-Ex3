@@ -1283,8 +1283,6 @@ Hooks.once("ready", async function () {
   //   }
   // }
 
-
-
   $("#chat-log").on("click", " .item-row", ev => {
     const li = $(ev.currentTarget).next();
     li.toggle("fast");

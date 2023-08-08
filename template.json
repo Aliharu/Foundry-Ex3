@@ -907,8 +907,7 @@
         "base",
         "summary",
         "macro",
-        "activatable",
-        "itemparent"
+        "activatable"
       ],
       "prerequisites": "",
       "charmprerequisites": [],
@@ -1064,6 +1063,7 @@
         "activatable"
       ],
       "merittype": "story",
+      "parentitemid": "",
       "points": 0
     },
     "ritual": {
