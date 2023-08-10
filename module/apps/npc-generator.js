@@ -1236,13 +1236,13 @@ export default class NPCGenerator extends FormApplication {
   calculateMaxExaltedMotes(moteType, exaltType, essenceLevel) {
     var maxMotes = 0;
     if (moteType === 'personal') {
-      if (exaltType === 'solar' || exaltType === 'abyssal') {
+      if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
         maxMotes = 10 + (essenceLevel * 3);
       }
       if (exaltType === 'dragonblooded') {
         maxMotes = 11 + essenceLevel;
       }
-      if (exaltType === 'lunar') {
+      if (exaltType === 'lunar' || exaltType === 'alchemical') {
         maxMotes = 15 + essenceLevel;
       }
       if (exaltType === 'exigent') {
@@ -1265,7 +1265,7 @@ export default class NPCGenerator extends FormApplication {
       }
     }
     else {
-      if (exaltType === 'solar' || exaltType === 'abyssal') {
+      if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
         maxMotes = 26 + (essenceLevel * 7);
       }
       if (exaltType === 'dragonblooded') {
@@ -1277,7 +1277,7 @@ export default class NPCGenerator extends FormApplication {
       if (exaltType === 'exigent') {
         maxMotes = 23 + (essenceLevel * 4);
       }
-      if (exaltType === 'sidereal') {
+      if (exaltType === 'sidereal' || exaltType === 'alchemical') {
         maxMotes = 25 + (essenceLevel * 6);
       }
       if (exaltType === 'liminal') {

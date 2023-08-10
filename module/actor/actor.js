@@ -141,7 +141,7 @@ export class ExaltedThirdActor extends Actor {
   calculateMaxExaltedMotes(moteType, exaltType, essenceLevel) {
     var maxMotes = 0;
     if (moteType === 'personal') {
-      if (exaltType === 'solar' || exaltType === 'abyssal') {
+      if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
         maxMotes = 10 + (essenceLevel * 3);
       }
       if (exaltType === 'dragonblooded') {
@@ -170,7 +170,7 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     else {
-      if (exaltType === 'solar' || exaltType === 'abyssal') {
+      if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
         maxMotes = 26 + (essenceLevel * 7);
       }
       if (exaltType === 'dragonblooded') {

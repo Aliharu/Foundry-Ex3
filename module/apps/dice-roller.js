@@ -2680,7 +2680,7 @@ export class RollForm extends FormApplication {
                     }
                 }
                 if (this.object.targetCombatant?.actor?.system?.battlegroup) {
-                    if(game.settings.get("exaltedthird", "automaticWitheringDamage")) {
+                    if (game.settings.get("exaltedthird", "automaticWitheringDamage")) {
                         sizeDamaged = this.dealHealthDamage(total, true);
                         if (sizeDamaged) {
                             this.object.gainedInitiative += (5 * sizeDamaged);
@@ -2689,7 +2689,7 @@ export class RollForm extends FormApplication {
                     else {
                         sizeDamaged = this.calculateSizeDamage(total);
                     }
-                    if(sizeDamaged) {
+                    if (sizeDamaged) {
                         targetResults = `<h4 class="dice-total dice-total-middle">${sizeDamaged} Size Damage!</h4>`;
                     }
                 }
@@ -2702,7 +2702,7 @@ export class RollForm extends FormApplication {
             if (crashed) {
                 fullInitiative += 5;
             }
-            if(this.object.targetCombatant?.actor?.system?.battlegroup) {
+            if (this.object.targetCombatant?.actor?.system?.battlegroup) {
                 fullInitiative = (5 * sizeDamaged) + 1;
             }
             typeSpecificResults = `
@@ -3019,7 +3019,7 @@ export class RollForm extends FormApplication {
     }
 
     calculateSizeDamage(damage) {
-        if(this.object.target) {
+        if (this.object.target) {
             let totalHealth = this.object.newTargetData.system.health.levels.zero.value + this.object.newTargetData.system.size.value;
             var currentHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
             const remainingHealth = Math.max(0, currentHealth - damage);
@@ -3028,7 +3028,7 @@ export class RollForm extends FormApplication {
             return filledHealthBars;
         }
         return 0;
-      }
+    }
 
     async _updateTargetActor() {
         if (game.user.isGM) {
@@ -3327,7 +3327,7 @@ export class RollForm extends FormApplication {
                     }
                     var abilityValue = 0;
                     abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
-                    if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                    if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt)) {
                         return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                     }
                     if (this.actor.system.details.exalt === "dragonblooded") {
@@ -3497,7 +3497,7 @@ export class RollForm extends FormApplication {
                 if (this.actor.system.details.exalt === "sidereal") {
                     return this.actor.system.essence.value;
                 }
-                if (this.actor.system.details.exalt === "solar" || this.actor.system.details.exalt === "abyssal") {
+                if (['abyssal', 'solar', 'infernal', 'alchemical'].includes(this.actor.system.details.exalt)) {
                     diceMap = {
                         'zero': 0,
                         'two': 2,

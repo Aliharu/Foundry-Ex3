@@ -607,7 +607,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
       const formActor = game.actors.get(item.system.actorid);
-      if(formActor) {
+      if (formActor) {
         formActor.sheet.render(true);
       }
     });
@@ -1078,20 +1078,40 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.anima-flux').click(ev => {
       if (game.user.targets && game.user.targets.size > 0) {
         for (const target of game.user.targets) {
+          const tokenId = target.actor.token?.id || target.actor.getActiveTokens()[0]?.id;
+          let combatant = game.combat.combatants.find(c => c.tokenId == tokenId);
           var roll = new Roll(`1d10cs>=7`).evaluate({ async: false });
+          let diceDisplay = "";
           var total = roll.total;
-          for (let dice of roll.dice[0].results) {
+          for (let dice of roll.dice[0].results.sort((a, b) => b.result - a.result)) {
+            if (dice.result === 10) {
+              diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
+            }
+            else if (dice.result >= 7) { diceDisplay += `<li class="roll die d10 success">${dice.result}</li>`; }
+            else if (dice.rerolled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
+            else if (dice.result == 1) { diceDisplay += `<li class="roll die d10 failure">${dice.result}</li>`; }
+            else { diceDisplay += `<li class="roll die d10">${dice.result}</li>`; }
             if (dice.result >= 10) {
               total += 1;
             }
           }
+          let resultsMessage = `<h4 class="dice-total">${total} Damage</h4>`;
           if (total > 0) {
             if (game.combat) {
-              let combatant = game.combat.combatants.find(c => c.tokenId == target.actor.token.id);
               if (combatant && combatant.initiative != null) {
                 if (combatant.initiative > 0) {
                   if (target.actor.system.hardness.value <= 0) {
-                    game.combat.setInitiative(combatant.id, combatant.initiative - total);
+                    if (game.user.isGM) {
+                      game.combat.setInitiative(combatant.id, combatant.initiative - total);
+                    }
+                    else {
+                      game.socket.emit('system.exaltedthird', {
+                        type: 'updateInitiative',
+                        id: combatant.id,
+                        data: combatant.initiative - total,
+                        // crasherId: crasherId,
+                      });
+                    }
                   }
                 }
                 else {
@@ -1106,17 +1126,37 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                   }
                   else {
                     game.socket.emit('system.exaltedthird', {
-                      type: 'healthDamage',
+                      type: 'updateTargetData',
                       id: target.id,
-                      data: targetActorData.system.health,
+                      data: targetActorData,
                     });
                   }
                 }
               }
             }
+            if (combatant.initiative > 0 && target.actor.system.hardness.value > 0) {
+              resultsMessage = `<h4 class="dice-total">Blocked by hardness</h4>`;
+            }
           }
-          ChatMessage.create({ type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll });
+          let messageContent = `
+          <div class="dice-roll">
+              <div class="dice-result">
+                  <h4 class="dice-formula">Anima Flux vs ${target.actor.name}</h4>
+                  <div class="dice-tooltip">
+                      <div class="dice">
+                          <ol class="dice-rolls">${diceDisplay}</ol>
+                      </div>
+                  </div>
+                  ${resultsMessage}
+              </div>
+          </div>`;
+          ChatMessage.create({ user: game.user.id, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll, content: messageContent });
         }
+      }
+      else {
+        ui.notifications.warn('Ex3.NoTargets', {
+          localize: true,
+        });
       }
     });
 
@@ -1659,13 +1699,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         $(this).css("background-color", color);
       }
     })
-    if(itemID) {
+    if (itemID) {
       const item = this.actor.items.get(itemID);
       let newVal = index + 1;
-      if(index === 0 && item.system.points === 1) {
+      if (index === 0 && item.system.points === 1) {
         newVal = 0;
       }
-      if(item) {
+      if (item) {
         this.actor.updateEmbeddedDocuments('Item', [
           {
             _id: itemID,
