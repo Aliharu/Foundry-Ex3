@@ -20,6 +20,7 @@ export class RollForm extends FormApplication {
             this.object.craftRating = data.craftRating || 0;
             this.object.splitAttack = false;
             this.object.rollType = data.rollType;
+            this.object.targetStat = 'defense';
             this.object.attackType = data.attackType || data.rollType || 'withering';
             if (this.object.rollType === 'damage' || this.object.rollType === 'accuracy') {
                 this.object.attackType = 'withering';
@@ -243,6 +244,7 @@ export class RollForm extends FormApplication {
                     this.object.weaponTags = data.weapon.traits?.weapontags?.selected || {};
                     this.object.damage.resetInit = data.weapon.resetinitiative;
                     this.object.poison = data.weapon.poison;
+                    this.object.targetStat = data.weapon.targetstat;
                     if (this.actor.type === 'character') {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.weapon.ability || "archery";
@@ -505,6 +507,8 @@ export class RollForm extends FormApplication {
             }
             let effectiveParry = target.actor.system.parry.value;
             let effectiveEvasion = target.actor.system.evasion.value;
+            let effectiveResolve = target.actor.system.resolve.value;
+            let effectiveGuile = target.actor.system.guile.value;
 
             if (target.actor.effects) {
                 if (target.actor.effects.some(e => e.statuses.has('lightcover'))) {
@@ -540,13 +544,23 @@ export class RollForm extends FormApplication {
                 }
                 effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
             }
-            if ((effectiveParry >= effectiveEvasion || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
-                target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
-                target.rollData.defense = effectiveParry;
+            if(this.object.targetStat === 'resolve'){
+                target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
+                target.rollData.defense = effectiveResolve;
             }
-            if ((effectiveEvasion >= effectiveParry || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
-                target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
-                target.rollData.defense = effectiveEvasion;
+            else if (this.object.targetStat === 'guile') {
+                target.rollData.defenseType = game.i18n.localize('Ex3.Guile');
+                target.rollData.defense = effectiveGuile;
+            }
+            else {
+                if ((effectiveParry >= effectiveEvasion || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
+                    target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
+                    target.rollData.defense = effectiveParry;
+                }
+                if ((effectiveEvasion >= effectiveParry || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
+                    target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
+                    target.rollData.defense = effectiveEvasion;
+                }
             }
             if (target.rollData.defense < 0) {
                 target.rollData.defense = 0;
@@ -554,6 +568,7 @@ export class RollForm extends FormApplication {
             if (target.rollData.soak < 0) {
                 target.rollData.soak = 0;
             }
+
             if (this.object.weaponTags["bombard"]) {
                 if (!target.actor.system.battlegroup && !target.actor.system.legendarysize && !target.actor.system.warstrider.equipped) {
                     target.rollData.diceModifier -= 4;

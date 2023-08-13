@@ -869,6 +869,7 @@
       "decisivedamagetype": "initiative",
       "staticdamage": 0,
       "resetinitiative": true,
+      "targetstat": "defense",
       "poison": {
         "name": "",
         "apply": false,

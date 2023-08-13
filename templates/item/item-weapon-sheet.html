@@ -180,6 +180,16 @@
                                 value="system.hasevocations" {{checked system.hasevocations}}>
                         </div>
                     </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.TargetStat"}}</div>
+                        <select name="system.targetstat" data-type="String">
+                            {{#select system.targetstat}}
+                            <option value="defense">{{localize "Ex3.Defense"}}</option>
+                            <option value="resolve">{{localize "Ex3.Resolve"}}</option>
+                            <option value="guile">{{localize "Ex3.Guile"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
                 </div>
                 <div class="d-flex flex-center resource-label">
                     <div class="resource-label mr-1">{{localize "Ex3.PoisonRoundTrigger"}} </div>
