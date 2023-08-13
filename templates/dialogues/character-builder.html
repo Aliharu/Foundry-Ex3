@@ -162,6 +162,53 @@
             <td>{{data.creationData.spent.bonusPoints.total}}</td>
           </tr>
         </table>
+        {{#if data.unifiedCharacterCreation}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Experience"}}</label>
+        </div>
+        <table>
+          <tr>
+            <th>{{localize "Ex3.Section"}}</th>
+            <th>{{localize "Ex3.Cost"}}</th>
+            <th>{{localize "Ex3.Spent"}}</th>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Attributes"}}</td>
+            <td>10 per dot, 8 per favored dot</td>
+            <td>{{data.creationData.spent.experience.attributes}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Abilities"}}</td>
+            <td>5 per dot, 4 per favored dot</td>
+            <td>{{data.creationData.spent.experience.abilities}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Specialties"}}</td>
+            <td>2</td>
+            <td>{{data.creationData.spent.experience.specialties}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Merits"}}</td>
+            <td>2 per dot</td>
+            <td>{{data.creationData.spent.experience.merits}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+            <td>12 per dot, 10 per favored dot</td>
+            <td>{{data.creationData.spent.experience.charms}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Willpower"}}</td>
+            <td>6 per dot</td>
+            <td>{{data.creationData.spent.experience.willpower}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Total"}}</td>
+            <td></td>
+            <td>{{data.creationData.spent.experience.total}}</td>
+          </tr>
+        </table>
+        {{else}}
         <div class="resource-content flexrow flex-center flex-between mt-2">
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.BonusPoints"}}</label>
         </div>
@@ -207,6 +254,7 @@
             <td>{{data.creationData.spent.bonusPoints.total}}</td>
           </tr>
         </table>
+        {{/if}}
       </div>
       <div class="tab flex-center" data-group="primary" data-tab="attributes">
         <div class="resource-content flexrow flex-center flex-between mt-2">

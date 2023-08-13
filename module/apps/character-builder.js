@@ -348,6 +348,7 @@ export default class CharacterBuilder extends FormApplication {
         randomSpells: 0,
       }
     }
+    this.object.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     this.onChange(null);
   }
 
@@ -1169,15 +1170,50 @@ export default class CharacterBuilder extends FormApplication {
         willpower: 0,
         total: 0,
       },
+      experience: {
+        abilities: 0,
+        attributes: 0,
+        specialties: 0,
+        merits: 0,
+        charms: 0,
+        willpower: 0,
+        total: 0,
+      },
     }
-    for (let [key, attr] of Object.entries(this.object.character.attributes)) {
-      this.object.creationData.spent.attributes[attr.type] += (attr.value - 1);
-      this.object.creationData.spent.charms += attr.randomCharms;
 
-      if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && attr.favored) {
-        this.object.creationData.spent.favoredAttributes++;
+    var attributesSpent = {
+      physical: {
+        favored: 0,
+        unFavored: 0,
+      },
+      mental: {
+        favored: 0,
+        unFavored: 0,
+      },
+      social: {
+        favored: 0,
+        unFavored: 0,
       }
     }
+    var favoredCharms = 0;
+    var nonFavoredCharms = 0;
+    for (let [key, attr] of Object.entries(this.object.character.attributes)) {
+      this.object.creationData.spent.attributes[attr.type] += (attr.value - 1);
+
+      if (attr.favored) {
+        if(!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
+          this.object.creationData.spent.favoredAttributes++;
+        }
+        attributesSpent[attr.type].favored += (attr.value - 1);
+        favoredCharms += attr.randomCharms;
+      }
+      else {
+        attributesSpent[attr.type].unFavored += (attr.value - 1);
+        nonFavoredCharms += attr.randomCharms;
+      }
+    }
+    var favoredAttributesSpent = 0;
+    var unFavoredAttributesSpent = 0;
     for (let [key, attribute] of Object.entries(this.object.creationData.spent.attributes)) {
       if (this.object.creationData[key] === 'tertiary' || this.object.character.exalt === 'lunar') {
         this.object.creationData.spent.bonusPoints.attributes += (Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]) * 3);
@@ -1185,20 +1221,27 @@ export default class CharacterBuilder extends FormApplication {
       else {
         this.object.creationData.spent.bonusPoints.attributes += (Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]) * 4);
       }
+      unFavoredAttributesSpent += Math.max(0, attributesSpent[key].unFavored - this.object.creationData.available.attributes[key]);
+      favoredAttributesSpent += Math.max(0, attributesSpent[key].favored - Math.max(0, this.object.creationData.available.attributes[key] - attributesSpent[key].unFavored));
     }
     var threeOrBelowFavored = 0;
     var threeOrBelowNonFavored = 0;
+    var aboveThreeFavored = 0;
+    var aboveThreeUnFavored = 0;
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       this.object.creationData.spent.abovethree += Math.max(0, (ability.value - 3));
       if (ability.favored) {
+        aboveThreeFavored += Math.max(0, (ability.value - 3));
         this.object.creationData.spent.bonusPoints.abilities += Math.max(0, (ability.value - 3));
         threeOrBelowFavored += Math.min(3, ability.value);
+        favoredCharms += ability.randomCharms;
       }
       else {
         this.object.creationData.spent.bonusPoints.abilities += (Math.max(0, (ability.value - 3))) * 2;
         threeOrBelowNonFavored += Math.min(3, ability.value);
+        aboveThreeUnFavored += Math.max(0, (ability.value - 3));
+        nonFavoredCharms += ability.randomCharms;
       }
-      this.object.creationData.spent.charms += ability.randomCharms;
 
       if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
         this.object.creationData.spent.favoredAbilities++;
@@ -1209,10 +1252,12 @@ export default class CharacterBuilder extends FormApplication {
       if (this.object.character.abilities.craft.favored) {
         this.object.creationData.spent.bonusPoints.abilities += Math.max(0, (craft.system.points - 3));
         threeOrBelowFavored += Math.min(3, craft.system.points);
+        aboveThreeFavored += Math.max(0, (craft.system.points - 3));
       }
       else {
         this.object.creationData.spent.bonusPoints.abilities += (Math.max(0, (craft.system.points - 3))) * 2;
         threeOrBelowNonFavored += Math.min(3, craft.system.points);
+        aboveThreeUnFavored += Math.max(0, (craft.system.points - 3));
       }
     }
     for (let martialArt of Object.values(this.object.character.martialArts)) {
@@ -1220,10 +1265,12 @@ export default class CharacterBuilder extends FormApplication {
       if (this.object.character.abilities.martialarts.favored) {
         this.object.creationData.spent.bonusPoints.abilities += Math.max(0, (martialArt.system.points - 3));
         threeOrBelowFavored += Math.min(3, martialArt.system.points);
+        aboveThreeFavored += Math.max(0, (martialArt.system.points - 3));
       }
       else {
         this.object.creationData.spent.bonusPoints.abilities += (Math.max(0, (martialArt.system.points - 3))) * 2;
         threeOrBelowNonFavored += Math.min(3, martialArt.system.points);
+        aboveThreeUnFavored += Math.max(0, (martialArt.system.points - 3));
       }
     }
     this.object.creationData.spent.abilities = threeOrBelowFavored + threeOrBelowNonFavored;
@@ -1235,17 +1282,56 @@ export default class CharacterBuilder extends FormApplication {
     for (let merit of Object.values(this.object.character.merits)) {
       this.object.creationData.spent.merits += merit.system.points;
     }
-    this.object.creationData.spent.charms += Object.entries(this.object.character.charms).length;
-    this.object.creationData.spent.charms += Object.entries(this.object.character.evocations).length;
-    this.object.creationData.spent.charms += Object.entries(this.object.character.otherCharms).length;
-    this.object.creationData.spent.charms += Object.entries(this.object.character.martialArtsCharms).length;
+
+    for(const [key, charm] of Object.entries(this.object.character.charms)) {
+      if(this.object.character.attributes[charm.system.ability] && this.object.character.attributes[charm.system.ability].favored) {
+        favoredCharms++;
+      } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored){
+        favoredCharms++;
+      }
+      else {
+        nonFavoredCharms++;
+      }
+    }  
+    favoredCharms += Object.entries(this.object.character.evocations).length;
+    nonFavoredCharms += Object.entries(this.object.character.otherCharms).length;
+    if(this.object.character.abilities.martialarts.favored) {
+      favoredCharms += Object.entries(this.object.character.martialArtsCharms).length;
+    }
+    else {
+      nonFavoredCharms += Object.entries(this.object.character.martialArtsCharms).length;
+    }
+    if(this.object.character.abilities.occult.favored) {
+      favoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1) + this.object.character.randomSpells;
+    }
+    else {
+      nonFavoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1) + this.object.character.randomSpells;
+    }
+
+    this.object.creationData.spent.charms = nonFavoredCharms + favoredCharms;
+
+
+    var totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - this.object.creationData.available.charms));
+    var totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, this.object.creationData.available.charms - nonFavoredCharms)));
+
+
     this.object.creationData.spent.intimacies = Object.entries(this.object.character.intimacies).length;
-    this.object.creationData.spent.charms += Math.max(0, Object.entries(this.object.character.spells).length - 1) + this.object.character.randomSpells;
     this.object.creationData.spent.bonusPoints.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 2;
     this.object.creationData.spent.bonusPoints.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits)));
     this.object.creationData.spent.bonusPoints.specialties += (Math.max(0, (this.object.creationData.spent.specialties - this.object.creationData.available.specialties)));
-    this.object.creationData.spent.bonusPoints.charms += (Math.max(0, (this.object.creationData.spent.charms - this.object.creationData.available.charms))) * 4;
+    this.object.creationData.spent.bonusPoints.charms += totalNonFavoredCharms * 5;
+    this.object.creationData.spent.bonusPoints.charms += totalFavoredCharms * 4;
     this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms;
+ 
+    this.object.creationData.spent.experience.attributes += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
+    this.object.creationData.spent.experience.abilities += (favoredBPBelowThree * 4) + (nonfavoredBPBelowThree * 5);
+    this.object.creationData.spent.experience.abilities += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);
+    this.object.creationData.spent.experience.charms += totalNonFavoredCharms * 12;
+    this.object.creationData.spent.experience.charms += totalFavoredCharms * 10;
+    this.object.creationData.spent.experience.specialties += (Math.max(0, (this.object.creationData.spent.specialties - this.object.creationData.available.specialties))) * 2;
+    this.object.creationData.spent.experience.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits))) * 2;
+    this.object.creationData.spent.experience.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 6;
+    this.object.creationData.spent.experience.total = this.object.creationData.spent.experience.willpower + this.object.creationData.spent.experience.merits + this.object.creationData.spent.experience.specialties + this.object.creationData.spent.experience.abilities + this.object.creationData.spent.experience.attributes + this.object.creationData.spent.experience.charms;
 
     await this.render();
   }
