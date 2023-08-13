@@ -1,4 +1,13 @@
 export function registerSettings() {
+    game.settings.registerMenu('exaltedthird', 'rulesConfig', {
+        name: "Ex3.RulesConfig",
+        label: "Ex3.RulesConfigLabel",
+        hint: "Ex3.RulesConfigLabelDesc",
+        icon: "fa-solid fa-globe",
+        type: RulesConfigurator,
+        restricted: true,
+    });
+
     game.settings.register("exaltedthird", "sheetStyle", {
         name: "Ex3.SheetStyle",
         hint: "Ex3.SheetStyleDescription",
@@ -116,12 +125,24 @@ export function registerSettings() {
         config: true,
     });
 
+    game.settings.register("exaltedthird", "unifiedCharacterCreation", {
+        name: game.i18n.localize('Ex3.UnifiedCharacterCreation'),
+        hint: game.i18n.localize('Ex3.UnifiedCharacterCreationDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: false
+    });
+
     game.settings.register("exaltedthird", "flatXP", {
         name: game.i18n.localize('Ex3.FlatXP'),
         hint: game.i18n.localize('Ex3.FlatXPDescription'),
         scope: "world",
-        config: true,
+        config: false,
         type: Boolean,
+        ruleChange: true,
+        homebrew: true,
         default: false
     });
 
@@ -129,8 +150,10 @@ export function registerSettings() {
         name: game.i18n.localize('Ex3.ShieldInitiativeSetting'),
         hint: game.i18n.localize('Ex3.ShieldInitiativeSettingDescription'),
         scope: "world",
-        config: true,
+        config: false,
         type: Boolean,
+        ruleChange: true,
+        homebrew: true,
         default: false
     });
 
@@ -138,8 +161,62 @@ export function registerSettings() {
         name: game.i18n.localize('Ex3.BankableStunts'),
         hint: game.i18n.localize('Ex3.BankableStuntsDescription'),
         scope: "world",
-        config: true,
+        config: false,
         type: Boolean,
+        ruleChange: true,
+        homebrew: true,
         default: false
     });
+
+    game.settings.register("exaltedthird", "virtues", {
+        name: game.i18n.localize('Ex3.UseVirtues'),
+        hint: game.i18n.localize('Ex3.UseVirtuesDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: false
+    });
+
+    game.settings.register("exaltedthird", "forgivingDecisives", {
+        name: game.i18n.localize('Ex3.ForgivingDecisives'),
+        hint: game.i18n.localize('Ex3.ForgivingDecisivesDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: false
+    });
+}
+
+class RulesConfigurator extends FormApplication {
+    static get defaultOptions() {
+        const options = super.defaultOptions;
+        options.id = "rules-config";
+        options.template = "systems/exaltedthird/templates/dialogues/rules-config.html";
+        options.width = 600;
+        options.minimizable = true;
+        options.resizable = true;
+        options.title = "Rules Config";
+        return options;
+    }
+
+    getData() {
+        let data = super.getData();
+        data.settings = Array.from(game.settings.settings).filter(s => s[1].ruleChange && !s[1].homebrew).map(i => i[1]);
+        data.homebrewSettings = Array.from(game.settings.settings).filter(s => s[1].ruleChange && s[1].homebrew).map(i => i[1]);
+
+        data.settings.forEach(s => s.inputType = s.type == Boolean ? "checkbox" : "text");
+        data.homebrewSettings.forEach(s => s.inputType = s.type == Boolean ? "checkbox" : "text");
+
+        data.settings.forEach(s => s.value = game.settings.get(s.namespace, s.key));
+        data.homebrewSettings.forEach(s => s.value = game.settings.get(s.namespace, s.key));
+        return data
+    }
+
+
+    async _updateObject(event, formData) {
+        for(let setting in formData)
+            game.settings.set("exaltedthird", setting, formData[setting]);
+    }
 }

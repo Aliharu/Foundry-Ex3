@@ -117,6 +117,15 @@
       <div style="padding-top:10px;">
         <label class="resource-label">{{localize "Ex3.CharacterCreationModePrompt"}}</label>
       </div>
+      {{#if unifiedCharacterCreation}}
+      <div style="padding-top:10px;">
+        <label class="resource-label">{{localize "Ex3.Experience"}}(Calculations Assume favored purchases with Experience)
+          <a><i class="fas fa-info-circle show-experience cursor-pointer"></i></a></label>
+      </div>
+      <div style="padding-top:10px;">
+        <label>{{system.charcreation.spent.experience}}/{{system.charcreation.available.experience}}</label>
+      </div>
+      {{else}}
       <div style="padding-top:10px;">
         <label class="resource-label">{{localize "Ex3.BonusPoints"}}(Calculations Assume favored purchases with BP)
           <a><i class="fas fa-info-circle show-bonus-points cursor-pointer"></i></a></label>
@@ -124,6 +133,7 @@
       <div style="padding-top:10px;">
         <label>{{system.charcreation.spent.bonuspoints}}/{{system.charcreation.available.bonuspoints}}</label>
       </div>
+      {{/if}}
       {{/if}}
       <div style="padding-top:10px;">
         <label class="resource-label">{{localize "Ex3.Attributes"}}</label>
@@ -533,8 +543,8 @@
         </li>
         {{#ifEquals system.details.exalt 'abyssal'}}
         <div>
-          <label class="resource-label">{{localize "Ex3.Cthonic"}}</label>
-          <input type="text" name="system.details.cthonic" value="{{system.details.cthonic}}" />
+          <label class="resource-label">{{localize "Ex3.Apocalyptic"}}</label>
+          <input type="text" name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" />
         </div>
         {{/ifEquals}}
         {{#ifEquals system.details.exalt 'solar'}}

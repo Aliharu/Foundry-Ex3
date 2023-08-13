@@ -73,6 +73,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.abilityList = CONFIG.exaltedthird.abilities;
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
+    context.showVirtues = game.settings.get("exaltedthird", "virtues");
+    context.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     context.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.availableCastes = []
@@ -134,6 +136,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       },
       abilities: 28,
       bonuspoints: 15,
+      experience: 55,
       charms: 15,
       specialties: 4,
       merits: 10,
@@ -163,6 +166,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         },
         abilities: 28,
         bonuspoints: 18,
+        experience: 55,
         charms: 20,
         specialties: 3,
         merits: 18,
@@ -191,6 +195,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         },
         abilities: 28,
         bonuspoints: 21,
+        experience: 55,
         charms: 0,
         specialties: 4,
         merits: 7,
@@ -206,6 +211,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       },
       abilities: 0,
       bonuspoints: 0,
+      experience: 0,
       charms: 0,
       specialties: 0,
       merits: 0,
@@ -223,6 +229,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else {
         sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 4);
       }
+      sheetData.system.charcreation.spent.experience += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 10);
     }
     var threeOrBelow = 0;
     for (let attr of Object.values(sheetData.system.abilities)) {
@@ -230,9 +237,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       sheetData.system.charcreation.spent.abovethree += Math.max(0, (attr.value - 3));
       if (attr.favored) {
         sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (attr.value - 3));
+        sheetData.system.charcreation.spent.experience += (Math.max(0, (attr.value - 3))) * 4;
       }
       else {
         sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (attr.value - 3))) * 2;
+        sheetData.system.charcreation.spent.experience += (Math.max(0, (attr.value - 3))) * 5;
       }
       threeOrBelow += Math.min(3, attr.value);
     }
@@ -240,9 +249,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       sheetData.system.charcreation.spent.abovethree += Math.max(0, (customAbility.system.points - 3));
       if (customAbility.system.favored) {
         sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (customAbility.system.points - 3));
+        sheetData.system.charcreation.spent.experience += Math.max(0, (customAbility.system.points - 3)) * 4;
       }
       else {
         sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (customAbility.system.points - 3))) * 2;
+        sheetData.system.charcreation.spent.experience += Math.max(0, (customAbility.system.points - 3)) * 5;
       }
       threeOrBelow += Math.min(3, customAbility.system.points);
     }
@@ -253,6 +264,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     else {
       sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28)));
     }
+    sheetData.system.charcreation.spent.experience += (Math.max(0, (threeOrBelow - 28))) * 4;
     sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
     for (let merit of actorData.merits) {
       sheetData.system.charcreation.spent.merits += merit.system.points;
@@ -264,6 +276,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits)));
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties)));
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 4;
+
+    sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 6;
+    sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits))) * 2;
+    sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties))) * 2;
+    sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 10;
     sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
   }
 
@@ -667,6 +684,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.exalt-xp').mousedown(ev => {
       this.showDialogue('exalt-xp');
+    });
+
+    html.find('.show-experience').mousedown(ev => {
+      this.showDialogue('experience');
     });
 
     html.find('.show-bonus-points').mousedown(ev => {
@@ -1474,6 +1495,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async showDialogue(type) {
     var template = "systems/exaltedthird/templates/dialogues/armor-tags.html";
     switch (type) {
+      case 'experience':
+        template = "systems/exaltedthird/templates/dialogues/experience-points-dialogue.html";
+        break;
       case 'weapons':
         template = "systems/exaltedthird/templates/dialogues/weapon-tags.html";
         break;

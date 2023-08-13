@@ -2333,7 +2333,7 @@ export class RollForm extends FormApplication {
                 this.object.characterInitiative += this.object.gainedInitiative;
             }
             const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets)
-            if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit) {
+            if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit && !game.settings.get("exaltedthird", "forgivingDecisives")) {
                 if (this.object.characterInitiative < 11) {
                     this.object.characterInitiative -= 2;
                 }

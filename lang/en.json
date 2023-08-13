@@ -45,7 +45,7 @@
     "Ex3.Ideal": "Ideal",
     "Ex3.Penumbra": "Penumbra",
     "Ex3.Supernal": "Supernal",
-    "Ex3.Cthonic": "Cthonic",
+    "Ex3.Apocalyptic": "Apocalyptic",
     "Ex3.Anima": "Anima",
     "Ex3.AnimaBanner": "Anima Banner",
     "Ex3.Bonfire": "Bonfire",
@@ -875,5 +875,21 @@
     "Ex3.ArtifactLight": "Artifact Light",
     "Ex3.ArtifactMedium": "Artifact Medium",
     "Ex3.ArtifactHeavy": "Artifact Heavy",
-    "Ex3.ArtifactSiege": "Artifact Siege"
+    "Ex3.ArtifactSiege": "Artifact Siege",
+
+    "Ex3.UseVirtues": "Use Virtues",
+    "Ex3.UseVirtuesDescription": "Allow access to virtues on sheet",
+
+    "Ex3.ForgivingDecisives": "Forgiving Decisives",
+    "Ex3.ForgivingDecisivesDescription": "Missing decisives doesn't lose initiative",
+    
+    "Ex3.RulesConfig": "Rules Config",
+    "Ex3.RulesConfigLabel": "Rules Configuration",
+    "Ex3.RulesConfigLabelDesc": "Various changes to rules in the system",
+    "Ex3.Homebrew": "Homebrew",
+    "Ex3.HomebrewHint": "homebrew Changes",
+    "Ex3.Rules": "Rules",
+
+    "Ex3.UnifiedCharacterCreation": "Unified Character Creation",
+    "Ex3.UnifiedCharacterCreationDescription": "Use the unified character creation rules from Crucible of Legend"
 }

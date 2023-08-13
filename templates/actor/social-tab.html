@@ -4,57 +4,66 @@
 </div> -->
 <div class="grid {{#ifEquals actor.type 'npc'}} grid-5col {{else}} grid-4col {{/ifEquals}} flex-group-center">
   {{#ifEquals actor.type 'npc'}}
-  <div {{#if system.socialCapPadding}}style="margin-bottom:17px"{{/if}}>
-      <label class="resource-label">{{localize "Ex3.Appearance"}}</label>
-      <input type="number" name="system.appearance.value" value="{{system.appearance.value}}"
-          data-dtype="Number" />
+  <div {{#if system.socialCapPadding}}style="margin-bottom:17px" {{/if}}>
+    <label class="resource-label">{{localize "Ex3.Appearance"}}</label>
+    <input type="number" name="system.appearance.value" value="{{system.appearance.value}}" data-dtype="Number" />
   </div>
   {{/ifEquals}}
-  <div {{#if system.resolve.padding}}style="margin-bottom:17px"{{/if}}>
-      <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}
-        {{#if system.settings.editmode}}
-        <a><i
-          class="fas fa-calculator calculate-resolve cursor-pointer"
-          title="Auto Set Resolve" style="margin-left:3px;"></i></a>
-        {{/if}}
-        {{/ifEquals}}</label>
-      <input type="number" name="system.resolve.value" value="{{system.resolve.value}}"
-          data-dtype="Number" />
-      <label>{{system.resolve.cap}}</label>
+  <div {{#if system.resolve.padding}}style="margin-bottom:17px" {{/if}}>
+    <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}
+      {{#if system.settings.editmode}}
+      <a><i class="fas fa-calculator calculate-resolve cursor-pointer" title="Auto Set Resolve"
+          style="margin-left:3px;"></i></a>
+      {{/if}}
+      {{/ifEquals}}</label>
+    <input type="number" name="system.resolve.value" value="{{system.resolve.value}}" data-dtype="Number" />
+    <label>{{system.resolve.cap}}</label>
   </div>
-  <div {{#if system.guile.padding}}style="margin-bottom:17px"{{/if}}>
-      <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}
-        {{#if system.settings.editmode}}
-        <a><i
-          class="fas fa-calculator calculate-guile cursor-pointer"
-          title="Auto Set Guile" style="margin-left:3px;"></i></a>
-        {{/if}}
-        {{/ifEquals}}</label>
-      <input type="number" name="system.guile.value" value="{{system.guile.value}}"
-          data-dtype="Number" />
-      <label>{{system.guile.cap}}</label>
+  <div {{#if system.guile.padding}}style="margin-bottom:17px" {{/if}}>
+    <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}
+      {{#if system.settings.editmode}}
+      <a><i class="fas fa-calculator calculate-guile cursor-pointer" title="Auto Set Guile"
+          style="margin-left:3px;"></i></a>
+      {{/if}}
+      {{/ifEquals}}</label>
+    <input type="number" name="system.guile.value" value="{{system.guile.value}}" data-dtype="Number" />
+    <label>{{system.guile.cap}}</label>
   </div>
-  <div {{#if system.socialCapPadding}}style="margin-bottom:17px"{{/if}}>
-      <label class="resource-label">{{localize "Ex3.ReadIntentions"}}</label>
-      <button class="roll-button read-intentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
+  <div {{#if system.socialCapPadding}}style="margin-bottom:17px" {{/if}}>
+    <label class="resource-label">{{localize "Ex3.ReadIntentions"}}</label>
+    <button class="roll-button read-intentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
   </div>
-  <div {{#if system.socialCapPadding}}style="margin-bottom:17px"{{/if}}>
-      <label class="resource-label">{{localize "Ex3.SocialInfluence"}}</label>
-      <button class="roll-button social-influence"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
+  <div {{#if system.socialCapPadding}}style="margin-bottom:17px" {{/if}}>
+    <label class="resource-label">{{localize "Ex3.SocialInfluence"}}</label>
+    <button class="roll-button social-influence"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
   </div>
 </div>
+{{#if showVirtues}}
+<div class="grid grid-2col">
+  <div>
+    <label class="resource-label">{{localize "Ex3.Virtue"}}</label>
+    <input type="text" name="system.virtueone" value="{{system.virtueone}}" />
+  </div>
+  <div>
+    <label class="resource-label">{{localize "Ex3.Virtue"}}</label>
+    <input type="text" name="system.virtuetwo" value="{{system.virtuetwo}}" />
+  </div>
+</div>
+{{/if}}
 <ol class="items-list">
   <div class="resource-label list-section-header d-flex flex-between">
     <div>
       {{localize "Ex3.Intimacies"}}
     </div>
-    <a class="item-control item-create" title="Create intimacy" data-type="intimacy"><i
-        class="fas fa-plus"></i>Add Intimacy</a>
+    <a class="item-control item-create" title="Create intimacy" data-type="intimacy"><i class="fas fa-plus"></i>Add
+      Intimacy</a>
   </div>
   {{#each actor.intimacies as |item id|}}
   <li class="item flexrow item-row" data-item-id="{{item._id}}">
-    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
-    <h4 class="item-name"><span style="text-transform: capitalize;font-weight: bold;">{{item.system.strength}}: </span>{{item.name}}</h4>
+    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+        height="24" /></div>
+    <h4 class="item-name"><span style="text-transform: capitalize;font-weight: bold;">{{item.system.strength}}:
+      </span>{{item.name}}</h4>
     <div class="item-controls">
       {{#if item.system.visible}}
       <a class="item-control toggle-visible" title="Visible"><i class="fas fa-eye"></i></a>

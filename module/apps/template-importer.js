@@ -776,7 +776,7 @@ export default class TemplateImporter extends FormApplication {
             "aura": "none",
             "ideal": "",
             "supernal": "",
-            "cthonic": "",
+            "apocalyptic": "",
             "penumbra": {
               "value": 0,
               "max": 10,

@@ -1,0 +1,29 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+
+    <h2>{{localize "Ex3.Rules"}}</h2>
+
+    {{#each settings as |setting s|}}
+    <div class="form-group">
+        <label>{{localize setting.name}}</label>
+        <div class="form-fields">
+        <input type="{{setting.inputType}}" name="{{setting.key}}" data-dtype="{{setting.type.name}}" value="{{setting.value}}" {{checked setting.value}}>
+        </div>
+        <p class="notes">{{{localize setting.hint}}}</p>
+    </div>
+    {{/each}}
+
+    <h2>{{localize "Ex3.Homebrew"}}</h2>
+    <p class="notes">{{{localize "Ex3.HomebrewHint"}}}</p>
+    {{#each homebrewSettings as |setting s|}}
+    <div class="form-group">
+        <label>{{localize setting.name}}</label>
+        <div class="form-fields">
+        <input type="{{setting.inputType}}" name="{{setting.key}}" data-dtype="{{setting.type.name}}" value="{{setting.value}}" {{checked setting.value}}>
+        </div>
+        <p class="notes">{{{localize setting.hint}}}</p>
+    </div>
+    {{/each}}
+
+    <button type="submit" name="submit">{{localize "Submit"}}</button>
+</form>
+    

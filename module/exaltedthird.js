@@ -1054,6 +1054,22 @@ Hooks.once("ready", async function () {
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
+  if (isNewerVersion("2.4.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.4.0, please wait`);
+    for (let actor of game.actors) {
+      try {
+        if (actor.system.details.exalt === 'abyssal') {
+          await actor.update({ [`system.details.apocalyptic`]: actor.system.details.cthonic });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    ui.notifications.notify(`Migration Complete`);
+    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+  }
+
   // const charms = game.items.filter(item => item.type === 'charm');
   // for (const charm of charms.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None')) {
   // console.log(`${charm.name} - ${charm.system.prerequisites}`);

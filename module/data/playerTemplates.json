@@ -1,0 +1,196 @@
+{
+    "custom": {
+        "name": "",
+        "willpower": 5,
+        "attributes": {
+          "strength": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "charisma": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "perception": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "dexterity": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "manipulation": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "intelligence": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "stamina": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "appearance": {
+            "value": 1,
+            "randomCharms": 0
+          },
+          "wits": {
+            "value": 1,
+            "randomCharms": 0
+          }
+        },
+        "abilities": {
+          "archery": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "athletics": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "awareness": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "brawl": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "bureaucracy": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "craft": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "dodge": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "integrity": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "investigation": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "larceny": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "linguistics": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "lore": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "martialarts": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "medicine": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "melee": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "occult": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "performance": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "presence": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "resistance": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "ride": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "sail": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "socialize": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "stealth": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "survival": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "thrown": {
+            "value": 0,
+            "randomCharms": 0
+          },
+          "war": {
+            "value": 0,
+            "randomCharms": 0
+          }
+        },
+        "specialties": {},
+        "weapons": {},
+        "randomWeapons": {},
+        "armor": {
+          "type": "none",
+          "weight": "any",
+          "artifact": false
+        },
+        "sorcerer": "none",
+        "ritual": {
+          "name": ""
+        },
+        "randomSpells": 0
+    },
+    "martial_artist": {
+
+    },
+    "shrewd_merchant": {
+
+    },
+    "tough_brawler": {
+
+    },
+    "thief_assassin": {
+
+    },
+    "charasmatic_diplomatic": {
+
+    },
+    "quick_archer": {
+
+    },
+    "master_swordsman": {
+
+    },
+    "detective_brawler": {
+
+    },
+    "sorcerer_healer": {
+
+    },
+    "righteous_scholar": {
+        
+    },
+    "armored_warleader": {
+
+    }
+}
