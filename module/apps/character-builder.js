@@ -53,300 +53,300 @@ export default class CharacterBuilder extends FormApplication {
           },
         },
       },
-      this.object.character = {
-        name: '',
-        defaultName: 'New Character',
-        exalt: "solar",
-        caste: "",
-        exigent: "",
-        supernal: "",
-        essence: 1,
-        willpower: 5,
-        showAttributeCharms: true,
-        showAbilityCharms: true,
-        attributes: {
-          strength: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Strength',
-            type: 'physical',
-          },
-          charisma: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Charisma',
-            type: 'social',
-          },
-          perception: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Perception',
-            type: 'mental',
-          },
-          dexterity: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Dexterity',
-            type: 'physical',
-          },
-          manipulation: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Manipulation',
-            type: 'social',
-          },
-          intelligence: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Intelligence',
-            type: 'mental',
-          },
-          stamina: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Stamina',
-            type: 'physical',
-          },
-          appearance: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Appearance',
-            type: 'social',
-          },
-          wits: {
-            excellency: false,
-            value: 1,
-            randomCharms: 0,
-            charms: {},
-            name: 'Ex3.Wits',
-            type: 'mental',
-          }
-        },
-        abilities: {
-          archery: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Archery",
-          },
-          athletics: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Athletics",
-          },
-          awareness: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Awareness",
-          },
-          brawl: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Brawl",
-          },
-          bureaucracy: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Bureaucracy",
-          },
-          craft: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Craft",
-          },
-          dodge: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Dodge",
-          },
-          integrity: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Integrity",
-          },
-          investigation: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Investigation",
-          },
-          larceny: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Larceny",
-          },
-          linguistics: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Linguistics",
-          },
-          lore: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Lore",
-          },
-          martialarts: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.MartialArts",
-          },
-          medicine: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Medicine",
-          },
-          melee: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Melee",
-          },
-          occult: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Occult",
-          },
-          performance: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Performance",
-          },
-          presence: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Presence",
-          },
-          resistance: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Resistance",
-          },
-          ride: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Ride",
-          },
-          sail: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Sail",
-          },
-          socialize: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Socialize",
-          },
-          stealth: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Stealth",
-          },
-          survival: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Survival",
-          },
-          thrown: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.Thrown",
-          },
-          war: {
-            excellency: false,
-            value: 0,
-            randomCharms: 0,
-            charms: {},
-            name: "Ex3.War",
-          }
-        },
-        charms: {},
-        spells: {},
-        specialties: {},
-        merits: {},
-        crafts: {},
-        evocations: {},
-        otherCharms: {},
-        martialArts: {},
-        martialArtsCharms: {},
-        weapons: {},
-        armors: {},
-        items: {},
-        randomWeapons: {},
-        armor: {
-          "type": "none",
-          "weight": "any",
-          "artifact": false,
-        },
-        intimacies: {},
-        sorcerer: 'none',
-        ritual: {
+        this.object.character = {
           name: '',
-        },
-        randomSpells: 0,
-      }
+          defaultName: 'New Character',
+          exalt: "solar",
+          caste: "",
+          exigent: "",
+          supernal: "",
+          essence: 1,
+          willpower: 5,
+          showAttributeCharms: true,
+          showAbilityCharms: true,
+          attributes: {
+            strength: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Strength',
+              type: 'physical',
+            },
+            charisma: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Charisma',
+              type: 'social',
+            },
+            perception: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Perception',
+              type: 'mental',
+            },
+            dexterity: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Dexterity',
+              type: 'physical',
+            },
+            manipulation: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Manipulation',
+              type: 'social',
+            },
+            intelligence: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Intelligence',
+              type: 'mental',
+            },
+            stamina: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Stamina',
+              type: 'physical',
+            },
+            appearance: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Appearance',
+              type: 'social',
+            },
+            wits: {
+              excellency: false,
+              value: 1,
+              randomCharms: 0,
+              charms: {},
+              name: 'Ex3.Wits',
+              type: 'mental',
+            }
+          },
+          abilities: {
+            archery: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Archery",
+            },
+            athletics: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Athletics",
+            },
+            awareness: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Awareness",
+            },
+            brawl: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Brawl",
+            },
+            bureaucracy: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Bureaucracy",
+            },
+            craft: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Craft",
+            },
+            dodge: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Dodge",
+            },
+            integrity: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Integrity",
+            },
+            investigation: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Investigation",
+            },
+            larceny: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Larceny",
+            },
+            linguistics: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Linguistics",
+            },
+            lore: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Lore",
+            },
+            martialarts: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.MartialArts",
+            },
+            medicine: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Medicine",
+            },
+            melee: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Melee",
+            },
+            occult: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Occult",
+            },
+            performance: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Performance",
+            },
+            presence: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Presence",
+            },
+            resistance: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Resistance",
+            },
+            ride: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Ride",
+            },
+            sail: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Sail",
+            },
+            socialize: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Socialize",
+            },
+            stealth: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Stealth",
+            },
+            survival: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Survival",
+            },
+            thrown: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.Thrown",
+            },
+            war: {
+              excellency: false,
+              value: 0,
+              randomCharms: 0,
+              charms: {},
+              name: "Ex3.War",
+            }
+          },
+          charms: {},
+          spells: {},
+          specialties: {},
+          merits: {},
+          crafts: {},
+          evocations: {},
+          otherCharms: {},
+          martialArts: {},
+          martialArtsCharms: {},
+          weapons: {},
+          armors: {},
+          items: {},
+          randomWeapons: {},
+          armor: {
+            "type": "none",
+            "weight": "any",
+            "artifact": false,
+          },
+          intimacies: {},
+          sorcerer: 'none',
+          ritual: {
+            name: '',
+          },
+          randomSpells: 0,
+        }
     }
     this.object.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     this.onChange(null);
@@ -1201,7 +1201,7 @@ export default class CharacterBuilder extends FormApplication {
       this.object.creationData.spent.attributes[attr.type] += (attr.value - 1);
 
       if (attr.favored) {
-        if(!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
+        if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
           this.object.creationData.spent.favoredAttributes++;
         }
         attributesSpent[attr.type].favored += (attr.value - 1);
@@ -1214,12 +1214,14 @@ export default class CharacterBuilder extends FormApplication {
     }
     var favoredAttributesSpent = 0;
     var unFavoredAttributesSpent = 0;
+    var tertiaryAttributes = 0;
+    var nonTertiaryAttributes = 0;
     for (let [key, attribute] of Object.entries(this.object.creationData.spent.attributes)) {
-      if (this.object.creationData[key] === 'tertiary' || this.object.character.exalt === 'lunar') {
-        this.object.creationData.spent.bonusPoints.attributes += (Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]) * 3);
+      if (this.object.creationData[key] === 'tertiary') {
+        tertiaryAttributes += Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]);
       }
       else {
-        this.object.creationData.spent.bonusPoints.attributes += (Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]) * 4);
+        nonTertiaryAttributes += Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]);
       }
       unFavoredAttributesSpent += Math.max(0, attributesSpent[key].unFavored - this.object.creationData.available.attributes[key]);
       favoredAttributesSpent += Math.max(0, attributesSpent[key].favored - Math.max(0, this.object.creationData.available.attributes[key] - attributesSpent[key].unFavored));
@@ -1283,25 +1285,25 @@ export default class CharacterBuilder extends FormApplication {
       this.object.creationData.spent.merits += merit.system.points;
     }
 
-    for(const [key, charm] of Object.entries(this.object.character.charms)) {
-      if(this.object.character.attributes[charm.system.ability] && this.object.character.attributes[charm.system.ability].favored) {
+    for (const [key, charm] of Object.entries(this.object.character.charms)) {
+      if (this.object.character.attributes[charm.system.ability] && this.object.character.attributes[charm.system.ability].favored) {
         favoredCharms++;
-      } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored){
+      } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored) {
         favoredCharms++;
       }
       else {
         nonFavoredCharms++;
       }
-    }  
+    }
     favoredCharms += Object.entries(this.object.character.evocations).length;
     nonFavoredCharms += Object.entries(this.object.character.otherCharms).length;
-    if(this.object.character.abilities.martialarts.favored) {
+    if (this.object.character.abilities.martialarts.favored) {
       favoredCharms += Object.entries(this.object.character.martialArtsCharms).length;
     }
     else {
       nonFavoredCharms += Object.entries(this.object.character.martialArtsCharms).length;
     }
-    if(this.object.character.abilities.occult.favored) {
+    if (this.object.character.abilities.occult.favored) {
       favoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1) + this.object.character.randomSpells;
     }
     else {
@@ -1316,13 +1318,19 @@ export default class CharacterBuilder extends FormApplication {
 
 
     this.object.creationData.spent.intimacies = Object.entries(this.object.character.intimacies).length;
+
+    if (this.object.character.exalt === 'lunar') {
+      this.object.creationData.spent.bonusPoints.attributes += (favoredAttributesSpent * 3) + (unFavoredAttributesSpent * 4);
+    } else {
+      this.object.creationData.spent.bonusPoints.attributes += (tertiaryAttributes * 3) + (nonTertiaryAttributes * 4);
+    }
     this.object.creationData.spent.bonusPoints.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 2;
     this.object.creationData.spent.bonusPoints.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits)));
     this.object.creationData.spent.bonusPoints.specialties += (Math.max(0, (this.object.creationData.spent.specialties - this.object.creationData.available.specialties)));
     this.object.creationData.spent.bonusPoints.charms += totalNonFavoredCharms * 5;
     this.object.creationData.spent.bonusPoints.charms += totalFavoredCharms * 4;
     this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms;
- 
+
     this.object.creationData.spent.experience.attributes += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
     this.object.creationData.spent.experience.abilities += (favoredBPBelowThree * 4) + (nonfavoredBPBelowThree * 5);
     this.object.creationData.spent.experience.abilities += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);
