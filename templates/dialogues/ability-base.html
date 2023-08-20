@@ -33,7 +33,6 @@
 
     {{#if data.showPool}}
     {{#ifEquals data.characterType 'npc'}}
-    <label class="resource-label">{{localize "Ex3.Pool"}}</label>
     <select name="object.pool" value="{{data.pool}}" data-type="String">
         {{#select data.pool}}
         {{#each actor.system.pools as |pool key|}}

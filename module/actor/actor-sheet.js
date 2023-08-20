@@ -1086,6 +1086,73 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this._lunarSync();
     });
 
+    html.find('.lunar-sync').click(ev => {
+      this._lunarSync();
+    });
+
+    // html.find('.test-bonfire').click(ev => {
+      // const weaponChart = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/bonfire_weapons.json', {}, { int: 30000 });
+
+      // const weaponTotal = {};
+      // for(const weapon of weaponChart) {
+      //   let valTotal = 0;
+      //   for(let i = 0; i < 10000; i++) {z
+      //     var roll = new Roll(weapon.formula).evaluate({ async: false });
+      //     let rollTotal = roll.total / weapon.speed;
+      //     valTotal += rollTotal;
+      //   }
+      //   valTotal /= 10000;
+      //   console.log(`${weapon.name}:${valTotal}`);
+      //   weaponTotal[weapon.name] = valTotal;        
+      // }
+      // const weaponTotal = {};
+      // for(const dieRoll of [2,3,4,6,8,10,12,20]) {
+      //   let valTotal = 0;
+      //   for(let i = 0; i < 10000; i++) {
+      //     var roll = new Roll(`1d${dieRoll}x${dieRoll}`).evaluate({ async: false });
+      //     let rollTotal = roll.total;
+      //     valTotal += rollTotal;
+      //   }
+      //   valTotal /= 10000;
+      //   weaponTotal[dieRoll] = valTotal;    
+      // }
+      // console.log(
+      //   weaponTotal
+      // );
+
+
+      // for (let i = 10; i <= 30; i += 5) {
+      //   var playerSucceeded = 0;
+      //   for (let j = 0; j < 10000; j++) {
+      //     var explosionRoll = null;
+      //     var playerRoll = new Roll(`1d20+20`).evaluate({ async: false });
+      //     var playerTotal = playerRoll.total;
+      //     if (playerRoll.dice[0].results[0].result) {
+      //       explosionRoll = new Roll(`1d6x6`).evaluate({ async: false });
+      //       playerTotal += explosionRoll.total;
+      //     }
+      //     var gmRoll = new Roll(`1d20+${i}`).evaluate({ async: false });
+      //     var gmTotal = gmRoll.total;
+      //     if (playerRoll.dice[0].results[0].result) {
+      //       explosionRoll = new Roll(`1d6x6`).evaluate({ async: false });
+      //       gmTotal += explosionRoll.total;
+      //     }
+
+      //     if (gmTotal <= playerTotal) {
+      //       playerSucceeded++;
+      //     }
+      //   }
+      //   const mapThing = {
+      //     10: 'Routine',
+      //     15: 'Easy',
+      //     20: 'Average',
+      //     25: 'Hard',
+      //     30: 'Challenging',
+      //   }
+      //   console.log(`Player succeeded ${(playerSucceeded / 10000) * 100}% of the time on a ${mapThing[i]} check`)
+      // }
+    // });
+
     html.find('.quick-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
       new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
