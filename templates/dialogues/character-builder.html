@@ -156,6 +156,13 @@
             <td>{{data.creationData.available.charms}}</td>
             <td>{{data.creationData.spent.charms}}</td>
           </tr>
+          {{#if data.creationData.available.excellencies}}
+          <tr>
+            <td>{{localize "Ex3.Excellencies"}}</td>
+            <td>{{data.creationData.available.excellencies}}</td>
+            <td>{{data.creationData.spent.excellencies}}</td>
+          </tr>
+          {{/if}}
           <tr>
             <td>{{localize "Ex3.BonusPoints"}}</td>
             <td>{{data.creationData.available.bonusPoints}}</td>

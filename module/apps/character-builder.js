@@ -1107,7 +1107,8 @@ export default class CharacterBuilder extends FormApplication {
         favoredAttributes: 0,
         favoredAbilities: 5,
         bonusPoints: 18,
-        charms: 20,
+        charms: 15,
+        excellencies: 5,
         specialties: 3,
         merits: 18,
         intimacies: 4,
@@ -1160,6 +1161,7 @@ export default class CharacterBuilder extends FormApplication {
       specialties: 0,
       merits: 0,
       charms: 0,
+      excellencies: 0,
       abovethree: 0,
       bonusPoints: {
         abilities: 0,
@@ -1308,6 +1310,11 @@ export default class CharacterBuilder extends FormApplication {
     }
     else {
       nonFavoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1) + this.object.character.randomSpells;
+    }
+
+    if(this.object.character.exalt === 'dragonblooded') {
+      this.object.creationData.spent.excellencies = Math.min(5, Object.values(this.object.character.charms).filter(charm => charm.system.keywords.toLowerCase().includes('excellency') && this.object.character.abilities[charm.system.ability]?.favored).length);
+      favoredCharms = Math.max(0, favoredCharms - this.object.creationData.spent.excellencies);
     }
 
     this.object.creationData.spent.charms = nonFavoredCharms + favoredCharms;
@@ -1571,11 +1578,11 @@ export default class CharacterBuilder extends FormApplication {
     for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
       actorData.system.attributes[key].value = attribute.value;
       if (this.object.character.exalt === 'lunar') {
-        if (attribute.favored && attribute.value >= 3 && (Object.entries(attribute.charms).length + attribute.randomCharms > 0)) {
-          actorData.system.abilities[key].excellency = true;
+        if (actorData.system.attributes[key].excellency && attribute.favored && attribute.value >= 3 && (Object.entries(attribute.charms).length + attribute.randomCharms > 0)) {
+          actorData.system.attributes[key].excellency = true;
         }
-        else if (attribute.value >= 5 && (Object.entries(attribute.charms).length + attribute.randomCharms > 1)) {
-          actorData.system.abilities[key].excellency = true;
+        else if (actorData.system.attributes[key].excellency && attribute.value >= 5 && (Object.entries(attribute.charms).length + attribute.randomCharms > 1)) {
+          actorData.system.attributes[key].excellency = true;
         }
       }
     }
@@ -1584,6 +1591,9 @@ export default class CharacterBuilder extends FormApplication {
       actorData.system.abilities[key].value = ability.value;
       actorData.system.abilities[key].favored = ability.favored;
       if (((Object.entries(ability.charms).length + ability.randomCharms > 0) || (ability.favored && ability.value > 0)) && (this.object.character.exalt === 'solar' || this.object.character.exalt === 'sidereal')) {
+        actorData.system.abilities[key].excellency = true;
+      }
+      if(Object.values(ability.charms).some(charm => charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) {
         actorData.system.abilities[key].excellency = true;
       }
     }
