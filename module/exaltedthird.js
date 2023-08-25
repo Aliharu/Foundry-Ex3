@@ -1069,6 +1069,14 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
+  // var cost = 5;
+  // var bonus = 0;
+  // while(cost < 45) {
+  //   bonus++
+  //   cost *= 1.25
+  // }
+  // console.log(cost)
+  // console.log(bonus)
 
   // const charms = game.items.filter(item => item.type === 'charm');
   // for (const charm of charms.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None')) {
