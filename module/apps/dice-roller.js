@@ -2890,7 +2890,6 @@ export class RollForm extends FormApplication {
                     icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
                     origin: this.actor.uuid,
                     disabled: false,
-                    description: `Difficulty ${this.object.poison.difficulty}`,
                     duration: {
                         rounds: this.object.poison.duration,
                         startRound: game.combat?.round || 0,
@@ -2899,7 +2898,6 @@ export class RollForm extends FormApplication {
                         "exaltedthird": {
                             poisonerCombatantId: this._getActorCombatant()?._id || null,
                             weaponInflictedPosion: true,
-                            difficulty: this.object.poison.difficulty
                         }
                     },
                     changes: [
