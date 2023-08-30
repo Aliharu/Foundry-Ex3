@@ -33,7 +33,18 @@
                 <option value="tree">{{localize "Ex3.Tree"}}</option>
                 <option value="leaves">{{localize "Ex3.Leaves"}}</option>
                 {{/select}}
-            </select> <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
+            </select>
+            {{#if showExigentType}}
+            <label className="resource-label">{{localize "Ex3.ExigentType"}}:</label>
+            <select id="exigentType" name="settings.exigenttype" data-type="String">
+                {{#select settings.exigenttype}}
+                <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
+                <option value="celestial">{{localize "Ex3.Celestial"}}</option>
+                <option value="">{{localize "Ex3.None"}}</option>
+                {{/select}}
+            </select>
+            {{/if}}
+            <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>
             <input id="smaEnlightenment" name="settings.smaenlightenment" type="checkbox" {{checked
                 settings.smaenlightenment}}>
             <label className="resource-label">{{localize "Ex3.ShowWarstrider"}}:</label>

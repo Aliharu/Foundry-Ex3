@@ -151,7 +151,12 @@ export class ExaltedThirdActor extends Actor {
         maxMotes = 15 + essenceLevel;
       }
       if (exaltType === 'exigent') {
-        maxMotes = 11 + essenceLevel;
+        if(this.system.settings?.exigenttype === 'celestial') {
+          maxMotes = 11 + (essenceLevel * 2);
+        }
+        else {
+          maxMotes = 11 + essenceLevel;
+        }
       }
       if (exaltType === 'sidereal') {
         maxMotes = 9 + (essenceLevel * 2);
@@ -180,7 +185,12 @@ export class ExaltedThirdActor extends Actor {
         maxMotes = 34 + (essenceLevel * 4);
       }
       if (exaltType === 'exigent') {
-        maxMotes = 23 + (essenceLevel * 4);
+        if(this.system.settings?.exigenttype === 'celestial') {
+          maxMotes = 27 + (essenceLevel * 6);
+        }
+        else {
+          maxMotes = 23 + (essenceLevel * 4);
+        }
       }
       if (exaltType === 'sidereal') {
         maxMotes = 25 + (essenceLevel * 6);

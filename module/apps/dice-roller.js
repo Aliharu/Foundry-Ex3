@@ -2720,6 +2720,9 @@ export class RollForm extends FormApplication {
             if (this.object.targetCombatant?.actor?.system?.battlegroup) {
                 fullInitiative = (5 * sizeDamaged) + 1;
             }
+            if(!game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative) {
+                fullInitiative += this.object.gainedInitiative;
+            }
             typeSpecificResults = `
                                     <h4 class="dice-total dice-total-middle">${total} Total Damage!</h4>
                                     ${this.object.damage.gainInitiative ? `<h4 class="dice-total">${fullInitiative} Initiative Gained!</h4>` : ''}

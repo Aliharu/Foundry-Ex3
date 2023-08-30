@@ -1605,7 +1605,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async sheetSettings() {
     let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled });
+    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': this.actor.system.details.exalt === 'exigent' });
     new Dialog({
       title: `Settings`,
       content: html,
@@ -1619,6 +1619,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             charmmotepool: html.find('#charmMotePool').val(),
             martialartsmastery: html.find('#martialArtsMastery').val(),
             sheetbackground: html.find('#sheetBackground').val(),
+            exigenttype: html.find('#exigentType').val(),
             smaenlightenment: html.find('#smaEnlightenment').is(":checked"),
             showwarstrider: html.find('#showWarstrider').is(":checked"),
             showship: html.find('#showShip').is(":checked"),

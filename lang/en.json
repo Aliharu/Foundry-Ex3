@@ -629,6 +629,7 @@
     "Ex3.IncreaseInitiative": "Increase Initiative",
     "Ex3.DecreaseInitiative": "Decrease Initiative",
     "Ex3.OldInitiative": "Old Initiative",
+    "Ex3.GainedInitiative": "Gained Initiative",
     "Ex3.CurrentInitiative": "Current Initiative",
     "Ex3.Dematerialized": "Dematerialized",
     "Ex3.Incapacitated": "Incapacitated",
@@ -892,6 +893,7 @@
     "Ex3.Rules": "Rules",
 
     "Ex3.TargetStat": "Target Stat",
+    "Ex3.ExigentType": "Exigent Type",
 
     "Ex3.UnifiedCharacterCreation": "Unified Character Creation",
     "Ex3.UnifiedCharacterCreationDescription": "Use the unified character creation rules from Crucible of Legend"

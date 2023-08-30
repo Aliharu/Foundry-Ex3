@@ -184,6 +184,7 @@
         "settings": {
           "charmmotepool": "peripheral",
           "martialartsmastery": "standard",
+          "exigenttype": "",
           "smaenlightenment": false,
           "showwarstrider": false,
           "showship": false,

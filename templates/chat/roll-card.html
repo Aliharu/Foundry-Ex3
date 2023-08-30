@@ -172,11 +172,16 @@
                 {{/ifEquals}}
                 {{#ifEquals rollData.attackType 'withering'}}
                 {{#ifNotEquals rollData.rollType 'accuracy'}}
-                    {{#if rollData.characterInitiative }}
+                    {{#if rollData.characterInitiative}}
                         <div>
-                            <b>{{localize "Ex3.OldInitiative"}}:</b> {{rollData.originalInitiative}},
-                            <b>{{localize "Ex3.CurrentInitiative"}}:</b> {{rollData.characterInitiative}}
+                            <b>{{localize "Ex3.OldInitiative"}}:</b> {{rollData.originalInitiative}}
                         </div>
+                    {{/if}}
+                    {{#if rollData.gainedInitiative}}
+                    <div>
+                        <b>{{localize "Ex3.GainedInitiative"}}:</b> {{rollData.gainedInitiative}}
+
+                    </div>
                     {{/if}}
                 {{/ifNotEquals}}
             {{/ifEquals}}
