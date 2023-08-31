@@ -7,6 +7,22 @@
     </div>
 </div>
 <div id="addedCharmsDropdown" {{#if data.addedCharmsDropdown}} {{else}} style="display:none;" {{/if}}>
+    <div class="resource flex-center">
+        <label class="resource-label">{{localize "Ex3.Details"}}</label>
+    </div>
+    <div class="resource grid grid-2col flex-center">
+        <label class="resource-label">{{localize "Ex3.MotePool"}}</label>
+        <select class="update-motes" name="object.motePool" data-type="String">
+            {{#select data.motePool}}
+            <option value="personal">{{localize "Ex3.Personal"}}</option>
+            <option value="peripheral">{{localize "Ex3.Peripheral"}}</option>
+            {{/select}}
+        </select>
+        <label class="resource-label">{{localize "Ex3.AnimaAfterRoll"}}</label>
+        <div>
+            {{ data.newAnima }}
+        </div>
+    </div>
     <ol class="items-list">
         {{#each data.addedCharms as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item.id}}">
@@ -24,7 +40,7 @@
     <div class="resource grid grid-3col flex-center">
         <div>
             <label class="resource-label">{{localize "Ex3.Motes"}}</label>
-            <input type="number" name="object.cost.motes" value="{{data.cost.motes}}">
+            <input class="update-motes" type="number" name="object.cost.motes" value="{{data.cost.motes}}">
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.MuteMotes"}} </label>
@@ -36,7 +52,7 @@
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.Anima"}} </label>
-            <input type="number" name="object.cost.anima" value="{{data.cost.anima}}">
+            <input class="update-motes" type="number" name="object.cost.anima" value="{{data.cost.anima}}">
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.Willpower"}} </label>

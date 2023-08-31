@@ -955,6 +955,7 @@
         "rerollfailed": false,
         "rolltwice": false,
         "activateAura": "none",
+        "selfdefensepenalty": 0,
         "triggerontens": "none",
         "triggertenscap": 0,
         "settings": {

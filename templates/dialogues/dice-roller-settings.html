@@ -70,6 +70,12 @@
         </div>
     </div>
     {{#if isAttack}}
+    <div class="resource grid grid-2col flex-center">
+        <div class="resource flex-center">
+            <div class="resource-label">{{localize "Ex3.SelfDefensePenalty"}}</div>
+            <input id="selfDefensePenalty" name="selfDefensePenalty" value="{{selfDefensePenalty}}" type="number">
+        </div>
+    </div>
     <div class="resource flex-center">
         <label class="resource-label mb-1" style="font-size: 17px;">{{localize "Ex3.Damage"}}</label>
     </div>

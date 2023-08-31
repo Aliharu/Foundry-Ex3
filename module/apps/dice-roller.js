@@ -78,6 +78,7 @@ export class RollForm extends FormApplication {
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
+            this.object.triggerFullDefense = false;
             this.object.macroMessages = '';
 
             this.object.overwhelming = data.overwhelming || 0;
@@ -426,6 +427,8 @@ export class RollForm extends FormApplication {
                     this.object.diceModifier -= 1;
                 }
             }
+            this.object.motePool = this.actor.system?.settings?.charmmotepool || 'peripheral';
+            this._calculateAnimaGain();
         }
     }
 
@@ -544,7 +547,7 @@ export class RollForm extends FormApplication {
                 }
                 effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
             }
-            if(this.object.targetStat === 'resolve'){
+            if (this.object.targetStat === 'resolve') {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
                 target.rollData.defense = effectiveResolve;
             }
@@ -608,7 +611,7 @@ export class RollForm extends FormApplication {
                 icon: 'fas fa-cog',
                 onclick: async (ev) => {
                     let confirmed = false;
-                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
+                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
                     new Dialog({
                         title: `Dice Roll Settings`,
                         content: html,
@@ -627,6 +630,8 @@ export class RollForm extends FormApplication {
 
                                 this.object.settings.triggerTensCap = parseInt(html.find('#triggerTensCap').val() || 0);
                                 this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
+
+                                this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
 
                                 this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
@@ -692,7 +697,7 @@ export class RollForm extends FormApplication {
                                 else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
                                     specialAttack.show = true;
                                 }
-                                else if (specialAttack.id === 'aim') {
+                                else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense') {
                                     specialAttack.show = true;
                                 }
                                 else {
@@ -870,6 +875,7 @@ export class RollForm extends FormApplication {
 
         this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
         this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+        this.object.triggerSelfDefensePenalty += item.system.diceroller.selfdefensepenalty;
         if (!item.system.diceroller.settings.noncharmdice) {
             this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
         }
@@ -983,6 +989,7 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.triggerontens !== 'none') {
             this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
         }
+        this._calculateAnimaGain();
         this.render();
     }
 
@@ -1270,6 +1277,11 @@ export class RollForm extends FormApplication {
                 if (id === 'piercing' && this.object.attackType === 'withering') {
                     this.object.damage.ignoreSoak += 4;
                 }
+                else if (id === 'fulldefense') {
+                    this.object.diceModifier -= 3;
+                    this.object.cost.initiative += 1;
+                    this.object.triggerFullDefense = true;
+                }
                 this.object.triggerSelfDefensePenalty += 1;
             }
             this.render();
@@ -1305,6 +1317,11 @@ export class RollForm extends FormApplication {
                 }
                 if (id === 'piercing' && this.object.attackType === 'withering') {
                     this.object.damage.ignoreSoak -= 4;
+                }
+                else if (id === 'fulldefense') {
+                    this.object.diceModifier += 3;
+                    this.object.cost.initiative -= 1;
+                    this.object.triggerFullDefense = true;
                 }
                 this.object.triggerSelfDefensePenalty = Math.max(0, this.object.triggerSelfDefensePenalty - 1);
             }
@@ -1380,6 +1397,8 @@ export class RollForm extends FormApplication {
 
                 this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+
+                this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
                 if (!item.system.diceroller.settings.noncharmdice) {
                     this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
                 }
@@ -1483,6 +1502,7 @@ export class RollForm extends FormApplication {
                 this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
                 this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
             }
+            this._calculateAnimaGain();
             this.render();
         });
 
@@ -1589,6 +1609,11 @@ export class RollForm extends FormApplication {
                 this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
             }
             li.toggle("fast");
+        });
+
+        html.on("change", ".update-motes", ev => {
+            this._calculateAnimaGain();
+            this.render();
         });
     }
 
@@ -2720,7 +2745,7 @@ export class RollForm extends FormApplication {
             if (this.object.targetCombatant?.actor?.system?.battlegroup) {
                 fullInitiative = (5 * sizeDamaged) + 1;
             }
-            if(!game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative) {
+            if (!game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative) {
                 fullInitiative += this.object.gainedInitiative;
             }
             typeSpecificResults = `
@@ -2880,6 +2905,14 @@ export class RollForm extends FormApplication {
                         }
                     ]
                 }]);
+            }
+        }
+        if (this.object.triggerFullDefense) {
+            const fullDefenseExists = this.actor?.effects.find(e => e.statuses.has('fulldefense'));
+            if (!fullDefenseExists) {
+                var actorToken = this._getActorToken();
+                const fullDefense = CONFIG.statusEffects.find(e => e.id === 'fulldefense');
+                await actorToken.toggleEffect(fullDefense);
             }
         }
         if (this.object.target) {
@@ -3622,6 +3655,47 @@ export class RollForm extends FormApplication {
         return highestAttributeNumber;
     }
 
+    _calculateAnimaGain() {
+        var newLevel = this.actor.system.anima.level;
+        if (this.object.cost.anima > 0) {
+            for (var i = 0; i < this.object.cost.anima; i++) {
+                if (newLevel === "Transcendent") {
+                    newLevel = "Bonfire";
+                }
+                else if (newLevel === "Bonfire") {
+                    newLevel = "Burning";
+                }
+                else if (newLevel === "Burning") {
+                    newLevel = "Glowing";
+                }
+                if (newLevel === "Glowing") {
+                    newLevel = "Dim";
+                }
+            }
+        }
+
+        if (this.object.motePool === 'peripheral') {
+            if (this.object.cost.motes > 4) {
+                for (var i = 0; i < Math.floor((this.object.cost.motes) / 5); i++) {
+                    if (newLevel === "Dim") {
+                        newLevel = "Glowing";
+                    }
+                    else if (newLevel === "Glowing") {
+                        newLevel = "Burning";
+                    }
+                    else if (newLevel === "Burning") {
+                        newLevel = "Bonfire";
+                    }
+                    else if (this.actor.system.anima.max === 4) {
+                        newLevel = "Transcendent";
+                    }
+                }
+            }
+        }
+
+        this.object.newAnima = newLevel;
+    }
+
     _migrateNewData(data) {
         if (this.object.cost === undefined) {
             this.object.cost = {
@@ -3758,6 +3832,7 @@ export class RollForm extends FormApplication {
                 { id: 'aim', name: "Aim", added: false, show: false, description: '+3 Attack Dice', img: 'systems/exaltedthird/assets/icons/targeting.svg' },
                 { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
                 { id: 'flurry', name: "Flurry", added: false, show: this._isAttackRoll(), description: 'Cost: 3 dice and reduce defense by 1.', img: 'systems/exaltedthird/assets/icons/spinning-blades.svg' },
+                { id: 'fulldefense', name: "Flurry Full Defense", added: false, show: false, description: '3 Dice and 2 Initiative cost and add the full defense effect to token.  -1 Defense for flurrying', img: 'icons/svg/shield.svg' },
                 { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
                 { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
                 { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
@@ -3831,7 +3906,7 @@ export class RollForm extends FormApplication {
         var spentPersonal = 0;
         var spentPeripheral = 0;
         var totalMotes = this.object.cost.motes + this.object.cost.muteMotes;
-        if (actorData.system.settings.charmmotepool === 'personal') {
+        if (this.object.motePool === 'personal') {
             var remainingPersonal = actorData.system.motes.personal.value - totalMotes;
             if (remainingPersonal < 0) {
                 spentPersonal = totalMotes + remainingPersonal;
@@ -3906,7 +3981,7 @@ export class RollForm extends FormApplication {
         if (this.object.activateAura !== 'none') {
             actorData.system.details.aura = this.object.activateAura;
         }
-        if (actorData.system.settings.charmmotepool === 'personal') {
+        if (this.object.motePool === 'personal') {
             actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + this.object.restore.motes);
         }
         else {
