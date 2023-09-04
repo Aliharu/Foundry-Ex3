@@ -21,6 +21,7 @@
     "Ex3.Health": "Health",
     "Ex3.HealthPenaltyModifier": "Health Penalty Modifier",
     "Ex3.HealthPenaltyText": "This value will reduce what the health penalty on rolls is (Min 0)",
+    "Ex3.AddOxBody": "Add Ox-Body",
     "Ex3.Bashing": "Bashing",
     "Ex3.Lethal": "Lethal",
     "Ex3.Aggravated": "Aggravated",

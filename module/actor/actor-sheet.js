@@ -1438,17 +1438,59 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           oxBodyText = 'Ox Body: Two -0 levels';
         }
       }
+      else if (this.actor.system.details.caste.toLowerCase() === 'strawmaiden' || this.actor.system.details.caste.toLowerCase() === 'janest') {
+        if (this.actor.system.attributes.stamina.value < 3) {
+          oxBodyText = 'Ox Body: One -1 level and one -2 level';
+        }
+        else if (this.actor.system.attributes.stamina.value < 5) {
+          oxBodyText = 'Ox Body: One -1 level and two -2 levels';
+        }
+        else {
+          oxBodyText = 'Ox Body: One -1 level, One -2 level, Two -4 levels';
+        }
+      }
+      else if (this.actor.system.details.caste.toLowerCase() === 'puppeteer') {
+        if (this.actor.system.attributes.stamina.value < 3) {
+          oxBodyText = 'Ox Body: Two -2 levels';
+        }
+        else if (this.actor.system.attributes.stamina.value < 5) {
+          oxBodyText = 'Ox Body: One -1 level and one -2 level';
+        }
+        else {
+          oxBodyText = 'Ox Body: Two -1 levels';
+        }
+      }
+      else if (this.actor.system.details.caste.toLowerCase() === 'architect') {
+        if (this.actor.system.attributes.stamina.value < 3) {
+          oxBodyText = 'Ox Body: Two -2 levels';
+        }
+        else if (this.actor.system.attributes.stamina.value < 5) {
+          oxBodyText = 'Ox Body: Two -2 levels and One -4 level';
+        }
+        else {
+          oxBodyText = 'Ox Body: One -1 level and Two -2 Levels';
+        }
+      }
+      else if (this.actor.system.details.caste.toLowerCase() === 'sovereign') {
+        if (this.actor.system.attributes.stamina.value < 3) {
+          oxBodyText = 'Ox Body: One -2 level and One -4 level';
+        }
+        else if (this.actor.system.attributes.stamina.value < 5) {
+          oxBodyText = 'Ox Body: One -2 level and Two -4 levels';
+        }
+        else {
+          oxBodyText = 'Ox Body: One -2 level and Three -4 levels';
+        }
+      }
     }
 
 
     var template = "systems/exaltedthird/templates/dialogues/calculate-health.html";
-    if (this.actor.system.battlegroup && healthType === 'person') {
-      template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
-    }
 
     var templateData = {
       'oxBodyText': oxBodyText,
       'healthType': healthType,
+      'hasOxBody': false,
     }
     if (healthType === 'warstrider') {
       templateData.zero = this.actor.system.warstrider.health.levels.zero.value;
@@ -1468,6 +1510,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       templateData.two = this.actor.system.health.levels.two.value;
       templateData.four = this.actor.system.health.levels.four.value;
       templateData.penaltyMod = this.actor.system.health.penaltymod;
+      if(this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['janest', 'strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
+        templateData.hasOxBody = true;
+      }
+    }
+
+    if (this.actor.system.battlegroup && healthType === 'person') {
+      template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
+      templateData.hasOxBody = false;
     }
 
     const html = await renderTemplate(template, templateData);
@@ -1513,7 +1563,146 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             this.actor.update({ [`system.${healthType}.health`]: healthData });
           }
         }
-      }
+      },
+      render: (html) => {
+        html.find('.add-ox-body').click(ev => {
+          const oxBodyChart = {
+            solar: {
+              5: {
+                zero: 1,
+                one: 1,
+                two: 1,
+              },
+              4: {
+                one: 1,
+                two: 2,
+              },
+              2: {
+                one: 1,
+                two: 1,
+              },
+            },
+            dragonblooded: {
+              5: {
+                one: 1,
+                two: 2,
+              },
+              4: {
+                one: 1,
+                two: 1,
+              },
+              2: {
+                two: 2,
+              },
+            },
+            lunar: {
+              5: {
+                two: 2,
+                four: 2,
+              },
+              4: {
+                two: 2,
+                four: 1,
+              },
+              2: {
+                two: 2,
+              },
+            },
+            sidereal: {
+              5: {
+                zero: 2,
+              },
+              4: {
+                zero: 1,
+                one: 1,
+              },
+              2: {
+                zero: 1,
+              },
+            },
+            janest: {
+              5: {
+                one: 1,
+                two: 1,
+                four: 2,
+              },
+              4: {
+                one: 1,
+                two: 2,
+              },
+              2: {
+                one: 1,
+                two: 1,
+              },
+            },
+            strawmaiden: {
+              5: {
+                one: 1,
+                two: 1,
+                four: 2,
+              },
+              4: {
+                one: 1,
+                two: 2,
+              },
+              2: {
+                one: 1,
+                two: 1,
+              },
+            },
+            puppeteer: {
+              5: {
+                one: 2,
+              },
+              4: {
+                one: 1,
+                two: 1,
+              },
+              2: {
+                two: 2,
+              },
+            },
+            architect: {
+              5: {
+                one: 1,
+                two: 2,
+              },
+              4: {
+                two: 2,
+                four: 1,
+              },
+              2: {
+                two: 2,
+              },
+            },
+            sovereign: {
+              5: {
+                two: 1,
+                four: 3,
+              },
+              4: {
+                two: 1,
+                four: 2,
+              },
+              2: {
+                two: 1,
+                four: 1,
+              },
+            }
+          }
+
+          if(oxBodyChart[this.actor.system.details.exalt]){
+            for (let [staminaValue, staminaDetails] of Object.entries(oxBodyChart[this.actor.system.details.exalt]).sort(([keyA], [keyB]) => Number(keyB) - Number(keyA))) {
+              if(this.actor.system.attributes.stamina.value >= parseInt(staminaValue)) {
+                for (let [levelValue, healthLevel] of Object.entries(staminaDetails)) {
+                  html.find(`#${levelValue}`).val((parseInt(html.find(`#${levelValue}`).val()) || 0) + healthLevel);
+                }
+                break;
+              }
+            }
+          }
+        });
+      },
     }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
   }
 
