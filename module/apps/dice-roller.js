@@ -1650,20 +1650,20 @@ export class RollForm extends FormApplication {
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
                     await this._attackRoll();
                     if (this.object.updateTargetActorData) {
-                        this._updateTargetActor();
+                        await this._updateTargetActor();
                     }
                     if (this.object.updateTargetInitiative) {
-                        this._updateTargetInitiative();
+                        await this._updateTargetInitiative();
                     }
                 }
             }
             else {
                 await this._attackRoll();
                 if (this.object.updateTargetActorData) {
-                    this._updateTargetActor();
+                    await this._updateTargetActor();
                 }
                 if (this.object.updateTargetInitiative) {
-                    this._updateTargetInitiative();
+                    await this._updateTargetInitiative();
                 }
             }
             this._postAttackResults();
@@ -2684,7 +2684,7 @@ export class RollForm extends FormApplication {
             if (this.object.target && game.combat) {
                 if (this.object.targetCombatant && this.object.newTargetInitiative !== null) {
                     this.object.targetHit = true;
-                    if (this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) {
+                    if ((this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) && (!this.actor.system.battlegroup || this.object.targetCombatant.initiative > 0)) {
                         let newInitative = this.object.newTargetInitiative;
                         var subractTotal = total;
                         if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.useShieldInitiative && this.object.shieldInitiative > 0) {
