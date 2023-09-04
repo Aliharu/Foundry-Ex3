@@ -1092,6 +1092,44 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       //   weaponTotal
       // );
 
+      // var playerSucceeded = 0;
+      // var playerPerfectAttacks = 0;
+      // for (let j = 0; j < 10000; j++) {
+      //   var explosionRoll = null;
+      //   var playerRoll = new Roll(`1d20`).evaluate({ async: false });
+      //   var playerTotal = playerRoll.total;
+      //   if (playerRoll.dice[0].results[0].result === 20) {
+      //     explosionRoll = new Roll(`1d6x6`).evaluate({ async: false });
+      //     playerTotal += explosionRoll.total;
+      //   }
+      //   var gmRoll = new Roll(`1d20`).evaluate({ async: false });
+      //   var gmTotal = gmRoll.total;
+      //   if (playerRoll.dice[0].results[0].result === 20) {
+      //     explosionRoll = new Roll(`1d6x6`).evaluate({ async: false });
+      //     gmTotal += explosionRoll.total;
+      //   }
+
+      //   if (gmTotal < playerTotal) {
+      //     playerSucceeded++;
+      //   }
+      //   if(playerTotal >= 20) {
+      //     playerPerfectAttacks++;
+      //   }
+      // }
+      // console.log(`Player succeeded ${(playerSucceeded / 10000) * 100}% of the time on an attack check, ${(playerPerfectAttacks / 10000) * 100}% perfect attacks`)
+
+
+      // var total1 = 0;
+      // var total2 = 0;
+      // for (let j = 0; j < 10000; j++) {
+      //   var explosionRoll = null;
+      //   var playerRoll = new Roll(`2d8x8`).evaluate({ async: false });
+      //   total1 += playerRoll.total;
+      //   var playerRoll2 = new Roll(`1d10x10 + 1d8x8`).evaluate({ async: false });
+      //   total2 += playerRoll2.total;
+      // }
+
+      // console.log(`Player succeeded ${(total1 / 10000)} normal attack average, ${(total2 / 10000)} Power attack average`)
 
       // for (let i = 10; i <= 30; i += 5) {
       //   var playerSucceeded = 0;
@@ -1510,7 +1548,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       templateData.two = this.actor.system.health.levels.two.value;
       templateData.four = this.actor.system.health.levels.four.value;
       templateData.penaltyMod = this.actor.system.health.penaltymod;
-      if(this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['janest', 'strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
+      if (this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['janest', 'strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
         templateData.hasOxBody = true;
       }
     }
@@ -1691,9 +1729,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             }
           }
 
-          if(oxBodyChart[this.actor.system.details.exalt]){
+          if (oxBodyChart[this.actor.system.details.exalt]) {
             for (let [staminaValue, staminaDetails] of Object.entries(oxBodyChart[this.actor.system.details.exalt]).sort(([keyA], [keyB]) => Number(keyB) - Number(keyA))) {
-              if(this.actor.system.attributes.stamina.value >= parseInt(staminaValue)) {
+              if (this.actor.system.attributes.stamina.value >= parseInt(staminaValue)) {
                 for (let [levelValue, healthLevel] of Object.entries(staminaDetails)) {
                   html.find(`#${levelValue}`).val((parseInt(html.find(`#${levelValue}`).val()) || 0) + healthLevel);
                 }
