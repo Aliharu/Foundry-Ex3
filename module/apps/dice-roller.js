@@ -2303,7 +2303,7 @@ export class RollForm extends FormApplication {
     async _attackRoll() {
         // Accuracy
         if (this.object.rollType !== 'damage') {
-            this._accuracyRoll();
+            await this._accuracyRoll();
         }
         else {
             this.object.thereshholdSuccesses = 0;
@@ -2311,15 +2311,15 @@ export class RollForm extends FormApplication {
         if ((this.object.thereshholdSuccesses >= 0 && this.object.rollType !== 'accuracy') || this.object.rollType === 'damage') {
             if (this.object.rollType === 'damage' && this.object.attackSuccesses < this.object.defense) {
                 this.object.thereshholdSuccesses = this.object.attackSuccesses - this.object.defense;
-                this.missAttack(false);
+                await this.missAttack(false);
             }
             else {
-                this._damageRoll();
+                await this._damageRoll();
             }
         }
         else {
             if (this.object.thereshholdSuccesses < 0) {
-                this.missAttack();
+                await this.missAttack();
             }
         }
         if (this.object.rollType === 'accuracy') {
