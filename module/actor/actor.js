@@ -111,6 +111,64 @@ export class ExaltedThirdActor extends Actor {
     }
   }
 
+  spendMotes(moteCost, actorData) {
+    var newLevel = actorData.system.anima.level;
+    var newValue = actorData.system.anima.value;
+
+    var spentPersonal = 0;
+    var spentPeripheral = 0;
+    if (actorData.system.settings.charmmotepool === 'personal') {
+      var remainingPersonal = actorData.system.motes.personal.value - moteCost;
+      if (remainingPersonal < 0) {
+        spentPersonal = moteCost + remainingPersonal;
+        spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
+      }
+      else {
+        spentPersonal = moteCost;
+      }
+    }
+    else {
+      var remainingPeripheral = actorData.system.motes.peripheral.value - moteCost;
+      if (remainingPeripheral < 0) {
+        spentPeripheral = moteCost + remainingPeripheral;
+        spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+      }
+      else {
+        spentPeripheral = moteCost;
+      }
+    }
+    var newPeripheralMotes = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+    var newPersonalMotes = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
+
+    if (spentPeripheral > 4) {
+      for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+        if (newLevel === "Dim") {
+          newLevel = "Glowing";
+          newValue = 1;
+        }
+        else if (newLevel === "Glowing") {
+          newLevel = "Burning";
+          newValue = 2;
+        }
+        else if (newLevel === "Burning") {
+          newLevel = "Bonfire";
+          newValue = 3;
+        }
+        else if (actorData.system.anima.max === 4) {
+          newLevel = "Transcendent";
+          newValue = 4;
+        }
+      }
+    }
+
+    return {
+      newPersonalMotes: newPersonalMotes,
+      newPeripheralMotes: newPeripheralMotes,
+      newAnimaLevel: newLevel,
+      newAnimaValue: newValue,
+    }
+  }
+
   async displayEmbeddedItem(itemId) {
     // Render the chat card template
     let item = this.items.find(x => x.id === itemId);

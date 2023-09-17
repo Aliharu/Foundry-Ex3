@@ -1530,8 +1530,8 @@ export default class CharacterBuilder extends FormApplication {
     var actorData = this._getBaseStatblock();
 
     await this.getbaseCharacterData(actorData, itemData);
-    this._getCharacterCharms(actorData, itemData);
-    await this._getCharacterSpells(actorData, itemData);
+    this._getCharacterCharms(itemData);
+    await this._getCharacterSpells(itemData);
     await this._getCharacterEquipment(actorData, itemData);
 
     actorData.items = itemData;
@@ -1741,8 +1741,8 @@ export default class CharacterBuilder extends FormApplication {
     );
   }
 
-  _getCharacterCharms(actorData, itemData) {
-    if (this.object.character.exalt !== 'mortal') {
+  _getCharacterCharms(itemData) {
+    if (this.object.character.exalt !== 'mortal' && this.object.character.exalt !== 'dragonblooded') {
       itemData.push({
         type: 'charm',
         img: 'icons/magic/light/explosion-star-large-orange.webp',
@@ -1909,7 +1909,7 @@ export default class CharacterBuilder extends FormApplication {
 
   }
 
-  async _getCharacterSpells(actorData, itemData) {
+  async _getCharacterSpells(itemData) {
     if (this.object.character.ritual.name) {
       if (this.object.character.ritual._id) {
         itemData.push(await duplicate(this.object.character.ritual));

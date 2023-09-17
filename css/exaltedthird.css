@@ -706,7 +706,7 @@
 }
 
 .embeded-item-list-wrapper {
-  height: 40px;
+  min-height: 40px;
   border-radius: 3px;
   background: rgba(0, 0, 0, 0.05);
 }

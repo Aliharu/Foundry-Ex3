@@ -419,6 +419,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
     combat = game.combat;
   }
 
+  //New round
   if (update && update.round) {
     for (var combatant of combat.combatants) {
       const actorData = duplicate(combatant.actor)
@@ -449,6 +450,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       let lethalDamage = 0;
       let aggravatedDamage = 0;
       let initiativeDamage = 0;
+      let moteCost = 0;
       let crasherId = null;
       let currentCombatantInitiative = combatant.initiative;
       for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
@@ -481,6 +483,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             if (change.key === 'system.damage.round.aggravated') {
               aggravatedDamage += parseInt(change.value);
             }
+            if (change.key === 'system.motes.cost.round') {
+              moteCost += parseInt(change.value);
+            }
           }
         }
         if (activeEffect.flags?.exaltedthird?.weaponInflictedPosion && activeEffect.duration.remaining === 0) {
@@ -501,10 +506,19 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           }
         }
       }
+      if(moteCost) {
+        var moteResults = combatant.actor.spendMotes(moteCost, actorData);
+        actorData.system.motes.personal.value = moteResults.newPersonalMotes;
+        actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
+        actorData.system.anima.level = moteResults.newAnimaLevel;
+        actorData.system.anima.value = moteResults.newAnimaValue;
+      }
+
       await combatant.actor.update(actorData);
     }
   }
   if (update && (update.round !== undefined || update.turn !== undefined)) {
+    //Start of Persons Turn
     if (combat.current.combatantId) {
       var currentCombatant = combat.combatants.get(combat.current.combatantId);
       if (currentCombatant?.actor) {
@@ -552,6 +566,23 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           for (const effect of effectItem.effects) {
             effect.update({ disabled: true });
           }
+        }
+        var moteCost = 0;
+        for (const activeEffect of currentCombatant.actor.allApplicableEffects()) {
+          if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
+            for (const change of activeEffect.changes) {
+              if (change.key === 'system.motes.cost.turn') {
+                moteCost += parseInt(change.value);
+              }
+            }
+          }
+        }
+        if(moteCost) {
+          var moteResults = currentCombatant.actor.spendMotes(moteCost, actorData);
+          actorData.system.motes.personal.value = moteResults.newPersonalMotes;
+          actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
+          actorData.system.anima.level = moteResults.newAnimaLevel;
+          actorData.system.anima.value = moteResults.newAnimaValue;
         }
         await currentCombatant.actor.update(actorData);
       }

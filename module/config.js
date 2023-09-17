@@ -119,6 +119,8 @@ exaltedthird.activeEffectChanges = {
     'system.baseinitiative.value': 'Ex3.BaseInitiative',
     'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
     'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
+    'system.motes.cost.round': 'Ex3.MoteCostPerRound',
+    'system.motes.cost.turn': 'Ex3.MoteCostPerTurn',
     'system.damage.round.initiative.bashing': 'Ex3.InitiativeDamageRoundBashing',
     'system.damage.round.initiative.lethal': 'Ex3.InitiativeDamageRoundLethal',
     'system.damage.round.bashing': 'Ex3.BashingDamageRound',
