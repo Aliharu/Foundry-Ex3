@@ -1109,12 +1109,13 @@ export default class CharacterBuilder extends FormApplication {
         bonusPoints: 18,
         charms: 15,
         excellencies: 5,
-        specialties: 3,
+        specialties: 5,
         merits: 18,
         intimacies: 4,
         willpower: 5,
       }
       if (this.object.character.essence === 1) {
+        this.object.creationData.available.specialties = 3;
         this.object.creationData.available.charms = 15;
         this.object.creationData.available.merits = 10;
         this.object.creationData.available.bonusPoints = 15;
