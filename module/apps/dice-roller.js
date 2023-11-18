@@ -3555,6 +3555,15 @@ export class RollForm extends FormApplication {
                         'eleven': 10,
                     };
                 }
+                if (this.actor.system.details.exalt === 'getimian') {
+                    diceMap = {
+                        'zero': 0,
+                        'two': 2,
+                        'three': 5,
+                        'seven': 6,
+                        'eleven': 10,
+                    };
+                }
                 if (this.actor.system.details.exalt === "dragonblooded") {
                     diceMap = {
                         'zero': 0,

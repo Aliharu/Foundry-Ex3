@@ -1758,7 +1758,7 @@ export default class CharacterBuilder extends FormApplication {
             motes: 1
           },
           diceroller: {
-            bonusdice: 1
+            bonusdice: "1"
           }
         }
       });
@@ -1776,7 +1776,7 @@ export default class CharacterBuilder extends FormApplication {
             motes: 2
           },
           diceroller: {
-            bonussuccesses: 1
+            bonussuccesses: "1"
           }
         }
       });
@@ -1796,9 +1796,9 @@ export default class CharacterBuilder extends FormApplication {
           diceroller: {
             opposedbonuses: {
               enabled: true,
-              defense: 1,
-              resolve: 1,
-              guile: 1,
+              defense: "1",
+              resolve: "1",
+              guile: "1",
             }
           }
         }
@@ -1823,7 +1823,7 @@ export default class CharacterBuilder extends FormApplication {
           diceroller: {
             opposedbonuses: {
               enabled: true,
-              soak: 1,
+              soak: "1",
             }
           }
         }
@@ -1843,7 +1843,7 @@ export default class CharacterBuilder extends FormApplication {
           },
           diceroller: {
             damage: {
-              bonusdice: 1,
+              bonusdice: "1",
             }
           }
         }

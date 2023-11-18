@@ -205,11 +205,11 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'dragonblooded') {
         maxMotes = 11 + essenceLevel;
       }
-      if (exaltType === 'lunar') {
+      if (exaltType === 'lunar' || exaltType === 'alchemical' || exaltType === 'getimian') {
         maxMotes = 15 + essenceLevel;
       }
       if (exaltType === 'exigent') {
-        if(this.system.settings?.exigenttype === 'celestial') {
+        if (this.system.settings?.exigenttype === 'celestial') {
           maxMotes = 11 + (essenceLevel * 2);
         }
         else {
@@ -243,14 +243,14 @@ export class ExaltedThirdActor extends Actor {
         maxMotes = 34 + (essenceLevel * 4);
       }
       if (exaltType === 'exigent') {
-        if(this.system.settings?.exigenttype === 'celestial') {
+        if (this.system.settings?.exigenttype === 'celestial') {
           maxMotes = 27 + (essenceLevel * 6);
         }
         else {
           maxMotes = 23 + (essenceLevel * 4);
         }
       }
-      if (exaltType === 'sidereal') {
+      if (exaltType === 'sidereal' || exaltType === 'alchemical' || exaltType === 'getimian') {
         maxMotes = 25 + (essenceLevel * 6);
       }
       if (exaltType === 'liminal') {
@@ -944,6 +944,15 @@ export class ExaltedThirdActor extends Actor {
             caps = [0, 1, 3, 5]
             break
           case 'abyssal':
+            caps = [0, 1, 3, 5]
+            break
+          case 'infernal':
+            caps = [0, 1, 3, 5]
+            break
+          case 'getimian':
+            caps = [0, 1, 3, 5]
+            break
+          case 'alchemical':
             caps = [0, 1, 3, 5]
             break
           case 'liminal':
