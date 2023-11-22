@@ -367,13 +367,43 @@
           </div>
         </li>
         <li>
-          <textarea type="text" name="system.anima.passive" rows="4">{{system.anima.passive}}</textarea>
+          <div class="d-flex flex-between collapsable cursor-pointer list-section-header mb-1" data-type="passive">
+            <div class="resource-label">
+              {{localize "Ex3.Anima"}} <a class="item-control data-chat" title="Chat" data-type="passive"><i
+                  class="fas fa-comment"></i></a> </div>
+            <div>
+              <i class="fas fa-caret-down"></i>
+            </div>
+          </div>
+          <div {{#if system.collapse.passive }} style="display:none;" {{/if}}>
+            <textarea type="text" name="system.anima.passive" rows="12">{{system.anima.passive}}</textarea>
+          </div>
         </li>
         <li>
-          <textarea type="text" name="system.anima.active" rows="4">{{system.anima.active}}</textarea>
+          <div class="d-flex flex-between collapsable cursor-pointer list-section-header mb-1" data-type="active">
+            <div class="resource-label">
+              {{localize "Ex3.Anima"}} <a class="item-control data-chat" title="Chat" data-type="active"><i
+                  class="fas fa-comment"></i></a> </div>
+            <div>
+              <i class="fas fa-caret-down"></i>
+            </div>
+          </div>
+          <div {{#if system.collapse.active }} style="display:none;" {{/if}}>
+            <textarea type="text" name="system.anima.active" rows="12">{{system.anima.active}}</textarea>
+          </div>
         </li>
         <li>
-          <textarea type="text" name="system.anima.iconic" rows="4">{{system.anima.iconic}}</textarea>
+          <div class="d-flex flex-between collapsable cursor-pointer list-section-header mb-1" data-type="iconic">
+            <div class="resource-label">
+              {{localize "Ex3.Anima"}} <a class="item-control data-chat" title="Chat" data-type="iconic"><i
+                  class="fas fa-comment"></i></a> </div>
+            <div>
+              <i class="fas fa-caret-down"></i>
+            </div>
+          </div>
+          <div {{#if system.collapse.iconic }} style="display:none;" {{/if}}>
+            <textarea type="text" name="system.anima.iconic" rows="12">{{system.anima.iconic}}</textarea>
+          </div>
         </li>
         {{/if}}
         {{#if system.settings.editmode}}

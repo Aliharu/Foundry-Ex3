@@ -404,7 +404,12 @@
           }
         },
         "virtueone": "",
-        "virtuetwo": ""
+        "virtuetwo": "",
+        "collapse": {
+          "passive": false,
+          "active": false,
+          "iconic": false
+        }
       }
     },
     "character": {

@@ -595,6 +595,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
     html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
 
+    html.find('.collapsable').click(ev => {
+      let type = $(ev.currentTarget).data("type");
+      const li = $(ev.currentTarget).next();
+      if(type) {
+        this.actor.update({ [`system.collapse.${type}`]: !li.is(":hidden") });
+      }
+    });
+
     html.find('.charm-list-collapsable').click(ev => {
       const li = $(ev.currentTarget).next();
       if (li.attr('id')) {
@@ -1017,6 +1025,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       item.update({
         [`system.visible`]: !item.system.visible,
       });
+    });
+
+    html.find('.data-chat').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      this._displayDataChat(ev);
     });
 
     html.find('.item-chat').click(ev => {
@@ -2073,6 +2087,43 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
     game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
+  }
+
+  async _displayDataChat(event) {
+    let type = $(event.currentTarget).data("type");
+    const token = this.actor.token;
+    var content = '';
+    var title = 'Anima Power';
+    switch (type) {
+      case "passive":
+        content = this.actor.system.anima.passive;
+        break;
+      case "active":
+        content = this.actor.system.anima.active;
+        break;
+      case "iconic":
+        content = this.actor.system.anima.iconic;
+        break;
+    }
+    const templateData = {
+      actor: this.actor,
+      tokenId: token?.uuid || null,
+      content: content,
+      title: title,
+    };
+    const html = await renderTemplate("systems/exaltedthird/templates/chat/exalt-ability-card.html", templateData);
+
+    // Create the ChatMessage data object
+    const chatData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
+    };
+
+
+    // Create the Chat Message or return its data
+    return ChatMessage.create(chatData);
   }
 
   /**
