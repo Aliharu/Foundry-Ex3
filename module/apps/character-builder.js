@@ -1080,7 +1080,7 @@ export default class CharacterBuilder extends FormApplication {
         }
       }
     }
-    if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'lunar') {
+    if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'lunar' || this.object.character.exalt === 'abyssal') {
       if (this.object.character.essence >= 2) {
         this.object.creationData.available.charms = 20;
         this.object.creationData.available.merits = 13;

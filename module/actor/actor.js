@@ -208,6 +208,9 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'lunar' || exaltType === 'alchemical' || exaltType === 'getimian') {
         maxMotes = 15 + essenceLevel;
       }
+      if (exaltType === 'sovereign') {
+        maxMotes = 4 + essenceLevel;
+      }
       if (exaltType === 'exigent') {
         if (this.system.settings?.exigenttype === 'celestial') {
           maxMotes = 11 + (essenceLevel * 2);
@@ -225,7 +228,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'other') {
         maxMotes = 10 * essenceLevel;
       }
-      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'sovereign' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
+      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         maxMotes = 11 + essenceLevel;
       }
       if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
@@ -242,6 +245,9 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'lunar') {
         maxMotes = 34 + (essenceLevel * 4);
       }
+      if (exaltType === 'sovereign') {
+        maxMotes = 30 + (essenceLevel * 4);
+      }
       if (exaltType === 'exigent') {
         if (this.system.settings?.exigenttype === 'celestial') {
           maxMotes = 27 + (essenceLevel * 6);
@@ -256,7 +262,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'liminal') {
         maxMotes = 23 + (essenceLevel * 4);
       }
-      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'sovereign' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
+      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         maxMotes = 23 + (essenceLevel * 4);
       }
       if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
@@ -369,6 +375,7 @@ export class ExaltedThirdActor extends Actor {
       "liminal": [],
       "lunar": ['moonsilver'],
       "sidereal": ['starmetal'],
+      "soverign": [],
       "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "umbral": ['soulsteel'],
     }
@@ -376,9 +383,6 @@ export class ExaltedThirdActor extends Actor {
     if (exaltType === 'exigent') {
       if (this.system.details.caste?.toLowerCase() === 'janest' || this.system.details.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         resonance.value = ['orichalcum', 'greenjade'];
-      }
-      if (this.system.details.caste?.toLowerCase() === 'sovereign') {
-        resonance.value = [];
       }
       if (this.system.details.caste?.toLowerCase() === 'puppeteer') {
         resonance.value = [];
@@ -408,15 +412,13 @@ export class ExaltedThirdActor extends Actor {
       "lunar": "",
       "sidereal": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "solar": [],
+      "soverign": ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "umbral": [],
     }
 
     if (exaltType === 'exigent') {
       if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         dissonance.value = ['soulsteel'];
-      }
-      if (this.system.details?.caste?.toLowerCase() === 'sovereign') {
-        dissonance.value = ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
       }
       if (this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         dissonance.value = ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];

@@ -3424,7 +3424,7 @@ export class RollForm extends FormApplication {
                     if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
                         return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
                     }
-                    if (this.actor.system.details.caste.toLowerCase() === "sovereign") {
+                    if (this.actor.system.details.exalt === "sovereign") {
                         return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
                     }
                 }
@@ -4320,13 +4320,13 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                 }
                 else if (newAnimaValue === 2) {
                     await TokenMagic.addUpdateFilters(actorToken, burning);
-                    if (actorToken.actor.system.details.caste.toLowerCase() === "sovereign") {
+                    if (this.actor.system.details.exalt === "sovereign") {
                         await TokenMagic.addUpdateFilters(actorToken, sovereign);
                     }
                 }
                 else {
                     await TokenMagic.addUpdateFilters(actorToken, bonfire);
-                    if (actorToken.actor.system.details.caste.toLowerCase() === "sovereign") {
+                    if (this.actor.system.details.exalt === "sovereign") {
                         await TokenMagic.addUpdateFilters(actorToken, sovereign);
                     }
                 }

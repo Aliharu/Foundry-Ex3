@@ -1422,7 +1422,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           oxBodyText = 'Ox Body: One -1 level and Two -2 Levels';
         }
       }
-      else if (this.actor.system.details.caste.toLowerCase() === 'sovereign') {
+      else if (this.actor.system.details.exalt === 'sovereign') {
         if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: One -2 level and One -4 level';
         }
@@ -1771,7 +1771,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             showanima: html.find('#showAnima').is(":checked"),
             editmode: html.find('#editMode').is(":checked"),
             hasaura: html.find('#hasAura').is(":checked"),
-            issorcerer: html.find('#isSorcerer').is(":checked"),
+            sorcerercircle: html.find('#sorcererCircle').val(),
             iscrafter: html.find('#isCrafter').is(":checked"),
           }
           if (this.actor.type === 'npc') {
