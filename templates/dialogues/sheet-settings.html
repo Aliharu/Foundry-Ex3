@@ -34,10 +34,28 @@
                 <option value="leaves">{{localize "Ex3.Leaves"}}</option>
                 {{/select}}
             </select>
+            <label className="resource-label">{{localize "Ex3.SorceryCircle"}}:</label>
+            <select id="sorceryCircle" name="settings.sorcerycircle" data-type="String">
+                {{#select settings.sorcerycircle}}
+                <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
+                <option value="celestial">{{localize "Ex3.Celestial"}}</option>
+                <option value="solar">{{localize "Ex3.Solar"}}</option>
+                {{/select}}
+            </select>
+            <label className="resource-label">{{localize "Ex3.NecromancyCircle"}}:</label>
+            <select id="necromancyCircle" name="settings.necromancycircle" data-type="String">
+                {{#select settings.necromancycircle}}
+                <option value="none">{{localize "Ex3.None"}}</option>
+                <option value="ivory">{{localize "Ex3.Ivory"}}</option>
+                <option value="shadow">{{localize "Ex3.Shadow"}}</option>
+                <option value="void">{{localize "Ex3.Void"}}</option>
+                {{/select}}
+            </select>
             {{#if showExigentType}}
             <label className="resource-label">{{localize "Ex3.ExigentType"}}:</label>
             <select id="exigentType" name="settings.exigenttype" data-type="String">
                 {{#select settings.exigenttype}}
+                <option value="none">{{localize "Ex3.None"}}</option>
                 <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
                 <option value="celestial">{{localize "Ex3.Celestial"}}</option>
                 <option value="">{{localize "Ex3.None"}}</option>

@@ -218,6 +218,13 @@ exaltedthird.castes = {
     nadir: 'Ex3.Nadir',
     penumbra: 'Ex3.Penumbra',
   },
+  sovereign: {
+    diamond: 'Ex3.Diamond',
+    emerald: 'Ex3.Emerald',
+    opal: 'Ex3.Opal',
+    ruby: 'Ex3.Ruby',
+    sapphire: 'Ex3.Sapphire',
+  },
   liminal: {
     blood: 'Ex3.Blood',
     breath: 'Ex3.Breath',
@@ -436,7 +443,8 @@ exaltedthird.martialarts = [
   "Laughing Monster Style",
   "Swaying Grass Style",
   "Throne Shadow Style",
-  "Violet Bier of Sorrows Style"
+  "Violet Bier of Sorrows Style",
+  "Hungry Ghost Style",
 ];
 
 

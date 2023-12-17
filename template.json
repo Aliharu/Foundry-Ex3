@@ -115,6 +115,11 @@
           "max": 10,
           "trigger": ""
         },
+        "penumbra": {
+          "value": 0,
+          "max": 10,
+          "min": 0
+        },
         "sorcery": {
           "motes": 0
         },
@@ -174,16 +179,13 @@
           "aura": "none",
           "ideal": "",
           "supernal": "",
-          "apocalyptic": "",
-          "penumbra": {
-            "value": 0,
-            "max": 10,
-            "min": 0
-          }
+          "apocalyptic": ""
         },
         "settings": {
           "charmmotepool": "peripheral",
           "martialartsmastery": "standard",
+          "sorcerycircle": "none",
+          "necromancycircle": "none",
           "exigenttype": "",
           "smaenlightenment": false,
           "showwarstrider": false,
@@ -933,6 +935,7 @@
         "commitmotes": 0,
         "initiative": 0,
         "anima": 0,
+        "penumbra": 0,
         "willpower": 0,
         "aura": "",
         "health": 0,

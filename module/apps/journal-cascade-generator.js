@@ -7,6 +7,7 @@ export default class JournalCascadeGenerator extends FormApplication {
     this.object.character = '';
     this.object.mainText = 'description';
     this.object.type = 'character';
+    this.object.includeSpells = true;
     this.object.filterByPrerequisiteCharms = false;
   }
 
@@ -48,6 +49,8 @@ export default class JournalCascadeGenerator extends FormApplication {
       folderIds.push(this.object.folder);
       let charms = game.items.filter(item => item.type === 'charm' && item.folder && folderIds.includes(item.folder.id));
 
+      let spells = game.items.filter(item => item.type === 'spell' && item.folder && folderIds.includes(item.folder.id));
+
       const folderCharms = charms.sort(function (a, b) {
         const sortValueA = a.system.requirement;
         const sortValueB = b.system.requirement;
@@ -57,9 +60,16 @@ export default class JournalCascadeGenerator extends FormApplication {
       const folder = await Folder.create({ name: `${mainFolder.name} Cards`, type: 'JournalEntry' });
 
       const charmsMap = await this.createCharmMap(folderCharms, charms);
+      const spellsMap = await this.createSpellsMap(spells);
 
       for (let [name, charmsList] of Object.entries(charmsMap)) {
-        this.createJournal(charmsList, name, folder, charms);
+        this.createCharmJournal(charmsList, name, folder, charms);
+      }
+
+      if(this.object.includeSpells) {
+        for (let [name, spellsList] of Object.entries(spellsMap)) {
+          this.createSpellJournal(spellsList, name, folder);
+        }
       }
     }
     if (this.object.type === 'character') {
@@ -69,18 +79,48 @@ export default class JournalCascadeGenerator extends FormApplication {
       const fullCharacter = game.actors.get(this.object.character);
       let charms = game.items.filter(item => item.type === 'charm' && item.system.charmtype === fullCharacter.system.details.exalt);
 
+      let spells = game.items.filter(item => item.type === 'spell');
+
       const characterCharms = charms.filter(charm => (charm.system.essence <= fullCharacter.system.essence.value && fullCharacter.system.attributes[charm.system.ability] && charm.system.requirement <= fullCharacter.system.attributes[charm.system.ability].value) || fullCharacter.system.abilities[charm.system.ability] && charm.system.requirement <= fullCharacter.system.abilities[charm.system.ability].value).sort(function (a, b) {
         const sortValueA = a.system.requirement;
         const sortValueB = b.system.requirement;
         return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
       });
 
+      const characterSpells = spells.filter(spell => {
+        if(spell.system.circle === 'terrestrial' && fullCharacter.system.settings.sorcerycircle !== 'none') {
+          return true;
+        }
+        if(spell.system.circle === 'celestial' && fullCharacter.system.settings.sorcerycircle !== 'terrestrial' && fullCharacter.system.settings.sorcerycircle !== 'none') {
+          return true;
+        }
+        if(spell.system.circle === 'solar' && fullCharacter.system.settings.sorcerycircle === 'solar') {
+          return true;
+        }
+        if(spell.system.circle === 'ivory' && fullCharacter.system.settings.necromancycircle !== 'none') {
+          return true;
+        }
+        if(spell.system.circle === 'shadow' && fullCharacter.system.settings.necromancycircle !== 'ivory' && fullCharacter.system.settings.necromancycircle !== 'none') {
+          return true;
+        }
+        if(spell.system.circle === 'void' && fullCharacter.system.settings.necromancycircle === 'void') {
+          return true;
+        }
+        return false;
+      });
       const charmsMap = await this.createCharmMap(characterCharms, charms);
+
+      const spellsMap = await this.createSpellsMap(characterSpells);
 
       const folder = await Folder.create({ name: `${fullCharacter.name} Cards`, type: 'JournalEntry' });
 
       for (let [name, charmsList] of Object.entries(charmsMap)) {
-        this.createJournal(charmsList, name, folder, charms);
+        this.createCharmJournal(charmsList, name, folder, charms);
+      }
+      if(this.object.includeSpells) {
+        for (let [name, spellsList] of Object.entries(spellsMap)) {
+          this.createSpellJournal(spellsList, name, folder);
+        }
       }
     }
   }
@@ -105,7 +145,99 @@ export default class JournalCascadeGenerator extends FormApplication {
     return charmsMap;
   }
 
-  async createJournal(charms, name, folder, fullCharms) {
+  async createSpellsMap(spells) {
+    const spellsMap = {};
+    spells.forEach(spell => {
+      if (!spellsMap[spell.system.circle]) {
+        spellsMap[spell.system.circle] = [];
+      }
+      spellsMap[spell.system.circle].push(spell);
+    });
+    return spellsMap;
+  }
+
+  async createSpellJournal(spells, name, folder) {
+    const spellsMap = {
+      'terrestrial': [],
+      'celestial': [],
+      'solar': [],
+      'ivory': [],
+      'shadow': [],
+      'voice': [],
+      other: [],
+    };
+    spells.forEach(spell => {
+      if(spellsMap[spell.system.circle]) {
+        spellsMap[spell.system.circle].push(spell);
+      }
+      else {
+        spellsMap['other'].push(spell);
+      }
+    });
+
+    const pages = [];
+    for (let [circle, spellsList] of Object.entries(spellsMap)) {
+      if (spellsList.length > 0) {
+        let spellsListHtml = '';
+        for (const spell of spellsList) {
+          let templateData = {
+            spell: spell,
+            descriptionText: this.object.mainText
+          }
+          const spellHtml = await renderTemplate("systems/exaltedthird/templates/journal/spell-cascade-journal.html", templateData);
+          spellsListHtml += spellHtml;
+        }
+        let fullListHtml = this.object.mainText === 'summary' ? `<div class="journal-charm-cards grid grid-2col">${spellsListHtml}</div>` : `<div class="journal-charm-cards">${spellsListHtml}</div>`;
+        var listingCircle = circle.charAt(0).toUpperCase() + circle.slice(1);
+        pages.push(
+          {
+            name: `${listingCircle} Circle`,
+            type: 'text',
+            text: {
+              content: fullListHtml,
+              format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
+            }
+          }
+        );
+      }
+    }
+    if(this.object.type === 'character') {
+      const fullCharacter = game.actors.get(this.object.character);
+      const characterSpells = fullCharacter.items.filter(item => item.type === 'spell' && item.system.ability === name);
+      if (characterSpells.length > 0) {
+        let spellListHtml = '';
+        for (const spell of characterSpells) {
+          let templateData = {
+            spell: spell,
+            descriptionText: this.object.mainText
+          }
+          const charmHtml = await renderTemplate("systems/exaltedthird/templates/journal/spell-cascade-journal.html", templateData);
+          spellListHtml += charmHtml;
+        }
+        let fullListHtml = this.object.mainText === 'summary' ? `<div class="journal-charm-cards grid grid-2col">${spellListHtml}</div>` : `<div class="journal-charm-cards">${spellListHtml}</div>`;
+        pages.push(
+          {
+            name: `Known by Character`,
+            type: 'text',
+            text: {
+              content: fullListHtml,
+              format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
+            }
+          }
+        );
+      }
+    }
+
+    const journalData = {
+      name: name.capitalize(),
+      pages: pages,
+      folder: folder,
+    };
+
+    await JournalEntry.create(journalData);
+  }
+
+  async createCharmJournal(charms, name, folder, fullCharms) {
     const charmsMap = {
       1: [],
       2: [],

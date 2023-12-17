@@ -726,7 +726,7 @@
         <div class="resource-content flexrow flex-center flex-between mt-2" style="font-size: 24px;">
           <label class="resource-label">{{localize "Ex3.Sorcery"}}</label>
         </div>
-        <div class="resource grid grid-3col">
+        <div class="resource grid grid-4col">
           <div>
             <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
             <select name="object.character.sorcerer" data-type="String">
@@ -735,6 +735,14 @@
               <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
               <option value="celestial">{{localize "Ex3.Celestial"}}</option>
               <option value="solar">{{localize "Ex3.Solar"}}</option>
+              {{/select}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Necromancer"}}</div>
+            <select name="object.character.necromancer" data-type="String">
+              {{#select data.character.necromancer}}
+              <option value="none">{{localize "Ex3.None"}}</option>
               <option value="ivory">{{localize "Ex3.Ivory"}}</option>
               <option value="shadow">{{localize "Ex3.Shadow"}}</option>
               <option value="void">{{localize "Ex3.Void"}}</option>

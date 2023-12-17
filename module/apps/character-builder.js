@@ -342,6 +342,7 @@ export default class CharacterBuilder extends FormApplication {
           },
           intimacies: {},
           sorcerer: 'none',
+          necromancer: 'none',
           ritual: {
             name: '',
           },
@@ -639,24 +640,27 @@ export default class CharacterBuilder extends FormApplication {
         items = items.filter(charm => !charmIds.includes(charm._id));
       }
       if (itemType === 'spell') {
-        if (this.object.character.sorcerer === 'terrestrial') {
-          items = items.filter((spell) => spell.system.circle === 'terrestrial');
-        }
-        if (this.object.character.sorcerer === 'celestial') {
-          items = items.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial');
-        }
-        if (this.object.character.sorcerer === 'solar') {
-          items = items.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial' || spell.system.circle === 'solar');
-        }
-        if (this.object.character.sorcerer === 'ivory') {
-          items = items.filter((spell) => spell.system.circle === 'ivory');
-        }
-        if (this.object.character.sorcerer === 'shadow') {
-          items = items.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow');
-        }
-        if (this.object.character.sorcerer === 'void') {
-          items = items.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow' || spell.system.circle === 'void');
-        }
+        items = items.filter(spell => {
+          if(spell.system.circle === 'terrestrial' && this.object.character.sorcerer !== 'none') {
+            return true;
+          }
+          if(spell.system.circle === 'celestial' && this.object.character.sorcerer !== 'terrestrial' && this.object.character.sorcerer !== 'none') {
+            return true;
+          }
+          if(spell.system.circle === 'solar' && this.object.character.sorcerer === 'solar') {
+            return true;
+          }
+          if(spell.system.circle === 'ivory' && this.object.character.necromancer !== 'none') {
+            return true;
+          }
+          if(spell.system.circle === 'shadow' && this.object.character.necromancer !== 'ivory' && this.object.character.necromancer !== 'none') {
+            return true;
+          }
+          if(spell.system.circle === 'void' && this.object.character.necromancer === 'void') {
+            return true;
+          }
+          return false;
+        });
       }
       const sectionList = {};
       for (var item of items) {
@@ -1547,6 +1551,11 @@ export default class CharacterBuilder extends FormApplication {
         data: actorData,
       });
     }
+    ChatMessage.create({
+      user: game.user.id,
+      content: `${actorData.name} created using the character creator`,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+    });
   }
 
   async getbaseCharacterData(actorData, itemData) {
@@ -1575,6 +1584,9 @@ export default class CharacterBuilder extends FormApplication {
     if (actorData.system.details.exalt === 'mortal') {
       actorData.system.settings.showanima = false;
     }
+
+    actorData.system.settings.sorcerycircle = this.object.character.sorcerer;
+    actorData.system.settings.necromancycircle = this.object.character.necromancer;
 
     for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
       actorData.system.attributes[key].value = attribute.value;
@@ -1938,13 +1950,13 @@ export default class CharacterBuilder extends FormApplication {
     if (this.object.character.sorcerer === 'solar') {
       spells = spells.filter((spell) => spell.system.circle === 'terrestrial' || spell.system.circle === 'celestial' || spell.system.circle === 'solar');
     }
-    if (this.object.character.sorcerer === 'ivory') {
+    if (this.object.character.necromancer === 'ivory') {
       spells = spells.filter((spell) => spell.system.circle === 'ivory');
     }
-    if (this.object.character.sorcerer === 'shadow') {
+    if (this.object.character.necromancer === 'shadow') {
       spells = spells.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow');
     }
-    if (this.object.character.sorcerer === 'void') {
+    if (this.object.character.necromancer === 'void') {
       spells = spells.filter((spell) => spell.system.circle === 'ivory' || spell.system.circle === 'shadow' || spell.system.circle === 'void');
     }
     if (spells) {
@@ -2602,6 +2614,8 @@ export default class CharacterBuilder extends FormApplication {
         "settings": {
           "charmmotepool": "peripheral",
           "martialartsmastery": "standard",
+          "sorcerycircle": "none",
+          "necromancycircle": "none",
           "smaenlightenment": false,
           "showwarstrider": false,
           "showship": false,

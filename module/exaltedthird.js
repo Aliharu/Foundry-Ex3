@@ -324,7 +324,7 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
-    game.templateImporter = new TemplateImporter("charm").render(true);
+    game.templateImporter = new TemplateImporter({}, {}, { type: 'charm'}).render(true);
   })
 });
 

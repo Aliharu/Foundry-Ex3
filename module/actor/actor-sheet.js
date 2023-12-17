@@ -1760,6 +1760,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             martialartsmastery: html.find('#martialArtsMastery').val(),
             sheetbackground: html.find('#sheetBackground').val(),
             exigenttype: html.find('#exigentType').val(),
+            sorcerycircle: html.find('#sorceryCircle').val(),
+            necromancycircle: html.find('#necromancyCircle').val(),
             smaenlightenment: html.find('#smaEnlightenment').is(":checked"),
             showwarstrider: html.find('#showWarstrider').is(":checked"),
             showship: html.find('#showShip').is(":checked"),
@@ -1771,7 +1773,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             showanima: html.find('#showAnima').is(":checked"),
             editmode: html.find('#editMode').is(":checked"),
             hasaura: html.find('#hasAura').is(":checked"),
-            sorcerercircle: html.find('#sorcererCircle').val(),
+            issorcerer: html.find('#isSorcerer').is(":checked"),
             iscrafter: html.find('#isCrafter').is(":checked"),
           }
           if (this.actor.type === 'npc') {

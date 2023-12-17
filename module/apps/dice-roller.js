@@ -42,6 +42,7 @@ export class RollForm extends FormApplication {
             }
             this.object.cost = {
                 motes: 0,
+                penumbra: 0,
                 muteMotes: 0,
                 willpower: 0,
                 initiative: 0,
@@ -847,6 +848,7 @@ export class RollForm extends FormApplication {
             this.object.cost.motes += item.system.cost.motes;
         }
         this.object.cost.anima += item.system.cost.anima;
+        this.object.cost.penumbra += item.system.cost.penumbra;
         this.object.cost.willpower += item.system.cost.willpower;
         this.object.cost.silverxp += item.system.cost.silverxp;
         this.object.cost.goldxp += item.system.cost.goldxp;
@@ -1369,6 +1371,7 @@ export class RollForm extends FormApplication {
                     this.object.cost.motes -= item.system.cost.motes;
                 }
                 this.object.cost.anima -= item.system.cost.anima;
+                this.object.cost.penumbra -= item.system.cost.penumbra;
                 this.object.cost.willpower -= item.system.cost.willpower;
                 this.object.cost.silverxp -= item.system.cost.silverxp;
                 this.object.cost.goldxp -= item.system.cost.goldxp;
@@ -3405,10 +3408,10 @@ export class RollForm extends FormApplication {
                         return `${abilityValue} or ${Math.min(10, abilityValue + this.actor.system.essence.value)} when upholding ideal`;
                     }
                     if (this.actor.system.details.exalt === "umbral") {
-                        return `${Math.min(10, abilityValue + this.actor.system.details.penumbra.value)}`;
+                        return `${Math.min(10, abilityValue + this.actor.system.penumbra.value)}`;
                     }
                     if (this.actor.system.details.exalt === "hearteater") {
-                        return `${abilityValue + 1} + Intimacy`;
+                        return `${this.actor.system.attributes[this.object.attribute].value + 1} + Intimacy`;
                     }
                     if (this.actor.system.details.exalt === "liminal") {
                         if (this.actor.system.anima.value >= 1) {
@@ -3935,6 +3938,7 @@ export class RollForm extends FormApplication {
                 spentPeripheral = totalMotes;
             }
         }
+        actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
         actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
         actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
 

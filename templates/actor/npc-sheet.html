@@ -81,6 +81,7 @@
                         <option value="lunar">{{localize "Ex3.Lunar"}}</option>
                         <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
                         <option value="solar">{{localize "Ex3.Solar"}}</option>
+                        <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
                         <option value="umbral">{{localize "Ex3.Umbral"}}</option>
                         <option value="other">{{localize "Ex3.Other"}}</option>
                         {{/select}}
@@ -204,8 +205,8 @@
                 {{#ifEquals system.details.exalt 'umbral'}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-                    <input type="number" name="system.details.penumbra.value"
-                        value="{{system.details.penumbra.value}}" />
+                    <input type="number" name="system.penumbra.value"
+                        value="{{system.penumbra.value}}" />
                 </div>
                 {{/ifEquals}}
                 {{#ifEquals actor.type 'npc'}}

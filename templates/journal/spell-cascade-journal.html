@@ -1,0 +1,13 @@
+<div class="card-wrapper">
+    <div class="charm-card">
+        <div class="charm-card-content-wrapper">
+            <div class="charm-content">
+                <div class="charm-name"><h4>@UUID[{{spell.uuid}}]</h4></div>
+                <div class="charm-prerequisites">
+                    <b>{{localize "Ex3.Circle" }}:</b> <span style="text-transform:capitalize">{{spell.system.circle}}</span>
+                </div>
+                <div class="charm-description">{{#ifEquals descriptionText 'summary'}}{{spell.system.summary}}{{else}}{{{spell.system.description}}}{{/ifEquals}}</div>
+            </div>
+        </div>
+    </div>
+</div>

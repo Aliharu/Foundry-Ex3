@@ -920,7 +920,7 @@ export class ExaltedThirdActor extends Actor {
           value = Math.floor(abilityValue / 2);
           return `(+${value} for ${value * 2}m)`;
         case 'umbral':
-          value = Math.floor(Math.min(10, abilityValue + actorData.system.details.penumbra.value) / 2);
+          value = Math.floor(Math.min(10, abilityValue + actorData.system.penumbra.value) / 2);
           return `(+${value} for ${value * 2}m)`
         default:
           return ''

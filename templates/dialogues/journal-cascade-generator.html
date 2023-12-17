@@ -52,6 +52,10 @@
         {{/select}}
       </select>
     </div>
+    <div class="check-button">
+      <label class="resource-label">{{localize "Ex3.ShowSpells"}}: </label>
+      <input data-dtype="Boolean" name="object.includeSpells" type="checkbox" {{checked data.includeSpells}}>
+    </div>
     <ul>
       {{#ifEquals data.type 'character'}}
         <li>Makes cards for all charms of the characters exalt type that they meet the ability/essence prerequisites for.</li>
