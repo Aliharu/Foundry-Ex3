@@ -6,6 +6,7 @@ export default class TemplateImporter extends FormApplication {
     this.spellCircle = 'terrestrial';
     this.itemType = 'armor';
     this.folder = '';
+    this.folders = [];
     this.errorText = '';
     this.errorSection = '';
     this.showError = false;
@@ -18,7 +19,7 @@ export default class TemplateImporter extends FormApplication {
     options.id = "ex3-template-importer";
     options.template = "systems/exaltedthird/templates/dialogues/template-importer.html"
     options.resizable = true;
-    options.height = 915;
+    options.height = 940;
     options.width = 860;
     options.minimizable = true;
     options.title = "Template Importer"
@@ -58,6 +59,16 @@ export default class TemplateImporter extends FormApplication {
     data.showError = this.showError;
     data.error = this.error;
     data.errorSection = this.errorSection;
+    let collection;
+    if(this.type === 'qc' || this.type === 'adversary') {
+      // collection = game.folders.filter(folder => folder.type === 'Actor');
+      collection = game.collections.get("Actor");
+    }
+    else {
+      // this.folders = game.folders.filter(folder => folder.type === 'Item');
+      collection = game.collections.get("Item");
+    }
+    data.folders = collection?._formatFolderSelectOptions() ?? [];
     if (this.type === 'charm') {
       data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
     }
@@ -79,18 +90,7 @@ export default class TemplateImporter extends FormApplication {
   async createCharm(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     var charmType = html.find('#charmType').val();
-    var folderName = html.find('#folder').val();
-    var folder = null;
-
-    if(folderName) {
-      folder = game.folders.find(folder => {
-        return folder.name === folderName && folder.type === 'Item';
-      });
-  
-      if(!folder) {
-        folder = await Folder.create({ name: folderName, type: 'Item' });
-      }
-    }
+    var folder = await this._getFolder(html);
 
     var index = 0;
     const charmsList = [];
@@ -257,6 +257,10 @@ export default class TemplateImporter extends FormApplication {
         var num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.anima = parseInt(num);
       }
+      if (costString.includes('Penumbra')) {
+        var num = costString.replace(/[^0-9]/g, '');
+        charmData.system.cost.penumbra = parseInt(num);
+      }
       if (costString.includes('wp')) {
         var num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.willpower = parseInt(num);
@@ -335,18 +339,7 @@ export default class TemplateImporter extends FormApplication {
     var spellCircle = html.find('#spellCircle').val();
 
     var index = 0;
-    var folderName = html.find('#folder').val();
-    var folder = null;
-
-    if(folderName) {
-      folder = game.folders.find(folder => {
-        return folder.name === folderName && folder.type === 'Item';
-      });
-  
-      if(!folder) {
-        folder = await Folder.create({ name: folderName, type: 'Item' });
-      }
-    }
+    var folder = await this._getFolder(html);
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var spellData = {
         type: 'spell',
@@ -399,18 +392,7 @@ export default class TemplateImporter extends FormApplication {
     var itemType = html.find('#itemType').val();
     var index = 0;
 
-    var folderName = html.find('#folder').val();
-    var folder = null;
-
-    if(folderName) {
-      folder = game.folders.find(folder => {
-        return folder.name === folderName && folder.type === 'Item';
-      });
-  
-      if(!folder) {
-        folder = await Folder.create({ name: folderName, type: 'Item' });
-      }
-    }
+    var folder = await this._getFolder(html);
     const weaponTags = CONFIG.exaltedthird.weapontags;
     const armorTags = CONFIG.exaltedthird.armortags;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
@@ -430,7 +412,6 @@ export default class TemplateImporter extends FormApplication {
           for(let tag of tagSplit) {
             if(tag.includes('(')) {
               var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim();
-              console.log(rangeTag);
               if(weaponTags[rangeTag] && itemType === 'weapon') {
                 itemTags.push(rangeTag);
               }
@@ -476,6 +457,35 @@ export default class TemplateImporter extends FormApplication {
       await Item.create(itemData);
       index++;
     }
+  }
+
+  async _getFolder(html) {
+    // var folderId = html.find('#folder').val();
+    // var folder = null;
+
+    // if(folderId) {
+    //   folder = game.folders.get(folderId);
+    // }
+
+    var folderName = html.find('#folder').val();
+    var folder = null;
+
+    var folderType = 'Item';
+
+    if(this.type === 'qc' || this.type === 'character') {
+      folderType = "Actor";
+    }
+
+    if(folderName) {
+      folder = game.folders.find(folder => {
+        return folder.name === folderName && folder.type === folderType;
+      });
+  
+      if(!folder) {
+        folder = await Folder.create({ name: folderName, type: folderType });
+      }
+    }
+    return folder;
   }
 
   _getStatBlock(adversary = false) {
@@ -966,6 +976,7 @@ export default class TemplateImporter extends FormApplication {
 
   async createQuickCharacter(html) {
     var actorData = this._getStatBlock(false);
+    var folder = await this._getFolder(html);
     const itemData = [
     ];
     let index = 1;
@@ -1288,6 +1299,9 @@ export default class TemplateImporter extends FormApplication {
       index++;
       itemData.push(...this._getItemData(textArray, index, actorData));
       actorData.items = itemData;
+      if(folder) {
+        actorData.folder = folder;
+      }
       await Actor.create(actorData);
     }
     catch (error) {
@@ -1564,6 +1578,10 @@ export default class TemplateImporter extends FormApplication {
                   var num = costString.replace(/[^0-9]/g, '');
                   charmSystemData.cost.anima = parseInt(num);
                 }
+                if (costString.includes('Penumbra')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.penumbra = parseInt(num);
+                }
                 if (costString.includes('wp')) {
                   var num = costString.replace(/[^0-9]/g, '');
                   charmSystemData.cost.willpower = parseInt(num);
@@ -1696,6 +1714,7 @@ export default class TemplateImporter extends FormApplication {
               "healthtype": "bashing",
               "silverxp": 0,
               "goldxp": 0,
+              "penumbra": 0,
               "whitexp": 0
             }
           };
@@ -1720,6 +1739,7 @@ export default class TemplateImporter extends FormApplication {
 
   async createAdversary(html) {
     var actorData = this._getStatBlock(true);
+    var folder = await this._getFolder(html);
     const itemData = [
     ];
     let index = 1;
@@ -2130,6 +2150,9 @@ export default class TemplateImporter extends FormApplication {
       itemData.push(...this._getItemData(textArray, index, actorData));
       readingItems = false;
       actorData.items = itemData;
+      if(folder) {
+        actorData.folder = folder;
+      }
       await Actor.create(actorData);
     }
     catch (error) {

@@ -64,8 +64,6 @@
           <option value="other">{{localize "Ex3.Other"}}</option>
           {{/select}}
       </select>
-      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
-      <input id="folder" style="width:200px;" type="text" name="folder" value="{{folder}}" />
     </div>
     {{/ifEquals}}
 
@@ -82,8 +80,6 @@
           <option value="void">{{localize "Ex3.Void"}}</option>
           {{/select}}
       </select>
-      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
-      <input id="folder" style="width:200px;" type="text" name="folder" value="{{folder}}" />
     </div>
     {{/ifEquals}}
 
@@ -99,10 +95,18 @@
           <option value="weapon">{{localize "Ex3.Weapon"}}</option>
           {{/select}}
       </select>
-      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
-      <input id="folder" style="width:200px;" type="text" name="folder" value="{{folder}}" />
     </div>
     {{/ifEquals}}
+    <div>
+      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
+      <input id="folder" style="width:200px;" type="text" name="folder" value="{{folder}}" />
+      <!-- <select id="folder" name="folder" value="{{folder}}" data-type="String">
+        <option value=""></option>
+        {{#each folders as |folder|}}
+        <option value="{{folder.id}}">{{ folder.name }}</option>
+        {{/each}}
+      </select> -->
+    </div>
 
     <label class="resource-label">{{ localize "Ex3.Template"}}</label>
     <textarea name="textBox" type="text" id="template-text" rows="40" placeholder='{{templateHint}}'>{{textBox}}</textarea>
