@@ -594,6 +594,7 @@
     "Ex3.DefaultRollStunts": "Default tier one stunt bonus on rolls",
     "Ex3.DefaultDefenseStunt": "Default +1 stunt bonus on static defenses",
     "Ex3.EditMode": "Enable character creation mode and auto set buttons",
+    "Ex3.IsSorcerer": "Is Sorcerer",
     "Ex3.SorcererCircle": "Sorcerer Level",
     "Ex3.IsCrafter": "Show craft fields",
     "Ex3.UseDotValues": "Use dot values",

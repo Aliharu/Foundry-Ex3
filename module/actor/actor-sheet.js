@@ -1459,6 +1459,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       templateData.zero = this.actor.system.health.levels.zero.value;
       templateData.one = this.actor.system.health.levels.one.value;
       templateData.two = this.actor.system.health.levels.two.value;
+      templateData.three = this.actor.system.health.levels.three.value;
       templateData.four = this.actor.system.health.levels.four.value;
       templateData.penaltyMod = this.actor.system.health.penaltymod;
       if (this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['janest', 'strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
@@ -1508,6 +1509,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             aggravated: 0,
           }
           if (healthType === 'person') {
+            let three = parseInt(html.find('#three').val()) || 0;
+            healthData.levels.three = {
+              value: three,
+            }
             this.actor.update({ [`system.health`]: healthData });
           }
           else {

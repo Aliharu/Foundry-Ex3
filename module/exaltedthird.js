@@ -147,7 +147,10 @@ Hooks.once('init', async function () {
     else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value) {
       return '2'
     }
-    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.four.value) {
+    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.three.value) {
+      return '3'
+    }
+    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.three.value + healthLevels.four.value) {
       return '4'
     }
     return 'i'

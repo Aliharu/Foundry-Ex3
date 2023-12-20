@@ -20,6 +20,10 @@
               "value": 2,
               "penalty": 2
             },
+            "three": {
+              "value": 0,
+              "penalty": 3
+            },
             "four": {
               "value": 1,
               "penalty": 4

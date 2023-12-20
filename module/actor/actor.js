@@ -28,7 +28,7 @@ export class ExaltedThirdActor extends Actor {
       updateData.system.health = {
         "levels": {
           "zero": {
-            "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.four.value + 1,
+            "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.three.value + this.system.health.levels.four.value + 1,
           }
         }
       };
