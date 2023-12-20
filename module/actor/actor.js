@@ -807,6 +807,9 @@ export class ExaltedThirdActor extends Actor {
     actorCharms = actorCharms.sort(function (a, b) {
       const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
       const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+      if(sortValueA === sortValueB) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      }
       return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
     });
 

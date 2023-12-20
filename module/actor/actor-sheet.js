@@ -431,6 +431,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorCharms = actorCharms.sort(function (a, b) {
       const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
       const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+      if(sortValueA === sortValueB) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      }
       return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
     });
 
@@ -2140,13 +2143,22 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 * @param {boolean} createMessage   Whether to automatically create a ChatMessage entity (if true), or only return
 *                                  the prepared message data (if false)
 */
-  async _displayCard(item) {
+  async _displayCard(item, cardType="") {
     const token = this.actor.token;
+    if(cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
+      if(item.system.active) {
+        cardType = "Deactivate";
+      }
+      else {
+        cardType = "Activate";
+      }
+    }
     const templateData = {
       actor: this.actor,
       tokenId: token?.uuid || null,
       item: item,
       labels: this.labels,
+      cardType: cardType,
     };
     const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
 
@@ -2186,7 +2198,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let item = this.actor.items.get(li.data("item-id"));
     spendEmbeddedItem(this.actor, item);
     if (game.settings.get("exaltedthird", "spendChatCards")) {
-      this._displayCard(item);
+      this._displayCard(item, "Spent");
     }
   }
 
