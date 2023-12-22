@@ -523,6 +523,7 @@
           {{#each data.character.merits as |merit index|}}
           <div>
             <input name="object.character.merits.{{index}}.name" type="text" value="{{merit.name}}" />
+            {{#if merit.system.description}}
             <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
               <li class="flexrow item-header">
                 <div class="item-name">{{localize "Ex3.Description"}}</div>
@@ -534,6 +535,7 @@
             <div style="display:none;text-align:start;">
               {{{merit.enritchedHTML}}}
             </div>
+            {{/if}}
           </div>
           <input name="object.character.merits.{{index}}.system.points" type="number" value="{{merit.system.points}}" />
           <a class="item-control delete-item" title="Delete" data-type="merits" data-index="{{index}}"><i
