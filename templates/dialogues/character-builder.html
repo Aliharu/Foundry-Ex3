@@ -163,11 +163,19 @@
             <td>{{data.creationData.spent.excellencies}}</td>
           </tr>
           {{/if}}
+          {{#if data.unifiedCharacterCreation}}
           <tr>
             <td>{{localize "Ex3.BonusPoints"}}</td>
-            <td>{{data.creationData.available.bonusPoints}}</td>
-            <td>{{data.creationData.spent.bonusPoints.total}}</td>
+            <td>{{data.creationData.available.experience}}</td>
+            <td>{{data.creationData.spent.experience.total}}</td>
           </tr>
+            {{else}}
+            <tr>
+              <td>{{localize "Ex3.BonusPoints"}}</td>
+              <td>{{data.creationData.available.bonusPoints}}</td>
+              <td>{{data.creationData.spent.bonusPoints.total}}</td>
+            </tr>
+          {{/if}}
         </table>
         {{#if data.unifiedCharacterCreation}}
         <div class="resource-content flexrow flex-center flex-between mt-2">
@@ -832,7 +840,7 @@
           {{/each}}
         </div>
         <div>
-          {{data.creationData.spent.intimacies}}/{{data.creationData.available.intimacies}} (Must
+          {{data.creationData.spent.intimacies}} (Must
           have 1 defining, 1
           major, 1 minor, 1 negative tie)
         </div>

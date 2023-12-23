@@ -328,6 +328,12 @@
             <td>Attribute</td>
             <td>(new rating) months</td>
         </tr>
+        {{#ifEquals exalt 'lunar'}}
+        <tr style="text-align:center;">
+            <td>Caste/Favored Attribute</td>
+            <td>(new rating + 1) weeks</td>
+        </tr>
+        {{/ifEquals}}
         <tr style="text-align:center;">
             <td>Non-Caste/Favored Ability</td>
             <td>(new rating) weeks</td>
@@ -338,7 +344,7 @@
         </tr>
         <tr style="text-align:center;">
             <td>Specialty</td>
-            <td>two weeks</td>
+            <td>Two weeks</td>
         </tr>
         <tr style="text-align:center;">
             <td>Purchased Merit</td>
@@ -346,16 +352,22 @@
         </tr>
         <tr style="text-align:center;">
             <td>Willpower</td>
-            <td>one month</td>
+            <td>One month</td>
         </tr>
         <tr style="text-align:center;">
             <td>Favored Charm</td>
-            <td>(Ability minimum) days</td>
+            <td>(Ability (Attribute for attribute exalts) minimum) days</td>
         </tr>
         <tr style="text-align:center;">
             <td>Non-Favored Charm</td>
-            <td>(Ability + Essence minimum) days</td>
+            <td>(Ability (Attribute for attribute exalts) + Essence minimum) days</td>
         </tr>
+        {{#ifEquals exalt 'lunar'}}
+        <tr style="text-align:center;">
+            <td>Martial Arts Charm</td>
+            <td>(Martial Arts + Essence minimum) days</td>
+        </tr>
+        {{/ifEquals}}
         <tr style="text-align:center;">
             <td>Spells</td>
             <td>Two weeks per Circle</td>
@@ -364,5 +376,11 @@
             <td>Evocation</td>
             <td>(Essence minimum x 4) days</td>
         </tr>
+        {{#ifEquals exalt 'lunar'}}
+        <tr style="text-align:center;">
+            <td>Animal Latent Ability</td>
+            <td>One week</td>
+        </tr>
+        {{/ifEquals}}
     </table>
 </div>

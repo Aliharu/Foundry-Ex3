@@ -1065,6 +1065,7 @@ export default class CharacterBuilder extends FormApplication {
       merits: 10,
       intimacies: 4,
       willpower: 5,
+      experience: 55,
     }
     if (ev?.target?.name === 'object.character.caste') {
       for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
@@ -1327,7 +1328,6 @@ export default class CharacterBuilder extends FormApplication {
 
     var totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - this.object.creationData.available.charms));
     var totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, this.object.creationData.available.charms - nonFavoredCharms)));
-
 
     this.object.creationData.spent.intimacies = Object.entries(this.object.character.intimacies).length;
 

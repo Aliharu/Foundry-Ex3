@@ -780,7 +780,7 @@ Hooks.on("renderChatLog", (app, html, data) => {
 //Martialart, craft, and initiation are deprecated but i don't want to delete them because it will break characters
 Hooks.on("renderDialog", (dialog, html) => {
   Array.from(html.find("#document-create option")).forEach(i => {
-    if (i.value == "martialrt" || i.value == "craft" || i.value == "initiation") {
+    if (i.value == "martialart" || i.value == "craft" || i.value == "initiation") {
       i.remove()
     }
   });
