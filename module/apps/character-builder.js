@@ -20,6 +20,7 @@ export default class CharacterBuilder extends FormApplication {
           },
           abilities: 0,
           favoredAttributes: 2,
+          casteAbilities: 5,
           favoredAbilities: 5,
           specialties: 0,
           merits: 0,
@@ -37,6 +38,7 @@ export default class CharacterBuilder extends FormApplication {
           abilities: 0,
           abovethree: 0,
           favoredAttributes: 0,
+          casteAbilities: 0,
           favoredAbilities: 0,
           specialties: 0,
           merits: 0,
@@ -1059,6 +1061,7 @@ export default class CharacterBuilder extends FormApplication {
       abilities: 28,
       favoredAttributes: 0,
       favoredAbilities: 5,
+      casteAbilities: 0,
       bonusPoints: 15,
       charms: 15,
       specialties: 4,
@@ -1067,21 +1070,30 @@ export default class CharacterBuilder extends FormApplication {
       willpower: 5,
       experience: 55,
     }
+    if(this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal') {
+      this.object.creationData.available.casteAbilities = 5;
+    }
     if (ev?.target?.name === 'object.character.caste') {
       for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
         if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
           attribute.favored = true;
+          attribute.caste = true;
         }
         else {
           attribute.favored = false;
+          attribute.caste = false;
         }
       }
       for (let [key, ability] of Object.entries(this.object.character.abilities)) {
         if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
-          ability.favored = true;
+          if(this.object.character.exalt !== 'solar' && this.object.character.exalt !== 'abyssal') {
+            ability.favored = true;
+          }
+          ability.caste = true;
         }
         else {
           ability.favored = false;
+          ability.caste = false;
         }
       }
     }
@@ -1164,6 +1176,7 @@ export default class CharacterBuilder extends FormApplication {
       abilitiesAboveThree: 0,
       favoredAttributes: 0,
       favoredAbilities: 0,
+      casteAbilities: 0,
       specialties: 0,
       merits: 0,
       charms: 0,
@@ -1255,6 +1268,9 @@ export default class CharacterBuilder extends FormApplication {
 
       if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
         this.object.creationData.spent.favoredAbilities++;
+      }
+      else if(casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
+        this.object.creationData.spent.casteAbilities++;
       }
     }
     for (let craft of Object.values(this.object.character.crafts)) {

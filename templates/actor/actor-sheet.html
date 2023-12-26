@@ -182,7 +182,7 @@
             <input class="attribute-checkbox" name="system.attributes.{{key}}.favored" type="checkbox" {{checked
               attribute.favored}}>
             <label for="system.attributes.{{key}}.value" class="resource-label" data-roll="{{attribute.value}}"
-              data-label="{{attribute.name}}" style="text-align:start;">{{localize attribute.name}}</label>
+              data-label="{{attribute.name}}" style="text-align:start;">{{localize attribute.name}}{{#if ../system.settings.editmode}}{{#if attribute.caste}}*{{/if}}{{/if}}</label>
             {{#if ../system.settings.usedotsvalues}}
             <div class="resource-value" data-value="{{attribute.value}}" data-name="system.attributes.{{key}}.value">
               {{#numLoop 5}}
@@ -231,7 +231,7 @@
             <label for="system.abilities.{{key}}.value" class="resource-label vrollable roll-ability"
               data-roll="{{ability.value}}" data-ability="{{key}}" data-label="{{ability.name}}"
               style="text-align:start;">{{localize
-              ability.name}}</label>
+              ability.name}}{{#if ../system.settings.editmode}}{{#if ability.caste}}*{{/if}}{{/if}}</label>
             {{#if ../system.settings.usedotsvalues}}
             <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
               {{#numLoop 5}}

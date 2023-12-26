@@ -99,11 +99,19 @@ export class ExaltedThirdActor extends Actor {
       for (let [key, attribute] of Object.entries(this.system.attributes)) {
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           attributes[key].favored = true;
+          attributes[key].caste = true;
+        }
+        else {
+          attributes[key].caste = false;
         }
       }
       for (let [key, ability] of Object.entries(this.system.abilities)) {
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           abilities[key].favored = true;
+          abilities[key].caste = true;
+        }
+        else {
+          abilities[key].caste = false;
         }
       }
       updateData.system.attributes = attributes;

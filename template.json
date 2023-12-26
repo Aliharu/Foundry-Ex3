@@ -426,6 +426,7 @@
       "attributes": {
         "strength": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Strength",
@@ -433,6 +434,7 @@
         },
         "charisma": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Charisma",
@@ -440,6 +442,7 @@
         },
         "perception": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Perception",
@@ -454,6 +457,7 @@
         },
         "manipulation": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Manipulation",
@@ -461,6 +465,7 @@
         },
         "intelligence": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Intelligence",
@@ -468,6 +473,7 @@
         },
         "stamina": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Stamina",
@@ -475,6 +481,7 @@
         },
         "appearance": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Appearance",
@@ -482,6 +489,7 @@
         },
         "wits": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 1,
           "name": "Ex3.Wits",
@@ -491,6 +499,7 @@
       "abilities": {
         "archery": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Archery",
@@ -498,6 +507,7 @@
         },
         "athletics": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Athletics",
@@ -505,6 +515,7 @@
         },
         "awareness": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Awareness",
@@ -512,6 +523,7 @@
         },
         "brawl": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Brawl",
@@ -519,6 +531,7 @@
         },
         "bureaucracy": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Bureaucracy",
@@ -526,6 +539,7 @@
         },
         "craft": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Craft",
@@ -533,6 +547,7 @@
         },
         "dodge": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Dodge",
@@ -540,6 +555,7 @@
         },
         "integrity": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Integrity",
@@ -547,6 +563,7 @@
         },
         "investigation": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Investigation",
@@ -554,6 +571,7 @@
         },
         "larceny": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Larceny",
@@ -561,6 +579,7 @@
         },
         "linguistics": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Linguistics",
@@ -568,6 +587,7 @@
         },
         "lore": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Lore",
@@ -575,6 +595,7 @@
         },
         "martialarts": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.MartialArts",
@@ -582,6 +603,7 @@
         },
         "medicine": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Medicine",
@@ -589,6 +611,7 @@
         },
         "melee": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Melee",
@@ -596,6 +619,7 @@
         },
         "occult": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Occult",
@@ -603,6 +627,7 @@
         },
         "performance": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Performance",
@@ -610,6 +635,7 @@
         },
         "presence": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Presence",
@@ -617,6 +643,7 @@
         },
         "resistance": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Resistance",
@@ -624,6 +651,7 @@
         },
         "ride": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Ride",
@@ -631,6 +659,7 @@
         },
         "sail": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Sail",
@@ -638,6 +667,7 @@
         },
         "socialize": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Socialize",
@@ -645,6 +675,7 @@
         },
         "stealth": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Stealth",
@@ -652,6 +683,7 @@
         },
         "survival": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Survival",
@@ -659,6 +691,7 @@
         },
         "thrown": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.Thrown",
@@ -666,6 +699,7 @@
         },
         "war": {
           "favored": false,
+          "caste": false,
           "excellency": false,
           "value": 0,
           "name": "Ex3.War",
@@ -1005,6 +1039,7 @@
           "tens": 0
         },
         "excludeonesfromrerolls": false,
+        "ignorelegendarysize": false,
         "damage": {
           "bonusdice": 0,
           "bonussuccesses": 0,

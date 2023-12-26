@@ -176,6 +176,7 @@ export class RollForm extends FormApplication {
                 triggerOnesCap: 0,
                 triggerOnTens: 'none',
                 triggerTensCap: 0,
+                ignoreLegendarySize: false,
                 damage: {
                     doubleSucccessCaps: {
                         sevens: 0,
@@ -193,7 +194,7 @@ export class RollForm extends FormApplication {
             this.object.craft = {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
-            }
+            };
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -634,6 +635,7 @@ export class RollForm extends FormApplication {
 
                                 this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
 
+                                this.object.settings.ignoreLegendarySize = html.find('#ignoreLegendarySize').is(":checked");
                                 this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
                                 this.object.settings.damage.doubleSucccessCaps.nines = parseInt(html.find('#damageNinesCap').val() || 0);
@@ -924,6 +926,9 @@ export class RollForm extends FormApplication {
             if (value) {
                 this.object.settings.doubleSucccessCaps[key] += this._getFormulaValue(value);
             }
+        }
+        if (item.system.diceroller.ignorelegendarysize) {
+            this.object.settings.ignoreLegendarySize = item.system.diceroller.ignorelegendarysize;
         }
         if (item.system.diceroller.excludeonesfromrerolls) {
             this.object.settings.excludeOnesFromRerolls = item.system.diceroller.excludeonesfromrerolls;
@@ -1445,6 +1450,9 @@ export class RollForm extends FormApplication {
                     if (value) {
                         this.object.settings.doubleSucccessCaps[key] -= this._getFormulaValue(value);
                     }
+                }
+                if (item.system.diceroller.ignorelegendarysize) {
+                    this.object.settings.ignoreLegendarySize = false;
                 }
                 if (item.system.diceroller.excludeonesfromrerolls) {
                     this.object.settings.excludeOnesFromRerolls = false;
@@ -3324,6 +3332,9 @@ export class RollForm extends FormApplication {
     }
 
     _useLegendarySize(effectType) {
+        if(this.object.settings.ignoreLegendarySize) {
+            return false;
+        }
         if (this.object.target) {
             if (effectType === 'onslaught') {
                 return (this.object.target.actor.system.legendarysize && this.object.target.actor.system.warstrider.equipped) && !this.object.isMagic && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
@@ -3838,6 +3849,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.settings.triggerOnTens === undefined) {
             this.object.settings.triggerOnTens = 'none';
+        }
+        if (this.object.settings.ignoreLegendarySize === undefined) {
+            this.object.settings.ignoreLegendarySize = false;
         }
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
