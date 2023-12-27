@@ -155,7 +155,7 @@
         },
         "dontresetonslaught": false,
         "savedRolls": {},
-        "legendarysize": false,
+        "sizecategory": "standard",
         "traits": {
           "languages": {
             "value": [],

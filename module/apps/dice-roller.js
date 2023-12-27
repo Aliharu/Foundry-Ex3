@@ -549,6 +549,16 @@ export class RollForm extends FormApplication {
                 }
                 effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
             }
+            if(target.actor.system.sizecategory === 'tiny') {
+                if(this.actor.system.sizecategory !== 'tiny' && this.actor.system.sizecategory !== 'minuscule') {
+                    effectiveEvasion += 2;
+                }
+            }
+            if(target.actor.system.sizecategory === 'minuscule') {
+                if(this.actor.system.sizecategory !== 'minuscule') {
+                    effectiveEvasion += 3;
+                }
+            }
             if (this.object.targetStat === 'resolve') {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
                 target.rollData.defense = effectiveResolve;
@@ -575,7 +585,7 @@ export class RollForm extends FormApplication {
             }
 
             if (this.object.weaponTags["bombard"]) {
-                if (!target.actor.system.battlegroup && !target.actor.system.legendarysize && !target.actor.system.warstrider.equipped) {
+                if (!target.actor.system.battlegroup && target.actor.system.sizecategory !== 'legendary' && !target.actor.system.warstrider.equipped) {
                     target.rollData.diceModifier -= 4;
                 }
             }
@@ -2998,7 +3008,7 @@ export class RollForm extends FormApplication {
     }
 
     _addOnslaught(number = 1, magicInflicted = false) {
-        if (!this.object.target?.actor?.system?.legendarysize && !magicInflicted) {
+        if ((this.object.target?.actor?.system?.sizecategory || 'standard') !== 'legendary' && !magicInflicted) {
             this.object.updateTargetActorData = true;
             const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
             if (onslaught) {
@@ -3337,13 +3347,13 @@ export class RollForm extends FormApplication {
         }
         if (this.object.target) {
             if (effectType === 'onslaught') {
-                return (this.object.target.actor.system.legendarysize && this.object.target.actor.system.warstrider.equipped) && !this.object.isMagic && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
+                return (this.object.target.actor.system.sizecategory === 'legendary' && this.object.target.actor.system.warstrider.equipped) && !this.object.isMagic && this.actor.system.sizecategory !== 'legendary' && !this.actor.system.warstrider.equipped;
             }
             if (effectType === 'withering') {
-                return (this.object.target.actor.system.legendarysize || this.object.target.actor.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
+                return (this.object.target.actor.system.sizecategory === 'legendary' || this.object.target.actor.system.warstrider.equipped) && this.actor.system.sizecategory !== 'legendary' && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
             }
             if (effectType === 'decisive') {
-                return (this.object.target.actor.system.legendarysize || this.object.target.actor.system.warstrider.equipped) && !this.actor.system.legendarysize && !this.actor.system.warstrider.equipped;
+                return (this.object.target.actor.system.sizecategory === 'legendary' || this.object.target.actor.system.warstrider.equipped) && this.actor.system.sizecategory !== 'legendary' && !this.actor.system.warstrider.equipped;
             }
         }
         return false;

@@ -70,6 +70,7 @@ export default class NPCGenerator extends FormApplication {
         }
       },
       sorcerer: 'none',
+      sizeCategory: 'standard',
       battlegroup: false,
       battlegroupStats: {
         size: 1,
@@ -84,7 +85,6 @@ export default class NPCGenerator extends FormApplication {
       traits: {
         commander: { label: 'Ex3.Commander', value: false },
         godOrDemon: { label: 'Ex3.God/Demon', value: false },
-        legendarySize: { label: 'Ex3.LegendarySize', value: false },
         poisoner: { label: 'Ex3.Poisoner', value: false },
         martialArtist: { label: 'Ex3.MartialArtist', value: false },
         motePool: { label: 'Ex3.MotePool', value: false },
@@ -441,7 +441,7 @@ export default class NPCGenerator extends FormApplication {
 
     actorData.system.willpower.max = willpowerMap[this.object.character.skills.willpower.value];
     actorData.system.willpower.value = willpowerMap[this.object.character.skills.willpower.value];
-    actorData.system.legendarysize = this.object.character.traits.legendarySize.value;
+    actorData.system.sizecategory = this.object.character.sizeCategory;
 
     actorData.system.appearance.value = 2;
     if (this.object.character.traits.strikingAppearance.value) {

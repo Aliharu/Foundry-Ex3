@@ -70,7 +70,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       async: true
     });
     context.attributeList = CONFIG.exaltedthird.attributes;
-    context.abilityList = CONFIG.exaltedthird.abilities;
+    context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
     context.showVirtues = game.settings.get("exaltedthird", "virtues");
@@ -90,6 +90,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this._prepareCharacterItems(context);
     if (context.actor.type === 'character') {
       this._prepareCharacterData(context);
+      
     }
     if (context.actor.type === 'npc') {
       this._prepareNPCData(context);
@@ -109,10 +110,25 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   _prepareCharacterData(sheetData) {
     const actorData = sheetData.actor;
+
     var pointsAvailableMap = {
       primary: 8,
       secondary: 6,
       tertiary: 4,
+    }
+    var attributesSpent = {
+      physical: {
+        favored: 0,
+        unFavored: 0,
+      },
+      mental: {
+        favored: 0,
+        unFavored: 0,
+      },
+      social: {
+        favored: 0,
+        unFavored: 0,
+      }
     }
     if (sheetData.system.details.exalt === 'lunar') {
       pointsAvailableMap = {
@@ -174,6 +190,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         willpower: 5,
       }
       if (sheetData.system.essence.value === 1) {
+        sheetData.system.charcreation.available.specialties = 3;
         sheetData.system.charcreation.available.charms = 15;
         sheetData.system.charcreation.available.merits = 10;
         sheetData.system.charcreation.available.bonuspoints = 15;
@@ -218,69 +235,115 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       abovethree: 0,
       intimacies: 0,
     }
-    for (let attr of Object.values(sheetData.system.attributes)) {
+    for (let [key, attr] of Object.entries(sheetData.system.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
       sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
-    }
-    for (let name of Object.keys(sheetData.system.charcreation.spent.attributes)) {
-      if (sheetData.system.charcreation[name] === 'tertiary' || sheetData.system.details.exalt === 'lunar') {
-        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 3);
-      }
-      else {
-        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 4);
-      }
-      sheetData.system.charcreation.spent.experience += (Math.max(0, sheetData.system.charcreation.spent.attributes[name] - sheetData.system.charcreation.available.attributes[name]) * 10);
-    }
-    var threeOrBelow = 0;
-    for (let attr of Object.values(sheetData.system.abilities)) {
-      attr.isCheckbox = attr.dtype === "Boolean";
-      sheetData.system.charcreation.spent.abovethree += Math.max(0, (attr.value - 3));
       if (attr.favored) {
-        sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (attr.value - 3));
-        sheetData.system.charcreation.spent.experience += (Math.max(0, (attr.value - 3))) * 4;
+        attributesSpent[attr.type].favored += (attr.value - 1);
       }
       else {
-        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (attr.value - 3))) * 2;
-        sheetData.system.charcreation.spent.experience += (Math.max(0, (attr.value - 3))) * 5;
+        attributesSpent[attr.type].unFavored += (attr.value - 1);
       }
-      threeOrBelow += Math.min(3, attr.value);
+    }
+    var favoredCharms = 0;
+    var nonFavoredCharms = 0;
+    var favoredAttributesSpent = 0;
+    var unFavoredAttributesSpent = 0;
+    var tertiaryAttributes = 0;
+    var nonTertiaryAttributes = 0;
+    var threeOrBelowFavored = 0;
+    var threeOrBelowNonFavored = 0;
+    var aboveThreeFavored = 0;
+    var aboveThreeUnFavored = 0;
+
+    for (let [key, attribute] of Object.entries(sheetData.system.charcreation.spent.attributes)) {
+      if (sheetData.system.charcreation[key] === 'tertiary') {
+        tertiaryAttributes += Math.max(0, sheetData.system.charcreation.spent.attributes[key] - sheetData.system.charcreation.available.attributes[key]);
+      }
+      else {
+        nonTertiaryAttributes += Math.max(0, sheetData.system.charcreation.spent.attributes[key] - sheetData.system.charcreation.available.attributes[key]);
+      }
+      unFavoredAttributesSpent += Math.max(0, attributesSpent[key].unFavored - sheetData.system.charcreation.available.attributes[key]);
+      favoredAttributesSpent += Math.max(0, attributesSpent[key].favored - Math.max(0, sheetData.system.charcreation.available.attributes[key] - attributesSpent[key].unFavored));
+    }
+    for (let [key, ability] of Object.entries(sheetData.system.abilities)) {
+      sheetData.system.charcreation.spent.abovethree += Math.max(0, (ability.value - 3));
+      if (ability.favored) {
+        aboveThreeFavored += Math.max(0, (ability.value - 3));
+        sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (ability.value - 3));
+        threeOrBelowFavored += Math.min(3, ability.value);
+      }
+      else {
+        sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (ability.value - 3))) * 2;
+        threeOrBelowNonFavored += Math.min(3, ability.value);
+        aboveThreeUnFavored += Math.max(0, (ability.value - 3));
+      }
     }
     for (let customAbility of actorData.customabilities) {
       sheetData.system.charcreation.spent.abovethree += Math.max(0, (customAbility.system.points - 3));
       if (customAbility.system.favored) {
         sheetData.system.charcreation.spent.bonuspoints += Math.max(0, (customAbility.system.points - 3));
-        sheetData.system.charcreation.spent.experience += Math.max(0, (customAbility.system.points - 3)) * 4;
+        threeOrBelowFavored += Math.min(3, customAbility.system.points);
+        aboveThreeFavored += Math.max(0, (customAbility.system.points - 3));
       }
       else {
         sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (customAbility.system.points - 3))) * 2;
-        sheetData.system.charcreation.spent.experience += Math.max(0, (customAbility.system.points - 3)) * 5;
+        threeOrBelowNonFavored += Math.min(3, customAbility.system.points);
+        aboveThreeUnFavored += Math.max(0, (customAbility.system.points - 3));
       }
-      threeOrBelow += Math.min(3, customAbility.system.points);
     }
-    sheetData.system.charcreation.spent.abilities = threeOrBelow;
+    sheetData.system.charcreation.spent.abilities = threeOrBelowFavored + threeOrBelowNonFavored;
+    var nonfavoredBPBelowThree = Math.max(0, (threeOrBelowNonFavored - 28));
+    var favoredBPBelowThree = Math.max(0, (threeOrBelowFavored - Math.max(0, 28 - threeOrBelowNonFavored)));
     if (sheetData.system.details.exalt === 'lunar') {
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28))) * 2;
+      sheetData.system.charcreation.spent.bonuspoints += (favoredAttributesSpent * 3) + (unFavoredAttributesSpent * 4);
+    } else {
+      sheetData.system.charcreation.spent.bonuspoints += (tertiaryAttributes * 3) + (nonTertiaryAttributes * 4);
     }
-    else {
-      sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (threeOrBelow - 28)));
-    }
-    sheetData.system.charcreation.spent.experience += (Math.max(0, (threeOrBelow - 28))) * 4;
-    sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
     for (let merit of actorData.merits) {
       sheetData.system.charcreation.spent.merits += merit.system.points;
     }
-    sheetData.system.charcreation.spent.charms = actorData.items.filter((item) => item.type === 'charm').length;
+
+    for (const charm of actorData.items.filter((item) => item.type === 'charm')) {
+      if (actorData.system.attributes[charm.system.ability] && actorData.system.attributes[charm.system.ability].favored) {
+        favoredCharms++;
+      } else if (actorData.system.abilities[charm.system.ability] && actorData.system.abilities[charm.system.ability].favored) {
+        favoredCharms++;
+      }
+      else {
+        nonFavoredCharms++;
+      }
+    }
+
+    if (actorData.system.abilities.occult.favored) {
+      favoredCharms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
+    }
+    else {
+      nonFavoredCharms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
+    }
+
+    var totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - sheetData.system.charcreation.available.charms));
+    var totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, sheetData.system.charcreation.available.charms - nonFavoredCharms)));
+
+    sheetData.system.charcreation.spent.charms = nonFavoredCharms + favoredCharms;
+    sheetData.system.charcreation.spent.bonuspoints += favoredBPBelowThree + (nonfavoredBPBelowThree * 2);
     sheetData.system.charcreation.spent.intimacies = actorData.items.filter((item) => item.type === 'intimacy').length;
-    sheetData.system.charcreation.spent.charms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
+    sheetData.system.charcreation.spent.bonuspoints += totalNonFavoredCharms * 5;
+    sheetData.system.charcreation.spent.bonuspoints += totalFavoredCharms * 4;
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 2;
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits)));
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties)));
     sheetData.system.charcreation.spent.bonuspoints += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 4;
 
+    sheetData.system.charcreation.spent.experience += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
+    sheetData.system.charcreation.spent.experience += (favoredBPBelowThree * 4) + (nonfavoredBPBelowThree * 5);
+    sheetData.system.charcreation.spent.experience += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);    
+    sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
+    sheetData.system.charcreation.spent.experience += totalNonFavoredCharms * 12;
+    sheetData.system.charcreation.spent.experience += totalFavoredCharms * 10;
     sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 6;
     sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits))) * 2;
     sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties))) * 2;
-    sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.charms - sheetData.system.charcreation.available.charms))) * 10;
     sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
   }
 

@@ -60,7 +60,7 @@ export default class TemplateImporter extends FormApplication {
     data.error = this.error;
     data.errorSection = this.errorSection;
     let collection;
-    if(this.type === 'qc' || this.type === 'adversary') {
+    if (this.type === 'qc' || this.type === 'adversary') {
       // collection = game.folders.filter(folder => folder.type === 'Actor');
       collection = game.collections.get("Actor");
     }
@@ -123,13 +123,13 @@ export default class TemplateImporter extends FormApplication {
         index = this.standardCharm(charmData, textArray, index);
       }
 
-      if(charmData.system.duration.toLowerCase() === 'one scene') {
+      if (charmData.system.duration.toLowerCase() === 'one scene') {
         charmData.system.endtrigger = 'endscene';
       }
-      if(charmData.system.duration.toLowerCase() === 'one turn' || charmData.system.duration.toLowerCase() === 'until next turn') {
+      if (charmData.system.duration.toLowerCase() === 'one turn' || charmData.system.duration.toLowerCase() === 'until next turn') {
         charmData.system.endtrigger = 'startturn';
       }
-      if(charmData.system.duration.toLowerCase() !== 'permanent' && charmData.system.duration.toLowerCase() !== 'instant') {
+      if (charmData.system.duration.toLowerCase() !== 'permanent' && charmData.system.duration.toLowerCase() !== 'instant') {
         charmData.system.cost.commitmotes = charmData.system.cost.motes;
         charmData.system.cost.motes = 0;
       }
@@ -153,26 +153,26 @@ export default class TemplateImporter extends FormApplication {
         }
       }
       charmData.system.description = description.replace('- ', '');
-      if(folder) {
+      if (folder) {
         charmData.folder = folder;
       }
       charmsList.push(await Item.create(charmData));
       index++;
     }
-    if(charmsList) {
+    if (charmsList) {
       this.updatePrereqs(charmsList);
     }
   }
 
   async updatePrereqs(charmsList) {
     const filteredCharms = charmsList.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None');
-    for(const charm of filteredCharms) {
+    for (const charm of filteredCharms) {
       const charmData = duplicate(charm);
       const splitPrereqs = charm.system.prerequisites.split(',');
       const newPrereqs = [];
-      for(const prereq of splitPrereqs) {
+      for (const prereq of splitPrereqs) {
         const existingCharm = game.items.filter(item => item.type === 'charm' && item.system.charmtype === charm.system.charmtype && item.name.trim() === prereq.trim())[0];
-        if(existingCharm) {
+        if (existingCharm) {
           charmData.system.charmprerequisites.push(
             {
               id: existingCharm.id,
@@ -184,7 +184,7 @@ export default class TemplateImporter extends FormApplication {
           newPrereqs.push(prereq);
         }
       }
-      if(charm.system.charmprerequisites) {
+      if (charm.system.charmprerequisites) {
         charmData.system.prerequisites = newPrereqs.join(", ");
         await charm.update(charmData);
       }
@@ -378,7 +378,7 @@ export default class TemplateImporter extends FormApplication {
         }
       }
       spellData.system.description = description;
-      if(folder) {
+      if (folder) {
         spellData.folder = folder;
       }
       await Item.create(spellData);
@@ -386,7 +386,7 @@ export default class TemplateImporter extends FormApplication {
     }
   }
 
-  
+
   async createOther(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     var itemType = html.find('#itemType').val();
@@ -405,38 +405,38 @@ export default class TemplateImporter extends FormApplication {
       index++;
       var description = '';
       while (textArray[index] && index !== textArray.length) {
-        if(textArray[index].includes('Tags:')) {
-          var tagString = textArray[index].toLowerCase().replace('tags:' , '');
+        if (textArray[index].includes('Tags:')) {
+          var tagString = textArray[index].toLowerCase().replace('tags:', '');
           var tagSplit = tagString.split(/,|;/);
           var itemTags = [];
-          for(let tag of tagSplit) {
-            if(tag.includes('(')) {
+          for (let tag of tagSplit) {
+            if (tag.includes('(')) {
               var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim();
-              if(weaponTags[rangeTag] && itemType === 'weapon') {
+              if (weaponTags[rangeTag] && itemType === 'weapon') {
                 itemTags.push(rangeTag);
               }
-              else if(armorTags[rangeTag] && itemType === 'armor') {
+              else if (armorTags[rangeTag] && itemType === 'armor') {
                 itemTags.push(rangeTag);
               }
               tag = tag.replace(/\(([^)]+)\)/g, '');
             }
             tag = tag.replace(/\s+/g, '').replace('-', '').trim();
-            if(weaponTags[tag] && itemType === 'weapon') {
+            if (weaponTags[tag] && itemType === 'weapon') {
               itemTags.push(tag);
             }
-            else if(armorTags[tag] && itemType === 'armor') {
+            else if (armorTags[tag] && itemType === 'armor') {
               itemTags.push(tag);
             }
           }
           itemData.system.traits = {};
-          if(itemType === 'armor') {
+          if (itemType === 'armor') {
             itemData.system.traits.armortags = {
               "value": [],
               "custom": ""
             }
             itemData.system.traits.armortags.value = itemTags;
           }
-          if(itemType === 'weapon') {
+          if (itemType === 'weapon') {
             itemData.system.traits.weapontags = {
               "value": [],
               "custom": ""
@@ -451,7 +451,7 @@ export default class TemplateImporter extends FormApplication {
         index++;
       }
       itemData.system.description = description;
-      if(folder) {
+      if (folder) {
         itemData.folder = folder;
       }
       await Item.create(itemData);
@@ -472,16 +472,16 @@ export default class TemplateImporter extends FormApplication {
 
     var folderType = 'Item';
 
-    if(this.type === 'qc' || this.type === 'character') {
+    if (this.type === 'qc' || this.type === 'character') {
       folderType = "Actor";
     }
 
-    if(folderName) {
+    if (folderName) {
       folder = game.folders.find(folder => {
         return folder.name === folderName && folder.type === folderType;
       });
-  
-      if(!folder) {
+
+      if (!folder) {
         folder = await Folder.create({ name: folderName, type: folderType });
       }
     }
@@ -770,7 +770,7 @@ export default class TemplateImporter extends FormApplication {
             "motes": 0
           },
           "savedRolls": {},
-          "legendarysize": false,
+          "sizecategory": "standard",
           "traits": {
             "languages": {
               "value": [],
@@ -938,7 +938,7 @@ export default class TemplateImporter extends FormApplication {
           "motes": 0
         },
         "savedRolls": {},
-        "legendarysize": false,
+        "sizecategory": "standard",
         "traits": {
           "languages": {
             "value": [],
@@ -1237,7 +1237,7 @@ export default class TemplateImporter extends FormApplication {
         }
         else {
           damage = 0;
-          overwhelming= 0;
+          overwhelming = 0;
           var grappleSplit = attackArray[1].split('(');
           var grappleValue = parseInt(grappleSplit[1].replace(/[^0-9]/g, ''));
           actorData.system.pools.grapple.value = grappleValue;
@@ -1299,7 +1299,7 @@ export default class TemplateImporter extends FormApplication {
       index++;
       itemData.push(...this._getItemData(textArray, index, actorData));
       actorData.items = itemData;
-      if(folder) {
+      if (folder) {
         actorData.folder = folder;
       }
       await Actor.create(actorData);
@@ -1512,7 +1512,13 @@ export default class TemplateImporter extends FormApplication {
                 itemDescription += titleArray[1].trim();
               }
               if (itemType === 'merit' && itemName === 'Legendary Size') {
-                actorData.system.legendarysize = true;
+                actorData.system.sizecategory = 'legendary';
+              }
+              if (itemType === 'merit' && itemName === 'Tiny Creature') {
+                actorData.system.sizecategory = 'tiny';
+              }
+              if (itemType === 'merit' && itemName === 'Minuscule Size') {
+                actorData.system.sizecategory = 'minuscule';
               }
               newItem = false;
             }
@@ -1990,19 +1996,19 @@ export default class TemplateImporter extends FormApplication {
           index++;
         }
         var itemTags = [];
-        if(attackString.includes('Tags:')) {
-          var tagString = attackString.match(/Tags:(.*$)/)[1] || ''; 
+        if (attackString.includes('Tags:')) {
+          var tagString = attackString.match(/Tags:(.*$)/)[1] || '';
           var tagSplit = tagString.split(/,|;/);
-          for(let tag of tagSplit) {
-            if(tag.includes('(')) {
+          for (let tag of tagSplit) {
+            if (tag.includes('(')) {
               var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim().toLowerCase();
-              if(weaponTags[rangeTag]) {
+              if (weaponTags[rangeTag]) {
                 itemTags.push(rangeTag);
               }
               tag = tag.replace(/\(([^)]+)\)/g, '');
             }
             tag = tag.replace(/\s+/g, '').replace('-', '').trim().toLowerCase();
-            if(weaponTags[tag]) {
+            if (weaponTags[tag]) {
               itemTags.push(tag);
             }
           }
@@ -2150,7 +2156,7 @@ export default class TemplateImporter extends FormApplication {
       itemData.push(...this._getItemData(textArray, index, actorData));
       readingItems = false;
       actorData.items = itemData;
-      if(folder) {
+      if (folder) {
         actorData.folder = folder;
       }
       await Actor.create(actorData);

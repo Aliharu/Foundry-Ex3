@@ -697,10 +697,15 @@
         </li>
         {{/ifEquals}}
         <div>
-          <div class="check-button">
-            <label class="resource-label">{{localize "Ex3.LegendarySize"}}:</label>
-            <input data-dtype="Boolean" name="system.legendarysize" type="checkbox" {{checked system.legendarysize}}>
-          </div>
+          <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+          <select name="system.sizecategory" data-type="String">
+            {{#select system.sizecategory}}
+            <option value="standard">{{localize "Ex3.Standard"}}</option>
+            <option value="legendary">{{localize "Ex3.Legendary"}}</option>
+            <option value="tiny">{{localize "Ex3.Tiny"}}</option>
+            <option value="minuscule">{{localize "Ex3.Minuscule"}}</option>
+            {{/select}}
+          </select>
         </div>
         <!-- <div class="grid flex-group-center">
           <button id="import-stuff">Import</button>

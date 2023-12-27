@@ -58,6 +58,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -85,10 +86,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -182,6 +179,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -209,10 +207,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -306,6 +300,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -333,10 +328,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -430,6 +421,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -457,10 +449,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -583,10 +571,6 @@
         "label": "Ex3.God/Demon",
         "value": false
       },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
-        "value": false
-      },
       "poisoner": {
         "label": "Ex3.Poisoner",
         "value": false
@@ -678,6 +662,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -705,10 +690,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -802,6 +783,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -830,10 +812,6 @@
       "godOrDemon": {
         "label": "Ex3.God/Demon",
         "value": true
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
-        "value": false
       },
       "poisoner": {
         "label": "Ex3.Poisoner",
@@ -926,6 +904,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -953,10 +932,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -1050,6 +1025,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -1077,10 +1053,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {
@@ -1174,6 +1146,7 @@
       }
     },
     "sorcerer": "none",
+    "sizeCategory": "standard",
     "battlegroup": false,
     "battlegroupStats": {
       "size": 1,
@@ -1201,10 +1174,6 @@
       },
       "godOrDemon": {
         "label": "Ex3.God/Demon",
-        "value": false
-      },
-      "legendarySize": {
-        "label": "Ex3.LegendarySize",
         "value": false
       },
       "poisoner": {

@@ -309,8 +309,19 @@ export class ExaltedThirdActor extends Actor {
   async calculateDerivedStats(type) {
     const actorData = duplicate(this);
     var armoredSoakValue = 0;
+
+    var staticAttributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type]?.attribute]?.value || 0;
+    var staticAbilityValue = 0;
+    if(actorData.system.settings.staticcapsettings[type]?.ability && actorData.system.settings.staticcapsettings[type]?.ability !== 'none') {
+      if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === actorData.system.settings.staticcapsettings[type].ability)) {
+        staticAbilityValue = this.items.filter(item => item.type === 'customability').find(x => x._id === actorData.system.settings.staticcapsettings[type].ability).system.points;
+      }
+      else {
+        staticAbilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability].value;
+      }
+    }
     if (type === 'natural-soak') {
-      actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value;
+      actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute]?.value;
     }
     if (type === 'soak' || type === 'armored-soak' || type === 'all') {
       for (let armor of this.armor) {
@@ -322,12 +333,12 @@ export class ExaltedThirdActor extends Actor {
         actorData.system.armoredsoak.value = armoredSoakValue;
       }
       if (type === 'soak' || type === 'all') {
-        actorData.system.soak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute].value + armoredSoakValue;
+        actorData.system.soak.value = staticAttributeValue + armoredSoakValue;
       }
     }
     let specialtyBonus = actorData.system?.settings?.staticcapsettings[type]?.specialty ? 1 : 0;
     if (type === 'parry' || type === 'all') {
-      actorData.system.parry.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.parry.ability].value + specialtyBonus) / 2);
+      actorData.system.parry.value = Math.ceil((staticAttributeValue + staticAbilityValue + specialtyBonus) / 2);
       for (let weapon of this.weapons) {
         if (weapon.system.equipped) {
           actorData.system.parry.value = actorData.system.parry.value + weapon.system.defense;
@@ -335,7 +346,7 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     if (type === 'evasion' || type === 'all') {
-      var newEvasionValue = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.parry.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.evasion.ability].value + specialtyBonus) / 2);
+      var newEvasionValue = Math.ceil((staticAttributeValue + staticAbilityValue + specialtyBonus) / 2);
       for (let armor of this.armor) {
         if (armor.system.equipped) {
           newEvasionValue = newEvasionValue - Math.abs(armor.system.penalty);
@@ -344,10 +355,10 @@ export class ExaltedThirdActor extends Actor {
       actorData.system.evasion.value = newEvasionValue;
     }
     if (type === 'resolve' || type === 'all') {
-      actorData.system.resolve.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.resolve.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.resolve.ability].value + specialtyBonus) / 2);
+      actorData.system.resolve.value = Math.ceil((staticAttributeValue + staticAbilityValue + specialtyBonus) / 2);
     }
     if (type === 'guile' || type === 'all') {
-      actorData.system.guile.value = Math.ceil((actorData.system.attributes[actorData.system.settings.staticcapsettings.guile.attribute].value + actorData.system.abilities[actorData.system.settings.staticcapsettings.guile.ability].value + specialtyBonus) / 2);
+      actorData.system.guile.value = Math.ceil((staticAttributeValue + staticAbilityValue + specialtyBonus) / 2);
     }
     if (type === 'resonance' || type === 'all') {
       actorData.system.traits.resonance = this.calculateResonance(this.system.details.exalt);
@@ -815,7 +826,7 @@ export class ExaltedThirdActor extends Actor {
     actorCharms = actorCharms.sort(function (a, b) {
       const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
       const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-      if(sortValueA === sortValueB) {
+      if (sortValueA === sortValueB) {
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
       }
       return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0

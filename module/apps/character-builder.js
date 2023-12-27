@@ -1008,7 +1008,6 @@ export default class CharacterBuilder extends FormApplication {
   }
 
   async onChange(ev) {
-    const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;
     if (CONFIG.exaltedthird.castes[this.object.character.exalt]) {
       this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
     }
@@ -1032,6 +1031,14 @@ export default class CharacterBuilder extends FormApplication {
       this.object.character.showAttributeCharms = false;
       this.object.character.showAbilityCharms = true;
     }
+
+    this._calculateSpentExperience(ev);
+
+    await this.render();
+  }
+
+  _calculateSpentExperience(ev) {
+    const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;
 
     var pointsAvailableMap = {
       primary: 8,
@@ -1237,6 +1244,10 @@ export default class CharacterBuilder extends FormApplication {
     var unFavoredAttributesSpent = 0;
     var tertiaryAttributes = 0;
     var nonTertiaryAttributes = 0;
+    var threeOrBelowFavored = 0;
+    var threeOrBelowNonFavored = 0;
+    var aboveThreeFavored = 0;
+    var aboveThreeUnFavored = 0;
     for (let [key, attribute] of Object.entries(this.object.creationData.spent.attributes)) {
       if (this.object.creationData[key] === 'tertiary') {
         tertiaryAttributes += Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]);
@@ -1247,10 +1258,6 @@ export default class CharacterBuilder extends FormApplication {
       unFavoredAttributesSpent += Math.max(0, attributesSpent[key].unFavored - this.object.creationData.available.attributes[key]);
       favoredAttributesSpent += Math.max(0, attributesSpent[key].favored - Math.max(0, this.object.creationData.available.attributes[key] - attributesSpent[key].unFavored));
     }
-    var threeOrBelowFavored = 0;
-    var threeOrBelowNonFavored = 0;
-    var aboveThreeFavored = 0;
-    var aboveThreeUnFavored = 0;
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       this.object.creationData.spent.abovethree += Math.max(0, (ability.value - 3));
       if (ability.favored) {
@@ -1368,8 +1375,6 @@ export default class CharacterBuilder extends FormApplication {
     this.object.creationData.spent.experience.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits))) * 2;
     this.object.creationData.spent.experience.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 6;
     this.object.creationData.spent.experience.total = this.object.creationData.spent.experience.willpower + this.object.creationData.spent.experience.merits + this.object.creationData.spent.experience.specialties + this.object.creationData.spent.experience.abilities + this.object.creationData.spent.experience.attributes + this.object.creationData.spent.experience.charms;
-
-    await this.render();
   }
 
 

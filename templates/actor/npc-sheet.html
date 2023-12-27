@@ -165,10 +165,16 @@
                     <input data-dtype="Boolean" name="system.battlegroup" type="checkbox" {{checked
                         system.battlegroup}}>
                 </div>
-                <div class="check-button">
-                    <label class="resource-label">{{localize "Ex3.LegendarySize"}}:</label>
-                    <input data-dtype="Boolean" name="system.legendarysize" type="checkbox" {{checked
-                        system.legendarysize}}>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+                    <select name="system.sizecategory" data-type="String">
+                        {{#select system.sizecategory}}
+                        <option value="standard">{{localize "Ex3.Standard"}}</option>
+                        <option value="legendary">{{localize "Ex3.Legendary"}}</option>
+                        <option value="tiny">{{localize "Ex3.Tiny"}}</option>
+                        <option value="minuscule">{{localize "Ex3.Minuscule"}}</option>
+                        {{/select}}
+                    </select>
                 </div>
                 {{#ifEquals system.details.exalt 'abyssal'}}
                 <div>
@@ -205,8 +211,7 @@
                 {{#ifEquals system.details.exalt 'umbral'}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-                    <input type="number" name="system.penumbra.value"
-                        value="{{system.penumbra.value}}" />
+                    <input type="number" name="system.penumbra.value" value="{{system.penumbra.value}}" />
                 </div>
                 {{/ifEquals}}
                 {{#ifEquals actor.type 'npc'}}

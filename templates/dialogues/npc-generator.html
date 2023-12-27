@@ -143,6 +143,17 @@
           {{/select}}
         </select>
       </div>
+      <div>
+        <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+        <select name="object.character.sizeCategory" data-type="String">
+          {{#select data.character.sizeCategory}}
+          <option value="standard">{{localize "Ex3.Standard"}}</option>
+          <option value="legendary">{{localize "Ex3.Legendary"}}</option>
+          <option value="tiny">{{localize "Ex3.Tiny"}}</option>
+          <option value="minuscule">{{localize "Ex3.Minuscule"}}</option>
+          {{/select}}
+        </select>
+      </div>
       {{#each data.character.numberTraits as |trait key|}}
       <div>
         <label class="resource-label">{{localize trait.label}}</label>

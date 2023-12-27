@@ -1085,7 +1085,6 @@ Hooks.once("ready", async function () {
       }
     }
     ui.notifications.notify(`Migration Complete`);
-    await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
   if (isNewerVersion("2.4.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -1094,6 +1093,20 @@ Hooks.once("ready", async function () {
       try {
         if (actor.system.details.exalt === 'abyssal') {
           await actor.update({ [`system.details.apocalyptic`]: actor.system.details.cthonic });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    ui.notifications.notify(`Migration Complete`);
+  }
+  if (isNewerVersion("2.5.2", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.5.2, please wait`);
+    for (let actor of game.actors) {
+      try {
+        if (actor.system.legendarysize) {
+          await actor.update({ [`system.sizecategory`]: 'legendary' });
         }
       } catch (error) {
         error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;

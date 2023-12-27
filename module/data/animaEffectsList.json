@@ -93,5 +93,30 @@
         "1m, learn whether an ending would align with destiny and how the ending should go.",
         "5m (0m at Bonfire),  Until next turn she and allies gain (Essence max 5) overwhelming and add 1 auto succes on decisive damage.",
         "1/story, 20m, 1wp, Take 1 turn for allies to gain -1 TN on damage, -2 on damage vs enemies of fate, and ignore hardness.  Un-Exalted characters cannot take crippling injurings and automatically fail rolls vs poison/disease/crippling effects.  Medicine treatments also fail.  Those slain pass unto Lethe (Exalts might still rise as hungry ghosts)."
+    ],
+    "dusk": [
+        "At Bonfire, add (Essence/2, rounded up) to base initiative after decisive attacks",
+        "Add (Essence/2, Rounded up) non-charm dice to threaten rolls, can affects things that are nomrally immune but not magical immunity.",
+        "(10m; Reflexive; Instant) Once per day reset all combat charms"
+    ],
+    "midnight": [
+        "(10m[3m]; Simple; Instant) Roll (INT+Occult) vs Resolve to bind a ghost as familiar.  Does not compel obidience.  Can summon the ghost with 3m or banish it for free.  Max (Essence) Ghosts",
+        "(5m; Supplemental; Instant; Mute) Add (Essence or 3) non-charm dice to an inspire/instill/threaten roll.  Undead count as having minor intimacy and can influence mindless undead.  No cost at bonfire",
+        "(1m or 10m, 1wp; Simple; Instant) 1m to reanimates corpse as a zombie.  Once per day for 10m 1wp summon the ghost of somebody dead for less than 3 days to his corpse.  Does not bind the ghost."
+    ],
+    "daybreak": [
+        "(10m, 1wp; Reflexive; Instant) On turn vanish into anima's darkness at the start of next turn if you havent moved.  Reappear at next sunrise at location assiciated with death within 10 miles.",
+        "(5m; Simple; Instant) Roll ([Perception or Intelligence] + [Awareness, Investigation, Lore, or Occult]) vs Guile of supernatural being to determine a detail about his magical power.  No cost at bonfire",
+        "(--; Reflexive; Instant) Once per Day while at Burning or higher.  Either: Gain 1 WP, Add (Essence + Mental Attribute) mote to a necromancy spell, or gain Free Full Excellency on a non join battle mental action."
+    ],
+    "day": [
+        "At bonfire, Cannot discern identity or details.  Cannot be defeated even by powerful magic.",
+        "(2m; Reflexive; Instant; Mute): Mute all motes in 1 instant.",
+        "(3m; Supplemental; Instant; Mute): Ignore (Essence or 3) points of penalties on a Stealth roll"
+    ],
+    "moonshadow": [
+        "Has protection when dealing with spirits or fair folk unless the peace is broken by the abyssal or her companions.",
+        "(10m, 1wp; Reflexive; Instant): Bind an oath.  If the oath/pact is broken the person suffers a punishment.",
+        "Learn Eclipse Charms"
     ]
 }

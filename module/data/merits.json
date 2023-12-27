@@ -37,5 +37,6 @@
     {"name": "Toxin Resistance", "dotValues" : [3], "pageref": "Exalted Third, p. 165"},
     {"name": "Resources", "dotValues" : [1,2,3,4,5], "pageref": "Exalted Third, p. 165"},
     {"name": "Sobriquet", "dotValues" : [2], "pageref": "WFHW, p. 142"},
-    {"name": "Well-Bred", "dotValues" : [2], "pageref": "WFHW, p. 142"}
+    {"name": "Well-Bred", "dotValues" : [2], "pageref": "WFHW, p. 142"},
+    {"name": "Whispers", "dotValues" : [2, 4], "pageref": "Abyssals"}
 ]
