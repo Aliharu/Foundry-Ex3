@@ -1359,24 +1359,22 @@ export class RollForm extends FormApplication {
             const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem.id);
             const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem.id);
             if (index > -1) {
-                for (var charmlist of Object.values(this.object.charmList)) {
-                    for (const charm of charmlist.list) {
-                        if (charm._id === item.id) {
-                            if (addedCharm.timesAdded > 0) {
-                                charm.timesAdded--;
-                            }
-                            if (charm.timesAdded <= 0) {
-                                charm.charmAdded = false;
-                            }
-                        }
-                    }
-                }
-
                 if (addedCharm.timesAdded > 0) {
                     addedCharm.timesAdded--;
                 }
                 if (addedCharm.timesAdded <= 0) {
                     this.object.addedCharms.splice(index, 1);
+                }
+
+                for (var charmlist of Object.values(this.object.charmList)) {
+                    for (const charm of charmlist.list) {
+                        if (charm._id === item.id) {
+                            charm.timesAdded = addedCharm.timesAdded;
+                            if (charm.timesAdded <= 0) {
+                                charm.charmAdded = false;
+                            }
+                        }
+                    }
                 }
 
                 if (item.system.keywords.toLowerCase().includes('mute')) {
@@ -3010,7 +3008,7 @@ export class RollForm extends FormApplication {
     _addOnslaught(number = 1, magicInflicted = false) {
         if ((this.object.target?.actor?.system?.sizecategory || 'standard') !== 'legendary' && !magicInflicted) {
             this.object.updateTargetActorData = true;
-            const onslaught = this.object.target.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
+            const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
             if (onslaught) {
                 onslaught.changes[0].value = onslaught.changes[0].value - number;
                 onslaught.changes[1].value = onslaught.changes[1].value - number;
