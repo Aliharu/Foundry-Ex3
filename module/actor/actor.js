@@ -303,7 +303,15 @@ export class ExaltedThirdActor extends Actor {
 
   async calculateAllDerivedStats() {
     await this.calculateCharacterMotes();
-    await this.calculateDerivedStats('all');
+    await this.calculateDerivedStats('parry');
+    await this.calculateDerivedStats('evasion');
+    await this.calculateDerivedStats('guile');
+    await this.calculateDerivedStats('resolve');
+    await this.calculateDerivedStats('hardness');
+    await this.calculateDerivedStats('soak');
+    await this.calculateDerivedStats('natural-soak');
+    await this.calculateDerivedStats('armored-soak');
+    await this.calculateDerivedStats('resonance');
   }
 
   async calculateDerivedStats(type) {

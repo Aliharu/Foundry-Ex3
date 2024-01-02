@@ -403,20 +403,20 @@ export class RollForm extends FormApplication {
                 }
             }
             this.object.targets = {}
-            if (game.user.targets && game.user.targets.size > 0) {
-                this.object.showTargets = game.user.targets.size;
-                if (this._isAttackRoll() || this.object.rollType === 'social' || this.object.rollType === 'readintentions') {
-                    this._setUpMultitargets();
-                }
-                else {
-                    this._setupSingleTarget(Array.from(game.user.targets)[0]);
-                }
-            }
             if (this.actor.token) {
                 this.object.conditions = (this.actor.token && this.actor.token.actor.effects) ? this.actor.token.actor.effects : [];
             }
             else {
                 this.object.conditions = this.actor.effects;
+            }
+            if (game.user.targets && game.user.targets.size > 0) {
+                this.object.showTargets = game.user.targets.size;
+                if (this._isAttackRoll() || this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
+                    this._setUpMultitargets();
+                }
+                else {
+                    this._setupSingleTarget(Array.from(game.user.targets)[0]);
+                }
             }
             if (this.object.conditions.some(e => e.name === 'blind')) {
                 this.object.diceModifier -= 3;
@@ -547,15 +547,27 @@ export class RollForm extends FormApplication {
                 if (target.actor.effects.some(e => e.statuses.has('prone'))) {
                     effectiveEvasion -= 2;
                 }
+                if (target.actor.effects.some(e => e.statuses.has('mounted'))) {
+                    if (!this.object.conditions.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
+                        const combinedTags = this.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
+                            const tags = weapon.system.traits.weapontags.value || []; 
+                            return acc.concat(tags);
+                        }, []);
+                        if(!combinedTags.includes('reaching')) {
+                            effectiveEvasion += 1;
+                            effectiveParry += 1;
+                        }
+                    }
+                }
                 effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
             }
-            if(target.actor.system.sizecategory === 'tiny') {
-                if(this.actor.system.sizecategory !== 'tiny' && this.actor.system.sizecategory !== 'minuscule') {
+            if (target.actor.system.sizecategory === 'tiny') {
+                if (this.actor.system.sizecategory !== 'tiny' && this.actor.system.sizecategory !== 'minuscule') {
                     effectiveEvasion += 2;
                 }
             }
-            if(target.actor.system.sizecategory === 'minuscule') {
-                if(this.actor.system.sizecategory !== 'minuscule') {
+            if (target.actor.system.sizecategory === 'minuscule') {
+                if (this.actor.system.sizecategory !== 'minuscule') {
                     effectiveEvasion += 3;
                 }
             }
@@ -587,6 +599,20 @@ export class RollForm extends FormApplication {
             if (this.object.weaponTags["bombard"]) {
                 if (!target.actor.system.battlegroup && target.actor.system.sizecategory !== 'legendary' && !target.actor.system.warstrider.equipped) {
                     target.rollData.diceModifier -= 4;
+                }
+            }
+            if (this.object.attackType === 'withering' && this.object.conditions?.some(e => e.statuses.has('mounted'))) {
+                if (!target.actor.effects.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
+                    const combinedTags = target.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
+                        const tags = weapon.system.traits.weapontags.value || []; 
+                        return acc.concat(tags);
+                    }, []);
+                    if(!combinedTags.includes('reaching')) {
+                        target.rollData.diceModifier += 1;
+                        if (target.actor.system.battlegroup) {
+                            target.rollData.diceModifier += 1;
+                        }
+                    }
                 }
             }
             this.object.targets[target.id] = target;
@@ -705,6 +731,9 @@ export class RollForm extends FormApplication {
                         if (this.object.rollType !== 'gambit') {
                             for (var specialAttack of this.object.specialAttacksList) {
                                 if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
+                                    specialAttack.show = true;
+                                }
+                                else if (specialAttack.id === 'impale' && this.object.weaponTags['lance']) {
                                     specialAttack.show = true;
                                 }
                                 else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
@@ -1275,6 +1304,14 @@ export class RollForm extends FormApplication {
             if (id === 'aim') {
                 this.object.diceModifier += 3;
             }
+            else if(id === 'impale') {
+                if(this.object.attackType === 'withering') {
+                    this.object.damage.damageDice += 5;
+                }
+                else {
+                    this.object.damage.damageDice += 3;
+                }
+            }
             else {
                 if (id === 'knockback' || id === 'knockdown') {
                     this.object.cost.initiative += 2;
@@ -1315,6 +1352,14 @@ export class RollForm extends FormApplication {
             }
             if (id === 'aim') {
                 this.object.diceModifier -= 3;
+            }
+            else if(id === 'impale') {
+                if(this.object.attackType === 'withering') {
+                    this.object.damage.damageDice -= 5;
+                }
+                else {
+                    this.object.damage.damageDice -= 3;
+                }
             }
             else {
                 if (id === 'knockback' || id === 'knockdown') {
@@ -3340,7 +3385,7 @@ export class RollForm extends FormApplication {
     }
 
     _useLegendarySize(effectType) {
-        if(this.object.settings.ignoreLegendarySize) {
+        if (this.object.settings.ignoreLegendarySize) {
             return false;
         }
         if (this.object.target) {
@@ -3870,6 +3915,7 @@ export class RollForm extends FormApplication {
                 { id: 'piercing', name: "Piercing", added: false, show: false, description: 'Cost: 1i and reduce defense by 1.  Ignore 4 soak', img: 'systems/exaltedthird/assets/icons/fast-arrow.svg' },
                 { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
                 { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
+                { id: 'impale', name: "Impale", added: false, show: false, description: 'If moved 2 consecutive range bands toward target while mounted.  Deal +5 withering or +3 decisive damage', img: 'systems/exaltedthird/assets/icons/spiked-tail.svg' },
             ];
         }
         if (this.object.charmDiceAdded === undefined) {
@@ -4346,13 +4392,13 @@ export async function animaTokenMagic(actor, newAnimaValue) {
                 }
                 else if (newAnimaValue === 2) {
                     await TokenMagic.addUpdateFilters(actorToken, burning);
-                    if (this.actor.system.details.exalt === "sovereign") {
+                    if (actorToken.actor.system.details.exalt === "sovereign") {
                         await TokenMagic.addUpdateFilters(actorToken, sovereign);
                     }
                 }
                 else {
                     await TokenMagic.addUpdateFilters(actorToken, bonfire);
-                    if (this.actor.system.details.exalt === "sovereign") {
+                    if (actorToken.actor.system.details.exalt === "sovereign") {
                         await TokenMagic.addUpdateFilters(actorToken, sovereign);
                     }
                 }

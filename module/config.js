@@ -384,6 +384,7 @@ exaltedthird.weapontags = {
   "flexible": "Flexible",
   "improvised": "Improvised",
   "grappling": "Grappling",
+  "lance": "Lance",
   "lethal": "Lethal",
   "long": "Long Range",
   "magicdamage": "Magic Damage",
@@ -634,6 +635,11 @@ exaltedthird.statusEffects = [
     id: 'entangled',
     label: 'Ex3.Entangled',
     name: 'entangled'
+  },
+  {
+    icon: 'systems/exaltedthird/assets/icons/horse-head.svg',
+    id: 'mounted',
+    label: 'Ex3.Mounted',
   },
   {
     icon: 'systems/exaltedthird/assets/icons/hidden.svg',

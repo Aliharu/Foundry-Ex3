@@ -1119,7 +1119,10 @@ Hooks.once("ready", async function () {
 
   // for(const martialArt of CONFIG.exaltedthird.martialarts) {
   //   console.log(martialArt);
-  //   const folder = game.folders.filter(folder => folder.name === 'Martial Arts')[0];
+  //   let folder = game.folders.filter(folder => folder.name === 'Martial Arts')[0];
+  //   if(!folder) {
+  //     folder = await Folder.create({ name: 'Martial Arts', type: 'Item' });
+  //   }
   //   await Item.create({
   //     name: martialArt,
   //     img: 'systems/exaltedthird/assets/icons/punch-blast.svg',
