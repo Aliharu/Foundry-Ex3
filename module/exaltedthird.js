@@ -323,11 +323,11 @@ $(document).ready(() => {
 });
 
 Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"></i>${game.i18n.localize("Ex3.CharmImport")}</button>`);
+  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"></i>${game.i18n.localize("Ex3.Import")}</button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
-    game.templateImporter = new TemplateImporter({}, {}, { type: 'charm'}).render(true);
+    game.templateImporter = new TemplateImporter("charm").render(true);
   })
 });
 
