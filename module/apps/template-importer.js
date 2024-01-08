@@ -11,6 +11,14 @@ export default class TemplateImporter extends FormApplication {
     this.errorSection = '';
     this.showError = false;
     this.textBox = '';
+    let collection;
+    if (this.type === 'qc' || this.type === 'adversary') {
+      collection = game.collections.get("Actor");
+    }
+    else {
+      collection = game.collections.get("Item");
+    }
+    this.folders = collection?._formatFolderSelectOptions() ?? [];
   }
 
   static get defaultOptions() {
@@ -55,20 +63,11 @@ export default class TemplateImporter extends FormApplication {
     data.spellCircle = this.spellCircle;
     data.itemType = this.itemType;
     data.folder = this.folder;
+    data.folders = this.folders;
     data.textBox = this.textBox;
     data.showError = this.showError;
     data.error = this.error;
     data.errorSection = this.errorSection;
-    let collection;
-    if (this.type === 'qc' || this.type === 'adversary') {
-      // collection = game.folders.filter(folder => folder.type === 'Actor');
-      collection = game.collections.get("Actor");
-    }
-    else {
-      // this.folders = game.folders.filter(folder => folder.type === 'Item');
-      collection = game.collections.get("Item");
-    }
-    data.folders = collection?._formatFolderSelectOptions() ?? [];
     if (this.type === 'charm') {
       data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
     }
@@ -2205,16 +2204,21 @@ export default class TemplateImporter extends FormApplication {
   activateListeners(html) {
     html.on("change", "#charmType", ev => {
       this.charmType = ev.currentTarget.value;
+      this.textBox = html.find('#template-text').val();
+      this.folder = html.find('#folder').val();
       this.render();
     });
 
     html.on("change", "#itemType", ev => {
       this.itemType = ev.currentTarget.value;
+      this.textBox = html.find('#template-text').val();
+      this.folder = html.find('#folder').val();
       this.render();
     });
 
     html.on("change", "#folder", ev => {
       this.folder = ev.currentTarget.value;
+      this.textBox = html.find('#template-text').val();
       this.render();
     });
 
@@ -2232,11 +2236,27 @@ export default class TemplateImporter extends FormApplication {
       else if (document.getElementById("other-radio").checked) {
         this.type = "other";
       }
+      this.textBox = html.find('#template-text').val();
+      let collection;
+      if (this.type === 'qc' || this.type === 'adversary') {
+        collection = game.collections.get("Actor");
+      }
+      else {
+        collection = game.collections.get("Item");
+      }
+      this.folders = collection?._formatFolderSelectOptions() ?? [];
+      if(!this.folders.map(folder => folder.id).includes(this.folder)) {
+        this.folder = '';
+      }
+      else {
+        this.folder = html.find('#folder').val();
+      }
       this.render();
     });
 
     html.find("#import-template").on("click", async (event) => {
       this.textBox = html.find('#template-text').val();
+      this.folder = html.find('#folder').val();
       this.showError = false;
       if (this.type === 'charm') {
         this.createCharm(html);
