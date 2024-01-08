@@ -8,50 +8,6 @@
           placeholder="{{data.character.defaultName}}">
       </div>
     </div>
-    <div class="resource-content flexrow flex-center flex-between">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Description"}}</label>
-    </div>
-    <div class="resource grid grid-3col flex-center">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
-        <select id="exalt" name="object.character.exalt" data-type="String">
-          {{#select data.character.exalt}}
-          <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-          <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-          <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-          <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-          <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-          <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-          <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-          <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-          <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-          <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-          <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-          <option value="solar">{{localize "Ex3.Solar"}}</option>
-          <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-          <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-          <option value="other">{{localize "Ex3.Other"}}</option>
-          {{/select}}
-        </select>
-      </div>
-      {{#if data.availableCastes}}
-      <div>
-        <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
-        <select name="object.character.caste" data-type="String">
-          {{#select data.character.caste}}
-          {{#each data.availableCastes as |label caste|}}
-          <option value="{{caste}}">{{localize label}}</option>
-          {{/each}}
-          <option value="">{{localize "Ex3.None"}}</option>
-          {{/select}}
-        </select>
-      </div>
-      {{/if}}
-      <div>
-        <label class="resource-label">{{localize "Ex3.Essence"}} </label>
-        <input name="object.character.essence" value="{{data.character.essence}}" type="number">
-      </div>
-    </div>
     {{#ifEquals data.characterType 'npc'}}
     <div class="resource-content flexrow flex-center flex-between mt-2">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.NPC"}}</label>
@@ -106,6 +62,50 @@
       </div>
     </div>
     {{/ifEquals}}
+    <div class="resource-content flexrow flex-center flex-between">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Description"}}</label>
+    </div>
+    <div class="resource grid grid-3col flex-center">
+      <div>
+        <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
+        <select id="exalt" name="object.character.exalt" data-type="String">
+          {{#select data.character.exalt}}
+          <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
+          <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
+          <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
+          <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
+          <option value="exigent">{{localize "Ex3.Exigent"}}</option>
+          <option value="getimian">{{localize "Ex3.Getimian"}}</option>
+          <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
+          <option value="infernal">{{localize "Ex3.Infernal"}}</option>
+          <option value="liminal">{{localize "Ex3.Liminal"}}</option>
+          <option value="lunar">{{localize "Ex3.Lunar"}}</option>
+          <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
+          <option value="solar">{{localize "Ex3.Solar"}}</option>
+          <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
+          <option value="umbral">{{localize "Ex3.Umbral"}}</option>
+          <option value="other">{{localize "Ex3.Other"}}</option>
+          {{/select}}
+        </select>
+      </div>
+      {{#if data.availableCastes}}
+      <div>
+        <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
+        <select name="object.character.caste" data-type="String">
+          {{#select data.character.caste}}
+          {{#each data.availableCastes as |label caste|}}
+          <option value="{{caste}}">{{localize label}}</option>
+          {{/each}}
+          <option value="">{{localize "Ex3.None"}}</option>
+          {{/select}}
+        </select>
+      </div>
+      {{/if}}
+      <div>
+        <label class="resource-label">{{localize "Ex3.Essence"}} </label>
+        <input name="object.character.essence" value="{{data.character.essence}}" type="number">
+      </div>
+    </div>
     {{#ifEquals data.characterType 'npc'}}
     <div class="resource-content flexrow flex-center flex-between mt-2">
       <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Skills"}}</label>

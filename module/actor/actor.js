@@ -291,7 +291,6 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async calculateCharacterMotes() {
-    await this.calculateCommitMotes('personal');
     await this.calculateCommitMotes('peripheral');
     const actorData = duplicate(this);
     actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;

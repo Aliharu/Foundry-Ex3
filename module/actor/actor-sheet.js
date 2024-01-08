@@ -90,7 +90,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this._prepareCharacterItems(context);
     if (context.actor.type === 'character') {
       this._prepareCharacterData(context);
-      
     }
     if (context.actor.type === 'npc') {
       this._prepareNPCData(context);
@@ -337,7 +336,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     sheetData.system.charcreation.spent.experience += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
     sheetData.system.charcreation.spent.experience += (favoredBPBelowThree * 4) + (nonfavoredBPBelowThree * 5);
-    sheetData.system.charcreation.spent.experience += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);    
+    sheetData.system.charcreation.spent.experience += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);
     sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
     sheetData.system.charcreation.spent.experience += totalNonFavoredCharms * 12;
     sheetData.system.charcreation.spent.experience += totalFavoredCharms * 10;
@@ -494,7 +493,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     actorCharms = actorCharms.sort(function (a, b) {
       const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
       const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-      if(sortValueA === sortValueB) {
+      if (sortValueA === sortValueB) {
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
       }
       return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
@@ -664,7 +663,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.collapsable').click(ev => {
       let type = $(ev.currentTarget).data("type");
       const li = $(ev.currentTarget).next();
-      if(type) {
+      if (type) {
         this.actor.update({ [`system.collapse.${type}`]: !li.is(":hidden") });
       }
     });
@@ -899,6 +898,102 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.subtract-onslaught-penalty').mousedown(ev => {
       subtractDefensePenalty(this.actor, 'Onslaught');
     });
+
+    // html.find('.add-new-charm').click(async ev => {
+    //   ev.preventDefault();
+    //   ev.stopPropagation();
+    //   const target = ev.currentTarget;
+    //   var ability = target.dataset.ability;
+    //   ability = this.actor.charms[ability].list[0]?.system.ability;
+    //   var itemType = 'charm';
+
+    //   let items = game.items.filter(charm => charm.type === itemType);
+    //   items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
+    //   if (itemType === 'charm') {
+    //     if (this.object.exalt === 'exigent') {
+    //       items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exigent);
+    //     } else {
+    //       items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exalt);
+    //     }
+    //     if (ability) {
+    //       items = items.filter(charm => charm.system.ability === ability);
+    //     }
+    //     items = items.filter(charm => {
+    //       if (this.actor.system.attributes[charm.system.ability]) {
+    //         return charm.system.requirement <= this.actor.system.attributes[charm.system.ability].value;
+    //       }
+    //       if (this.actor.system.abilities[charm.system.ability]) {
+    //         return charm.system.requirement <= this.actor.system.abilities[charm.system.ability].value;
+    //       }
+    //       return true;
+    //     });
+    //   }
+
+    //   const itemIds = [
+    //     ...Object.values(this.actor.items.filter(item => item.type === 'charm')).map(charm => charm._id),
+    //   ];
+    //   const itemNames = [
+    //     ...Object.values(this.actor.items.filter(item => item.type === 'charm')).map(charm => charm.name),
+    //   ];
+    //   items = items.filter(item => !itemNames.includes(item.name));
+    //   if (itemType === 'charm') {
+    //     items = items.filter(charm => {
+    //       return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => itemIds.includes(prerequisite.id));
+    //     });
+    //   }
+    //   for (var item of items) {
+    //     item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+    //   }
+
+    //   const sectionList = {};
+
+    //   for (const charm of items.sort(function (a, b) {
+    //     const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
+    //     const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+    //     return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+    //   })) {
+    //     if (charm.system.listingname) {
+    //       if (!sectionList[charm.system.listingname]) {
+    //         sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
+    //       }
+    //       sectionList[charm.system.listingname].list.push(charm);
+    //     }
+    //     else {
+    //       if (!sectionList[charm.system.ability]) {
+    //         sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
+    //       }
+    //       sectionList[charm.system.ability].list.push(charm);
+    //     }
+    //   }
+
+    //   const template = "systems/exaltedthird/templates/dialogues/import-item.html";
+    //   const html = await renderTemplate(template, { 'sectionList': sectionList });
+    //   new Dialog({
+    //     title: `Import Item`,
+    //     content: html,
+    //     buttons: {
+    //       closeImportItem: { label: "Close" }
+    //     },
+    //     render: (html) => {
+    //       html.find('.add-item').click(ev => {
+    //         ev.stopPropagation();
+    //         let li = $(ev.currentTarget).parents(".item");
+    //         let item = items.find((item) => item._id === li.data("item-id"));
+    //         this.actor.createEmbeddedDocuments("Item", [item])
+    //         html.find('.closeImportItem').trigger('click');
+    //       });
+
+    //       html.find('.collapsable').click(ev => {
+    //         const li = $(ev.currentTarget).next();
+    //         li.toggle("fast");
+    //       });
+    //     },
+    //   }, {
+    //     height: 800,
+    //     width: 650,
+    //     resizable: true, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
+    //   }).render(true);
+    // });
 
     html.find('#rollDice').mousedown(ev => {
       game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true);
@@ -2206,10 +2301,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 * @param {boolean} createMessage   Whether to automatically create a ChatMessage entity (if true), or only return
 *                                  the prepared message data (if false)
 */
-  async _displayCard(item, cardType="") {
+  async _displayCard(item, cardType = "") {
     const token = this.actor.token;
-    if(cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
-      if(item.system.active) {
+    if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
+      if (item.system.active) {
         cardType = "Deactivate";
       }
       else {

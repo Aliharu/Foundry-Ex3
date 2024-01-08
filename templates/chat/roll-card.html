@@ -70,7 +70,7 @@
             <b>{{localize "Ex3.TriggerOnTens"}}:</b> {{rollData.settings.triggerOnTens}}
         </div>
         <div>
-            {{#if rollData.rerollFailed}}<b>{{localize "Ex3.RerollFailed"}}</b>{{/if}}{{#if rollData.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
+            {{#if rollData.rerollFailed}}<b>{{localize "Ex3.RerollAllFailedOnce"}}</b>{{/if}}{{#if rollData.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
         </div>
         <div>
             {{#if rollData.difficulty}}<b>{{localize "Ex3.Difficulty"}}: </b>{{rollData.difficulty}}{{/if}}
@@ -128,7 +128,7 @@
                 </div>
                 {{/if}}
                 <div>
-                    {{#if rollData.damage.rerollFailed}}<b>{{localize "Ex3.RerollFailed"}}</b>{{/if}}{{#if rollData.damage.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
+                    {{#if rollData.damage.rerollFailed}}<b>{{localize "Ex3.RerollAllFailedOnce"}}</b>{{/if}}{{#if rollData.damage.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
                 </div>
                 <div>
                     <b>{{localize "Ex3.DicetoSuccesses"}}:</b> {{rollData.damage.diceToSuccesses}}

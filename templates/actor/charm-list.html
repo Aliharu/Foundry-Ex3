@@ -7,11 +7,14 @@
 {{#each actor.charms as |charm ability|}}
 {{#if charm.visible}}
 <div class="item d-flex flex-between mb-1 charm-list-collapsable cursor-pointer">
-    <li class="flexrow item-header">
+    <div class="flexrow item-header">
         <div class="item-name">{{localize charm.name}}</div>
-    </li>
+    </div>
     <div>
-        <i class="fas fa-caret-down"></i>
+        <!-- {{#if ../system.settings.editmode}}
+        <a class="fas fa-plus add-new-charm" data-ability="{{ability}}"><i></i></a>
+        {{/if}} -->
+        <a><i class="fas fa-caret-down"></i></a>
     </div>
 </div>
 <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>

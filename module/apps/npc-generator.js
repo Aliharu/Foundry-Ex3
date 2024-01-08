@@ -655,6 +655,7 @@ export default class NPCGenerator extends FormApplication {
     actorData.system.essence.value = this.object.character.essence;
     actorData.system.creaturetype = this.object.character.npcType;
     actorData.system.details.exalt = this.object.character.exalt;
+    actorData.system.details.caste = this.object.character.caste;
 
     const animaList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/animaEffectsList.json', {}, { int: 30000 });
     if (animaList[this.object.character.caste]) {

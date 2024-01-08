@@ -72,7 +72,6 @@ export class RollForm extends FormApplication {
             this.object.difficulty = data.difficulty || 0;
             this.object.resolve = 0;
             this.object.guile = 0;
-            this.object.isMagic = data.isMagic || false;
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
             this.object.weaponAccuracy = 0;
@@ -276,9 +275,6 @@ export class RollForm extends FormApplication {
                     }
                     if (this.object.weaponTags['aggravated']) {
                         this.object.damage.type = 'aggravated';
-                    }
-                    if (this.object.weaponTags["magicdamage"]) {
-                        this.object.isMagic = true;
                     }
                     if (this.object.weaponTags["improvised"]) {
                         this.object.cost.initiative += 1;
@@ -3390,7 +3386,7 @@ export class RollForm extends FormApplication {
         }
         if (this.object.target) {
             if (effectType === 'onslaught') {
-                return (this.object.target.actor.system.sizecategory === 'legendary' && this.object.target.actor.system.warstrider.equipped) && !this.object.isMagic && this.actor.system.sizecategory !== 'legendary' && !this.actor.system.warstrider.equipped;
+                return (this.object.target.actor.system.sizecategory === 'legendary' && this.object.target.actor.system.warstrider.equipped) && this.actor.system.sizecategory !== 'legendary' && !this.actor.system.warstrider.equipped;
             }
             if (effectType === 'withering') {
                 return (this.object.target.actor.system.sizecategory === 'legendary' || this.object.target.actor.system.warstrider.equipped) && this.actor.system.sizecategory !== 'legendary' && !this.actor.system.warstrider.equipped && this.object.finalDamageDice < 10;
