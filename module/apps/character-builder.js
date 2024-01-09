@@ -913,7 +913,7 @@ export default class CharacterBuilder extends FormApplication {
     items = items.filter(item => !itemIds.includes(item._id));
     if (itemType === 'charm') {
       items = items.filter(charm => {
-        return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => itemIds.includes(prerequisite.id));
+        return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
       });
     }
     for (var item of items) {

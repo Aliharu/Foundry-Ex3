@@ -2,7 +2,12 @@
     <div>
         {{localize "Ex3.Charms"}} <a><i class="fas fa-info-circle charms-cheat-sheet cursor-pointer"></i></a>
     </div>
-    <a class="item-control item-create" title="Create charm" data-type="charm"><i class="fas fa-plus"></i>Add Charm</a>
+    <div>
+        {{#ifEquals actor.type 'character'}}
+        <a class="item-control add-new-item" title="Import charm" data-type="charm"><i class="fas fa-edit"></i> {{localize "Ex3.Import"}}</a>
+        {{/ifEquals}}
+        <a class="item-control item-create" title="Create charm" data-type="charm"><i class="fas fa-plus"></i> {{localize "Ex3.Add"}}</a>
+    </div>
 </div>
 {{#each actor.charms as |charm ability|}}
 {{#if charm.visible}}
@@ -11,9 +16,11 @@
         <div class="item-name">{{localize charm.name}}</div>
     </div>
     <div>
-        <!-- {{#if ../system.settings.editmode}}
-        <a class="fas fa-plus add-new-charm" data-ability="{{ability}}"><i></i></a>
-        {{/if}} -->
+        {{#ifEquals actor.type 'character'}}
+            {{#if ../system.settings.editmode}}
+            <a class="fas fa-plus add-new-item" data-ability="{{ability}}" data-type="charm"><i></i></a>
+            {{/if}}
+        {{/ifEquals}}
         <a><i class="fas fa-caret-down"></i></a>
     </div>
 </div>
@@ -75,7 +82,12 @@
     <div>
         {{localize "Ex3.Spells"}}
     </div>
-    <a class="item-control item-create" title="Create spell" data-type="spell"><i class="fas fa-plus"></i>Add Spell</a>
+    <div>
+        {{#ifEquals actor.type 'character'}}
+        <a class="item-control add-new-item" title="Import spell" data-type="spell"><i class="fas fa-edit"></i> {{localize "Ex3.Import"}}</a>
+        {{/ifEquals}}
+        <a class="item-control item-create" title="Create spell" data-type="spell"><i class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+    </div>
 </div>
 {{#each actor.spells as |spell circle|}}
 {{#if spell.visible}}
@@ -84,6 +96,11 @@
         <div class="item-name">{{localize spell.name}}</div>
     </li>
     <div>
+        {{#ifEquals actor.type 'character'}}
+            {{#if ../system.settings.editmode}}
+            <a class="fas fa-plus add-new-item" data-type="spell" data-circle="{{circle}}"><i></i></a>
+            {{/if}}
+        {{/ifEquals}}
         <i class="fas fa-caret-down"></i>
     </div>
 </div>

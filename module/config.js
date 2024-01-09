@@ -325,6 +325,15 @@ exaltedthird.charmabilities = {
   universal: 'Ex3.Universal',
 };
 
+exaltedthird.circles = {
+  terrestrial: 'Ex3.Terrestrial',
+  celestial: 'Ex3.Celestial',
+  solar: 'Ex3.Solar',
+  ivory: 'Ex3.Ivory',
+  shadow: 'Ex3.Shadow',
+  void: 'Ex3.Void',
+};
+
 exaltedthird.languages = {
   "lowrealm": "Low Realm",
   "highrealm": "High Realm",

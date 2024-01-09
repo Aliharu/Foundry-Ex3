@@ -3,8 +3,7 @@
         <div>
             {{localize "Ex3.Items"}}
         </div>
-        <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i>Add
-            Item</a>
+        <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
     </div>
     {{#each actor.gear as |item id|}}
     <li class="item flexrow item-row" data-item-id="{{item._id}}">

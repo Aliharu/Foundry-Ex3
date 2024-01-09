@@ -1,4 +1,48 @@
 <div>
+    {{#if unifiedCharacterCreation}}
+    <table>
+        <tr style="text-align:center;">
+            <th>Trait</th>
+            <th>Cost</th>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Attribute</td>
+            <td>10 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Caste/Favored Attributes</td>
+            <td>8 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Abilities</td>
+            <td>5 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Caste/Favored Abilities</td>
+            <td>4 pre dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>New Specialty</td>
+            <td>2</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Merits</td>
+            <td>2 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Willpower</td>
+            <td>6 per dot</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>New Charm, Spell, or Evocation</td>
+            <td>12</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>New Caste/Favored Charm or Spell</td>
+            <td>10</td>
+        </tr>
+    </table>
+    {{else}}
     <p><b>Advancement Costs</b></p>
     {{#if flatXP}}
     <p><b>Flat Costs (Use other tables for fields not in this one)</b></p>
@@ -383,4 +427,5 @@
         </tr>
         {{/ifEquals}}
     </table>
+    {{/if}}
 </div>

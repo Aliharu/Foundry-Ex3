@@ -899,101 +899,174 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       subtractDefensePenalty(this.actor, 'Onslaught');
     });
 
-    // html.find('.add-new-charm').click(async ev => {
-    //   ev.preventDefault();
-    //   ev.stopPropagation();
-    //   const target = ev.currentTarget;
-    //   var ability = target.dataset.ability;
-    //   ability = this.actor.charms[ability].list[0]?.system.ability;
-    //   var itemType = 'charm';
+    html.find('.add-new-item').click(async ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const target = ev.currentTarget;
+      var itemType = target.dataset.type;
 
-    //   let items = game.items.filter(charm => charm.type === itemType);
-    //   items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
-    //   if (itemType === 'charm') {
-    //     if (this.object.exalt === 'exigent') {
-    //       items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exigent);
-    //     } else {
-    //       items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exalt);
-    //     }
-    //     if (ability) {
-    //       items = items.filter(charm => charm.system.ability === ability);
-    //     }
-    //     items = items.filter(charm => {
-    //       if (this.actor.system.attributes[charm.system.ability]) {
-    //         return charm.system.requirement <= this.actor.system.attributes[charm.system.ability].value;
-    //       }
-    //       if (this.actor.system.abilities[charm.system.ability]) {
-    //         return charm.system.requirement <= this.actor.system.abilities[charm.system.ability].value;
-    //       }
-    //       return true;
-    //     });
-    //   }
+      let items = game.items.filter(item => item.type === itemType);
+      if (itemType === 'charm') {
+        var ability = target.dataset.ability;
+        items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
+        if (this.object.exalt === 'exigent') {
+          items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exigent);
+        } else {
+          items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exalt);
+        }
+        if (ability) {
+          ability = this.actor.charms[ability].list[0]?.system.ability;
+          items = items.filter(charm => charm.system.ability === ability);
+        }
+        items = items.filter(charm => {
+          if (this.actor.system.attributes[charm.system.ability]) {
+            return charm.system.requirement <= this.actor.system.attributes[charm.system.ability].value;
+          }
+          if (this.actor.system.abilities[charm.system.ability]) {
+            return charm.system.requirement <= this.actor.system.abilities[charm.system.ability].value;
+          }
+          return true;
+        });
+      }
+      if (itemType === 'spell') {
+        items = items.filter(spell => {
+          if (spell.system.circle === 'terrestrial' && this.actor.system.settings.sorcerycircle !== 'none') {
+            return true;
+          }
+          if (spell.system.circle === 'celestial' && this.actor.system.settings.sorcerycircle !== 'terrestrial' && this.actor.system.settings.sorcerycircle !== 'none') {
+            return true;
+          }
+          if (spell.system.circle === 'solar' && this.actor.system.settings.sorcerycircle === 'solar') {
+            return true;
+          }
+          if (spell.system.circle === 'ivory' && this.actor.system.settings.necromancycircle !== 'none') {
+            return true;
+          }
+          if (spell.system.circle === 'shadow' && this.actor.system.settings.necromancycircle !== 'ivory' && this.actor.system.settings.necromancycircle !== 'none') {
+            return true;
+          }
+          if (spell.system.circle === 'void' && this.actor.system.settings.necromancycircle === 'void') {
+            return true;
+          }
+          return false;
+        });
+      }
+      const itemIds = this.actor.items.map(item => {
+        const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
+        const sections = sourceId.split('.'); // Split the sourceId by periods
+        return sections.length > 1 ? sections.pop() : '';
+      }).filter(section => section.trim() !== '');
+      // const itemIds = [
+      //   ...Object.values(this.actor.items.filter(item => item.type === 'charm')).map(charm => charm._id),
+      // ];
+      items = items.filter(item => !itemIds.includes(item._id));
+      if (itemType === 'charm') {
+        items = items.filter(charm => {
+          return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
+        });
+      }
+      for (var item of items) {
+        item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+      }
 
-    //   const itemIds = [
-    //     ...Object.values(this.actor.items.filter(item => item.type === 'charm')).map(charm => charm._id),
-    //   ];
-    //   const itemNames = [
-    //     ...Object.values(this.actor.items.filter(item => item.type === 'charm')).map(charm => charm.name),
-    //   ];
-    //   items = items.filter(item => !itemNames.includes(item.name));
-    //   if (itemType === 'charm') {
-    //     items = items.filter(charm => {
-    //       return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.some(prerequisite => itemIds.includes(prerequisite.id));
-    //     });
-    //   }
-    //   for (var item of items) {
-    //     item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
-    //   }
+      const sectionList = {};
 
-    //   const sectionList = {};
+      if (itemType === 'spell') {
+        var circle = target.dataset.circle;
+        if (circle) {
+          sectionList[circle] = {
+            name: CONFIG.exaltedthird.circles[circle],
+            list: items.filter(item => item.system.circle === circle)
+          }
+        } else {
+          if (items.some(item => item.system.circle === 'terrestrial')) {
+            sectionList['terrestrial'] = {
+              name: game.i18n.localize("Ex3.Terrestrial"),
+              list: items.filter(item => item.system.circle === 'terrestrial')
+            }
+          }
+          if (items.some(item => item.system.circle === 'celestial')) {
+            sectionList['celestial'] = {
+              name: game.i18n.localize("Ex3.Celestial"),
+              list: items.filter(item => item.system.circle === 'celestial')
+            }
+          }
+          if (items.some(item => item.system.circle === 'solar')) {
+            sectionList['solar'] = {
+              name: game.i18n.localize("Ex3.Solar"),
+              list: items.filter(item => item.system.circle === 'solar')
+            }
+          }
+          if (items.some(item => item.system.circle === 'ivory')) {
+            sectionList['ivory'] = {
+              name: game.i18n.localize("Ex3.Ivory"),
+              list: items.filter(item => item.system.circle === 'ivory')
+            }
+          }
+          if (items.some(item => item.system.circle === 'shadow')) {
+            sectionList['shadow'] = {
+              name: game.i18n.localize("Ex3.Shadow"),
+              list: items.filter(item => item.system.circle === 'shadow')
+            }
+          }
+          if (items.some(item => item.system.circle === 'void')) {
+            sectionList['void'] = {
+              name: game.i18n.localize("Ex3.Void"),
+              list: items.filter(item => item.system.circle === 'void')
+            }
+          }
+        }
 
-    //   for (const charm of items.sort(function (a, b) {
-    //     const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
-    //     const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-    //     return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-    //   })) {
-    //     if (charm.system.listingname) {
-    //       if (!sectionList[charm.system.listingname]) {
-    //         sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
-    //       }
-    //       sectionList[charm.system.listingname].list.push(charm);
-    //     }
-    //     else {
-    //       if (!sectionList[charm.system.ability]) {
-    //         sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
-    //       }
-    //       sectionList[charm.system.ability].list.push(charm);
-    //     }
-    //   }
+      }
+      else {
+        for (const charm of items.sort(function (a, b) {
+          const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
+          const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+        })) {
+          if (charm.system.listingname) {
+            if (!sectionList[charm.system.listingname]) {
+              sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
+            }
+            sectionList[charm.system.listingname].list.push(charm);
+          }
+          else {
+            if (!sectionList[charm.system.ability]) {
+              sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
+            }
+            sectionList[charm.system.ability].list.push(charm);
+          }
+        }
+      }
 
-    //   const template = "systems/exaltedthird/templates/dialogues/import-item.html";
-    //   const html = await renderTemplate(template, { 'sectionList': sectionList });
-    //   new Dialog({
-    //     title: `Import Item`,
-    //     content: html,
-    //     buttons: {
-    //       closeImportItem: { label: "Close" }
-    //     },
-    //     render: (html) => {
-    //       html.find('.add-item').click(ev => {
-    //         ev.stopPropagation();
-    //         let li = $(ev.currentTarget).parents(".item");
-    //         let item = items.find((item) => item._id === li.data("item-id"));
-    //         this.actor.createEmbeddedDocuments("Item", [item])
-    //         html.find('.closeImportItem').trigger('click');
-    //       });
+      const template = "systems/exaltedthird/templates/dialogues/import-item.html";
+      const html = await renderTemplate(template, { 'sectionList': sectionList });
+      new Dialog({
+        title: `Import Item`,
+        content: html,
+        buttons: {
+          closeImportItem: { label: "Close" }
+        },
+        render: (html) => {
+          html.find('.add-item').click(ev => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let item = items.find((item) => item._id === li.data("item-id"));
+            this.actor.createEmbeddedDocuments("Item", [item])
+            html.find('.closeImportItem').trigger('click');
+          });
 
-    //       html.find('.collapsable').click(ev => {
-    //         const li = $(ev.currentTarget).next();
-    //         li.toggle("fast");
-    //       });
-    //     },
-    //   }, {
-    //     height: 800,
-    //     width: 650,
-    //     resizable: true, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
-    //   }).render(true);
-    // });
+          html.find('.collapsable').click(ev => {
+            const li = $(ev.currentTarget).next();
+            li.toggle("fast");
+          });
+        },
+      }, {
+        height: 800,
+        width: 650,
+        resizable: true, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
+      }).render(true);
+    });
 
     html.find('#rollDice').mousedown(ev => {
       game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true);
@@ -1873,7 +1946,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       default:
         break;
     }
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP") });
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP"), 'unifiedCharacterCreation': game.settings.get("exaltedthird", "unifiedCharacterCreation") });
     new Dialog({
       title: `Info Dialogue`,
       content: html,
