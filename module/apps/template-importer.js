@@ -459,31 +459,31 @@ export default class TemplateImporter extends FormApplication {
   }
 
   async _getFolder(html) {
-    // var folderId = html.find('#folder').val();
-    // var folder = null;
-
-    // if(folderId) {
-    //   folder = game.folders.get(folderId);
-    // }
-
-    var folderName = html.find('#folder').val();
+    var folderId = html.find('#folder').val();
     var folder = null;
 
-    var folderType = 'Item';
-
-    if (this.type === 'qc' || this.type === 'character') {
-      folderType = "Actor";
+    if(folderId) {
+      folder = game.folders.get(folderId);
     }
 
-    if (folderName) {
-      folder = game.folders.find(folder => {
-        return folder.name === folderName && folder.type === folderType;
-      });
+    // var folderName = html.find('#folder').val();
+    // var folder = null;
 
-      if (!folder) {
-        folder = await Folder.create({ name: folderName, type: folderType });
-      }
-    }
+    // var folderType = 'Item';
+
+    // if (this.type === 'qc' || this.type === 'character') {
+    //   folderType = "Actor";
+    // }
+
+    // if (folderName) {
+    //   folder = game.folders.find(folder => {
+    //     return folder.name === folderName && folder.type === folderType;
+    //   });
+
+    //   if (!folder) {
+    //     folder = await Folder.create({ name: folderName, type: folderType });
+    //   }
+    // }
     return folder;
   }
 
