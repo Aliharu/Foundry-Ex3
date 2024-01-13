@@ -757,27 +757,28 @@ export default class CharacterBuilder extends FormApplication {
       else {
         const items = this._getItemList(event);
         var item = items[Math.floor(Math.random() * items.length)];
-        const newItem = duplicate(item);
-        this.getEnritchedHTML(newItem);
-
-        if (item.type === 'ritual') {
-          this.object.character.ritual = newItem;
-        }
-        else {
-          if (newItem) {
-            this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-
-            if (type === 'charms') {
-              if (this.object.character.abilities[newItem.system.ability]) {
-                this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
-              }
-              if (this.object.character.attributes[newItem.system.ability]) {
-                this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
+        if(item) {
+          const newItem = duplicate(item);
+          this.getEnritchedHTML(newItem);
+  
+          if (item.type === 'ritual') {
+            this.object.character.ritual = newItem;
+          }
+          else {
+            if (newItem) {
+              this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
+  
+              if (type === 'charms') {
+                if (this.object.character.abilities[newItem.system.ability]) {
+                  this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
+                }
+                if (this.object.character.attributes[newItem.system.ability]) {
+                  this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
+                }
               }
             }
           }
         }
-
       }
       await this.onChange(event);
     });
@@ -791,6 +792,17 @@ export default class CharacterBuilder extends FormApplication {
       }
       else {
         const index = event.currentTarget.dataset.index;
+        if (this.object.character[type][index].type === 'charm') {
+          const charm = this.object.character[type][index];
+          if (this.object.character.abilities[charm.system.ability]) {
+            const index = Object.values(this.object.character.abilities[charm.system.ability].charms).indexOf(charm);
+            delete this.object.character.abilities[charm.system.ability].charms[index];
+          }
+          if (this.object.character.attributes[charm.system.ability]) {
+            const index = Object.values(this.object.character.attributes[charm.system.ability].charms).indexOf(charm);
+            delete this.object.character.attributes[charm.system.ability].charms[index];
+          }
+        }
         delete this.object.character[type][index];
       }
       await this.onChange(event);

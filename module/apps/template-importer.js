@@ -2209,6 +2209,13 @@ export default class TemplateImporter extends FormApplication {
       this.render();
     });
 
+    html.on("change", "#spellCircle", ev => {
+      this.spellCircle = ev.currentTarget.value;
+      this.textBox = html.find('#template-text').val();
+      this.folder = html.find('#folder').val();
+      this.render();
+    });
+
     html.on("change", "#itemType", ev => {
       this.itemType = ev.currentTarget.value;
       this.textBox = html.find('#template-text').val();
@@ -2259,17 +2266,17 @@ export default class TemplateImporter extends FormApplication {
       this.folder = html.find('#folder').val();
       this.showError = false;
       if (this.type === 'charm') {
-        this.createCharm(html);
+        await this.createCharm(html);
       } else if (this.type === 'spell') {
-        this.createSpell(html);
+        await this.createSpell(html);
       } else if (this.type === 'qc') {
-        this.createQuickCharacter(html);
+        await this.createQuickCharacter(html);
       }
       else if (this.type === 'adversary') {
-        this.createAdversary(html);
+        await this.createAdversary(html);
       }
       else if (this.type === 'other') {
-        this.createOther(html);
+        await this.createOther(html);
       }
       this.render();
     });
