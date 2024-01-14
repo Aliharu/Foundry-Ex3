@@ -1579,7 +1579,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     var oxBodyText = '';
 
     if (this.actor.type !== 'npc') {
-      if (this.actor.system.details.exalt === 'solar') {
+      if (this.actor.system.details.exalt === 'solar' || this.actor.system.details.exalt === 'abyssal') {
         if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: One -1 and one -2 level.';
         }

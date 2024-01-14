@@ -93,6 +93,12 @@
           </select>
         </div>
         {{/ifEquals}}
+        {{#if data.oxBodyEnabled}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.OxBodies"}}</div>
+          <input name="object.character.oxBodies" type="number" value="{{data.character.oxBodies}}" />
+        </div>
+        {{/if}}
       </div>
     </header>
     {{!-- Sheet Tab Navigation --}}
@@ -573,7 +579,16 @@
           <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
-            <h4 class="item-name">{{item.name}}</h4>
+            <h4 class="item-name">{{item.name}}
+
+              <a class="item-control lower-charm-count" title="Lower Charm Count" data-type="charms"
+              data-index="{{index}}"><i
+                class="fas fa-minus"></i></a>
+                {{item.itemCount}}
+                <a class="item-control add-charm-count" title="Add Charm Count" data-type="charms"
+                data-index="{{index}}"><i
+                class="fas fa-plus"></i></a>
+            </h4>
             <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="charms"
                 data-index="{{index}}"><i class="fas fa-trash"></i></a>
           </li>

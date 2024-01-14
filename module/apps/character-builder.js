@@ -64,6 +64,7 @@ export default class CharacterBuilder extends FormApplication {
           supernal: "",
           essence: 1,
           willpower: 5,
+          oxBodies: 0,
           showAttributeCharms: true,
           showAbilityCharms: true,
           attributes: {
@@ -702,6 +703,7 @@ export default class CharacterBuilder extends FormApplication {
             let li = $(ev.currentTarget).parents(".item");
             let item = items.find((item) => item._id === li.data("item-id"));
             const newItem = duplicate(item);
+            newItem.itemCount = 1;
             this.getEnritchedHTML(newItem);
             if (item.type === 'ritual') {
               this.object.character.ritual = newItem;
@@ -757,17 +759,18 @@ export default class CharacterBuilder extends FormApplication {
       else {
         const items = this._getItemList(event);
         var item = items[Math.floor(Math.random() * items.length)];
-        if(item) {
+        if (item) {
           const newItem = duplicate(item);
+          newItem.itemCount = 1;
           this.getEnritchedHTML(newItem);
-  
+
           if (item.type === 'ritual') {
             this.object.character.ritual = newItem;
           }
           else {
             if (newItem) {
               this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-  
+
               if (type === 'charms') {
                 if (this.object.character.abilities[newItem.system.ability]) {
                   this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
@@ -808,6 +811,22 @@ export default class CharacterBuilder extends FormApplication {
       await this.onChange(event);
     });
 
+
+    html.find(".lower-charm-count").on("click", async (event) => {
+      const type = event.currentTarget.dataset.type;
+      const index = event.currentTarget.dataset.index;
+      if(this.object.character[type][index].itemCount > 0) {
+        this.object.character[type][index].itemCount--;
+      }
+      await this.onChange(event);
+    });
+
+    html.find(".add-charm-count").on("click", async (event) => {
+      const type = event.currentTarget.dataset.type;
+      const index = event.currentTarget.dataset.index;
+      this.object.character[type][index].itemCount++;
+      await this.onChange(event);
+    });
 
     html.find('.item-row').click(ev => {
       const li = $(ev.currentTarget).next();
@@ -1053,6 +1072,19 @@ export default class CharacterBuilder extends FormApplication {
       this.object.character.showAttributeCharms = false;
       this.object.character.showAbilityCharms = true;
     }
+
+    const oxBodyAvailable = [
+      'solar',
+      'lunar',
+      'abyssal',
+      'sidereal',
+      'janest',
+      'sovereign',
+      'architect',
+      'puppeteer'
+    ]
+
+    this.object.oxBodyEnabled = (oxBodyAvailable.includes(this.object.character.exalt) || oxBodyAvailable.includes(this.object.character.exigent));
 
     this._calculateSpentExperience(ev);
 
@@ -1336,12 +1368,12 @@ export default class CharacterBuilder extends FormApplication {
 
     for (const [key, charm] of Object.entries(this.object.character.charms)) {
       if (this.object.character.attributes[charm.system.ability] && this.object.character.attributes[charm.system.ability].favored) {
-        favoredCharms++;
+        favoredCharms += charm.itemCount;
       } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored) {
-        favoredCharms++;
+        favoredCharms += charm.itemCount;
       }
       else {
-        nonFavoredCharms++;
+        nonFavoredCharms += charm.itemCount;
       }
     }
     favoredCharms += Object.entries(this.object.character.evocations).length;
@@ -1622,6 +1654,50 @@ export default class CharacterBuilder extends FormApplication {
     }
     if (actorData.system.details.exalt === 'mortal') {
       actorData.system.settings.showanima = false;
+    }
+
+    if (this.object.character.oxBodies > 0) {
+      const oxBodyChart = CONFIG.exaltedthird.oxBody;
+      if (oxBodyChart[this.object.character.exalt]) {
+        if (this.object.character.attributes.stamina.value < 3) {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].zero.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].zero.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].zero.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].zero.four * this.object.character.oxBodies);
+        }
+        else if (this.object.character.attributes.stamina.value < 5) {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].three.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].three.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].three.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].three.four * this.object.character.oxBodies);
+        }
+        else {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].five.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].five.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].five.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].five.four * this.object.character.oxBodies);
+        }
+      }
+      if (oxBodyChart[this.object.character.exigent]) {
+        if (this.object.character.attributes.stamina.value < 3) {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exigent].zero.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exigent].zero.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exigent].zero.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exigent].zero.four * this.object.character.oxBodies);
+        }
+        else if (this.object.character.attributes.stamina.value < 5) {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exigent].three.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exigent].three.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exigent].three.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exigent].three.four * this.object.character.oxBodies);
+        }
+        else {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exigent].five.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exigent].five.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exigent].five.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exigent].five.four * this.object.character.oxBodies);
+        }
+      }
     }
 
     actorData.system.settings.sorcerycircle = this.object.character.sorcerer;

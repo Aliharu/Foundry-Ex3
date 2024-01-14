@@ -532,13 +532,13 @@ exaltedthird.casteabilitiesmap = {
     'integrity', 'larceny', 'linguistics', 'lore', 'performance', 'presence', 'resistance', 'survival',
   ],
   'daybreak': [
-    'awareness','bureaucracy','craft','investigation','lore','medicine','occult', 'sail'
+    'awareness', 'bureaucracy', 'craft', 'investigation', 'lore', 'medicine', 'occult', 'sail'
   ],
   'day': [
-    'athletics','awareness','investigation','dodge','larceny','socialize','stealth','survival',
+    'athletics', 'awareness', 'investigation', 'dodge', 'larceny', 'socialize', 'stealth', 'survival',
   ],
   'moonshadow': [
-    'bureaucracy','integrity','linguistics','occult','presence','ride','sail', 'socialize'
+    'bureaucracy', 'integrity', 'linguistics', 'occult', 'presence', 'ride', 'sail', 'socialize'
   ],
 };
 
@@ -661,3 +661,166 @@ exaltedthird.statusEffects = [
     label: 'Ex3.Incapacitated',
   },
 ]
+
+exaltedthird.oxBody = {
+  'solar': {
+    zero: {
+      zero: 0,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 1,
+      two: 2,
+      four: 0,
+    },
+    five: {
+      zero: 1,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+  },
+  'abyssal': {
+    zero: {
+      zero: 0,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 1,
+      two: 2,
+      four: 0,
+    },
+    five: {
+      zero: 1,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+  },
+  'lunar': {
+    zero: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 1,
+    },
+    five: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 2,
+    },
+  },
+  'dragonblooded': {
+    zero: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+    five: {
+      zero: 0,
+      one: 1,
+      two: 2,
+      four: 0,
+    },
+  },
+  'sidereal': {
+    zero: {
+      zero: 1,
+      one: 0,
+      two: 0,
+      four: 0,
+    },
+    three: {
+      zero: 1,
+      one: 1,
+      two: 0,
+      four: 0,
+    },
+    five: {
+      zero: 2,
+      one: 0,
+      two: 0,
+      four: 0,
+    },
+  },
+  'puppeteer': {
+    zero: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+    five: {
+      zero: 0,
+      one: 2,
+      two: 0,
+      four: 0,
+    },
+  },
+  'architect': {
+    zero: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 1,
+    },
+    five: {
+      zero: 0,
+      one: 1,
+      two: 2,
+      four: 0,
+    },
+  },
+  'sovereign': {
+    zero: {
+      zero: 0,
+      one: 0,
+      two: 1,
+      four: 1,
+    },
+    three: {
+      zero: 0,
+      one: 0,
+      two: 1,
+      four: 2,
+    },
+    five: {
+      zero: 0,
+      one: 0,
+      two: 1,
+      four: 3,
+    },
+  },
+};
