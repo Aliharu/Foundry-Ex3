@@ -909,8 +909,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (itemType === 'charm') {
         var ability = target.dataset.ability;
         items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
-        if (this.object.exalt === 'exigent') {
-          items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exigent);
+        if (this.actor.system.details.exalt === 'exigent') {
+          items = items.filter(charm => charm.system.charmtype === this.actor.system.details.caste.toLowerCase());
         } else {
           items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exalt);
         }
