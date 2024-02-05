@@ -1101,6 +1101,7 @@
           "enabled": false,
           "dicemodifier": 0,
           "successmodifier": 0,
+          "rerollsuccesses": 0,
           "defense": 0,
           "soak": 0,
           "shieldinitiative": 0,

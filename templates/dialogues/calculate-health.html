@@ -28,11 +28,6 @@
             </div>
             {{#ifEquals healthType 'person'}}
             <div style="margin-top:5px;">
-                <label class="resource-label">{{localize "Ex3.HealthPenaltyModifier"}}</label>
-                <div>{{localize "Ex3.HealthPenaltyText"}}</div>
-                <div>
-                    <input id="penaltyMod" type="number" value="{{penaltyMod}}" data-dtype="Number" />
-                </div>
                 {{#if hasOxBody}}
                 <!-- <button style="margin-top:5px;" class="add-ox-body">{{localize
                     "Ex3.AddOxBody"}}</button> -->

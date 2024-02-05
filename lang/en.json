@@ -679,6 +679,7 @@
     "Ex3.IncreaseEnemyDefense": "Increase Enemy Defense",
     "Ex3.SubtractInitiative": "Subtract Initiative",
     "Ex3.SubtractSuccesses": "Subtract Successes",
+    "Ex3.RerollSuccesses": "Reroll Successes",
     "Ex3.TriggerOnEnemyOnes": "Trigger On Enemy Ones",
     "Ex3.IncreaseSoak": "Increase Soak",
     "Ex3.IncreaseDefense": "Increase Defense",
@@ -836,6 +837,7 @@
 
     "Ex3.Captain": "Captain",
     "Ex3.Gull": "Gull",
+    "Ex3.Mast": "Mast",
     "Ex3.Messenger": "Messenger",
     "Ex3.ShipsWheel": "Ship's Wheel",
     "Ex3.Ewer": "Ewer",
@@ -846,6 +848,7 @@
     "Ex3.Banner": "Banner",
     "Ex3.Gauntlet": "Gauntlet",
     "Ex3.Shield": "Shield",
+    "Ex3.Quiver": "Quiver",
     "Ex3.Gaurdians": "Gaurdians",
     "Ex3.Key": "Key",
     "Ex3.Mask": "Mask",

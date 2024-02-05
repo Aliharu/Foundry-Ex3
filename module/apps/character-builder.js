@@ -8,6 +8,7 @@ export default class CharacterBuilder extends FormApplication {
       this.object.template = 'custom';
       this.object.availableCastes = {};
       this.object.abilityList = CONFIG.exaltedthird.abilities;
+      this.object.signList = CONFIG.exaltedthird.siderealSigns;
       this.object.creationData = {
         physical: 'primary',
         social: 'secondary',
@@ -62,6 +63,10 @@ export default class CharacterBuilder extends FormApplication {
           caste: "",
           exigent: "",
           supernal: "",
+          tell: "",
+          spiritShape: "",
+          birthSign: "",
+          exaltSign: "",
           essence: 1,
           willpower: 5,
           oxBodies: 0,
@@ -1638,6 +1643,10 @@ export default class CharacterBuilder extends FormApplication {
       actorData.system.details.supernal = this.object.character.supernal;
       actorData.system.details.apocalyptic = this.object.character.supernal;
     }
+    actorData.system.details.tell = this.object.character.tell;
+    actorData.system.details.spriitshape = this.object.character.spriitShape;
+    actorData.system.details.birthsign = this.object.character.birthSign;
+    actorData.system.details.exaltsign = this.object.character.exaltSign;
     actorData.system.details.caste = this.object.character.caste;
     actorData.system.willpower.max = this.object.character.willpower;
     actorData.system.willpower.value = this.object.character.willpower;

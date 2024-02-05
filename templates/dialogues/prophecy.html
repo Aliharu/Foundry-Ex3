@@ -5,39 +5,13 @@
         <label class="resource-label">{{localize "Ex3.Sign"}}:</label>
         <select class="sign-select" name="object.sign" data-type="String">
           {{#select data.sign}}
-          <optgroup label="Journeys">
-            <option value="captain">{{localize "Ex3.Captain"}}</option>
-            <option value="gull">{{localize "Ex3.Gull"}}</option>
-            <option value="mast">{{localize "Ex3.Messenger"}}</option>
-            <option value="shipswheel">{{localize "Ex3.ShipsWheel"}}</option>
+          {{#each data.signList as |signCategory signCategoryType|}}
+          <optgroup label="{{signCategory.label}}">
+            {{#each signCategory.signs as |sign signType|}}
+            <option value="{{signType}}">{{localize sign}}</option>
+            {{/each}}
           </optgroup>
-          <optgroup label="Serenity">
-            <option value="bind">{{localize "Ex3.Ewer"}}</option>
-            <option value="lovers">{{localize "Ex3.Lovers"}}</option>
-            <option value="musician">{{localize "Ex3.Musician"}}</option>
-            <option value="peacock">{{localize "Ex3.Peacock"}}</option>
-            <option value="pillar">{{localize "Ex3.Pillar"}}</option>
-          </optgroup>
-          <optgroup label="Battles">
-            <option value="banner">{{localize "Ex3.Banner"}}</option>
-            <option value="gauntlet">{{localize "Ex3.Gauntlet"}}</option>
-            <option value="shield">{{localize "Ex3.Shield"}}</option>
-            <option value="spear">{{localize "Ex3.Spear"}}</option>
-          </optgroup>
-          <optgroup label="Secrets">
-            <option value="gaurdians">{{localize "Ex3.Gaurdians"}}</option>
-            <option value="key">{{localize "Ex3.Key"}}</option>
-            <option value="mask">{{localize "Ex3.Mask"}}</option>
-            <option value="sorcerer">{{localize "Ex3.Sorcerer"}}</option>
-            <option value="treasuretrove">{{localize "Ex3.TreasureTrove"}}</option>
-          </optgroup>
-          <optgroup label="Endings">
-            <option value="corpse">{{localize "Ex3.Corpse"}}</option>
-            <option value="crow">{{localize "Ex3.Crow"}}</option>
-            <option value="haywain">{{localize "Ex3.Haywain"}}</option>
-            <option value="risingsmoke">{{localize "Ex3.RisingSmoke"}}</option>
-            <option value="sword">{{localize "Ex3.Sword"}}</option>
-          </optgroup>
+          {{/each}}
           <option value="">{{localize "Ex3.None"}}</option>
           {{/select}}
         </select>

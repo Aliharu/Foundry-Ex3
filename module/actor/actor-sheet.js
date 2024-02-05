@@ -70,6 +70,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       async: true
     });
     context.attributeList = CONFIG.exaltedthird.attributes;
+    context.signList = CONFIG.exaltedthird.siderealSigns;
     context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
     context.rollData = context.actor.getRollData();
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
@@ -1695,7 +1696,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       templateData.two = this.actor.system.health.levels.two.value;
       templateData.three = this.actor.system.health.levels.three.value;
       templateData.four = this.actor.system.health.levels.four.value;
-      templateData.penaltyMod = this.actor.system.health.penaltymod;
       if (this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['janest', 'strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
         templateData.hasOxBody = true;
       }
@@ -1721,7 +1721,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           let one = parseInt(html.find('#one').val()) || 0;
           let two = parseInt(html.find('#two').val()) || 0;
           let four = parseInt(html.find('#four').val()) || 0;
-          let penaltyMod = parseInt(html.find('#penaltyMod').val()) || 0;
           let healthData = {
             levels: {
               zero: {
@@ -1737,7 +1736,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                 value: four,
               },
             },
-            penaltymod: penaltyMod,
             bashing: 0,
             lethal: 0,
             aggravated: 0,

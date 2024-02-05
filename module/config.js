@@ -662,6 +662,59 @@ exaltedthird.statusEffects = [
   },
 ]
 
+exaltedthird.siderealSigns = {
+  journeys: {
+    label: "Journeys",
+    signs: {
+      captain: "Ex3.Captain",
+      gull: "Ex3.Gull",
+      mast: "Ex3.Captain",
+      messenger: "Ex3.Messenger",
+      shipswheel: "Ex3.ShipsWheel",
+    },
+  },
+  serenity: {
+    label: "Serenity",
+    signs: {
+      ewer: "Ex3.Ewer",
+      lovers: "Ex3.Lovers",
+      musician: "Ex3.Musician",
+      peacock: "Ex3.Peacock",
+      pillar: "Ex3.Pillar",
+    },
+  },
+  battles: {
+    label: "Battles",
+    signs: {
+      banner: "Ex3.Banner",
+      gauntlet: "Ex3.Gauntlet",
+      quiver: "Ex3.Quiver",
+      shield: "Ex3.Shield",
+      spear: "Ex3.Spear",
+    },
+  },
+  secrets: {
+    label: "Secrets",
+    signs: {
+      gaurdians: "Ex3.Gaurdians",
+      key: "Ex3.Key",
+      mask: "Ex3.Mask",
+      sorcerer: "Ex3.Sorcerer",
+      treasuretrove: "Ex3.TreasureTrove",
+    },
+  },
+  endings: {
+    label: "Endings",
+    signs: {
+      corpse: "Ex3.Corpse",
+      crow: "Ex3.Crow",
+      haywain: "Ex3.Haywain",
+      risingsmoke: "Ex3.RisingSmoke",
+      sword: "Ex3.Sword",
+    },
+  },
+}
+
 exaltedthird.oxBody = {
   'solar': {
     zero: {

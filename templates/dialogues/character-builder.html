@@ -93,6 +93,48 @@
           </select>
         </div>
         {{/ifEquals}}
+        {{#ifEquals data.character.exalt 'lunar'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.SpiritShape"}}</div>
+          <input name="object.character.spiritShape" type="number" value="{{data.character.spiritShape}}" />
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.Tell"}}</div>
+          <input name="object.character.tell" type="number" value="{{data.character.tell}}" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals data.character.exalt 'sidereal'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.BirthSign"}}</div>
+          <select name="object.character.birthSign" data-type="String">
+            {{#select data.character.birthSign}}
+            {{#each data.signList as |signCategory signCategoryType|}}
+            <optgroup label="{{signCategory.label}}">
+              {{#each signCategory.signs as |sign signType|}}
+              <option value="{{signType}}">{{localize sign}}</option>
+              {{/each}}
+            </optgroup>
+            {{/each}}
+            <option value="">{{localize "Ex3.None"}}</option>
+            {{/select}}
+          </select>
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.ExaltationSign"}}</div>
+          <select name="object.character.exaltSign" data-type="String">
+            {{#select data.character.exaltSign}}
+            {{#each data.signList as |signCategory signCategoryType|}}
+            <optgroup label="{{signCategory.label}}">
+              {{#each signCategory.signs as |sign signType|}}
+              <option value="{{signType}}">{{localize sign}}</option>
+              {{/each}}
+            </optgroup>
+            {{/each}}
+            <option value="">{{localize "Ex3.None"}}</option>
+            {{/select}}
+          </select>
+        </div>
+        {{/ifEquals}}
         {{#if data.oxBodyEnabled}}
         <div>
           <div class="resource-label">{{localize "Ex3.OxBodies"}}</div>
@@ -536,7 +578,8 @@
       <div class="tab flex-center" data-group="primary" data-tab="merits">
         <div class="resource-content flex-center mt-2" style="font-size: 24px;">
           <label class="resource-label">{{localize "Ex3.Merits"}}</label>
-          <a class="item-control random-item" title="Random merit" data-type="merits" data-item="merit"><i class="fas fa-dice"></i></a>
+          <a class="item-control random-item" title="Random merit" data-type="merits" data-item="merit"><i
+              class="fas fa-dice"></i></a>
           <a class="item-control add-item" title="Create merit" data-type="merits"><i class="fas fa-plus"></i></a>
           <a class="item-control import-item" title="Import merit" data-type="merits" data-item="merit"><i
               class="fas fa-edit"></i></a>
@@ -582,12 +625,10 @@
             <h4 class="item-name">{{item.name}}
 
               <a class="item-control lower-charm-count" title="Lower Charm Count" data-type="charms"
-              data-index="{{index}}"><i
-                class="fas fa-minus"></i></a>
-                {{item.itemCount}}
-                <a class="item-control add-charm-count" title="Add Charm Count" data-type="charms"
-                data-index="{{index}}"><i
-                class="fas fa-plus"></i></a>
+                data-index="{{index}}"><i class="fas fa-minus"></i></a>
+              {{item.itemCount}}
+              <a class="item-control add-charm-count" title="Add Charm Count" data-type="charms"
+                data-index="{{index}}"><i class="fas fa-plus"></i></a>
             </h4>
             <div class="item-controls"><a class="item-control delete-item" title="Remove Charm" data-type="charms"
                 data-index="{{index}}"><i class="fas fa-trash"></i></a>
@@ -625,7 +666,7 @@
         <div class="resource-content flexrow flex-center flex-between mt-2">
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Evocations"}}
             <a><i class="fas fa-dice cursor-pointer random-item" title="Random Evocation" data-type="evocations"
-              data-item="evocation"></i></a>
+                data-item="evocation"></i></a>
             <a class="item-control import-item" title="Import evocation" data-type="evocations" data-item="evocation"><i
                 class="fas fa-edit"></i></a></label>
         </div>
@@ -672,7 +713,7 @@
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.MartialArts"}} {{localize
             "Ex3.Charms"}}
             <a><i class="fas fa-dice cursor-pointer random-item" title="Random MA Charm" data-type="martialArtsCharms"
-              data-item="martialArtCharm"></i></a>
+                data-item="martialArtCharm"></i></a>
             <a class="item-control import-item" title="Import MA charm" data-type="martialArtsCharms"
               data-item="martialArtCharm"><i class="fas fa-edit"></i></a></label>
         </div>

@@ -802,6 +802,7 @@ export default class TemplateImporter extends FormApplication {
             "showescort": false,
             "usetenattributes": false,
             "editmode": false,
+            "showanima": false,
           },
         }
       };
@@ -968,6 +969,7 @@ export default class TemplateImporter extends FormApplication {
           "showescort": false,
           "usetenattributes": false,
           "editmode": false,
+          "showanima": false,
         },
       }
     };
@@ -1197,7 +1199,7 @@ export default class TemplateImporter extends FormApplication {
       while (textArray[index].includes('Attack')) {
         this.errorSection = 'Attacks';
         var attackString = textArray[index];
-        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement')) {
+        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement') && !textArray[index + 1].includes('Evasion:')) {
           attackString += textArray[index + 1];
           index++;
         }
@@ -1334,6 +1336,7 @@ export default class TemplateImporter extends FormApplication {
     if (!isAdversary) {
       actorData.system.creaturetype = 'exalt';
     }
+    actorData.system.settings.showanima = true;
     actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').toLowerCase().replace(/\s+/g, "").trim();
     if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste)) {
       actorData.system.details.exalt = 'dragonblooded';
@@ -1404,12 +1407,12 @@ export default class TemplateImporter extends FormApplication {
               index++;
               newItem = true;
             }
-            if (textArray[index].trim().toLowerCase() === 'intimacies') {
+            else if (textArray[index].trim().toLowerCase() === 'intimacies') {
               itemType = 'intimacy';
               index++;
               newItem = true;
             }
-            if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations') || textArray[index].trim().toLowerCase() === 'anima') {
+            else if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations') || textArray[index].trim().toLowerCase() === 'anima') {
               charmSystemData.listingname = textArray[index].trim();
               if (textArray[index].trim().toLowerCase().includes('offensive')) {
                 charmSystemData.ability = 'offensive';
@@ -1439,30 +1442,30 @@ export default class TemplateImporter extends FormApplication {
               index++;
               newItem = true;
             }
-            if (textArray[index].trim().toLowerCase().includes('new merit:')) {
+            else if (textArray[index].trim().toLowerCase().includes('new merit:')) {
               itemType = 'merit';
               newItem = true;
             }
-            if (textArray[index].trim().toLowerCase() === 'sorcery' || textArray[index].trim().toLowerCase() === 'necromancy') {
+            else if (textArray[index].trim().toLowerCase() === 'sorcery' || textArray[index].trim().toLowerCase() === 'necromancy') {
               itemType = 'spell';
               index++;
               newItem = true;
               charmSystemData.ability = 'occult';
             }
-            if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
+            else if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
               itemType = 'quality';
               index++;
               newItem = true;
               itemDescription += textArray[index].trim();
               itemDescription += '\n';
             }
-            if (textArray[index].trim().toLowerCase() === 'escort') {
+            else if (textArray[index].trim().toLowerCase() === 'escort') {
               itemType = 'escort';
               index++;
               newItem = true;
               actorData.system.settings.showescort = true;
             }
-            if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits') {
+            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits'  || textArray[index].trim().toLowerCase() === 'excellency') {
               itemType = 'specialability';
               index++;
               newItem = true;
@@ -1527,6 +1530,14 @@ export default class TemplateImporter extends FormApplication {
             }
             else if (itemType === 'spell') {
               if (textArray[index].toLowerCase().includes('shaping ritual')) {
+                var titleArray = textArray[index].split(':');
+                itemName = titleArray[0].trim();
+                if (titleArray.length === 2) {
+                  itemDescription += titleArray[1].trim();
+                }
+                itemType = 'ritual';
+              }
+              else if (!textArray[index].includes('(')) {
                 var titleArray = textArray[index].split(':');
                 itemName = titleArray[0].trim();
                 if (titleArray.length === 2) {

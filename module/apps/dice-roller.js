@@ -110,6 +110,7 @@ export class RollForm extends FormApplication {
             this.object.rollTwice = false;
             this.object.targetNumber = 7;
             this.object.rerollNumber = 0;
+            this.object.rerollSuccesses = 0;
             this.object.attackSuccesses = 0;
 
             this.object.reroll = {
@@ -158,6 +159,7 @@ export class RollForm extends FormApplication {
                 rerollFailed: false,
                 rollTwice: false,
                 rerollNumber: 0,
+                rerollSuccesses: 0,
                 decisiveDamageType: 'initiative',
                 decisiveDamageCalculation: 'evenSplit',
                 diceToSuccesses: 0,
@@ -498,14 +500,6 @@ export class RollForm extends FormApplication {
                 target.rollData.soak += target.actor.system.size.value;
                 target.rollData.naturalSoak += target.actor.system.size.value;
             }
-            if (target.actor.system.settings.defenseStunts) {
-                target.rollData.defense += 1;
-                target.rollData.resolve += 1;
-                target.rollData.guile += 1;
-            }
-            if (target.actor.system.health.penalty !== 'inc') {
-                target.rollData.defense -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
-            }
             let effectiveParry = target.actor.system.parry.value;
             let effectiveEvasion = target.actor.system.evasion.value;
             let effectiveResolve = target.actor.system.resolve.value;
@@ -566,6 +560,16 @@ export class RollForm extends FormApplication {
                 if (this.actor.system.sizecategory !== 'minuscule') {
                     effectiveEvasion += 3;
                 }
+            }
+            if (target.actor.system.settings.defenseStunts) {
+                effectiveEvasion += 1;
+                effectiveParry += 1;
+                effectiveResolve += 1;
+                effectiveGuile += 1;
+            }
+            if (target.actor.system.health.penalty !== 'inc') {
+                effectiveEvasion -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
+                effectiveParry -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
             }
             if (this.object.targetStat === 'resolve') {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
@@ -1132,6 +1136,7 @@ export class RollForm extends FormApplication {
             this.object.opposingCharms.push(charm);
         }
         this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
+        this.object.rerollSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses);
         this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
         if (this.object.showTargets) {
             const targetValues = Object.values(this.object.targets);
@@ -1580,6 +1585,7 @@ export class RollForm extends FormApplication {
                     charm.timesAdded--;
                 }
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
+                this.object.rerollSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses);
                 this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
                 if (this.object.showTargets) {
                     const targetValues = Object.values(this.object.targets);
@@ -1792,6 +1798,7 @@ export class RollForm extends FormApplication {
     _rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled) {
         var total = 0;
         var tensTriggered = 0;
+        var onesTriggered = 0;
         var results = null;
         const numbersChart = {
             1: 'one',
@@ -1849,6 +1856,10 @@ export class RollForm extends FormApplication {
                 diceModifiers.rerollNumber += 1;
                 tensTriggered += 1;
             }
+            if (dice.result === 1 && diceModifiers.settings.triggerOnOnes === 'rerollSuccesses' && (diceModifiers.settings.triggerOnesCap === 0 || diceModifiers.settings.triggerOnesCap > onesTriggered)) {
+                diceModifiers.rerollSuccesses += 1;
+                onesTriggered += 1;
+            }
         }
 
         let rollResult = {
@@ -1889,6 +1900,7 @@ export class RollForm extends FormApplication {
         let diceRoll = rollResults.results;
         let total = rollResults.total;
         var possibleRerolls = 0;
+        var possibleSuccessRerolls = 0;
         if (diceModifiers.rerollFailed) {
             for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
                 if (!diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
@@ -1902,10 +1914,20 @@ export class RollForm extends FormApplication {
         }
 
         possibleRerolls = 0;
+        possibleSuccessRerolls = 0;
         for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
             if (diceModifiers.rerollNumber > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
                 possibleRerolls++;
                 diceResult.rerolled = true;
+            }
+            if (diceModifiers.rerollSuccesses > possibleSuccessRerolls && !diceResult.rerolled && diceResult.result >= this.object.targetNumber) {
+                possibleSuccessRerolls++;
+                total--;
+                if(diceResult.doubled) {
+                    total--;
+                }
+                diceResult.rerolled = true;
+                diceResult.successCanceled = true;
             }
         }
 
@@ -1920,6 +1942,27 @@ export class RollForm extends FormApplication {
                     possibleRerolls++;
                     diceToReroll++;
                     diceResult.rerolled = true;
+                }
+            }
+            diceRoll = diceRoll.concat(rerollNumDiceResults.results);
+            total += rerollNumDiceResults.total;
+        }
+        var successesToReroll = Math.min(possibleSuccessRerolls, diceModifiers.rerollSuccesses);
+        let successRerolledDice = 0;
+        while (successesToReroll > 0 && (successRerolledDice < diceModifiers.rerollSuccesses)) {
+            successRerolledDice += possibleSuccessRerolls;
+            var rerollNumDiceResults = this._rollTheDice(successesToReroll, diceModifiers, doublesRolled, numbersRerolled);
+            successesToReroll = 0
+            for (const diceResult of rerollNumDiceResults.results.sort((a, b) => a.result - b.result)) {
+                if (diceModifiers.rerollSuccesses > possibleSuccessRerolls && !diceResult.rerolled && diceResult.result >= this.object.targetNumber) {
+                    possibleSuccessRerolls++;
+                    successesToReroll++;
+                    total--;
+                    if(diceResult.doubled) {
+                        total--;
+                    }
+                    diceResult.rerolled = true;
+                    diceResult.successCanceled = true;
                 }
             }
             diceRoll = diceRoll.concat(rerollNumDiceResults.results);
@@ -1955,7 +1998,8 @@ export class RollForm extends FormApplication {
 
         let diceDisplay = "";
         for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
-            if (dice.doubled) {
+            if (dice.successCanceled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
+            else if (dice.doubled) {
                 diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
             }
             else if (dice.result >= diceModifiers.targetNumber) { diceDisplay += `<li class="roll die d10 success">${dice.result}</li>`; }
@@ -2099,6 +2143,7 @@ export class RollForm extends FormApplication {
             reroll: this.object.reroll,
             rerollFailed: this.object.rerollFailed,
             rerollNumber: this.object.rerollNumber,
+            rerollSuccesses: this.object.rerollSuccesses || 0,
             settings: this.object.settings,
             preRollMacros: [],
             macros: [],
@@ -2626,6 +2671,7 @@ export class RollForm extends FormApplication {
             reroll: this.object.damage.reroll,
             rerollFailed: this.object.damage.rerollFailed,
             rerollNumber: this.object.damage.rerollNumber,
+            rerollSuccesses: this.object.damage.rerollSuccesses || 0,
             settings: this.object.settings.damage,
             preRollMacros: [],
             macros: [],
@@ -4411,6 +4457,7 @@ export class Prophecy extends FormApplication {
         this.object.signTrappings = '';
         this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
         this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
+        this.object.signList = CONFIG.exaltedthird.siderealSigns;
         this.object.totalUsedAmbition = 4;
         this.object.ambitions = {
             duration: {
