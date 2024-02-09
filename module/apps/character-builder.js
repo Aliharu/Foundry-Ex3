@@ -1083,6 +1083,7 @@ export default class CharacterBuilder extends FormApplication {
       'lunar',
       'abyssal',
       'sidereal',
+      'dragonblooded',
       'janest',
       'sovereign',
       'architect',

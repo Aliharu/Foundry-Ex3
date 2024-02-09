@@ -671,6 +671,8 @@
     "Ex3.Tens": "Tens",
     "Ex3.ExcludeOnesFromRerolls": "Exclude Ones From Rerolls",
     "Ex3.TriggerOnOnes": "Trigger On Ones",
+    "Ex3.AlsoTriggerTwos": "Also Trigger Twos",
+    "Ex3.AlsoTriggerNines": "Also Trigger Nines",
     "Ex3.TriggerOnTens": "Trigger On Tens",
     "Ex3.TriggerTensCap": "Trigger Tens Cap",
     "Ex3.TriggerOnesCap": "Trigger Ones Cap",

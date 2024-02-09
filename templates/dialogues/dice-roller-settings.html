@@ -51,6 +51,8 @@
             <label class="resource-label">{{localize "Ex3.TriggerOnesCap"}}</label>
             <input id="triggerOnesCap" name="settings.triggerOnesCap" value="{{settings.triggerOnesCap}}" type="number">
         </div>
+        <label class="resource-label">{{localize "Ex3.AlsoTriggerTwos"}}</label>
+        <input id="alsoTriggerTwos" type="checkbox" name="settings.alsoTriggerTwos" value="{{settings.alsoTriggerTwos}}" {{checked settings.alsoTriggerTwos}}>
         <div>
             <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
             <select id="triggerOnTens" name="settings.triggerOnTens" data-type="String">
@@ -69,6 +71,8 @@
             <label class="resource-label">{{localize "Ex3.TriggerTensCap"}}</label>
             <input id="triggerTensCap" name="settings.triggerTensCap" value="{{settings.triggerTensCap}}" type="number">
         </div>
+        <label class="resource-label">{{localize "Ex3.AlsoTriggerNines"}}</label>
+        <input id="alsoTriggerNines" type="checkbox" name="settings.alsoTriggerNines" value="{{settings.alsoTriggerNines}}" {{checked settings.alsoTriggerNines}}>
     </div>
     {{#if isAttack}}
     <div class="resource grid grid-2col flex-center">
@@ -133,6 +137,8 @@
             <label class="resource-label">{{localize "Ex3.TriggerTensCap"}}</label>
             <input id="damageTriggerTensCap" name="settings.damage.triggerTensCap" value="{{settings.damage.triggerTensCap}}" type="number">
         </div>
+        <label class="resource-label">{{localize "Ex3.AlsoTriggerNines"}}</label>
+        <input id="damageAlsoTriggerNines" type="checkbox" name="settings.damage.alsoTriggerNines" value="{{settings.damage.alsoTriggerNines}}" {{checked settings.damage.alsoTriggerNines}}>
     </div>
     {{/if}}
 </div>

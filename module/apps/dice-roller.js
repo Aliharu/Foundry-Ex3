@@ -174,8 +174,10 @@ export class RollForm extends FormApplication {
                 },
                 excludeOnesFromRerolls: false,
                 triggerOnOnes: 'none',
+                alsoTriggerTwos: false,
                 triggerOnesCap: 0,
                 triggerOnTens: 'none',
+                alsoTriggerNines: false,
                 triggerTensCap: 0,
                 ignoreLegendarySize: false,
                 damage: {
@@ -187,6 +189,9 @@ export class RollForm extends FormApplication {
                     },
                     excludeOnesFromRerolls: false,
                     triggerOnOnes: 'none',
+                    triggerOnTens: 'none',
+                    alsoTriggerTwos: false,
+                    alsoTriggerNines: false,
                     triggerTensCap: 0,
                 }
             }
@@ -666,6 +671,9 @@ export class RollForm extends FormApplication {
                                 this.object.settings.triggerOnOnes = html.find('#triggerOnOnes').val() || 'none';
                                 this.object.settings.triggerOnTens = html.find('#triggerOnTens').val() || 'none';
 
+                                this.object.settings.alsoTriggerTwos = html.find('#alsoTriggerTwos').is(":checked");
+                                this.object.settings.alsoTriggerNines = html.find('#alsoTriggerNines').is(":checked");
+
                                 this.object.settings.triggerTensCap = parseInt(html.find('#triggerTensCap').val() || 0);
                                 this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
 
@@ -678,6 +686,7 @@ export class RollForm extends FormApplication {
                                 this.object.settings.damage.doubleSucccessCaps.tens = parseInt(html.find('#damageTensCap').val() || 0);
                                 this.object.settings.damage.excludeOnesFromRerolls = html.find('#damageExcludeOnesFromRerolls').is(":checked");
                                 this.object.settings.damage.triggerTensCap = parseInt(html.find('#damageTriggerTensCap').val() || 0);
+                                this.object.settings.damage.alsoTriggerNines = html.find('#damageAlsoTriggerNines').is(":checked");
 
                                 for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
                                     this.object.reroll[rerollKey].cap = parseInt(html.find(`#reroll-${this.object.reroll[rerollKey].number}-cap`).val() || 0);
@@ -1025,11 +1034,13 @@ export class RollForm extends FormApplication {
         }
         if (item.system.diceroller.triggerontens !== 'none') {
             this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
+            this.object.settings.alsoTriggerNines = item.system.diceroller.alsotriggernines;
         }
         this.object.settings.triggerTensCap += this._getFormulaValue(item.system.diceroller.triggertenscap);
 
         if (item.system.diceroller.damage.triggerontens !== 'none') {
             this.object.settings.damage.triggerOnTens = item.system.diceroller.damage.triggerontens;
+            this.object.settings.damage.alsoTriggerNines = item.system.diceroller.damage.alsotriggernines;
         }
         this.object.settings.damage.triggerTensCap += this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
         if (item.system.diceroller.triggerontens !== 'none') {
@@ -1185,6 +1196,7 @@ export class RollForm extends FormApplication {
         this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
         if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
             this.object.settings.triggerOnOnes = charm.system.diceroller.opposedbonuses.triggeronones;
+            this.object.settings.alsoTriggerTwos = charm.system.diceroller.opposedbonuses.alsotriggertwos;
         }
         this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
         this.render();
@@ -1559,10 +1571,12 @@ export class RollForm extends FormApplication {
                 }
                 if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
                     this.object.settings.triggerOnTens = 'none';
+                    this.object.settings.alsoTriggerNines = false;
                 }
                 this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
                 if (item.system.diceroller.damage.triggerontens !== 'none') {
                     this.object.settings.damage.triggerOnTens = 'none';
+                    this.object.settings.damage.alsoTriggerNines = false;
                 }
                 this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
                 this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
@@ -1634,6 +1648,7 @@ export class RollForm extends FormApplication {
                 this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
                 if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
                     this.object.settings.triggerOnOnes = 'none';
+                    this.object.settings.alsoTriggerTwos = false;
                 }
                 this.object.settings.triggerOnesCap -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
             }
@@ -1852,11 +1867,11 @@ export class RollForm extends FormApplication {
                     doublesRolled[dice.result] += 1;
                 }
             }
-            if (dice.result === 10 && diceModifiers.settings.triggerOnTens === 'rerolllDie' && (diceModifiers.settings.triggerTensCap === 0 || diceModifiers.settings.triggerTensCap > tensTriggered)) {
+            if ((dice.result === 10 || (dice.result === 9 && diceModifiers.settings.alsoTriggerNines)) && diceModifiers.settings.triggerOnTens === 'rerolllDie' && (diceModifiers.settings.triggerTensCap === 0 || diceModifiers.settings.triggerTensCap > tensTriggered)) {
                 diceModifiers.rerollNumber += 1;
                 tensTriggered += 1;
             }
-            if (dice.result === 1 && diceModifiers.settings.triggerOnOnes === 'rerollSuccesses' && (diceModifiers.settings.triggerOnesCap === 0 || diceModifiers.settings.triggerOnesCap > onesTriggered)) {
+            if ((dice.result === 1 || (dice.result === 2 && diceModifiers.settings.alsoTriggerTwos)) && diceModifiers.settings.triggerOnOnes === 'rerollSuccesses' && (diceModifiers.settings.triggerOnesCap === 0 || diceModifiers.settings.triggerOnesCap > onesTriggered)) {
                 diceModifiers.rerollSuccesses += 1;
                 onesTriggered += 1;
             }
@@ -2231,10 +2246,10 @@ export class RollForm extends FormApplication {
         let onesRolled = 0;
         let tensRolled = 0;
         for (let dice of diceRoll) {
-            if (!dice.rerolled && dice.result === 1) {
+            if (!dice.rerolled && (dice.result === 1 || (dice.result === 2 && this.object.settings.alsoTriggerTwos))) {
                 onesRolled++
             }
-            if (!dice.rerolled && dice.result === 10) {
+            if (!dice.successCanceled && (dice.result === 10 || (dice.result === 9 && this.object.settings.alsoTriggerNines))) {
                 tensRolled++;
             }
         }
@@ -2728,13 +2743,13 @@ export class RollForm extends FormApplication {
 
         let tensRolled = 0;
         for (let dice of diceRollResults.diceRoll) {
-            if (!dice.rerolled && dice.result === 10) {
+            if (!dice.successCanceled && (dice.result === 10 || (this.object.settings.damage.alsoTriggerNines && dice.result === 9))) {
                 tensRolled++;
             }
         }
 
         if (this.object.settings.damage.triggerTensCap) {
-            tensRolled = Math.min(tensRolled, this.object.settings.triggerTensCap);
+            tensRolled = Math.min(tensRolled, this.object.settings.damage.triggerTensCap);
         }
         if (tensRolled > 0 && this.object.settings.damage.triggerOnTens !== 'none') {
             switch (this.object.settings.damage.triggerOnTens) {
@@ -3926,6 +3941,7 @@ export class RollForm extends FormApplication {
                     },
                     excludeOnesFromRerolls: false,
                     triggerOnTens: 'none',
+                    alsoTriggerNines: false,
                     triggerTensCap: 0,
                 }
             }

@@ -1011,6 +1011,7 @@
         "activateAura": "none",
         "selfdefensepenalty": 0,
         "triggerontens": "none",
+        "alsotriggernines": false,
         "triggertenscap": 0,
         "settings": {
           "noncharmdice": false,
@@ -1065,6 +1066,7 @@
           "doublerolleddamage": false,
           "triggerontens": "none",
           "triggertenscap": 0,
+          "alsotriggernines": false,
           "reroll": {
             "one": false,
             "two": false,
@@ -1113,6 +1115,7 @@
           "resolve": 0,
           "guile": 0,
           "triggeronones": "none",
+          "alsotriggertwos": false,
           "triggeronescap": 0
         }
       }

@@ -1053,6 +1053,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = items.find((item) => item._id === li.data("item-id"));
+            if(!item.flags?.core?.sourceId) {
+              item.updateSource({"flags.core.sourceId": item.uuid});
+            }
             this.actor.createEmbeddedDocuments("Item", [item])
             html.find('.closeImportItem').trigger('click');
           });
