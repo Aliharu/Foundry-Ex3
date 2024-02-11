@@ -8,6 +8,7 @@ export default class JournalCascadeGenerator extends FormApplication {
     this.object.mainText = 'description';
     this.object.type = 'character';
     this.object.includeSpells = true;
+    this.object.useLinks = true;
     this.object.filterByPrerequisiteCharms = false;
   }
 
@@ -182,7 +183,8 @@ export default class JournalCascadeGenerator extends FormApplication {
         for (const spell of spellsList) {
           let templateData = {
             spell: spell,
-            descriptionText: this.object.mainText
+            descriptionText: this.object.mainText,
+            useLinks: this.object.useLinks,
           }
           const spellHtml = await renderTemplate("systems/exaltedthird/templates/journal/spell-cascade-journal.html", templateData);
           spellsListHtml += spellHtml;
@@ -209,7 +211,8 @@ export default class JournalCascadeGenerator extends FormApplication {
         for (const spell of characterSpells) {
           let templateData = {
             spell: spell,
-            descriptionText: this.object.mainText
+            descriptionText: this.object.mainText,
+            useLinks: this.object.useLinks,
           }
           const charmHtml = await renderTemplate("systems/exaltedthird/templates/journal/spell-cascade-journal.html", templateData);
           spellListHtml += charmHtml;
@@ -264,7 +267,8 @@ export default class JournalCascadeGenerator extends FormApplication {
         for (const charm of charmsList) {
           let templateData = {
             charm: charm,
-            descriptionText: this.object.mainText
+            descriptionText: this.object.mainText,
+            useLinks: this.object.useLinks,
           }
           const charmHtml = await renderTemplate("systems/exaltedthird/templates/journal/charm-cascade-journal.html", templateData);
           charmsListHtml += charmHtml;
@@ -299,7 +303,8 @@ export default class JournalCascadeGenerator extends FormApplication {
           charm.system.leadsTo = fullCharms.filter(globalCharm => globalCharm.system.charmprerequisites.map(prereqCharm => prereqCharm.id).includes(charm.id));
           let templateData = {
             charm: charm,
-            descriptionText: this.object.mainText
+            descriptionText: this.object.mainText,
+            useLinks: this.object.useLinks,
           }
           const charmHtml = await renderTemplate("systems/exaltedthird/templates/journal/charm-cascade-journal.html", templateData);
           charmsListHtml += charmHtml;

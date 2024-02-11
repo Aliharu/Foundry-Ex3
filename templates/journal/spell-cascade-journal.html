@@ -2,7 +2,11 @@
     <div class="charm-card">
         <div class="charm-card-content-wrapper">
             <div class="charm-content">
+                {{#if useLinks}}
                 <div class="charm-name"><h4>@UUID[{{spell.uuid}}]</h4></div>
+                {{else}}
+                <div class="charm-name"><h4>{{spell.name}}</h4></div>
+                {{/if}}
                 <div class="charm-prerequisites">
                     <b>{{localize "Ex3.Circle" }}:</b> <span style="text-transform:capitalize">{{spell.system.circle}}</span>
                 </div>
