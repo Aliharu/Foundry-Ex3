@@ -325,6 +325,79 @@ exaltedthird.charmabilities = {
   universal: 'Ex3.Universal',
 };
 
+exaltedthird.charmAbilitiesSectioned = {
+  abilities: {
+    label: "Ex3.Abilities",
+    entries: {
+      archery: 'Ex3.Archery',
+      athletics: 'Ex3.Athletics',
+      awareness: 'Ex3.Awareness',
+      brawl: 'Ex3.Brawl',
+      bureaucracy: 'Ex3.Bureaucracy',
+      craft: 'Ex3.Craft',
+      dodge: 'Ex3.Dodge',
+      integrity: 'Ex3.Integrity',
+      investigation: 'Ex3.Investigation',
+      larceny: 'Ex3.Larceny',
+      linguistics: 'Ex3.Linguistics',
+      lore: 'Ex3.Lore',
+      martialarts: 'Ex3.MartialArts',
+      medicine: 'Ex3.Medicine',
+      melee: 'Ex3.Melee',
+      occult: 'Ex3.Occult',
+      performance: 'Ex3.Performance',
+      presence: 'Ex3.Presence',
+      resistance: 'Ex3.Resistance',
+      ride: 'Ex3.Ride',
+      sail: 'Ex3.Sail',
+    },
+  },
+  attributes: {
+    label: "Ex3.Attributes",
+    entries: {
+      strength: 'Ex3.Strength',
+      dexterity: 'Ex3.Dexterity',
+      stamina: 'Ex3.Stamina',
+      charisma: 'Ex3.Charisma',
+      manipulation: 'Ex3.Manipulation',
+      appearance: 'Ex3.Appearance',
+      perception: 'Ex3.Perception',
+      intelligence: 'Ex3.Intelligence',
+      wits: 'Ex3.Wits',
+    },
+  },
+  maidens: {
+    label: "Ex3.Maidens",
+    entries: {
+      journeys: 'Ex3.Journeys',
+      serenity: 'Ex3.Serenity',
+      battles: 'Ex3.Battles',
+      secrets: 'Ex3.Secrets',
+      endings: 'Ex3.Endings',
+    },
+  },
+  npc: {
+    label: "Ex3.NPC",
+    entries: {
+      offensive: 'Ex3.Offensive',
+      defensive: 'Ex3.Defensive',
+      mobility: 'Ex3.Mobility',
+    },
+  },
+  other: {
+    label: "Ex3.Other",
+    entries: {
+      evocation: 'Ex3.Evocation',
+      universal: 'Ex3.Universal',
+      other: 'Ex3.Other',
+    },
+  },
+  custom: {
+    label: "Ex3.Custom",
+    entries: {},
+  }
+};
+
 exaltedthird.circles = {
   terrestrial: 'Ex3.Terrestrial',
   celestial: 'Ex3.Celestial',

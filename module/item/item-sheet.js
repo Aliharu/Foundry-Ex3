@@ -47,14 +47,15 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.attributeList = CONFIG.exaltedthird.attributes;
     context.charmAbilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities));
+    context.charmAbilityListSectioned = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmAbilitiesSectioned));
     context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
     context.charmExaltType = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes));
     context.parentItemList = [];
-    if(itemData.type === 'charm'){
-      if(itemData.system.ability === 'evocation') {
+    if (itemData.type === 'charm') {
+      if (itemData.system.ability === 'evocation') {
         context.parentItemList = game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations);
       }
-      if(itemData.system.ability === 'martialarts') {
+      if (itemData.system.ability === 'martialarts') {
         context.parentItemList = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart');
       }
     }
@@ -69,6 +70,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       for (const customAbility of this.object.parent.customabilities) {
         context.abilityList[customAbility._id] = customAbility.name;
         context.charmAbilityList[customAbility._id] = customAbility.name;
+        context.charmAbilityListSectioned.custom.entries[customAbility._id] = customAbility.name;
       }
     }
 
@@ -210,18 +212,24 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     html.find(".embeded-item-delete").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
+      let formData = {};
 
       const li = event.currentTarget;
       const parent = $(li).parent()[0];
       const itemIndex = parent.dataset.itemIndex;
 
-      const items = this.object.system.charmprerequisites;
-      items.splice(itemIndex, 1);
-
-      let formData = {};
-      setProperty(formData, `system.charmprerequisites`, items);
-
-      this.object.update(formData);
+      if (event.currentTarget.dataset?.type === 'archetype') {
+        const items = this.object.system.archetype.charmprerequisites;
+        items.splice(itemIndex, 1);
+        setProperty(formData, `system.archetype.charmprerequisites`, items);
+        this.object.update(formData);
+      }
+      else {
+        const items = this.object.system.charmprerequisites;
+        items.splice(itemIndex, 1);
+        setProperty(formData, `system.charmprerequisites`, items);
+        this.object.update(formData);
+      }
     });
 
     // Embeded Item code taken and modified from the Star Wars FFG FoundryVTT module
@@ -239,8 +247,14 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       const li = event.currentTarget;
       let itemType = li.dataset.itemName;
       let itemIndex = li.dataset.itemIndex;
+      let embededItem;
 
-      const embededItem = this.object.system.charmprerequisites[itemIndex];
+      if (li.dataset.type === 'archetype') {
+        embededItem = this.object.system.archetype.charmprerequisites[itemIndex];
+      }
+      else {
+        embededItem = this.object.system.charmprerequisites[itemIndex];
+      }
 
       var item;
 
@@ -314,7 +328,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       dragData = doc.toDragData();
     }
 
-    if ( !dragData ) return;
+    if (!dragData) return;
 
     event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
@@ -362,7 +376,12 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     }
 
     if (itemObject.type === "charm") {
+      const otherTab = li.querySelector(`#other-tab`);
+      const otherTabactive = otherTab.classList.contains("active");
       let items = obj?.system.charmprerequisites;
+      if (otherTabactive) {
+        items = obj?.system.archetype.charmprerequisites;
+      }
       if (!items) {
         items = [];
       }
@@ -381,7 +400,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       }
 
       let formData = {};
-      setProperty(formData, `system.charmprerequisites`, items);
+      setProperty(formData, `system${otherTabactive ? '.archetype' : ''}.charmprerequisites`, items);
 
       obj.update(formData);
     }

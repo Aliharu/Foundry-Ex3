@@ -976,6 +976,11 @@
       "requirement": 0,
       "essence": 0,
       "parentitemid": "",
+      "archetype": {
+        "ability": "",
+        "prerequisites": "",
+        "charmprerequisites": []
+      },
       "cost": {
         "motes": 0,
         "commitmotes": 0,

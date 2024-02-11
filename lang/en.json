@@ -831,6 +831,7 @@
     "Ex3.Folders": "Folders",
     "Ex3.All": "All",
     "Ex3.MainText": "Main Text",
+    "Ex3.UseLinks": "Use Links",
     "Ex3.ShowSpells": "Show Spells",
     
     "Ex3.LeadsTo": "Leads to",
@@ -873,6 +874,11 @@
     "Ex3.ThreeMonths": "Three Months",
     "Ex3.Max": "Max",
     "Ex3.Sign": "Sign",
+    "Ex3.Maidens": "Maidens",
+
+    "Ex3.Archetype": "Archetype",
+
+    "Ex3.AlternatePrerequisites": "Alternate Prerequisites",
 
     "Ex3.One": "One",
     "Ex3.Two": "Two",

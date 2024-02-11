@@ -907,6 +907,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       var itemType = target.dataset.type;
 
       let items = game.items.filter(item => item.type === itemType);
+      let archetypeCharms = [];
       if (itemType === 'charm') {
         var ability = target.dataset.ability;
         items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
@@ -915,9 +916,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         } else {
           items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exalt);
         }
+        archetypeCharms = items.filter(charm => charm.system.archetype.ability);
         if (ability) {
           ability = this.actor.charms[ability].list[0]?.system.ability;
           items = items.filter(charm => charm.system.ability === ability);
+          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability === ability);
         }
         items = items.filter(charm => {
           if (this.actor.system.attributes[charm.system.ability]) {
@@ -925,6 +928,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
           if (this.actor.system.abilities[charm.system.ability]) {
             return charm.system.requirement <= this.actor.system.abilities[charm.system.ability].value;
+          }
+          return true;
+        });
+        archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
+          if (this.actor.system.attributes[charm.system.archetype.ability]) {
+            return charm.system.requirement <= this.actor.system.attributes[charm.system.archetype.ability].value;
+          }
+          if (this.actor.system.abilities[charm.system.archetype.ability]) {
+            return charm.system.requirement <= this.actor.system.abilities[charm.system.archetype.ability].value;
           }
           return true;
         });
@@ -965,6 +977,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         items = items.filter(charm => {
           return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
         });
+        if(archetypeCharms) {
+          archetypeCharms = archetypeCharms.filter(charm => {
+            return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
+          });
+          items = items.concat(archetypeCharms);
+        }
       }
       for (var item of items) {
         item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });

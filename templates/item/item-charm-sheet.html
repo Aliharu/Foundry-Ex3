@@ -7,8 +7,12 @@
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="system.ability" data-type="String">
                     {{#select system.ability}}
-                    {{#each charmAbilityList as |label ability|}}
-                    <option value="{{ability}}">{{localize label}}</option>
+                    {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
+                    <optgroup label="{{localize charmCategory.label}}">
+                      {{#each charmCategory.entries as |entry entryType|}}
+                      <option value="{{entryType}}">{{localize entry}}</option>
+                      {{/each}}
+                    </optgroup>
                     {{/each}}
                     {{/select}}
                 </select>
@@ -879,7 +883,7 @@
             </div>
         </div>
 
-        <div class="tab" data-group="primary" data-tab="other">
+        <div id="other-tab" class="tab" data-group="primary" data-tab="other">
             <div class="flex-group-center">
                 <label class="resource-label">{{localize "Ex3.Summary"}}</label>
                 <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
@@ -914,6 +918,54 @@
                     </select>
                 </div>
             </div>
+            <div class="d-flex flex-center resource-label">
+                <div class="resource-label">{{localize "Ex3.AlternatePrerequisites"}}</div>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+                <select name="system.archetype.ability" data-type="String">
+                    {{#select system.archetype.ability}}
+                    {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
+                    <optgroup label="{{localize charmCategory.label}}">
+                      {{#each charmCategory.entries as |entry entryType|}}
+                      <option value="{{entryType}}">{{localize entry}}</option>
+                      {{/each}}
+                    </optgroup>
+                    {{/each}}
+                    {{/select}}
+                </select>
+            </div>
+            <div class="flex-center mt-1">
+                <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
+            </div>
+            <div class="embeded-item-list-wrapper" {{#if
+                options.editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
+                <div class="flex-group-center embeded-item-list">
+                    <ul>
+                        {{#if options.editable}}
+                        {{#each system.archetype.charmprerequisites as |item id|}}
+                        <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}"
+                            data-item-name="{{item.name}}" data-item-index="{{id}}" data-type="archetype">
+                            <li data-item-index="{{id}}">
+                                {{item.name}}
+                                <i data-type="archetype" class="fas fa-trash embeded-item-delete"></i>
+                            </li>
+                        </a>
+                        {{/each}}
+                        {{else}}
+                        {{#each system.archetype.charmprerequisites as |item id|}}
+                        <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}" data-type="archetype">
+                            {{item.name}}
+                        </li>
+                        {{/each}}
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+            <div class="flex-center mt-1">
+                <div class="resource-label">{{localize "Ex3.OtherPrerequisites"}}</div>
+            </div>
+            <textarea type="text" name="system.archetype.prerequisites" rows="4">{{system.archetype.prerequisites}}</textarea>
             {{#if parentItemList}}
             <div>
                 {{#ifEquals system.ability 'evocation'}}

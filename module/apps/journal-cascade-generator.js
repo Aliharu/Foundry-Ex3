@@ -82,7 +82,12 @@ export default class JournalCascadeGenerator extends FormApplication {
 
       let spells = game.items.filter(item => item.type === 'spell');
 
-      const characterCharms = charms.filter(charm => (charm.system.essence <= fullCharacter.system.essence.value && fullCharacter.system.attributes[charm.system.ability] && charm.system.requirement <= fullCharacter.system.attributes[charm.system.ability].value) || fullCharacter.system.abilities[charm.system.ability] && charm.system.requirement <= fullCharacter.system.abilities[charm.system.ability].value).sort(function (a, b) {
+      let characterCharms = charms.filter(charm => (charm.system.essence <= fullCharacter.system.essence.value && fullCharacter.system.attributes[charm.system.ability] && charm.system.requirement <= fullCharacter.system.attributes[charm.system.ability].value) || fullCharacter.system.abilities[charm.system.ability] && charm.system.requirement <= fullCharacter.system.abilities[charm.system.ability].value);
+
+      const archetypeCharm = charms.filter(charm => (charm.system.essence <= fullCharacter.system.essence.value && fullCharacter.system.attributes[charm.system.archetype.ability] && charm.system.requirement <= fullCharacter.system.attributes[charm.system.archetype.ability].value) || fullCharacter.system.abilities[charm.system.archetype.ability] && charm.system.requirement <= fullCharacter.system.abilities[charm.system.archetype.ability].value);
+
+      characterCharms = characterCharms.concat(archetypeCharm);
+      characterCharms = characterCharms.sort(function (a, b) {
         const sortValueA = a.system.requirement;
         const sortValueB = b.system.requirement;
         return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
@@ -142,6 +147,27 @@ export default class JournalCascadeGenerator extends FormApplication {
       }
       charm.system.leadsTo = fullCharms.filter(globalCharm => globalCharm.system.charmprerequisites.map(prereqCharm => prereqCharm.id).includes(charm.id));
       charmsMap[charm.system.ability].push(charm);
+    });
+
+    charms.forEach(charm => {
+      if(charm.system.archetype.ability) {
+        const charmCopy = JSON.parse(JSON.stringify(charm));
+        if (!charmsMap[charmCopy.system.archetype.ability]) {
+          charmsMap[charmCopy.system.archetype.ability] = [];
+        }
+        if (charmCopy.system.archetype.charmprerequisites) {
+          for (const prereq of charmCopy.system.archetype.charmprerequisites) {
+            const charmPrereq = game.items.get(prereq.id);
+            if (charmPrereq?.uuid) {
+              prereq.uuid = charmPrereq.uuid;
+            }
+          }
+        }
+        charmCopy.system.leadsTo = fullCharms.filter(globalCharm => globalCharm.system.archetype.charmprerequisites.map(prereqCharm => prereqCharm.id).includes(charmCopy.id));
+        charmCopy.useArchetype = true;
+        charmCopy.uuid = charm.uuid;
+        charmsMap[charmCopy.system.archetype.ability].push(charmCopy);
+      }
     });
     return charmsMap;
   }

@@ -110,7 +110,12 @@ export default class TemplateImporter extends FormApplication {
             "silverxp": 0,
             "goldxp": 0,
             "whitexp": 0
-          }
+          },
+          archetype: {
+            ability: "",
+            prerequisites: "",
+            charmprerequisites: []
+          },
         }
       };
       charmData.name = textArray[index];
@@ -132,7 +137,6 @@ export default class TemplateImporter extends FormApplication {
         charmData.system.cost.commitmotes = charmData.system.cost.motes;
         charmData.system.cost.motes = 0;
       }
-
       var description = '';
       while (textArray[index] && index !== textArray.length) {
         description += textArray[index];
@@ -154,6 +158,28 @@ export default class TemplateImporter extends FormApplication {
       charmData.system.description = description.replace('- ', '');
       if (folder) {
         charmData.folder = folder;
+      }
+
+      if(charmData.system.keywords.toLowerCase().includes('archetype')) {
+        const keywordList = charmData.system.keywords.split(',');
+        for(const keyword of keywordList) {
+          if(keyword.toLowerCase().includes('archetype')) {
+            const archetypeAbility = this.getTextInsideParentheses(keyword);
+            charmData.system.archetype.ability = archetypeAbility.toLowerCase();
+          }
+        }
+
+        const index = charmData.system.description.indexOf("Archetype:");
+
+        // Check if "Archetype" was found
+        if (index !== -1) {
+          // Use substring to get the text after "Archetype"
+          const textAfterArchetype = charmData.system.description.substring(index + "Archetype".length + 1);
+          charmData.system.archetype.prerequisites =  textAfterArchetype.trim(); // Trim whitespace
+        } else {
+          // Return an empty string if "Archetype" was not found
+          return '';
+        }
       }
       charmsList.push(await Item.create(charmData));
       index++;
@@ -2179,6 +2205,24 @@ export default class TemplateImporter extends FormApplication {
         this.error = textArray[index];
       }
       this.showError = true;
+    }
+  }
+
+  getTextInsideParentheses(inputString) {
+    // Regular expression to match text inside parentheses
+    const regex = /\(([^)]+)\)/;
+  
+    // Use match() to find text inside parentheses
+    const matches = inputString.match(regex);
+  
+    // Check if any matches were found
+    if (matches) {
+      // Extracted text inside parentheses is in the first capturing group
+      const textInsideParentheses = matches[1];
+      return textInsideParentheses;
+    } else {
+      // Return an empty string if no matches were found
+      return '';
     }
   }
 

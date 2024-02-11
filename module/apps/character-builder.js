@@ -691,6 +691,12 @@ export default class CharacterBuilder extends FormApplication {
               sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
             }
             sectionList[charm.system.ability].list.push(charm);
+            // if(charm.system.archetype.ability) {
+            //   if (!sectionList[charm.system.archetype.ability]) {
+            //     sectionList[charm.system.archetype.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.archetype.ability] || 'Ex3.Other', visible: true, list: [] };
+            //   }
+            //   sectionList[charm.system.archetype.ability].list.push(charm);
+            // }
           }
         }
       }
@@ -851,6 +857,7 @@ export default class CharacterBuilder extends FormApplication {
     const type = event.currentTarget.dataset.type;
     const itemType = event.currentTarget.dataset.item;
     let items = game.items.filter(charm => charm.type === itemType);
+    let archetypeCharms = [];
     if (itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
       items = game.items.filter(charm => charm.type === 'charm');
     }
@@ -865,8 +872,10 @@ export default class CharacterBuilder extends FormApplication {
         } else {
           items = items.filter(charm => charm.system.charmtype === this.object.character.exalt);
         }
+        archetypeCharms = items.filter(charm => charm.system.archetype.ability);
         if (event.currentTarget.dataset.ability) {
           items = items.filter(charm => charm.system.ability === event.currentTarget.dataset.ability);
+          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability === event.currentTarget.dataset.ability);
         }
         items = items.filter(charm => {
           if (this.object.character.attributes[charm.system.ability]) {
@@ -874,6 +883,15 @@ export default class CharacterBuilder extends FormApplication {
           }
           if (this.object.character.abilities[charm.system.ability]) {
             return charm.system.requirement <= this.object.character.abilities[charm.system.ability].value;
+          }
+          return true;
+        });
+        archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
+          if (this.object.character.attributes[charm.system.archetype.ability]) {
+            return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;
+          }
+          if (this.object.character.abilities[charm.system.archetype.ability]) {
+            return charm.system.requirement <= this.object.character.abilities[charm.system.archetype.ability].value;
           }
           return true;
         });
@@ -951,6 +969,12 @@ export default class CharacterBuilder extends FormApplication {
       items = items.filter(charm => {
         return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
       });
+      if(archetypeCharms) {
+        archetypeCharms = archetypeCharms.filter(charm => {
+          return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
+        });
+        items = items.concat(archetypeCharms);
+      }
     }
     for (var item of items) {
       this.getEnritchedHTML(item);

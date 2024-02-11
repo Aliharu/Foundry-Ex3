@@ -17,35 +17,49 @@
                 {{else}}
                 <div class="charm-name"><h4>{{charm.name}}</h4></div>
                 {{/if}}
-                {{#if useLinks}}
-                <div class="charm-prerequisites">
-                    <b>{{localize "Ex3.Prerequisites" }}:</b> {{#each charm.system.charmprerequisites as |prereq|}}{{#if prereq.uuid}}@UUID[{{prereq.uuid}}]{{/if}}{{/each}}{{charm.system.prerequisites}}
-                </div>
+
+                {{#if charm.useArchetype}}
+                    {{#if useLinks}}
+                        <div class="charm-prerequisites">
+                            <b>{{localize "Ex3.Prerequisites" }}:</b> {{#each charm.system.archetype.charmprerequisites as |prereq|}}{{#if prereq.uuid}}@UUID[{{prereq.uuid}}]{{/if}}{{/each}}{{charm.system.archetype.prerequisites}}
+                        </div>
+                    {{else}}
+                        <div class="charm-prerequisites">
+                            <b>{{localize "Ex3.Prerequisites" }}:</b> {{#each charm.system.archetype.charmprerequisites as |prereq|}}{{#if prereq.uuid}}{{prereq.name}},{{/if}}{{/each}}{{charm.system.archetype.prerequisites}}
+                        </div>
+                    {{/if}}
+                    <div class="charm-description">{{#ifEquals descriptionText 'summary'}}{{charm.system.summary}}{{else}}{{{charm.system.description}}}{{/ifEquals}}</div>
                 {{else}}
-                <div class="charm-prerequisites">
-                    <b>{{localize "Ex3.Prerequisites" }}:</b> {{#each charm.system.charmprerequisites as |prereq|}}{{#if prereq.uuid}}{{prereq.name}},{{/if}}{{/each}}{{charm.system.prerequisites}}
-                </div>
-                {{/if}}
-                <div class="charm-description">{{#ifEquals descriptionText 'summary'}}{{charm.system.summary}}{{else}}{{{charm.system.description}}}{{/ifEquals}}</div>
-                {{#if charm.system.leadsTo}}
-                {{#if useLinks}}
-                <div class="charm-leads-to">
-                    <b>{{localize "Ex3.LeadsTo" }}:</b> {{#each charm.system.leadsTo as |leadCharm|}}{{#if leadCharm.uuid}}@UUID[{{leadCharm.uuid}}]{{/if}}{{/each}}
-                </div>
-                {{else}}
-                <div class="charm-leads-to">
-                    <b>{{localize "Ex3.LeadsTo" }}:</b> {{#each charm.system.leadsTo as |leadCharm|}}{{#if leadCharm.uuid}}{{leadCharm.name}},{{/if}}{{/each}}
-                </div>
-                {{/if}}
+                    {{#if useLinks}}
+                        <div class="charm-prerequisites">
+                            <b>{{localize "Ex3.Prerequisites" }}:</b> {{#each charm.system.charmprerequisites as |prereq|}}{{#if prereq.uuid}}@UUID[{{prereq.uuid}}]{{/if}}{{/each}}{{charm.system.prerequisites}}
+                        </div>
+                    {{else}}
+                        <div class="charm-prerequisites">
+                            <b>{{localize "Ex3.Prerequisites" }}:</b> {{#each charm.system.charmprerequisites as |prereq|}}{{#if prereq.uuid}}{{prereq.name}},{{/if}}{{/each}}{{charm.system.prerequisites}}
+                        </div>
+                    {{/if}}
+                    <div class="charm-description">{{#ifEquals descriptionText 'summary'}}{{charm.system.summary}}{{else}}{{{charm.system.description}}}{{/ifEquals}}</div>
+                    {{#if charm.system.leadsTo}}
+                        {{#if useLinks}}
+                            <div class="charm-leads-to">
+                                <b>{{localize "Ex3.LeadsTo" }}:</b> {{#each charm.system.leadsTo as |leadCharm|}}{{#if leadCharm.uuid}}@UUID[{{leadCharm.uuid}}]{{/if}}{{/each}}
+                            </div>
+                        {{else}}
+                            <div class="charm-leads-to">
+                                <b>{{localize "Ex3.LeadsTo" }}:</b> {{#each charm.system.leadsTo as |leadCharm|}}{{#if leadCharm.uuid}}{{leadCharm.name}},{{/if}}{{/each}}
+                            </div>
+                        {{/if}}
+                    {{/if}}
                 {{/if}}
                 <div>
                     {{#numLoop 5}}
-                    {{#ifGreater ../charm.system.requirement this}}
-                    <span class="full-ability-dot dot">&nbsp;</span>
-                    {{else}}
-                    <span class="dot">&nbsp;</span>
-                    {{/ifGreater}}
-                    &nbsp;
+                        {{#ifGreater ../charm.system.requirement this}}
+                            <span class="full-ability-dot dot">&nbsp;</span>
+                        {{else}}
+                            <span class="dot">&nbsp;</span>
+                        {{/ifGreater}}
+                        &nbsp;
                     {{/numLoop}}
                 </div>
             </div>
