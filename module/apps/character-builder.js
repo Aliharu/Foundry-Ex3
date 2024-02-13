@@ -2011,6 +2011,29 @@ export default class CharacterBuilder extends FormApplication {
       });
     }
 
+    if (this.object.character.exalt === 'sidereal') {
+      itemData.push({
+        type: 'charm',
+        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        name: 'Mote TN Excellency',
+        system: {
+          description: 'Lower Target Number by 1',
+          ability: 'universal',
+          listingname: 'Excellency',
+          requirement: 1,
+          essence: 1,
+          cost: {
+            motes: 1
+          },
+          diceroller: {
+            damage: {
+              decreasetargetnumber: 1,
+            }
+          }
+        }
+      });
+    }
+
     for (const charm of Object.values(this.object.character.charms)) {
       itemData.push(duplicate(charm));
     }
