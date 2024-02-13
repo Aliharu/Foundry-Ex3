@@ -187,6 +187,26 @@ export function registerSettings() {
         ruleChange: true,
         default: false
     });
+
+    game.settings.register("exaltedthird", "simplifiedCrafting", {
+        name: game.i18n.localize('Ex3.SimplifiedCrafting'),
+        hint: game.i18n.localize('Ex3.SimplifiedCraftingDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: false
+    });
+
+    game.settings.register("exaltedthird", "steadyAction", {
+        name: game.i18n.localize('Ex3.SteadyAction'),
+        hint: game.i18n.localize('Ex3.SteadyActionDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: false
+    });
 }
 
 class RulesConfigurator extends FormApplication {

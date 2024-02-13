@@ -78,6 +78,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     context.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+    context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
+    context.steadyAction = game.settings.get("exaltedthird", "steadyAction");
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
     context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
@@ -1198,6 +1200,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
 
+    html.find('.steady').mousedown(ev => {
+      if (this.actor.type === "npc") {
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'steady', pool: 'resistance' }).render(true);
+      }
+      else {
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'steady' }).render(true);
+      }
+    });
+
     html.find('.shape-sorcery').mousedown(ev => {
       if (this.actor.type === "npc") {
         game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);
@@ -1301,6 +1312,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.craft-project').click(ev => {
       var type = $(ev.target).attr("data-type");
       new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: type, craftRating: 2 }).render(true);
+    });
+
+    html.find('.craft-simple-project').click(ev => {
+      var type = $(ev.target).attr("data-type");
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'simpleCraft', ability: "craft" }).render(true);
     });
 
     html.find('.sorcerous-working').click(ev => {

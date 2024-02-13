@@ -889,7 +889,7 @@ Hooks.once("ready", async function () {
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
         let updateData = duplicate(actor);
-        const doNotUpdate = ['command', 'grapple', 'joinbattle', 'movement', 'readintentions', 'social', 'sorcery'];
+        const doNotUpdate = ['command', 'grapple', 'joinbattle', 'movement', 'readintentions', 'social', 'sorcery', 'resistance'];
         for (let [key, pool] of Object.entries(updateData.system.pools)) {
           if (!doNotUpdate.includes(key)) {
             if (pool.value) {

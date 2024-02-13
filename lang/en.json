@@ -357,6 +357,7 @@
     "Ex3.SilverXP": "Silver",
     "Ex3.GoldXP": "Gold",
     "Ex3.WhiteXP": "White",
+    "Ex3.CraftXP": "Craft XP",
     "Ex3.Superior": "Superior",
     "Ex3.Legendary": "Legendary",
     "Ex3.ProjectType": "Project Type",
@@ -918,22 +919,30 @@
     "Ex3.ArtifactHeavy": "Artifact Heavy",
     "Ex3.ArtifactSiege": "Artifact Siege",
 
-    "Ex3.UseVirtues": "Use Virtues",
-    "Ex3.UseVirtuesDescription": "Allow access to virtues on sheet",
-
-    "Ex3.ForgivingDecisives": "Forgiving Decisives",
-    "Ex3.ForgivingDecisivesDescription": "Missing decisives doesn't lose initiative",
-    
     "Ex3.RulesConfig": "Rules Config",
     "Ex3.RulesConfigLabel": "Rules Configuration",
     "Ex3.RulesConfigLabelDesc": "Various changes to rules in the system",
     "Ex3.Homebrew": "Homebrew",
     "Ex3.HomebrewHint": "homebrew Changes",
     "Ex3.Rules": "Rules",
+    "Ex3.Steady": "Steady",
+
 
     "Ex3.TargetStat": "Target Stat",
     "Ex3.ExigentType": "Exigent Type",
 
+    "Ex3.UseVirtues": "Use Virtues",
+    "Ex3.UseVirtuesDescription": "Allow access to virtues on sheet",
+
+    "Ex3.SteadyAction": "Steady Action",
+    "Ex3.SteadyActionDescription": "Allow the use of the Steady action from Crucible of Legend",
+
     "Ex3.UnifiedCharacterCreation": "Unified Character Creation",
-    "Ex3.UnifiedCharacterCreationDescription": "Use the unified character creation rules from Crucible of Legend"
+    "Ex3.UnifiedCharacterCreationDescription": "Use the unified character creation rules from Crucible of Legend",
+
+    "Ex3.ForgivingDecisives": "Forgiving Decisives",
+    "Ex3.ForgivingDecisivesDescription": "Missing decisives doesn't lose initiative",
+
+    "Ex3.SimplifiedCrafting": "Simplified Crafting",
+    "Ex3.SimplifiedCraftingDescription": "Use the simplified crafting rules from Crucible of Legend"
 }

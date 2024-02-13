@@ -428,6 +428,7 @@ export default class NPCGenerator extends FormApplication {
     actorData.system.pools.joinbattle.value = this._getCharacterPool(this.object.character.skills.perception.value);
     actorData.system.pools.movement.value = this._getCharacterPool(this.object.character.skills.agility.value);
     actorData.system.pools.readintentions.value = this._getCharacterPool(this.object.character.skills.perception.value);
+    actorData.system.pools.resistance.value = this._getCharacterPool(this.object.character.skills.body.value);
     actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
     if (this.object.character.sorcerer !== 'none') {
       actorData.system.pools.sorcery.value = this._getCharacterPool(this.object.character.skills.mind.value);
@@ -487,15 +488,6 @@ export default class NPCGenerator extends FormApplication {
         name: 'Senses',
         system: {
           value: this._getCharacterPool(this.object.character.skills.perception.value)
-        }
-      }
-    )
-    itemData.push(
-      {
-        type: 'action',
-        name: 'Resistance',
-        system: {
-          value: this._getCharacterPool(this.object.character.skills.body.value)
         }
       }
     )
@@ -1317,6 +1309,10 @@ export default class NPCGenerator extends FormApplication {
           },
           "readintentions": {
             "name": "Ex3.ReadIntentions",
+            "value": 0
+          },
+          "resistance": {
+            "name": "Ex3.Resistance",
             "value": 0
           },
           "social": {

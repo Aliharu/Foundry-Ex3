@@ -63,7 +63,7 @@ export class RollForm extends FormApplication {
             };
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
-            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy'].indexOf(data.rollType) !== -1);
+            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft'].indexOf(data.rollType) !== -1);
             this.object.hasIntervals = (['craft', 'prophecy', 'working',].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = 0;
@@ -304,28 +304,7 @@ export class RollForm extends FormApplication {
                     this.object.intervals = 1;
                     this.object.finished = false;
                     this.object.objectivesCompleted = 0;
-
-                    if (this.object.craftType === 'superior') {
-                        this.object.intervals = 6;
-                        this.object.difficulty = 5;
-                        if (this.object.craftRating === 2) {
-                            this.object.goalNumber = 30;
-                        }
-                        if (this.object.craftRating === 3) {
-                            this.object.goalNumber = 50;
-                        }
-                        if (this.object.craftRating === 4) {
-                            this.object.goalNumber = 75;
-                        }
-                        if (this.object.craftRating >= 5) {
-                            this.object.goalNumber = 100;
-                        }
-                    }
-                    else if (this.object.craftType === 'legendary') {
-                        this.object.intervals = 6;
-                        this.object.difficulty = 5;
-                        this.object.goalNumber = 200;
-                    }
+                    this._getCraftDifficulty();
                 }
                 this.object.finesse = 1;
                 this.object.ambition = 5;
@@ -356,6 +335,7 @@ export class RollForm extends FormApplication {
         this.object.missedAttacks = 0;
         this.object.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
         this.object.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
+        this.object.simpleCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             this.object.showTargets = 0;
@@ -1232,30 +1212,11 @@ export class RollForm extends FormApplication {
         });
 
         html.on("change", "#craft-type", ev => {
+
             this.object.intervals = 1;
             this.object.difficulty = 1;
             this.object.goalNumber = 0;
-            if (this.object.craftType === 'superior') {
-                this.object.intervals = 6;
-                this.object.difficulty = 5;
-                if (parseInt(this.object.craftRating) === 2) {
-                    this.object.goalNumber = 30;
-                }
-                if (parseInt(this.object.craftRating) === 3) {
-                    this.object.goalNumber = 50;
-                }
-                if (parseInt(this.object.craftRating) === 4) {
-                    this.object.goalNumber = 75;
-                }
-                if (parseInt(this.object.craftRating) === 5) {
-                    this.object.goalNumber = 100;
-                }
-            }
-            else if (this.object.craftType === 'legendary') {
-                this.object.intervals = 6;
-                this.object.difficulty = 5;
-                this.object.goalNumber = 200;
-            }
+            this._getCraftDifficulty();
             this.render();
         });
 
@@ -2339,8 +2300,8 @@ export class RollForm extends FormApplication {
         if (this.object.rollType === "joinBattle") {
             resultString = `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
         }
+        const threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         if (this.object.hasDifficulty) {
-            const threshholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
             if (this.object.total < this.object.difficulty) {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
                 if (this.object.total === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
@@ -2350,6 +2311,11 @@ export class RollForm extends FormApplication {
             else {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>`;
                 goalNumberLeft = Math.max(goalNumberLeft - threshholdSuccesses - 1, 0);
+                if (this.object.rollType === "simpleCraft") {
+                    const actorData = duplicate(this.actor);
+                    actorData.system.craft.experience.simple.value += threshholdSuccesses + 1;
+                    this.actor.update(actorData);
+                }
             }
             if (this.object.goalNumber > 0) {
                 extendedTest = `<h4 class="dice-total dice-total-middle" style="margin-top:5px">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
@@ -2360,11 +2326,14 @@ export class RollForm extends FormApplication {
                 actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
                 this.actor.update(actorData);
             }
-            if (this.object.target && this.object.rollType === "command") {
+            if (this.object.target && this.object.rollType === 'command') {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
                     this.object.newTargetData.system.commandbonus.value = threshholdSuccesses;
                     this.object.updateTargetActorData = true;
                 }
+            }
+            if (this.object.rollType === 'steady') {
+                this.object.restore.initiative += Math.min(5, threshholdSuccesses);
             }
         }
         let theContent = `
@@ -2410,6 +2379,15 @@ export class RollForm extends FormApplication {
                 let combatant = this._getActorCombatant();
                 if (combatant) {
                     combat.setInitiative(combatant.id, this.object.total + 3);
+                }
+            }
+        }
+        if (this.object.rollType === 'steady') {
+            let combat = game.combat;
+            if (combat) {
+                let combatant = this._getActorCombatant();
+                if (combatant && combatant.initiative != null) {
+                    combat.setInitiative(combatant.id, combatant.initiative + threshholdSuccesses);
                 }
             }
         }
@@ -3408,6 +3386,36 @@ export class RollForm extends FormApplication {
             const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
             return canvas.tokens.placeables.filter(x => x.id === tokenId)[0];
         }
+    }
+
+    _getCraftDifficulty() {
+        if(game.settings.get("exaltedthird", "simplifiedCrafting")) {
+            this.object.intervals = 1;
+        }
+        else {
+            if (this.object.craftType === 'superior') {
+                this.object.intervals = 6;
+                this.object.difficulty = 5;
+                if (parseInt(this.object.craftRating) === 2) {
+                    this.object.goalNumber = 30;
+                }
+                if (parseInt(this.object.craftRating) === 3) {
+                    this.object.goalNumber = 50;
+                }
+                if (parseInt(this.object.craftRating) === 4) {
+                    this.object.goalNumber = 75;
+                }
+                if (parseInt(this.object.craftRating) === 5) {
+                    this.object.goalNumber = 100;
+                }
+            }
+            else if (this.object.craftType === 'legendary') {
+                this.object.intervals = 6;
+                this.object.difficulty = 5;
+                this.object.goalNumber = 200;
+            }
+        }
+
     }
 
     _getRangedAccuracy() {

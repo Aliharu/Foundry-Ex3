@@ -267,6 +267,12 @@
               "ability": "occult",
               "bonus": 0,
               "name": "Ex3.Sorcery"
+            },
+            "steady": {
+              "attribute": "stamina",
+              "ability": "resistance",
+              "bonus": 0,
+              "name": "Ex3.Steady"
             }
           },
           "attackrollsettings": {
@@ -732,6 +738,9 @@
       },
       "craft": {
         "experience": {
+          "simple": {
+            "value": 0
+          },
           "silver": {
             "value": 0
           },
@@ -782,6 +791,10 @@
         },
         "readintentions": {
           "name": "Ex3.ReadIntentions",
+          "value": 0
+        },
+        "resistance": {
+          "name": "Ex3.Resistance",
           "value": 0
         },
         "social": {

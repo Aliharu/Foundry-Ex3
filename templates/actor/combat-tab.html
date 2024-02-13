@@ -42,10 +42,13 @@
     <label class="resource-label"><a><i id="rollAbility" class="fas fa-dice-d10 cursor-pointer rollAbility"></i></a>
         {{localize "Ex3.Combat"}} <a><i class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
 </div>
-<div class="grid grid-3col flex-group-center">
+<div class="grid {{#if steadyAction}} grid-4col {{else}} grid-3col {{/if}} flex-group-center">
     <button class="roll-button join-battle"><i class="fas fa-play"></i>{{localize "Ex3.JoinBattle"}}</button>
     <button class="roll-button accuracy"><i class="fas fa-crosshairs"></i>{{localize "Ex3.Accuracy"}}</button>
     <button class="roll-button damage"><i class="fas fa-skull"></i>{{localize "Ex3.Damage"}}</button>
+    {{#if steadyAction}}
+    <button class="roll-button steady"><i class="fas fa-wave-pulse"></i>{{localize "Ex3.Steady"}}</button>
+    {{/if}}
 </div>
 <div class="grid grid-3col flex-group-center">
     <div>

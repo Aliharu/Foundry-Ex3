@@ -2802,7 +2802,13 @@ export default class CharacterBuilder extends FormApplication {
               "ability": "occult",
               "bonus": 0,
               "name": "Ex3.Sorcery"
-            }
+            },
+            "steady": {
+              "attribute": "stamina",
+              "ability": "resistance",
+              "bonus": 0,
+              "name": "Ex3.Steady"
+            },
           },
           "attackrollsettings": {
             "withering": {
