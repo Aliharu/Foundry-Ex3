@@ -352,6 +352,11 @@ exaltedthird.charmAbilitiesSectioned = {
       resistance: 'Ex3.Resistance',
       ride: 'Ex3.Ride',
       sail: 'Ex3.Sail',
+      socialize: 'Ex3.Socialize',
+      stealth: 'Ex3.Stealth',
+      survival: 'Ex3.Survival',
+      thrown: 'Ex3.Thrown',
+      war: 'Ex3.War',
     },
   },
   attributes: {
