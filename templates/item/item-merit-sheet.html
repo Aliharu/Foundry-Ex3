@@ -50,6 +50,23 @@
                     </select>
                 </div>
             </div>
+            <!-- {{#ifEquals system.merittype 'sorcery'}}
+            {{#if parentItemList}}
+            <div>
+                <div class="flex-center">
+                    <div class="resource-label">{{localize "Ex3.Ritual"}}</div>
+                </div>
+                <select name="system.parentitemid" data-type="String">
+                    {{#select system.parentitemid}}
+                    <option value="">{{localize "Ex3.None"}}</option>
+                    {{#each parentItemList as |item|}}
+                    <option value="{{item._id}}">{{item.name}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+            </div>
+            {{/if}}
+            {{/ifEquals}} -->
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

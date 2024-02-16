@@ -60,6 +60,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         context.parentItemList = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart');
       }
     }
+    // if(itemData.type === 'merit') {
+    //   if (itemData.system.merittype === 'sorcery') {
+    //     context.parentItemList = game.items.filter(item => item.type === 'ritual');
+    //   }
+    // }
     context.childCharms = game.items.filter(charm => charm.type === 'charm' && charm.system.parentitemid === itemData._id);
     context.lunarForms = game.actors.filter(actor => actor.type === 'npc' && actor.system.lunarform.enabled).map((actor) => {
       return {
