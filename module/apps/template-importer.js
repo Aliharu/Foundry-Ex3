@@ -160,10 +160,10 @@ export default class TemplateImporter extends FormApplication {
         charmData.folder = folder;
       }
 
-      if(charmData.system.keywords.toLowerCase().includes('archetype')) {
+      if (charmData.system.keywords.toLowerCase().includes('archetype')) {
         const keywordList = charmData.system.keywords.split(',');
-        for(const keyword of keywordList) {
-          if(keyword.toLowerCase().includes('archetype')) {
+        for (const keyword of keywordList) {
+          if (keyword.toLowerCase().includes('archetype')) {
             const archetypeAbility = this.getTextInsideParentheses(keyword);
             charmData.system.archetype.ability = archetypeAbility.toLowerCase();
           }
@@ -175,7 +175,16 @@ export default class TemplateImporter extends FormApplication {
         if (index !== -1) {
           // Use substring to get the text after "Archetype"
           const textAfterArchetype = charmData.system.description.substring(index + "Archetype".length + 1);
-          charmData.system.archetype.prerequisites =  textAfterArchetype.trim(); // Trim whitespace
+          charmData.system.archetype.prerequisites = textAfterArchetype.trim(); // Trim whitespace
+          const archetypePrereqCharms = Object.values(game.items.filter(item => item.type === 'charm' && charmType === item.system.charmtype && textAfterArchetype.toLowerCase().includes(item.name.toLowerCase())));
+          for (const archetypePrereqCharm of archetypePrereqCharms) {
+            charmData.system.archetype.charmprerequisites.push(
+              {
+                id: archetypePrereqCharm.id,
+                name: archetypePrereqCharm.name
+              }
+            );
+          }
         } else {
           // Return an empty string if "Archetype" was not found
           return '';
@@ -488,7 +497,7 @@ export default class TemplateImporter extends FormApplication {
     var folderId = html.find('#folder').val();
     var folder = null;
 
-    if(folderId) {
+    if (folderId) {
       folder = game.folders.get(folderId);
     }
 
@@ -1491,7 +1500,7 @@ export default class TemplateImporter extends FormApplication {
               newItem = true;
               actorData.system.settings.showescort = true;
             }
-            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits'  || textArray[index].trim().toLowerCase() === 'excellency') {
+            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits' || textArray[index].trim().toLowerCase() === 'excellency') {
               itemType = 'specialability';
               index++;
               newItem = true;
@@ -2211,10 +2220,10 @@ export default class TemplateImporter extends FormApplication {
   getTextInsideParentheses(inputString) {
     // Regular expression to match text inside parentheses
     const regex = /\(([^)]+)\)/;
-  
+
     // Use match() to find text inside parentheses
     const matches = inputString.match(regex);
-  
+
     // Check if any matches were found
     if (matches) {
       // Extracted text inside parentheses is in the first capturing group
@@ -2307,7 +2316,7 @@ export default class TemplateImporter extends FormApplication {
         collection = game.collections.get("Item");
       }
       this.folders = collection?._formatFolderSelectOptions() ?? [];
-      if(!this.folders.map(folder => folder.id).includes(this.folder)) {
+      if (!this.folders.map(folder => folder.id).includes(this.folder)) {
         this.folder = '';
       }
       else {
