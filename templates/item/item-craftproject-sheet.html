@@ -15,6 +15,10 @@
                 </select>
                 <label class="resource-label">{{localize "Ex3.Rating"}}: </label>
                 <input type="number" name="system.rating" value="{{system.rating}}" style="width:55px;" />
+                {{#if simplifiedCrafting}}
+                <label class="resource-label">{{localize "Ex3.Difficulty"}}: </label>
+                <input type="number" name="system.difficulty" value="{{system.difficulty}}" style="width:55px;" />
+                {{/if}}
             </div>
         </div>
     </header>
@@ -28,6 +32,21 @@
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
+            {{#if simplifiedCrafting}}
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.Experience"}}</div>
+            </div>
+            <div class="grid grid-2col flex-group-center">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Completed"}}</div>
+                    <input type="number" name="system.experience.completed" value="{{system.experience.completed}}" />
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Required"}}</div>
+                    <input type="number" name="system.experience.required" value="{{system.experience.required}}" />
+                </div>
+            </div>
+            {{/if}}
             <div class="flex-center">
                 <div class="resource-label">{{localize "Ex3.Description"}}</div>
             </div>

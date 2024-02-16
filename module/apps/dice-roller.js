@@ -90,6 +90,9 @@ export class RollForm extends FormApplication {
             this.object.hardness = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
+            this.object.maxCraftXP = 5;
+            this.object.craftProjectId = data.craftProjectId || '';
+
             this.object.gambit = 'none';
             this.object.weaponTags = {};
 
@@ -328,6 +331,9 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'command') {
                     this.object.difficulty = 1;
                 }
+                if(this.object.rollType === 'simpleCraft') {
+                    this.object.difficulty = data.difficulty || 1;
+                }
             }
         }
         this.object.addingCharms = false;
@@ -335,7 +341,7 @@ export class RollForm extends FormApplication {
         this.object.missedAttacks = 0;
         this.object.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
         this.object.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
-        this.object.simpleCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
+        this.object.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             this.object.showTargets = 0;
@@ -525,10 +531,10 @@ export class RollForm extends FormApplication {
                 if (target.actor.effects.some(e => e.statuses.has('mounted'))) {
                     if (!this.object.conditions.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
                         const combinedTags = this.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
-                            const tags = weapon.system.traits.weapontags.value || []; 
+                            const tags = weapon.system.traits.weapontags.value || [];
                             return acc.concat(tags);
                         }, []);
-                        if(!combinedTags.includes('reaching')) {
+                        if (!combinedTags.includes('reaching')) {
                             effectiveEvasion += 1;
                             effectiveParry += 1;
                         }
@@ -589,10 +595,10 @@ export class RollForm extends FormApplication {
             if (this.object.attackType === 'withering' && this.object.conditions?.some(e => e.statuses.has('mounted'))) {
                 if (!target.actor.effects.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
                     const combinedTags = target.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
-                        const tags = weapon.system.traits.weapontags.value || []; 
+                        const tags = weapon.system.traits.weapontags.value || [];
                         return acc.concat(tags);
                     }, []);
-                    if(!combinedTags.includes('reaching')) {
+                    if (!combinedTags.includes('reaching')) {
                         target.rollData.diceModifier += 1;
                         if (target.actor.system.battlegroup) {
                             target.rollData.diceModifier += 1;
@@ -1278,8 +1284,8 @@ export class RollForm extends FormApplication {
             if (id === 'aim') {
                 this.object.diceModifier += 3;
             }
-            else if(id === 'impale') {
-                if(this.object.attackType === 'withering') {
+            else if (id === 'impale') {
+                if (this.object.attackType === 'withering') {
                     this.object.damage.damageDice += 5;
                 }
                 else {
@@ -1327,8 +1333,8 @@ export class RollForm extends FormApplication {
             if (id === 'aim') {
                 this.object.diceModifier -= 3;
             }
-            else if(id === 'impale') {
-                if(this.object.attackType === 'withering') {
+            else if (id === 'impale') {
+                if (this.object.attackType === 'withering') {
                     this.object.damage.damageDice -= 5;
                 }
                 else {
@@ -1899,7 +1905,7 @@ export class RollForm extends FormApplication {
             if (diceModifiers.rerollSuccesses > possibleSuccessRerolls && !diceResult.rerolled && diceResult.result >= this.object.targetNumber) {
                 possibleSuccessRerolls++;
                 total--;
-                if(diceResult.doubled) {
+                if (diceResult.doubled) {
                     total--;
                 }
                 diceResult.rerolled = true;
@@ -1934,7 +1940,7 @@ export class RollForm extends FormApplication {
                     possibleSuccessRerolls++;
                     successesToReroll++;
                     total--;
-                    if(diceResult.doubled) {
+                    if (diceResult.doubled) {
                         total--;
                     }
                     diceResult.rerolled = true;
@@ -2312,9 +2318,28 @@ export class RollForm extends FormApplication {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>`;
                 goalNumberLeft = Math.max(goalNumberLeft - threshholdSuccesses - 1, 0);
                 if (this.object.rollType === "simpleCraft") {
-                    const actorData = duplicate(this.actor);
-                    actorData.system.craft.experience.simple.value += threshholdSuccesses + 1;
-                    this.actor.update(actorData);
+                    var craftXPGained = Math.min(this.object.maxCraftXP, threshholdSuccesses + 1);
+                    resultString += `<h4 class="dice-total dice-total-end">Craft XP Gained: ${craftXPGained}</h4>`;
+                    if (this.object.craftProjectId) {
+                        var projectItem = this.actor.items.get(this.object.craftProjectId);
+                        var newXp = projectItem.system.experience.completed + craftXPGained;
+                        if (projectItem) {
+                            if ((newXp) > projectItem.system.experience.required) {
+                                resultString += `<h4 class="dice-total dice-total-end">Project Completed</h4>`;
+                            }
+                            else {
+                                resultString += `<h4 class="dice-total dice-total-end">${projectItem.system.experience.required - projectItem.system.experience.completed - craftXPGained} Experience Remaining</h4>`;
+                            }
+                            projectItem.update({
+                                [`system.experience.completed`]: newXp,
+                            });
+                        }
+                    }
+                    else {
+                        const actorData = duplicate(this.actor);
+                        actorData.system.craft.experience.simple.value += craftXPGained;
+                        this.actor.update(actorData);
+                    }
                 }
             }
             if (this.object.goalNumber > 0) {
@@ -3389,7 +3414,7 @@ export class RollForm extends FormApplication {
     }
 
     _getCraftDifficulty() {
-        if(game.settings.get("exaltedthird", "simplifiedCrafting")) {
+        if (game.settings.get("exaltedthird", "simplifiedCrafting")) {
             this.object.intervals = 1;
         }
         else {

@@ -713,6 +713,9 @@ export default class CharacterBuilder extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = items.find((item) => item._id === li.data("item-id"));
+            if(!item.flags?.core?.sourceId) {
+              item.updateSource({"flags.core.sourceId": item.uuid});
+            }
             const newItem = duplicate(item);
             newItem.itemCount = 1;
             this.getEnritchedHTML(newItem);
@@ -771,6 +774,9 @@ export default class CharacterBuilder extends FormApplication {
         const items = this._getItemList(event);
         var item = items[Math.floor(Math.random() * items.length)];
         if (item) {
+          if(!item.flags?.core?.sourceId) {
+            item.updateSource({"flags.core.sourceId": item.uuid});
+          }
           const newItem = duplicate(item);
           newItem.itemCount = 1;
           this.getEnritchedHTML(newItem);
@@ -984,8 +990,6 @@ export default class CharacterBuilder extends FormApplication {
 
   async _onDropItem(event) {
     let data;
-    const obj = this.object;
-    const li = event.currentTarget;
 
     try {
       data = JSON.parse(event.dataTransfer.getData("text/plain"));
@@ -1018,46 +1022,52 @@ export default class CharacterBuilder extends FormApplication {
       };
     }
 
-    switch (itemObject.type) {
+    if(!itemObject.flags?.core?.sourceId) {
+      itemObject.updateSource({"flags.core.sourceId": itemObject.uuid});
+    }
+
+    const newItem = duplicate(itemObject);
+
+    switch (newItem.type) {
       case 'charm':
-        if (itemObject.system.charmtype === 'evocation') {
-          this.object.character.evocations[Object.entries(this.object.character.evocations).length] = itemObject;
+        if (newItem.system.charmtype === 'evocation') {
+          this.object.character.evocations[Object.entries(this.object.character.evocations).length] = newItem;
         }
-        else if (itemObject.system.charmtype === 'otherCharm') {
-          this.object.character.otherCharms[Object.entries(this.object.character.otherCharms).length] = itemObject;
+        else if (newItem.system.charmtype === 'otherCharm') {
+          this.object.character.otherCharms[Object.entries(this.object.character.otherCharms).length] = newItem;
         }
-        else if (itemObject.system.charmtype === 'martialarts') {
-          this.object.character.martialArtsCharms[Object.entries(this.object.character.martialArtsCharms).length] = itemObject;
+        else if (newItem.system.charmtype === 'martialarts') {
+          this.object.character.martialArtsCharms[Object.entries(this.object.character.martialArtsCharms).length] = newItem;
         }
         else {
-          this.object.character.charms[Object.entries(this.object.character.charms).length] = itemObject;
-          if (this.object.character.abilities[itemObject.system.ability]) {
-            this.object.character.abilities[itemObject.system.ability].charms[Object.entries(this.object.character.abilities[itemObject.system.ability].charms).length] = itemObject;
+          this.object.character.charms[Object.entries(this.object.character.charms).length] = newItem;
+          if (this.object.character.abilities[newItem.system.ability]) {
+            this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
           }
-          if (this.object.character.attributes[itemObject.system.ability]) {
-            this.object.character.attributes[itemObject.system.ability].charms[Object.entries(this.object.character.attributes[itemObject.system.ability].charms).length] = itemObject;
+          if (this.object.character.attributes[newItem.system.ability]) {
+            this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
           }
         }
 
         break;
       case 'spell':
-        this.object.character.spells[Object.entries(this.object.character.spells).length] = itemObject;
+        this.object.character.spells[Object.entries(this.object.character.spells).length] = newItem;
         break;
       case 'merit':
-        this.object.character.merits[Object.entries(this.object.character.merits).length] = itemObject;
+        this.object.character.merits[Object.entries(this.object.character.merits).length] = newItem;
         break;
       case 'weapon':
-        this.object.character.weapons[Object.entries(this.object.character.weapons).length] = itemObject;
+        this.object.character.weapons[Object.entries(this.object.character.weapons).length] = newItem;
         break;
       case 'armor':
-        this.object.character.armors[Object.entries(this.object.character.armors).length] = itemObject;
+        this.object.character.armors[Object.entries(this.object.character.armors).length] = newItem;
         break;
       case 'customability':
-        if (itemObject.system.abilitytype === 'martialart') {
-          this.object.character.martialArts[Object.entries(this.object.character.martialArts).length] = itemObject;
+        if (newItem.system.abilitytype === 'martialart') {
+          this.object.character.martialArts[Object.entries(this.object.character.martialArts).length] = newItem;
         }
-        if (itemObject.system.abilitytype === 'craft') {
-          this.object.character.crafts[Object.entries(this.object.character.crafts).length] = itemObject;
+        if (newItem.system.abilitytype === 'craft') {
+          this.object.character.crafts[Object.entries(this.object.character.crafts).length] = newItem;
         }
         break;
     }
@@ -1768,6 +1778,11 @@ export default class CharacterBuilder extends FormApplication {
       itemData.push({
         type: 'customability',
         name: craft.name,
+        flags: {
+          core: {
+            sourceId: craft.flags?.core?.sourceId
+          }
+        },
         system: {
           points: craft.system.points,
           abilitytype: "craft",
@@ -1780,6 +1795,11 @@ export default class CharacterBuilder extends FormApplication {
       itemData.push({
         type: 'customability',
         name: martialArt.name,
+        flags: {
+          core: {
+            sourceId: martialArt.flags?.core?.sourceId
+          }
+        },
         system: {
           points: martialArt.system.points,
           abilitytype: "martialart",
@@ -1792,6 +1812,11 @@ export default class CharacterBuilder extends FormApplication {
       itemData.push({
         type: 'merit',
         name: merit.name,
+        flags: {
+          core: {
+            sourceId: merit.flags?.core?.sourceId
+          }
+        },
         system: {
           points: merit.system.points,
           description: merit.system.description
@@ -1802,6 +1827,11 @@ export default class CharacterBuilder extends FormApplication {
       itemData.push({
         type: 'specialty',
         name: specialty.name,
+        flags: {
+          core: {
+            sourceId: specialty.flags?.core?.sourceId
+          }
+        },
         system: {
           ability: specialty.system.ability,
         }

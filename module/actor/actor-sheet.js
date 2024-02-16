@@ -910,9 +910,33 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
       let items = game.items.filter(item => item.type === itemType);
       let archetypeCharms = [];
+      const itemIds = this.actor.items.map(item => {
+        const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
+        const sections = sourceId.split('.'); // Split the sourceId by periods
+        return sections.length > 1 ? sections.pop() : '';
+      }).filter(section => section.trim() !== '');
       if (itemType === 'charm') {
         var ability = target.dataset.ability;
         items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
+        const nonAbilityCharms = items.filter(charm => charm.system.charmtype === 'martialarts' || charm.system.charmtype === 'evocation').filter(charm => {
+          if (charm.system.charmtype === 'martialarts') {
+            if (charm.system.parentitemid) {
+              return Object.values(this.actor.items.filter(item => item.type === 'customability'  || item.system.abilitytype === 'martialart')).some(martialArt => {
+                const sourceId = martialArt.flags?.core?.sourceId || '';
+                const sections = sourceId.split('.');
+                return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points
+              } );
+            }
+            return false;
+          }
+          if (charm.system.charmtype === 'evocation') {
+            if (charm.system.parentitemid) {
+              return itemIds.includes(charm.system.parentitemid);
+            }
+            return false;
+          }
+          return false;
+        });
         if (this.actor.system.details.exalt === 'exigent') {
           items = items.filter(charm => charm.system.charmtype === this.actor.system.details.caste.toLowerCase());
         } else {
@@ -942,6 +966,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
           return true;
         });
+        items = items.concat(nonAbilityCharms);
       }
       if (itemType === 'spell') {
         items = items.filter(spell => {
@@ -966,14 +991,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           return false;
         });
       }
-      const itemIds = this.actor.items.map(item => {
-        const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
-        const sections = sourceId.split('.'); // Split the sourceId by periods
-        return sections.length > 1 ? sections.pop() : '';
-      }).filter(section => section.trim() !== '');
-      // const itemIds = [
-      //   ...Object.values(this.actor.items.filter(item => item.type === 'charm')).map(charm => charm._id),
-      // ];
       items = items.filter(item => !itemIds.includes(item._id));
       if (itemType === 'charm') {
         items = items.filter(charm => {
@@ -1076,7 +1093,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             if(!item.flags?.core?.sourceId) {
               item.updateSource({"flags.core.sourceId": item.uuid});
             }
-            this.actor.createEmbeddedDocuments("Item", [item])
+            this.actor.createEmbeddedDocuments("Item", [item]);
             html.find('.closeImportItem').trigger('click');
           });
 
@@ -1315,8 +1332,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.craft-simple-project').click(ev => {
-      var type = $(ev.target).attr("data-type");
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'simpleCraft', ability: "craft" }).render(true);
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+
+      new RollForm(this.actor, { event: ev }, {}, { rollType: 'simpleCraft', ability: "craft", craftProjectId: item?.id, difficulty: item?.system.difficulty }).render(true);
     });
 
     html.find('.sorcerous-working').click(ev => {

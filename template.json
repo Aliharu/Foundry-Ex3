@@ -1208,7 +1208,12 @@
         "base"
       ],
       "type": "basic",
-      "rating": 0
+      "rating": 0,
+      "difficulty": 0,
+      "experience": {
+        "required": 0,
+        "completed": 0
+      }
     },
     "action": {
       "templates": [

@@ -658,6 +658,10 @@
   margin-bottom: 5px;
 }
 
+.dice-roll .dice-total-end {
+  margin-top: 5px;
+}
+
 .closeImportItem {
   display: none;
 }

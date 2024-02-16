@@ -45,6 +45,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     const itemData = this.item.toObject(false);
     context.system = itemData.system;
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+    context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
     context.attributeList = CONFIG.exaltedthird.attributes;
     context.charmAbilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities));
     context.charmAbilityListSectioned = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmAbilitiesSectioned));

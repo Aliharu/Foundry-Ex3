@@ -442,9 +442,16 @@
         <label class="resource-label">{{localize data.difficultyString}}</label>
         <input type="number" name="object.difficulty" value="{{data.difficulty}}">
     </div>
+    {{#ifEquals data.rollType 'simpleCraft'}}
     <div>
-        <label class="resource-label">{{localize "Ex3.GoalNumber"}} </label>
+        <label class="resource-label">{{localize "Ex3.ExperienceCap"}}</label>
+        <input type="number" name="object.maxCraftXP" value="{{data.maxCraftXP}}">
+    </div>
+    {{else}}
+    <div>
+        <label class="resource-label">{{localize "Ex3.GoalNumber"}}</label>
         <input type="number" name="object.goalNumber" value="{{data.goalNumber}}">
     </div>
+    {{/ifEquals}}
 </div>
 {{/if}}
