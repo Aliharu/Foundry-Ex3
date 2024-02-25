@@ -136,6 +136,11 @@
                     <input type="number" name="system.cost.willpower" value="{{system.cost.willpower}}"
                         data-dtype="Number" />
                 </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.GrappleControl"}}</div>
+                    <input type="number" name="system.cost.grapplecontrol" value="{{system.cost.grapplecontrol}}"
+                        data-dtype="Number" />
+                </div>
             </div>
             <div class="grid grid-5col flex-group-center">
                 <div>
@@ -932,6 +937,7 @@
                       {{/each}}
                     </optgroup>
                     {{/each}}
+                    <option value="">{{localize "Ex3.None"}}</option>
                     {{/select}}
                 </select>
             </div>

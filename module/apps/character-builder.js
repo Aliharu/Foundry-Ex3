@@ -589,9 +589,47 @@ export default class CharacterBuilder extends FormApplication {
         }
       }
       else if (itemType === 'merit') {
-        sectionList['merits'] = {
-          name: game.i18n.localize("Ex3.Merits"),
-          list: items
+        if (items.some(item => item.system.merittype === 'innate')) {
+          sectionList['innate'] = {
+            name: game.i18n.localize("Ex3.Innate"),
+            list: items.filter(item => item.system.merittype === 'innate')
+          };
+        }
+        if (items.some(item => item.system.merittype === 'purchased')) {
+          sectionList['purchased'] = {
+            name: game.i18n.localize("Ex3.Purchased"),
+            list: items.filter(item => item.system.merittype === 'purchased')
+          };
+        }
+        if (items.some(item => item.system.merittype === 'story')) {
+          sectionList['story'] = {
+            name: game.i18n.localize("Ex3.Story"),
+            list: items.filter(item => item.system.merittype === 'story')
+          };
+        }
+        if (items.some(item => item.system.merittype === 'thaumaturgy')) {
+          sectionList['thaumaturgy'] = {
+            name: game.i18n.localize("Ex3.Thaumaturgy"),
+            list: items.filter(item => item.system.merittype === 'thaumaturgy')
+          };
+        }
+        if (items.some(item => item.system.merittype === 'sorcery' && !item.system.archetypename)) {
+          sectionList['sorcery'] = {
+            name: game.i18n.localize("Ex3.Sorcery"),
+            list: items.filter(item => item.system.merittype === 'sorcery' && !item.system.archetypename)
+          };
+        }
+        for (const merit of items.filter(item => item.system.merittype === 'sorcery' && item.system.archetypename).sort(function (a, b) {
+          const sortValueA = a.system.archetypename.toLowerCase();
+          const sortValueB = b.system.archetypename.toLowerCase();
+          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+        })) {
+          if (merit.system.archetypename) {
+            if (!sectionList[merit.system.archetypename]) {
+              sectionList[merit.system.archetypename] = { name: merit.system.archetypename, list: [] };
+            }
+            sectionList[merit.system.archetypename].list.push(merit);
+          }
         }
       }
       else if (itemType === 'customability') {
@@ -671,7 +709,19 @@ export default class CharacterBuilder extends FormApplication {
       else if (itemType === 'ritual') {
         sectionList['rituals'] = {
           name: game.i18n.localize("Ex3.Rituals"),
-          list: items
+          list: items.filter(item => !item.system.archetypename)
+        };
+        for (const ritual of items.filter(item => item.system.archetypename).sort(function (a, b) {
+          const sortValueA = a.system.archetypename.toLowerCase();
+          const sortValueB = b.system.archetypename.toLowerCase();
+          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+        })) {
+          if (ritual.system.archetypename) {
+            if (!sectionList[ritual.system.archetypename]) {
+              sectionList[ritual.system.archetypename] = { name: ritual.system.archetypename, list: [] };
+            }
+            sectionList[ritual.system.archetypename].list.push(ritual);
+          }
         }
       }
       else {
@@ -955,6 +1005,19 @@ export default class CharacterBuilder extends FormApplication {
         }
         if (spell.system.circle === 'void' && this.object.character.necromancer === 'void') {
           return true;
+        }
+        return false;
+      });
+    }
+    if(itemType === "merit") {
+      items = items.filter(merit => {
+        if(merit.system.merittype !== "sorcery") {
+          return true;
+        }
+        if(this.object.character.ritual?.system?.archetypename) {
+          if(!merit.system.archetypename || merit.system.archetypename === this.object.character.ritual?.system?.archetypename) {
+            return true;
+          }
         }
         return false;
       });

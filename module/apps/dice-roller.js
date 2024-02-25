@@ -50,6 +50,7 @@ export class RollForm extends FormApplication {
                 healthbashing: 0,
                 healthlethal: 0,
                 healthaggravated: 0,
+                grappleControl: 0,
                 silverxp: 0,
                 goldxp: 0,
                 whitexp: 0,
@@ -890,6 +891,8 @@ export class RollForm extends FormApplication {
         this.object.cost.goldxp += item.system.cost.goldxp;
         this.object.cost.whitexp += item.system.cost.whitexp;
         this.object.cost.initiative += item.system.cost.initiative;
+        this.object.cost.grappleControl += item.system.cost.grapplecontrol;
+
 
         if (item.system.cost.aura) {
             this.object.cost.aura = item.system.cost.aura;
@@ -1415,6 +1418,7 @@ export class RollForm extends FormApplication {
                 this.object.cost.goldxp -= item.system.cost.goldxp;
                 this.object.cost.whitexp -= item.system.cost.whitexp;
                 this.object.cost.initiative -= item.system.cost.initiative;
+                this.object.cost.grappleControl -= item.system.cost.grapplecontrol;
 
                 if (item.system.cost.aura === this.object.cost.aura) {
                     this.object.cost.aura = "";
@@ -1777,7 +1781,7 @@ export class RollForm extends FormApplication {
     }
 
     // Dovie'andi se tovya sagain.
-    _rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled) {
+    async _rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled) {
         var total = 0;
         var tensTriggered = 0;
         var onesTriggered = 0;
@@ -1806,7 +1810,7 @@ export class RollForm extends FormApplication {
                 rerolls.push(diceModifiers.reroll[rerollValue].number);
             }
         }
-        var roll = new Roll(`${dice}d10cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+        var roll = await new Roll(`${dice}d10cs>=${diceModifiers.targetNumber}`).evaluate();
         results = roll.dice[0].results;
         total = roll.total;
         if (rerolls.length > 0) {
@@ -1821,7 +1825,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                 }
-                var rerollRoll = new Roll(`${toReroll}d10cs>=${diceModifiers.targetNumber}`).evaluate({ async: false });
+                var rerollRoll = await new Roll(`${toReroll}d10cs>=${diceModifiers.targetNumber}`).evaluate();
                 results = results.concat(rerollRoll.dice[0].results);
                 total += rerollRoll.total;
             }
@@ -1853,7 +1857,7 @@ export class RollForm extends FormApplication {
         return rollResult;
     }
 
-    _calculateRoll(dice, diceModifiers) {
+    async _calculateRoll(dice, diceModifiers) {
         const doublesRolled = {
             7: 0,
             8: 0,
@@ -1878,7 +1882,7 @@ export class RollForm extends FormApplication {
             results = diceModifiers.preRollMacros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), results);
         }
 
-        let rollResults = this._rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled);
+        let rollResults = await this._rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled);
         let diceRoll = rollResults.results;
         let total = rollResults.total;
         var possibleRerolls = 0;
@@ -1890,7 +1894,7 @@ export class RollForm extends FormApplication {
                     diceResult.rerolled = true;
                 }
             }
-            var failedDiceRollResult = this._rollTheDice(possibleRerolls, diceModifiers, doublesRolled, numbersRerolled);
+            var failedDiceRollResult = await this._rollTheDice(possibleRerolls, diceModifiers, doublesRolled, numbersRerolled);
             diceRoll = diceRoll.concat(failedDiceRollResult.results);
             total += failedDiceRollResult.total;
         }
@@ -1917,7 +1921,7 @@ export class RollForm extends FormApplication {
         let rerolledDice = 0;
         while (diceToReroll > 0 && (rerolledDice < diceModifiers.rerollNumber)) {
             rerolledDice += possibleRerolls;
-            var rerollNumDiceResults = this._rollTheDice(diceToReroll, diceModifiers, doublesRolled, numbersRerolled);
+            var rerollNumDiceResults = await this._rollTheDice(diceToReroll, diceModifiers, doublesRolled, numbersRerolled);
             diceToReroll = 0
             for (const diceResult of rerollNumDiceResults.results.sort((a, b) => a.result - b.result)) {
                 if (diceModifiers.rerollNumber > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
@@ -1933,7 +1937,7 @@ export class RollForm extends FormApplication {
         let successRerolledDice = 0;
         while (successesToReroll > 0 && (successRerolledDice < diceModifiers.rerollSuccesses)) {
             successRerolledDice += possibleSuccessRerolls;
-            var rerollNumDiceResults = this._rollTheDice(successesToReroll, diceModifiers, doublesRolled, numbersRerolled);
+            var rerollNumDiceResults = await this._rollTheDice(successesToReroll, diceModifiers, doublesRolled, numbersRerolled);
             successesToReroll = 0
             for (const diceResult of rerollNumDiceResults.results.sort((a, b) => a.result - b.result)) {
                 if (diceModifiers.rerollSuccesses > possibleSuccessRerolls && !diceResult.rerolled && diceResult.result >= this.object.targetNumber) {
@@ -1956,7 +1960,7 @@ export class RollForm extends FormApplication {
             let remainder = total % 3;
             while (newCraftDice > 0) {
                 var rollSuccessTotal = 0;
-                var craftDiceRollResults = this._rollTheDice(newCraftDice, diceModifiers, doublesRolled, numbersRerolled);
+                var craftDiceRollResults = await this._rollTheDice(newCraftDice, diceModifiers, doublesRolled, numbersRerolled);
                 diceRoll = diceRoll.concat(craftDiceRollResults.results);
                 rollSuccessTotal += craftDiceRollResults.total;
                 total += craftDiceRollResults.total;
@@ -2193,14 +2197,14 @@ export class RollForm extends FormApplication {
             }
         }
 
-        const diceRollResults = this._calculateRoll(dice, rollModifiers);
+        const diceRollResults = await this._calculateRoll(dice, rollModifiers);
         this.object.roll = diceRollResults.roll;
         this.object.displayDice = diceRollResults.diceDisplay;
         this.object.total = diceRollResults.total;
         var diceRoll = diceRollResults.diceRoll;
 
         if (this.object.rollTwice) {
-            const secondRoll = this._calculateRoll(dice, rollModifiers);
+            const secondRoll = await this._calculateRoll(dice, rollModifiers);
             if (secondRoll.total > diceRollResults.total) {
                 this.object.roll = secondRoll.roll;
                 this.object.displayDice = secondRoll.diceDisplay;
@@ -2266,12 +2270,12 @@ export class RollForm extends FormApplication {
         }
 
         if (!this._isAttackRoll() && this.object.rollType !== 'base') {
-            this._updateCharacterResources();
+            await this._updateCharacterResources();
         }
     }
 
     async _diceRoll() {
-        this._baseAbilityDieRoll();
+        await this._baseAbilityDieRoll();
         let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
@@ -2617,7 +2621,7 @@ export class RollForm extends FormApplication {
     }
 
     async _accuracyRoll() {
-        this._baseAbilityDieRoll();
+        await this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
         this.object.attackSuccesses = this.object.total;
     }
@@ -2727,9 +2731,9 @@ export class RollForm extends FormApplication {
             });
         }
 
-        var diceRollResults = this._calculateRoll(dice, rollModifiers);
+        var diceRollResults = await this._calculateRoll(dice, rollModifiers);
         if (this.object.damage.rollTwice) {
-            const secondRoll = this._calculateRoll(dice, rollModifiers);
+            const secondRoll = await this._calculateRoll(dice, rollModifiers);
             if (secondRoll.total > diceRollResults.total) {
                 diceRollResults = secondRoll;
             }
@@ -3244,7 +3248,7 @@ export class RollForm extends FormApplication {
     }
 
     async _completeCraftProject() {
-        this._baseAbilityDieRoll();
+        await this._baseAbilityDieRoll();
         let resultString = ``;
         let projectStatus = ``;
         let craftFailed = false;
@@ -3873,11 +3877,15 @@ export class RollForm extends FormApplication {
                 healthbashing: 0,
                 healthlethal: 0,
                 healthaggravated: 0,
+                grappleControl: 0,
                 silverxp: 0,
                 goldxp: 0,
                 whitexp: 0,
                 aura: "",
             }
+        }
+        if(this.object.cost.grapplecontrol === undefined) {
+            this.object.cost.grapplecontrol = 0;
         }
         if (this.object.restore === undefined) {
             this.object.restore = {
@@ -4126,6 +4134,8 @@ export class RollForm extends FormApplication {
         actorData.system.anima.value = newValue;
 
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
+        actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl);
+
         if (this.actor.type === 'character') {
             actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - this.object.cost.silverxp);
             actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - this.object.cost.goldxp);

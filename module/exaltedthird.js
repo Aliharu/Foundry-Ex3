@@ -104,15 +104,7 @@ Hooks.once('init', async function () {
     else {
       initDice = actor.system.pools.joinbattle.value;
     }
-    let roll = new Roll(`${initDice}d10cs>=7 + 3`).evaluate({ async: false });
-    let diceRoll = roll.total;
-    let bonus = 0;
-    for (let dice of roll.dice[0].results) {
-      if (dice.result >= 10) {
-        bonus++;
-      }
-    }
-    return `${diceRoll + bonus}`;
+    return `${initDice}d10cs>=7 + 3`;
   }
 
   // If you need to add Handlebars helpers, here are a few useful examples:

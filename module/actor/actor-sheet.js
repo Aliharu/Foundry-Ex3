@@ -619,7 +619,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       };
       buttons = [settingsButton, helpButton, ...buttons];
       const colorButton = {
-        label: game.i18n.localize('Ex3.DotColors'),
+        label: game.i18n.localize('Ex3.Colors'),
         class: 'set-color',
         icon: 'fas fa-palette',
         onclick: (ev) => this.pickColor(ev),

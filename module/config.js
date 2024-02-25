@@ -389,6 +389,7 @@ exaltedthird.charmAbilitiesSectioned = {
       offensive: 'Ex3.Offensive',
       defensive: 'Ex3.Defensive',
       mobility: 'Ex3.Mobility',
+      social: 'Ex3.Social',
     },
   },
   other: {

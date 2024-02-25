@@ -50,8 +50,14 @@
                     </select>
                 </div>
             </div>
-            <!-- {{#ifEquals system.merittype 'sorcery'}}
-            {{#if parentItemList}}
+            {{#ifEquals system.merittype 'sorcery'}}
+            <div>
+                <div class="flex-center">
+                    <div class="resource-label">{{localize "Ex3.Archetype"}}</div>
+                </div>
+                <input type="text" name="system.archetypename" value="{{system.archetypename}}" />
+            </div>
+            <!-- {{#if parentItemList}}
             <div>
                 <div class="flex-center">
                     <div class="resource-label">{{localize "Ex3.Ritual"}}</div>
@@ -65,8 +71,8 @@
                     {{/select}}
                 </select>
             </div>
-            {{/if}}
-            {{/ifEquals}} -->
+            {{/if}} -->
+            {{/ifEquals}}
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

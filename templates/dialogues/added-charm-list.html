@@ -76,6 +76,18 @@
             <input type="number" name="object.cost.willpower" value="{{data.cost.willpower}}">
         </div>
         <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}(b)</div>
+            <input type="number" name="object.cost.healthbashing" value="{{data.cost.healthbashing}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}(l)</div>
+            <input type="number" name="object.cost.healthlethal" value="{{data.cost.healthlethal}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}(a)</div>
+            <input type="number" name="object.cost.healthaggravated" value="{{data.cost.healthaggravated}}" data-dtype="Number" />
+        </div>
+        <div>
             <div class="resource-label">{{localize "Ex3.Aura"}}</div>
             <select name="object.cost.aura" data-type="String">
                 {{#select data.cost.aura}}
@@ -90,16 +102,8 @@
             </select>
         </div>
         <div>
-            <div class="resource-label">{{localize "Ex3.Health"}}(b)</div>
-            <input type="number" name="object.cost.healthbashing" value="{{data.cost.healthbashing}}" data-dtype="Number" />
-        </div>
-        <div>
-            <div class="resource-label">{{localize "Ex3.Health"}}(l)</div>
-            <input type="number" name="object.cost.healthlethal" value="{{data.cost.healthlethal}}" data-dtype="Number" />
-        </div>
-        <div>
-            <div class="resource-label">{{localize "Ex3.Health"}}(a)</div>
-            <input type="number" name="object.cost.healthaggravated" value="{{data.cost.healthaggravated}}" data-dtype="Number" />
+            <div class="resource-label">{{localize "Ex3.GrappleControl"}}</div>
+            <input type="number" name="object.cost.grappleControl" value="{{data.cost.grappleControl}}" data-dtype="Number" />
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Silver"}}</div>

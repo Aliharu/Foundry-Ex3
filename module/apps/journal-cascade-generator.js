@@ -1,8 +1,8 @@
 export default class JournalCascadeGenerator extends FormApplication {
   constructor(app, options, object, data) {
     super(object, options);
-    this.object.folders = game.folders.filter(folder => folder.type === 'Item').sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-    this.object.characters = game.actors.filter(actor => actor.type === 'character').sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+    this.object.folders = game.folders.filter(folder => folder.type === 'Item').sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+    this.object.characters = game.actors.filter(actor => actor.type === 'character').sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
     this.object.folder = '';
     this.object.character = '';
     this.object.mainText = 'description';
@@ -67,7 +67,7 @@ export default class JournalCascadeGenerator extends FormApplication {
         this.createCharmJournal(charmsList, name, folder, charms);
       }
 
-      if(this.object.includeSpells) {
+      if (this.object.includeSpells) {
         for (let [name, spellsList] of Object.entries(spellsMap)) {
           this.createSpellJournal(spellsList, name, folder);
         }
@@ -78,6 +78,31 @@ export default class JournalCascadeGenerator extends FormApplication {
         return;
       }
       const fullCharacter = game.actors.get(this.object.character);
+      const itemIds = fullCharacter.items.map(item => {
+        const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
+        const sections = sourceId.split('.'); // Split the sourceId by periods
+        return sections.length > 1 ? sections.pop() : '';
+      }).filter(section => section.trim() !== '');
+
+      const nonAbilityCharms = game.items.filter(charm => charm.system.charmtype === 'martialarts' || charm.system.charmtype === 'evocation').filter(charm => {
+        if (charm.system.charmtype === 'martialarts') {
+          if (charm.system.parentitemid) {
+            return Object.values(fullCharacter.items.filter(item => item.type === 'customability'  || item.system.abilitytype === 'martialart')).some(martialArt => {
+              const sourceId = martialArt.flags?.core?.sourceId || '';
+              const sections = sourceId.split('.');
+              return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points
+            } );
+          }
+          return false;
+        }
+        if (charm.system.charmtype === 'evocation') {
+          if (charm.system.parentitemid) {
+            return itemIds.includes(charm.system.parentitemid);
+          }
+          return false;
+        }
+        return false;
+      });
       let charms = game.items.filter(item => item.type === 'charm' && item.system.charmtype === fullCharacter.system.details.exalt);
 
       let spells = game.items.filter(item => item.type === 'spell');
@@ -87,6 +112,8 @@ export default class JournalCascadeGenerator extends FormApplication {
       const archetypeCharm = charms.filter(charm => (charm.system.essence <= fullCharacter.system.essence.value && fullCharacter.system.attributes[charm.system.archetype.ability] && charm.system.requirement <= fullCharacter.system.attributes[charm.system.archetype.ability].value) || fullCharacter.system.abilities[charm.system.archetype.ability] && charm.system.requirement <= fullCharacter.system.abilities[charm.system.archetype.ability].value);
 
       characterCharms = characterCharms.concat(archetypeCharm);
+      characterCharms = characterCharms.concat(nonAbilityCharms);
+      
       characterCharms = characterCharms.sort(function (a, b) {
         const sortValueA = a.system.requirement;
         const sortValueB = b.system.requirement;
@@ -94,22 +121,22 @@ export default class JournalCascadeGenerator extends FormApplication {
       });
 
       const characterSpells = spells.filter(spell => {
-        if(spell.system.circle === 'terrestrial' && fullCharacter.system.settings.sorcerycircle !== 'none') {
+        if (spell.system.circle === 'terrestrial' && fullCharacter.system.settings.sorcerycircle !== 'none') {
           return true;
         }
-        if(spell.system.circle === 'celestial' && fullCharacter.system.settings.sorcerycircle !== 'terrestrial' && fullCharacter.system.settings.sorcerycircle !== 'none') {
+        if (spell.system.circle === 'celestial' && fullCharacter.system.settings.sorcerycircle !== 'terrestrial' && fullCharacter.system.settings.sorcerycircle !== 'none') {
           return true;
         }
-        if(spell.system.circle === 'solar' && fullCharacter.system.settings.sorcerycircle === 'solar') {
+        if (spell.system.circle === 'solar' && fullCharacter.system.settings.sorcerycircle === 'solar') {
           return true;
         }
-        if(spell.system.circle === 'ivory' && fullCharacter.system.settings.necromancycircle !== 'none') {
+        if (spell.system.circle === 'ivory' && fullCharacter.system.settings.necromancycircle !== 'none') {
           return true;
         }
-        if(spell.system.circle === 'shadow' && fullCharacter.system.settings.necromancycircle !== 'ivory' && fullCharacter.system.settings.necromancycircle !== 'none') {
+        if (spell.system.circle === 'shadow' && fullCharacter.system.settings.necromancycircle !== 'ivory' && fullCharacter.system.settings.necromancycircle !== 'none') {
           return true;
         }
-        if(spell.system.circle === 'void' && fullCharacter.system.settings.necromancycircle === 'void') {
+        if (spell.system.circle === 'void' && fullCharacter.system.settings.necromancycircle === 'void') {
           return true;
         }
         return false;
@@ -123,7 +150,7 @@ export default class JournalCascadeGenerator extends FormApplication {
       for (let [name, charmsList] of Object.entries(charmsMap)) {
         this.createCharmJournal(charmsList, name, folder, charms);
       }
-      if(this.object.includeSpells) {
+      if (this.object.includeSpells) {
         for (let [name, spellsList] of Object.entries(spellsMap)) {
           this.createSpellJournal(spellsList, name, folder);
         }
@@ -134,8 +161,15 @@ export default class JournalCascadeGenerator extends FormApplication {
   async createCharmMap(charms, fullCharms) {
     const charmsMap = {};
     charms.forEach(charm => {
-      if (!charmsMap[charm.system.ability]) {
-        charmsMap[charm.system.ability] = [];
+      let abilityKey = charm.system.ability;
+      if((charm.system.charmtype === "martialarts" || charm.system.charmtype === "evocation" ) && charm.system.parentitemid) {
+        let parentItem = game.items.get(charm.system.parentitemid);
+        if(parentItem) {
+          abilityKey = parentItem.name;
+        }
+      }
+      if (!charmsMap[abilityKey]) {
+        charmsMap[abilityKey] = [];
       }
       if (charm.system.charmprerequisites) {
         for (const prereq of charm.system.charmprerequisites) {
@@ -146,11 +180,9 @@ export default class JournalCascadeGenerator extends FormApplication {
         }
       }
       charm.system.leadsTo = fullCharms.filter(globalCharm => globalCharm.system.charmprerequisites.map(prereqCharm => prereqCharm.id).includes(charm.id));
-      charmsMap[charm.system.ability].push(charm);
-    });
-
-    charms.forEach(charm => {
-      if(charm.system.archetype.ability) {
+      charmsMap[abilityKey].push(charm);
+      
+      if (charm.system.archetype.ability) {
         const charmCopy = JSON.parse(JSON.stringify(charm));
         if (!charmsMap[charmCopy.system.archetype.ability]) {
           charmsMap[charmCopy.system.archetype.ability] = [];
@@ -191,10 +223,10 @@ export default class JournalCascadeGenerator extends FormApplication {
       'ivory': [],
       'shadow': [],
       'voice': [],
-      other: [],
+      'other': [],
     };
     spells.forEach(spell => {
-      if(spellsMap[spell.system.circle]) {
+      if (spellsMap[spell.system.circle]) {
         spellsMap[spell.system.circle].push(spell);
       }
       else {
@@ -229,7 +261,7 @@ export default class JournalCascadeGenerator extends FormApplication {
         );
       }
     }
-    if(this.object.type === 'character') {
+    if (this.object.type === 'character') {
       const fullCharacter = game.actors.get(this.object.character);
       const characterSpells = fullCharacter.items.filter(item => item.type === 'spell' && item.system.ability === name);
       if (characterSpells.length > 0) {
@@ -277,7 +309,7 @@ export default class JournalCascadeGenerator extends FormApplication {
     };
     // const noPrereqs = charms.filter(charm => !charm.system.prerequisites || charm.system.prerequisites === 'None');
     charms.forEach(charm => {
-      if(charmsMap[charm.system.essence]) {
+      if (charmsMap[charm.system.essence]) {
         charmsMap[charm.system.essence].push(charm);
       }
       else {
@@ -312,7 +344,7 @@ export default class JournalCascadeGenerator extends FormApplication {
         );
       }
     }
-    if(this.object.type === 'character') {
+    if (this.object.type === 'character') {
       const fullCharacter = game.actors.get(this.object.character);
       const characterCharms = fullCharacter.items.filter(item => item.type === 'charm' && item.system.ability === name);
       if (characterCharms.length > 0) {

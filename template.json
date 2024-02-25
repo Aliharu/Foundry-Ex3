@@ -1001,6 +1001,7 @@
         "anima": 0,
         "penumbra": 0,
         "willpower": 0,
+        "grapplecontrol": 0,
         "aura": "",
         "health": 0,
         "healthtype": "bashing",
@@ -1145,13 +1146,15 @@
       ],
       "merittype": "story",
       "parentitemid": "",
+      "archetypename": "",
       "points": 0
     },
     "ritual": {
       "templates": [
         "base",
         "activatable"
-      ]
+      ],
+      "archetypename": ""
     },
     "initiation": {
       "templates": [

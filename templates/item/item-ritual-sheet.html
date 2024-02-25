@@ -25,6 +25,12 @@
         <div class="tab" data-group="primary" data-tab="effects">
             <div class="grid grid-2col flex-group-center">
                 <div>
+                    <div class="flex-center">
+                        <div class="resource-label">{{localize "Ex3.Archetype"}}</div>
+                    </div>
+                    <input type="text" name="system.archetypename" value="{{system.archetypename}}" />
+                </div>
+                <div>
                     <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
                     <select name="system.endtrigger" data-type="String">
                         {{#select system.endtrigger}}
