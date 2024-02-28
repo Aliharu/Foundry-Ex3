@@ -921,11 +921,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         const nonAbilityCharms = items.filter(charm => charm.system.charmtype === 'martialarts' || charm.system.charmtype === 'evocation').filter(charm => {
           if (charm.system.charmtype === 'martialarts') {
             if (charm.system.parentitemid) {
-              return Object.values(this.actor.items.filter(item => item.type === 'customability'  || item.system.abilitytype === 'martialart')).some(martialArt => {
+              return Object.values(this.actor.items.filter(item => item.type === 'customability' || item.system.abilitytype === 'martialart')).some(martialArt => {
                 const sourceId = martialArt.flags?.core?.sourceId || '';
                 const sections = sourceId.split('.');
                 return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points
-              } );
+              });
             }
             return false;
           }
@@ -946,7 +946,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (ability) {
           ability = this.actor.charms[ability].list[0]?.system.ability;
           items = items.filter(charm => charm.system.ability === ability);
-          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability === ability);
+          archetypeCharms = archetypeCharms.filter(charm => {
+            if (charm.system.archetype.ability === "combat") {
+              return ['archery', 'brawl', 'melee', 'thrown'].includes(ability);
+            }
+            return charm.system.archetype.ability === ability;
+          });
         }
         items = items.filter(charm => {
           if (this.actor.system.attributes[charm.system.ability]) {
@@ -958,6 +963,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           return true;
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
+          if (charm.system.archetype.ability === "combat") {
+            return charm.system.requirement <= Math.max(this.actor.system.abilities['archery'].value, this.actor.system.abilities['brawl'].value, this.actor.system.abilities['melee'].value, this.actor.system.abilities['thrown'].value);
+          }
           if (this.actor.system.attributes[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.actor.system.attributes[charm.system.archetype.ability].value;
           }
@@ -991,18 +999,23 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           return false;
         });
       }
-      items = items.filter(item => !itemIds.includes(item._id));
       if (itemType === 'charm') {
         items = items.filter(charm => {
+          if (charm.system.numberprerequisites.number > 0) {
+            if (this.actor.items.filter(numberCharm => numberCharm.type === 'charm' && numberCharm.system.ability === charm.system.numberprerequisites.ability).length < charm.system.numberprerequisites.number) {
+              return false;
+            }
+          }
           return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
         });
-        if(archetypeCharms) {
+        if (archetypeCharms) {
           archetypeCharms = archetypeCharms.filter(charm => {
             return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
           });
           items = items.concat(archetypeCharms);
         }
       }
+      items = items.filter(item => !itemIds.includes(item._id));
       for (var item of items) {
         item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
       }
@@ -1090,8 +1103,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = items.find((item) => item._id === li.data("item-id"));
-            if(!item.flags?.core?.sourceId) {
-              item.updateSource({"flags.core.sourceId": item.uuid});
+            if (!item.flags?.core?.sourceId) {
+              item.updateSource({ "flags.core.sourceId": item.uuid });
             }
             this.actor.createEmbeddedDocuments("Item", [item]);
             html.find('.closeImportItem').trigger('click');

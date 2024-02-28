@@ -924,6 +924,24 @@
                 </div>
             </div>
             <div class="d-flex flex-center resource-label">
+                <div class="resource-label">{{localize "Ex3.PreviousCharmsPrerequisites"}}</div>
+            </div>
+            <div class="resource-content flexrow flex-center">
+                <input placeholder="Previous Charms from: " type="number" name="system.numberprerequisites.number" value="{{system.numberprerequisites.number}}" />
+                <select name="system.numberprerequisites.ability" data-type="String">
+                    {{#select system.numberprerequisites.ability}}
+                    {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
+                    <optgroup label="{{localize charmCategory.label}}">
+                      {{#each charmCategory.entries as |entry entryType|}}
+                      <option value="{{entryType}}">{{localize entry}}</option>
+                      {{/each}}
+                    </optgroup>
+                    {{/each}}
+                    <option value="">{{localize "Ex3.None"}}</option>
+                    {{/select}}
+                </select>
+            </div>
+            <div class="d-flex flex-center resource-label">
                 <div class="resource-label">{{localize "Ex3.AlternatePrerequisites"}}</div>
             </div>
             <div>
@@ -937,6 +955,7 @@
                       {{/each}}
                     </optgroup>
                     {{/each}}
+                    <option value="combat">{{localize "Ex3.AnyCombatAbility"}}</option>
                     <option value="">{{localize "Ex3.None"}}</option>
                     {{/select}}
                 </select>

@@ -994,6 +994,10 @@
         "prerequisites": "",
         "charmprerequisites": []
       },
+      "numberprerequisites": {
+        "ability": "",
+        "number": 0
+      },
       "cost": {
         "motes": 0,
         "commitmotes": 0,

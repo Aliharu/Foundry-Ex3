@@ -763,8 +763,8 @@ export default class CharacterBuilder extends FormApplication {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = items.find((item) => item._id === li.data("item-id"));
-            if(!item.flags?.core?.sourceId) {
-              item.updateSource({"flags.core.sourceId": item.uuid});
+            if (!item.flags?.core?.sourceId) {
+              item.updateSource({ "flags.core.sourceId": item.uuid });
             }
             const newItem = duplicate(item);
             newItem.itemCount = 1;
@@ -824,8 +824,8 @@ export default class CharacterBuilder extends FormApplication {
         const items = this._getItemList(event);
         var item = items[Math.floor(Math.random() * items.length)];
         if (item) {
-          if(!item.flags?.core?.sourceId) {
-            item.updateSource({"flags.core.sourceId": item.uuid});
+          if (!item.flags?.core?.sourceId) {
+            item.updateSource({ "flags.core.sourceId": item.uuid });
           }
           const newItem = duplicate(item);
           newItem.itemCount = 1;
@@ -882,7 +882,7 @@ export default class CharacterBuilder extends FormApplication {
     html.find(".lower-charm-count").on("click", async (event) => {
       const type = event.currentTarget.dataset.type;
       const index = event.currentTarget.dataset.index;
-      if(this.object.character[type][index].itemCount > 0) {
+      if (this.object.character[type][index].itemCount > 0) {
         this.object.character[type][index].itemCount--;
       }
       await this.onChange(event);
@@ -931,7 +931,12 @@ export default class CharacterBuilder extends FormApplication {
         archetypeCharms = items.filter(charm => charm.system.archetype.ability);
         if (event.currentTarget.dataset.ability) {
           items = items.filter(charm => charm.system.ability === event.currentTarget.dataset.ability);
-          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability === event.currentTarget.dataset.ability);
+          archetypeCharms = archetypeCharms.filter(charm => {
+            if (charm.system.archetype.ability === "combat") {
+              return ['archery', 'brawl', 'melee', 'thrown'].includes(event.currentTarget.dataset.ability);
+            }
+            return charm.system.archetype.ability === event.currentTarget.dataset.ability;
+          });
         }
         items = items.filter(charm => {
           if (this.object.character.attributes[charm.system.ability]) {
@@ -943,6 +948,9 @@ export default class CharacterBuilder extends FormApplication {
           return true;
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
+          if (charm.system.archetype.ability === "combat") {
+            return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value);
+          }
           if (this.object.character.attributes[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;
           }
@@ -1009,13 +1017,13 @@ export default class CharacterBuilder extends FormApplication {
         return false;
       });
     }
-    if(itemType === "merit") {
+    if (itemType === "merit") {
       items = items.filter(merit => {
-        if(merit.system.merittype !== "sorcery") {
+        if (merit.system.merittype !== "sorcery") {
           return true;
         }
-        if(this.object.character.ritual?.system?.archetypename) {
-          if(!merit.system.archetypename || merit.system.archetypename === this.object.character.ritual?.system?.archetypename) {
+        if (this.object.character.ritual?.system?.archetypename) {
+          if (!merit.system.archetypename || merit.system.archetypename === this.object.character.ritual?.system?.archetypename) {
             return true;
           }
         }
@@ -1033,18 +1041,23 @@ export default class CharacterBuilder extends FormApplication {
       ...Object.values(this.object.character.items).map(item => item._id),
       ...Object.values(this.object.character.merits).map(merit => merit._id),
     ];
-    items = items.filter(item => !itemIds.includes(item._id));
     if (itemType === 'charm') {
       items = items.filter(charm => {
+        if (charm.system.numberprerequisites.number > 0) {
+          if ((Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0) < charm.system.numberprerequisites.number) {
+            return false;
+          }
+        }
         return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
       });
-      if(archetypeCharms) {
+      if (archetypeCharms) {
         archetypeCharms = archetypeCharms.filter(charm => {
           return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
         });
         items = items.concat(archetypeCharms);
       }
     }
+    items = items.filter(item => !itemIds.includes(item._id));
     for (var item of items) {
       this.getEnritchedHTML(item);
     }
@@ -1085,8 +1098,8 @@ export default class CharacterBuilder extends FormApplication {
       };
     }
 
-    if(!itemObject.flags?.core?.sourceId) {
-      itemObject.updateSource({"flags.core.sourceId": itemObject.uuid});
+    if (!itemObject.flags?.core?.sourceId) {
+      itemObject.updateSource({ "flags.core.sourceId": itemObject.uuid });
     }
 
     const newItem = duplicate(itemObject);
