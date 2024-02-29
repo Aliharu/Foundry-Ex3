@@ -2025,7 +2025,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async pickColor() {
     let confirmed = false;
-    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor });
+    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
     new Dialog({
       title: `Pick Color`,
       content: html,
@@ -2037,12 +2037,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (confirmed) {
           let color = html.find('#color').val();
           let animaColor = html.find('#animaColor').val();
+          let initiativeIconColor = html.find('#initiativeIconColor').val();
+          let initiativeIcon = html.find('#initiativeIcon').val();
           if (isColor(color)) {
             this.actor.update({ [`system.details.color`]: color });
           }
           if (isColor(animaColor)) {
             this.actor.update({ [`system.details.animacolor`]: animaColor });
           }
+          if (isColor(initiativeIconColor)) {
+            this.actor.update({ [`system.details.initiativeiconcolor`]: initiativeIconColor });
+          }
+          this.actor.update({ [`system.details.initiativeicon`]: initiativeIcon });
         }
       }
     }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);

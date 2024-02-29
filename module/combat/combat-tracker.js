@@ -17,6 +17,8 @@ export class ExaltedCombatTracker extends CombatTracker {
                 ...t,
                 css: t.css,
                 acted: combatant?.flags.acted,
+                initiativeIconColor: combatant?.actor?.system?.details?.initiativeiconcolor  || '#F9B516',
+                initiativeIcon: combatant?.actor?.system?.details?.initiativeicon?.toLowerCase() || 'sun',
                 turnOrderInitiative: ((combatant?.initiative || 0) + (combatant?.actor?.system?.turnorderinitiative.value || 0))
             };
         });

@@ -332,7 +332,7 @@ export default class CharacterBuilder extends FormApplication {
       popOut: true,
       template: "systems/exaltedthird/templates/dialogues/character-builder.html",
       id: "ex3-character-builder",
-      title: `Character Builder (BETA)`,
+      title: `Character Builder`,
       width: 875,
       height: 1100,
       resizable: true,
@@ -633,6 +633,7 @@ export default class CharacterBuilder extends FormApplication {
         }
       }
       else if (itemType === 'customability') {
+
         sectionList['martialarts'] = {
           name: game.i18n.localize("Ex3.MartialArts"),
           list: items.filter(item => !item.system.siderealmartialart)
@@ -641,6 +642,30 @@ export default class CharacterBuilder extends FormApplication {
           sectionList['sideralmartialarts'] = {
             name: game.i18n.localize("Ex3.SiderealMartialArts"),
             list: items.filter(item => item.system.siderealmartialart)
+          }
+        }
+        if (items.some(item => item.system.armorallowance === 'none')) {
+          sectionList['none'] = {
+            name: game.i18n.localize("Ex3.NoArmor"),
+            list: items.filter(item => item.system.armorallowance === 'none')
+          }
+        }
+        if (items.some(item => item.system.armorallowance === 'light')) {
+          sectionList['light'] = {
+            name: game.i18n.localize("Ex3.LightArmor"),
+            list: items.filter(item => item.system.armorallowance === 'light')
+          }
+        }
+        if (items.some(item => item.system.armorallowance === 'medium')) {
+          sectionList['medium'] = {
+            name: game.i18n.localize("Ex3.MediumArmor"),
+            list: items.filter(item => item.system.armorallowance === 'medium')
+          }
+        }
+        if (items.some(item => item.system.armorallowance === 'heavy')) {
+          sectionList['heavy'] = {
+            name: game.i18n.localize("Ex3.HeavyArmor"),
+            list: items.filter(item => item.system.armorallowance === 'heavy')
           }
         }
       }
@@ -1023,7 +1048,7 @@ export default class CharacterBuilder extends FormApplication {
           return true;
         }
         if (this.object.character.ritual?.system?.archetypename) {
-          if (!merit.system.archetypename || merit.system.archetypename === this.object.character.ritual?.system?.archetypename) {
+          if (!merit.system.archetypename || merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase()) {
             return true;
           }
         }
@@ -1032,6 +1057,7 @@ export default class CharacterBuilder extends FormApplication {
     }
     const itemIds = [
       ...Object.values(this.object.character.charms).map(charm => charm._id),
+      ...Object.values(this.object.character.martialArts).map(charm => charm._id),
       ...Object.values(this.object.character.martialArtsCharms).map(charm => charm._id),
       ...Object.values(this.object.character.evocations).map(charm => charm._id),
       ...Object.values(this.object.character.otherCharms).map(charm => charm._id),

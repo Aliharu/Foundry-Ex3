@@ -176,6 +176,8 @@
           "caste": "",
           "color": "#000000",
           "animacolor": "#FFFFFF",
+          "initiativeiconcolor": "#F9B516",
+          "initiativeicon": "sun",
           "tell": "",
           "spiritshape": "",
           "birthsign": "",
@@ -910,7 +912,8 @@
       ],
       "abilitytype": "other",
       "siderealmartialart": false,
-      "excellency": false
+      "excellency": false,
+      "armorallowance": ""
     },
     "weapon": {
       "templates": [
