@@ -270,6 +270,9 @@ export function prepareItemTraits(type, i) {
   if (type === 'armor') {
     map['armortags'] = CONFIG.exaltedthird.armortags
   }
+  if (type === 'customability') {
+    map['weapons'] = CONFIG.exaltedthird.weapons
+  }
   for (let [t, choices] of Object.entries(map)) {
     const trait = i.system.traits[t];
     if (!trait) continue;

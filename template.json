@@ -913,7 +913,13 @@
       "abilitytype": "other",
       "siderealmartialart": false,
       "excellency": false,
-      "armorallowance": ""
+      "armorallowance": "",
+      "traits": {
+        "weapons": {
+          "value": [],
+          "custom": ""
+        }
+      }
     },
     "weapon": {
       "templates": [

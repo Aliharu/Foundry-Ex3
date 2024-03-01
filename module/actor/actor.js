@@ -780,6 +780,7 @@ export class ExaltedThirdActor extends Actor {
         gear.push(i);
       }
       else if (i.type === 'customability') {
+        prepareItemTraits('customability', i);
         customAbilities.push(i);
       }
       else if (i.type === 'weapon') {

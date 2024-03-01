@@ -429,6 +429,7 @@ export default class TemplateImporter extends FormApplication {
     var folder = await this._getFolder(html);
     const weaponTags = CONFIG.exaltedthird.weapontags;
     const armorTags = CONFIG.exaltedthird.armortags;
+    const weapons = CONFIG.exaltedthird.weapons;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var itemData = {
         type: itemType,
@@ -477,12 +478,50 @@ export default class TemplateImporter extends FormApplication {
             }
             itemData.system.traits.weapontags.value = itemTags;
           }
-        } else {
+        }
+        else {
           description += textArray[index];
           description += " ";
         }
 
         index++;
+      }
+      if (itemType === 'martialArt') {
+        itemData.img = "systems/exaltedthird/assets/icons/punch-blast.svg";
+        itemData.type = 'customability';
+        itemData.system.abilitytype = 'martialart';
+        // const weaponMatches = description.match(/Weapons:(.*?)Armor:/s);
+        // if (weaponMatches) {
+        //   const extractedText = weaponMatches[1].trim().replace(/[^\w\s]/gi, '').toLowerCase();
+        //   var weaponsList = [];
+        //   for (const weapon of Object.keys(weapons)) {
+        //     if (extractedText.includes(weapon)) {
+        //       weaponsList.push(weapon);
+        //     }
+        //   }
+        //   itemData.system.traits = {
+        //     "weapons": {
+        //       "value": weaponsList,
+        //       "custom": ""
+        //     }
+        //   }
+        // }
+        const armorMatches = description.match(/Armor:(.*)/);
+        if (armorMatches) {
+          const extractedText = armorMatches[1].trim().toLowerCase();
+          if (extractedText.includes("all")) {
+            itemData.system.armorallowance = "heavy";
+          }
+          else if (extractedText.includes("medium")) {
+            itemData.system.armorallowance = "medium";
+          }
+          else if (extractedText.includes("light")) {
+            itemData.system.armorallowance = "light";
+          }
+          else {
+            itemData.system.armorallowance = "none";
+          }
+        }
       }
       itemData.system.description = description;
       if (folder) {

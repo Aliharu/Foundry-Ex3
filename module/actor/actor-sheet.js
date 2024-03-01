@@ -435,6 +435,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         gear.push(i);
       }
       else if (i.type === 'customability') {
+        prepareItemTraits('customability', i);
         customAbilities.push(i);
       }
       else if (i.type === 'weapon') {
@@ -948,7 +949,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           items = items.filter(charm => charm.system.ability === ability);
           archetypeCharms = archetypeCharms.filter(charm => {
             if (charm.system.archetype.ability === "combat") {
-              return ['archery', 'brawl', 'melee', 'thrown'].includes(ability);
+              return ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(ability);
             }
             return charm.system.archetype.ability === ability;
           });
@@ -964,7 +965,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
           if (charm.system.archetype.ability === "combat") {
-            return charm.system.requirement <= Math.max(this.actor.system.abilities['archery'].value, this.actor.system.abilities['brawl'].value, this.actor.system.abilities['melee'].value, this.actor.system.abilities['thrown'].value);
+            return charm.system.requirement <= Math.max(this.actor.system.abilities['archery'].value, this.actor.system.abilities['brawl'].value, this.actor.system.abilities['melee'].value, this.actor.system.abilities['thrown'].value, this.actor.system.abilities['war'].value);
           }
           if (this.actor.system.attributes[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.actor.system.attributes[charm.system.archetype.ability].value;

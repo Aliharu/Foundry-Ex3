@@ -1,63 +1,80 @@
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="profile-img-wrapper">
+            <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+        </div>
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-            <div class="check-button">
-                <label class="resource-label">{{localize "Ex3.Type"}}: </label>
-                <select name="system.abilitytype" data-type="String">
-                    {{#select system.abilitytype}}
-                    <option value="craft">{{localize "Ex3.Craft"}}</option>
-                    <option value="martialart">{{localize "Ex3.MartialArt"}}</option>
-                    <option value="other">{{localize "Ex3.Other"}}</option>
-                    {{/select}}
-                </select>
-                <label class="resource-label">{{localize "Ex3.Points"}}: </label>
-                <input type="number" name="system.points" value="{{system.points}}" style="width:10%;margin-right:5px" />
-                <label class="resource-label">{{localize "Ex3.Favored"}}: </label>
-                <input name="system.favored" type="checkbox" value="system.favored" {{checked system.favored}}>
+            <h1 class="itemname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" />
+                {{#ifEquals system.abilitytype 'martialart'}}
+                <a class="trait-selector" data-options="weapons" data-target="system.traits.weapons">
+                    <i class="fas fa-edit"></i>
+                </a>
+                {{/ifEquals}}
+            </h1>
+            <div class="mt-1">
+                <div class="mt-1">
+                    {{#each system.traits.weapons.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                    {{/each}}
+                </div>
             </div>
         </div>
     </header>
-
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
-        <a class="item" data-tab="effects">{{localize "Ex3.Effects"}}</a>
+        <a class="item" data-tab="details">{{localize "Ex3.Details"}}</a>
     </nav>
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            <div class="d-flex flex-center">
-                <label class="resource-label">{{localize "Ex3.SiderealMartialArt"}}</label>
-                <input name="system.siderealmartialart" type="checkbox" value="system.siderealmartialart" {{checked system.siderealmartialart}}>
-                <label class="resource-label">{{localize "Ex3.Excellency"}}</label>
-                <input name="system.excellency" type="checkbox" value="system.excellency" {{checked system.excellency}}>
-            </div>
-            <div class="flex-center">
-                <div class="resource-label">{{localize "Ex3.Description"}}</div>
-            </div>
             {{editor descriptionHTML target="system.description" button=true editable=editable engine="prosemirror"}}
         </div>
 
-        <div class="tab" data-group="primary" data-tab="effects">
-            {{#ifEquals system.abilitytype 'martialart'}}
+        <div class="tab" data-group="primary" data-tab="details">
             <div class="grid grid-3col flex-group-center">
                 <div>
-                    <div class="resource-label">{{localize "Ex3.ArmorAllowance"}}</div>
-                    <select name="system.armorallowance" data-type="String">
-                        {{#select system.armorallowance}}
-                        <option value="none">{{localize "Ex3.NoArmor"}}</option>
-                        <option value="light">{{localize "Ex3.Light"}}</option>
-                        <option value="medium">{{localize "Ex3.Medium"}}</option>
-                        <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-                        <option value="">{{localize "Ex3.NotSet"}}</option>
+                    <div class="resource-label">{{localize "Ex3.Type"}}</div>
+                    <select name="system.abilitytype" data-type="String">
+                        {{#select system.abilitytype}}
+                        <option value="craft">{{localize "Ex3.Craft"}}</option>
+                        <option value="martialart">{{localize "Ex3.MartialArt"}}</option>
+                        <option value="other">{{localize "Ex3.Other"}}</option>
                         {{/select}}
                     </select>
                 </div>
+                {{#ifEquals system.abilitytype 'martialart'}}
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.ArmorAllowance"}}</div>
+                        <select name="system.armorallowance" data-type="String">
+                            {{#select system.armorallowance}}
+                            <option value="none">{{localize "Ex3.NoArmor"}}</option>
+                            <option value="light">{{localize "Ex3.Light"}}</option>
+                            <option value="medium">{{localize "Ex3.Medium"}}</option>
+                            <option value="heavy">{{localize "Ex3.Heavy"}}</option>
+                            <option value="">{{localize "Ex3.NotSet"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                {{/ifEquals}}
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Points"}}</div>
+                    <input type="number" name="system.points" value="{{system.points}}"/>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Favored"}}</div>
+                    <input name="system.favored" type="checkbox" value="system.favored" {{checked system.favored}}>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.SiderealMartialArt"}}</div>
+                    <input name="system.siderealmartialart" type="checkbox" value="system.siderealmartialart" {{checked system.siderealmartialart}}>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Excellency"}}</div>
+                    <input name="system.excellency" type="checkbox" value="system.excellency" {{checked system.excellency}}>
+                </div>
             </div>
-            {{/ifEquals}}
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 

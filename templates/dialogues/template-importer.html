@@ -6,19 +6,19 @@
     <div class="mb-2 mt-2">
       <input class="radio" id="charm-radio" type="radio" name="type" value="charm" data-dtype="String" value="{{type}}"
         {{#ifEquals type 'charm' }} checked {{/ifEquals}} />
-      {{ localize "Ex3.Charm"}}
+      <label for="charm-radio">{{ localize "Ex3.Charm"}}</label>
       <input class="radio" id="spell-radio" type="radio" name="type" value="spell" data-dtype="String" value="{{type}}"
         {{#ifEquals type 'spell' }} checked {{/ifEquals}} />
-      {{ localize "Ex3.Spell"}}
+        <label for="spell-radio">{{ localize "Ex3.Spell"}}</label>
       <input class="radio" id="adversary-radio" type="radio" name="type" value="adversary" data-dtype="String"
         value="{{type}}" {{#ifEquals type 'adversary' }} checked {{/ifEquals}} />
-      {{ localize "Ex3.Adversary"}}
+        <label for="adversary-radio">{{ localize "Ex3.Adversary"}}</label>
       <input class="radio" id="qc-radio" type="radio" name="type" value="qc" data-dtype="String" value="{{type}}"
         {{#ifEquals type 'qc' }} checked {{/ifEquals}} />
-      {{ localize "Ex3.QuickCharacter"}}
+        <label for="qc-radio">{{ localize "Ex3.QuickCharacter"}}</label>
       <input class="radio" id="other-radio" type="radio" name="type" value="qc" data-dtype="String" value="{{type}}"
       {{#ifEquals type 'other' }} checked {{/ifEquals}} />
-    {{ localize "Ex3.Other"}}
+      <label for="other-radio">{{ localize "Ex3.Other"}}</label>
     </div>
     {{#if showError}}
     {{#ifEquals type 'qc' }}
@@ -91,6 +91,7 @@
           <option value="armor">{{localize "Ex3.Armor"}}</option>
           <option value="ritual">{{localize "Ex3.ShapingRitual"}}</option>
           <option value="item">{{localize "Ex3.Item"}}</option>
+          <option value="martialArt">{{localize "Ex3.MartialArt"}}</option>
           <option value="merit">{{localize "Ex3.Merit"}}</option>
           <option value="weapon">{{localize "Ex3.Weapon"}}</option>
           {{/select}}

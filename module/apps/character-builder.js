@@ -595,6 +595,12 @@ export default class CharacterBuilder extends FormApplication {
             list: items.filter(item => item.system.merittype === 'innate')
           };
         }
+        if (items.some(item => item.system.merittype === 'flaw')) {
+          sectionList['flaw'] = {
+            name: game.i18n.localize("Ex3.Flaw"),
+            list: items.filter(item => item.system.merittype === 'flaw')
+          };
+        }
         if (items.some(item => item.system.merittype === 'purchased')) {
           sectionList['purchased'] = {
             name: game.i18n.localize("Ex3.Purchased"),
@@ -958,7 +964,7 @@ export default class CharacterBuilder extends FormApplication {
           items = items.filter(charm => charm.system.ability === event.currentTarget.dataset.ability);
           archetypeCharms = archetypeCharms.filter(charm => {
             if (charm.system.archetype.ability === "combat") {
-              return ['archery', 'brawl', 'melee', 'thrown'].includes(event.currentTarget.dataset.ability);
+              return ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(event.currentTarget.dataset.ability);
             }
             return charm.system.archetype.ability === event.currentTarget.dataset.ability;
           });
@@ -974,7 +980,7 @@ export default class CharacterBuilder extends FormApplication {
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
           if (charm.system.archetype.ability === "combat") {
-            return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value);
+            return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
           }
           if (this.object.character.attributes[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;

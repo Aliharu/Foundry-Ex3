@@ -91,7 +91,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       async: true
     });
 
-    if (itemData.type === 'weapon' || itemData.type === 'armor') {
+    if (itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'customability') {
       this._prepareTraits(itemData.type, context.system.traits);
     }
 
@@ -116,6 +116,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     }
     if (type === 'armor') {
       map['armortags'] = CONFIG.exaltedthird.armortags
+    }
+    if (type === 'customability') {
+      map['weapons'] = CONFIG.exaltedthird.weapons
     }
     for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];

@@ -20,6 +20,13 @@
             {{/each}}
         </div>
         {{/if}}
+        {{#if item.system.traits.weapons.selected}}
+        <div class="mt-1">
+            {{#each item.system.traits.weapons.selected as |v k|}}
+            <span class="tag {{k}}">{{v}}</span>
+            {{/each}}
+        </div>
+        {{/if}}
         {{#ifEquals item.type 'charm'}}
         <div>
             {{{charmCostDisplay item.system.cost}}}

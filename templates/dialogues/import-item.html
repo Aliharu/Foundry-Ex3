@@ -19,6 +19,27 @@
                             class="fas fa-plus"></i></a>
             </li>
             <li class="item-description">
+                {{#if item.system.traits.weapontags.value}}
+                <div class="mt-1">
+                    {{#each item.system.traits.weapontags.selected as |v k|}}
+                    <span class="tag {{k}}">{{v}}</span>
+                    {{/each}}
+                </div>
+                {{/if}}
+                {{#if item.system.traits.armortags.value}}
+                <div class="mt-1">
+                    {{#each item.system.traits.armortags.selected as |v k|}}
+                    <span class="tag {{k}}">{{v}}</span>
+                    {{/each}}
+                </div>
+                {{/if}}
+                {{#if item.system.traits.weapons.value}}
+                <div class="mt-1">
+                    {{#each item.system.traits.weapons.value as |v k|}}
+                    <span class="tag {{k}}">{{v}}</span>
+                    {{/each}}
+                </div>
+                {{/if}}
                 {{#ifEquals item.type 'charm'}}
                 <div>
                     {{{charmCostDisplay item.system.cost}}}
