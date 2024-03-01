@@ -807,6 +807,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.showDialogue('craft');
     });
 
+    html.find('.show-health').mousedown(ev => {
+      this.showDialogue('health');
+    });
+
     html.find('.set-pool-peripheral').mousedown(ev => {
       this.setSpendPool('peripheral');
     });
@@ -2010,6 +2014,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         break;
       case 'bonus-points':
         template = "systems/exaltedthird/templates/dialogues/bonus-points-dialogue.html";
+        break;
+      case 'health':
+        template = "systems/exaltedthird/templates/dialogues/health-dialogue.html";
         break;
       default:
         break;

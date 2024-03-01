@@ -1,9 +1,14 @@
 <div class="resource flex-group-center d-flex">
     <div {{#if system.battlegroup}}{{else}}style="margin-right:20px;" {{/if}}>
         <div class="flexrow">
-            <label for="system.health" class="resource-label"><a><i class="fas fa-calculator cursor-pointer"
-                        id="calculate-health" style="margin-right:3px;" title="Calculate Health"></i></a> {{#if
-                system.battlegroup}}
+            <label for="system.health" class="resource-label">
+                {{#if system.settings.editmode}}
+                <a><i class="fas fa-calculator cursor-pointer" id="calculate-health" style="margin-right:3px;"
+                        title="Calculate Health"></i></a>
+                {{else}}
+                <a><i class="fas fa-info-circle show-health cursor-pointer" style="margin-right:3px;"></i></a>
+                {{/if}}
+                {{#if system.battlegroup}}
                 {{localize "Ex3.Magnitude"}}
                 {{else}}
                 {{localize "Ex3.Health"}}
@@ -150,7 +155,8 @@
             {{#if bankableStunts}}
             <div>
                 <label class="resource-label">{{localize "Ex3.StuntDice"}}</label>
-                <input type="number" name="system.stuntdice.value" value="{{system.stuntdice.value}}" data-dtype="Number" />
+                <input type="number" name="system.stuntdice.value" value="{{system.stuntdice.value}}"
+                    data-dtype="Number" />
             </div>
             {{/if}}
         </div>
