@@ -89,7 +89,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
     this._prepareTraits(context.system.traits);
-    // this._prepareActorSheetData(context);
+    this._prepareActorSheetData(context);
     this._prepareCharacterItems(context);
     if (context.actor.type === 'character') {
       this._prepareCharacterData(context);
@@ -106,9 +106,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     return context;
   }
 
-  // _prepareActorSheetData(sheetData) {
-  //   const actorData = sheetData.actor;
-  // }
+  _prepareActorSheetData(sheetData) {
+    const actorData = sheetData.actor;
+
+    for (let [key, setting] of Object.entries(sheetData.system.settings.rollsettings)) {
+      setting.name = CONFIG.exaltedthird.rolltypes[key];
+    }
+    for (let [key, setting] of Object.entries(sheetData.system.settings.attackrollsettings)) {
+      setting.name = CONFIG.exaltedthird.attackrolltypes[key];
+    }
+    for (let [key, setting] of Object.entries(sheetData.system.settings.staticcapsettings)) {
+      setting.name = CONFIG.exaltedthird.statictypes[key];
+    }
+  }
 
   _prepareCharacterData(sheetData) {
     const actorData = sheetData.actor;
@@ -239,6 +249,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     for (let [key, attr] of Object.entries(sheetData.system.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
+      attr.name = CONFIG.exaltedthird.attributes[key];
       sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
       if (attr.favored) {
         attributesSpent[attr.type].favored += (attr.value - 1);
@@ -246,6 +257,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else {
         attributesSpent[attr.type].unFavored += (attr.value - 1);
       }
+    }
+    for (let [key, ability] of Object.entries(sheetData.system.abilities)) {
+      ability.name = CONFIG.exaltedthird.abilities[key];
     }
     var favoredCharms = 0;
     var nonFavoredCharms = 0;
@@ -351,8 +365,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   _prepareNPCData(sheetData) {
     sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheetsNPC");
-  }
 
+    for (let [key, pool] of Object.entries(sheetData.system.pools)) {
+      pool.name = CONFIG.exaltedthird.npcpools[key];
+    }
+  }
 
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData.actor;

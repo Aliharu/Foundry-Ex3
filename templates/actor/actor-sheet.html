@@ -442,8 +442,8 @@
         <div class="grid grid-2col flex-group-center">
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.spent}}
-                Spent)</label>
+              <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.remaining}}
+                {{localize "Ex3.Remaining"}})</label>
               <div class="resource-content flexrow flex-center flex-between">
                 <input name="system.experience.standard.value" value="{{system.experience.standard.value}}" type="text"
                   placeholder="Remaining" />
@@ -455,8 +455,8 @@
           </div>
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.spent}}
-                Spent)
+              <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.remaining}}
+                {{localize "Ex3.Remaining"}})
                 <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
                 <div class="resource-content flexrow flex-center flex-between">
                   <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"

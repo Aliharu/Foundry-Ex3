@@ -1106,6 +1106,20 @@ Hooks.once("ready", async function () {
       }
     }
     ui.notifications.notify(`Migration Complete`);
+  }
+
+  if (isNewerVersion("2.7.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.7.0, please wait`);
+    for (let actor of game.actors.filter(actor => actor.type === "character")) {
+      try {
+        await actor.update({ [`system.experience.standard.value`]: actor.system.experience.standard.total - actor.system.experience.standard.value });
+        await actor.update({ [`system.experience.exalt.value`]: actor.system.experience.exalt.total - actor.system.experience.exalt.value });
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 

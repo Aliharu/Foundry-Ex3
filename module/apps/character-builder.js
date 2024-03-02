@@ -2458,56 +2458,48 @@ export default class CharacterBuilder extends FormApplication {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Strength",
             "type": "physical"
           },
           "charisma": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Charisma",
             "type": "social"
           },
           "perception": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Perception",
             "type": "mental"
           },
           "dexterity": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Dexterity",
             "type": "physical"
           },
           "manipulation": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Manipulation",
             "type": "social"
           },
           "intelligence": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Intelligence",
             "type": "mental"
           },
           "stamina": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Stamina",
             "type": "physical"
           },
           "appearance": {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Appearance",
             "type": "social"
           },
           "wits": {
@@ -2528,7 +2520,6 @@ export default class CharacterBuilder extends FormApplication {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Archery",
             "prefattribute": "dexterity"
           },
           "athletics": {
@@ -2542,168 +2533,144 @@ export default class CharacterBuilder extends FormApplication {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Awareness",
             "prefattribute": "perception"
           },
           "brawl": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Brawl",
             "prefattribute": "dexterity"
           },
           "bureaucracy": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Bureaucracy",
             "prefattribute": "intelligence"
           },
           "craft": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Craft",
             "prefattribute": "intelligence"
           },
           "dodge": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Dodge",
             "prefattribute": "dexterity"
           },
           "integrity": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Integrity",
             "prefattribute": "charisma"
           },
           "investigation": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Investigation",
             "prefattribute": "intelligence"
           },
           "larceny": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Larceny",
             "prefattribute": "dexterity"
           },
           "linguistics": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Linguistics",
             "prefattribute": "intelligence"
           },
           "lore": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Lore",
             "prefattribute": "intelligence"
           },
           "martialarts": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.MartialArts",
             "prefattribute": "dexterity"
           },
           "medicine": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Medicine",
             "prefattribute": "intelligence"
           },
           "melee": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Melee",
             "prefattribute": "dexterity"
           },
           "occult": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Occult",
             "prefattribute": "intelligence"
           },
           "performance": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Performance",
             "prefattribute": "charisma"
           },
           "presence": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Presence",
             "prefattribute": "charisma"
           },
           "resistance": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Resistance",
             "prefattribute": "stamina"
           },
           "ride": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Ride",
             "prefattribute": "dexterity"
           },
           "sail": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Sail",
             "prefattribute": "dexterity"
           },
           "socialize": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Socialize",
             "prefattribute": "charisma"
           },
           "stealth": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Stealth",
             "prefattribute": "dexterity"
           },
           "survival": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Survival",
             "prefattribute": "perception"
           },
           "thrown": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.Thrown",
             "prefattribute": "dexterity"
           },
           "war": {
             "favored": false,
             "excellency": false,
             "value": 0,
-            "name": "Ex3.War",
             "prefattribute": "intelligence"
           }
         },
@@ -2906,115 +2873,96 @@ export default class CharacterBuilder extends FormApplication {
             "attacks": {
               "attribute": "dexterity",
               "ability": "melee",
-              "bonus": 0,
-              "name": "Ex3.Attacks"
+              "bonus": 0
             },
             "command": {
               "attribute": "charisma",
               "ability": "war",
-              "bonus": 0,
-              "name": "Ex3.Command"
+              "bonus": 0
             },
             "craft": {
               "attribute": "intelligence",
               "ability": "craft",
-              "bonus": 0,
-              "name": "Ex3.Craft"
+              "bonus": 0
             },
             "disengage": {
               "attribute": "dexterity",
               "ability": "dodge",
-              "bonus": 0,
-              "name": "Ex3.Disengage"
+              "bonus": 0
             },
             "grapplecontrol": {
               "attribute": "strength",
               "ability": "brawl",
-              "bonus": 0,
-              "name": "Ex3.GrappleControl"
+              "bonus": 0
             },
             "joinbattle": {
               "attribute": "wits",
               "ability": "awareness",
-              "bonus": 0,
-              "name": "Ex3.JoinBattle"
+              "bonus": 0
             },
             "readintentions": {
               "attribute": "perception",
               "ability": "socialize",
-              "bonus": 0,
-              "name": "Ex3.ReadIntentions"
+              "bonus": 0
             },
             "rush": {
               "attribute": "dexterity",
               "ability": "athletics",
-              "bonus": 0,
-              "name": "Ex3.Rush"
+              "bonus": 0
             },
             "social": {
               "attribute": "charisma",
               "ability": "socialize",
               "appearanceattribute": "appearance",
-              "bonus": 0,
-              "name": "Ex3.Social"
+              "bonus": 0
             },
             "sorcery": {
               "attribute": "intelligence",
               "ability": "occult",
-              "bonus": 0,
-              "name": "Ex3.Sorcery"
+              "bonus": 0
             },
             "steady": {
               "attribute": "stamina",
               "ability": "resistance",
-              "bonus": 0,
-              "name": "Ex3.Steady"
+              "bonus": 0
             },
           },
           "attackrollsettings": {
             "withering": {
               "bonus": 0,
-              "damage": 0,
-              "name": "Ex3.Withering"
+              "damage": 0
             },
             "decisive": {
               "bonus": 0,
-              "damage": 0,
-              "name": "Ex3.Decisive"
+              "damage": 0
             },
             "gambit": {
               "bonus": 0,
-              "damage": 0,
-              "name": "Ex3.Gambit"
+              "damage": 0
             }
           },
           "staticcapsettings": {
             "parry": {
-              "name": "Ex3.Parry",
               "attribute": "dexterity",
               "ability": "melee",
               "specialty": false
             },
             "evasion": {
-              "name": "Ex3.Evasion",
               "attribute": "dexterity",
               "ability": "dodge",
               "specialty": false
             },
             "resolve": {
-              "name": "Ex3.Resolve",
               "attribute": "wits",
               "ability": "integrity",
               "specialty": false
             },
             "guile": {
-              "name": "Ex3.Guile",
               "attribute": "manipulation",
               "ability": "socialize",
               "specialty": false
             },
             "soak": {
-              "name": "Ex3.Soak",
               "attribute": "stamina",
               "ability": "none",
               "specialty": false

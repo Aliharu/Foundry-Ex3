@@ -15,36 +15,6 @@ export const exaltedthird = {};
 //     "localtongue": "Ex3.LocalTongue",
 // };
 
-// "pools": {
-//     "command": {
-//       "name": "Ex3.Command",
-//       "value": 0
-//     },
-//     "grapple": {
-//       "name": "Ex3.GrappleControl",
-//       "value": 0
-//     },
-//     "joinbattle": {
-//       "name": "Ex3.JoinBattle",
-//       "value": 0
-//     },
-//     "movement": {
-//       "name": "Ex3.Movement",
-//       "value": 0
-//     },
-//     "readintentions": {
-//       "name": "Ex3.ReadIntentions",
-//       "value": 0
-//     },
-//     "social": {
-//       "name": "Ex3.Social",
-//       "value": 0
-//     },
-//     "sorcery": {
-//       "name": "Ex3.Sorcery",
-//       "value": 0
-//     }
-
 exaltedthird.activeEffectChanges = {
   'system.attributes.strength.value': 'Ex3.Strength',
   'system.attributes.dexterity.value': 'Ex3.Dexterity',
@@ -129,17 +99,6 @@ exaltedthird.activeEffectChanges = {
   'system.damage.round.aggravated': 'Ex3.AggravatedDamageRound',
 };
 
-exaltedthird.npcpools = {
-  command: 'Ex3.Command',
-  grapple: 'Ex3.GrappleControl',
-  joinbattle: 'Ex3.JoinBattle',
-  movement: 'Ex3.Movement',
-  resistance: 'Ex3.Resistance',
-  readintentions: 'Ex3.ReadIntentions',
-  social: 'Ex3.Social',
-  sorcery: 'Ex3.Sorcery',
-};
-
 exaltedthird.exaltcharmtypes = {
   abyssal: "Ex3.Abyssal",
   alchemical: "Ex3.Alchemical",
@@ -162,6 +121,32 @@ exaltedthird.exaltcharmtypes = {
   sovereign: "Ex3.Sovereign",
   umbral: "Ex3.Umbral",
   other: "Ex3.Other"
+};
+
+exaltedthird.rolltypes = {
+  command: "Ex3.Command",
+  craft: "Ex3.Craft",
+  disengage: "Ex3.Disengage",
+  grapplecontrol: "Ex3.GrappleControl",
+  joinbattle: "Ex3.JoinBattle",
+  readintentions: "Ex3.ReadIntentions",
+  rush: "Ex3.Rush",
+  social: "Ex3.Social",
+  sorcery: "Ex3.Steady",
+};
+
+exaltedthird.attackrolltypes = {
+  "withering": "Ex3.Withering",
+  "decisive": "Ex3.Decisive",
+  "gambit": "Ex3.Gambit",
+};
+
+exaltedthird.statictypes = {
+  "parry": "Ex3.Parry",
+  "evasion": "Ex3.Evasion",
+  "resolve": "Ex3.Resolve",
+  "guile": "Ex3.Guile",
+  "soak": "Ex3.Soak",
 };
 
 exaltedthird.castes = {
@@ -275,6 +260,17 @@ exaltedthird.abilities = {
   survival: 'Ex3.Survival',
   thrown: 'Ex3.Thrown',
   war: 'Ex3.War',
+};
+
+exaltedthird.npcpools = {
+  command: 'Ex3.Command',
+  grapple: 'Ex3.GrappleControl',
+  joinbattle: 'Ex3.JoinBattle',
+  movement: 'Ex3.Movement',
+  resistance: 'Ex3.Resistance',
+  readintentions: 'Ex3.ReadIntentions',
+  social: 'Ex3.Social',
+  sorcery: 'Ex3.Sorcery',
 };
 
 exaltedthird.charmabilities = {

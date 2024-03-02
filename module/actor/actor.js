@@ -699,8 +699,8 @@ export class ExaltedThirdActor extends Actor {
     data.ship.health.penalty = currentShipPenalty;
 
     if (actorData.type !== "npc") {
-      data.experience.standard.spent = data.experience.standard.total - data.experience.standard.value;
-      data.experience.exalt.spent = data.experience.exalt.total - data.experience.exalt.value;
+      data.experience.standard.remaining = data.experience.standard.total - data.experience.standard.value;
+      data.experience.exalt.remaining = data.experience.exalt.total - data.experience.exalt.value;
     }
 
     var currentParryPenalty = 0;

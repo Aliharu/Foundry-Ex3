@@ -1292,35 +1292,27 @@ export default class NPCGenerator extends FormApplication {
       system: {
         "pools": {
           "command": {
-            "name": "Ex3.Command",
             "value": 0
           },
           "grapple": {
-            "name": "Ex3.GrappleControl",
             "value": 0
           },
           "joinbattle": {
-            "name": "Ex3.JoinBattle",
             "value": 0
           },
           "movement": {
-            "name": "Ex3.Movement",
             "value": 0
           },
           "readintentions": {
-            "name": "Ex3.ReadIntentions",
             "value": 0
           },
           "resistance": {
-            "name": "Ex3.Resistance",
             "value": 0
           },
           "social": {
-            "name": "Ex3.Social",
             "value": 0
           },
           "sorcery": {
-            "name": "Ex3.Sorcery",
             "value": 0
           }
         },
