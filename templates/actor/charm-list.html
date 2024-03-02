@@ -35,6 +35,13 @@
             <a class="item-control add-opposing-charm" title="Add charm's opposed bonuses to other characters rolls"><i
                     class="fas fa-shield-plus"></i></a>
             {{/if}}
+            <!-- {{#if item.system.userestriction}}
+            {{#if item.system.available}}
+            <a class="item-control item-disable" title="Charm Available"><i class="fas fa-sun" style="color:#F9B516;"></i></a>
+            {{else}}
+            <a class="item-control item-disable" title="Charm Available"><i class="fas fa-sun"></i></a>
+            {{/if}}
+            {{/if}} -->
             {{#ifGreater item.system.cost.commitmotes 0}}
             {{#if item.system.active}}
             <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>

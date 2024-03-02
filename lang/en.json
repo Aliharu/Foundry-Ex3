@@ -453,7 +453,10 @@
     "Ex3.EndTurn": "End Turn",
     "Ex3.EndScene": "End Scene",
 
+    "Ex3.Restriction": "Restriction",
     "Ex3.EndTrigger": "End Trigger",
+    "Ex3.OncePerScene": "Once per Scene",
+    "Ex3.OncePerStory": "Once per Story",
     "Ex3.Source": "Source",
     "Ex3.Standard": "Standard",
     "Ex3.Onslaught": "Onslaught",
