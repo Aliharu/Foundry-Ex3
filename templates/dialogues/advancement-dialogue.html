@@ -44,49 +44,48 @@
     </table>
     {{else}}
     <p><b>Advancement Costs</b></p>
-    {{#if flatXP}}
-    <p><b>Flat Costs (Use other tables for fields not in this one)</b></p>
+    {{#ifEquals exalt 'solar'}}
     <table>
         <tr style="text-align:center;">
             <th>Trait</th>
             <th>Cost</th>
         </tr>
-        {{#ifNotEquals exalt 'lunar'}}
         <tr style="text-align:center;">
             <td>Attribute</td>
-            <td>10</td>
-        </tr>
-        {{/ifNotEquals}}
-        {{#ifEquals exalt 'lunar'}}
-        <tr style="text-align:center;">
-            <td>Non-Caste</td>
-            <td>10  (9 if Casteless)</td>
+            <td>Curent Rating X 4</td>
         </tr>
         <tr style="text-align:center;">
-            <td>Caste or Favoured </td>
-            <td>7</td>
-        </tr>
-        {{/ifEquals}}
-        <tr style="text-align:center;">
-            <td>First Ability Dot</td>
-            <td>3</td>
+            <td>Caste/Favored Ability</td>
+            <td>(Current Rating X 2) - 1</td>
         </tr>
         <tr style="text-align:center;">
-            <td>Non-First Ability Dot</td>
-            <td>5</td>
+            <td>Non-Caste/Favored Ability</td>
+            <td>(Current Rating X 2)</td>
         </tr>
         <tr style="text-align:center;">
             <td>New Ability or Specialty</td>
             <td>3</td>
         </tr>
         <tr style="text-align:center;">
+            <td>Willpower</td>
+            <td>8</td>
+        </tr>
+        <tr style="text-align:center;">
             <td>Purchased Merit</td>
-            <td>3</td>
+            <td>New Rating X 3</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Charms/Spells</td>
+            <td>10 (8 if ability is favored)</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Evocation</td>
+            <td>10</td>
         </tr>
     </table>
-    {{/if}}
-    <p><b>Costs Table</b></p>
-    {{#ifEquals exalt 'solar'}}
+    {{/ifEquals}}
+
+    {{#ifEquals exalt 'abyssal'}}
     <table>
         <tr style="text-align:center;">
             <th>Trait</th>

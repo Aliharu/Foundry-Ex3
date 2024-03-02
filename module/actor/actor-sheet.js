@@ -2064,7 +2064,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       default:
         break;
     }
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP"), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
     new Dialog({
       title: `Info Dialogue`,
       content: html,

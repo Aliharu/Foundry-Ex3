@@ -4,8 +4,8 @@
             <div style="margin-bottom:3px;">
                 <a><i class="fas fa-bolt set-pool-personal cursor-pointer" title="Spend motes from this pool"></i></a>
                 <label class="resource-label"> {{localize "Ex3.Personal"}} <a><i
-                            class="fas fa-calculator calculate-motes cursor-pointer"
-                            title="Auto Set Motes"></i></a>
+                            class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} calculate-motes cursor-pointer"
+                            title="{{#if system.settings.editmode}} Auto Set Motes {{else}} Restore Motes {{/if}}"></i></a>
                 </label>
                 <div class="resource-content flexrow flex-center flex-between">
                     <input type="number" name="system.motes.personal.value" value="{{system.motes.personal.value}}"
@@ -28,8 +28,8 @@
                 <a><i class="fas fa-bolt set-pool-peripheral cursor-pointer"
                         title="Spend motes from this pool"></i></a><label class="resource-label"> {{localize
                     "Ex3.Peripheral"}}
-                    <a><i class="fas fa-calculator calculate-motes cursor-pointer"
-                            title="Auto Set Motes"></i></a></label>
+                    <a><i class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square  {{/if}} cursor-pointer"
+                            title="{{#if system.settings.editmode}} Auto Set Motes {{else}} Restore Motes {{/if}}"></i></a></label>
                 <div class="resource-content flexrow flex-center flex-between">
                     <input type="number" name="system.motes.peripheral.value" value="{{system.motes.peripheral.value}}"
                         data-dtype="Number" />

@@ -145,17 +145,6 @@ export function registerSettings() {
         default: false
     });
 
-    game.settings.register("exaltedthird", "flatXP", {
-        name: game.i18n.localize('Ex3.FlatXP'),
-        hint: game.i18n.localize('Ex3.FlatXPDescription'),
-        scope: "world",
-        config: false,
-        type: Boolean,
-        ruleChange: true,
-        homebrew: true,
-        default: false
-    });
-
     game.settings.register("exaltedthird", "useShieldInitiative", {
         name: game.i18n.localize('Ex3.ShieldInitiativeSetting'),
         hint: game.i18n.localize('Ex3.ShieldInitiativeSettingDescription'),

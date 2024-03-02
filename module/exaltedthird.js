@@ -104,7 +104,25 @@ Hooks.once('init', async function () {
     else {
       initDice = actor.system.pools.joinbattle.value;
     }
-    return `${initDice}d10cs>=7 + 3`;
+    return `${initDice}d10cs>=7ds>=10 + 3`;
+  }
+
+  Die.prototype.constructor.MODIFIERS["ds"] = "doubleSuccess";
+  //add said function to the Die prototype
+  Die.prototype.doubleSuccess = function (modifier) {
+    const rgx = /(?:ds)([<>=]+)?([0-9]+)?/i;
+    const match = modifier.match(rgx);
+    if ( !match ) return false;
+    let [comparison, target] = match.slice(1);
+    comparison = comparison || "=";
+    target = parseInt(target) ?? this.faces;
+    for ( let r of this.results ) {
+      let success = DiceTerm.compareResult(r.result, comparison, target);
+      if(!r.success) {
+        r.success = success;
+      }
+      r.count += (success ? 1 : 0);
+    }
   }
 
   // If you need to add Handlebars helpers, here are a few useful examples:
@@ -501,7 +519,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           }
         }
       }
-      if(moteCost) {
+      if (moteCost) {
         var moteResults = combatant.actor.spendMotes(moteCost, actorData);
         actorData.system.motes.personal.value = moteResults.newPersonalMotes;
         actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
@@ -572,7 +590,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
         }
-        if(moteCost) {
+        if (moteCost) {
           var moteResults = currentCombatant.actor.spendMotes(moteCost, actorData);
           actorData.system.motes.personal.value = moteResults.newPersonalMotes;
           actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
