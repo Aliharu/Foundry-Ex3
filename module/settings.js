@@ -135,6 +135,16 @@ export function registerSettings() {
         default: false
     });
 
+    game.settings.register("exaltedthird", "unifiedCharacterAdvancement", {
+        name: game.i18n.localize('Ex3.UnifiedAdvancement'),
+        hint: game.i18n.localize('Ex3.UnifiedAdvancementDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: false
+    });
+
     game.settings.register("exaltedthird", "flatXP", {
         name: game.i18n.localize('Ex3.FlatXP'),
         hint: game.i18n.localize('Ex3.FlatXPDescription'),

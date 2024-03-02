@@ -76,6 +76,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
     context.showVirtues = game.settings.get("exaltedthird", "virtues");
     context.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
+    context.unifiedCharacterAdvancement = game.settings.get("exaltedthird", "unifiedCharacterAdvancement");
     context.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
@@ -251,6 +252,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       attr.isCheckbox = attr.dtype === "Boolean";
       attr.name = CONFIG.exaltedthird.attributes[key];
       sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
+      attr.nextDotCost = 0;
+      if(attr.value < 5) {
+        if(game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+          attr.nextDotCost = attr.favored ? 8 : 10;
+        } else {
+          attr.nextDotCost = attr.value * (attr.favored ? 3 : 4);
+          if(sheetData.system.details.caste === 'casteless') {
+            attr.nextDotCost--;
+          }
+        }
+      }
+
       if (attr.favored) {
         attributesSpent[attr.type].favored += (attr.value - 1);
       }
@@ -260,6 +273,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     for (let [key, ability] of Object.entries(sheetData.system.abilities)) {
       ability.name = CONFIG.exaltedthird.abilities[key];
+
+      if(ability.value < 5) {
+        if(game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+          ability.nextDotCost = ability.favored ? 4 : 5;
+        } else {
+          if(ability.value === 0) {
+            ability.nextDotCost = 3;
+          }
+          else {
+            ability.nextDotCost = (ability.value * 2) - (ability.favored ? 1 : 0);
+          }
+        }
+      }
     }
     var favoredCharms = 0;
     var nonFavoredCharms = 0;
@@ -2038,7 +2064,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       default:
         break;
     }
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP"), 'unifiedCharacterCreation': game.settings.get("exaltedthird", "unifiedCharacterCreation") });
+    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'flatXP': game.settings.get("exaltedthird", "flatXP"), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
     new Dialog({
       title: `Info Dialogue`,
       content: html,

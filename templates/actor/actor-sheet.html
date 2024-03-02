@@ -201,6 +201,13 @@
             {{/if}}
           </div>
           {{#if ../system.settings.editmode}}
+          {{#if attribute.nextDotCost}}
+          <div>
+            <b>{{localize "Ex3.NextDot"}}: </b>{{attribute.nextDotCost}} XP
+          </div>
+          {{else}}
+            {{localize "Ex3.MaxedOut"}}
+          {{/if}}
           <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.HasExcellency"}}</label>
             <input name="system.attributes.{{key}}.excellency" type="checkbox" {{checked attribute.excellency}}>
@@ -250,6 +257,13 @@
             {{/if}}
           </div>
           {{#if ../system.settings.editmode}}
+          {{#if ability.nextDotCost}}
+          <div>
+            <b>{{localize "Ex3.NextDot"}}: </b>{{ability.nextDotCost}} XP
+          </div>
+          {{else}}
+            {{localize "Ex3.MaxedOut"}}
+          {{/if}}
           <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
             <select name="system.abilities.{{key}}.prefattribute" value="{{ability.prefattribute}}" data-type="String">
@@ -455,7 +469,7 @@
           </div>
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{localize "Ex3.Exalt"}} XP ({{system.experience.exalt.remaining}}
+              <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
                 {{localize "Ex3.Remaining"}})
                 <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
                 <div class="resource-content flexrow flex-center flex-between">

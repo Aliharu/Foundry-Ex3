@@ -45,6 +45,7 @@
     "Ex3.SpiritShape": "Spirit Shape",
     "Ex3.BirthSign": "Birth Sign",
     "Ex3.ExaltationSign": "Exaltation Sign",
+    "Ex3.Heroic": "Heroic",
     "Ex3.Prophecy": "Prophecy",
     "Ex3.Interval": "Interval",
     "Ex3.Ideal": "Ideal",
@@ -943,6 +944,9 @@
     "Ex3.Rules": "Rules",
     "Ex3.Steady": "Steady",
 
+    "Ex3.NextDot": "Next Dot",
+    "Ex3.MaxedOut": "Maxed Out",
+
 
     "Ex3.TargetStat": "Target Stat",
     "Ex3.ExigentType": "Exigent Type",
@@ -955,6 +959,10 @@
 
     "Ex3.UnifiedCharacterCreation": "Unified Character Creation",
     "Ex3.UnifiedCharacterCreationDescription": "Use the unified character creation rules from Crucible of Legend",
+
+    "Ex3.UnifiedAdvancement": "Unified Advancement",
+    "Ex3.UnifiedAdvancementDescription": "Use the unified advancement creation rules from Crucible of Legend (This will override the Flat XP option)",
+
 
     "Ex3.ForgivingDecisives": "Forgiving Decisives",
     "Ex3.ForgivingDecisivesDescription": "Missing decisives doesn't lose initiative",
