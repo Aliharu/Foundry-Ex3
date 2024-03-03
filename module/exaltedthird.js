@@ -1140,6 +1140,7 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
+  
   // for(const martialArt of CONFIG.exaltedthird.martialarts) {
   //   console.log(martialArt);
   //   let folder = game.folders.filter(folder => folder.name === 'Martial Arts')[0];
