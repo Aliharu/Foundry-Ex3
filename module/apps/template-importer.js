@@ -422,6 +422,7 @@ export default class TemplateImporter extends FormApplication {
 
 
   async createOther(html) {
+    const martialArtsWeapons = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/martialArtsWeapons.json', {}, { int: 30000 });
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     var itemType = html.find('#itemType').val();
     var index = 0;
@@ -490,22 +491,14 @@ export default class TemplateImporter extends FormApplication {
         itemData.img = "systems/exaltedthird/assets/icons/punch-blast.svg";
         itemData.type = 'customability';
         itemData.system.abilitytype = 'martialart';
-        // const weaponMatches = description.match(/Weapons:(.*?)Armor:/s);
-        // if (weaponMatches) {
-        //   const extractedText = weaponMatches[1].trim().replace(/[^\w\s]/gi, '').toLowerCase();
-        //   var weaponsList = [];
-        //   for (const weapon of Object.keys(weapons)) {
-        //     if (extractedText.includes(weapon)) {
-        //       weaponsList.push(weapon);
-        //     }
-        //   }
-        //   itemData.system.traits = {
-        //     "weapons": {
-        //       "value": weaponsList,
-        //       "custom": ""
-        //     }
-        //   }
-        // }
+        if (martialArtsWeapons[itemData.name]) {
+          itemData.system.traits = {
+            weapons: {
+              "value": martialArtsWeapons[itemData.name],
+              "custom": ""
+            }
+          }
+        }
         const armorMatches = description.match(/Armor:(.*)/);
         if (armorMatches) {
           const extractedText = armorMatches[1].trim().toLowerCase();
@@ -520,6 +513,21 @@ export default class TemplateImporter extends FormApplication {
           }
           else {
             itemData.system.armorallowance = "none";
+          }
+        }
+
+        const natureMatches = description.match(/Nature:(.*)/);
+        if (natureMatches) {
+          const extractedText = natureMatches[1].trim().toLowerCase();
+          itemData.system.siderealmartialart = true;
+          if (extractedText.includes('still') && extractedText.includes('flowing')) {
+            itemData.system.nature = 'both';
+          }
+          else if (extractedText.includes('still')) {
+            itemData.system.nature = 'still';
+          }
+          else if (extractedText.includes('flowing')) {
+            itemData.system.nature = 'flowing';
           }
         }
       }

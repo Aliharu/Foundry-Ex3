@@ -851,6 +851,7 @@
       "siderealmartialart": false,
       "excellency": false,
       "armorallowance": "",
+      "nature": "",
       "traits": {
         "weapons": {
           "value": [],

@@ -112,13 +112,13 @@ Hooks.once('init', async function () {
   Die.prototype.doubleSuccess = function (modifier) {
     const rgx = /(?:ds)([<>=]+)?([0-9]+)?/i;
     const match = modifier.match(rgx);
-    if ( !match ) return false;
+    if (!match) return false;
     let [comparison, target] = match.slice(1);
     comparison = comparison || "=";
     target = parseInt(target) ?? this.faces;
-    for ( let r of this.results ) {
+    for (let r of this.results) {
       let success = DiceTerm.compareResult(r.result, comparison, target);
-      if(!r.success) {
+      if (!r.success) {
         r.success = success;
       }
       r.count += (success ? 1 : 0);
@@ -1140,7 +1140,11 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
-
+  const map = {}
+  for (const martialArt of game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart')) {
+    map[martialArt.name] = martialArt.system.traits.weapons.value;
+  }
+  console.log(map);
   // for(const martialArt of CONFIG.exaltedthird.martialarts) {
   //   console.log(martialArt);
   //   let folder = game.folders.filter(folder => folder.name === 'Martial Arts')[0];

@@ -1,0 +1,179 @@
+{
+    "Air Dragon Style": [
+        "chakrams",
+        "unarmed"
+    ],
+    "Bear Style": [
+        "unarmed"
+    ],
+    "Black Claw Style": [
+        "unarmed"
+    ],
+    "Centipede Style": [
+        "fightingchains",
+        "hookswords",
+        "ironboots",
+        "sevenectionstaffs",
+        "unarmed"
+    ],
+    "Charcoal March of Spiders Style": [
+        "fightingchains",
+        "knives",
+        "meteorhammers",
+        "nunchakus",
+        "ropedarts",
+        "sevenectionstaffs",
+        "unarmed",
+        "whips"
+    ],
+    "Citrine Poxes of Contagion Style": [
+        "handneedles",
+        "ropedarts",
+        "unarmed"
+    ],
+    "Crane Style": [
+        "hookswords",
+        "unarmed",
+        "warfans"
+    ],
+    "Earth Dragon Style": [
+        "tetsubos",
+        "unarmed"
+    ],
+    "Ebon Shadow Style": [
+        "knives",
+        "sais",
+        "tigerclaws",
+        "unarmed"
+    ],
+    "Emerald Gyre of Aeons Style": [
+        "kusarigamas",
+        "melee",
+        "nunchakus",
+        "ropedarts",
+        "sevenectionstaffs",
+        "staffs",
+        "unarmed",
+        "windandfirewheels"
+    ],
+    "Falcon Style": [
+        "cestus",
+        "improvised",
+        "ironboots",
+        "tigerclaws",
+        "unarmed"
+    ],
+    "Fire Dragon Style": [
+        "shortswords",
+        "unarmed"
+    ],
+    "Golden Janissary Style": [
+        "spears",
+        "staffs",
+        "unarmed"
+    ],
+    "Laughing Monster Style": [
+        "staffs",
+        "unarmed",
+        "warfans",
+        "whips"
+    ],
+    "Mantis Style": [
+        "batons",
+        "kamas",
+        "nunchakus",
+        "sevenectionstaffs",
+        "unarmed",
+        "warfans"
+    ],
+    "Monkey Style": [
+        "batons",
+        "improvised",
+        "sevenectionstaffs",
+        "staffs",
+        "unarmed"
+    ],
+    "Obsidian Shards of Infinity Style": [
+        "khatars",
+        "knives",
+        "sais",
+        "unarmed"
+    ],
+    "Prismatic Arrangement of Creation Style": [],
+    "Rat Style": [
+        "knives",
+        "tigerclaws",
+        "unarmed"
+    ],
+    "Righteous Devil Style": [
+        "flame"
+    ],
+    "Silver-Voiced Nightingale Style": [
+        "kiais",
+        "unarmed"
+    ],
+    "Single Point Shining Into the Void Style": [
+        "slashingswords"
+    ],
+    "Snake Style": [
+        "hookswords",
+        "sevenectionstaffs",
+        "unarmed"
+    ],
+    "Steel Devil Style": [
+        "dualswords"
+    ],
+    "Swaying Grass Dance Style": [
+        "batons",
+        "ironboots",
+        "knives",
+        "unarmed"
+    ],
+    "Thousand Blades Style": [
+        "melee"
+    ],
+    "Throne Shadow Style": [
+        "fightingchains",
+        "ropedarts",
+        "sevenectionstaffs",
+        "staffs",
+        "unarmed",
+        "windandfirewheels"
+    ],
+    "Tiger Style": [
+        "tigerclaws",
+        "unarmed"
+    ],
+    "Toad Style": [
+        "unarmed"
+    ],
+    "Violet Bier of Sorrows Style": [
+        "choppingswords",
+        "greatswords",
+        "knives",
+        "sevenectionstaffs",
+        "straightswords",
+        "staffs",
+        "unarmed"
+    ],
+    "Water Dragon Style": [
+        "tigerclaws",
+        "unarmed"
+    ],
+    "White Reaper Style": [
+        "scythes",
+        "spears",
+        "staffs",
+        "unarmed"
+    ],
+    "White Veil Style": [
+        "garrotes",
+        "handneedles",
+        "unarmed"
+    ],
+    "Wood Dragon Style": [
+        "bows",
+        "staffs",
+        "unarmed"
+    ]
+}
