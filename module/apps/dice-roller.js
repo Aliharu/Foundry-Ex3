@@ -78,6 +78,7 @@ export class RollForm extends FormApplication {
             this.object.weaponAccuracy = 0;
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
+            this.object.triggerEnemyDefensePenalty = 0;
             this.object.triggerKnockdown = false;
             this.object.triggerFullDefense = false;
             this.object.macroMessages = '';
@@ -332,7 +333,7 @@ export class RollForm extends FormApplication {
                 if (this.object.rollType === 'command') {
                     this.object.difficulty = 1;
                 }
-                if(this.object.rollType === 'simpleCraft') {
+                if (this.object.rollType === 'simpleCraft') {
                     this.object.difficulty = data.difficulty || 1;
                 }
             }
@@ -340,9 +341,11 @@ export class RollForm extends FormApplication {
         this.object.addingCharms = false;
         this.object.showSpecialAttacks = false;
         this.object.missedAttacks = 0;
+        this.object.deleteEffects = [];
         this.object.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
         this.object.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
         this.object.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
+        this.object.useEssenceGambit = game.settings.get("exaltedthird", "useEssenceGambits");
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             this.object.showTargets = 0;
@@ -641,7 +644,7 @@ export class RollForm extends FormApplication {
                 icon: 'fas fa-cog',
                 onclick: async (ev) => {
                     let confirmed = false;
-                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
+                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'enemyDefensePenalty': this.object.triggerEnemyDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
                     new Dialog({
                         title: `Dice Roll Settings`,
                         content: html,
@@ -665,6 +668,7 @@ export class RollForm extends FormApplication {
                                 this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
 
                                 this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
+                                this.object.triggerEnemyDefensePenalty = parseInt(html.find('#enemyDefensePenalty').val() || 0);
 
                                 this.object.settings.ignoreLegendarySize = html.find('#ignoreLegendarySize').is(":checked");
                                 this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
@@ -1202,6 +1206,11 @@ export class RollForm extends FormApplication {
                 'distract': 3,
                 'disarm': 3,
                 'detonate': 4,
+                'knockback': 3,
+                'knockdown': 3,
+                'pilfer': 2,
+                'pull': 3,
+                'revealWeakness': 2,
                 'bind': 2,
                 'goad': 3,
                 'leech': 3,
@@ -1217,11 +1226,13 @@ export class RollForm extends FormApplication {
             if (this.object.gambit === 'disarm' && this.object.weaponTags['disarming']) {
                 this.object.gambitDifficulty--;
             }
+            if ((this.object.gambit === 'knockback' || this.object.gambit === 'knockdown') && this.object.weaponTags['smashing']) {
+                this.object.gambitDifficulty--;
+            }
             this.render();
         });
 
         html.on("change", "#craft-type", ev => {
-
             this.object.intervals = 1;
             this.object.difficulty = 1;
             this.object.goalNumber = 0;
@@ -2776,6 +2787,7 @@ export class RollForm extends FormApplication {
         let typeSpecificResults = ``;
         var sizeDamaged = 0;
         this.object.attackSuccess = true;
+        this.object.damageThresholdSuccesses = 0;
 
         if (this._damageRollType('decisive')) {
             typeSpecificResults = `<h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4><h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
@@ -2805,6 +2817,7 @@ export class RollForm extends FormApplication {
                 resultsText = `<h4 class="dice-total">Gambit Failed</h4>`
             }
             typeSpecificResults = `<h4 class="dice-formula">${total} Successes vs ${this.object.gambitDifficulty} Difficulty!</h4>${resultsText}`;
+            this.object.damageThresholdSuccesses = (total - this.object.gambitDifficulty);
         }
         else {
             let targetResults = ``;
@@ -2861,6 +2874,7 @@ export class RollForm extends FormApplication {
                         targetResults = `<h4 class="dice-total dice-total-middle">${sizeDamaged} Size Damage!</h4>`;
                     }
                 }
+                this._removeEffect();
             }
             soakResult = `<h4 class="dice-formula">${this.object.soak} Soak! (Ignoring ${this.object.damage.ignoreSoak})</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>`;
             var fullInitiative = total + 1;
@@ -3087,7 +3101,8 @@ export class RollForm extends FormApplication {
                 var triggerGambit = 'none';
                 const gambitChart = {
                     'leech': 'bleeding',
-                    'unhorse': 'knockdown',
+                    'unhorse': 'prone',
+                    'knockdown': 'prone',
                     'grapple': 'grappled',
                     'disarm': 'disarmed',
                     'entangle': 'entangled',
@@ -3099,6 +3114,35 @@ export class RollForm extends FormApplication {
                 if (this.object.gambit === 'leech') {
                     this.dealHealthDamage(1);
                 }
+                if (this.object.gambit === 'revealWeakness') {
+                    this.object.newTargetData.effects.push({
+                        name: 'Reveal Weakness',
+                        icon: 'systems/exaltedthird/assets/icons/hammer-break.svg',
+                        origin: this.object.target.actor.uuid,
+                        disabled: false,
+                        duration: {
+                            rounds: 5,
+                        },
+                        flags: {
+                            "exaltedthird": {
+                                statusId: 'revealWeakness',
+                            }
+                        },
+                        changes: [
+                            {
+                                "key": "data.soak.value",
+                                "value": (Math.ceil(this.object.target.actor.system.soak.value / 2)) * -1,
+                                "mode": 2
+                            }
+                        ]
+                    });
+                }
+                if (this.object.gambit === 'pull') {
+                    this.object.triggerEnemyDefensePenalty += this.object.damageThresholdSuccesses;
+                }
+                if (this.object.gambit === 'knockback') {
+                    this.object.triggerEnemyDefensePenalty += this.object.damageThresholdSuccesses;
+                }
                 if (this.object.gambit === 'grapple') {
                     const grapplingExists = this.actor?.effects.find(e => e.statuses.has('grappling'));
                     if (!grapplingExists) {
@@ -3107,6 +3151,9 @@ export class RollForm extends FormApplication {
                         await actorToken.toggleEffect(grappling);
                     }
                 }
+                if (this.object.triggerEnemyDefensePenalty) {
+                    this._addEnemyDefensePenalty(this.object.triggerEnemyDefensePenalty);
+                }
             }
             if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
                 this.object.newTargetData.system.grapplecontrolrounds.value = Math.max(0, this.object.newTargetData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2 : 1));
@@ -3114,10 +3161,19 @@ export class RollForm extends FormApplication {
         }
     }
 
+    async _removeEffect(type = 'revealWeakness') {
+        this.object.updateTargetActorData = true;
+        const effect = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId === type);
+        if (effect?._id) {
+            this.object.deleteEffects.push(effect._id);
+        }
+        this.object.newTargetData.effects = this.object.newTargetData.effects.filter(i => i.flags.exaltedthird?.statusId !== type);
+    }
+
     _addOnslaught(number = 1, magicInflicted = false) {
         if ((this.object.target?.actor?.system?.sizecategory || 'standard') !== 'legendary' && !magicInflicted) {
             this.object.updateTargetActorData = true;
-            const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
+            const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId === "onslaught");
             if (onslaught) {
                 onslaught.changes[0].value = onslaught.changes[0].value - number;
                 onslaught.changes[1].value = onslaught.changes[1].value - number;
@@ -3151,6 +3207,43 @@ export class RollForm extends FormApplication {
                     ]
                 });
             }
+        }
+    }
+
+    _addEnemyDefensePenalty(number = 1) {
+        this.object.updateTargetActorData = true;
+        const existingPenalty = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
+        if (existingPenalty) {
+            existingPenalty.changes[0].value = existingPenalty.changes[0].value - number;
+            existingPenalty.changes[1].value = existingPenalty.changes[1].value - number;
+        }
+        else {
+            this.object.newTargetData.effects.push({
+                name: 'Defense Penalty',
+                icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+                origin: this.object.target.actor.uuid,
+                disabled: false,
+                duration: {
+                    rounds: 5,
+                },
+                flags: {
+                    "exaltedthird": {
+                        statusId: 'defensePenalty',
+                    }
+                },
+                changes: [
+                    {
+                        "key": "data.evasion.value",
+                        "value": number * -1,
+                        "mode": 2
+                    },
+                    {
+                        "key": "data.parry.value",
+                        "value": number * -1,
+                        "mode": 2
+                    }
+                ]
+            });
         }
     }
 
@@ -3217,13 +3310,17 @@ export class RollForm extends FormApplication {
                     await this.object.target.toggleEffect(effect);
                 }
             }
+            if(this.object.deleteEffects) {
+                await this.object.target.actor.deleteEmbeddedDocuments('ActiveEffect', this.object.deleteEffects);
+            }
         }
         else {
             game.socket.emit('system.exaltedthird', {
                 type: 'updateTargetData',
                 id: this.object.target.id,
                 data: this.object.newTargetData,
-                addStatuses: this.object.addStatuses
+                addStatuses: this.object.addStatuses,
+                deleteEffects: this.object.deleteEffects
             });
         }
     }
@@ -3884,7 +3981,7 @@ export class RollForm extends FormApplication {
                 aura: "",
             }
         }
-        if(this.object.cost.grapplecontrol === undefined) {
+        if (this.object.cost.grapplecontrol === undefined) {
             this.object.cost.grapplecontrol = 0;
         }
         if (this.object.restore === undefined) {
@@ -3923,6 +4020,9 @@ export class RollForm extends FormApplication {
             this.object.damage.ignoreSoak = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
+        }
+        if (this.object.triggerEnemyDefensePenalty === undefined) {
+            this.object.triggerEnemyDefensePenalty = 0;
         }
         if (this.object.damage.ignoreHardness === undefined) {
             this.object.damage.ignoreHardness = 0;

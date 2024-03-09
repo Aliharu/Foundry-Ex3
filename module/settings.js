@@ -156,6 +156,17 @@ export function registerSettings() {
         default: false
     });
 
+    game.settings.register("exaltedthird", "useEssenceGambits", {
+        name: game.i18n.localize('Ex3.UseEssenceGambits'),
+        hint: game.i18n.localize('Ex3.UseEssenceGambitsDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        homebrew: true,
+        default: false
+    });
+
     game.settings.register("exaltedthird", "bankableStunts", {
         name: game.i18n.localize('Ex3.BankableStunts'),
         hint: game.i18n.localize('Ex3.BankableStuntsDescription'),

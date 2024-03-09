@@ -252,7 +252,7 @@ Hooks.once('init', async function () {
 //   console.log(updateData);
 // });
 
-async function handleSocket({ type, id, data, actorId, crasherId = null, addStatuses = [] }) {
+async function handleSocket({ type, id, data, actorId, crasherId = null, addStatuses = [], deleteEffects = [] }) {
   if (type === 'addOpposingCharm') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
@@ -295,6 +295,9 @@ async function handleSocket({ type, id, data, actorId, crasherId = null, addStat
           const effect = CONFIG.statusEffects.find(e => e.id === status);
           await game.canvas.tokens.get(id).toggleEffect(effect);
         }
+      }
+      if (deleteEffects) {
+        await targetedActor.deleteEmbeddedDocuments('ActiveEffect', deleteEffects);
       }
     }
   }
@@ -1146,7 +1149,7 @@ Hooks.once("ready", async function () {
   //     await item.update({ [`system.archetypename`]: item.folder.name });
   //   }
   // }
-  
+
   // for(const martialArt of CONFIG.exaltedthird.martialarts) {
   //   console.log(martialArt);
   //   let folder = game.folders.filter(folder => folder.name === 'Martial Arts')[0];
