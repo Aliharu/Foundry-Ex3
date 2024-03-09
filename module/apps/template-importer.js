@@ -430,16 +430,36 @@ export default class TemplateImporter extends FormApplication {
     var folder = await this._getFolder(html);
     const weaponTags = CONFIG.exaltedthird.weapontags;
     const armorTags = CONFIG.exaltedthird.armortags;
-    const weapons = CONFIG.exaltedthird.weapons;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var itemData = {
         type: itemType,
         system: {
         }
       };
+      if(itemType === 'hearthstone') {
+        itemData.system.itemtype = 'hearthstone';
+        itemData.type = 'item';
+        itemData.img = 'systems/exaltedthird/assets/icons/emerald.svg';
+      }
+      var weightType = '';
       itemData.name = textArray[index];
       index++;
       var description = '';
+      if (itemType === 'armor' || itemType === 'weapon') {
+        itemData.system.traits = {};
+        if (itemType === 'armor') {
+          itemData.system.traits.armortags = {
+            "value": [],
+            "custom": ""
+          }
+        }
+        if (itemType === 'weapon') {
+          itemData.system.traits.weapontags = {
+            "value": [],
+            "custom": ""
+          }
+        }
+      }
       while (textArray[index] && index !== textArray.length) {
         if (textArray[index].includes('Tags:')) {
           var tagString = textArray[index].toLowerCase().replace('tags:', '');
@@ -464,26 +484,57 @@ export default class TemplateImporter extends FormApplication {
               itemTags.push(tag);
             }
           }
-          itemData.system.traits = {};
           if (itemType === 'armor') {
-            itemData.system.traits.armortags = {
-              "value": [],
-              "custom": ""
-            }
-            itemData.system.traits.armortags.value = itemTags;
+            itemData.system.traits.armortags.value = itemData.system.traits.armortags.value.concat(itemTags);
           }
           if (itemType === 'weapon') {
-            itemData.system.traits.weapontags = {
-              "value": [],
-              "custom": ""
-            }
-            itemData.system.traits.weapontags.value = itemTags;
+            itemData.system.traits.weapontags.value = itemData.system.traits.weapontags.value.concat(itemTags);
+          }
+          if(itemTags.includes("melee") || itemTags.includes("brawl") ) {
+            itemData.system.weapontype = 'melee';
+          }
+          else if (itemTags.includes("archery")) {
+            itemData.system.weapontype = 'ranged';
+          }
+          else if (itemTags.includes("thrown")) {
+            itemData.system.weapontype = 'thrown';
+          }
+          else if (itemTags.includes("siege")) {
+            itemData.system.weapontype = 'siege';
           }
         }
-        else {
-          description += textArray[index];
-          description += " ";
+        if (textArray[index].includes('Attunement:')) {
+          if (itemType === 'armor') {
+            itemData.system.traits.armortags.value.push('artifact');
+            itemData.system.hasevocations = true;
+          }
+          if (itemType === 'weapon') {
+            itemData.system.traits.weapontags.value.push('artifact');
+            itemData.system.hasevocations = true;
+          }
         }
+        if (textArray[index].includes('Type:')) {
+          if(textArray[index].toLowerCase().includes('light')) {
+            weightType = 'light';
+          }
+          else if(textArray[index].toLowerCase().includes('medium')) {
+            weightType = 'medium';
+          }
+          else if(textArray[index].toLowerCase().includes('heavy')) {
+            weightType = 'heavy';
+          }
+        }
+        if (textArray[index].toLowerCase().includes("hearthstone slot(s):")) {
+          var slotsSplit = textArray[index].split(':');
+          if(slotsSplit[1] && slotsSplit[1].trim() !== 'None') {
+            itemData.system.hearthstones = {
+              value: 0,
+              max: slotsSplit[1].replace(/[^0-9]/g, ''),
+            }
+          }
+        }
+        description += textArray[index];
+        description += " ";
 
         index++;
       }
@@ -535,7 +586,10 @@ export default class TemplateImporter extends FormApplication {
       if (folder) {
         itemData.folder = folder;
       }
-      await Item.create(itemData);
+      const item = await Item.create(itemData);
+      if((item.type === 'weapon' || item.type === 'armor') && weightType) {
+        await item.update({ [`system.weighttype`]: weightType });
+      }
       index++;
     }
   }
@@ -2382,6 +2436,7 @@ export default class TemplateImporter extends FormApplication {
       else if (this.type === 'other') {
         await this.createOther(html);
       }
+      ui.notifications.notify(`Import Complete`);
       this.render();
     });
   }

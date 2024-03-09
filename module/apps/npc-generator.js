@@ -1023,66 +1023,8 @@ export default class NPCGenerator extends FormApplication {
     }
     weaponData.system.weighttype = weight;
     weaponData.system.weapontype = weaponType;
-    const equipmentChart = {
-      light: {
-        accuracy: 4,
-        damage: 7,
-        defense: 0,
-        overwhelming: 1,
-        attunement: 5,
-      },
-      medium: {
-        accuracy: 2,
-        damage: 9,
-        defense: 1,
-        overwhelming: 1,
-        attunement: 5,
-      },
-      heavy: {
-        accuracy: 0,
-        damage: 11,
-        defense: -1,
-        overwhelming: 1,
-        attunement: 5,
-      },
-      siege: {
-        accuracy: -3,
-        damage: 15,
-        defense: 0,
-        overwhelming: 3,
-        attunement: 5,
-      },
-    };
-    const artifactEquipmentChart = {
-      light: {
-        accuracy: 5,
-        damage: 10,
-        defense: 0,
-        overwhelming: 3,
-        attunement: 5,
-      },
-      medium: {
-        accuracy: 3,
-        damage: 12,
-        defense: 1,
-        overwhelming: 4,
-        attunement: 5,
-      },
-      heavy: {
-        accuracy: 1,
-        damage: 14,
-        defense: 0,
-        overwhelming: 5,
-        attunement: 5,
-      },
-      siege: {
-        accuracy: -2,
-        damage: 20,
-        defense: 0,
-        overwhelming: 5,
-        attunement: 5,
-      },
-    };
+    const equipmentChart = CONFIG.exaltedthird.weaponStats;
+    const artifactEquipmentChart = CONFIG.exaltedthird.artifactWeaponStats;
     if (isArtifact) {
       weaponData.system.witheringaccuracy = artifactEquipmentChart[weaponData.system.weighttype].accuracy;
       weaponData.system.witheringdamage = artifactEquipmentChart[weaponData.system.weighttype].damage;
@@ -1122,46 +1064,8 @@ export default class NPCGenerator extends FormApplication {
     }
     armorData.system.weighttype = weight;
 
-    const equipmentChart = {
-      light: {
-        attunement: 0,
-        soak: 3,
-        hardness: 0,
-        penalty: 0,
-      },
-      medium: {
-        attunement: 0,
-        soak: 5,
-        hardness: 0,
-        penalty: 1,
-      },
-      heavy: {
-        attunement: 0,
-        soak: 7,
-        hardness: 0,
-        penalty: 2,
-      },
-    };
-    const artifactEquipmentChart = {
-      light: {
-        attunement: 4,
-        soak: 5,
-        hardness: 4,
-        penalty: 0,
-      },
-      medium: {
-        attunement: 5,
-        soak: 8,
-        hardness: 7,
-        penalty: 1,
-      },
-      heavy: {
-        attunement: 6,
-        soak: 11,
-        hardness: 10,
-        penalty: 2,
-      },
-    };
+    const equipmentChart = CONFIG.exaltedthird.armorStats;
+    const artifactEquipmentChart = CONFIG.exaltedthird.artifactArmorStats;
     if (isArtifact) {
       armorData.system.attunement = artifactEquipmentChart[armorData.system.weighttype].attunement;
       armorData.system.soak = artifactEquipmentChart[armorData.system.weighttype].soak;
