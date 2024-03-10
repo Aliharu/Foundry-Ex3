@@ -1088,6 +1088,9 @@
           "alsotriggertwos": false,
           "triggeronescap": 0
         }
+      },
+      "triggers": {
+        "dicerollertriggers": {}
       }
     },
     "merit": {

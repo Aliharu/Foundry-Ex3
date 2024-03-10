@@ -2410,7 +2410,6 @@ export default class CharacterBuilder extends FormApplication {
             "favored": false,
             "excellency": false,
             "value": 1,
-            "name": "Ex3.Wits",
             "type": "mental"
           }
         },

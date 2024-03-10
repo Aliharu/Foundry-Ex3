@@ -196,6 +196,59 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       this.item.update(itemData);
     });
 
+    html.find('.add-trigger').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      if (triggerType) {
+        const newList = this.item.system.triggers[triggerType];
+        newList[Object.entries(newList).length] = {
+          name: "",
+          bonuses: {},
+          restrictions: {}
+        };
+        this.item.update({ [`system.triggers.${triggerType}`]: newList });
+      }
+    });
+
+    html.find('.add-bonus').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
+      const newList = this.item.system.triggers[triggerType][index].bonuses;
+      newList[newList.length] = {
+        name: "",
+        value: "",
+      };
+      this.item.update({ [`system.triggers.${triggerType}.${index}.bonuses`]: newList });
+    });
+
+    html.find('.delete-trigger').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
+      this.item.update({
+        [`system.triggers.${triggerType}.-=${index}`]: null,
+      });
+    });
+
+    html.find('.delete-bonus').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
+      var bonusIndex = ev.currentTarget.dataset.bonusindex;
+      let formData = {};
+
+      const items = this.object.system.triggers[triggerType][index].bonuses;
+      items.splice(bonusIndex, 1);
+      setProperty(formData, `system.triggers.${triggerType}.${index}.bonuses`, items);
+      this.object.update(formData);
+    });
+
+    html.on("change", ".trigger-name", ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
+      const newList = this.item.system.triggers[triggerType];
+      newList[index].name = ev.currentTarget.value;
+      this.item.update({ [`system.triggers.${triggerType}`]: newList });
+    });
+
+
     html.find(".charms-cheat-sheet").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
       new Dialog({

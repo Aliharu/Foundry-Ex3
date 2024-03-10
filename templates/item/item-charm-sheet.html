@@ -50,6 +50,7 @@
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
         <a class="item" data-tab="bonuses">{{localize "Ex3.Dice"}}</a>
+        <a class="item" data-tab="triggers">{{localize "Ex3.Triggers"}}</a>
         <a class="item" data-tab="macros">{{localize "Ex3.Macros"}}</a>
         <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
     </nav>
@@ -856,6 +857,45 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="tab" data-group="primary" data-tab="triggers">
+            <div class="resource flex-center mb-1" style="font-size: 17px;">
+                <label class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger" title="Create ritual" data-type="dicerollertriggers"><i
+                    class="fas fa-plus"></i></a></label>
+            </div>
+            {{#each system.triggers.dicerollertriggers as |trigger index|}}
+            <div class="d-flex" style="align-items:center;">
+                <input class="trigger-name" value="{{trigger.name}}" type="text" data-index="{{index}}" data-type="dicerollertriggers" placeholder='{{localize "Ex3.Name"}}'>
+                <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers" data-index="{{index}}"><i
+                    class="fas fa-trash" style="margin: 15px;"></i></a>
+            </div>
+            <div class="resource flex-center mb-1" style="font-size: 17px;">
+                <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control add-bonus" title="Create ritual" data-type="dicerollertriggers" data-index="{{index}}"><i
+                    class="fas fa-plus"></i></a></label>
+            </div>
+            <div class="grid grid-3col flex-group-center">
+                {{#each trigger.bonuses as |bonus bonusIndex|}}
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.Name"}}</div>
+                        <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.name" data-type="String">
+                            {{#select bonus.name}}
+                            <option value="">{{localize "Ex3.None"}}</option>
+                            <option value="test">{{localize "Ex3.Test"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.Bonus"}}</div>
+                        <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value" value="{{bonus.value}}" type="text">
+                    </div>
+                    <div>
+                        <a class="item-control delete-bonus" title="Delete bonus" data-type="dicerollertriggers" data-index="{{index}}" data-bonusindex="{{bonusIndex}}"><i
+                            class="fas fa-trash"></i></a>
+                    </div>
+                {{/each}}
+            </div>
+            {{/each}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="macros">
