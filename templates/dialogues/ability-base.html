@@ -8,8 +8,8 @@
     <!-- <label class="resource-label">{{localize "Ex3.Attribute"}}</label> -->
     <select class="update-roller" name="object.attribute" value="{{data.attribute}}" data-type="String">
         {{#select data.attribute}}
-        {{#each actor.system.attributes as |attribute key|}}
-        <option value="{{key}}">{{localize attribute.name}}</option>
+        {{#each data.attributes as |attribute key|}}
+        <option value="{{key}}">{{localize attribute}}</option>
         {{/each}}
         <option value="none">{{localize "Ex3.None"}}</option>
         {{/select}}
@@ -18,8 +18,8 @@
     <!-- <label class="resource-label">{{localize "Ex3.Ability"}}</label> -->
     <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
         {{#select data.ability}}
-        {{#each actor.system.abilities as |ability key|}}
-        <option value="{{key}}">{{localize ability.name}}</option>
+        {{#each data.abilities as |ability key|}}
+        <option value="{{key}}">{{localize ability}}</option>
         {{/each}}
         {{#each actor.customabilities as |action key|}}
         <option value="{{action._id}}">{{action.name}}</option>
@@ -35,8 +35,8 @@
     {{#ifEquals data.characterType 'npc'}}
     <select name="object.pool" value="{{data.pool}}" data-type="String">
         {{#select data.pool}}
-        {{#each actor.system.pools as |pool key|}}
-        <option value="{{key}}">{{localize pool.name}}</option>
+        {{#each data.npcPools as |pool key|}}
+        <option value="{{key}}">{{localize pool}}</option>
         {{/each}}
         {{#each actor.actions as |action key|}}
         <option value="{{action._id}}">{{action.name}}</option>

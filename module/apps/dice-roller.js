@@ -78,7 +78,7 @@ export class RollForm extends FormApplication {
             this.object.weaponAccuracy = 0;
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
-            this.object.triggerEnemyDefensePenalty = 0;
+            this.object.triggerTargetDefensePenalty = 0;
             this.object.triggerKnockdown = false;
             this.object.triggerFullDefense = false;
             this.object.macroMessages = '';
@@ -346,6 +346,9 @@ export class RollForm extends FormApplication {
         this.object.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
         this.object.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
         this.object.useEssenceGambit = game.settings.get("exaltedthird", "useEssenceGambits");
+        this.object.attributes = CONFIG.exaltedthird.attributes;
+        this.object.abilities = CONFIG.exaltedthird.abilities;
+        this.object.npcPools = CONFIG.exaltedthird.npcpools;
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
             this.object.showTargets = 0;
@@ -644,7 +647,7 @@ export class RollForm extends FormApplication {
                 icon: 'fas fa-cog',
                 onclick: async (ev) => {
                     let confirmed = false;
-                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'enemyDefensePenalty': this.object.triggerEnemyDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
+                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
                     new Dialog({
                         title: `Dice Roll Settings`,
                         content: html,
@@ -668,7 +671,7 @@ export class RollForm extends FormApplication {
                                 this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
 
                                 this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
-                                this.object.triggerEnemyDefensePenalty = parseInt(html.find('#enemyDefensePenalty').val() || 0);
+                                this.object.triggerTargetDefensePenalty = parseInt(html.find('#targetDefensePenalty').val() || 0);
 
                                 this.object.settings.ignoreLegendarySize = html.find('#ignoreLegendarySize').is(":checked");
                                 this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
@@ -921,6 +924,7 @@ export class RollForm extends FormApplication {
         this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
         this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
         this.object.triggerSelfDefensePenalty += item.system.diceroller.selfdefensepenalty;
+        this.object.triggerTargetDefensePenalty += item.system.diceroller.targetdefensepenalty;
         if (!item.system.diceroller.settings.noncharmdice) {
             this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
         }
@@ -1455,6 +1459,8 @@ export class RollForm extends FormApplication {
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
 
                 this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
+                this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
+
                 if (!item.system.diceroller.settings.noncharmdice) {
                     this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
                 }
@@ -3138,10 +3144,10 @@ export class RollForm extends FormApplication {
                     });
                 }
                 if (this.object.gambit === 'pull') {
-                    this.object.triggerEnemyDefensePenalty += this.object.damageThresholdSuccesses;
+                    this.object.triggerTargetDefensePenalty += this.object.damageThresholdSuccesses;
                 }
                 if (this.object.gambit === 'knockback') {
-                    this.object.triggerEnemyDefensePenalty += this.object.damageThresholdSuccesses;
+                    this.object.triggerTargetDefensePenalty += this.object.damageThresholdSuccesses;
                 }
                 if (this.object.gambit === 'grapple') {
                     const grapplingExists = this.actor?.effects.find(e => e.statuses.has('grappling'));
@@ -3151,8 +3157,8 @@ export class RollForm extends FormApplication {
                         await actorToken.toggleEffect(grappling);
                     }
                 }
-                if (this.object.triggerEnemyDefensePenalty) {
-                    this._addEnemyDefensePenalty(this.object.triggerEnemyDefensePenalty);
+                if (this.object.triggerTargetDefensePenalty) {
+                    this._addTargetDefensePenalty(this.object.triggerTargetDefensePenalty);
                 }
             }
             if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
@@ -3210,7 +3216,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _addEnemyDefensePenalty(number = 1) {
+    _addTargetDefensePenalty(number = 1) {
         this.object.updateTargetActorData = true;
         const existingPenalty = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
         if (existingPenalty) {
@@ -4021,8 +4027,8 @@ export class RollForm extends FormApplication {
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerKnockdown = false;
         }
-        if (this.object.triggerEnemyDefensePenalty === undefined) {
-            this.object.triggerEnemyDefensePenalty = 0;
+        if (this.object.triggerTargetDefensePenalty === undefined) {
+            this.object.triggerTargetDefensePenalty = 0;
         }
         if (this.object.damage.ignoreHardness === undefined) {
             this.object.damage.ignoreHardness = 0;

@@ -727,6 +727,16 @@
             </div>
             <div class="resource grid grid-2col flex-center">
                 <div>
+                    <label class="resource-label">{{localize "Ex3.SelfDefensePenalty"}}</label>
+                    <input name="system.diceroller.selfdefensepenalty"
+                        value="{{system.diceroller.selfdefensepenalty}}" type="number">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.TargetDefensePenalty"}}</label>
+                    <input name="system.diceroller.targetdefensepenalty"
+                        value="{{system.diceroller.targetdefensepenalty}}" type="number">
+                </div>
+                <div>
                     <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
                     <select name="system.diceroller.activateAura" data-type="String">
                         {{#select system.diceroller.activateAura}}
@@ -738,11 +748,6 @@
                         <option value="wood">{{localize "Ex3.Wood"}}</option>
                         {{/select}}
                     </select>
-                </div>
-                <div>
-                    <label class="resource-label">{{localize "Ex3.SelfDefensePenalty"}}</label>
-                    <input name="system.diceroller.selfdefensepenalty"
-                        value="{{system.diceroller.selfdefensepenalty}}" type="number">
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.IgnoreLegendarySize"}}</div>
