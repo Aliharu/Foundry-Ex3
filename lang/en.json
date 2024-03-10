@@ -171,7 +171,7 @@
     "Ex3.AnyCombatAbility": "Any Combat Ability",
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
-    "Ex3.EnemyDefensePenalty": "Enemy Defense Penalty",
+    "Ex3.TargetDefensePenalty": "Target Defense Penalty",
     "Ex3.AccuracyModifiers": "Accuracy Modifiers",
     "Ex3.DamageModifiers": "Damage Modifiers",
     "Ex3.DiceRollTriggers": "Dice Roll Triggers",
@@ -624,7 +624,7 @@
     "Ex3.ShieldInitiativeSettingDescription": "Shield initiative is temporary initiative you get at the start of each round.  Its lost before regular initiative is lost and does not count towards turn order or decisive damage.",
     "Ex3.BankableStunts": "Bankable Stunts",
     "Ex3.UseEssenceGambits": "Use Essence Gambits",
-    "Ex3.UseEssenceGambitsDescription": "Adds gambits from Essence that are missing from Exalted Third Edition.",
+    "Ex3.UseEssenceGambitsDescription": "Adds gambits from Essence that are missing from Exalted Third Edition.  Changes: Each gambit costs 1 less than Essence, pilfer does not give any power because that mechanic is not in Ex3, and Reveal Weakness will always half the targets soak until the next successful withering attack against them.  Defense penalties are calculated based off the gambits initiative roll.",
     
     "Ex3.BankableStuntsDescription": "Changes stunts to work like how they do in Exalted Essence.  Stunts are limited to 1 level and can now be banked.",
 

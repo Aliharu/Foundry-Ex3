@@ -980,6 +980,7 @@
         "rolltwice": false,
         "activateAura": "none",
         "selfdefensepenalty": 0,
+        "targetdefensepenalty": 0,
         "triggerontens": "none",
         "alsotriggernines": false,
         "triggertenscap": 0,
