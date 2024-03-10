@@ -325,6 +325,12 @@ Handlebars.registerHelper('le', function (a, b) {
   return (a <= b) ? next.fn(this) : next.inverse(this);
 });
 
+// Check Triggers to see if show number value
+Handlebars.registerHelper('ifNumberValue', function (arg1, arg2, options) {
+  return (arg1 >= arg2) ? options.fn(this) : options.inverse(this);
+});
+
+
 
 $(document).ready(() => {
   const diceIconSelector = '#chat-controls .chat-control-icon .fa-dice-d20';

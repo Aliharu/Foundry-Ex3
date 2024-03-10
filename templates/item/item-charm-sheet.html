@@ -9,9 +9,9 @@
                     {{#select system.ability}}
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                      {{#each charmCategory.entries as |entry entryType|}}
-                      <option value="{{entryType}}">{{localize entry}}</option>
-                      {{/each}}
+                        {{#each charmCategory.entries as |entry entryType|}}
+                        <option value="{{entryType}}">{{localize entry}}</option>
+                        {{/each}}
                     </optgroup>
                     {{/each}}
                     {{/select}}
@@ -178,7 +178,8 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Penumbra"}}</div>
-                    <input type="number" name="system.cost.penumbra" value="{{system.cost.penumbra}}" data-dtype="Number" />
+                    <input type="number" name="system.cost.penumbra" value="{{system.cost.penumbra}}"
+                        data-dtype="Number" />
                 </div>
             </div>
             <div class="flex-center">
@@ -455,9 +456,8 @@
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.AlsoTriggerNines"}}</div>
-                    <input name="system.diceroller.alsotriggernines"
-                        value="system.diceroller.alsotriggernines" type="checkbox" {{checked
-                        system.diceroller.alsotriggernines}}>
+                    <input name="system.diceroller.alsotriggernines" value="system.diceroller.alsotriggernines"
+                        type="checkbox" {{checked system.diceroller.alsotriggernines}}>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</div>
@@ -534,8 +534,8 @@
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}}*</label>
-                        <input name="system.diceroller.damage.dicetosuccesses" value="{{system.diceroller.damage.dicetosuccesses}}"
-                            type="text">
+                        <input name="system.diceroller.damage.dicetosuccesses"
+                            value="{{system.diceroller.damage.dicetosuccesses}}" type="text">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.ThreshholdToDamage"}} </label>
@@ -700,14 +700,15 @@
                         <select name="system.diceroller.damage.triggerontens" data-type="String">
                             {{#select system.diceroller.damage.triggerontens}}
                             <option value="none">{{localize "Ex3.Nothing"}}</option>
-                            <option value="subtractTargetInitiative">{{localize "Ex3.SubtractTargetInitiative"}}</option>
+                            <option value="subtractTargetInitiative">{{localize "Ex3.SubtractTargetInitiative"}}
+                            </option>
                             {{/select}}
                         </select>
                     </div>
                     <div>
                         <div class="resource-label">{{localize "Ex3.TriggerTensCap"}}</div>
-                        <input name="system.diceroller.damage.triggertenscap" value="{{system.diceroller.damage.triggertenscap}}"
-                            type="text">
+                        <input name="system.diceroller.damage.triggertenscap"
+                            value="{{system.diceroller.damage.triggertenscap}}" type="text">
                     </div>
                     <div>
                         <div class="resource-label">{{localize "Ex3.AlsoTriggerNines"}}</div>
@@ -751,10 +752,14 @@
                     </select>
                 </div>
                 <div>
+                    <label class="resource-label">{{localize "Ex3.SelfDefensePenalty"}}</label>
+                    <input name="system.diceroller.selfdefensepenalty" value="{{system.diceroller.selfdefensepenalty}}"
+                        type="number">
+                </div>
+                <div>
                     <div class="resource-label">{{localize "Ex3.IgnoreLegendarySize"}}</div>
-                    <input name="system.diceroller.ignorelegendarysize"
-                        value="system.diceroller.ignorelegendarysize" type="checkbox" {{checked
-                        system.diceroller.ignorelegendarysize}}>
+                    <input name="system.diceroller.ignorelegendarysize" value="system.diceroller.ignorelegendarysize"
+                        type="checkbox" {{checked system.diceroller.ignorelegendarysize}}>
                 </div>
             </div>
             <hr>
@@ -856,9 +861,8 @@
                     </div>
                     <div>
                         <div class="resource-label">{{localize "Ex3.AlsoTriggerTwos"}}</div>
-                        <input name="system.diceroller.alsotriggertwos"
-                            value="system.diceroller.alsotriggertwos" type="checkbox" {{checked
-                            system.diceroller.alsotriggertwos}}>
+                        <input name="system.diceroller.alsotriggertwos" value="system.diceroller.alsotriggertwos"
+                            type="checkbox" {{checked system.diceroller.alsotriggertwos}}>
                     </div>
                 </div>
             </div>
@@ -866,39 +870,89 @@
 
         <div class="tab" data-group="primary" data-tab="triggers">
             <div class="resource flex-center mb-1" style="font-size: 17px;">
-                <label class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger" title="Create ritual" data-type="dicerollertriggers"><i
-                    class="fas fa-plus"></i></a></label>
+                <label class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger"
+                        title="Create ritual" data-type="dicerollertriggers"><i class="fas fa-plus"></i></a></label>
             </div>
             {{#each system.triggers.dicerollertriggers as |trigger index|}}
-            <div class="d-flex" style="align-items:center;">
-                <input class="trigger-name" value="{{trigger.name}}" type="text" data-index="{{index}}" data-type="dicerollertriggers" placeholder='{{localize "Ex3.Name"}}'>
-                <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers" data-index="{{index}}"><i
-                    class="fas fa-trash" style="margin: 15px;"></i></a>
-            </div>
-            <div class="resource flex-center mb-1" style="font-size: 17px;">
-                <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control add-bonus" title="Create ritual" data-type="dicerollertriggers" data-index="{{index}}"><i
-                    class="fas fa-plus"></i></a></label>
-            </div>
-            <div class="grid grid-3col flex-group-center">
-                {{#each trigger.bonuses as |bonus bonusIndex|}}
+            <div class="flex-group-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Name"}}</label>
+                </div>
+                <div class="d-flex" style="align-items:center;">
+                    <input name="system.triggers.dicerollertriggers.{{index}}.name" class="trigger-name" value="{{trigger.name}}" type="text" data-index="{{index}}"
+                        data-type="dicerollertriggers">
+                    <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers"
+                        data-index="{{index}}"><i class="fas fa-trash" style="margin: 15px;"></i></a>
+                </div>
+                <div class="resource flex-center mb-1" style="font-size: 17px;">
+                    <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control add-trigger-subitem"
+                            title="Create bonus" data-type="dicerollertriggers" data-subtype="bonuses" data-index="{{index}}"><i
+                                class="fas fa-plus"></i></a></label>
+                </div>
+                <div class="grid grid-2col flex-center">
+                    {{#each trigger.bonuses as |bonus bonusIndex|}}
                     <div>
-                        <div class="resource-label">{{localize "Ex3.Name"}}</div>
-                        <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.name" data-type="String">
-                            {{#select bonus.name}}
-                            <option value="">{{localize "Ex3.None"}}</option>
-                            <option value="test">{{localize "Ex3.Test"}}</option>
+                        <div class="resource-label">{{localize "Ex3.Effect"}}</div>
+                        <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.effect"
+                            data-type="String">
+                            {{#select bonus.effect}}
+                            <optgroup label="{{localize 'Ex3.DiceRoller'}}">
+                                <option value="">{{localize "Ex3.None"}}</option>
+                                <option value="addDice">{{localize "Ex3.AddDice"}}</option>
+                            </optgroup>
                             {{/select}}
                         </select>
                     </div>
                     <div>
-                        <div class="resource-label">{{localize "Ex3.Bonus"}}</div>
-                        <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value" value="{{bonus.value}}" type="text">
+                        <div class="resource-label">{{localize "Ex3.ValueType"}}</div>
+                        <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.valueType"
+                            data-type="String">
+                            {{#select bonus.valueType}}
+                            <option value="">{{localize "Ex3.None"}}</option>
+                            <option value="threshholdSuccesses">{{localize "Ex3.ThreshholdSuccesses"}}</option>
+                            <option value="formulaValue">{{localize "Ex3.FormulaValue"}}</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                    {{#ifEquals bonus.valueType 'formulaValue'}}
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.FormulaValue"}}* <a><i
+                            class="formula-help fas fa-info-circle"></i></label></a></div>
+                        <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                            value="{{bonus.value}}" type="text">
+                    </div>
+                    {{/ifEquals}}
+                    <div>
+                        <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
+                            data-index="{{index}}" data-subindex="{{bonusIndex}}" data-subtype="bonuses"><i class="fas fa-trash"></i></a>
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="resource flex-center mb-1" style="font-size: 17px;">
+                    <label class="resource-label">{{localize "Ex3.Restrictions"}} <a class="item-control add-trigger-subitem"
+                            title="Create restriction" data-type="dicerollertriggers" data-subtype="restrictions" data-index="{{index}}"><i
+                                class="fas fa-plus"></i></a></label>
+                </div>
+                <div class="grid grid-2col flex-center">
+                    {{#each trigger.restrictions as |restriction restrictionIndex|}}
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.Effect"}}</div>
+                        <select name="system.triggers.dicerollertriggers.{{index}}.restrictions.{{restrictionIndex}}.value"
+                            data-type="String">
+                            {{#select restriction.value}}
+                            <optgroup label="{{localize 'Ex3.DiceRoller'}}">
+                                <option value="">{{localize "Ex3.None"}}</option>
+                                <option value="witheringAttackOnly">{{localize "Ex3.WitheringAttackOnly"}}</option>
+                            </optgroup>
+                            {{/select}}
+                        </select>
                     </div>
                     <div>
-                        <a class="item-control delete-bonus" title="Delete bonus" data-type="dicerollertriggers" data-index="{{index}}" data-bonusindex="{{bonusIndex}}"><i
-                            class="fas fa-trash"></i></a>
+                        <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
+                            data-index="{{index}}" data-subindex="{{restrictionIndex}}" data-subtype="restrictions"><i class="fas fa-trash"></i></a>
                     </div>
-                {{/each}}
+                    {{/each}}
+                </div>
             </div>
             {{/each}}
         </div>
@@ -982,14 +1036,15 @@
                 <div class="resource-label">{{localize "Ex3.PreviousCharmsPrerequisites"}}</div>
             </div>
             <div class="resource-content flexrow flex-center">
-                <input placeholder="Previous Charms from: " type="number" name="system.numberprerequisites.number" value="{{system.numberprerequisites.number}}" />
+                <input placeholder="Previous Charms from: " type="number" name="system.numberprerequisites.number"
+                    value="{{system.numberprerequisites.number}}" />
                 <select name="system.numberprerequisites.ability" data-type="String">
                     {{#select system.numberprerequisites.ability}}
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                      {{#each charmCategory.entries as |entry entryType|}}
-                      <option value="{{entryType}}">{{localize entry}}</option>
-                      {{/each}}
+                        {{#each charmCategory.entries as |entry entryType|}}
+                        <option value="{{entryType}}">{{localize entry}}</option>
+                        {{/each}}
                     </optgroup>
                     {{/each}}
                     <option value="">{{localize "Ex3.None"}}</option>
@@ -1005,9 +1060,9 @@
                     {{#select system.archetype.ability}}
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                      {{#each charmCategory.entries as |entry entryType|}}
-                      <option value="{{entryType}}">{{localize entry}}</option>
-                      {{/each}}
+                        {{#each charmCategory.entries as |entry entryType|}}
+                        <option value="{{entryType}}">{{localize entry}}</option>
+                        {{/each}}
                     </optgroup>
                     {{/each}}
                     <option value="combat">{{localize "Ex3.AnyCombatAbility"}}</option>
@@ -1034,7 +1089,8 @@
                         {{/each}}
                         {{else}}
                         {{#each system.archetype.charmprerequisites as |item id|}}
-                        <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}" data-type="archetype">
+                        <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}"
+                            data-type="archetype">
                             {{item.name}}
                         </li>
                         {{/each}}
@@ -1045,7 +1101,8 @@
             <div class="flex-center mt-1">
                 <div class="resource-label">{{localize "Ex3.OtherPrerequisites"}}</div>
             </div>
-            <textarea type="text" name="system.archetype.prerequisites" rows="4">{{system.archetype.prerequisites}}</textarea>
+            <textarea type="text" name="system.archetype.prerequisites"
+                rows="4">{{system.archetype.prerequisites}}</textarea>
             {{#if parentItemList}}
             <div>
                 {{#ifEquals system.ability 'evocation'}}

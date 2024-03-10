@@ -209,17 +209,6 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       }
     });
 
-    html.find('.add-bonus').click(ev => {
-      var triggerType = ev.currentTarget.dataset.type;
-      var index = ev.currentTarget.dataset.index;
-      const newList = this.item.system.triggers[triggerType][index].bonuses;
-      newList[newList.length] = {
-        name: "",
-        value: "",
-      };
-      this.item.update({ [`system.triggers.${triggerType}.${index}.bonuses`]: newList });
-    });
-
     html.find('.delete-trigger').click(ev => {
       var triggerType = ev.currentTarget.dataset.type;
       var index = ev.currentTarget.dataset.index;
@@ -228,26 +217,62 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       });
     });
 
-    html.find('.delete-bonus').click(ev => {
+    // html.on("change", ".trigger-name", ev => {
+    //   var triggerType = ev.currentTarget.dataset.type;
+    //   var index = ev.currentTarget.dataset.index;
+    //   const newList = this.item.system.triggers[triggerType];
+    //   newList[index].name = ev.currentTarget.value;
+    //   this.item.update({ [`system.triggers.${triggerType}`]: newList });
+    // });
+
+    html.find('.add-trigger-subitem').click(ev => {
       var triggerType = ev.currentTarget.dataset.type;
       var index = ev.currentTarget.dataset.index;
-      var bonusIndex = ev.currentTarget.dataset.bonusindex;
-      let formData = {};
-
-      const items = this.object.system.triggers[triggerType][index].bonuses;
-      items.splice(bonusIndex, 1);
-      setProperty(formData, `system.triggers.${triggerType}.${index}.bonuses`, items);
-      this.object.update(formData);
+      var subType = ev.currentTarget.dataset.subtype;
+      const newList = this.item.system.triggers[triggerType][index][subType];
+      let listIndex = 0;
+      let indexAdd = "0";
+      for(const key of Object.keys(newList)) {
+        if(key !== listIndex.toString()) {
+          break;
+        }
+        listIndex++;
+      }
+      indexAdd = listIndex.toString();
+      if(subType === 'bonuses') {
+        newList[indexAdd] = {
+          effect: "addDice",
+          valueType: "",
+          value: "0",
+        };
+      }
+      else {
+        newList[indexAdd] = {
+          value: "",
+        };
+      }
+      this.item.update({ [`system.triggers.${triggerType}.${index}.${subType}`]: newList });
     });
 
-    html.on("change", ".trigger-name", ev => {
+    html.find('.delete-trigger-subitem').click(ev => {
       var triggerType = ev.currentTarget.dataset.type;
       var index = ev.currentTarget.dataset.index;
-      const newList = this.item.system.triggers[triggerType];
-      newList[index].name = ev.currentTarget.value;
-      this.item.update({ [`system.triggers.${triggerType}`]: newList });
+      var subindex = ev.currentTarget.dataset.subindex;
+      var subType = ev.currentTarget.dataset.subtype;
+      this.item.update({
+        [`system.triggers.${triggerType}.${index}.${subType}.-=${subindex}`]: null,
+      });
     });
 
+    // html.on("change", ".bonus-change", ev => {
+    //   var triggerType = ev.currentTarget.dataset.type;
+    //   var index = ev.currentTarget.dataset.index;
+    //   var bonusIndex = ev.currentTarget.dataset.index;
+    //   var fieldName = ev.currentTarget.dataset.fieldname;
+    //   const newList = this.item.system.triggers[triggerType][index].bonuses;
+    //   newList[bonusIndex][fieldName] = ev.currentTarget.value;
+    //   this.item.update({ [`system.triggers.${triggerType}`]: newList });
+    // });
 
     html.find(".charms-cheat-sheet").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
