@@ -662,6 +662,24 @@ exaltedthird.casteabilitiesmap = {
   ],
 };
 
+exaltedthird.maidenabilities = {
+  'journeys': [
+    'resistance', 'ride', 'sail', 'survival', 'thrown', 'journeys'
+  ],
+  'serenity': [
+    'craft', 'dodge', 'linguistics', 'performance', 'socialize', 'serenity'
+  ],
+  'battles': [
+    'archery', 'brawl', 'melee', 'presence', 'war', 'battles'
+  ],
+  'secrets': [
+    'investigation', 'larceny', 'lore', 'occult', 'stealth', 'secrets'
+  ],
+  'endings': [
+    'athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine', 'endings'
+  ],
+}
+
 exaltedthird.statusEffects = [
   {
     icon: 'icons/svg/falling.svg',
@@ -1099,3 +1117,11 @@ exaltedthird.artifactArmorStats = {
     penalty: 2,
   },
 };
+
+exaltedthird.maidens = [
+  "journeys",
+  "serenity",
+  "battles",
+  "secrets",
+  "endings"
+];

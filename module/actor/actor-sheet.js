@@ -253,12 +253,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       attr.name = CONFIG.exaltedthird.attributes[key];
       sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
       attr.nextDotCost = 0;
-      if(attr.value < 5) {
-        if(game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+      if (attr.value < 5) {
+        if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
           attr.nextDotCost = attr.favored ? 8 : 10;
         } else {
           attr.nextDotCost = attr.value * (attr.favored ? 3 : 4);
-          if(sheetData.system.details.caste === 'casteless') {
+          if (sheetData.system.details.caste === 'casteless') {
             attr.nextDotCost--;
           }
         }
@@ -274,11 +274,11 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     for (let [key, ability] of Object.entries(sheetData.system.abilities)) {
       ability.name = CONFIG.exaltedthird.abilities[key];
 
-      if(ability.value < 5) {
-        if(game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+      if (ability.value < 5) {
+        if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
           ability.nextDotCost = ability.favored ? 4 : 5;
         } else {
-          if(ability.value === 0) {
+          if (ability.value === 0) {
             ability.nextDotCost = 3;
           }
           else {
@@ -350,6 +350,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (actorData.system.attributes[charm.system.ability] && actorData.system.attributes[charm.system.ability].favored) {
         favoredCharms++;
       } else if (actorData.system.abilities[charm.system.ability] && actorData.system.abilities[charm.system.ability].favored) {
+        favoredCharms++;
+      }
+      else if(CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === actorData.system.details.caste) {
         favoredCharms++;
       }
       else {
@@ -1008,6 +1011,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           if (this.actor.system.abilities[charm.system.ability]) {
             return charm.system.requirement <= this.actor.system.abilities[charm.system.ability].value;
           }
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.ability);
+          }
           return true;
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
@@ -1019,6 +1025,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
           if (this.actor.system.abilities[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.actor.system.abilities[charm.system.archetype.ability].value;
+          }
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.archetype.ability)) {
+            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.archetype.ability);
           }
           return true;
         });
@@ -1050,6 +1059,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (itemType === 'charm') {
         items = items.filter(charm => {
           if (charm.system.numberprerequisites.number > 0) {
+            if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+              return charm.system.numberprerequisites.number <= this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
+            }
             if (this.actor.items.filter(numberCharm => numberCharm.type === 'charm' && numberCharm.system.ability === charm.system.numberprerequisites.ability).length < charm.system.numberprerequisites.number) {
               return false;
             }
@@ -2245,6 +2257,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     this._assignToActorField(fields, newValue)
   }
 
+  _getHighestMaidenAbility(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    let highestValue = 0;
+    for (const ability of abilityList) {
+      if ((this.actor.system.abilities[ability]?.value || 0) > highestValue) {
+        highestValue = (this.actor.system.abilities[ability]?.value || 0);
+      }
+    }
+    return highestValue;
+  }
+
+  _getMaidenCharmsNumber(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    return (this.actor.items.filter(numberCharm => numberCharm.type === 'charm' && abilityList.includes(numberCharm.system.ability)).length || 0)
+  }
 
   _onDotCounterChange(event) {
     event.preventDefault()

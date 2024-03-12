@@ -19,6 +19,11 @@
                             class="fas fa-plus"></i></a>
             </li>
             <li class="item-description">
+                {{#if item.system.points}}
+                <div>
+                    <b>{{localize "Ex3.Cost"}}</b>: {{item.system.points}}
+                </div>
+                {{/if}}
                 {{#if item.system.traits.weapontags.value}}
                 <div class="mt-1">
                     {{#each item.system.traits.weapontags.selected as |v k|}}

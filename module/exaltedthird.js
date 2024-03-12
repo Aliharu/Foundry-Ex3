@@ -1144,6 +1144,13 @@ Hooks.once("ready", async function () {
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 
+  // for(const item of game.items.filter(item => item.type === 'charm' && item.folder?.name && item.system.charmtype === 'martialarts')) {
+  //   const martialArt = game.items.filter(ma => ma.type === 'customability' && ma.name === item.folder?.name)[0];
+  //   if(martialArt) {
+  //     item.update({[`system.parentitemid`]: martialArt.id});
+  //   }
+  // }
+
   // for(const item of game.items.filter(item => item.type === 'ritual' || (item.type === 'merit' && item.system.merittype === 'sorcery'))) {
   //   if(item.folder?.name && !item.system.archetypename) {
   //     await item.update({ [`system.archetypename`]: item.folder.name });

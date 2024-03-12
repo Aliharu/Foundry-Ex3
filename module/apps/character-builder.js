@@ -949,7 +949,7 @@ export default class CharacterBuilder extends FormApplication {
       items = game.items.filter(charm => charm.type === 'charm');
     }
     if (type === 'martialArts') {
-      items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart');
+      items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart' && (!item.system.siderealmartialart || this.object.character.essence >= 3));
     }
     if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
       items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
@@ -976,6 +976,9 @@ export default class CharacterBuilder extends FormApplication {
           if (this.object.character.abilities[charm.system.ability]) {
             return charm.system.requirement <= this.object.character.abilities[charm.system.ability].value;
           }
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.ability);
+          }
           return true;
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
@@ -987,6 +990,9 @@ export default class CharacterBuilder extends FormApplication {
           }
           if (this.object.character.abilities[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.object.character.abilities[charm.system.archetype.ability].value;
+          }
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.archetype.ability)) {
+            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.archetype.ability);
           }
           return true;
         });
@@ -1076,6 +1082,9 @@ export default class CharacterBuilder extends FormApplication {
     if (itemType === 'charm') {
       items = items.filter(charm => {
         if (charm.system.numberprerequisites.number > 0) {
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            return charm.system.numberprerequisites.number <= this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
+          }
           if ((Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0) < charm.system.numberprerequisites.number) {
             return false;
           }
@@ -1094,6 +1103,22 @@ export default class CharacterBuilder extends FormApplication {
       this.getEnritchedHTML(item);
     }
     return items;
+  }
+
+  _getHighestMaidenAbility(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    let highestValue = 0;
+    for (const ability of abilityList) {
+      if ((this.object.character.abilities[ability]?.value || 0) > highestValue) {
+        highestValue = (this.object.character.abilities[ability]?.value || 0);
+      }
+    }
+    return highestValue;
+  }
+
+  _getMaidenCharmsNumber(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    return (Object.values(this.object.character.charms)?.filter(numberCharm => abilityList.includes(numberCharm.system.ability)).length || 0)
   }
 
   async _onDropItem(event) {
@@ -1519,6 +1544,9 @@ export default class CharacterBuilder extends FormApplication {
         favoredCharms += charm.itemCount;
       } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored) {
         favoredCharms += charm.itemCount;
+      }
+      else if(CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
+        favoredCharms += charm.itemCount
       }
       else {
         nonFavoredCharms += charm.itemCount;
