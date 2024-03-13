@@ -359,7 +359,13 @@ export default class TemplateImporter extends FormApplication {
     }
     if (requirementArray.length === 1) {
       var essenceRequirement = requirementArray[0].trim().split(' ');
-      charmData.system.ability = 'evocation';
+      if(this.charmType === 'evocation') {
+        charmData.system.ability = 'evocation';
+      }
+      else {
+        charmData.system.ability = 'universal';
+      }
+      charmData.system.requirement = 0;
       charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
     if (requirementArray.length === 2) {

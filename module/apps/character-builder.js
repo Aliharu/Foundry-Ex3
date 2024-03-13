@@ -1082,10 +1082,28 @@ export default class CharacterBuilder extends FormApplication {
     if (itemType === 'charm') {
       items = items.filter(charm => {
         if (charm.system.numberprerequisites.number > 0) {
-          if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
-            return charm.system.numberprerequisites.number <= this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
+          let existingCharms = 0;
+          if (charm.system.numberprerequisites.ability === "combat") {
+            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(numberCharm.system.ability)).length || 0);
           }
-          if ((Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0) < charm.system.numberprerequisites.number) {
+          else if(['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(charm.system.numberprerequisites.ability)) {
+            if(charm.system.numberprerequisites.ability === 'physicalAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['strength', 'dexterity', 'stamina'].includes(numberCharm.system.ability)).length || 0);
+            }
+            if(charm.system.numberprerequisites.ability === 'mentalAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['intelligence', 'wits', 'perception'].includes(numberCharm.system.ability)).length || 0);
+            }
+            if(charm.system.numberprerequisites.ability === 'socialAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['charisma', 'appearance', 'manipulation'].includes(numberCharm.system.ability)).length || 0);
+            }
+          }
+          else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            existingCharms = this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
+          }
+          else {
+            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0);
+          }
+          if(existingCharms < charm.system.numberprerequisites.number) {
             return false;
           }
         }
