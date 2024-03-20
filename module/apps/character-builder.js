@@ -343,7 +343,37 @@ export default class CharacterBuilder extends FormApplication {
   }
 
   _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
+    let buttons = [
+      {
+        label: "Close",
+        class: "close",
+        icon: "fas fa-times",
+        onclick: () => {
+          let applyChanges = false;
+          new Dialog({
+            title: 'Close?',
+            content: 'Any unsaved changed will be lost',
+            buttons: {
+              delete: {
+                icon: '<i class="fas fa-check"></i>',
+                label: 'Close',
+                callback: () => applyChanges = true
+              },
+              cancel: {
+                icon: '<i class="fas fa-times"></i>',
+                label: 'Cancel'
+              },
+            },
+            default: "cancel",
+            close: html => {
+              if (applyChanges) {
+                this.close();
+              }
+            }
+          }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        } 
+      }
+    ];
     const saveButton = {
       label: game.i18n.localize('Ex3.Save'),
       class: 'save',

@@ -1898,12 +1898,13 @@ export class RollForm extends FormApplication {
             let results = {};
             results = diceModifiers.preRollMacros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), results);
         }
-
+        //Base Roll
         let rollResults = await this._rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled);
         let diceRoll = rollResults.results;
         let total = rollResults.total;
         var possibleRerolls = 0;
         var possibleSuccessRerolls = 0;
+        // Reroll Failed Number
         if (diceModifiers.rerollFailed) {
             for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
                 if (!diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {

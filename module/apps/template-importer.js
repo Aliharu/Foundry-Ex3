@@ -359,7 +359,7 @@ export default class TemplateImporter extends FormApplication {
     }
     if (requirementArray.length === 1) {
       var essenceRequirement = requirementArray[0].trim().split(' ');
-      if(this.charmType === 'evocation') {
+      if (this.charmType === 'evocation') {
         charmData.system.ability = 'evocation';
       }
       else {
@@ -442,7 +442,7 @@ export default class TemplateImporter extends FormApplication {
         system: {
         }
       };
-      if(itemType === 'hearthstone') {
+      if (itemType === 'hearthstone') {
         itemData.system.itemtype = 'hearthstone';
         itemData.type = 'item';
         itemData.img = 'systems/exaltedthird/assets/icons/emerald.svg';
@@ -496,7 +496,7 @@ export default class TemplateImporter extends FormApplication {
           if (itemType === 'weapon') {
             itemData.system.traits.weapontags.value = itemData.system.traits.weapontags.value.concat(itemTags);
           }
-          if(itemTags.includes("melee") || itemTags.includes("brawl") ) {
+          if (itemTags.includes("melee") || itemTags.includes("brawl")) {
             itemData.system.weapontype = 'melee';
           }
           else if (itemTags.includes("archery")) {
@@ -520,19 +520,19 @@ export default class TemplateImporter extends FormApplication {
           }
         }
         if (textArray[index].includes('Type:')) {
-          if(textArray[index].toLowerCase().includes('light')) {
+          if (textArray[index].toLowerCase().includes('light')) {
             weightType = 'light';
           }
-          else if(textArray[index].toLowerCase().includes('medium')) {
+          else if (textArray[index].toLowerCase().includes('medium')) {
             weightType = 'medium';
           }
-          else if(textArray[index].toLowerCase().includes('heavy')) {
+          else if (textArray[index].toLowerCase().includes('heavy')) {
             weightType = 'heavy';
           }
         }
         if (textArray[index].toLowerCase().includes("hearthstone slot(s):")) {
           var slotsSplit = textArray[index].split(':');
-          if(slotsSplit[1] && slotsSplit[1].trim() !== 'None') {
+          if (slotsSplit[1] && slotsSplit[1].trim() !== 'None') {
             itemData.system.hearthstones = {
               value: 0,
               max: slotsSplit[1].replace(/[^0-9]/g, ''),
@@ -593,7 +593,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.folder = folder;
       }
       const item = await Item.create(itemData);
-      if((item.type === 'weapon' || item.type === 'armor') && weightType) {
+      if ((item.type === 'weapon' || item.type === 'armor') && weightType) {
         await item.update({ [`system.weighttype`]: weightType });
       }
       index++;
