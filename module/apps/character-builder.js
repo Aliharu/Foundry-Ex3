@@ -922,9 +922,9 @@ export default class CharacterBuilder extends FormApplication {
         }
       }
       else {
-        const index = event.currentTarget.dataset.index;
-        if (this.object.character[type][index].type === 'charm') {
-          const charm = this.object.character[type][index];
+        const baseIndex = event.currentTarget.dataset.index;
+        if (this.object.character[type][baseIndex].type === 'charm') {
+          const charm = this.object.character[type][baseIndex];
           if (this.object.character.abilities[charm.system.ability]) {
             const index = Object.values(this.object.character.abilities[charm.system.ability].charms).indexOf(charm);
             delete this.object.character.abilities[charm.system.ability].charms[index];
@@ -934,7 +934,7 @@ export default class CharacterBuilder extends FormApplication {
             delete this.object.character.attributes[charm.system.ability].charms[index];
           }
         }
-        delete this.object.character[type][index];
+        delete this.object.character[type][baseIndex];
       }
       await this.onChange(event);
     });
