@@ -1062,11 +1062,18 @@ export class ExaltedThirdActor extends Actor {
       currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
     }
 
+    let armorPenalty = 0;
+
+    for (let armor of this.items.filter(item => item.type === 'armor' && item.system.equipped)) {
+      armorPenalty += Math.abs(armor.system.penalty);
+    }
+
     data.woundpenalty = { 'value': currentPenalty };
     data.evasionpenalty = { 'value': currentEvasionPenalty };
     data.onslaught = { 'value': currentOnslaughtPenalty };
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
+    data.armorpenalty = {'value': armorPenalty};
     if (!data.size) {
       data.size = {
         value: 0,

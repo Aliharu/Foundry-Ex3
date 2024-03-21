@@ -262,6 +262,34 @@ exaltedthird.abilities = {
   war: 'Ex3.War',
 };
 
+exaltedthird.abilitiesList = [
+  'archery',
+  'athletics',
+  'awareness',
+  'brawl',
+  'bureaucracy',
+  'craft',
+  'dodge',
+  'integrity',
+  'investigation',
+  'larceny',
+  'linguistics',
+  'lore',
+  'medicine',
+  'melee',
+  'occult',
+  'performance',
+  'presence',
+  'resistance',
+  'ride',
+  'sail',
+  'socialize',
+  'stealth',
+  'survival',
+  'thrown',
+  'war',
+];
+
 exaltedthird.npcpools = {
   command: 'Ex3.Command',
   grapple: 'Ex3.GrappleControl',

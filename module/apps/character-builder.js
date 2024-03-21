@@ -371,7 +371,7 @@ export default class CharacterBuilder extends FormApplication {
               }
             }
           }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
-        } 
+        }
       }
     ];
     const saveButton = {
@@ -508,11 +508,29 @@ export default class CharacterBuilder extends FormApplication {
     });
 
     html.find("#randomAbilities").on("click", async (ev) => {
+      const abilitiesRandom = CONFIG.exaltedthird.abilitiesList;
+
+      const favoredOrCasteAbilities = [];
+      const otherAbilities = [];
+      abilitiesRandom.forEach(ability => {
+        if (this.object.character.abilities[ability].favored || this.object.character.abilities[ability].caste) {
+          favoredOrCasteAbilities.push(ability);
+        } else {
+          otherAbilities.push(ability);
+        }
+      });
+
+      const shuffledFavoredOrCasteAbilities = this._shuffleArray(favoredOrCasteAbilities);
+      const shuffledOtherAbilities = this._shuffleArray(otherAbilities);
+      
+      const shuffledAbilitiesList = shuffledFavoredOrCasteAbilities.concat(shuffledOtherAbilities);
+      
       let abilityValues = [
         5, 5, 4, 4, 3, 3, 3, 3, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      ]
-      for (const ability of Object.values(this.object.character.abilities).filter(ability => ability.name !== "Ex3.MartialArts")) {
-        ability.value = abilityValues.splice(Math.floor(Math.random() * abilityValues.length), 1)[0];
+      ];
+
+      for (let i = 0; i < shuffledAbilitiesList.length; i++) {
+        this.object.character.abilities[shuffledAbilitiesList[i]].value = (abilityValues[i] || 0)
       }
 
       await this.onChange(ev);
@@ -835,14 +853,6 @@ export default class CharacterBuilder extends FormApplication {
             }
             else {
               this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-              if (item.type === 'charm') {
-                if (this.object.character.abilities[item.system.ability]) {
-                  this.object.character.abilities[item.system.ability].charms[Object.entries(this.object.character.abilities[item.system.ability].charms).length] = newItem;
-                }
-                if (this.object.character.attributes[item.system.ability]) {
-                  this.object.character.attributes[item.system.ability].charms[Object.entries(this.object.character.attributes[item.system.ability].charms).length] = newItem;
-                }
-              }
             }
 
             this.onChange(ev);
@@ -897,16 +907,16 @@ export default class CharacterBuilder extends FormApplication {
           }
           else {
             if (newItem) {
-              this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-
-              if (type === 'charms') {
-                if (this.object.character.abilities[newItem.system.ability]) {
-                  this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
+              let listIndex = 0;
+              let indexAdd = "0";
+              for (const key of Object.keys(this.object.character[type])) {
+                if (key !== listIndex.toString()) {
+                  break;
                 }
-                if (this.object.character.attributes[newItem.system.ability]) {
-                  this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
-                }
+                listIndex++;
               }
+              indexAdd = listIndex.toString();
+              this.object.character[type][indexAdd] = newItem;
             }
           }
         }
@@ -1116,14 +1126,14 @@ export default class CharacterBuilder extends FormApplication {
           if (charm.system.numberprerequisites.ability === "combat") {
             existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(numberCharm.system.ability)).length || 0);
           }
-          else if(['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(charm.system.numberprerequisites.ability)) {
-            if(charm.system.numberprerequisites.ability === 'physicalAttribute') {
+          else if (['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(charm.system.numberprerequisites.ability)) {
+            if (charm.system.numberprerequisites.ability === 'physicalAttribute') {
               existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['strength', 'dexterity', 'stamina'].includes(numberCharm.system.ability)).length || 0);
             }
-            if(charm.system.numberprerequisites.ability === 'mentalAttribute') {
+            if (charm.system.numberprerequisites.ability === 'mentalAttribute') {
               existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['intelligence', 'wits', 'perception'].includes(numberCharm.system.ability)).length || 0);
             }
-            if(charm.system.numberprerequisites.ability === 'socialAttribute') {
+            if (charm.system.numberprerequisites.ability === 'socialAttribute') {
               existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['charisma', 'appearance', 'manipulation'].includes(numberCharm.system.ability)).length || 0);
             }
           }
@@ -1133,7 +1143,7 @@ export default class CharacterBuilder extends FormApplication {
           else {
             existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0);
           }
-          if(existingCharms < charm.system.numberprerequisites.number) {
+          if (existingCharms < charm.system.numberprerequisites.number) {
             return false;
           }
         }
@@ -1308,6 +1318,12 @@ export default class CharacterBuilder extends FormApplication {
     this.object.oxBodyEnabled = (oxBodyAvailable.includes(this.object.character.exalt) || oxBodyAvailable.includes(this.object.character.exigent));
 
     this._calculateSpentExperience(ev);
+
+    const categories = [...Object.entries(this.object.character.abilities), ...Object.entries(this.object.character.attributes)];
+
+    for (const [key, category] of categories) {
+      category.charms = Object.values(this.object.character.charms).filter(charm => charm.system.ability === key);
+    }
 
     await this.render();
   }
@@ -1593,7 +1609,7 @@ export default class CharacterBuilder extends FormApplication {
       } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored) {
         favoredCharms += charm.itemCount;
       }
-      else if(CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
+      else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
         favoredCharms += charm.itemCount
       }
       else {
@@ -1649,6 +1665,14 @@ export default class CharacterBuilder extends FormApplication {
     this.object.creationData.spent.experience.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits))) * 2;
     this.object.creationData.spent.experience.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 6;
     this.object.creationData.spent.experience.total = this.object.creationData.spent.experience.willpower + this.object.creationData.spent.experience.merits + this.object.creationData.spent.experience.specialties + this.object.creationData.spent.experience.abilities + this.object.creationData.spent.experience.attributes + this.object.creationData.spent.experience.charms;
+  }
+
+  _shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
 
@@ -2134,24 +2158,6 @@ export default class CharacterBuilder extends FormApplication {
           },
           diceroller: {
             bonusdice: "1"
-          }
-        }
-      });
-      itemData.push({
-        type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
-        name: 'Success Excellency',
-        system: {
-          description: 'Add 1 success to a roll for 2 motes.',
-          ability: 'universal',
-          listingname: 'Excellency',
-          requirement: 1,
-          essence: 1,
-          cost: {
-            motes: 2
-          },
-          diceroller: {
-            bonussuccesses: "1"
           }
         }
       });
