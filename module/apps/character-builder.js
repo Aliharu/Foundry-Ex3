@@ -522,9 +522,7 @@ export default class CharacterBuilder extends FormApplication {
 
       const shuffledFavoredOrCasteAbilities = this._shuffleArray(favoredOrCasteAbilities);
       const shuffledOtherAbilities = this._shuffleArray(otherAbilities);
-      
       const shuffledAbilitiesList = shuffledFavoredOrCasteAbilities.concat(shuffledOtherAbilities);
-      
       let abilityValues = [
         5, 5, 4, 4, 3, 3, 3, 3, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
@@ -932,19 +930,38 @@ export default class CharacterBuilder extends FormApplication {
         }
       }
       else {
-        const baseIndex = event.currentTarget.dataset.index;
-        if (this.object.character[type][baseIndex].type === 'charm') {
-          const charm = this.object.character[type][baseIndex];
-          if (this.object.character.abilities[charm.system.ability]) {
-            const index = Object.values(this.object.character.abilities[charm.system.ability].charms).indexOf(charm);
-            delete this.object.character.abilities[charm.system.ability].charms[index];
-          }
-          if (this.object.character.attributes[charm.system.ability]) {
-            const index = Object.values(this.object.character.attributes[charm.system.ability].charms).indexOf(charm);
-            delete this.object.character.attributes[charm.system.ability].charms[index];
-          }
+        delete this.object.character[type][event.currentTarget.dataset.index];
+      }
+      await this.onChange(event);
+    });
+
+    html.find(".delete-sublist-charm").on("click", async (event) => {
+      const sublistkey = event.currentTarget.dataset.sublistkey;
+      const type = event.currentTarget.dataset.type;
+      const charm = this.object.character[type][sublistkey].charms[event.currentTarget.dataset.index];
+
+      let index = null;
+      for (const [key, value] of Object.entries(this.object.character.charms)) {
+        if (value === charm) {
+          index = key;
+          break;
         }
-        delete this.object.character[type][baseIndex];
+      }
+      if (index) {
+        delete this.object.character.charms[index];
+        await this.onChange(event);
+      }
+    });
+
+    html.find(".delete-ability-item").on("click", async (event) => {
+      const type = event.currentTarget.dataset.type;
+      if (type === 'ritual') {
+        this.object.character.ritual = {
+          name: '',
+        }
+      }
+      else {
+        delete this.object.character[type][event.currentTarget.dataset.index];
       }
       await this.onChange(event);
     });
