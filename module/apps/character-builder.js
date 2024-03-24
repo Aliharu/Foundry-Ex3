@@ -1887,7 +1887,7 @@ export default class CharacterBuilder extends FormApplication {
       actorData.system.details.apocalyptic = this.object.character.supernal;
     }
     actorData.system.details.tell = this.object.character.tell;
-    actorData.system.details.spriitshape = this.object.character.spriitShape;
+    actorData.system.details.spiritshape = this.object.character.spiritShape;
     actorData.system.details.birthsign = this.object.character.birthSign;
     actorData.system.details.exaltsign = this.object.character.exaltSign;
     actorData.system.details.caste = this.object.character.caste;
