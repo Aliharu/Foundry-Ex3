@@ -957,11 +957,17 @@ export class RollForm extends FormApplication {
                 target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                 target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                 target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                if(this.object.rollType === 'damage') {
+                    target.rollData.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                }
             }
         }
         else {
             this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
             this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+            if(this.object.rollType === 'damage') {
+                this.object.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+            }
         }
 
         for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
@@ -1498,11 +1504,17 @@ export class RollForm extends FormApplication {
                         target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                         target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                         target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        if(this.object.rollType === 'damage') {
+                            target.rollData.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                        }
                     }
                 }
                 else {
                     this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                     this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                    if(this.object.rollType === 'damage') {
+                        this.object.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                    }
                 }
 
 
