@@ -1957,11 +1957,12 @@ export default class CharacterBuilder extends FormApplication {
 
     for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
       actorData.system.attributes[key].value = attribute.value;
+      actorData.system.attributes[key].favored = attribute.favored;
       if (this.object.character.exalt === 'lunar') {
-        if (actorData.system.attributes[key].excellency && attribute.favored && attribute.value >= 3 && (Object.entries(attribute.charms).length > 0)) {
+        if (attribute.favored && (attribute.value >= 3 || (Object.entries(attribute.charms).length > 0))) {
           actorData.system.attributes[key].excellency = true;
         }
-        else if (actorData.system.attributes[key].excellency && attribute.value >= 5 && (Object.entries(attribute.charms).length > 1)) {
+        else if (attribute.value >= 5 || (Object.entries(attribute.charms).length >= 3)) {
           actorData.system.attributes[key].excellency = true;
         }
       }

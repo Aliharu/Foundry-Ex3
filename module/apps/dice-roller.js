@@ -265,6 +265,7 @@ export class RollForm extends FormApplication {
                     }
                     if (this.object.attackType === 'withering' || this.actor.type === "npc" || (data.weapon.ability === 'none' && data.weapon.attribute === 'none')) {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
+                        this.object.baseAccuracy = data.weapon.witheringaccuracy || 0;
                         this.object.weaponAccuracy = data.weapon.witheringaccuracy || 0;
                         if (this.object.attackType === 'withering') {
                             this.object.damage.damageDice += data.weapon.witheringdamage || 0;
@@ -3809,7 +3810,11 @@ export class RollForm extends FormApplication {
                     dicePool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
                 }
                 else if (this.actor.system.pools[this.object.pool]) {
-                    dicePool = this.actor.system.pools[this.object.pool].value;
+                    if(this.object.baseAccuracy) {
+                        dicePool = this.object.baseAccuracy;
+                    } else {
+                        dicePool = this.actor.system.pools[this.object.pool].value;
+                    }
                 }
                 var diceTier = "zero";
                 var diceMap = {
