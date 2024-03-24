@@ -17,10 +17,13 @@
                 <option value="gambit">{{localize "Ex3.Gambit"}}</option>
                 {{/select}}
             </select>
+            {{#if data.showTargets}}
+            {{else}}
             <div>
                 <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
                 <input type="number" name="object.attackSuccesses" value="{{data.attackSuccesses}}">
             </div>
+            {{/if}}
             {{/ifEquals}}
             <div>
                 <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
@@ -184,6 +187,13 @@
                     <div class="resource-label">{{target.actor.name}}</div>
                 </div>
                 <div class="resource grid grid-2col flex-center">
+                    {{#ifEquals ../data.rollType 'damage'}}
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.attackSuccesses"
+                            value="{{target.rollData.attackSuccesses}}">
+                    </div>
+                    {{/ifEquals}}
                     <div>
                         <label class="resource-label">{{localize "Ex3.Defense"}}
                             ({{target.rollData.defenseType}})</label>
@@ -254,6 +264,13 @@
                 <div class="resource-label">{{target.actor.name}}</div>
             </div>
             <div class="resource grid grid-2col flex-center">
+                {{#ifEquals ../data.rollType 'damage'}}
+                <div>
+                    <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
+                    <input type="number" name="object.targets.{{id}}.rollData.attackSuccesses"
+                        value="{{target.rollData.attackSuccesses}}">
+                </div>
+                {{/ifEquals}}
                 <div>
                     <label class="resource-label">{{localize "Ex3.Defense"}}
                         ({{target.rollData.defenseType}})</label>

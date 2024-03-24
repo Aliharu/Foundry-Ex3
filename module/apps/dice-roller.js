@@ -471,6 +471,7 @@ export class RollForm extends FormApplication {
             target.rollData.resolve = target.actor.system.resolve.value;
             target.rollData.appearanceBonus = Math.max(0, userAppearance - target.actor.system.resolve.value);
             target.rollData.targetIntimacies = target.actor.intimacies.filter((i) => i.system.visible || game.user.isGM);
+            target.rollData.attackSuccesses = 0;
             if (target.actor.system.warstrider.equipped) {
                 target.rollData.soak = target.actor.system.warstrider.soak.value;
                 target.rollData.hardness = target.actor.system.warstrider.hardness.value;
@@ -1158,6 +1159,9 @@ export class RollForm extends FormApplication {
                 targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                 targetValues[0].rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                 targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                if(this.object.rollType === 'damage') {
+                    targetValues[0].rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                }
             }
             else {
                 for (const target of targetValues) {
@@ -1171,6 +1175,9 @@ export class RollForm extends FormApplication {
                         target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                         target.rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                        if(this.object.rollType === 'damage') {
+                            target.rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                        }
                     }
                 }
             }
@@ -1188,6 +1195,9 @@ export class RollForm extends FormApplication {
             }
             if (this.object.rollType === 'social') {
                 this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
+            }
+            if(this.object.rollType === 'damage') {
+                this.object.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
             }
         }
         this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
@@ -1601,6 +1611,9 @@ export class RollForm extends FormApplication {
                         targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                         targetValues[0].rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                        if(this.object.rollType === 'damage') {
+                            targetValues[0].rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                        }
                     }
                     else {
                         for (const target of targetValues) {
@@ -1614,6 +1627,9 @@ export class RollForm extends FormApplication {
                                 target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                                 target.rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                                 target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                                if(this.object.rollType === 'damage') {
+                                    target.rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                                }
                             }
                         }
                     }
@@ -1631,6 +1647,9 @@ export class RollForm extends FormApplication {
                     }
                     if (this.object.rollType === 'social') {
                         this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
+                    }
+                    if(this.object.rollType === 'damage') {
+                        this.object.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                     }
                 }
                 this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
@@ -1714,6 +1733,7 @@ export class RollForm extends FormApplication {
                     this.object.shieldInitiative = target.rollData.shieldInitiative;
                     this.object.hardness = target.rollData.hardness;
                     this.object.defense = target.rollData.defense;
+                    this.object.attackSuccesses = target.rollData.attackSuccesses;
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
                     this.object.targetSpecificSuccessMod = target.rollData.successModifier;
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
@@ -2463,7 +2483,7 @@ export class RollForm extends FormApplication {
             }
         }
         else {
-            if (this.object.thereshholdSuccesses < 0) {
+            if (this.object.thereshholdSuccesses < 0 && this.object.rollType !== 'accuracy') {
                 await this.missAttack();
             }
         }
@@ -2642,6 +2662,9 @@ export class RollForm extends FormApplication {
         await this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
         this.object.attackSuccesses = this.object.total;
+        if(this.object.target) {
+            this.object.target.rollData.attackSuccesses = this.object.total;
+        }
     }
 
     async _damageRoll() {
