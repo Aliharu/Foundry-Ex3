@@ -1529,12 +1529,12 @@ function applyWitheringDamage(message) {
         localize: true,
       });
     }
-    else if (!combatant?.initiative) {
+    else if (combatant.initiative === null) {
       ui.notifications.warn('Ex3.CombatantHasNoInitiative', {
         localize: true,
       });
     }
-    if (combatant?.initiative) {
+    if (combatant && combatant.initiative !== null) {
       var initiativeDamage = message?.flags?.exaltedthird?.damage?.total;
       if (actor.type !== 'npc' || actor.system.battlegroup === false) {
         if (game.settings.get("exaltedthird", "useShieldInitiative") && actor.system.newShieldInitiative.value > 0) {
@@ -1578,12 +1578,12 @@ function gainAttackInitiative(message) {
         localize: true,
       });
     }
-    else if (!combatant?.initiative) {
+    else if (combatant.initiative === null) {
       ui.notifications.warn('Ex3.CombatantHasNoInitiative', {
         localize: true,
       });
     }
-    if (combatant?.initiative) {
+    if (combatant && combatant.initiative !== null) {
       game.combat.setInitiative(combatant.id, combatant.initiative + message?.flags?.exaltedthird?.damage?.gainedInitiative);
     }
   }

@@ -389,7 +389,7 @@ export class RollForm extends FormApplication {
             let combat = game.combat;
             if (combat) {
                 let combatant = this._getActorCombatant();
-                if (combatant && combatant.initiative) {
+                if (combatant && combatant.initiative !== null) {
                     if (!this.object.showWithering) {
                         if (data.weapon && this.object.damage.decisiveDamageType === 'initiative') {
                             this.object.damage.damageDice += combatant.initiative;
@@ -1732,7 +1732,7 @@ export class RollForm extends FormApplication {
                     if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
                         const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
                         this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
-                        if (this.object.targetCombatant?.initiative) {
+                        if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
                             this.object.newTargetInitiative = this.object.targetCombatant.initiative;
                         }
                         else {
