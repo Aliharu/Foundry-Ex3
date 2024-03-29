@@ -713,108 +713,115 @@ exaltedthird.statusEffects = [
     icon: 'icons/svg/falling.svg',
     id: 'prone',
     label: 'Ex3.Prone',
-    name: 'prone'
+    name: 'prone',
+    description: '<p>Character suffers a -3 penalty to attack rolls, -1 to Parry, and -2 to Evasion</p>'
   },
   {
     icon: 'icons/svg/ruins.svg',
     id: 'lightcover',
     label: 'Ex3.LightCover',
-    name: 'lightcover'
+    name: 'lightcover',
+    description: "<p>Character is behind light cover, Character adds +1 to Defense</p>"
   },
   {
     icon: 'icons/svg/castle.svg',
     id: 'heavycover',
     label: 'Ex3.HeavyCover',
-    name: 'heavycover'
+    name: 'heavycover',
+    description: "<p>Character is behind heavy cover, +2 to Defense</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/brick-wall.svg',
     id: 'fullcover',
     label: 'Ex3.FullCover',
-    name: 'fullcover'
+    name: 'fullcover',
+    description: "<p>Character cannot be targeted, if a opponent has an ability to target her anyway add +3 to Defense</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/grab.svg',
     id: 'grappled',
     label: 'Ex3.Grappled',
-    name: 'grappled'
+    name: 'grappled',
+    description: "<p>Character is grapped by an opponent, -2 to Defense and -1 die to attack rolls</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/shaking-hands.svg',
     id: 'grappling',
     label: 'Ex3.Grappling',
-    name: 'grappling'
+    name: 'grappling',
+    description: "<p>Character has initiated a grapple, -2 to Defense</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/drop-weapon.svg',
     id: 'disarmed',
     label: 'Ex3.Disarmed',
-    name: 'disarmed'
+    name: 'disarmed',
   },
   {
     icon: 'icons/svg/shield.svg',
     id: 'fulldefense',
     label: 'Ex3.FullDefense',
-    name: 'fulldefense'
+    name: 'fulldefense',
+    description: "<p>Character has taken the Full Defense action, +2 to Defense</p>"
   },
   {
     icon: 'icons/svg/daze.svg',
     id: 'surprised',
     label: 'Ex3.Surprised',
-    name: 'surprised'
+    name: 'surprised',
+    description: "<p>Character is suprised, -2 Defense</p>"
   },
   {
     icon: 'icons/svg/blood.svg',
     id: 'bleeding',
     label: 'EFFECT.StatusBleeding',
-    name: 'bleeding'
+    name: 'bleeding',
+    description: ""
   },
   {
     icon: 'icons/svg/poison.svg',
     id: 'poisoned',
     label: 'EFFECT.StatusPoison',
-    name: 'poisoned'
+    name: 'poisoned',
   },
   {
     icon: 'icons/svg/fire.svg',
     id: 'burning',
     label: 'EFFECT.StatusBurning',
-    name: 'burning'
+    name: 'burning',
   },
   {
     icon: 'icons/svg/invisible.svg',
     id: 'dematerialized',
     label: 'Ex3.Dematerialized',
-    name: 'dematerialized'
+    name: 'dematerialized',
+    description: "<p>Character is dematerialized, cannot be attacked without special techniques or magic.</p>"
   },
   {
     icon: 'icons/svg/blind.svg',
     id: 'blind',
     label: 'EFFECT.StatusBlind',
-    name: 'blind'
-  },
-  {
-    icon: 'icons/svg/blind.svg',
-    id: 'blind',
-    label: 'EFFECT.StatusBlind',
-    name: 'blind'
+    name: 'blind',
+    description: "<p>Character is blinded, -3 Dice to all rolls</p>"
   },
   {
     icon: 'icons/svg/paralysis.svg',
     id: 'paralyzed',
     label: 'Ex3.Paralyzed',
-    name: 'paralyzed'
+    name: 'paralyzed',
   },
   {
     icon: 'systems/exaltedthird/assets/icons/cobweb.svg',
     id: 'entangled',
     label: 'Ex3.Entangled',
-    name: 'entangled'
+    name: 'entangled',
+    description: "<p>Character is entangled, +1 Mobility Penalty.</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/horse-head.svg',
     id: 'mounted',
     label: 'Ex3.Mounted',
+    description: "<p>Character is mounted, +1 Defense and +1 die to attack rolls unless attacker has the reaching tag.</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/hidden.svg',
