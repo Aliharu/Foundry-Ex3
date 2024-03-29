@@ -81,6 +81,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
     context.steadyAction = game.settings.get("exaltedthird", "steadyAction");
+    context.activeSpell = context.items?.find(item => item.system?.shaping);
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
     context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
@@ -352,7 +353,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       } else if (actorData.system.abilities[charm.system.ability] && actorData.system.abilities[charm.system.ability].favored) {
         favoredCharms++;
       }
-      else if(CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === actorData.system.details.caste) {
+      else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === actorData.system.details.caste) {
         favoredCharms++;
       }
       else {
@@ -1299,12 +1300,41 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
 
-    html.find('.shape-sorcery').mousedown(ev => {
+    html.find('.shape-sorcery').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
       if (this.actor.type === "npc") {
         game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);
       }
       else {
         game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', ability: 'occult', attribute: 'intelligence' }).render(true);
+      }
+    });
+
+    html.find('.item-shape').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let li = $(event.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      if (this.actor.type === "npc") {
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery', spell: li.data("item-id") }).render(true);
+      }
+      else {
+        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', ability: 'occult', attribute: 'intelligence', spell: li.data("item-id") }).render(true);
+      }
+    });
+
+    html.find('.item-stop-shape').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let li = $(event.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      if (item) {
+        item.update({ [`system.shaping`]: false });
+        this.actor.update({
+          [`system.sorcery.motes.value`]: 0,
+          [`system.sorcery.motes.max`]: 0
+        });
       }
     });
 

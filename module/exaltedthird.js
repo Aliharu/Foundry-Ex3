@@ -1141,6 +1141,37 @@ Hooks.once("ready", async function () {
       }
     }
     ui.notifications.notify(`Migration Complete`);
+  }
+
+  if (isNewerVersion("2.7.4", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.7.4, please wait`);
+    for (let actor of game.actors) {
+      try {
+        if(actor.system.sorcery.motes.value === undefined) {
+          await actor.update({
+            [`system.sorcery.motes`]: {
+              value: actor.system.sorcery.motes,
+              max: 0,
+            }
+          });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+
+    for (let item of game.items.filter(item => item.type === 'spell')) {
+      try {
+          await item.update({
+            [`system.cost`]: parseInt(item.system.cost)
+          });
+      } catch (error) {
+        error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
 

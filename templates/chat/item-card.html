@@ -49,7 +49,7 @@
 
         {{#ifEquals item.type 'spell'}}
         <div>
-            <b>{{localize "Ex3.Cost"}}</b>: {{item.system.cost}}sm, {{item.system.willpower}}wp
+            <b>{{localize "Ex3.Cost"}}</b>: {{#if item.system.cost}} {{item.system.cost}}sm{{else}} Ritual{{/if}}, {{item.system.willpower}}wp
         </div>
         <div>
             <b>{{localize "Ex3.Circle"}}</b>: {{item.system.circle}}

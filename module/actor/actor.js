@@ -537,9 +537,6 @@ export class ExaltedThirdActor extends Actor {
         }
       }
     }
-    if (item.type === 'spell') {
-      data.data.sorcery.motes = 0;
-    }
 
     this.displayEmbeddedItem(itemId);
 
@@ -1336,6 +1333,9 @@ export async function spendEmbeddedItem(actor, item) {
     }
   }
   else if (item.type === 'spell') {
+    if(item.system.willpower) {
+      actorData.system.willpower.value = Math.min(actorData.system.willpower.max, (actorData.system.willpower.value - item.system.willpower) + 1);
+    }
     if (item.system.active) {
       updateActive = false;
     }
@@ -1343,7 +1343,6 @@ export async function spendEmbeddedItem(actor, item) {
       if (item.system.activatable) {
         updateActive = true;
       }
-      actorData.system.sorcery.motes = 0;
     }
   }
   else {

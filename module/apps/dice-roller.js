@@ -206,6 +206,7 @@ export class RollForm extends FormApplication {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
             };
+            this.object.spell = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -427,6 +428,21 @@ export class RollForm extends FormApplication {
                 }
             }
             this.object.motePool = this.actor.system?.settings?.charmmotepool || 'peripheral';
+            this.object.spells = this.actor.items.filter(item => item.type === 'spell' && item.system.cost);
+            if (data.rollType === 'sorcery') {
+                if (data.spell) {
+                    const fullSpell = this.actor.items.get(data.spell);
+                    this.object.spell = data.spell;
+                    this.object.cost.willpower += parseInt(fullSpell.system.willpower);
+                }
+                else {
+                    const activeSpell = this.object.spells.find(spell => spell.system.shaping);
+                    if(activeSpell) {
+                        this.object.spell = activeSpell.id;
+                    }
+                }
+            }
+
             this._calculateAnimaGain();
         }
     }
@@ -512,7 +528,7 @@ export class RollForm extends FormApplication {
                 }
                 if (target.actor.effects.some(e => e.statuses.has('heavycover'))) {
                     effectiveParry += 2;
-                    effectiveEvasion += 3;
+                    effectiveEvasion += 2;
                 }
                 if (target.actor.effects.some(e => e.statuses.has('fullcover'))) {
                     effectiveParry += 3;
@@ -957,7 +973,7 @@ export class RollForm extends FormApplication {
                 target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                 target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                 target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                if(this.object.rollType === 'damage') {
+                if (this.object.rollType === 'damage') {
                     target.rollData.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 }
             }
@@ -965,7 +981,7 @@ export class RollForm extends FormApplication {
         else {
             this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
             this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-            if(this.object.rollType === 'damage') {
+            if (this.object.rollType === 'damage') {
                 this.object.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
             }
         }
@@ -1166,7 +1182,7 @@ export class RollForm extends FormApplication {
                 targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                 targetValues[0].rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                 targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                if(this.object.rollType === 'damage') {
+                if (this.object.rollType === 'damage') {
                     targetValues[0].rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                 }
             }
@@ -1182,7 +1198,7 @@ export class RollForm extends FormApplication {
                         target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                         target.rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                        if(this.object.rollType === 'damage') {
+                        if (this.object.rollType === 'damage') {
                             target.rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         }
                     }
@@ -1203,7 +1219,7 @@ export class RollForm extends FormApplication {
             if (this.object.rollType === 'social') {
                 this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
             }
-            if(this.object.rollType === 'damage') {
+            if (this.object.rollType === 'damage') {
                 this.object.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
             }
         }
@@ -1284,6 +1300,17 @@ export class RollForm extends FormApplication {
 
         html.on("change", "#working-ambition", ev => {
             this.object.goalNumber = parseInt(this.object.ambition);
+            this.render();
+        });
+
+        html.on("change", ".spell", ev => {
+            const fullSpell = this.actor.items.get(this.object.spell);
+            if(fullSpell) {
+                this.object.cost.willpower = parseInt(fullSpell.system.willpower);
+            }
+            else {
+                this.object.cost.willpower = 0;
+            }
             this.render();
         });
 
@@ -1504,7 +1531,7 @@ export class RollForm extends FormApplication {
                         target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                         target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                         target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        if(this.object.rollType === 'damage') {
+                        if (this.object.rollType === 'damage') {
                             target.rollData.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
                         }
                     }
@@ -1512,7 +1539,7 @@ export class RollForm extends FormApplication {
                 else {
                     this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
                     this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                    if(this.object.rollType === 'damage') {
+                    if (this.object.rollType === 'damage') {
                         this.object.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
                     }
                 }
@@ -1624,7 +1651,7 @@ export class RollForm extends FormApplication {
                         targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                         targetValues[0].rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                        if(this.object.rollType === 'damage') {
+                        if (this.object.rollType === 'damage') {
                             targetValues[0].rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                         }
                     }
@@ -1640,7 +1667,7 @@ export class RollForm extends FormApplication {
                                 target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
                                 target.rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                                 target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                                if(this.object.rollType === 'damage') {
+                                if (this.object.rollType === 'damage') {
                                     target.rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                                 }
                             }
@@ -1661,7 +1688,7 @@ export class RollForm extends FormApplication {
                     if (this.object.rollType === 'social') {
                         this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
                     }
-                    if(this.object.rollType === 'damage') {
+                    if (this.object.rollType === 'damage') {
                         this.object.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
                     }
                 }
@@ -1797,7 +1824,7 @@ export class RollForm extends FormApplication {
 
                     await this._abilityRoll();
                     if (this.object.updateTargetActorData) {
-                        this._updateTargetActor();
+                        await this._updateTargetActor();
                     }
                 }
             }
@@ -1805,7 +1832,7 @@ export class RollForm extends FormApplication {
         else {
             await this._abilityRoll();
             if (this.object.updateTargetActorData) {
-                this._updateTargetActor();
+                await this._updateTargetActor();
             }
         }
     }
@@ -2155,7 +2182,7 @@ export class RollForm extends FormApplication {
                     dice += this.object.appearanceBonus;
                 }
             }
-            this.actor.update(actorData);
+            await this.actor.update(actorData);
         }
 
         if (this._isAttackRoll()) {
@@ -2359,7 +2386,25 @@ export class RollForm extends FormApplication {
         let extendedTest = ``;
 
         if (this.object.rollType === "joinBattle") {
-            resultString = `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+            resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+        }
+        if (this.object.rollType === "sorcery") {
+            if(this.object.spell) {
+                let crashed = false;
+                if (game.combat) {
+                    let combatant = this._getActorCombatant();
+                    if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
+                        crashed = true;
+                    }
+                } 
+                const fullSpell = this.actor.items.get(this.object.spell);
+                if(fullSpell) {
+                    resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.total}/${fullSpell.system.cost + (crashed ? 3 : 0)}</h4>`;
+                }
+                if (this.object.spellCast) {
+                    resultString += `<h4 class="dice-total" style="margin-top:5px">Spell Cast</h4>`;
+                }
+            }
         }
         const threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         if (this.object.hasDifficulty) {
@@ -2470,11 +2515,6 @@ export class RollForm extends FormApplication {
                     combat.setInitiative(combatant.id, combatant.initiative + threshholdSuccesses);
                 }
             }
-        }
-        if (this.object.rollType === "sorcery") {
-            const actorData = duplicate(this.actor);
-            actorData.system.sorcery.motes += this.object.total;
-            this.actor.update(actorData);
         }
     }
 
@@ -2675,7 +2715,7 @@ export class RollForm extends FormApplication {
         await this._baseAbilityDieRoll();
         this.object.thereshholdSuccesses = this.object.total - this.object.defense;
         this.object.attackSuccesses = this.object.total;
-        if(this.object.target) {
+        if (this.object.target) {
             this.object.target.rollData.attackSuccesses = this.object.total;
         }
     }
@@ -3353,7 +3393,7 @@ export class RollForm extends FormApplication {
                     await this.object.target.toggleEffect(effect);
                 }
             }
-            if(this.object.deleteEffects) {
+            if (this.object.deleteEffects) {
                 await this.object.target.actor.deleteEmbeddedDocuments('ActiveEffect', this.object.deleteEffects);
             }
         }
@@ -3822,7 +3862,7 @@ export class RollForm extends FormApplication {
                     dicePool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
                 }
                 else if (this.actor.system.pools[this.object.pool]) {
-                    if(this.object.baseAccuracy) {
+                    if (this.object.baseAccuracy) {
                         dicePool = this.object.baseAccuracy;
                     } else {
                         dicePool = this.actor.system.pools[this.object.pool].value;
@@ -4196,6 +4236,9 @@ export class RollForm extends FormApplication {
         if (this.object.shieldInitiative === undefined) {
             this.object.shieldInitiative = 0;
         }
+        if (this.object.spell === undefined) {
+            this.object.spell = "";
+        }
         if (this.object.rollType !== 'base' && this.actor.type === 'npc' && !this.actor.system.pools[this.object.pool]) {
             const findPool = this.actor.actions.find((action) => action.system.oldKey === this.object.pool);
             if (findPool) {
@@ -4206,6 +4249,51 @@ export class RollForm extends FormApplication {
     }
 
     async _updateCharacterResources() {
+        if(this.object.rollType === 'sorcery') {
+            this.object.previousSorceryMotes = this.actor.system.sorcery.motes.value;
+            let actorSorceryMotes = this.actor.system.sorcery.motes.value;
+            let actorSorceryMoteCap = this.actor.system.sorcery.motes.max;
+            let crashed = false;
+            if (game.combat) {
+                let combatant = this._getActorCombatant();
+                if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
+                    crashed = true;
+                }
+            } 
+            actorSorceryMotes += this.object.total;
+            if(this.object.spell) {
+                const activeSpell = this.actor.items?.find(item => item.system?.shaping);
+                if(activeSpell && activeSpell.id !== this.object.spell) {
+                    actorSorceryMotes = this.object.total;
+                    actorSorceryMoteCap = 0;
+                    this.object.previousSorceryMotes = 0;
+                }
+                for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
+                    if(spell.id === this.object.spell) {
+                        await spell.update({[`system.shaping`]: true});
+                        actorSorceryMoteCap = (spell.system.cost + (crashed ? 3: 0));
+                    }
+                    if(spell.system.shaping && spell.id !== this.object.spell) {
+                        await spell.update({[`system.shaping`]: false});
+                    }
+                }
+                if (actorSorceryMoteCap && (actorSorceryMotes >= actorSorceryMoteCap)) {
+                    this.object.spellCast = true;
+                    actorSorceryMotes = 0;
+                    actorSorceryMoteCap = 0;
+                    if (this.object.spell && !crashed) {
+                        this.object.restore.willpower++;
+                    }
+                    for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
+                        await spell.update({[`system.shaping`]: false});
+                    }
+                }
+            }
+            await this.actor.update({
+                [`system.sorcery.motes.value`]: actorSorceryMotes,
+                [`system.sorcery.motes.max`]: actorSorceryMoteCap
+            });
+        }
         const actorData = duplicate(this.actor);
         var newLevel = actorData.system.anima.level;
         var newValue = actorData.system.anima.value;

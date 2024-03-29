@@ -125,7 +125,10 @@
           "min": 0
         },
         "sorcery": {
-          "motes": 0
+          "motes": {
+            "value": 0,
+            "max": 0
+          }
         },
         "grapplecontrolrounds": {
           "value": 0,
@@ -1123,7 +1126,8 @@
       "keywords": "",
       "cost": 0,
       "willpower": 1,
-      "duration": ""
+      "duration": "",
+      "shaping": false
     },
     "intimacy": {
       "templates": [
