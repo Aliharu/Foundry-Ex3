@@ -2788,7 +2788,10 @@ export default class CharacterBuilder extends FormApplication {
           "trigger": ""
         },
         "sorcery": {
-          "motes": 0
+          "motes": {
+            "value": 0,
+            "max": 0
+          }
         },
         "grapplecontrolrounds": {
           "value": 0,

@@ -1327,7 +1327,10 @@ export default class NPCGenerator extends FormApplication {
           "iconic": ""
         },
         "sorcery": {
-          "motes": 0
+          "motes": {
+            "value": 0,
+            "max": 0
+          }
         },
         "savedRolls": {},
         "legendarysize": false,

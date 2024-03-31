@@ -2403,7 +2403,7 @@ export class RollForm extends FormApplication {
                 } 
                 const fullSpell = this.actor.items.get(this.object.spell);
                 if(fullSpell) {
-                    resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.total}/${fullSpell.system.cost + (crashed ? 3 : 0)}</h4>`;
+                    resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.total}/${parseInt(fullSpell.system.cost) + (crashed ? 3 : 0)}</h4>`;
                 }
                 if (this.object.spellCast) {
                     resultString += `<h4 class="dice-total" style="margin-top:5px">Spell Cast</h4>`;
@@ -4275,7 +4275,7 @@ export class RollForm extends FormApplication {
                 for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
                     if(spell.id === this.object.spell) {
                         await spell.update({[`system.shaping`]: true});
-                        actorSorceryMoteCap = (spell.system.cost + (crashed ? 3: 0));
+                        actorSorceryMoteCap = (parseInt(spell.system.cost) + (crashed ? 3: 0));
                     }
                     if(spell.system.shaping && spell.id !== this.object.spell) {
                         await spell.update({[`system.shaping`]: false});

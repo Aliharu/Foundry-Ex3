@@ -908,7 +908,10 @@ export default class TemplateImporter extends FormApplication {
             "iconic": ""
           },
           "sorcery": {
-            "motes": 0
+            "motes": {
+              "value": 0,
+              "max": 0
+            }
           },
           "savedRolls": {},
           "sizecategory": "standard",
@@ -1070,7 +1073,10 @@ export default class TemplateImporter extends FormApplication {
           "iconic": ""
         },
         "sorcery": {
-          "motes": 0
+          "motes": {
+            "value": 0,
+            "max": 0
+          }
         },
         "savedRolls": {},
         "sizecategory": "standard",
