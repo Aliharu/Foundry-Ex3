@@ -124,6 +124,7 @@ exaltedthird.exaltcharmtypes = {
 };
 
 exaltedthird.rolltypes = {
+  attacks: "Ex3.Attacks",
   command: "Ex3.Command",
   craft: "Ex3.Craft",
   disengage: "Ex3.Disengage",
@@ -132,7 +133,8 @@ exaltedthird.rolltypes = {
   readintentions: "Ex3.ReadIntentions",
   rush: "Ex3.Rush",
   social: "Ex3.Social",
-  sorcery: "Ex3.Steady",
+  sorcery: "Ex3.Sorcery",
+  steady: "Ex3.Steady",
 };
 
 exaltedthird.attackrolltypes = {
@@ -709,6 +711,13 @@ exaltedthird.maidenabilities = {
 }
 
 exaltedthird.statusEffects = [
+  {
+    icon: 'systems/exaltedthird/assets/icons/targeting.svg',
+    id: 'aiming',
+    label: 'Ex3.Aiming',
+    name: 'aiming',
+    description: '<p>Character is aiming, can make ranged attacked beyond short range.  Aiming again or at short range gives +3 dice to attack rolls.</p>'
+  },
   {
     icon: 'icons/svg/falling.svg',
     id: 'prone',

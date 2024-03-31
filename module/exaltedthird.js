@@ -1147,7 +1147,7 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migrating data to 2.7.4, please wait`);
     for (let actor of game.actors) {
       try {
-        if(actor.system.sorcery.motes.value === undefined) {
+        if (actor.system.sorcery.motes.value === undefined) {
           await actor.update({
             [`system.sorcery.motes`]: {
               value: actor.system.sorcery.motes,
@@ -1163,9 +1163,9 @@ Hooks.once("ready", async function () {
 
     for (let item of game.items.filter(item => item.type === 'spell')) {
       try {
-          await item.update({
-            [`system.cost`]: parseInt(item.system.cost)
-          });
+        await item.update({
+          [`system.cost`]: parseInt(item.system.cost)
+        });
       } catch (error) {
         error.message = `Failed migration for Item ${item.name}: ${error.message} `;
         console.error(error);
@@ -1871,4 +1871,4 @@ export class ExaltedCombat extends Combat {
     await super.rollInitiative(ids, options);
     return this.update({ turn: null });
   }
-}
+} 

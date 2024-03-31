@@ -215,6 +215,10 @@ export class RollForm extends FormApplication {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
                     }
+                    else if(this.object.rollType === 'working') {
+                        this.object.attribute = this.actor.system.settings.rollsettings['sorcery'].attribute;
+                        this.object.ability = this.actor.system.settings.rollsettings['sorcery'].ability;
+                    }
                     else if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
                         this.object.attribute = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].ability;

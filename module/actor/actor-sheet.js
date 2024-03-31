@@ -1,9 +1,9 @@
-import TraitSelector from "../apps/trait-selector.js";
 import { animaTokenMagic, Prophecy, RollForm } from "../apps/dice-roller.js";
-import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import Importer from "../apps/importer.js";
+import TraitSelector from "../apps/trait-selector.js";
+import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
-import { addDefensePenalty, subtractDefensePenalty, spendEmbeddedItem } from "./actor.js";
+import { addDefensePenalty, spendEmbeddedItem, subtractDefensePenalty } from "./actor.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -1184,11 +1184,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('#rollDice').mousedown(ev => {
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'base',
+        }
+      );
     });
 
     html.find('.rollAbility').mousedown(ev => {
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability' }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'ability',
+        }
+      );
     });
 
     html.find('.prophecy').mousedown(ev => {
@@ -1199,10 +1207,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       var ability = $(ev.target).attr("data-ability");
       if (ability === 'willpower') {
         if (this.actor.type === "npc") {
-          game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
+          this.actor.actionRoll(
+            {
+              rollType: 'ability',
+              pool: 'willpower',
+            }
+          );
         }
         else {
-          game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: 'willpower', attribute: 'none' }).render(true);
+          this.actor.actionRoll(
+            {
+              rollType: 'ability',
+              ability: 'willpower',
+              attribute: 'none'
+            }
+          );
         }
       }
       else {
@@ -1213,17 +1232,32 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.roll-pool').mousedown(ev => {
       var pool = $(ev.target).attr("data-pool");
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: pool }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'ability',
+          pool: pool
+        }
+      );
     });
 
     html.find('.roll-action').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', pool: item.id }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'ability',
+          pool: item.id
+        }
+      );
     });
 
     html.find('.rout-check').mousedown(ev => {
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rout', pool: 'willpower' }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'rout',
+          pool: 'willpower'
+        }
+      );
     });
 
     html.find('.roll-ma').mousedown(ev => {
@@ -1239,76 +1273,84 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.join-battle').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'joinBattle',
+          pool: 'joinbattle'
+        }
+      );
     });
 
     html.find('.accuracy').mousedown(ev => {
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'accuracy' }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'accuracy',
+        }
+      );
     });
 
     html.find('.damage').mousedown(ev => {
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'damage' }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: 'damage',
+        }
+      );
     });
 
     html.find('.rush').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rush', pool: 'movement' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'rush', ability: 'athletics', attribute: 'dexterity' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'rush',
+          pool: 'movement',
+        }
+      );
     });
 
     html.find('.disengage').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'disengage', pool: 'movement' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'disengage', ability: 'dodge', attribute: 'dexterity' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'disengage',
+          pool: 'movement',
+        }
+      );
     });
 
     html.find('.grapple-control').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl', pool: 'grapple' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'grappleControl' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'grappleControl',
+          pool: 'grapple',
+        }
+      );
     });
 
     html.find('.command').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command', pool: 'command' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'command' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'command',
+          pool: 'command',
+        }
+      );
     });
 
     html.find('.steady').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'steady', pool: 'resistance' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'steady' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'steady',
+          pool: 'resistance',
+        }
+      );
     });
 
     html.find('.shape-sorcery').click(ev => {
       ev.preventDefault();
       ev.stopPropagation();
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', ability: 'occult', attribute: 'intelligence' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'sorcery',
+          pool: 'sorcery',
+        }
+      );
     });
 
     html.find('.item-shape').click(ev => {
@@ -1316,12 +1358,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       ev.stopPropagation();
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', pool: 'sorcery', spell: li.data("item-id") }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'sorcery', ability: 'occult', attribute: 'intelligence', spell: li.data("item-id") }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'sorcery',
+          pool: 'sorcery',
+          spell: li.data("item-id")
+        }
+      );
     });
 
     html.find('.item-stop-shape').click(ev => {
@@ -1339,21 +1382,44 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.read-intentions').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'readIntentions', pool: 'readintentions' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'readIntentions', ability: 'socialize', attribute: 'perception' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'readIntentions',
+          pool: 'readintentions'
+        }
+      );
     });
 
     html.find('.social-influence').mousedown(ev => {
-      if (this.actor.type === "npc") {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', pool: 'social' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'social', ability: 'socialize', attribute: 'charisma' }).render(true);
-      }
+      this.actor.actionRoll(
+        {
+          rollType: 'social',
+          pool: 'social'
+        }
+      );
+    });
+
+    html.find('.craft-project').click(ev => {
+      var type = $(ev.target).attr("data-type");
+
+      this.actor.actionRoll(
+        { rollType: 'craft', ability: "craft", craftType: type, craftRating: 2 }
+      );
+    });
+
+    html.find('.craft-simple-project').click(ev => {
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+
+      this.actor.actionRoll(
+        { rollType: 'simpleCraft', ability: "craft", craftProjectId: item?.id, difficulty: item?.system.difficulty }
+      );
+    });
+
+    html.find('.sorcerous-working').click(ev => {
+      this.actor.actionRoll(
+        { rollType: 'working', pool: "sorcery" }
+      );
     });
 
     html.find('#import-stuff').mousedown(async ev => {
@@ -1363,14 +1429,25 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.weapon-roll').click(ev => {
       let item = this.actor.items.get($(ev.target).attr("data-item-id"));
       let rollType = $(ev.target).attr("data-roll-type");
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
+
+      this.actor.actionRoll(
+        {
+          rollType: rollType,
+          weapon: item.system
+        }
+      );
     });
 
     html.find('.weapon-icon').click(ev => {
       ev.stopPropagation();
       let item = this.actor.items.get($(ev.target.parentElement).attr("data-item-id"));
       let rollType = $(ev.target.parentElement).attr("data-roll-type");
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: rollType, weapon: item.system }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: rollType,
+          weapon: item.system
+        }
+      );
     });
 
     html.find('#anima-up').click(ev => {
@@ -1427,27 +1504,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       let li = $(ev.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
       this._displayCard(item);
-    });
-
-    html.find('.craft-project').click(ev => {
-      var type = $(ev.target).attr("data-type");
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: type, craftRating: 2 }).render(true);
-    });
-
-    html.find('.craft-simple-project').click(ev => {
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-
-      new RollForm(this.actor, { event: ev }, {}, { rollType: 'simpleCraft', ability: "craft", craftProjectId: item?.id, difficulty: item?.system.difficulty }).render(true);
-    });
-
-    html.find('.sorcerous-working').click(ev => {
-      if (this.actor.type === "npc") {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'working', pool: "sorcery" }).render(true);
-      }
-      else {
-        new RollForm(this.actor, { event: ev }, {}, { rollType: 'working', ability: "occult", attribute: 'intelligence' }).render(true);
-      }
     });
 
     html.find('.item-complete').click(ev => {
@@ -2555,35 +2611,35 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 * @param {boolean} createMessage   Whether to automatically create a ChatMessage entity (if true), or only return
 *                                  the prepared message data (if false)
 */
-  async _displayCard(item, cardType = "") {
-    const token = this.actor.token;
-    if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
-      if (item.system.active) {
-        cardType = "Deactivate";
-      }
-      else {
-        cardType = "Activate";
-      }
+async _displayCard(item, cardType = "") {
+  const token = this.actor.token
+  if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
+    if (item.system.active) {
+      cardType = "Deactivate";
     }
-    const templateData = {
-      actor: this.actor,
-      tokenId: token?.uuid || null,
-      item: item,
-      labels: this.labels,
-      cardType: cardType,
-    };
-    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
-
-    // Create the ChatMessage data object
-    const chatData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: html,
-      speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
-    };
-    // Create the Chat Message or return its data
-    return ChatMessage.create(chatData);
+    else {
+      cardType = "Activate";
+    }
   }
+  const templateData = {
+    actor: this.actor,
+    tokenId: token?.uuid || null,
+    item: item,
+    labels: this.labels,
+    cardType: cardType,
+  };
+  const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+
+  // Create the ChatMessage data object
+  const chatData = {
+    user: game.user.id,
+    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+    content: html,
+    speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
+  };
+  // Create the Chat Message or return its data
+  return ChatMessage.create(chatData);
+}
 
   _addOpposingCharm(event) {
     event.preventDefault();
