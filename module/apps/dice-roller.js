@@ -434,13 +434,15 @@ export class RollForm extends FormApplication {
             this.object.motePool = this.actor.system?.settings?.charmmotepool || 'peripheral';
             this.object.spells = this.actor.items.filter(item => item.type === 'spell' && item.system.cost);
             if (data.rollType === 'sorcery') {
+                const activeSpell = this.object.spells.find(spell => spell.system.shaping);
                 if (data.spell) {
                     const fullSpell = this.actor.items.get(data.spell);
+                    if(!activeSpell || activeSpell.id !== data.spell) {
+                        this.object.cost.willpower += parseInt(fullSpell.system.willpower);
+                    }
                     this.object.spell = data.spell;
-                    this.object.cost.willpower += parseInt(fullSpell.system.willpower);
                 }
                 else {
-                    const activeSpell = this.object.spells.find(spell => spell.system.shaping);
                     if(activeSpell) {
                         this.object.spell = activeSpell.id;
                     }
