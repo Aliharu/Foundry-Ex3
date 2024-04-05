@@ -74,6 +74,13 @@ export default class CharacterBuilder extends FormApplication {
             source: "",
             value: 0,
           },
+          maidenCharms: {
+            journeys: 0,
+            serenity: 0,
+            battles: 0,
+            secrets: 0,
+            endings: 0,
+          },
           showAttributeCharms: true,
           showAbilityCharms: true,
           attributes: {
@@ -1344,6 +1351,14 @@ export default class CharacterBuilder extends FormApplication {
     ]
 
     this.object.oxBodyEnabled = (oxBodyAvailable.includes(this.object.character.exalt) || oxBodyAvailable.includes(this.object.character.exigent));
+
+    this.object.character.maidenCharms = {
+      journeys: this._getMaidenCharmsNumber('journeys'),
+      serenity: this._getMaidenCharmsNumber('serenity'),
+      battles: this._getMaidenCharmsNumber('battles'),
+      secrets: this._getMaidenCharmsNumber('secrets'),
+      endings: this._getMaidenCharmsNumber('endings'),
+    }
 
     this._calculateSpentExperience(ev);
 

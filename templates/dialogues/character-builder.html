@@ -677,6 +677,14 @@
             </div>
           </li>
           {{/each}}
+          {{#ifEquals data.character.exalt 'sidereal'}}
+          <li>
+            <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{data.character.maidenCharms.journeys}}, {{localize
+              "Ex3.Serenity"}}:
+              {{data.character.maidenCharms.serenity}}, {{localize "Ex3.Battles"}}: {{data.character.maidenCharms.battles}}, {{localize
+              "Ex3.Secrets"}}: {{data.character.maidenCharms.secrets}}, {{localize "Ex3.Endings"}}: {{data.character.maidenCharms.endings}}
+          </li>
+          {{/ifEquals}}
         </ol>
         <div class="resource-content flexrow flex-center flex-between mt-2">
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Evocations"}}

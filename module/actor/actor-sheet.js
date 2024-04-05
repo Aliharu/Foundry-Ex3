@@ -368,6 +368,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       nonFavoredCharms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
     }
 
+    sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
+
     var totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - sheetData.system.charcreation.available.charms));
     var totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, sheetData.system.charcreation.available.charms - nonFavoredCharms)));
 
@@ -384,7 +386,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     sheetData.system.charcreation.spent.experience += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
     sheetData.system.charcreation.spent.experience += (favoredBPBelowThree * 4) + (nonfavoredBPBelowThree * 5);
     sheetData.system.charcreation.spent.experience += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);
-    sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
     sheetData.system.charcreation.spent.experience += totalNonFavoredCharms * 12;
     sheetData.system.charcreation.spent.experience += totalFavoredCharms * 10;
     sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.willpower.max - sheetData.system.charcreation.available.willpower))) * 6;
