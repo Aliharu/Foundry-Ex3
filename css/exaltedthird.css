@@ -503,6 +503,26 @@
   background-size: cover;
 }
 
+.exigent-background .window-content {
+  background: url("../assets/backgrounds/exigent-background.jpg");
+  background-size: cover;
+}
+
+.janest-background .window-content {
+  background: url("../assets/backgrounds/janest-background.jpg");
+  background-size: cover;
+}
+
+.puppeteer-background .window-content {
+  background: url("../assets/backgrounds/puppeteer-background.jpg");
+  background-size: cover;
+}
+
+.sovereign-background .window-content {
+  background: url("../assets/backgrounds/sovereign-background.jpg");
+  background-size: cover;
+}
+
 .tree-background .window-content {
   background: url("../assets/backgrounds/tree-background.jpg");
   background-size: cover;

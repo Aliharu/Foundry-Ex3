@@ -161,6 +161,13 @@
             <input type="number" name="system.settings.attackrollsettings.{{key}}.damage" value="{{roll.damage}}"
                 data-dtype="Number" />
         </div>
+        {{#ifEquals key 'withering'}}
+        <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
+            <input type="number" name="system.settings.attackrollsettings.{{key}}.overwhelming" value="{{roll.overwhelming}}"
+                data-dtype="Number" />
+        </div>
+        {{/ifEquals}}
     </div>
     {{/each}}
 </div>

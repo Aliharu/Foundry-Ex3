@@ -16,11 +16,14 @@ export function registerSettings() {
         default: "solar",
         type: String,
         choices: {
-            "solar": "Ex3.Solar",
-            "lunar": "Ex3.Lunar",
             "db": "Ex3.Dragonblooded",
-            "tree": "Ex3.Tree",
+            "janest": "Ex3.Janest",
             "leaves": "Ex3.Leaves",
+            "lunar": "Ex3.Lunar",
+            "puppeteer": "Ex3.Puppeteer",
+            "solar": "Ex3.Solar",
+            "sovereign": "Ex3.Sovereign",
+            "tree": "Ex3.Tree",
         },
         onChange: (choice) => {
             window.location.reload();

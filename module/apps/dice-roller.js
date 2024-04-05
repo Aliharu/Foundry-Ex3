@@ -244,6 +244,7 @@ export class RollForm extends FormApplication {
                     if (this.actor.system.settings.attackrollsettings[this.object.attackType]) {
                         this.object.diceModifier += this.actor.system.settings.attackrollsettings[this.object.attackType].bonus;
                         this.object.damage.damageDice += this.actor.system.settings.attackrollsettings[this.object.attackType].damage;
+                        this.object.overwhelming += (this.actor.system.settings.attackrollsettings[this.object.attackType]?.overwhelming || 0);
                     }
                 }
                 else if (this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()]) {
@@ -297,7 +298,7 @@ export class RollForm extends FormApplication {
                     if (this.object.weaponTags["improvised"]) {
                         this.object.cost.initiative += 1;
                     }
-                    this.object.overwhelming = data.weapon.overwhelming || 0;
+                    this.object.overwhelming += (data.weapon.overwhelming || 0);
                     this.object.weaponType = data.weapon.weapontype || "melee";
                     this.object.attackEffectPreset = data.weapon.attackeffectpreset || "none";
                     this.object.attackEffect = data.weapon.attackeffect || "";

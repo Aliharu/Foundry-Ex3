@@ -307,6 +307,9 @@
     "Ex3.SorcerousInitiation": "Sorcerous Initiation",
     "Ex3.Ritual": "Ritual",
     "Ex3.Merits": "Merits",
+    "Ex3.BonusMerits": "Bonus Merits",
+    "Ex3.BonusMeritSource": "Bonus Merit Source",
+
     "Ex3.Destiny": "Destiny",
     "Ex3.Shape": "Shape",
     "Ex3.LunarShapes": "Lunar Shapes",
@@ -854,14 +857,15 @@
 
     "Ex3.Appearance(NPC)": "Appearance (NPC Only)",
     "Ex3.Command(NPC)": "Command (NPC Only)",
-    "Ex3.GrappleControl(NPC)": "Grapple Control (NPC Only)",
+    "Ex3.GrappleControl(NPC)": "Grapple Control (NPC Only)", 
     "Ex3.Movement(NPC)": "Movement (NPC Only)",
     "Ex3.JoinBattle(NPC)": "Join Battle (NPC Only)",
     "Ex3.ReadIntentions(NPC)": "Read Intentions (NPC Only)",
     "Ex3.SocialInfluence(NPC)": "Social Influence (NPC Only)",
     "Ex3.Social(NPC)": "Social (NPC Only)",
     "Ex3.Sorcery(NPC)": "Sorcery (NPC Only)",
-
+    "Ex3.Resistance(NPC)": "Resistance (NPC Only)",
+    
     "Ex3.Poison": "Poison",
     "Ex3.PoisonRoundTrigger": "Poison (Triggers End of Round)",
 

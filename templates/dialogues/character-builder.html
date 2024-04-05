@@ -589,6 +589,16 @@
           <a class="item-control import-item" title="Import merit" data-type="merits" data-item="merit"><i
               class="fas fa-edit"></i></a>
         </div>
+        <div class="resource grid grid-2col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.BonusMerits"}}</div>
+            <input name="object.character.bonusMerits.value" type="number" value="{{data.character.bonusMerits.value}}" />
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.BonusMeritSource"}}</div>
+            <input name="object.character.bonusMerits.source" type="text" value="{{data.character.bonusMerits.source}}" />
+          </div>
+        </div>
         <div class="resource grid grid-3col">
           {{#each data.character.merits as |merit index|}}
           <div>

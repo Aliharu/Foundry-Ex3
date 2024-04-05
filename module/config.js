@@ -67,6 +67,7 @@ exaltedthird.activeEffectChanges = {
   "system.settings.rollsettings.attackrollsettings.withering.damage": "Ex3.WitheringAttackDamage",
   "system.settings.rollsettings.attackrollsettings.decisive.damage": "Ex3.DecisiveAttackDamage",
   "system.settings.rollsettings.attackrollsettings.gambit.damage": "Ex3.GambitInitiative",
+  "system.settings.rollsettings.attackrollsettings.withering.overwhelming": "Ex3.Overwhelming",
   "system.settings.rollsettings.command.bonus": "Ex3.Command",
   "system.settings.rollsettings.craft.bonus": "Ex3.Craft",
   "system.settings.rollsettings.disengage.bonus": "Ex3.Disengage",
