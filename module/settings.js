@@ -17,6 +17,7 @@ export function registerSettings() {
         type: String,
         choices: {
             "db": "Ex3.Dragonblooded",
+            "exigent": "Ex3.Exigent",
             "janest": "Ex3.Janest",
             "leaves": "Ex3.Leaves",
             "lunar": "Ex3.Lunar",
