@@ -889,7 +889,7 @@
                             title="Create bonus" data-type="dicerollertriggers" data-subtype="bonuses" data-index="{{index}}"><i
                                 class="fas fa-plus"></i></a></label>
                 </div>
-                <div class="grid grid-2col flex-center">
+                <div class="grid grid-3col flex-center">
                     {{#each trigger.bonuses as |bonus bonusIndex|}}
                     <div>
                         <div class="resource-label">{{localize "Ex3.Effect"}}</div>
@@ -904,24 +904,11 @@
                         </select>
                     </div>
                     <div>
-                        <div class="resource-label">{{localize "Ex3.ValueType"}}</div>
-                        <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.valueType"
-                            data-type="String">
-                            {{#select bonus.valueType}}
-                            <option value="">{{localize "Ex3.None"}}</option>
-                            <option value="threshholdSuccesses">{{localize "Ex3.ThreshholdSuccesses"}}</option>
-                            <option value="formulaValue">{{localize "Ex3.FormulaValue"}}</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                    {{#ifEquals bonus.valueType 'formulaValue'}}
-                    <div>
-                        <div class="resource-label">{{localize "Ex3.FormulaValue"}}* <a><i
+                        <div class="resource-label">{{localize "Ex3.Value"}}* <a><i
                             class="formula-help fas fa-info-circle"></i></label></a></div>
                         <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                             value="{{bonus.value}}" type="text">
                     </div>
-                    {{/ifEquals}}
                     <div>
                         <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
                             data-index="{{index}}" data-subindex="{{bonusIndex}}" data-subtype="bonuses"><i class="fas fa-trash"></i></a>
@@ -933,7 +920,7 @@
                             title="Create restriction" data-type="dicerollertriggers" data-subtype="restrictions" data-index="{{index}}"><i
                                 class="fas fa-plus"></i></a></label>
                 </div>
-                <div class="grid grid-2col flex-center">
+                <div class="grid grid-3col flex-center">
                     {{#each trigger.restrictions as |restriction restrictionIndex|}}
                     <div>
                         <div class="resource-label">{{localize "Ex3.Effect"}}</div>
@@ -946,6 +933,12 @@
                             </optgroup>
                             {{/select}}
                         </select>
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.Value"}}<a><i
+                            class="formula-help fas fa-info-circle"></i></label></a></div>
+                        <input name="system.triggers.dicerollertriggers.{{index}}.restrictions.{{restrictionIndex}}.value"
+                            value="{{bonus.value}}" type="text">
                     </div>
                     <div>
                         <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"

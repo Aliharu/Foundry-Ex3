@@ -242,12 +242,12 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       if(subType === 'bonuses') {
         newList[indexAdd] = {
           effect: "addDice",
-          valueType: "",
-          value: "0",
+          value: "",
         };
       }
       else {
         newList[indexAdd] = {
+          restriction: "",
           value: "",
         };
       }
