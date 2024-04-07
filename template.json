@@ -125,7 +125,10 @@
           "min": 0
         },
         "sorcery": {
-          "motes": 0
+          "motes": {
+            "value": 0,
+            "max": 0
+          }
         },
         "grapplecontrolrounds": {
           "value": 0,
@@ -269,13 +272,15 @@
           "attackrollsettings": {
             "withering": {
               "bonus": 0,
-              "damage": 0
+              "damage": 0,
+              "overwhelming": 0
             },
             "decisive": {
               "bonus": 0,
               "damage": 0
             },
             "gambit": {
+              "bonus": 0,
               "damage": 0
             }
           },
@@ -1126,7 +1131,8 @@
       "keywords": "",
       "cost": 0,
       "willpower": 1,
-      "duration": ""
+      "duration": "",
+      "shaping": false
     },
     "intimacy": {
       "templates": [

@@ -67,6 +67,7 @@ exaltedthird.activeEffectChanges = {
   "system.settings.rollsettings.attackrollsettings.withering.damage": "Ex3.WitheringAttackDamage",
   "system.settings.rollsettings.attackrollsettings.decisive.damage": "Ex3.DecisiveAttackDamage",
   "system.settings.rollsettings.attackrollsettings.gambit.damage": "Ex3.GambitInitiative",
+  "system.settings.rollsettings.attackrollsettings.withering.overwhelming": "Ex3.Overwhelming",
   "system.settings.rollsettings.command.bonus": "Ex3.Command",
   "system.settings.rollsettings.craft.bonus": "Ex3.Craft",
   "system.settings.rollsettings.disengage.bonus": "Ex3.Disengage",
@@ -124,6 +125,7 @@ exaltedthird.exaltcharmtypes = {
 };
 
 exaltedthird.rolltypes = {
+  attacks: "Ex3.Attacks",
   command: "Ex3.Command",
   craft: "Ex3.Craft",
   disengage: "Ex3.Disengage",
@@ -132,7 +134,8 @@ exaltedthird.rolltypes = {
   readintentions: "Ex3.ReadIntentions",
   rush: "Ex3.Rush",
   social: "Ex3.Social",
-  sorcery: "Ex3.Steady",
+  sorcery: "Ex3.Sorcery",
+  steady: "Ex3.Steady",
 };
 
 exaltedthird.attackrolltypes = {
@@ -261,6 +264,34 @@ exaltedthird.abilities = {
   thrown: 'Ex3.Thrown',
   war: 'Ex3.War',
 };
+
+exaltedthird.abilitiesList = [
+  'archery',
+  'athletics',
+  'awareness',
+  'brawl',
+  'bureaucracy',
+  'craft',
+  'dodge',
+  'integrity',
+  'investigation',
+  'larceny',
+  'linguistics',
+  'lore',
+  'medicine',
+  'melee',
+  'occult',
+  'performance',
+  'presence',
+  'resistance',
+  'ride',
+  'sail',
+  'socialize',
+  'stealth',
+  'survival',
+  'thrown',
+  'war',
+];
 
 exaltedthird.npcpools = {
   command: 'Ex3.Command',
@@ -662,113 +693,145 @@ exaltedthird.casteabilitiesmap = {
   ],
 };
 
+exaltedthird.maidenabilities = {
+  'journeys': [
+    'resistance', 'ride', 'sail', 'survival', 'thrown', 'journeys'
+  ],
+  'serenity': [
+    'craft', 'dodge', 'linguistics', 'performance', 'socialize', 'serenity'
+  ],
+  'battles': [
+    'archery', 'brawl', 'melee', 'presence', 'war', 'battles'
+  ],
+  'secrets': [
+    'investigation', 'larceny', 'lore', 'occult', 'stealth', 'secrets'
+  ],
+  'endings': [
+    'athletics', 'awareness', 'bureaucracy', 'integrity', 'medicine', 'endings'
+  ],
+}
+
 exaltedthird.statusEffects = [
+  {
+    icon: 'systems/exaltedthird/assets/icons/targeting.svg',
+    id: 'aiming',
+    label: 'Ex3.Aiming',
+    name: 'aiming',
+    description: '<p>Character is aiming, can make ranged attacked beyond short range.  Aiming again or at short range gives +3 dice to attack rolls.</p>'
+  },
   {
     icon: 'icons/svg/falling.svg',
     id: 'prone',
     label: 'Ex3.Prone',
-    name: 'prone'
+    name: 'prone',
+    description: '<p>Character suffers a -3 penalty to attack rolls, -1 to Parry, and -2 to Evasion</p>'
   },
   {
     icon: 'icons/svg/ruins.svg',
     id: 'lightcover',
     label: 'Ex3.LightCover',
-    name: 'lightcover'
+    name: 'lightcover',
+    description: "<p>Character is behind light cover, Character adds +1 to Defense</p>"
   },
   {
     icon: 'icons/svg/castle.svg',
     id: 'heavycover',
     label: 'Ex3.HeavyCover',
-    name: 'heavycover'
+    name: 'heavycover',
+    description: "<p>Character is behind heavy cover, +2 to Defense</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/brick-wall.svg',
     id: 'fullcover',
     label: 'Ex3.FullCover',
-    name: 'fullcover'
+    name: 'fullcover',
+    description: "<p>Character cannot be targeted, if a opponent has an ability to target her anyway add +3 to Defense</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/grab.svg',
     id: 'grappled',
     label: 'Ex3.Grappled',
-    name: 'grappled'
+    name: 'grappled',
+    description: "<p>Character is grapped by an opponent, -2 to Defense and -1 die to attack rolls</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/shaking-hands.svg',
     id: 'grappling',
     label: 'Ex3.Grappling',
-    name: 'grappling'
+    name: 'grappling',
+    description: "<p>Character has initiated a grapple, -2 to Defense</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/drop-weapon.svg',
     id: 'disarmed',
     label: 'Ex3.Disarmed',
-    name: 'disarmed'
+    name: 'disarmed',
   },
   {
     icon: 'icons/svg/shield.svg',
     id: 'fulldefense',
     label: 'Ex3.FullDefense',
-    name: 'fulldefense'
+    name: 'fulldefense',
+    description: "<p>Character has taken the Full Defense action, +2 to Defense</p>"
   },
   {
     icon: 'icons/svg/daze.svg',
     id: 'surprised',
     label: 'Ex3.Surprised',
-    name: 'surprised'
+    name: 'surprised',
+    description: "<p>Character is suprised, -2 Defense</p>"
   },
   {
     icon: 'icons/svg/blood.svg',
     id: 'bleeding',
     label: 'EFFECT.StatusBleeding',
-    name: 'bleeding'
+    name: 'bleeding',
+    description: ""
   },
   {
     icon: 'icons/svg/poison.svg',
     id: 'poisoned',
     label: 'EFFECT.StatusPoison',
-    name: 'poisoned'
+    name: 'poisoned',
   },
   {
     icon: 'icons/svg/fire.svg',
     id: 'burning',
     label: 'EFFECT.StatusBurning',
-    name: 'burning'
+    name: 'burning',
   },
   {
     icon: 'icons/svg/invisible.svg',
     id: 'dematerialized',
     label: 'Ex3.Dematerialized',
-    name: 'dematerialized'
+    name: 'dematerialized',
+    description: "<p>Character is dematerialized, cannot be attacked without special techniques or magic.</p>"
   },
   {
     icon: 'icons/svg/blind.svg',
     id: 'blind',
     label: 'EFFECT.StatusBlind',
-    name: 'blind'
-  },
-  {
-    icon: 'icons/svg/blind.svg',
-    id: 'blind',
-    label: 'EFFECT.StatusBlind',
-    name: 'blind'
+    name: 'blind',
+    description: "<p>Character is blinded, -3 Dice to all rolls</p>"
   },
   {
     icon: 'icons/svg/paralysis.svg',
     id: 'paralyzed',
     label: 'Ex3.Paralyzed',
-    name: 'paralyzed'
+    name: 'paralyzed',
   },
   {
     icon: 'systems/exaltedthird/assets/icons/cobweb.svg',
     id: 'entangled',
     label: 'Ex3.Entangled',
-    name: 'entangled'
+    name: 'entangled',
+    description: "<p>Character is entangled, +1 Mobility Penalty.</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/horse-head.svg',
     id: 'mounted',
     label: 'Ex3.Mounted',
+    description: "<p>Character is mounted, +1 Defense and +1 die to attack rolls unless attacker has the reaching tag.</p>"
   },
   {
     icon: 'systems/exaltedthird/assets/icons/hidden.svg',
@@ -1099,3 +1162,11 @@ exaltedthird.artifactArmorStats = {
     penalty: 2,
   },
 };
+
+exaltedthird.maidens = [
+  "journeys",
+  "serenity",
+  "battles",
+  "secrets",
+  "endings"
+];

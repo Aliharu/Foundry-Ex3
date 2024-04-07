@@ -440,8 +440,8 @@
 
 .exaltedthird .items-list .item-controls {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 86px;
-  flex: 0 0 86px;
+  -ms-flex: 0 0 107px;
+  flex: 0 0 107px;
   text-align: right;
 }
 
@@ -500,6 +500,26 @@
 
 .db-background .window-content {
   background: url("../assets/backgrounds/db-background.jpg");
+  background-size: cover;
+}
+
+.exigent-background .window-content {
+  background: url("../assets/backgrounds/exigent-background.jpg");
+  background-size: cover;
+}
+
+.janest-background .window-content {
+  background: url("../assets/backgrounds/janest-background.jpg");
+  background-size: cover;
+}
+
+.puppeteer-background .window-content {
+  background: url("../assets/backgrounds/puppeteer-background.jpg");
+  background-size: cover;
+}
+
+.sovereign-background .window-content {
+  background: url("../assets/backgrounds/sovereign-background.jpg");
   background-size: cover;
 }
 

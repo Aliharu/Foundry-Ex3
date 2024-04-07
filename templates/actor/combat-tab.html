@@ -164,7 +164,11 @@
         <div class="grid grid-3col flex-group-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
-                <input type="number" name="system.sorcery.motes" value="{{system.sorcery.motes}}" data-dtype="Number" />
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="number" name="system.sorcery.motes.value" value="{{system.sorcery.motes.value}}" data-dtype="Number" />
+                    /
+                    <input type="number" name="system.sorcery.motes.max" value="{{system.sorcery.motes.max}}" data-dtype="Number" />
+                </div>
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
@@ -177,6 +181,11 @@
                     "Ex3.Roll"}}</button>
             </div>
         </div>
+        {{#if activeSpell}}
+        <div class="mb-1">
+            <b>{{localize "Ex3.ShapingSpell"}}:</b> {{activeSpell.name}}
+        </div>
+        {{/if}}
         {{/if}}
         {{#if system.battlegroup}}
         <div class="grid grid-5col flex-group-center">

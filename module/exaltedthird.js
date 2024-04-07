@@ -1147,8 +1147,69 @@ Hooks.once("ready", async function () {
       }
     }
     ui.notifications.notify(`Migration Complete`);
+  }
+
+  if (isNewerVersion("2.7.4", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.7.4, please wait`);
+    for (let actor of game.actors) {
+      try {
+        if (actor.system.sorcery.motes.value === undefined) {
+          await actor.update({
+            [`system.sorcery.motes`]: {
+              value: actor.system.sorcery.motes,
+              max: 0,
+            }
+          });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+
+    for (let item of game.items.filter(item => item.type === 'spell')) {
+      try {
+        await item.update({
+          [`system.cost`]: parseInt(item.system.cost)
+        });
+      } catch (error) {
+        error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+    ui.notifications.notify(`Migration Complete`);
+  }
+
+  if (isNewerVersion("2.7.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 2.7.5, please wait`);
+    for (let actor of game.actors) {
+      try {
+        for (let item of actor.items.filter(item => item.type === 'spell')) {
+          try {
+            await item.update({
+              [`system.cost`]: parseInt(item.system.cost)
+            });
+          } catch (error) {
+            error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+
+    ui.notifications.notify(`Migration Complete`);
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   }
+
+  // for(const item of game.items.filter(item => item.type === 'charm' && item.folder?.name && item.system.charmtype === 'martialarts')) {
+  //   const martialArt = game.items.filter(ma => ma.type === 'customability' && ma.name === item.folder?.name)[0];
+  //   if(martialArt) {
+  //     item.update({[`system.parentitemid`]: martialArt.id});
+  //   }
+  // }
 
   // for(const item of game.items.filter(item => item.type === 'ritual' || (item.type === 'merit' && item.system.merittype === 'sorcery'))) {
   //   if(item.folder?.name && !item.system.archetypename) {
@@ -1528,12 +1589,12 @@ function applyWitheringDamage(message) {
         localize: true,
       });
     }
-    else if (!combatant?.initiative) {
+    else if (combatant.initiative === null) {
       ui.notifications.warn('Ex3.CombatantHasNoInitiative', {
         localize: true,
       });
     }
-    if (combatant?.initiative) {
+    if (combatant && combatant.initiative !== null) {
       var initiativeDamage = message?.flags?.exaltedthird?.damage?.total;
       if (actor.type !== 'npc' || actor.system.battlegroup === false) {
         if (game.settings.get("exaltedthird", "useShieldInitiative") && actor.system.newShieldInitiative.value > 0) {
@@ -1577,12 +1638,12 @@ function gainAttackInitiative(message) {
         localize: true,
       });
     }
-    else if (!combatant?.initiative) {
+    else if (combatant.initiative === null) {
       ui.notifications.warn('Ex3.CombatantHasNoInitiative', {
         localize: true,
       });
     }
-    if (combatant?.initiative) {
+    if (combatant && combatant.initiative !== null) {
       game.combat.setInitiative(combatant.id, combatant.initiative + message?.flags?.exaltedthird?.damage?.gainedInitiative);
     }
   }
@@ -1810,12 +1871,12 @@ export class ExaltedCombat extends Combat {
   async rollInitiative(ids, formulaopt, updateTurnopt, messageOptionsopt) {
     const combatant = this.combatants.get(ids[0]);
     if (combatant.token.actor) {
-      if (combatant.token.actor.type === "npc") {
-        game.rollForm = new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', pool: 'joinbattle' }).render(true);
-      }
-      else {
-        game.rollForm = new RollForm(combatant.token.actor, {}, {}, { rollType: 'joinBattle', ability: 'awareness', attribute: 'wits' }).render(true);
-      }
+      combatant.token.actor.actionRoll(
+        {
+          rollType: 'joinBattle',
+          pool: 'joinbattle'
+        }
+      );
     }
     else {
       super.rollInitiative(ids, formulaopt, updateTurnopt, messageOptionsopt);
@@ -1839,4 +1900,4 @@ export class ExaltedCombat extends Combat {
     await super.rollInitiative(ids, options);
     return this.update({ turn: null });
   }
-}
+} 

@@ -96,11 +96,11 @@
         {{#ifEquals data.character.exalt 'lunar'}}
         <div>
           <div class="resource-label">{{localize "Ex3.SpiritShape"}}</div>
-          <input name="object.character.spiritShape" type="number" value="{{data.character.spiritShape}}" />
+          <input name="object.character.spiritShape" type="text" value="{{data.character.spiritShape}}" />
         </div>
         <div>
           <div class="resource-label">{{localize "Ex3.Tell"}}</div>
-          <input name="object.character.tell" type="number" value="{{data.character.tell}}" />
+          <input name="object.character.tell" type="text" value="{{data.character.tell}}" />
         </div>
         {{/ifEquals}}
         {{#ifEquals data.character.exalt 'sidereal'}}
@@ -386,6 +386,8 @@
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
                 <h4 class="item-name">{{item.name}}</h4>
+                <div class="item-image"><a class="item-control delete-sublist-charm" title="Delete" data-type="attributes" data-sublistkey="{{key}}" data-index="{{index}}"><i
+                  class="fas fa-trash"></i></a></div>
               </li>
               <li class="item-description" style="text-align: start;">
                 <div>
@@ -470,7 +472,10 @@
               <li class="item flexrow item-row" data-item-id="{{item._id}}">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
-                <h4 class="item-name">{{item.name}}</h4>
+                <h4 class="item-name">{{item.name}}
+                </h4>
+                <div class="item-image"><a class="item-control delete-sublist-charm" title="Delete" data-type="abilities" data-sublistkey="{{key}}" data-index="{{index}}"><i
+                  class="fas fa-trash"></i></a></div>
               </li>
               <li class="item-description" style="text-align: start;">
                 <div>
@@ -584,6 +589,16 @@
           <a class="item-control import-item" title="Import merit" data-type="merits" data-item="merit"><i
               class="fas fa-edit"></i></a>
         </div>
+        <div class="resource grid grid-2col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.BonusMerits"}}</div>
+            <input name="object.character.bonusMerits.value" type="number" value="{{data.character.bonusMerits.value}}" />
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.BonusMeritSource"}}</div>
+            <input name="object.character.bonusMerits.source" type="text" value="{{data.character.bonusMerits.source}}" />
+          </div>
+        </div>
         <div class="resource grid grid-3col">
           {{#each data.character.merits as |merit index|}}
           <div>
@@ -662,6 +677,14 @@
             </div>
           </li>
           {{/each}}
+          {{#ifEquals data.character.exalt 'sidereal'}}
+          <li>
+            <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{data.character.maidenCharms.journeys}}, {{localize
+              "Ex3.Serenity"}}:
+              {{data.character.maidenCharms.serenity}}, {{localize "Ex3.Battles"}}: {{data.character.maidenCharms.battles}}, {{localize
+              "Ex3.Secrets"}}: {{data.character.maidenCharms.secrets}}, {{localize "Ex3.Endings"}}: {{data.character.maidenCharms.endings}}
+          </li>
+          {{/ifEquals}}
         </ol>
         <div class="resource-content flexrow flex-center flex-between mt-2">
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Evocations"}}

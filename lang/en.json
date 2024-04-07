@@ -169,6 +169,9 @@
     "Ex3.Tracking": "Tracking",
     "Ex3.Combat": "Combat",
     "Ex3.AnyCombatAbility": "Any Combat Ability",
+    "Ex3.PhysicalAttribute": "Physical Attribute",
+    "Ex3.MentalAttribute": "Mental Attributes",
+    "Ex3.SocialAttribute": "Social Attribute",
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
     "Ex3.TargetDefensePenalty": "Target Defense Penalty",
@@ -308,6 +311,9 @@
     "Ex3.SorcerousInitiation": "Sorcerous Initiation",
     "Ex3.Ritual": "Ritual",
     "Ex3.Merits": "Merits",
+    "Ex3.BonusMerits": "Bonus Merits",
+    "Ex3.BonusMeritSource": "Bonus Merit Source",
+
     "Ex3.Destiny": "Destiny",
     "Ex3.Shape": "Shape",
     "Ex3.LunarShapes": "Lunar Shapes",
@@ -531,6 +537,17 @@
     "Ex3.Prone": "Prone",
     "Ex3.LightCover": "Light Cover",
     "Ex3.HeavyCover": "Heavy Cover",
+
+    "Ex3.TakeCover": "Take Cover",
+    "Ex3.RiseFromProne": "Rise From Prone",
+    "Ex3.Opposed": "Opposed",
+    "Ex3.Influence": "Influence",
+    "Ex3.DefendOther": "Defend Other",
+    "Ex3.Miscellaneous": "Miscellaneous",
+    "Ex3.Misc": "Misc",
+    "Ex3.EstablishSurprise": "Establish Surprise",
+    "Ex3.Delay": "Delay",
+
     "Ex3.FullCover": "Full Cover",
     "Ex3.Grapple": "Grapple",
     "Ex3.Unhorse": "Unhorse",
@@ -580,6 +597,7 @@
     "Ex3.Conditions": "Conditions",
     "Ex3.Disarmed": "Disarmed",
     "Ex3.FullDefense": "Full Defense",
+    "Ex3.Aim": "Aim",
     "Ex3.AddedDefensePenalty": "Added Defense Penalty",
     "Ex3.AddCharm": "Add Charm",
     "Ex3.AddSpell": "Add Spell",
@@ -691,6 +709,8 @@
     "Ex3.Entangled": "Entangled",
     
     "Ex3.RestoreMote": "Restore Mote",
+    "Ex3.RollExtraDie": "Roll Extra Die",
+
     "Ex3.ExtraSuccess": "Extra Success",
     "Ex3.AddExtraDie": "Add Extra Die",
     "Ex3.RerollDie": "Reroll Die",
@@ -730,6 +750,7 @@
     "Ex3.TurnOrderInitiative": "Turn Order Initiative",
 
     "Ex3.SiderealMartialArt": "Sidereal Martial Art",
+    "Ex3.SiderealMartialArts": "Sidereal Martial Arts",
     "Ex3.MartialArtsMastery": "Martial Arts Mastery",
     "Ex3.Mastery": "Mastery",
     "Ex3.SMAEnlightenment": "SMA Enlightenment",
@@ -840,14 +861,15 @@
 
     "Ex3.Appearance(NPC)": "Appearance (NPC Only)",
     "Ex3.Command(NPC)": "Command (NPC Only)",
-    "Ex3.GrappleControl(NPC)": "Grapple Control (NPC Only)",
+    "Ex3.GrappleControl(NPC)": "Grapple Control (NPC Only)", 
     "Ex3.Movement(NPC)": "Movement (NPC Only)",
     "Ex3.JoinBattle(NPC)": "Join Battle (NPC Only)",
     "Ex3.ReadIntentions(NPC)": "Read Intentions (NPC Only)",
     "Ex3.SocialInfluence(NPC)": "Social Influence (NPC Only)",
     "Ex3.Social(NPC)": "Social (NPC Only)",
     "Ex3.Sorcery(NPC)": "Sorcery (NPC Only)",
-
+    "Ex3.Resistance(NPC)": "Resistance (NPC Only)",
+    
     "Ex3.Poison": "Poison",
     "Ex3.PoisonRoundTrigger": "Poison (Triggers End of Round)",
 
@@ -962,6 +984,9 @@
     "Ex3.NextDot": "Next Dot",
     "Ex3.MaxedOut": "Maxed Out",
 
+    "Ex3.CastinSpell": "Casting Spell",
+
+    "Ex3.ShapingSpell": "Shaping Spell",
 
     "Ex3.TargetStat": "Target Stat",
     "Ex3.ExigentType": "Exigent Type",

@@ -70,6 +70,17 @@ export default class CharacterBuilder extends FormApplication {
           essence: 1,
           willpower: 5,
           oxBodies: 0,
+          bonusMerits: {
+            source: "",
+            value: 0,
+          },
+          maidenCharms: {
+            journeys: 0,
+            serenity: 0,
+            battles: 0,
+            secrets: 0,
+            endings: 0,
+          },
           showAttributeCharms: true,
           showAbilityCharms: true,
           attributes: {
@@ -322,6 +333,13 @@ export default class CharacterBuilder extends FormApplication {
           randomSpells: 0,
         }
     }
+    for(let [key, ability] of Object.entries(this.object.character.abilities)) {
+      for(const [maiden, list] of Object.entries(CONFIG.exaltedthird.maidenabilities)) {
+        if(list.includes(key)) {
+          ability.maiden = maiden;
+        }
+      }
+    }
     this.object.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     this.onChange(null);
   }
@@ -343,7 +361,37 @@ export default class CharacterBuilder extends FormApplication {
   }
 
   _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
+    let buttons = [
+      {
+        label: "Close",
+        class: "close",
+        icon: "fas fa-times",
+        onclick: () => {
+          let applyChanges = false;
+          new Dialog({
+            title: 'Close?',
+            content: 'Any unsaved changed will be lost',
+            buttons: {
+              delete: {
+                icon: '<i class="fas fa-check"></i>',
+                label: 'Close',
+                callback: () => applyChanges = true
+              },
+              cancel: {
+                icon: '<i class="fas fa-times"></i>',
+                label: 'Cancel'
+              },
+            },
+            default: "cancel",
+            close: html => {
+              if (applyChanges) {
+                this.close();
+              }
+            }
+          }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        }
+      }
+    ];
     const saveButton = {
       label: game.i18n.localize('Ex3.Save'),
       class: 'save',
@@ -478,11 +526,27 @@ export default class CharacterBuilder extends FormApplication {
     });
 
     html.find("#randomAbilities").on("click", async (ev) => {
+      const abilitiesRandom = CONFIG.exaltedthird.abilitiesList;
+
+      const favoredOrCasteAbilities = [];
+      const otherAbilities = [];
+      abilitiesRandom.forEach(ability => {
+        if (this.object.character.abilities[ability].favored || this.object.character.abilities[ability].caste) {
+          favoredOrCasteAbilities.push(ability);
+        } else {
+          otherAbilities.push(ability);
+        }
+      });
+
+      const shuffledFavoredOrCasteAbilities = this._shuffleArray(favoredOrCasteAbilities);
+      const shuffledOtherAbilities = this._shuffleArray(otherAbilities);
+      const shuffledAbilitiesList = shuffledFavoredOrCasteAbilities.concat(shuffledOtherAbilities);
       let abilityValues = [
         5, 5, 4, 4, 3, 3, 3, 3, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      ]
-      for (const ability of Object.values(this.object.character.abilities).filter(ability => ability.name !== "Ex3.MartialArts")) {
-        ability.value = abilityValues.splice(Math.floor(Math.random() * abilityValues.length), 1)[0];
+      ];
+
+      for (let i = 0; i < shuffledAbilitiesList.length; i++) {
+        this.object.character.abilities[shuffledAbilitiesList[i]].value = (abilityValues[i] || 0)
       }
 
       await this.onChange(ev);
@@ -805,14 +869,6 @@ export default class CharacterBuilder extends FormApplication {
             }
             else {
               this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-              if (item.type === 'charm') {
-                if (this.object.character.abilities[item.system.ability]) {
-                  this.object.character.abilities[item.system.ability].charms[Object.entries(this.object.character.abilities[item.system.ability].charms).length] = newItem;
-                }
-                if (this.object.character.attributes[item.system.ability]) {
-                  this.object.character.attributes[item.system.ability].charms[Object.entries(this.object.character.attributes[item.system.ability].charms).length] = newItem;
-                }
-              }
             }
 
             this.onChange(ev);
@@ -867,16 +923,16 @@ export default class CharacterBuilder extends FormApplication {
           }
           else {
             if (newItem) {
-              this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
-
-              if (type === 'charms') {
-                if (this.object.character.abilities[newItem.system.ability]) {
-                  this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
+              let listIndex = 0;
+              let indexAdd = "0";
+              for (const key of Object.keys(this.object.character[type])) {
+                if (key !== listIndex.toString()) {
+                  break;
                 }
-                if (this.object.character.attributes[newItem.system.ability]) {
-                  this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
-                }
+                listIndex++;
               }
+              indexAdd = listIndex.toString();
+              this.object.character[type][indexAdd] = newItem;
             }
           }
         }
@@ -892,19 +948,38 @@ export default class CharacterBuilder extends FormApplication {
         }
       }
       else {
-        const index = event.currentTarget.dataset.index;
-        if (this.object.character[type][index].type === 'charm') {
-          const charm = this.object.character[type][index];
-          if (this.object.character.abilities[charm.system.ability]) {
-            const index = Object.values(this.object.character.abilities[charm.system.ability].charms).indexOf(charm);
-            delete this.object.character.abilities[charm.system.ability].charms[index];
-          }
-          if (this.object.character.attributes[charm.system.ability]) {
-            const index = Object.values(this.object.character.attributes[charm.system.ability].charms).indexOf(charm);
-            delete this.object.character.attributes[charm.system.ability].charms[index];
-          }
+        delete this.object.character[type][event.currentTarget.dataset.index];
+      }
+      await this.onChange(event);
+    });
+
+    html.find(".delete-sublist-charm").on("click", async (event) => {
+      const sublistkey = event.currentTarget.dataset.sublistkey;
+      const type = event.currentTarget.dataset.type;
+      const charm = this.object.character[type][sublistkey].charms[event.currentTarget.dataset.index];
+
+      let index = null;
+      for (const [key, value] of Object.entries(this.object.character.charms)) {
+        if (value === charm) {
+          index = key;
+          break;
         }
-        delete this.object.character[type][index];
+      }
+      if (index) {
+        delete this.object.character.charms[index];
+        await this.onChange(event);
+      }
+    });
+
+    html.find(".delete-ability-item").on("click", async (event) => {
+      const type = event.currentTarget.dataset.type;
+      if (type === 'ritual') {
+        this.object.character.ritual = {
+          name: '',
+        }
+      }
+      else {
+        delete this.object.character[type][event.currentTarget.dataset.index];
       }
       await this.onChange(event);
     });
@@ -949,7 +1024,7 @@ export default class CharacterBuilder extends FormApplication {
       items = game.items.filter(charm => charm.type === 'charm');
     }
     if (type === 'martialArts') {
-      items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart');
+      items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart' && (!item.system.siderealmartialart || this.object.character.essence >= 3));
     }
     if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
       items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
@@ -976,6 +1051,9 @@ export default class CharacterBuilder extends FormApplication {
           if (this.object.character.abilities[charm.system.ability]) {
             return charm.system.requirement <= this.object.character.abilities[charm.system.ability].value;
           }
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.ability);
+          }
           return true;
         });
         archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
@@ -987,6 +1065,9 @@ export default class CharacterBuilder extends FormApplication {
           }
           if (this.object.character.abilities[charm.system.archetype.ability]) {
             return charm.system.requirement <= this.object.character.abilities[charm.system.archetype.ability].value;
+          }
+          if (CONFIG.exaltedthird.maidens.includes(charm.system.archetype.ability)) {
+            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.archetype.ability);
           }
           return true;
         });
@@ -1076,7 +1157,28 @@ export default class CharacterBuilder extends FormApplication {
     if (itemType === 'charm') {
       items = items.filter(charm => {
         if (charm.system.numberprerequisites.number > 0) {
-          if ((Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0) < charm.system.numberprerequisites.number) {
+          let existingCharms = 0;
+          if (charm.system.numberprerequisites.ability === "combat") {
+            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(numberCharm.system.ability)).length || 0);
+          }
+          else if (['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(charm.system.numberprerequisites.ability)) {
+            if (charm.system.numberprerequisites.ability === 'physicalAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['strength', 'dexterity', 'stamina'].includes(numberCharm.system.ability)).length || 0);
+            }
+            if (charm.system.numberprerequisites.ability === 'mentalAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['intelligence', 'wits', 'perception'].includes(numberCharm.system.ability)).length || 0);
+            }
+            if (charm.system.numberprerequisites.ability === 'socialAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['charisma', 'appearance', 'manipulation'].includes(numberCharm.system.ability)).length || 0);
+            }
+          }
+          else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            existingCharms = this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
+          }
+          else {
+            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0);
+          }
+          if (existingCharms < charm.system.numberprerequisites.number) {
             return false;
           }
         }
@@ -1094,6 +1196,22 @@ export default class CharacterBuilder extends FormApplication {
       this.getEnritchedHTML(item);
     }
     return items;
+  }
+
+  _getHighestMaidenAbility(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    let highestValue = 0;
+    for (const ability of abilityList) {
+      if ((this.object.character.abilities[ability]?.value || 0) > highestValue) {
+        highestValue = (this.object.character.abilities[ability]?.value || 0);
+      }
+    }
+    return highestValue;
+  }
+
+  _getMaidenCharmsNumber(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    return (Object.values(this.object.character.charms)?.filter(numberCharm => abilityList.includes(numberCharm.system.ability)).length || 0)
   }
 
   async _onDropItem(event) {
@@ -1234,7 +1352,21 @@ export default class CharacterBuilder extends FormApplication {
 
     this.object.oxBodyEnabled = (oxBodyAvailable.includes(this.object.character.exalt) || oxBodyAvailable.includes(this.object.character.exigent));
 
+    this.object.character.maidenCharms = {
+      journeys: this._getMaidenCharmsNumber('journeys'),
+      serenity: this._getMaidenCharmsNumber('serenity'),
+      battles: this._getMaidenCharmsNumber('battles'),
+      secrets: this._getMaidenCharmsNumber('secrets'),
+      endings: this._getMaidenCharmsNumber('endings'),
+    }
+
     this._calculateSpentExperience(ev);
+
+    const categories = [...Object.entries(this.object.character.abilities), ...Object.entries(this.object.character.attributes)];
+
+    for (const [key, category] of categories) {
+      category.charms = Object.values(this.object.character.charms).filter(charm => charm.system.ability === key);
+    }
 
     await this.render();
   }
@@ -1375,6 +1507,7 @@ export default class CharacterBuilder extends FormApplication {
         willpower: 3,
       }
     }
+    this.object.creationData.available.merits += this.object.character.bonusMerits.value;
     this.object.creationData.spent = {
       attributes: {
         physical: 0,
@@ -1520,6 +1653,9 @@ export default class CharacterBuilder extends FormApplication {
       } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored) {
         favoredCharms += charm.itemCount;
       }
+      else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
+        favoredCharms += charm.itemCount
+      }
       else {
         nonFavoredCharms += charm.itemCount;
       }
@@ -1573,6 +1709,14 @@ export default class CharacterBuilder extends FormApplication {
     this.object.creationData.spent.experience.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits))) * 2;
     this.object.creationData.spent.experience.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 6;
     this.object.creationData.spent.experience.total = this.object.creationData.spent.experience.willpower + this.object.creationData.spent.experience.merits + this.object.creationData.spent.experience.specialties + this.object.creationData.spent.experience.abilities + this.object.creationData.spent.experience.attributes + this.object.creationData.spent.experience.charms;
+  }
+
+  _shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
 
@@ -1787,7 +1931,7 @@ export default class CharacterBuilder extends FormApplication {
       actorData.system.details.apocalyptic = this.object.character.supernal;
     }
     actorData.system.details.tell = this.object.character.tell;
-    actorData.system.details.spriitshape = this.object.character.spriitShape;
+    actorData.system.details.spiritshape = this.object.character.spiritShape;
     actorData.system.details.birthsign = this.object.character.birthSign;
     actorData.system.details.exaltsign = this.object.character.exaltSign;
     actorData.system.details.caste = this.object.character.caste;
@@ -1857,11 +2001,12 @@ export default class CharacterBuilder extends FormApplication {
 
     for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
       actorData.system.attributes[key].value = attribute.value;
+      actorData.system.attributes[key].favored = attribute.favored;
       if (this.object.character.exalt === 'lunar') {
-        if (actorData.system.attributes[key].excellency && attribute.favored && attribute.value >= 3 && (Object.entries(attribute.charms).length > 0)) {
+        if (attribute.favored && (attribute.value >= 3 || (Object.entries(attribute.charms).length > 0))) {
           actorData.system.attributes[key].excellency = true;
         }
-        else if (actorData.system.attributes[key].excellency && attribute.value >= 5 && (Object.entries(attribute.charms).length > 1)) {
+        else if (attribute.value >= 5 || (Object.entries(attribute.charms).length >= 3)) {
           actorData.system.attributes[key].excellency = true;
         }
       }
@@ -2064,24 +2209,6 @@ export default class CharacterBuilder extends FormApplication {
       itemData.push({
         type: 'charm',
         img: 'icons/magic/light/explosion-star-large-orange.webp',
-        name: 'Success Excellency',
-        system: {
-          description: 'Add 1 success to a roll for 2 motes.',
-          ability: 'universal',
-          listingname: 'Excellency',
-          requirement: 1,
-          essence: 1,
-          cost: {
-            motes: 2
-          },
-          diceroller: {
-            bonussuccesses: "1"
-          }
-        }
-      });
-      itemData.push({
-        type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
         name: 'Static Excellency',
         system: {
           description: 'Add 1 to a static value for 2 motes.',
@@ -2164,9 +2291,7 @@ export default class CharacterBuilder extends FormApplication {
             motes: 1
           },
           diceroller: {
-            damage: {
-              decreasetargetnumber: 1,
-            }
+            decreasetargetnumber: 1,
           }
         }
       });
@@ -2354,525 +2479,9 @@ export default class CharacterBuilder extends FormApplication {
 
 
   _getBaseStatblock() {
-    return {
-      type: 'character',
-      system: {
-        "attributes": {
-          "strength": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "physical"
-          },
-          "charisma": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "social"
-          },
-          "perception": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "mental"
-          },
-          "dexterity": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "physical"
-          },
-          "manipulation": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "social"
-          },
-          "intelligence": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "mental"
-          },
-          "stamina": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "physical"
-          },
-          "appearance": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "social"
-          },
-          "wits": {
-            "favored": false,
-            "excellency": false,
-            "value": 1,
-            "type": "mental"
-          }
-        },
-        "charcreation": {
-          "physical": "primary",
-          "social": "secondary",
-          "mental": "tertiary"
-        },
-        "abilities": {
-          "archery": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "athletics": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "name": "Ex3.Athletics",
-            "prefattribute": "dexterity"
-          },
-          "awareness": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "perception"
-          },
-          "brawl": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "bureaucracy": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "craft": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "dodge": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "integrity": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "charisma"
-          },
-          "investigation": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "larceny": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "linguistics": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "lore": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "martialarts": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "medicine": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "melee": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "occult": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          },
-          "performance": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "charisma"
-          },
-          "presence": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "charisma"
-          },
-          "resistance": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "stamina"
-          },
-          "ride": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "sail": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "socialize": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "charisma"
-          },
-          "stealth": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "survival": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "perception"
-          },
-          "thrown": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "dexterity"
-          },
-          "war": {
-            "favored": false,
-            "excellency": false,
-            "value": 0,
-            "prefattribute": "intelligence"
-          }
-        },
-        "health": {
-          "levels": {
-            "zero": {
-              "value": 1,
-              "penalty": 0
-            },
-            "one": {
-              "value": 2,
-              "penalty": 1
-            },
-            "two": {
-              "value": 2,
-              "penalty": 2
-            },
-            "four": {
-              "value": 1,
-              "penalty": 4
-            },
-            "inc": {
-              "value": 1,
-              "penalty": "inc"
-            }
-          },
-          "bashing": 0,
-          "lethal": 0,
-          "aggravated": 0,
-          "value": 0,
-          "max": 0,
-          "penalty": 0,
-          "penaltymod": 0
-        },
-        "willpower": {
-          "value": 5,
-          "total": 5,
-          "max": 5,
-          "min": 0
-        },
-        "essence": {
-          "value": 1,
-          "min": 0,
-          "max": 10
-        },
-        "motes": {
-          "personal": {
-            "value": 0,
-            "total": 0,
-            "max": 0,
-            "committed": 0
-          },
-          "peripheral": {
-            "value": 0,
-            "total": 0,
-            "max": 0,
-            "committed": 0
-          }
-        },
-        "evasion": {
-          "value": 0,
-          "min": 0
-        },
-        "parry": {
-          "value": 0,
-          "min": 0
-        },
-        "shieldinitiative": {
-          "value": 0,
-          "min": 0,
-          "max": 0
-        },
-        "soak": {
-          "value": 1,
-          "min": 0
-        },
-        "armoredsoak": {
-          "value": 0,
-          "min": 0
-        },
-        "naturalsoak": {
-          "value": 1,
-          "min": 0
-        },
-        "hardness": {
-          "value": 0,
-          "min": 0
-        },
-        "stuntdice": {
-          "value": 0,
-          "min": 0
-        },
-        "resolve": {
-          "value": 0
-        },
-        "guile": {
-          "value": 0
-        },
-        "anima": {
-          "value": 0,
-          "max": 3,
-          "level": "Dim",
-          "passive": "",
-          "active": "",
-          "iconic": ""
-        },
-        "limit": {
-          "value": 0,
-          "min": 0,
-          "max": 10,
-          "trigger": ""
-        },
-        "sorcery": {
-          "motes": 0
-        },
-        "grapplecontrolrounds": {
-          "value": 0,
-          "min": 0
-        },
-        "effectivestrength": {
-          "value": 0,
-          "min": 0
-        },
-        "negateevasionpenalty": {
-          "value": 0,
-          "min": 0
-        },
-        "negateparrypenalty": {
-          "value": 0,
-          "min": 0
-        },
-        "turnorderinitiative": {
-          "value": 0
-        },
-        "dicemodifier": {
-          "value": 0,
-          "min": 0
-        },
-        "baseinitiative": {
-          "value": 3
-        },
-        "dontresetonslaught": false,
-        "savedRolls": {},
-        "legendarysize": false,
-        "traits": {
-          "languages": {
-            "value": [],
-            "custom": ""
-          },
-          "resonance": {
-            "value": [],
-            "custom": ""
-          },
-          "dissonance": {
-            "value": [],
-            "custom": ""
-          }
-        },
-        "details": {
-          "exalt": "other",
-          "creaturesubtype": "other",
-          "caste": "",
-          "color": "#000000",
-          "animacolor": "#FFFFFF",
-          "tell": "",
-          "spiritshape": "",
-          "birthsign": "",
-          "exaltsign": "",
-          "aura": "none",
-          "ideal": "",
-          "supernal": "",
-          "apocalyptic": "",
-          "penumbra": {
-            "value": 0,
-            "max": 10,
-            "min": 0
-          }
-        },
-        "settings": {
-          "charmmotepool": "peripheral",
-          "martialartsmastery": "standard",
-          "sorcerycircle": "none",
-          "necromancycircle": "none",
-          "smaenlightenment": false,
-          "showwarstrider": false,
-          "showship": false,
-          "showescort": false,
-          "usetenattributes": false,
-          "usetenabilities": false,
-          "rollStunts": false,
-          "defenseStunts": false,
-          "editmode": true,
-          "issorcerer": true,
-          "iscrafter": true,
-          "usedotsvalues": true,
-          "showanima": true,
-          "hasaura": false,
-          "sheetbackground": "default",
-          "rollsettings": {
-            "attacks": {
-              "attribute": "dexterity",
-              "ability": "melee",
-              "bonus": 0
-            },
-            "command": {
-              "attribute": "charisma",
-              "ability": "war",
-              "bonus": 0
-            },
-            "craft": {
-              "attribute": "intelligence",
-              "ability": "craft",
-              "bonus": 0
-            },
-            "disengage": {
-              "attribute": "dexterity",
-              "ability": "dodge",
-              "bonus": 0
-            },
-            "grapplecontrol": {
-              "attribute": "strength",
-              "ability": "brawl",
-              "bonus": 0
-            },
-            "joinbattle": {
-              "attribute": "wits",
-              "ability": "awareness",
-              "bonus": 0
-            },
-            "readintentions": {
-              "attribute": "perception",
-              "ability": "socialize",
-              "bonus": 0
-            },
-            "rush": {
-              "attribute": "dexterity",
-              "ability": "athletics",
-              "bonus": 0
-            },
-            "social": {
-              "attribute": "charisma",
-              "ability": "socialize",
-              "appearanceattribute": "appearance",
-              "bonus": 0
-            },
-            "sorcery": {
-              "attribute": "intelligence",
-              "ability": "occult",
-              "bonus": 0
-            },
-            "steady": {
-              "attribute": "stamina",
-              "ability": "resistance",
-              "bonus": 0
-            },
-          },
-          "attackrollsettings": {
-            "withering": {
-              "bonus": 0,
-              "damage": 0
-            },
-            "decisive": {
-              "bonus": 0,
-              "damage": 0
-            },
-            "gambit": {
-              "bonus": 0,
-              "damage": 0
-            }
-          },
-          "staticcapsettings": {
-            "parry": {
-              "attribute": "dexterity",
-              "ability": "melee",
-              "specialty": false
-            },
-            "evasion": {
-              "attribute": "dexterity",
-              "ability": "dodge",
-              "specialty": false
-            },
-            "resolve": {
-              "attribute": "wits",
-              "ability": "integrity",
-              "specialty": false
-            },
-            "guile": {
-              "attribute": "manipulation",
-              "ability": "socialize",
-              "specialty": false
-            },
-            "soak": {
-              "attribute": "stamina",
-              "ability": "none",
-              "specialty": false
-            }
-          }
-        },
-      }
-    };
+    return new Actor.implementation({
+      name: 'New Character',
+      type: 'character'
+    }).toObject();
   }
 }

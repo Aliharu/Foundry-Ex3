@@ -319,7 +319,7 @@ export class ExaltedThirdActor extends Actor {
 
     var staticAttributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type]?.attribute]?.value || 0;
     var staticAbilityValue = 0;
-    if(actorData.system.settings.staticcapsettings[type]?.ability && actorData.system.settings.staticcapsettings[type]?.ability !== 'none') {
+    if (actorData.system.settings.staticcapsettings[type]?.ability && actorData.system.settings.staticcapsettings[type]?.ability !== 'none') {
       if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === actorData.system.settings.staticcapsettings[type].ability)) {
         staticAbilityValue = this.items.filter(item => item.type === 'customability').find(x => x._id === actorData.system.settings.staticcapsettings[type].ability).system.points;
       }
@@ -536,9 +536,6 @@ export class ExaltedThirdActor extends Actor {
           data.data.health.aggravated = Math.min(totalHealth - data.data.health.bashing - data.data.health.lethal, data.data.health.aggravated + item.system.cost.health);
         }
       }
-    }
-    if (item.type === 'spell') {
-      data.data.sorcery.motes = 0;
     }
 
     this.displayEmbeddedItem(itemId);
@@ -1062,11 +1059,18 @@ export class ExaltedThirdActor extends Actor {
       currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
     }
 
+    let armorPenalty = 0;
+
+    for (let armor of this.items.filter(item => item.type === 'armor' && item.system.equipped)) {
+      armorPenalty += Math.abs(armor.system.penalty);
+    }
+
     data.woundpenalty = { 'value': currentPenalty };
     data.evasionpenalty = { 'value': currentEvasionPenalty };
     data.onslaught = { 'value': currentOnslaughtPenalty };
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
+    data.armorpenalty = { 'value': armorPenalty };
     if (!data.size) {
       data.size = {
         value: 0,
@@ -1104,6 +1108,54 @@ export class ExaltedThirdActor extends Actor {
     if (this.type !== 'npc') return;
   }
 
+  actionRoll(data) {
+    if (this.type === 'npc') {
+      game.rollForm = new RollForm(this, {}, {}, data).render(true);
+    }
+    else {
+      game.rollForm = new RollForm(this, {}, {}, data).render(true);
+    }
+  }
+
+  spendItem(item) {
+    spendEmbeddedItem(this, item);
+    if (game.settings.get("exaltedthird", "spendChatCards")) {
+      this._displayCard(item, "Spent");
+    }
+  }
+
+  addActorDefensePenalty() {
+    addDefensePenalty(this);
+  }
+
+  async _displayCard(item, cardType = "") {
+    const token = this.token
+    if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
+      if (item.system.active) {
+        cardType = "Deactivate";
+      }
+      else {
+        cardType = "Activate";
+      }
+    }
+    const templateData = {
+      actor: this,
+      tokenId: token?.uuid || null,
+      item: item,
+      cardType: cardType,
+    };
+    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+
+    // Create the ChatMessage data object
+    const chatData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: ChatMessage.getSpeaker({ actor: this, token }),
+    };
+    // Create the Chat Message or return its data
+    return ChatMessage.create(chatData);
+  }
 }
 
 
@@ -1329,6 +1381,9 @@ export async function spendEmbeddedItem(actor, item) {
     }
   }
   else if (item.type === 'spell') {
+    if (item.system.willpower) {
+      actorData.system.willpower.value = Math.min(actorData.system.willpower.max, (actorData.system.willpower.value - item.system.willpower) + 1);
+    }
     if (item.system.active) {
       updateActive = false;
     }
@@ -1336,7 +1391,6 @@ export async function spendEmbeddedItem(actor, item) {
       if (item.system.activatable) {
         updateActive = true;
       }
-      actorData.system.sorcery.motes = 0;
     }
   }
   else {
