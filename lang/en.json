@@ -180,7 +180,7 @@
     "Ex3.DiceRollTriggers": "Dice Roll Triggers",
     "Ex3.Triggers": "Triggers",
     "Ex3.Bonuses": "Bonuses",
-    "Ex3.Restrictions": "Restrictions",
+    "Ex3.Requirements": "Requirements",
     "Ex3.Bonus": "Bonus",
     "Ex3.Parry": "Parry",
     "Ex3.Evasion": "Evasion",
@@ -1009,7 +1009,27 @@
     "Ex3.SimplifiedCrafting": "Simplified Crafting",
     "Ex3.SimplifiedCraftingDescription": "Use the simplified crafting rules from Crucible of Legend",
 
+    "Ex3.DiceRoller": "Dice Roller",
 
-
-    "Ex3.DiceRoller": "Dice Roller"
+    "Ex3.TriggerTime": "TriggerTime",
+    "Ex3.BeforeRoll": "Before Roll",
+    "Ex3.AfterRoll": "After Roll",
+    "Ex3.BeforeDamage": "Before Damage",
+    "Ex3.AfterDamage": "After Damage",
+    "Ex3.AddDice": "Add Dice",
+    "Ex3.DiceRoll": "Dice Roll",
+    "Ex3.Effect": "Effect",
+    "Ex3.Spend": "Spend",
+    "Ex3.AddNonCharmDice": "Add Non-Charm Dice",
+    "Ex3.AddSuccesses": "Add Successes",
+    "Ex3.AddNonCharmSuccesses": "Add Non-Charm Successes",
+    "Ex3.RerollDieFace": "Reroll Die Face",
+    "Ex3.RerollDieFaceCap": "Reroll Die Face Cap",
+    "Ex3.RerollNumberDice": "Reroll Number Dice",
+    "Ex3.RerollFailedOnce": "Reroll Failed Once",
+    "Ex3.TriggerTens": "Trigger Tens",
+    "Ex3.TriggerNines&Tens": "Trigger Nines & Tens",
+    "Ex3.SilverXp": "Silver Xp",
+    "Ex3.GoldXp": "Gold Xp",
+    "Ex3.WhiteXp": "White Xp"
 }

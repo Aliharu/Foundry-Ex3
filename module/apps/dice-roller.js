@@ -206,6 +206,7 @@ export class RollForm extends FormApplication {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
             };
+            this.object.triggers = [];
             this.object.spell = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
@@ -215,7 +216,7 @@ export class RollForm extends FormApplication {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
                     }
-                    else if(this.object.rollType === 'working') {
+                    else if (this.object.rollType === 'working') {
                         this.object.attribute = this.actor.system.settings.rollsettings['sorcery'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['sorcery'].ability;
                     }
@@ -438,13 +439,13 @@ export class RollForm extends FormApplication {
                 const activeSpell = this.object.spells.find(spell => spell.system.shaping);
                 if (data.spell) {
                     const fullSpell = this.actor.items.get(data.spell);
-                    if(!activeSpell || activeSpell.id !== data.spell) {
+                    if (!activeSpell || activeSpell.id !== data.spell) {
                         this.object.cost.willpower += parseInt(fullSpell.system.willpower);
                     }
                     this.object.spell = data.spell;
                 }
                 else {
-                    if(activeSpell) {
+                    if (activeSpell) {
                         this.object.spell = activeSpell.id;
                     }
                 }
@@ -1129,6 +1130,55 @@ export class RollForm extends FormApplication {
         return rollerValue;
     }
 
+    _getRerollFormulaCap(formula) {
+        const rerollFaceMap = {
+            '1': 'one',
+            '2': 'two',
+            '3': 'three',
+            '4': 'four',
+            '5': 'five',
+            '6': 'six',
+            '7': 'seven',
+            '8': 'eight',
+            '9': 'nine',
+            '10': 'ten',
+        }
+
+        if (formula.includes('cap')) {
+            var split = formula.split(' ');
+            if (rerollFaceMap[split[0]]) {
+                this.object.reroll[rerollFaceMap[split[0]]].status = true;
+                this.object.reroll[rerollFaceMap[split[0]]].cap = this._getFormulaActorValue(split[2]);
+            }
+        }
+        else {
+            if (rerollFaceMap[formula]) {
+                this.object.reroll[rerollFaceMap[formula]].status = true;
+            }
+        }
+    }
+
+    _getDoublesFormula(formula) {
+        const doublesChart = {
+            '7': 'sevens',
+            '8': 'eights',
+            '9': 'nines',
+            '10': 'tens',
+        }
+        if (formula.includes('cap')) {
+            var split = formula.split(' ');
+            if (doublesChart[split[0]]) {
+                this.object.doubleSuccess = parseInt(split[0]);
+                this.object.settings.doubleSucccessCaps[doublesChart[split[0]]] = this._getFormulaActorValue(split[2]);
+            }
+        }
+        else {
+            if (doublesChart[formula]) {
+                this.object.doubleSuccess = parseInt(formula);
+            }
+        }
+    }
+
     _getFormulaActorValue(formula, opposedCharmActor = null) {
         var formulaVal = 0;
         var forumlaActor = this.actor;
@@ -1312,7 +1362,7 @@ export class RollForm extends FormApplication {
 
         html.on("change", ".spell", ev => {
             const fullSpell = this.actor.items.get(this.object.spell);
-            if(fullSpell) {
+            if (fullSpell) {
                 this.object.cost.willpower = parseInt(fullSpell.system.willpower);
             }
             else {
@@ -1753,6 +1803,7 @@ export class RollForm extends FormApplication {
     }
 
     async _roll() {
+        this._addTriggerBonuses('beforeRoll');
         if (this._isAttackRoll()) {
             this.object.gainedInitiative = 0;
             this.object.crashed = false;
@@ -2396,16 +2447,16 @@ export class RollForm extends FormApplication {
             resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
         }
         if (this.object.rollType === "sorcery") {
-            if(this.object.spell) {
+            if (this.object.spell) {
                 let crashed = false;
                 if (game.combat) {
                     let combatant = this._getActorCombatant();
                     if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
                         crashed = true;
                     }
-                } 
+                }
                 const fullSpell = this.actor.items.get(this.object.spell);
-                if(fullSpell) {
+                if (fullSpell) {
                     resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.total}/${parseInt(fullSpell.system.cost) + (crashed ? 3 : 0)}</h4>`;
                 }
                 if (this.object.spellCast) {
@@ -3260,6 +3311,81 @@ export class RollForm extends FormApplication {
         this.object.newTargetData.effects = this.object.newTargetData.effects.filter(i => i.flags.exaltedthird?.statusId !== type);
     }
 
+    _addTriggerBonuses(type = 'beforeRoll') {
+        for (const charm of this.object.addedCharms) {
+            for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
+                if (this._triggerRequirementsMet(trigger)) {
+                    for (const bonus of Object.values(trigger.bonuses)) {
+                        const cleanedValue = bonus.value.toLowerCase().trim();
+                        switch (bonus.effect) {
+                            case 'diceModifier':
+                            case 'successModifier':
+                            case 'rerollDice':
+                            case 'diceToSuccesses':
+                                this.object[bonus.effect] += this._getFormulaValue(cleanedValue);
+                                break;
+                            case 'doubleSuccess':
+                                this._getDoublesFormula(cleanedValue);
+                                break;
+                            case 'decreaseTargetNumber':
+                                this.object.targetNumber -= this._getFormulaValue(cleanedValue);
+                                break;
+                            case 'reduceDifficulty':
+                                if (this.object.showTargets) {
+                                    const targetValues = Object.values(this.object.targets);
+                                    for (const target of targetValues) {
+                                        target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue));
+                                        target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue));
+                                        target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue));
+                                    }
+                                }
+                                else {
+                                    this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue));
+                                    this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue));
+                                }
+                                break;
+                            case 'rerollDieFace':
+                                //Do something about the cap
+                                this._getRerollFormulaCap(cleanedValue);
+                                break;
+                            case 'excludeOnes':
+                                this.object.settings.excludeOnesFromRerolls = true;
+                                break;
+                            case 'rerollFailed':
+                            case 'rollTwice':
+                                this.object[bonus.effect] = true;
+                                break;
+                            case 'triggerOnTens':
+                                this.object.settings.triggerOnTens = cleanedValue;
+                                break;
+                            case 'triggerNinesAndTens':
+                                this.object.settings.triggerOnTens = cleanedValue;
+                                this.object.settings.alsoTriggerNines = true;
+                                break;
+                            case 'triggerTensCap':
+                                this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    _triggerRequirementsMet(trigger) {
+        let fufillsRequirements = true;
+        for (const requirementObject of Object.values(trigger.requirements)) {
+            const cleanedValue = requirementObject.value.toLowerCase().trim();
+            switch (requirementObject.requirement) {
+                case 'attackType':
+                    if (this.object.attackType !== cleanedValue) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+            }
+        }
+        return fufillsRequirements;
+    }
+
     _addOnslaught(number = 1, magicInflicted = false) {
         if ((this.object.target?.actor?.system?.sizecategory || 'standard') !== 'legendary' && !magicInflicted) {
             this.object.updateTargetActorData = true;
@@ -4095,6 +4221,9 @@ export class RollForm extends FormApplication {
                 holisticMiracleUnderstanding: false,
             }
         }
+        if (this.object.triggers === undefined) {
+            this.object.triggers = [];
+        }
         if (this.object.damage.threshholdToDamage === undefined) {
             this.object.damage.threshholdToDamage = false;
         }
@@ -4256,7 +4385,7 @@ export class RollForm extends FormApplication {
     }
 
     async _updateCharacterResources() {
-        if(this.object.rollType === 'sorcery') {
+        if (this.object.rollType === 'sorcery') {
             this.object.previousSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMoteCap = this.actor.system.sorcery.motes.max;
@@ -4266,22 +4395,22 @@ export class RollForm extends FormApplication {
                 if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
                     crashed = true;
                 }
-            } 
+            }
             actorSorceryMotes += this.object.total;
-            if(this.object.spell) {
+            if (this.object.spell) {
                 const activeSpell = this.actor.items?.find(item => item.system?.shaping);
-                if(activeSpell && activeSpell.id !== this.object.spell) {
+                if (activeSpell && activeSpell.id !== this.object.spell) {
                     actorSorceryMotes = this.object.total;
                     actorSorceryMoteCap = 0;
                     this.object.previousSorceryMotes = 0;
                 }
-                for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
-                    if(spell.id === this.object.spell) {
-                        await spell.update({[`system.shaping`]: true});
-                        actorSorceryMoteCap = (parseInt(spell.system.cost) + (crashed ? 3: 0));
+                for (const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
+                    if (spell.id === this.object.spell) {
+                        await spell.update({ [`system.shaping`]: true });
+                        actorSorceryMoteCap = (parseInt(spell.system.cost) + (crashed ? 3 : 0));
                     }
-                    if(spell.system.shaping && spell.id !== this.object.spell) {
-                        await spell.update({[`system.shaping`]: false});
+                    if (spell.system.shaping && spell.id !== this.object.spell) {
+                        await spell.update({ [`system.shaping`]: false });
                     }
                 }
                 if (actorSorceryMoteCap && (actorSorceryMotes >= actorSorceryMoteCap)) {
@@ -4291,8 +4420,8 @@ export class RollForm extends FormApplication {
                     if (this.object.spell && !crashed) {
                         this.object.restore.willpower++;
                     }
-                    for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
-                        await spell.update({[`system.shaping`]: false});
+                    for (const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
+                        await spell.update({ [`system.shaping`]: false });
                     }
                 }
             }

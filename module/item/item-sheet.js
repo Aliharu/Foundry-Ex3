@@ -202,8 +202,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         const newList = this.item.system.triggers[triggerType];
         newList[Object.entries(newList).length] = {
           name: "",
+          triggerTime: "beforeRoll",
           bonuses: {},
-          restrictions: {}
+          requirements: {}
         };
         this.item.update({ [`system.triggers.${triggerType}`]: newList });
       }
@@ -232,6 +233,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       const newList = this.item.system.triggers[triggerType][index][subType];
       let listIndex = 0;
       let indexAdd = "0";
+      //Add Bonuses and requirements
       for(const key of Object.keys(newList)) {
         if(key !== listIndex.toString()) {
           break;
@@ -241,13 +243,13 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       indexAdd = listIndex.toString();
       if(subType === 'bonuses') {
         newList[indexAdd] = {
-          effect: "addDice",
+          effect: "",
           value: "",
         };
       }
       else {
         newList[indexAdd] = {
-          restriction: "",
+          requirement: "",
           value: "",
         };
       }

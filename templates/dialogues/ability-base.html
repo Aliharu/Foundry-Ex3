@@ -146,6 +146,32 @@
 
 {{#ifNotEquals data.rollType 'base'}}
 {{> systems/exaltedthird/templates/dialogues/added-charm-list.html}}
+{{#if data.addedCharms}}
+<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+    <div class="resource-label">
+        {{localize "Ex3.Triggers"}}
+    </div>
+    <div>
+        <i class="fas fa-caret-down"></i>
+    </div>
+</div>
+<div style="display:none;">
+    <ol class="items-list">
+        {{#each data.addedCharms as |charm id|}}
+            {{#each charm.system.triggers.dicerollertriggers as |trigger triggerId|}}
+            <li class="item flexrow item-row">
+                <div class="item-image"><img class="list-item-image" src="{{charm.img}}" title="{{charm.name}}" width="24" height="24" /></div>
+                {{#if trigger.name}}
+                <h4 class="item-name">{{trigger.name}}</h4>
+                {{else}}
+                <h4 class="item-name">{{localize "Ex3.NoName"}}</h4>
+                {{/if}}
+            </li>
+            {{/each}}
+        {{/each}}
+    </ol>
+</div>
+{{/if}}
 {{/ifNotEquals}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
