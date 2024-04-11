@@ -109,8 +109,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _prepareActorSheetData(sheetData) {
-    const actorData = sheetData.actor;
-
     for (let [key, setting] of Object.entries(sheetData.system.settings.rollsettings)) {
       setting.name = CONFIG.exaltedthird.rolltypes[key];
     }

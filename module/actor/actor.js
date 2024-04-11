@@ -742,6 +742,20 @@ export class ExaltedThirdActor extends Actor {
     data.currentOnslaughtPenalty = currentOnslaughtPenalty;
     data.currentDefensePenalty = currentDefensePenalty;
 
+    if (actorData.type === 'character') {
+      for (let [key, attr] of Object.entries(actorData.system.attributes)) {
+        attr.name = CONFIG.exaltedthird.attributes[key];
+      }
+      for (let [key, ability] of Object.entries(actorData.system.abilities)) {
+        ability.name = CONFIG.exaltedthird.abilities[key];
+      }
+    }
+    else {
+      for (let [key, pool] of Object.entries(actorData.system.pools)) {
+        pool.name = CONFIG.exaltedthird.npcpools[key];
+      }
+    }
+
     // Initialize containers.
     const customAbilities = [];
     const gear = [];
