@@ -450,9 +450,11 @@ Hooks.on("renderChatMessage", (message, html, data) => {
           ui.notifications.error(`Error finding target and no character.`);
         }
         if (actor) {
-          new RollForm(actor, {}, {}, {
-            rollType: 'useOpposingCharms'
-          }).render(true);
+          actor.actionRoll(
+            {
+              rollType: 'useOpposingCharms'
+            }
+          );
         }
       });
     });

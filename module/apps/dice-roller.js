@@ -1243,8 +1243,12 @@ export class RollForm extends FormApplication {
     }
 
     async addOpposingCharm(charm) {
-        await this.addOpposedBonus(charm);
-        this.render();
+        if(this.object.rollType === 'useOpposingCharms') {
+            this.addCharm(charm);
+        } else {
+            await this.addOpposedBonus(charm);
+            this.render();
+        }
     }
 
     async addOpposedBonus(charm) {
@@ -1932,8 +1936,14 @@ export class RollForm extends FormApplication {
     }
 
     async useOpposingCharms() {
+        const addingCharms = [];
+        for(const charm of this.object.addedCharms) {
+            const newCharm = duplicate(charm);
+            newCharm.timesAdded = charm.timesAdded;
+            addingCharms.push(newCharm);
+        }
         const data = {
-            charmList: this.object.addedCharms,
+            charmList: addingCharms,
             defense: this.object.addOppose.defense,
             dice: this.object.addOppose.dice,
             soak: this.object.addOppose.soak,
