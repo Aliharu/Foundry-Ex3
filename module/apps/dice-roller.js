@@ -94,6 +94,7 @@ export class RollForm extends FormApplication {
             this.object.gambitDifficulty = 0;
             this.object.maxCraftXP = 5;
             this.object.craftProjectId = data.craftProjectId || '';
+            this.object.addedCharmsDropdown = this.object.rollType === 'useOpposingCharms';
 
             this.object.gambit = 'none';
             this.object.weaponTags = {};
@@ -202,6 +203,21 @@ export class RollForm extends FormApplication {
             }
             this.object.activateAura = 'none';
             this.object.addStatuses = [];
+            this.object.addOppose = {
+                defense: 0,
+                dice: 0,
+                soak: 0,
+                guile: 0,
+                resolve: 0,
+                hardness: 0,
+            }
+            this.object.opposeCaps = {
+                parry: this.actor.system.parry,
+                evasion: this.actor.system.evasion,
+                soak: this.actor.system.soak.cap,
+                guile: this.actor.system.parry.cap,
+                resolve: this.actor.system.resolve.cap,
+            }
             this.object.craft = {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
@@ -215,7 +231,7 @@ export class RollForm extends FormApplication {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['attacks'].ability;
                     }
-                    else if(this.object.rollType === 'working') {
+                    else if (this.object.rollType === 'working') {
                         this.object.attribute = this.actor.system.settings.rollsettings['sorcery'].attribute;
                         this.object.ability = this.actor.system.settings.rollsettings['sorcery'].ability;
                     }
@@ -380,7 +396,7 @@ export class RollForm extends FormApplication {
                 this._setBattlegroupBonuses();
             }
             if (this.object.charmList === undefined) {
-                this.object.charmList = this.actor.rollcharms;
+                this.object.charmList = this.object.rollType === 'useOpposingCharms' ? this.actor.defensecharms : this.actor.rollcharms;
                 for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
                     charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
                     for (const charm of charmlist.list) {
@@ -438,13 +454,13 @@ export class RollForm extends FormApplication {
                 const activeSpell = this.object.spells.find(spell => spell.system.shaping);
                 if (data.spell) {
                     const fullSpell = this.actor.items.get(data.spell);
-                    if(!activeSpell || activeSpell.id !== data.spell) {
+                    if (!activeSpell || activeSpell.id !== data.spell) {
                         this.object.cost.willpower += parseInt(fullSpell.system.willpower);
                     }
                     this.object.spell = data.spell;
                 }
                 else {
-                    if(activeSpell) {
+                    if (activeSpell) {
                         this.object.spell = activeSpell.id;
                     }
                 }
@@ -460,6 +476,9 @@ export class RollForm extends FormApplication {
    */
     get template() {
         var template = "systems/exaltedthird/templates/dialogues/ability-roll.html";
+        if (this.object.rollType === 'useOpposingCharms') {
+            template = "systems/exaltedthird/templates/dialogues/use-opposing-charms.html";
+        }
         if (this.object.rollType === 'base') {
             template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
         }
@@ -665,61 +684,64 @@ export class RollForm extends FormApplication {
         let buttons = super._getHeaderButtons();
         // Token Configuration
         if (this.object.rollType !== 'base') {
-            const settingsButton = {
-                label: game.i18n.localize('Ex3.Settings'),
-                class: 'roller-settings',
-                id: "roller-settings",
-                icon: 'fas fa-cog',
-                onclick: async (ev) => {
-                    let confirmed = false;
-                    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
-                    new Dialog({
-                        title: `Dice Roll Settings`,
-                        content: html,
-                        buttons: {
-                            roll: { label: "Save", callback: () => confirmed = true },
-                        },
-                        close: html => {
-                            if (confirmed) {
-                                this.object.settings.doubleSucccessCaps.sevens = parseInt(html.find('#sevensCap').val() || 0);
-                                this.object.settings.doubleSucccessCaps.eights = parseInt(html.find('#eightsCap').val() || 0);
-                                this.object.settings.doubleSucccessCaps.nines = parseInt(html.find('#ninesCap').val() || 0);
-                                this.object.settings.doubleSucccessCaps.tens = parseInt(html.find('#tensCap').val() || 0);
-                                this.object.settings.excludeOnesFromRerolls = html.find('#excludeOnesFromRerolls').is(":checked");
-                                this.object.settings.triggerOnOnes = html.find('#triggerOnOnes').val() || 'none';
-                                this.object.settings.triggerOnTens = html.find('#triggerOnTens').val() || 'none';
+            if (this.object.rollType !== 'useOpposingCharms') {
+                const settingsButton = {
+                    label: game.i18n.localize('Ex3.Settings'),
+                    class: 'roller-settings',
+                    id: "roller-settings",
+                    icon: 'fas fa-cog',
+                    onclick: async (ev) => {
+                        let confirmed = false;
+                        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
+                        new Dialog({
+                            title: `Dice Roll Settings`,
+                            content: html,
+                            buttons: {
+                                roll: { label: "Save", callback: () => confirmed = true },
+                            },
+                            close: html => {
+                                if (confirmed) {
+                                    this.object.settings.doubleSucccessCaps.sevens = parseInt(html.find('#sevensCap').val() || 0);
+                                    this.object.settings.doubleSucccessCaps.eights = parseInt(html.find('#eightsCap').val() || 0);
+                                    this.object.settings.doubleSucccessCaps.nines = parseInt(html.find('#ninesCap').val() || 0);
+                                    this.object.settings.doubleSucccessCaps.tens = parseInt(html.find('#tensCap').val() || 0);
+                                    this.object.settings.excludeOnesFromRerolls = html.find('#excludeOnesFromRerolls').is(":checked");
+                                    this.object.settings.triggerOnOnes = html.find('#triggerOnOnes').val() || 'none';
+                                    this.object.settings.triggerOnTens = html.find('#triggerOnTens').val() || 'none';
 
-                                this.object.settings.alsoTriggerTwos = html.find('#alsoTriggerTwos').is(":checked");
-                                this.object.settings.alsoTriggerNines = html.find('#alsoTriggerNines').is(":checked");
+                                    this.object.settings.alsoTriggerTwos = html.find('#alsoTriggerTwos').is(":checked");
+                                    this.object.settings.alsoTriggerNines = html.find('#alsoTriggerNines').is(":checked");
 
-                                this.object.settings.triggerTensCap = parseInt(html.find('#triggerTensCap').val() || 0);
-                                this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
+                                    this.object.settings.triggerTensCap = parseInt(html.find('#triggerTensCap').val() || 0);
+                                    this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
 
-                                this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
-                                this.object.triggerTargetDefensePenalty = parseInt(html.find('#targetDefensePenalty').val() || 0);
+                                    this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
+                                    this.object.triggerTargetDefensePenalty = parseInt(html.find('#targetDefensePenalty').val() || 0);
 
-                                this.object.settings.ignoreLegendarySize = html.find('#ignoreLegendarySize').is(":checked");
-                                this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
-                                this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
-                                this.object.settings.damage.doubleSucccessCaps.nines = parseInt(html.find('#damageNinesCap').val() || 0);
-                                this.object.settings.damage.doubleSucccessCaps.tens = parseInt(html.find('#damageTensCap').val() || 0);
-                                this.object.settings.damage.excludeOnesFromRerolls = html.find('#damageExcludeOnesFromRerolls').is(":checked");
-                                this.object.settings.damage.triggerTensCap = parseInt(html.find('#damageTriggerTensCap').val() || 0);
-                                this.object.settings.damage.alsoTriggerNines = html.find('#damageAlsoTriggerNines').is(":checked");
+                                    this.object.settings.ignoreLegendarySize = html.find('#ignoreLegendarySize').is(":checked");
+                                    this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
+                                    this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
+                                    this.object.settings.damage.doubleSucccessCaps.nines = parseInt(html.find('#damageNinesCap').val() || 0);
+                                    this.object.settings.damage.doubleSucccessCaps.tens = parseInt(html.find('#damageTensCap').val() || 0);
+                                    this.object.settings.damage.excludeOnesFromRerolls = html.find('#damageExcludeOnesFromRerolls').is(":checked");
+                                    this.object.settings.damage.triggerTensCap = parseInt(html.find('#damageTriggerTensCap').val() || 0);
+                                    this.object.settings.damage.alsoTriggerNines = html.find('#damageAlsoTriggerNines').is(":checked");
 
-                                for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
-                                    this.object.reroll[rerollKey].cap = parseInt(html.find(`#reroll-${this.object.reroll[rerollKey].number}-cap`).val() || 0);
-                                }
+                                    for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
+                                        this.object.reroll[rerollKey].cap = parseInt(html.find(`#reroll-${this.object.reroll[rerollKey].number}-cap`).val() || 0);
+                                    }
 
-                                for (let [rerollKey, rerollValue] of Object.entries(this.object.damage.reroll)) {
-                                    this.object.damage.reroll[rerollKey].cap = parseInt(html.find(`#damage-reroll-${this.object.damage.reroll[rerollKey].number}-cap`).val() || 0);
+                                    for (let [rerollKey, rerollValue] of Object.entries(this.object.damage.reroll)) {
+                                        this.object.damage.reroll[rerollKey].cap = parseInt(html.find(`#damage-reroll-${this.object.damage.reroll[rerollKey].number}-cap`).val() || 0);
+                                    }
                                 }
                             }
-                        }
-                    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
-                },
-            };
-            buttons = [settingsButton, ...buttons];
+                        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+                    },
+                };
+                buttons = [settingsButton, ...buttons];
+            }
+
             const charmsButton = {
                 label: game.i18n.localize('Ex3.AddCharm'),
                 class: 'add-charm',
@@ -806,7 +828,7 @@ export class RollForm extends FormApplication {
             popOut: true,
             template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
             id: "roll-form",
-            title: `Roll`,
+            title: game.i18n.localize('Ex3.Dialog'),
             width: 400,
             resizable: true,
             submitOnChange: true,
@@ -831,7 +853,11 @@ export class RollForm extends FormApplication {
      */
     async roll() {
         if (this.object.skipDialog) {
-            await this._roll();
+            if (this.object.rollType === 'useOpposingCharms') {
+                await this.useOpposingCharms();
+            } else {
+                await this._roll();
+            }
             return true;
         } else {
             var _promiseResolve;
@@ -864,6 +890,12 @@ export class RollForm extends FormApplication {
                         rollData.target = null;
                         rollData.showTargets = false;
                         rollData.targets = null;
+                        const addedCharmsConvertArray = [];
+                        for(let i = 0; i < this.object.addedCharms.length; i++) {
+                            addedCharmsConvertArray.push(duplicate(this.object.addedCharms[i]));
+                            addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
+                        }
+                        this.object.addedCharms = addedCharmsConvertArray;
 
                         let updates = {
                             "data.savedRolls": {
@@ -1165,7 +1197,57 @@ export class RollForm extends FormApplication {
         return formulaVal;
     }
 
+    async addMultiOpposedBonuses(data) {
+        for (const charm of data.charmList) {
+            charm.actor = data.actor;
+            for (let i = 0; i < charm.timesAdded; i++) {
+                await this.addOpposedBonus(charm);
+            }
+        }
+        if (this.object.showTargets) {
+            const targetValues = Object.values(this.object.targets);
+            if (targetValues.length === 1) {
+                targetValues[0].rollData.guile += data.guile;
+                targetValues[0].rollData.resolve += data.resolve;
+                targetValues[0].rollData.defense += data.defense;
+                targetValues[0].rollData.soak += data.soak;
+                targetValues[0].rollData.hardness += data.hardness;
+                targetValues[0].rollData.diceModifier += data.dice;
+            }
+            else {
+                for (const target of targetValues) {
+                    if (target.actor.id === data.actor._id || targetValues.length === 1) {
+                        target.rollData.guile += data.guile;
+                        target.rollData.resolve += data.resolve;
+                        target.rollData.defense += data.defense;
+                        target.rollData.soak += data.soak;
+                        target.rollData.hardness += data.hardness;
+                        target.rollData.diceModifier += data.dice;
+                    }
+                }
+            }
+        }
+        else {
+            this.object.defense += data.defense;
+            this.object.soak += data.soak;
+            this.object.hardness += data.hardness;
+            this.object.diceModifier += data.dice;
+            if (this.object.rollType === 'readIntentions') {
+                this.object.difficulty += data.guile;
+            }
+            if (this.object.rollType === 'social') {
+                this.object.difficulty += data.resolve;
+            }
+        }
+        this.render();
+    }
+
     async addOpposingCharm(charm) {
+        await this.addOpposedBonus(charm);
+        this.render();
+    }
+
+    async addOpposedBonus(charm) {
         const addedCharm = this.object.opposingCharms.find(opposedCharm => charm._id === opposedCharm._id);
         if (addedCharm) {
             addedCharm.timesAdded++;
@@ -1236,7 +1318,6 @@ export class RollForm extends FormApplication {
             this.object.settings.alsoTriggerTwos = charm.system.diceroller.opposedbonuses.alsotriggertwos;
         }
         this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
-        this.render();
     }
 
     activateListeners(html) {
@@ -1312,7 +1393,7 @@ export class RollForm extends FormApplication {
 
         html.on("change", ".spell", ev => {
             const fullSpell = this.actor.items.get(this.object.spell);
-            if(fullSpell) {
+            if (fullSpell) {
                 this.object.cost.willpower = parseInt(fullSpell.system.willpower);
             }
             else {
@@ -1326,11 +1407,17 @@ export class RollForm extends FormApplication {
         });
 
         html.find('#roll-button').click((event) => {
-            this._roll();
-            if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
-                this.resolve(true);
-                this.close();
+            if (this.object.rollType === 'useOpposingCharms') {
+                this.useOpposingCharms();
             }
+            else {
+                this._roll();
+                if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
+                    this.resolve(true);
+                    this.close();
+                }
+            }
+
         });
 
         html.find('#save-button').click((event) => {
@@ -1842,6 +1929,31 @@ export class RollForm extends FormApplication {
                 await this._updateTargetActor();
             }
         }
+    }
+
+    async useOpposingCharms() {
+        const data = {
+            charmList: this.object.addedCharms,
+            defense: this.object.addOppose.defense,
+            dice: this.object.addOppose.dice,
+            soak: this.object.addOppose.soak,
+            guile: this.object.addOppose.guile,
+            resolve: this.object.addOppose.resolve,
+            hardness: this.object.addOppose.hardness,
+        }
+
+        // if (game.rollForm) {
+        //     data.actor = this.actor;
+        //     game.rollForm.addMultiOpposedBonuses(data);
+        // }
+
+        game.socket.emit('system.exaltedthird', {
+            type: 'addMultiOpposingCharms',
+            data: data,
+            actorId: this.actor._id,
+        });
+        await this._updateCharacterResources();
+        this.close();
     }
 
     async _updateSpecialtyList() {
@@ -2393,19 +2505,27 @@ export class RollForm extends FormApplication {
         let extendedTest = ``;
 
         if (this.object.rollType === "joinBattle") {
-            resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+            if (game.combat) {
+                let combatant = this._getActorCombatant();
+                if (!combatant || combatant.initiative === null) {
+                    resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+                }
+            }
+            else {
+                resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+            }
         }
         if (this.object.rollType === "sorcery") {
-            if(this.object.spell) {
+            if (this.object.spell) {
                 let crashed = false;
                 if (game.combat) {
                     let combatant = this._getActorCombatant();
                     if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
                         crashed = true;
                     }
-                } 
+                }
                 const fullSpell = this.actor.items.get(this.object.spell);
-                if(fullSpell) {
+                if (fullSpell) {
                     resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.total}/${parseInt(fullSpell.system.cost) + (crashed ? 3 : 0)}</h4>`;
                 }
                 if (this.object.spellCast) {
@@ -2510,7 +2630,12 @@ export class RollForm extends FormApplication {
             if (combat) {
                 let combatant = this._getActorCombatant();
                 if (combatant) {
-                    combat.setInitiative(combatant.id, this.object.total + 3);
+                    if(combatant.initiative === null) {
+                        combat.setInitiative(combatant.id, this.object.total + 3);
+                    }
+                    else {
+                        combat.setInitiative(combatant.id, combatant.initiative + this.object.total);
+                    }
                 }
             }
         }
@@ -2558,9 +2683,11 @@ export class RollForm extends FormApplication {
                                         </div>
                                     </div>
                                     <h4 class="dice-total">${this.object.total} Successes</h4>
+                                    ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}
                                 </div>
                             </div>`;
             messageContent = await this._createChatMessageContent(messageContent, `Accuracy Roll ${this.object.target ? ` vs ${this.object.target.name}` : ''}`);
+
             ChatMessage.create({
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -2574,7 +2701,9 @@ export class RollForm extends FormApplication {
                         successModifier: this.object.successModifier,
                         total: this.object.total,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thereshholdSuccesses
+                        threshholdSuccesses: this.object.thereshholdSuccesses,
+                        targetActorId: this.object.target?.actor?._id,
+                        targetTokenId: this.object.target?.id,
                     }
                 }
             });
@@ -4256,7 +4385,7 @@ export class RollForm extends FormApplication {
     }
 
     async _updateCharacterResources() {
-        if(this.object.rollType === 'sorcery') {
+        if (this.object.rollType === 'sorcery') {
             this.object.previousSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMoteCap = this.actor.system.sorcery.motes.max;
@@ -4266,22 +4395,22 @@ export class RollForm extends FormApplication {
                 if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
                     crashed = true;
                 }
-            } 
+            }
             actorSorceryMotes += this.object.total;
-            if(this.object.spell) {
+            if (this.object.spell) {
                 const activeSpell = this.actor.items?.find(item => item.system?.shaping);
-                if(activeSpell && activeSpell.id !== this.object.spell) {
+                if (activeSpell && activeSpell.id !== this.object.spell) {
                     actorSorceryMotes = this.object.total;
                     actorSorceryMoteCap = 0;
                     this.object.previousSorceryMotes = 0;
                 }
-                for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
-                    if(spell.id === this.object.spell) {
-                        await spell.update({[`system.shaping`]: true});
-                        actorSorceryMoteCap = (parseInt(spell.system.cost) + (crashed ? 3: 0));
+                for (const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
+                    if (spell.id === this.object.spell) {
+                        await spell.update({ [`system.shaping`]: true });
+                        actorSorceryMoteCap = (parseInt(spell.system.cost) + (crashed ? 3 : 0));
                     }
-                    if(spell.system.shaping && spell.id !== this.object.spell) {
-                        await spell.update({[`system.shaping`]: false});
+                    if (spell.system.shaping && spell.id !== this.object.spell) {
+                        await spell.update({ [`system.shaping`]: false });
                     }
                 }
                 if (actorSorceryMoteCap && (actorSorceryMotes >= actorSorceryMoteCap)) {
@@ -4291,8 +4420,8 @@ export class RollForm extends FormApplication {
                     if (this.object.spell && !crashed) {
                         this.object.restore.willpower++;
                     }
-                    for(const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
-                        await spell.update({[`system.shaping`]: false});
+                    for (const spell of this.actor.items.filter(spell => spell.type === 'spell')) {
+                        await spell.update({ [`system.shaping`]: false });
                     }
                 }
             }

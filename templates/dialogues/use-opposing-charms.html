@@ -1,0 +1,53 @@
+<form style="display: flex;flex-direction: column;justify-content: space-between;">
+    <div>
+        <div class="sheet-body exaltedthird">
+            {{#if data.addingCharms }}
+            {{> systems/exaltedthird/templates/dialogues/add-roll-charm.html}}
+            {{else}}
+            {{> systems/exaltedthird/templates/dialogues/added-charm-list.html}}
+            <div class="resource flex-center">
+                <label class="resource-label">{{localize "Ex3.ManualBonuses"}}</label>
+            </div>
+            <div class="resource grid grid-2col" style="text-align:center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.DiceModifier"}}</label>
+                    <input name="object.dice" value="{{data.dice}}" type="number">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+                    <input name="object.addOppose.defense" value="{{data.addOppose.defense}}" type="number">
+                    {{#if data.opposeCaps.parry.cap}}
+                    <div><b>{{localize "Ex3.Parry"}}:</b> {{data.opposeCaps.parry.cap}}</div>
+                    {{/if}}
+                    {{#if data.opposeCaps.evasion.cap}}
+                    <div><b>{{localize "Ex3.Evasion"}}:</b> {{data.opposeCaps.evasion.cap}}</div>
+                    {{/if}}
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Soak"}}</label>
+                    <input name="object.addOppose.soak" value="{{data.addOppose.soak}}" type="number">
+                    <div>{{data.opposeCaps.soak.cap}}</div>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
+                    <input name="object.addOppose.hardness" value="{{data.addOppose.hardness}}" type="number">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                    <input name="object.addOppose.resolve" value="{{data.addOppose.resolve}}" type="number">
+                    <div>{{data.opposeCaps.resolve.cap}}</div>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Guile"}}</label>
+                    <input name="object.addOppose.guile" value="{{data.addOppose.guile}}" type="number">
+                    <div>{{data.opposeCaps.guile.cap}}</div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    <div class="d-flex">
+        <button type="button" id="roll-button">{{#ifNotEquals data.rollType 'useOpposingCharms'}}{{localize "Ex3.Roll"}}{{else}}{{localize "Ex3.Add"}}{{/ifNotEquals}}</button>
+        <button type="button" id="cancel">Cancel</button>
+    </div>
+</form>

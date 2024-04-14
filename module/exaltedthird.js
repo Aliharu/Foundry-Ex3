@@ -253,13 +253,17 @@ Hooks.once('init', async function () {
 // });
 
 async function handleSocket({ type, id, data, actorId, crasherId = null, addStatuses = [], deleteEffects = [] }) {
-  if (type === 'addOpposingCharm') {
+  if (type === 'addOpposingCharm' || type === 'addMultiOpposingCharms') {
     if (game.rollForm) {
-      data.actor = canvas.tokens.placeables.find(t => t.actor.id === actorId)?.actor;
+      data.actor = canvas.tokens.placeables.find(t => t.actor?.id === actorId)?.actor;
       if (!data.actor) {
         data.actor = game.actors.get(actorId);
       }
-      game.rollForm.addOpposingCharm(data);
+      if (type === 'addMultiOpposingCharms') {
+        game.rollForm.addMultiOpposedBonuses(data);
+      } else {
+        game.rollForm.addOpposingCharm(data);
+      }
     }
   }
 
@@ -423,6 +427,33 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         ev.stopPropagation();
         console.log(message);
         new CharacterBuilder(null, {}, {}, message.flags?.exaltedthird?.character).render(true);
+      });
+    });
+  html[0]
+    .querySelectorAll('.add-oppose-charms')
+    .forEach((target) => {
+      target.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        let actor = null;
+
+        if (game.user.character) {
+          actor = game.user.character;
+        }
+        else if (message.flags?.exaltedthird?.targetActorId) {
+          actor = canvas.tokens.placeables.find(t => t.id === message.flags?.exaltedthird?.targetTokenId)?.actor;
+          if (!actor) {
+            actor = game.actors.get(message.flags?.exaltedthird?.targetActorId);
+          }
+        }
+        else {
+          ui.notifications.error(`Error finding target and no character.`);
+        }
+        if (actor) {
+          new RollForm(actor, {}, {}, {
+            rollType: 'useOpposingCharms'
+          }).render(true);
+        }
       });
     });
 });

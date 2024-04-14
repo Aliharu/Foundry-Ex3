@@ -1123,11 +1123,38 @@ export class ExaltedThirdActor extends Actor {
   }
 
   actionRoll(data) {
+    if(data.rollType !== 'useOpposingCharms') {
+      this.sendTargetingChatMessage(data);
+    }
     if (this.type === 'npc') {
       game.rollForm = new RollForm(this, {}, {}, data).render(true);
     }
     else {
       game.rollForm = new RollForm(this, {}, {}, data).render(true);
+    }
+  }
+
+  async sendTargetingChatMessage(data) {
+    if (game.user.targets && game.user.targets.size > 0) {
+      for (const target of Array.from(game.user.targets)) {
+        const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
+          actor: this,
+          targetActor: target.actor,
+          imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || "icons/svg/explosion.svg",
+          rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || "Ex3.Other",
+        });
+        ChatMessage.create({
+          user: game.user.id,
+          content: messageContent,
+          type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+          flags: {
+            "exaltedthird": {
+              targetActorId: target.actor.id,
+              targetTokenId: target.id,
+            }
+          },
+        });
+      }
     }
   }
 

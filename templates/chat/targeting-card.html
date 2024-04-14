@@ -1,0 +1,28 @@
+<div class="chat-card exaltedthird">
+    <div class="card-content">A character is being targeted by an action.</div>
+    <div class="grid grid-3col" style="text-align:center;">
+        <div>
+            <div>
+                <img class="borderless-image" src="{{actor.img}}" title="{{actor.name}}" width="64" height="64" />
+            </div>
+            <div>
+                <b>{{actor.name}}</b>
+            </div>
+        </div>
+        <div>
+            <img class="borderless-image" src="{{imgUrl}}" width="64" height="64" />
+            <div>
+                <b>{{localize rollType}}</b>
+            </div>
+        </div>
+        <div>
+            <div>
+                <img class="borderless-image" class="list-item-image" src="{{targetActor.img}}" title="{{targetActor.name}}" width="64" height="64" />
+            </div>
+            <div>
+                <b>{{targetActor.name}}</b>
+            </div>
+        </div>
+    </div>
+    <div><button class="add-oppose-charms"> <i class="fas fa-shield-plus"></i>{{localize "Ex3.AddOpposingCharms"}}</button></div>
+</div>

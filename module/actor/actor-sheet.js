@@ -1532,7 +1532,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id") }).render(true);
+      this.actor.actionRoll(
+        {
+          rollType: this.actor.system.savedRolls[li.data("saved-roll-id")].rollType,
+          rollId: li.data("saved-roll-id") 
+        }
+      );
     });
 
     html.find('.anima-flux').click(ev => {
