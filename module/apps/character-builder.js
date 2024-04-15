@@ -1923,6 +1923,7 @@ export default class CharacterBuilder extends FormApplication {
 
   async getbaseCharacterData(actorData, itemData) {
     actorData.name = this.object.character.name || this.object.character.defaultName;
+    actorData.prototypeToken.name = this.object.character.name || this.object.character.defaultName;
     actorData.system.essence.value = this.object.character.essence;
     actorData.system.details.exalt = this.object.character.exalt;
     actorData.system.details.caste = this.object.character.caste;

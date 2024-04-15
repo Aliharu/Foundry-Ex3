@@ -644,6 +644,7 @@ export default class NPCGenerator extends FormApplication {
       "legendary": 5,
     }
     actorData.name = this.object.character.name || this.object.character.defaultName;
+    actorData.prototypeToken.name = this.object.character.name || this.object.character.defaultName;
     actorData.system.essence.value = this.object.character.essence;
     actorData.system.creaturetype = this.object.character.npcType;
     actorData.system.details.exalt = this.object.character.exalt;

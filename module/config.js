@@ -100,6 +100,36 @@ exaltedthird.activeEffectChanges = {
   'system.damage.round.aggravated': 'Ex3.AggravatedDamageRound',
 };
 
+exaltedthird.rollTypeTargetLabels = {
+  readIntentions: "Ex3.ReadIntentions",
+  social: "Ex3.Social",
+  command: "Ex3.Command",
+  grappleControl: "Ex3.GrappleControl",
+  accuracy: "Ex3.Accuracy",
+  damage: "Ex3.Damage",
+  withering: "Ex3.Withering",
+  decisive: "Ex3.Decisive",
+  gambit: "Ex3.Gambit",
+  'withering-split': "Ex3.Withering",
+  'decisive-split': "Ex3.Decisive",
+  'gambit-split': "Ex3.Gambit",
+}
+
+exaltedthird.rollTypeTargetImages = {
+  readIntentions: "systems/exaltedthird/assets/icons/spy.svg",
+  social: "systems/exaltedthird/assets/icons/heartburn.svg",
+  command: "systems/exaltedthird/assets/icons/rally-the-troops.svg",
+  grappleControl: "systems/exaltedthird/assets/icons/grab.svg",
+  accuracy: "systems/exaltedthird/assets/icons/targeting.svg",
+  damage: "systems/exaltedthird/assets/icons/bloody-sword.svg",
+  withering: "systems/exaltedthird/assets/icons/sword-clash.svg",
+  decisive: "systems/exaltedthird/assets/icons/bloody-sword.svg",
+  gambit: "systems/exaltedthird/assets/icons/punch-blast.svg",
+  'withering-split': "systems/exaltedthird/assets/icons/sword-clash.svg",
+  'decisive-split': "systems/exaltedthird/assets/icons/bloody-sword.svg",
+  'gambit-split': "systems/exaltedthird/assets/icons/punch-blast.svg",
+}
+
 exaltedthird.exaltcharmtypes = {
   abyssal: "Ex3.Abyssal",
   alchemical: "Ex3.Alchemical",

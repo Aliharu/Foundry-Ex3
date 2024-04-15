@@ -383,7 +383,10 @@
   }
 }
 
-
+.borderless-image {
+  border: none;
+  border-radius: 0px;
+}
 
 
 .chat-card {

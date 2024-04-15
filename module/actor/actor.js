@@ -742,6 +742,20 @@ export class ExaltedThirdActor extends Actor {
     data.currentOnslaughtPenalty = currentOnslaughtPenalty;
     data.currentDefensePenalty = currentDefensePenalty;
 
+    if (actorData.type === 'character') {
+      for (let [key, attr] of Object.entries(actorData.system.attributes)) {
+        attr.name = CONFIG.exaltedthird.attributes[key];
+      }
+      for (let [key, ability] of Object.entries(actorData.system.abilities)) {
+        ability.name = CONFIG.exaltedthird.abilities[key];
+      }
+    }
+    else {
+      for (let [key, pool] of Object.entries(actorData.system.pools)) {
+        pool.name = CONFIG.exaltedthird.npcpools[key];
+      }
+    }
+
     // Initialize containers.
     const customAbilities = [];
     const gear = [];
@@ -1109,11 +1123,38 @@ export class ExaltedThirdActor extends Actor {
   }
 
   actionRoll(data) {
+    if(data.rollType !== 'useOpposingCharms') {
+      this.sendTargetingChatMessage(data);
+    }
     if (this.type === 'npc') {
       game.rollForm = new RollForm(this, {}, {}, data).render(true);
     }
     else {
       game.rollForm = new RollForm(this, {}, {}, data).render(true);
+    }
+  }
+
+  async sendTargetingChatMessage(data) {
+    if (game.user.targets && game.user.targets.size > 0) {
+      for (const target of Array.from(game.user.targets)) {
+        const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
+          actor: this,
+          targetActor: target.actor,
+          imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || "icons/svg/explosion.svg",
+          rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || "Ex3.Other",
+        });
+        ChatMessage.create({
+          user: game.user.id,
+          content: messageContent,
+          type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+          flags: {
+            "exaltedthird": {
+              targetActorId: target.actor.id,
+              targetTokenId: target.id,
+            }
+          },
+        });
+      }
     }
   }
 

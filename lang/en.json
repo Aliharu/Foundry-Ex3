@@ -54,7 +54,7 @@
     "Ex3.Supernal": "Supernal",
     "Ex3.Apocalyptic": "Apocalyptic",
     "Ex3.Anima": "Anima",
-    "Ex3.AnimaAfterRoll": "Anima After Roll",
+    "Ex3.AnimaAfter": "Anima After",
     "Ex3.AnimaBanner": "Anima Banner",
     "Ex3.AnimaEffects": "Anima Effects",
     "Ex3.Bonfire": "Bonfire",
@@ -1031,5 +1031,9 @@
     "Ex3.TriggerNines&Tens": "Trigger Nines & Tens",
     "Ex3.SilverXp": "Silver Xp",
     "Ex3.GoldXp": "Gold Xp",
-    "Ex3.WhiteXp": "White Xp"
+    "Ex3.WhiteXp": "White Xp",
+    "Ex3.AddOpposingCharms": "Add Opposing Charms",
+    "Ex3.Cancel": "Cancel",
+    "Ex3.ManualBonuses": "Manual Bonuses",
+    "Ex3.Dialog": "Dialog"
 }

@@ -1,6 +1,9 @@
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
-        {{localize "Ex3.Charms"}} {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}} {{#if data.charmDiceAdded}}({{data.charmDiceAdded}} Charm Dice){{/if}}
+        {{localize "Ex3.Charms"}} 
+        {{#ifNotEquals data.rollType 'useOpposingCharms'}}
+        {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}} {{#if data.charmDiceAdded}}({{data.charmDiceAdded}} Charm Dice){{/if}}
+        {{/ifNotEquals}}
     </div>
     <div>
         <i class="fas fa-caret-down"></i>
@@ -31,14 +34,14 @@
             {{/select}}
         </select>
         {{/if}}
-        <label class="resource-label">{{localize "Ex3.AnimaAfterRoll"}}</label>
+        <label class="resource-label">{{localize "Ex3.AnimaAfter"}}</label>
         <div>
             {{ data.newAnima }}
         </div>
     </div>
     <ol class="items-list">
         {{#each data.addedCharms as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item.id}}">
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
             <h4 class="item-name">{{item.name}}{{#if item.system.macro}}(Macro){{/if}}{{#if item.system.damagemacro}}(Damage Macro){{/if}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
             <div class="item-controls">
