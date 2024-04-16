@@ -1064,13 +1064,17 @@ export class ExaltedThirdActor extends Actor {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
-    if (this.effects.some(e => e.statuses.has('grappled') || this.effects.some(e => e.statuses.has('grappling')))) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
     if (currentPenalty !== 'inc') {
       currentParryPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
       currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
+    }
+
+    data.nonsurprisedevasionpenalty = { 'value': currentEvasionPenalty };
+    data.nonsurprisedparrypenalty = { 'value': currentParryPenalty };
+
+    if (this.effects.some(e => e.statuses.has('grappled') || this.effects.some(e => e.statuses.has('grappling')))) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
     }
 
     let armorPenalty = 0;
@@ -1080,8 +1084,8 @@ export class ExaltedThirdActor extends Actor {
     }
 
     data.woundpenalty = { 'value': currentPenalty };
-    data.evasionpenalty = { 'value': currentEvasionPenalty };
     data.onslaught = { 'value': currentOnslaughtPenalty };
+    data.evasionpenalty = { 'value': currentEvasionPenalty };
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
     data.armorpenalty = { 'value': armorPenalty };

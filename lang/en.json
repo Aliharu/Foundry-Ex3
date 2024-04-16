@@ -1011,7 +1011,7 @@
 
     "Ex3.DiceRoller": "Dice Roller",
 
-    "Ex3.TriggerTime": "TriggerTime",
+    "Ex3.TriggerTime": "Trigger Time",
     "Ex3.BeforeRoll": "Before Roll",
     "Ex3.AfterRoll": "After Roll",
     "Ex3.BeforeDamage": "Before Damage",
@@ -1029,11 +1029,9 @@
     "Ex3.RerollFailedOnce": "Reroll Failed Once",
     "Ex3.TriggerTens": "Trigger Tens",
     "Ex3.TriggerNines&Tens": "Trigger Nines & Tens",
-    "Ex3.SilverXp": "Silver Xp",
-    "Ex3.GoldXp": "Gold Xp",
-    "Ex3.WhiteXp": "White Xp",
     "Ex3.AddOpposingCharms": "Add Opposing Charms",
     "Ex3.Cancel": "Cancel",
     "Ex3.ManualBonuses": "Manual Bonuses",
-    "Ex3.Dialog": "Dialog"
+    "Ex3.Dialog": "Dialog",
+    "Ex3.RollResults": "Roll Results"
 }

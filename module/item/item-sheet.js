@@ -266,6 +266,16 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       });
     });
 
+    html.find('.show-roll-triggers-link').click(ev => {
+      new Dialog({
+        title: `ReadMe`,
+        content: '<div><p><a href="https://github.com/Aliharu/Foundry-Ex3/wiki/Charm-Triggers">Instructions and Syntax.</a></p></div>',
+        buttons: {
+          cancel: { label: "Close" }
+        }
+      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+    });
+
     // html.on("change", ".bonus-change", ev => {
     //   var triggerType = ev.currentTarget.dataset.type;
     //   var index = ev.currentTarget.dataset.index;

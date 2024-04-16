@@ -892,7 +892,7 @@ export class RollForm extends FormApplication {
                         rollData.showTargets = false;
                         rollData.targets = null;
                         const addedCharmsConvertArray = [];
-                        for(let i = 0; i < this.object.addedCharms.length; i++) {
+                        for (let i = 0; i < this.object.addedCharms.length; i++) {
                             addedCharmsConvertArray.push(duplicate(this.object.addedCharms[i]));
                             addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
                         }
@@ -1162,7 +1162,7 @@ export class RollForm extends FormApplication {
         return rollerValue;
     }
 
-    _getRerollFormulaCap(formula) {
+    _getRerollFormulaCap(formula, damage = false) {
         const rerollFaceMap = {
             '1': 'one',
             '2': 'two',
@@ -1179,18 +1179,27 @@ export class RollForm extends FormApplication {
         if (formula.includes('cap')) {
             var split = formula.split(' ');
             if (rerollFaceMap[split[0]]) {
-                this.object.reroll[rerollFaceMap[split[0]]].status = true;
-                this.object.reroll[rerollFaceMap[split[0]]].cap = this._getFormulaActorValue(split[2]);
+                if (damage) {
+                    this.object.damage.reroll[rerollFaceMap[split[0]]].status = true;
+                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getFormulaActorValue(split[2]);
+                } else {
+                    this.object.damage.reroll[rerollFaceMap[split[0]]].status = true;
+                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getFormulaActorValue(split[2]);
+                }
             }
         }
         else {
             if (rerollFaceMap[formula]) {
-                this.object.reroll[rerollFaceMap[formula]].status = true;
+                if (damage) {
+                    this.object.damage.reroll[rerollFaceMap[formula]].status = true;
+                } else {
+                    this.object.reroll[rerollFaceMap[formula]].status = true;
+                }
             }
         }
     }
 
-    _getDoublesFormula(formula) {
+    _getDoublesFormula(formula, damage = false) {
         const doublesChart = {
             '7': 'sevens',
             '8': 'eights',
@@ -1200,13 +1209,35 @@ export class RollForm extends FormApplication {
         if (formula.includes('cap')) {
             var split = formula.split(' ');
             if (doublesChart[split[0]]) {
-                this.object.doubleSuccess = parseInt(split[0]);
-                this.object.settings.doubleSucccessCaps[doublesChart[split[0]]] = this._getFormulaActorValue(split[2]);
+                if (damage) {
+                    this.object.damage.doubleSuccess = parseInt(split[0]);
+                    this.object.settings.damage.doubleSucccessCaps[doublesChart[split[0]]] = this._getFormulaActorValue(split[2]);
+                } else {
+                    this.object.doubleSuccess = parseInt(split[0]);
+                    this.object.settings.doubleSucccessCaps[doublesChart[split[0]]] = this._getFormulaActorValue(split[2]);
+                }
             }
         }
         else {
             if (doublesChart[formula]) {
-                this.object.doubleSuccess = parseInt(formula);
+                if (damage) {
+                    this.object.damage.doubleSuccess = parseInt(formula);
+                } else {
+                    this.object.doubleSuccess = parseInt(formula);
+                }
+            }
+        }
+    }
+
+    _getHealthFormula(formula) {
+        let numberValue = formula.replace(/[^0-9]/g, '');
+        if (numberValue) {
+            if (formula.includes('a')) {
+                this.object.cost.healthaggravated += numberValue;
+            } else if (formula.includes('b')) {
+                this.object.cost.healthbashing += numberValue;
+            } else {
+                this.object.cost.healthlethal += numberValue;
             }
         }
     }
@@ -1293,7 +1324,7 @@ export class RollForm extends FormApplication {
     }
 
     async addOpposingCharm(charm) {
-        if(this.object.rollType === 'useOpposingCharms') {
+        if (this.object.rollType === 'useOpposingCharms') {
             this.addCharm(charm);
         } else {
             await this.addOpposedBonus(charm);
@@ -1988,7 +2019,7 @@ export class RollForm extends FormApplication {
 
     async useOpposingCharms() {
         const addingCharms = [];
-        for(const charm of this.object.addedCharms) {
+        for (const charm of this.object.addedCharms) {
             const newCharm = duplicate(charm);
             newCharm.timesAdded = charm.timesAdded;
             addingCharms.push(newCharm);
@@ -2691,7 +2722,7 @@ export class RollForm extends FormApplication {
             if (combat) {
                 let combatant = this._getActorCombatant();
                 if (combatant) {
-                    if(combatant.initiative === null) {
+                    if (combatant.initiative === null) {
                         combat.setInitiative(combatant.id, this.object.total + 3);
                     }
                     else {
@@ -3452,58 +3483,182 @@ export class RollForm extends FormApplication {
 
     _addTriggerBonuses(type = 'beforeRoll') {
         for (const charm of this.object.addedCharms) {
-            for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
-                if (this._triggerRequirementsMet(trigger)) {
-                    for (const bonus of Object.values(trigger.bonuses)) {
-                        const cleanedValue = bonus.value.toLowerCase().trim();
-                        switch (bonus.effect) {
-                            case 'diceModifier':
-                            case 'successModifier':
-                            case 'rerollDice':
-                            case 'diceToSuccesses':
-                                this.object[bonus.effect] += this._getFormulaValue(cleanedValue);
-                                break;
-                            case 'doubleSuccess':
-                                this._getDoublesFormula(cleanedValue);
-                                break;
-                            case 'decreaseTargetNumber':
-                                this.object.targetNumber -= this._getFormulaValue(cleanedValue);
-                                break;
-                            case 'reduceDifficulty':
+            this._addBonuses(charm, type);
+        }
+        for(const charm of this.object.opposingCharms) {
+            this._addBonuses(charm, type);
+        }
+    }
+
+    _addBonuses(charm, type) {
+        const triggerTensMap = {
+            damage: 'damage',
+            extrasuccess: 'extraSuccess',
+            ignorehardness: 'ignoreHardness',
+            postsoakdamage: 'postSoakDamage',
+            rerollldie: 'rerolllDie',
+            restoremote: 'restoreMote',
+        }
+        const triggerTensDamageMap = {
+            subtracttargettnitiative: 'subtractTargetInitiative',
+        }
+        for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
+            if (this._triggerRequirementsMet(trigger)) {
+                for (const bonus of Object.values(trigger.bonuses)) {
+                    const cleanedValue = bonus.value.toLowerCase().trim();
+                    switch (bonus.effect) {
+                        case 'diceModifier':
+                        case 'successModifier':
+                        case 'rerollDice':
+                        case 'diceToSuccesses':
+                        case 'triggerSelfDefensePenalty':
+                        case 'triggerTargetDefensePenalty':
+                            this.object[bonus.effect] += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'doubleSuccess':
+                            this._getDoublesFormula(cleanedValue);
+                            break;
+                        case 'decreaseTargetNumber':
+                            this.object.targetNumber -= this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'rerollDieFace':
+                            this._getRerollFormulaCap(cleanedValue);
+                            break;
+                        case 'excludeOnes':
+                            this.object.settings.excludeOnesFromRerolls = true;
+                            break;
+                        case 'rerollFailed':
+                        case 'rollTwice':
+                        case 'activateAura':
+                            this.object[bonus.effect] = true;
+                            break;
+                        case 'triggerOnTens':
+                            if (triggerTensMap[cleanedValue]) {
+                                this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
+                            }
+                            break;
+                        case 'triggerNinesAndTens':
+                            if (triggerTensMap[cleanedValue]) {
+                                this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
+                                this.object.settings.alsoTriggerNines = true;
+                            }
+                            break;
+                        case 'triggerTensCap':
+                            this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue);
+                        case 'reduceDifficulty':
+                            if (this.object.showTargets) {
+                                const targetValues = Object.values(this.object.targets);
+                                for (const target of targetValues) {
+                                    target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue));
+                                    target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue));
+                                    target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue));
+                                }
+                            }
+                            else {
+                                this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue));
+                                this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue));
+                            }
+                            break;
+                        case 'damageDice':
+                        case 'damageSuccessModifier':
+                            this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'rerollDice-damage':
+                            this.object.damage.rerollDice += this._getFormulaValue(cleanedValue);
+                        case 'diceToSuccesses-damage':
+                            this.object.damage.diceToSuccesses += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'doubleSuccess-damage':
+                            this._getDoublesFormula(cleanedValue, true);
+                            break;
+                        case 'decreaseTargetNumber-damage':
+                            this.object.damage.targetNumber -= this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'rerollDieFace-damage':
+                            this._getRerollFormulaCap(cleanedValue, true);
+                            break;
+                        case 'excludeOnes-damage':
+                            this.object.settings.damage.excludeOnesFromRerolls = true;
+                            break;
+                        case 'rerollFailed-damage':
+                            this.object.damage.rerollFailed = true;
+                            break;
+                        case 'rollTwice-damage':
+                            this.object.damage.rollTwice = true;
+                            break;
+                        case 'triggerOnTens-damage':
+                            if (triggerTensDamageMap[cleanedValue]) {
+                                this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
+                            }
+                            break;
+                        case 'triggerNinesAndTens-damage':
+                            if (triggerTensDamageMap[cleanedValue]) {
+                                this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
+                                this.object.settings.damage.alsoTriggerNines = true;
+                            }
+                            break;
+                        case 'triggerTensCap-damage':
+                            this.object.settings.damage.triggerTensCap += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'motes-spend':
+                        case 'initiative-spend':
+                        case 'anima-spend':
+                        case 'willpower-spend':
+                        case 'penumbra-spend':
+                        case 'silverXp-spend':
+                        case 'goldXp-spend':
+                        case 'whiteXp-spend':
+                            const spendKey = bonus.effect.replace('-spend', '');
+                            this.object.cost[spendKey] += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'muteMotes-spend':
+                            this.object.cost.muteMotes += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'grappleControl-spend':
+                            this.object.cost.grappleControl += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'health-spend':
+                            this._getHealthFormula(cleanedValue);
+                            break;
+                        case 'aura-spend':
+                            this.object.cost.aura = cleanedValue;
+                            break;
+                        case 'motes-restore':
+                        case 'initiative-restore':
+                        case 'anima-restore':
+                        case 'willpower-restore':
+                            const restoreKey = bonus.effect.replace('-restore', '');
+                            this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue);
+                            break;
+                        case 'ignoreLegendarySize':
+                            this.object.settings.ignoreLegendarySize = true;
+                            break;
+                        case 'defense':
+                        case 'soak':
+                        case 'hardness':
+                        case 'resolve':
+                        case 'guile':
+                            if(type === 'beforeRoll') {
                                 if (this.object.showTargets) {
                                     const targetValues = Object.values(this.object.targets);
-                                    for (const target of targetValues) {
-                                        target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue));
-                                        target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue));
-                                        target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue));
+                                    if (targetValues.length === 1) {
+                                        targetValues[0].rollData[bonus.effect] += this._getFormulaValue(cleanedValue);
+                                    }
+                                    else {
+                                        for (const target of targetValues) {
+                                            targetValues[0].rollData[bonus.effect] += this._getFormulaValue(cleanedValue);
+                                        }
                                     }
                                 }
                                 else {
-                                    this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue));
-                                    this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue));
+                                    if(bonus.effect !== 'resolve' && bonus.effect !== 'guile') {
+                                        this.object[bonus.effect] += this._getFormulaValue(cleanedValue);
+                                    } else {
+                                        this.object.difficulty += this._getFormulaValue(cleanedValue);
+                                    }
                                 }
-                                break;
-                            case 'rerollDieFace':
-                                //Do something about the cap
-                                this._getRerollFormulaCap(cleanedValue);
-                                break;
-                            case 'excludeOnes':
-                                this.object.settings.excludeOnesFromRerolls = true;
-                                break;
-                            case 'rerollFailed':
-                            case 'rollTwice':
-                                this.object[bonus.effect] = true;
-                                break;
-                            case 'triggerOnTens':
-                                this.object.settings.triggerOnTens = cleanedValue;
-                                break;
-                            case 'triggerNinesAndTens':
-                                this.object.settings.triggerOnTens = cleanedValue;
-                                this.object.settings.alsoTriggerNines = true;
-                                break;
-                            case 'triggerTensCap':
-                                this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue);
-                        }
+                            }
+                            break;
                     }
                 }
             }

@@ -865,7 +865,8 @@
 
         <div class="tab" data-group="primary" data-tab="triggers">
             <div class="resource flex-center mb-1" style="font-size: 17px;">
-                <label class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger"
+                <a><i class="fas fa-info-circle show-roll-triggers-link cursor-pointer"></i></a> <label
+                    class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger"
                         title="Create trigger" data-type="dicerollertriggers"><i class="fas fa-plus"></i></a></label>
             </div>
             {{#each system.triggers.dicerollertriggers as |trigger index|}}
@@ -877,7 +878,8 @@
                         </div>
                         <div class="d-flex" style="align-items:center; margin-bottom: 10px;">
                             <input name="system.triggers.dicerollertriggers.{{index}}.name" class="trigger-name"
-                                value="{{trigger.name}}" type="text" data-index="{{index}}" data-type="dicerollertriggers">
+                                value="{{trigger.name}}" type="text" data-index="{{index}}"
+                                data-type="dicerollertriggers">
                         </div>
                     </div>
                     <div>
@@ -887,11 +889,12 @@
                         <div class="d-flex" style="align-items:center; margin-bottom: 10px;justify-content:center;">
                             <select name="system.triggers.dicerollertriggers.{{index}}.triggerTime" data-type="String">
                                 {{#select trigger.triggerTime}}
-                                    <option value="beforeRoll">{{localize "Ex3.BeforeRoll"}}</option>
+                                <option value="beforeRoll">{{localize "Ex3.BeforeRoll"}}</option>
                                 {{/select}}
                             </select>
                             <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers"
-                                data-index="{{index}}"><i class="fas fa-trash" style="margin-right: 15px; margin-left:15px;"></i></a>
+                                data-index="{{index}}"><i class="fas fa-trash"
+                                    style="margin-right: 15px; margin-left:15px;"></i></a>
                         </div>
                     </div>
                 </div>
@@ -929,7 +932,8 @@
                                 <option value="damageSuccessModifier">{{localize "Ex3.AddSuccesses"}}</option>
                                 <option value="doubleSuccess-damage">{{localize "Ex3.DoubleSuccess"}}+</option>
                                 <option value="diceToSuccesses-damage">{{localize "Ex3.DicetoSuccesses"}}</option>
-                                <option value="decreaseTargetNumber-damage">{{localize "Ex3.DecreaseTargetNumber"}}</option>
+                                <option value="decreaseTargetNumber-damage">{{localize "Ex3.DecreaseTargetNumber"}}
+                                </option>
                                 <option value="rerollDieFace-damage">{{localize "Ex3.RerollDieFace"}}</option>
                                 <option value="rerollNumberDice-damage">{{localize "Ex3.RerollNumberDice"}}</option>
                                 <option value="rollTwice-damage">{{localize "Ex3.RollTwiceKeepHighest"}}</option>
@@ -953,11 +957,10 @@
                                 <option value="grappleControl-spend">{{localize "Ex3.GrappleControl"}}</option>
                                 <option value="health-spend">{{localize "Ex3.Health"}}</option>
                                 <option value="aura-spend">{{localize "Ex3.Aura"}}</option>
-                                <option value="xp-spend">{{localize "Ex3.XP"}}</option>
                                 <option value="penumbra-spend">{{localize "Ex3.Penumbra"}}</option>
-                                <option value="silverXp-spend">{{localize "Ex3.SilverXp"}}</option>
-                                <option value="goldXp-spend">{{localize "Ex3.Penumbra"}}</option>
-                                <option value="whiteXp-spend">{{localize "Ex3.WhiteXp"}}</option>
+                                <option value="silverXp-spend">{{localize "Ex3.SilverXP"}}</option>
+                                <option value="goldXp-spend">{{localize "Ex3.GilverXP"}}</option>
+                                <option value="whiteXp-spend">{{localize "Ex3.WhiteXP"}}</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.Restore'}}">
                                 <option value="motes-restore">{{localize "Ex3.Motes"}}</option>
@@ -966,10 +969,18 @@
                                 <option value="initiative-restore">{{localize "Ex3.Initiative"}}</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.Other'}}">
-                                <option value="selfDefensePenalty">{{localize "Ex3.SelfDefensePenalty"}}</option>
-                                <option value="targetDefensePenalty">{{localize "Ex3.TargetDefensePenalty"}}</option>
+                                <option value="triggerSelfDefensePenalty">{{localize "Ex3.SelfDefensePenalty"}}</option>
+                                <option value="triggerTargetDefensePenalty">{{localize "Ex3.TargetDefensePenalty"}}
+                                </option>
                                 <option value="activateAura">{{localize "Ex3.ActivateAura"}}</option>
                                 <option value="ignoreLegendarySize">{{localize "Ex3.IgnoreLegendarySize"}}</option>
+                            </optgroup>
+                            <optgroup label="{{localize 'Ex3.Defense'}}">
+                                <option value="defense">{{localize "Ex3.Defense"}}</option>
+                                <option value="soak">{{localize "Ex3.Soak"}}</option>
+                                <option value="hardness">{{localize "Ex3.Hardness"}}</option>
+                                <option value="resolve">{{localize "Ex3.Resolve"}}</option>
+                                <option value="guile">{{localize "Ex3.Guile"}}</option>
                             </optgroup>
                             {{/select}}
                         </select>
@@ -981,7 +992,8 @@
                                 value="{{bonus.value}}" type="text">
                             <a class="item-control delete-trigger-subitem" title="Delete bonus"
                                 data-type="dicerollertriggers" data-index="{{index}}" data-subindex="{{bonusIndex}}"
-                                data-subtype="bonuses"><i class="fas fa-trash" style="margin-right: 15px; margin-left: 15px;"></i></a>
+                                data-subtype="bonuses"><i class="fas fa-trash"
+                                    style="margin-right: 15px; margin-left: 15px;"></i></a>
                         </div>
                     </div>
                     {{/each}}
@@ -1019,8 +1031,8 @@
                                 value="{{requirement.value}}" type="text">
                             <a class="item-control delete-trigger-subitem" title="Delete bonus"
                                 data-type="dicerollertriggers" data-index="{{index}}"
-                                data-subindex="{{requirementIndex}}" data-subtype="requirements"><i
-                                    class="fas fa-trash" style="margin-right: 15px; margin-left: 15px;"></i></a>
+                                data-subindex="{{requirementIndex}}" data-subtype="requirements"><i class="fas fa-trash"
+                                    style="margin-right: 15px; margin-left: 15px;"></i></a>
                         </div>
                     </div>
                     {{/each}}
