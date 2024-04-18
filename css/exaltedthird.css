@@ -764,6 +764,10 @@
   border-radius: 0px;
 }
 
+.black-icon {
+  filter: invert(1);
+}
+
 .chat-card .roll-card-header {
   font-size: 16px;
   border-bottom: 1px solid black;

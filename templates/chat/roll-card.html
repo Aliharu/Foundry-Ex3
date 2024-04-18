@@ -1,5 +1,49 @@
 <div class="chat-card exaltedthird">
-    <div class="card-content">{{name}}</div>
+    {{#if rollData.target}}
+    <div class="grid grid-3col" style="text-align:center;">
+        <div>
+            <div>
+                <img class="borderless-image" src="{{rollingActor.img}}" title="{{rollingActor.name}}" width="64" height="64" />
+            </div>
+            <div>
+                <b>{{rollingActor.name}}</b>
+            </div>
+        </div>
+        <div>
+            <img class="borderless-image black-icon" src="{{rollTypeImgUrl}}" width="64" height="64" />
+            <div>
+                <b>{{localize rollTypeLabel}}</b>
+            </div>
+        </div>
+        <div>
+            <div>
+                <img class="borderless-image" class="list-item-image" src="{{rollData.target.actor.img}}" title="{{rollData.target.actor.name}}" width="64" height="64" />
+            </div>
+            <div>
+                <b>{{rollData.target.actor.name}}</b>
+            </div>
+        </div>
+    </div>
+    {{else}}
+        {{#ifNotEquals rollData.rollType 'base'}}
+            <div class="grid grid-2col" style="text-align:center;">
+                <div>
+                    <div>
+                        <img class="borderless-image" src="{{rollingActor.img}}" title="{{rollingActor.name}}" width="64" height="64" />
+                    </div>
+                    <div>
+                        <b>{{rollingActor.name}}</b>
+                    </div>
+                </div>
+                <div>
+                    <img class="borderless-image black-icon" src="{{rollTypeImgUrl}}" width="64" height="64" />
+                    <div>
+                        <b>{{localize rollTypeLabel}}</b>
+                    </div>
+                </div>
+            </div>
+        {{/ifNotEquals}}
+    {{/if}}
     {{#ifNotEquals rollData.rollType 'base'}}
     <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
         <div class="resource-label">
@@ -252,6 +296,7 @@
         </div>
         {{#if rollData.finished}}
         <div>
+            <b>{{localize "Ex3.CraftType"}}</b>: {{rollData.craftType}},
             <b>{{localize "Ex3.ObjectivesCompleted"}}: </b>{{rollData.objectivesCompleted}}
         </div>
         {{/if}}
@@ -418,6 +463,8 @@
             {{/each}}
         {{/if}}
     </div>
+    {{else}}
+    <div class="card-content">{{name}}</div>
     {{/ifNotEquals}}
     <div class="card-buttons">
         <div class="flexrow 1">

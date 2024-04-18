@@ -129,6 +129,15 @@ export function registerSettings() {
         config: true,
     });
 
+    game.settings.register('exaltedthird', 'nonTargetRollCards', {
+        name: game.i18n.localize('Ex3.NonTargetRollCards'),
+        hint: game.i18n.localize('Ex3.NonTargetRollCardsDescription'),
+        default: false,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
+
     game.settings.register("exaltedthird", "unifiedCharacterCreation", {
         name: game.i18n.localize('Ex3.UnifiedCharacterCreation'),
         hint: game.i18n.localize('Ex3.UnifiedCharacterCreationDescription'),
@@ -220,6 +229,16 @@ export function registerSettings() {
         type: Boolean,
         ruleChange: true,
         default: false
+    });
+
+    game.settings.register("exaltedthird", "disengageCost", {
+        name: game.i18n.localize('Ex3.DisengageCost'),
+        hint: game.i18n.localize('Ex3.DisengageCostDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        default: true
     });
 }
 
