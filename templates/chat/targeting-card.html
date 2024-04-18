@@ -1,5 +1,5 @@
 <div class="chat-card exaltedthird">
-    <div class="card-content">A character is being targeted by an action.</div>
+    <div class="card-content">A character is making an action roll.</div>
     <div class="grid grid-3col" style="text-align:center;">
         <div>
             <div>
@@ -10,11 +10,12 @@
             </div>
         </div>
         <div>
-            <img class="borderless-image" src="{{imgUrl}}" width="64" height="64" />
+            <img class="borderless-image black-icon" src="{{imgUrl}}" width="64" height="64" />
             <div>
                 <b>{{localize rollType}}</b>
             </div>
         </div>
+        {{#if targetActor}}
         <div>
             <div>
                 <img class="borderless-image" class="list-item-image" src="{{targetActor.img}}" title="{{targetActor.name}}" width="64" height="64" />
@@ -23,6 +24,16 @@
                 <b>{{targetActor.name}}</b>
             </div>
         </div>
+        {{else}}
+        <div>
+            <img class="borderless-image black-icon" src="icons/svg/mystery-man.svg" width="64" height="64" />
+            <div>
+                <b>{{localize "Ex3.NoTargets"}}</b>
+            </div>
+        </div>
+        {{/if}}
     </div>
-    <div><button class="add-oppose-charms"> <i class="fas fa-shield-plus"></i>{{localize "Ex3.AddOpposingCharms"}}</button></div>
+    {{#if targetActor}}
+        <div><button class="add-oppose-charms"> <i class="fas fa-shield-plus"></i>{{localize "Ex3.AddOpposingCharms"}}</button></div>
+    {{/if}}
 </div>

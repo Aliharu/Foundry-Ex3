@@ -211,13 +211,6 @@ export class RollForm extends FormApplication {
                 resolve: 0,
                 hardness: 0,
             }
-            this.object.opposeCaps = {
-                parry: this.actor.system.parry,
-                evasion: this.actor.system.evasion,
-                soak: this.actor.system.soak.cap,
-                guile: this.actor.system.parry.cap,
-                resolve: this.actor.system.resolve.cap,
-            }
             this.object.craft = {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
@@ -328,6 +321,9 @@ export class RollForm extends FormApplication {
                     this.object.difficultyString = 'Ex3.Resolve';
                 }
 
+                if(data.initiativeCost) {
+                    this.object.cost.initiative += data.initiativeCost;
+                }
                 if (this.object.rollType === 'craft') {
                     this.object.intervals = 1;
                     this.object.finished = false;
@@ -358,6 +354,13 @@ export class RollForm extends FormApplication {
                 }
                 if (this.object.rollType === 'simpleCraft') {
                     this.object.difficulty = data.difficulty || 1;
+                }
+                this.object.opposeCaps = {
+                    parry: this.actor.system.parry,
+                    evasion: this.actor.system.evasion,
+                    soak: this.actor.system.soak.cap,
+                    guile: this.actor.system.parry.cap,
+                    resolve: this.actor.system.resolve.cap,
                 }
             }
         }
@@ -3838,6 +3841,8 @@ export class RollForm extends FormApplication {
         }
         const messageData = {
             name: cardName,
+            rollTypeImgUrl: CONFIG.exaltedthird.rollTypeTargetImages[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.ability] || "icons/svg/explosion.svg",
+            rollTypeLabel: CONFIG.exaltedthird.rollTypeTargetLabels[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[this.object.ability] || "Ex3.Roll",
             messageContent: content,
             rollData: this.object,
             isAttack: this._isAttackRoll(),

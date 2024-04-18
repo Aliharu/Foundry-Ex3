@@ -1140,8 +1140,8 @@ export class ExaltedThirdActor extends Actor {
         const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
           actor: this,
           targetActor: target.actor,
-          imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || "icons/svg/explosion.svg",
-          rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || "Ex3.Other",
+          imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
+          rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
         });
         ChatMessage.create({
           user: game.user.id,
@@ -1155,6 +1155,41 @@ export class ExaltedThirdActor extends Actor {
           },
         });
       }
+    } else if(CONFIG.exaltedthird.targetableRollTypes.includes(data.rollType)) {
+      const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
+        actor: this,
+        targetActor: null,
+        imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
+        rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
+      });
+      ChatMessage.create({
+        user: game.user.id,
+        content: messageContent,
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        flags: {
+          "exaltedthird": {
+            targetActorId: null,
+            targetTokenId: null,
+          }
+        },
+      });
+    } else if(game.settings.get("exaltedthird", "nonTargetRollCards")) {
+      const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/pre-roll-card.html", {
+        actor: this,
+        imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
+        rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
+      });
+      ChatMessage.create({
+        user: game.user.id,
+        content: messageContent,
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        flags: {
+          "exaltedthird": {
+            targetActorId: null,
+            targetTokenId: null,
+          }
+        },
+      });
     }
   }
 

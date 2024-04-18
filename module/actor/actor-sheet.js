@@ -1225,7 +1225,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       else {
         const abilityObject = this.actor.system.abilities[ability];
-        game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: ability, attribute: abilityObject.prefattribute }).render(true);
+        this.actor.actionRoll(
+          { rollType: 'ability', ability: ability, attribute: abilityObject.prefattribute }
+        );
       }
     });
 
@@ -1310,6 +1312,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         {
           rollType: 'disengage',
           pool: 'movement',
+          initiativeCost: game.settings.get("exaltedthird", "disengageCost") ? 2 : 0
         }
       );
     });
