@@ -947,6 +947,7 @@
                                 <option value="ignoreSoak">{{localize "Ex3.IgnoreSoak"}}</option>
                                 <option value="overwhelming">{{localize "Ex3.Overwhelming"}}</option>
                                 <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
+                                <option value="noInitiativeReset">{{localize "Ex3.NoInitiativeReset"}}</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.Spend'}}">
                                 <option value="motes-spend">{{localize "Ex3.Motes"}}</option>
@@ -959,7 +960,7 @@
                                 <option value="aura-spend">{{localize "Ex3.Aura"}}</option>
                                 <option value="penumbra-spend">{{localize "Ex3.Penumbra"}}</option>
                                 <option value="silverXp-spend">{{localize "Ex3.SilverXP"}}</option>
-                                <option value="goldXp-spend">{{localize "Ex3.GilverXP"}}</option>
+                                <option value="goldXp-spend">{{localize "Ex3.GoldXP"}}</option>
                                 <option value="whiteXp-spend">{{localize "Ex3.WhiteXP"}}</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.Restore'}}">
@@ -974,6 +975,7 @@
                                 </option>
                                 <option value="activateAura">{{localize "Ex3.ActivateAura"}}</option>
                                 <option value="ignoreLegendarySize">{{localize "Ex3.IgnoreLegendarySize"}}</option>
+                                <option value="inflictDicePenalty">{{localize "Ex3.InflictDicePenalty"}}</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.Defense'}}">
                                 <option value="defense">{{localize "Ex3.Defense"}}</option>
@@ -1015,10 +1017,20 @@
                             <option value="">{{localize "Ex3.None"}}</option>
                             <optgroup label="{{localize 'Ex3.Roll'}}">
                                 <option value="attackType">{{localize "Ex3.AttackType"}}</option>
+                                <option value="charmAddedAmount">{{localize "Ex3.CharmAddedAmount"}}</option>
+                                <!-- Do thing for greater than target -->
+                                <option value="requiredInitiative">{{localize "Ex3.RequiredInitiative"}}</option>
+                                <option value="targetIsCrashed">{{localize "Ex3.TargetIsCrashed"}}</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.Character'}}">
+                                <option value="martialArtsLevel">{{localize "Ex3.MartialArtsTier"}}</option>
+                                <option value="smaLevel">{{localize "Ex3.SiderealMATier"}}</option>
+                                <option value="essence">{{localize "Ex3.Essence"}}+</option>
                             </optgroup>
                             <optgroup label="{{localize 'Ex3.RollResults'}}">
+                                <option value="thresholdSuccesses">{{localize "Ex3.ThresholdSuccesses"}}</option>
+                                <option value="crashedTheTarget">{{localize "Ex3.CrashedTheTarget"}}</option>
+                                <option value="flippedInit">{{localize "Ex3.FlippedInitiative"}}</option>
                             </optgroup>
                             {{/select}}
                         </select>
