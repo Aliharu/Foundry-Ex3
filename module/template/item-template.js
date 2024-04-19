@@ -75,7 +75,7 @@ export class ItemWeaponData extends CommonItemData {
             staticdamage: new fields.NumberField({ initial: 0 }),
             resetinitiative: new fields.BooleanField({ initial: true }),
             targetstat: new fields.StringField({ initial: "defense" }),
-            traits: new fields.SchemaField({
+            poison: new fields.SchemaField({
                 name: new fields.StringField({ initial: "" }),
                 apply: new fields.BooleanField({ initial: false }),
                 damage: new fields.NumberField({ initial: 0 }),
