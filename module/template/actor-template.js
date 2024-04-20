@@ -1,4 +1,4 @@
-import { abilityField, attributeField, resourceField, rollSettingField, shipData, statField, staticSettingField, traitField, warstriderData } from "./common-template";
+import { abilityField, attributeField, resourceField, rollSettingField, shipData, statField, staticSettingField, traitField, warstriderData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -259,17 +259,33 @@ export class CharacterData extends CommonActorData {
         trigger: new fields.StringField({ initial: "" }),
       }),
       craft: new fields.SchemaField({
-        major: new fields.SchemaField({
-          value: new fields.NumberField({ initial: 0 }),
-          total: new fields.NumberField({ initial: 0 }),
+        experience: new fields.SchemaField({
+          simple: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+          }),
+          silver: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+          }),
+          gold: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+          }),
+          white: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+          }),
         }),
-        superior: new fields.SchemaField({
-          value: new fields.NumberField({ initial: 0 }),
-          total: new fields.NumberField({ initial: 0 }),
-        }),
-        legendary: new fields.SchemaField({
-          value: new fields.NumberField({ initial: 0 }),
-          total: new fields.NumberField({ initial: 0 }),
+        slots: new fields.SchemaField({
+          major: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+            total: new fields.NumberField({ initial: 0 }),
+          }),
+          superior: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+            total: new fields.NumberField({ initial: 0 }),
+          }),
+          legendary: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+            total: new fields.NumberField({ initial: 0 }),
+          }),
         }),
       }),
     }

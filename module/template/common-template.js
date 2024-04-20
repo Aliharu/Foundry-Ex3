@@ -26,14 +26,14 @@ export function rollSettingField(attribute, ability) {
 export function staticSettingField(attribute, ability) {
     return new fields.SchemaField({
         attribute: new fields.StringField({ initial: attribute }),
-        value: new fields.StringField({ initial: ability }),
+        ability: new fields.StringField({ initial: ability }),
         specialty: new fields.BooleanField({ initial: false }),
     });
 }
 
 export function traitField() {
     return new fields.SchemaField({
-        value: new fields.ArrayField({ initial: [] }),
+        value: new fields.ArrayField(new fields.StringField({ initial: ""})),
         custom: new fields.StringField({ initial: "" }),
     });
 }
@@ -163,24 +163,24 @@ export function warstriderData() {
 }
 
 export function equipmentData() {
-    return new fields.SchemaField({
+    return {
         cost: new fields.NumberField({ initial: 0 }),
         exceptional: new fields.BooleanField({ initial: false }),
-    });
+    };
 }
 
 export function artifactData() {
-    return new fields.SchemaField({
+    return {
         hasevocations: new fields.BooleanField({ initial: false }),
         attunement: new fields.NumberField({ initial: 0 }),
         hearthstones: resourceField(0, 0),
-    });
+    }
 }
 
 export function activatableData() {
-    return new fields.SchemaField({
+    return {
         activatable: new fields.BooleanField({ initial: false }),
         active: new fields.BooleanField({ initial: false }),
         endtrigger: new fields.StringField({ initial: "none" }),
-    });
+    };
 }
