@@ -1089,11 +1089,19 @@ export class ExaltedThirdActor extends Actor {
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
     data.armorpenalty = { 'value': armorPenalty };
+    data.initiative = { 'value': 0 };
+
     if (!data.size) {
       data.size = {
         value: 0,
         min: 0,
       }
+    }
+
+    const tokenId = this.token?.id || this.getActiveTokens()[0]?.id;
+    if (game.combat && tokenId) {
+      let combatant = game.combat.combatants.find(c => c?.tokenId === tokenId);
+      data.initiative = { 'value': combatant?.initiative || 0 };
     }
 
     // Prepare character roll data.
@@ -1127,7 +1135,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   actionRoll(data) {
-    if(data.rollType !== 'useOpposingCharms') {
+    if (data.rollType !== 'useOpposingCharms') {
       this.sendTargetingChatMessage(data);
     }
     if (this.type === 'npc') {
@@ -1159,7 +1167,7 @@ export class ExaltedThirdActor extends Actor {
           },
         });
       }
-    } else if(CONFIG.exaltedthird.targetableRollTypes.includes(data.rollType)) {
+    } else if (CONFIG.exaltedthird.targetableRollTypes.includes(data.rollType)) {
       const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
         actor: this,
         targetActor: null,
@@ -1177,7 +1185,7 @@ export class ExaltedThirdActor extends Actor {
           }
         },
       });
-    } else if(game.settings.get("exaltedthird", "nonTargetRollCards")) {
+    } else if (game.settings.get("exaltedthird", "nonTargetRollCards")) {
       const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/pre-roll-card.html", {
         actor: this,
         imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
