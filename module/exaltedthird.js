@@ -20,38 +20,28 @@ import ExaltedActiveEffectConfig from "./active-effect-config.js";
 import NPCGenerator from "./apps/npc-generator.js";
 import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
 import CharacterBuilder from "./apps/character-builder.js";
-// import { CharacterData, NpcData } from "./template/actor-template.js";
-// import { ItemActionData, ItemArmorData, ItemCharmData, ItemCraftData, ItemCraftProjectData, ItemCustomAbilityData, ItemData, ItemDestinyData, ItemInitiationData, ItemIntimacyData, ItemMartialArtData, ItemMeritData, ItemRitualData, ItemShapeData, ItemSpecialAbilityData, ItemSpellData, ItemWeaponData } from "./template/item-template.js";
+import { CharacterData, NpcData } from "./template/actor-template.js";
+import {
+  ItemActionData,
+  ItemArmorData,
+  ItemCharmData,
+  ItemCraftData,
+  ItemCraftProjectData,
+  ItemCustomAbilityData,
+  ItemData, 
+  ItemDestinyData,
+  ItemInitiationData,
+  ItemIntimacyData,
+  ItemMartialArtData,
+  ItemMeritData,
+  ItemRitualData,
+  ItemShapeData,
+  ItemSpecialAbilityData,
+  ItemSpellData,
+  ItemWeaponData
+} from "./template/item-template.js";
 
 Hooks.once('init', async function () {
-
-  // foundry.utils.mergeObject(CONFIG.Actor.dataModels, {
-  //   // The keys are the types defined in our template.json
-  //   character: CharacterData,
-  //   npc: NpcData,
-  // });
-
-  // foundry.utils.mergeObject(CONFIG.Item.dataModels, {
-  //   // The keys are the types defined in our template.json
-  //   action: ItemActionData,
-  //   armor: ItemArmorData,
-  //   charm: ItemCharmData,
-  //   craft: ItemCraftData,
-  //   craftproject: ItemCraftProjectData,
-  //   customability: ItemCustomAbilityData,
-  //   martialart: ItemMartialArtData,
-  //   destiny: ItemDestinyData, 
-  //   intimacy: ItemIntimacyData,
-  //   item: ItemData,
-  //   merit: ItemMeritData,
-  //   ritual: ItemRitualData,
-  //   initiation: ItemInitiationData,
-  //   shape: ItemShapeData,
-  //   specialability: ItemSpecialAbilityData,
-  //   specialty: ItemSpecialAbilityData,
-  //   spell: ItemSpellData,
-  //   weapon: ItemWeaponData,
-  // });
 
   registerSettings();
 
@@ -75,6 +65,33 @@ Hooks.once('init', async function () {
     roll: roll,
     RollForm
   };
+
+  CONFIG.Actor.dataModels = {
+    character: CharacterData,
+    npc: NpcData
+  }
+
+  CONFIG.Item.dataModels = {
+    action: ItemActionData,
+    armor: ItemArmorData,
+    charm: ItemCharmData,
+    craft: ItemCraftData,
+    craftproject: ItemCraftProjectData,
+    customability: ItemCustomAbilityData,
+    martialart: ItemMartialArtData,
+    destiny: ItemDestinyData, 
+    intimacy: ItemIntimacyData,
+    item: ItemData,
+    merit: ItemMeritData,
+    ritual: ItemRitualData,
+    initiation: ItemInitiationData,
+    shape: ItemShapeData,
+    specialability: ItemSpecialAbilityData,
+    specialty: ItemSpecialAbilityData,
+    spell: ItemSpellData,
+    weapon: ItemWeaponData,
+  }
+
 
   /**
    * Set an initiative formula for the system
