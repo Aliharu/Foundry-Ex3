@@ -37,6 +37,7 @@ import {
   ItemRitualData,
   ItemShapeData,
   ItemSpecialAbilityData,
+  ItemSpecialtyData,
   ItemSpellData,
   ItemWeaponData
 } from "./template/item-template.js";
@@ -87,7 +88,7 @@ Hooks.once('init', async function () {
     initiation: ItemInitiationData,
     shape: ItemShapeData,
     specialability: ItemSpecialAbilityData,
-    specialty: ItemSpecialAbilityData,
+    specialty: ItemSpecialtyData,
     spell: ItemSpellData,
     weapon: ItemWeaponData,
   }
@@ -146,10 +147,13 @@ Hooks.once('init', async function () {
     const actor = this.actor;
     var initDice = 0;
     if (this.actor.type != 'npc') {
-      initDice = actor.system.attributes.wits.value + actor.system.abilities.awareness.value + 2;
+      initDice = actor.system.attributes.wits.value + actor.system.abilities.awareness.value;
     }
     else {
       initDice = actor.system.pools.joinbattle.value;
+    }
+    if(actor.system.settings.rollStunts) {
+      initDice += 2;
     }
     return `${initDice}d10cs>=7ds>=10 + 3`;
   }

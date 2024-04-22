@@ -198,6 +198,17 @@ export class ItemSpecialAbilityData extends CommonItemData {
     }
 }
 
+export class ItemSpecialtyData extends CommonItemData {
+    static defineSchema() {
+        const commonData = super.defineSchema();
+
+        return {
+            ...commonData,
+            ability: new fields.StringField({ initial: "archery" }),
+        }
+    }
+}
+
 export class ItemCraftProjectData extends CommonItemData {
     static defineSchema() {
         const commonData = super.defineSchema();
@@ -458,7 +469,9 @@ export class ItemCharmData extends CommonItemData {
                     triggeronescap: new fields.StringField({ initial: "" }),
                 }),
             }),
-
+            triggers: new fields.SchemaField({
+                dicerollertriggers: new fields.ObjectField({ initial: {} }),
+            }),
         }
     }
 }

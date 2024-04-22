@@ -107,6 +107,7 @@ exaltedthird.targetableRollTypes = [
   'accuracy',
   'damage',
   'withering',
+  'decisive',
   'gambit',
   'withering-split',
   'decisive-split',

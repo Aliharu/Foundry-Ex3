@@ -33,7 +33,7 @@
     </div>
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}} <i title="Effects 'Reroll Failed' and 'Reroll Failed dice'" class="fas fa-info-circle"></i></label>
-        <input id="excludeOnesFromRerolls" type="checkbox" name="settings.excludeOnesFromRerolls" value="{{settings.excludeOnesFromRerolls}}" {{checked settings.excludeOnesFromRerolls}}>
+        <input id="excludeOnesFromRerolls" type="checkbox" name="settings.excludeOnesFromRerolls" {{checked settings.excludeOnesFromRerolls}}>
         <div>
             <div class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</div>
             <select id="triggerOnOnes" name="settings.triggerOnOnes" data-type="String">
@@ -52,7 +52,7 @@
             <input id="triggerOnesCap" name="settings.triggerOnesCap" value="{{settings.triggerOnesCap}}" type="number">
         </div>
         <label class="resource-label">{{localize "Ex3.AlsoTriggerTwos"}}</label>
-        <input id="alsoTriggerTwos" type="checkbox" name="settings.alsoTriggerTwos" value="{{settings.alsoTriggerTwos}}" {{checked settings.alsoTriggerTwos}}>
+        <input id="alsoTriggerTwos" type="checkbox" name="settings.alsoTriggerTwos" {{checked settings.alsoTriggerTwos}}>
         <div>
             <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
             <select id="triggerOnTens" name="settings.triggerOnTens" data-type="String">
@@ -72,7 +72,7 @@
             <input id="triggerTensCap" name="settings.triggerTensCap" value="{{settings.triggerTensCap}}" type="number">
         </div>
         <label class="resource-label">{{localize "Ex3.AlsoTriggerNines"}}</label>
-        <input id="alsoTriggerNines" type="checkbox" name="settings.alsoTriggerNines" value="{{settings.alsoTriggerNines}}" {{checked settings.alsoTriggerNines}}>
+        <input id="alsoTriggerNines" type="checkbox" name="settings.alsoTriggerNines" {{checked settings.alsoTriggerNines}}>
     </div>
     {{#if isAttack}}
     <div class="resource grid grid-2col flex-center">
@@ -85,7 +85,7 @@
             <input id="targetDefensePenalty" name="targetDefensePenalty" value="{{targetDefensePenalty}}" type="number">
         </div>
         <label class="resource-label">{{localize "Ex3.IgnoreLegendarySize"}}</label>
-        <input id="ignoreLegendarySize" type="checkbox" name="settings.ignoreLegendarySize" value="{{settings.ignoreLegendarySize}}" {{checked settings.ignoreLegendarySize}}>
+        <input id="ignoreLegendarySize" type="checkbox" name="settings.ignoreLegendarySize" {{checked settings.ignoreLegendarySize}}>
     </div>
     <div class="resource flex-center">
         <label class="resource-label mb-1" style="font-size: 17px;">{{localize "Ex3.Damage"}}</label>
@@ -124,7 +124,7 @@
     </div>
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.ExcludeOnesFromRerolls"}}</label>
-        <input id="damageExcludeOnesFromRerolls" type="checkbox" name="settings.damage.excludeOnesFromRerolls" value="{{settings.damage.excludeOnesFromRerolls}}" {{checked settings.damage.excludeOnesFromRerolls}}>
+        <input id="damageExcludeOnesFromRerolls" type="checkbox" name="settings.damage.excludeOnesFromRerolls" {{checked settings.damage.excludeOnesFromRerolls}}>
     </div>
     <div class="resource grid grid-2col flex-center">
         <div>
@@ -141,7 +141,7 @@
             <input id="damageTriggerTensCap" name="settings.damage.triggerTensCap" value="{{settings.damage.triggerTensCap}}" type="number">
         </div>
         <label class="resource-label">{{localize "Ex3.AlsoTriggerNines"}}</label>
-        <input id="damageAlsoTriggerNines" type="checkbox" name="settings.damage.alsoTriggerNines" value="{{settings.damage.alsoTriggerNines}}" {{checked settings.damage.alsoTriggerNines}}>
+        <input id="damageAlsoTriggerNines" type="checkbox" name="settings.damage.alsoTriggerNines" {{checked settings.damage.alsoTriggerNines}}>
     </div>
     {{/if}}
 </div>
