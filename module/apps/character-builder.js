@@ -330,6 +330,9 @@ export default class CharacterBuilder extends FormApplication {
           ritual: {
             name: '',
           },
+          necromancyRitual: {
+            name: '',
+          },
           randomSpells: 0,
         }
     }
@@ -609,6 +612,7 @@ export default class CharacterBuilder extends FormApplication {
     html.find(".import-item").on("click", async (event) => {
       const type = event.currentTarget.dataset.type;
       const itemType = event.currentTarget.dataset.item;
+      const ritualType = event.currentTarget.dataset.ritual;
 
       let items = this._getItemList(event);
 
@@ -865,7 +869,11 @@ export default class CharacterBuilder extends FormApplication {
             newItem.itemCount = 1;
             this.getEnritchedHTML(newItem);
             if (item.type === 'ritual') {
-              this.object.character.ritual = newItem;
+              if(ritualType === 'sorcery') {
+                this.object.character.ritual = newItem;
+              } else {
+                this.object.character.necromancyRitual = newItem;
+              }
             }
             else {
               this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
@@ -919,7 +927,11 @@ export default class CharacterBuilder extends FormApplication {
           this.getEnritchedHTML(newItem);
 
           if (item.type === 'ritual') {
-            this.object.character.ritual = newItem;
+            if(item.system.ritualtype === 'necromancy') {
+              this.object.character.necromancyRitual = newItem;
+            } else {
+              this.object.character.ritual = newItem;
+            }
           }
           else {
             if (newItem) {
@@ -942,9 +954,16 @@ export default class CharacterBuilder extends FormApplication {
 
     html.find(".delete-item").on("click", async (event) => {
       const type = event.currentTarget.dataset.type;
+      const ritual = event.currentTarget.dataset.ritual;
       if (type === 'ritual') {
-        this.object.character.ritual = {
-          name: '',
+        if(ritual === 'sorcery') {
+          this.object.character.ritual = {
+            name: '',
+          }
+        } else {
+          this.object.character.necromancyRitual = {
+            name: '',
+          }
         }
       }
       else {
@@ -1018,7 +1037,11 @@ export default class CharacterBuilder extends FormApplication {
   _getItemList(event) {
     const type = event.currentTarget.dataset.type;
     const itemType = event.currentTarget.dataset.item;
+    const itemRitual = event.currentTarget.dataset.ritual;
     let items = game.items.filter(charm => charm.type === itemType);
+    if(itemRitual) {
+      items = items.filter(item => item.system.ritualtype === itemRitual);
+    }
     let archetypeCharms = [];
     if (itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
       items = game.items.filter(charm => charm.type === 'charm');
@@ -2328,6 +2351,19 @@ export default class CharacterBuilder extends FormApplication {
         itemData.push(
           {
             name: this.object.character.ritual.name,
+            type: 'ritual',
+          }
+        );
+      }
+    }
+    if (this.object.character.necromancyRitual.name) {
+      if (this.object.character.necromancyRitual._id) {
+        itemData.push(await duplicate(this.object.character.necromancyRitual));
+      }
+      else {
+        itemData.push(
+          {
+            name: this.object.character.necromancyRitual.name,
             type: 'ritual',
           }
         );

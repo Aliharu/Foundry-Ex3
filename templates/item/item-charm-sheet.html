@@ -606,43 +606,43 @@
                     <div class="resource d-flex flex-center">
                         <div>
                             <div>1</div>
-                            <input name="system.diceroller.damage.rerollcap.one" type="text">
+                            <input name="system.diceroller.damage.rerollcap.one" value="{{system.diceroller.damage.rerollcap.one}}" type="text">
                         </div>
                         <div>
                             <div>2</div>
-                            <input name="system.diceroller.damage.rerollcap.two" type="text">
+                            <input name="system.diceroller.damage.rerollcap.two" value="{{system.diceroller.damage.rerollcap.two}}" type="text">
                         </div>
                         <div>
                             <div>3</div>
-                            <input name="system.diceroller.damage.rerollcap.three" type="text">
+                            <input name="system.diceroller.damage.rerollcap.three" value="{{system.diceroller.damage.rerollcap.three}}" type="text">
                         </div>
                         <div>
                             <div>4</div>
-                            <input name="system.diceroller.damage.rerollcap.four" type="text">
+                            <input name="system.diceroller.damage.rerollcap.four" value="{{system.diceroller.damage.rerollcap.four}}" type="text">
                         </div>
                         <div>
                             <div>5</div>
-                            <input name="system.diceroller.damage.rerollcap.five" type="text">
+                            <input name="system.diceroller.damage.rerollcap.five" value="{{system.diceroller.damage.rerollcap.five}}" type="text">
                         </div>
                         <div>
                             <div>6</div>
-                            <input name="system.diceroller.damage.rerollcap.six" type="text">
+                            <input name="system.diceroller.damage.rerollcap.six" value="{{system.diceroller.damage.rerollcap.six}}" type="text">
                         </div>
                         <div>
                             <div>7</div>
-                            <input name="system.diceroller.damage.rerollcap.seven" type="text">
+                            <input name="system.diceroller.damage.rerollcap.seven" value="{{system.diceroller.damage.rerollcap.seven}}" type="text">
                         </div>
                         <div>
                             <div>8</div>
-                            <input name="system.diceroller.damage.rerollcap.eight" type="text">
+                            <input name="system.diceroller.damage.rerollcap.eight" value="{{system.diceroller.damage.rerollcap.eight}}" type="text">
                         </div>
                         <div>
                             <div>9</div>
-                            <input name="system.diceroller.damage.rerollcap.nine" type="text">
+                            <input name="system.diceroller.damage.rerollcap.nine" value="{{system.diceroller.damage.rerollcap.nine}}" type="text">
                         </div>
                         <div>
                             <div>10</div>
-                            <input name="system.diceroller.damage.rerollcap.ten" type="text">
+                            <input name="system.diceroller.damage.rerollcap.ten" value="{{system.diceroller.damage.rerollcap.ten}}" type="text">
                         </div>
                     </div>
                 </div>
@@ -1067,7 +1067,7 @@
                 <label class="resource-label">{{localize "Ex3.Summary"}}</label>
                 <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
             </div>
-            <div class="grid grid-3col flex-group-center">
+            <div class="grid grid-2col flex-group-center">
                 <div>
                     <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
                     <select name="system.charmtype" data-type="String">
@@ -1095,6 +1095,24 @@
                         <option value="endscene">{{localize "Ex3.EndScene"}}</option>
                         {{/select}}
                     </select>
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.AutoAddToRolls"}}</div>
+                    <select name="system.autoaddtorolls" data-type="String">
+                        {{#select system.autoaddtorolls}}
+                        <option value="">{{localize "Ex3.None"}}</option>
+                        <option value="action">{{localize "Ex3.CharacterRolls"}}</option>
+                        <option value="attacks">{{localize "Ex3.Attacks"}}</option>
+                        <option value="opposedRolls">{{localize "Ex3.OpposedRolls"}}</option>
+                        <option value="sameAbility">{{localize "Ex3.SameAbilityAttribute"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Activatable"}}</label>
+                    <div>
+                        <input name="system.activatable" type="checkbox" {{checked system.activatable}}>
+                    </div>
                 </div>
                 <!-- <div>
                     <div class="resource-label">{{localize "Ex3.Restriction"}}</div>

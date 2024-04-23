@@ -472,6 +472,12 @@ export class RollForm extends FormApplication {
                 }
             }
 
+            for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
+                for (const charm of charmlist.list.filter(charm => charm.system.active && this._autoAddCharm(charm))) {
+                    this.addCharm(charm, false);
+                }
+            }
+
             this._calculateAnimaGain();
         }
     }
@@ -929,7 +935,24 @@ export class RollForm extends FormApplication {
         mergeObject(this, formData);
     }
 
-    async addCharm(item) {
+    _autoAddCharm(charm) {
+        if(!charm.system.autoaddtorolls) {
+            return false;
+        }
+        switch (charm.system.autoaddtorolls) {
+            case 'action':
+                return (this.object.rollType !== 'useOpposingCharms');
+            case 'attacks':
+                return this._isAttackRoll();
+            case 'opposedRolls':
+                return (this.object.rollType === 'useOpposingCharms');
+            case 'sameAbility':
+                return (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
+        }
+        return false;
+    }
+
+    async addCharm(item, addCosts = true) {
         var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === item._id);
         if (existingAddedCharm) {
             existingAddedCharm.timesAdded++;
@@ -948,37 +971,39 @@ export class RollForm extends FormApplication {
                 }
             }
         }
-        if (item.system.keywords.toLowerCase().includes('mute')) {
-            this.object.cost.muteMotes += item.system.cost.motes;
-        }
-        else {
-            this.object.cost.motes += item.system.cost.motes;
-        }
-        this.object.cost.anima += item.system.cost.anima;
-        this.object.cost.penumbra += item.system.cost.penumbra;
-        this.object.cost.willpower += item.system.cost.willpower;
-        this.object.cost.silverxp += item.system.cost.silverxp;
-        this.object.cost.goldxp += item.system.cost.goldxp;
-        this.object.cost.whitexp += item.system.cost.whitexp;
-        this.object.cost.initiative += item.system.cost.initiative;
-        this.object.cost.grappleControl += item.system.cost.grapplecontrol;
-
-
-        if (item.system.cost.aura) {
-            this.object.cost.aura = item.system.cost.aura;
-        }
-
-        if (item.system.cost.health > 0) {
-            if (item.system.cost.healthtype === 'bashing') {
-                this.object.cost.healthbashing += item.system.cost.health;
-            }
-            else if (item.system.cost.healthtype === 'lethal') {
-                this.object.cost.healthlethal += item.system.cost.health;
+        if(addCosts) {
+            if (item.system.keywords.toLowerCase().includes('mute')) {
+                this.object.cost.muteMotes += item.system.cost.motes;
             }
             else {
-                this.object.cost.healthaggravated += item.system.cost.health;
+                this.object.cost.motes += item.system.cost.motes;
+            }
+            this.object.cost.anima += item.system.cost.anima;
+            this.object.cost.penumbra += item.system.cost.penumbra;
+            this.object.cost.willpower += item.system.cost.willpower;
+            this.object.cost.silverxp += item.system.cost.silverxp;
+            this.object.cost.goldxp += item.system.cost.goldxp;
+            this.object.cost.whitexp += item.system.cost.whitexp;
+            this.object.cost.initiative += item.system.cost.initiative;
+            this.object.cost.grappleControl += item.system.cost.grapplecontrol;
+    
+    
+            if (item.system.cost.aura) {
+                this.object.cost.aura = item.system.cost.aura;
+            }
+            if (item.system.cost.health > 0) {
+                if (item.system.cost.healthtype === 'bashing') {
+                    this.object.cost.healthbashing += item.system.cost.health;
+                }
+                else if (item.system.cost.healthtype === 'lethal') {
+                    this.object.cost.healthlethal += item.system.cost.health;
+                }
+                else {
+                    this.object.cost.healthaggravated += item.system.cost.health;
+                }
             }
         }
+
         this.object.restore.motes += item.system.restore.motes;
         this.object.restore.willpower += item.system.restore.willpower;
         this.object.restore.health += item.system.restore.health;

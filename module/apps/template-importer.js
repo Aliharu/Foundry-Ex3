@@ -135,6 +135,7 @@ export default class TemplateImporter extends FormApplication {
       }
       if (charmData.system.duration.toLowerCase() !== 'permanent' && charmData.system.duration.toLowerCase() !== 'instant') {
         charmData.system.cost.commitmotes = charmData.system.cost.motes;
+        charmData.system.activatable = true;
         charmData.system.cost.motes = 0;
       }
       var description = '';

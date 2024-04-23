@@ -1283,10 +1283,48 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-
-    ui.notifications.notify(`Migration Complete`);
+    
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+    ui.notifications.notify(`Migration Complete`);
   }
+
+  // if (isNewerVersion("3.0.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+  //   ui.notifications.notify(`Migrating data to 3.0.0, please wait`);
+  //   for (let item of game.items.filter(item => item.type === 'charm')) {
+  //     try {
+  //       if(item.system.cost.commitmotes > 0) {
+  //         await item.update({
+  //           [`system.activatable`]: true
+  //         });
+  //       }
+  //     } catch (error) {
+  //       error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+  //       console.error(error);
+  //     }
+  //   }
+  //   for (let actor of game.actors) {
+  //     try {
+  //       for (let item of actor.items.filter(item => item.type === 'charm')) {
+  //         try {
+  //           if(item.system.cost.commitmotes > 0) {
+  //             await item.update({
+  //               [`system.activatable`]: true
+  //             });
+  //           }
+  //         } catch (error) {
+  //           error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+  //           console.error(error);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+  //       console.error(error);
+  //     }
+  //   }
+
+  //   ui.notifications.notify(`Migration Complete`);
+  //   await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
+  // }
 
   // for(const item of game.items.filter(item => item.type === 'charm' && item.folder?.name && item.system.charmtype === 'martialarts')) {
   //   const martialArt = game.items.filter(ma => ma.type === 'customability' && ma.name === item.folder?.name)[0];

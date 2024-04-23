@@ -853,11 +853,11 @@
             </select>
           </div>
           <div>
-            <div class="resource-label">{{localize "Ex3.Ritual"}} <a><i class="fas fa-dice cursor-pointer random-item"
-                  title="Random ritual" data-type="rituals" data-item="ritual"></i></a> <a
-                class="item-control import-item" title="Import ritual" data-type="rituals" data-item="ritual"><i
+            <div class="resource-label">{{localize "Ex3.SorceryRitual"}} <a><i class="fas fa-dice cursor-pointer random-item"
+                  title="Random ritual" data-type="rituals" data-item="ritual" data-ritual="sorcery"></i></a> <a
+                class="item-control import-item" title="Import ritual" data-type="rituals" data-item="ritual" data-ritual="sorcery"><i
                   class="fas fa-edit"></i></a>
-              <a class="item-control delete-item" title="Remove ritual" data-type="ritual"><i
+              <a class="item-control delete-item" title="Remove ritual" data-type="ritual" data-ritual="sorcery"><i
                   class="fas fa-trash"></i></a>
             </div>
             <input name="object.character.ritual.name" value="{{data.character.ritual.name}}" type="text">
@@ -872,6 +872,29 @@
             </div>
             <div style="display:none;text-align:start;">
               {{{data.character.ritual.enritchedHTML}}}
+            </div>
+            {{/if}}
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.NecromancyRitual"}} <a><i class="fas fa-dice cursor-pointer random-item"
+                  title="Random ritual" data-type="rituals" data-item="ritual" data-ritual="necromancy"></i></a> <a
+                class="item-control import-item" title="Import ritual" data-type="rituals" data-item="ritual" data-ritual="necromancy"><i
+                  class="fas fa-edit"></i></a>
+              <a class="item-control delete-item" title="Remove ritual" data-type="ritual"  data-ritual="necromancy"><i
+                  class="fas fa-trash"></i></a>
+            </div>
+            <input name="object.character.necromancyRitual.name" value="{{data.character.necromancyRitual.name}}" type="text">
+            {{#if data.character.necromancyRitual.enritchedHTML}}
+            <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+              <li class="flexrow item-header">
+                <div class="item-name">{{localize "Ex3.Description"}}</div>
+              </li>
+              <div>
+                <i class="fas fa-caret-down"></i>
+              </div>
+            </div>
+            <div style="display:none;text-align:start;">
+              {{{data.character.necromancyRitual.enritchedHTML}}}
             </div>
             {{/if}}
           </div>

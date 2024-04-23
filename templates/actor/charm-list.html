@@ -42,7 +42,13 @@
             <a class="item-control item-disable" title="Charm Available"><i class="fas fa-sun"></i></a>
             {{/if}}
             {{/if}} -->
-            {{#ifGreater item.system.cost.commitmotes 0}}
+            {{#if item.system.cost.commitmotes}}
+            {{#if item.system.active}}
+            <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
+            {{else}}
+            <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
+            {{/if}}
+            {{else if item.system.activatable}}
             {{#if item.system.active}}
             <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
             {{else}}
@@ -50,7 +56,7 @@
             {{/if}}
             {{else}}
             <a class="item-control item-spend" title="Spend Charm"><i class="fas fa-bolt"></i></a>
-            {{/ifGreater}}
+            {{/if}}
             <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
             <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
             <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
