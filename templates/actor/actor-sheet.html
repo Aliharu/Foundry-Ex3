@@ -206,7 +206,7 @@
             <b>{{localize "Ex3.NextDot"}}: </b>{{attribute.nextDotCost}} XP
           </div>
           {{else}}
-            {{localize "Ex3.MaxedOut"}}
+          {{localize "Ex3.MaxedOut"}}
           {{/if}}
           <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.HasExcellency"}}</label>
@@ -237,8 +237,20 @@
               ability.favored}}>
             <label for="system.abilities.{{key}}.value" class="resource-label vrollable roll-ability"
               data-roll="{{ability.value}}" data-ability="{{key}}" data-label="{{ability.name}}"
-              style="text-align:start;">{{localize
-              ability.name}}{{#if ../system.settings.editmode}}{{#if ability.caste}}*{{/if}}{{/if}}</label>
+              style="text-align:start;">
+              {{#ifEquals ../system.details.exalt 'sidereal'}}
+              {{#if ../system.settings.showmaidens}}
+              {{#if ability.maiden}}
+              <img class="borderless-image" src="systems/exaltedthird/assets/caste-marks/{{ability.maiden}}.png"
+                title="{{ability.maiden}}" height="14" width="14" />
+              {{else}}
+              <img class="borderless-image" src="" height="14" width="14" />
+              {{/if}}
+              {{/if}}
+              {{/ifEquals}}
+              {{localize
+              ability.name}}{{#if ../system.settings.editmode}}{{#if ability.caste}}*{{/if}}{{/if}}
+            </label>
             {{#if ../system.settings.usedotsvalues}}
             <div class="resource-value" data-value="{{ability.value}}" data-name="system.abilities.{{key}}.value">
               {{#numLoop 5}}
@@ -262,7 +274,7 @@
             <b>{{localize "Ex3.NextDot"}}: </b>{{ability.nextDotCost}} XP
           </div>
           {{else}}
-            {{localize "Ex3.MaxedOut"}}
+          {{localize "Ex3.MaxedOut"}}
           {{/if}}
           <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
@@ -285,7 +297,12 @@
         <div class="item flexrow flex-center" data-item-id="{{item._id}}">
           <input class="item-favored" name="system.favored" type="checkbox" {{checked item.system.favored}}>
           <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}"
-            style="text-align:start;">{{localize item.name}}</label>
+            style="text-align:start;">
+            {{#if item.system.maiden}}
+            <img class="borderless-image" src="systems/exaltedthird/assets/caste-marks/{{item.system.maiden}}.png"
+              title="{{item.system.maiden}}" height="14" width="14" />
+            {{/if}}
+            {{localize item.name}}</label>
           {{#if ../system.settings.usedotsvalues}}
           <div class="resource-value" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
             {{#numLoop 5}}
@@ -469,7 +486,8 @@
           </div>
           <div class="resource-content flexrow flex-center flex-between">
             <div>
-              <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
+              <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize
+                "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
                 {{localize "Ex3.Remaining"}})
                 <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
                 <div class="resource-content flexrow flex-center flex-between">
@@ -591,7 +609,8 @@
           {{/if}}
           <div class="item-controls">
             {{#if ../simplifiedCrafting}}
-            <a class="item-control craft-simple-project" title="Craft Item" data-craftId="{{id}}"><i class="fas fa-hammer"></i></a>
+            <a class="item-control craft-simple-project" title="Craft Item" data-craftId="{{id}}"><i
+                class="fas fa-hammer"></i></a>
             {{else}}
             <a class="item-control item-complete" title="Complete Item"><i class="fas fa-hammer"></i></a>
             {{/if}}

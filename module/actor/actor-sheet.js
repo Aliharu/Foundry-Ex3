@@ -2243,6 +2243,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             hasaura: html.find('#hasAura').is(":checked"),
             issorcerer: html.find('#isSorcerer').is(":checked"),
             iscrafter: html.find('#isCrafter').is(":checked"),
+            showmaidens: html.find('#showMaidens').is(":checked"),
           }
           if (this.actor.type === 'npc') {
             this.actor.update({ [`system.lunarform.enabled`]: html.find('#lunarFormEnabled').is(":checked") });

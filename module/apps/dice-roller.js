@@ -4037,8 +4037,8 @@ export class RollForm extends FormApplication {
                 }
                 else if (this.object.craftType === "superior") {
                     if (this.object.objectivesCompleted > 0) {
-                        whiteXPGained = (this.object.craftRating - 1) + this.object.craftRating;
-                        goldXPGained = (this.object.craftRating * 2) * this.object.intervals;
+                        whiteXPGained = (parseInt(this.object.craftRating) * 2) + 1;
+                        goldXPGained = (parseInt(this.object.craftRating) * 2) * this.object.intervals;
                     }
                     projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
                 }

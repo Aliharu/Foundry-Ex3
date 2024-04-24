@@ -1288,6 +1288,30 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
   }
 
+  // for (let item of game.items.filter(item => item.type === 'charm')) {
+  //   await item.update({
+  //     [`system.diceroller.enabled`]: true
+  //   });
+  // }
+
+  // for (let actor of game.actors) {
+  //   try {
+  //     for (let item of actor.items.filter(item => item.type === 'spell')) {
+  //       try {
+  //         await item.update({
+  //           [`system.cost`]: parseInt(item.system.cost)
+  //         });
+  //       } catch (error) {
+  //         error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+  //         console.error(error);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+  //     console.error(error);
+  //   }
+  // }
+
   // if (isNewerVersion("3.0.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
   //   ui.notifications.notify(`Migrating data to 3.0.0, please wait`);
   //   for (let item of game.items.filter(item => item.type === 'charm')) {

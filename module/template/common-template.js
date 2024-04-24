@@ -18,7 +18,7 @@ export function statField(initialValue) {
 export function rollSettingField(attribute, ability) {
     return new fields.SchemaField({
         attribute: new fields.StringField({ initial: attribute }),
-        value: new fields.StringField({ initial: ability }),
+        ability: new fields.StringField({ initial: ability }),
         bonus: new fields.NumberField({ initial: 0 }),
     });
 }
@@ -48,13 +48,14 @@ export function attributeField(type) {
     });
 }
 
-export function abilityField(prefAttribute) {
+export function abilityField(prefAttribute, ability) {
     return new fields.SchemaField({
         favored: new fields.BooleanField({ initial: false }),
         caste: new fields.BooleanField({ initial: false }),
         excellency: new fields.BooleanField({ initial: false }),
         value: new fields.NumberField({ initial: 1 }),
         prefattribute: new fields.StringField({ initial: prefAttribute }),
+        maiden: new fields.StringField({ initial: CONFIG.exaltedthird.abilityMaidens[ability] || "" }),
     });
 }
 

@@ -381,6 +381,35 @@ exaltedthird.abilities = {
   war: 'Ex3.War',
 };
 
+exaltedthird.abilityMaidens = {
+  archery: 'battles',
+  athletics: 'endings',
+  awareness: 'endings',
+  brawl: 'battles',
+  bureaucracy: 'endings',
+  craft: 'serenity',
+  dodge: 'serenity',
+  integrity: 'endings',
+  investigation: 'secrets',
+  larceny: 'secrets',
+  linguistics: 'serenity',
+  lore: 'secrets',
+  martialarts: '',
+  medicine: 'endings',
+  melee: 'battles',
+  occult: 'secrets',
+  performance: 'serenity',
+  presence: 'battles',
+  resistance: 'journeys',
+  ride: 'journeys',
+  sail: 'journeys',
+  socialize: 'serenity',
+  stealth: 'secrets',
+  survival: 'journeys',
+  thrown: 'journeys',
+  war: 'battles',
+};
+
 exaltedthird.abilitiesList = [
   'archery',
   'athletics',
