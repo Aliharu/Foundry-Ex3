@@ -4033,20 +4033,23 @@ export class RollForm extends FormApplication {
                         silverXPGained = this.object.objectivesCompleted;
                         goldXPGained = 2 * this.object.objectivesCompleted;
                     }
-                    projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
+                    projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained (-10)</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4>`;
+                    silverXPGained -= 10;
                 }
                 else if (this.object.craftType === "superior") {
                     if (this.object.objectivesCompleted > 0) {
                         whiteXPGained = (parseInt(this.object.craftRating) * 2) + 1;
                         goldXPGained = (parseInt(this.object.craftRating) * 2) * this.object.intervals;
                     }
-                    projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                    projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained (-10)</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                    goldXPGained -= 10;
                 }
                 else if (this.object.craftType === "legendary") {
                     if (this.object.objectivesCompleted > 0) {
-                        whiteXPGained = 10;
+                        whiteXPGained += 10;
                     }
-                    projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
+                    projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained (-10)</h4>`;
+                    whiteXPGained -= 10;
                 }
                 else {
                     projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
