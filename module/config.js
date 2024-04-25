@@ -169,8 +169,6 @@ exaltedthird.rollTypeTargetImages = {
   social: "systems/exaltedthird/assets/icons/heartburn.svg",
   command: "systems/exaltedthird/assets/icons/rally-the-troops.svg",
   grappleControl: "systems/exaltedthird/assets/icons/grab.svg",
-  accuracy: "systems/exaltedthird/assets/icons/targeting.svg",
-  damage: "systems/exaltedthird/assets/icons/bloody-sword.svg",
   withering: "systems/exaltedthird/assets/icons/sword-clash.svg",
   decisive: "systems/exaltedthird/assets/icons/bloody-sword.svg",
   gambit: "systems/exaltedthird/assets/icons/punch-blast.svg",

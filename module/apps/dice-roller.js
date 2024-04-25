@@ -949,6 +949,9 @@ export class RollForm extends FormApplication {
             case 'sameAbility':
                 return (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
         }
+        if(this.object.rollType === charm.system.autoaddtorolls) {
+            return true;
+        }
         return false;
     }
 
@@ -1340,7 +1343,8 @@ export class RollForm extends FormApplication {
     async addMultiOpposedBonuses(data) {
         for (const charm of data.charmList) {
             charm.actor = data.actor;
-            for (let i = 0; i < charm.timesAdded; i++) {
+            let timesAdded = charm.timesAdded;
+            for (let i = 0; i < timesAdded; i++) {
                 await this.addOpposedBonus(charm);
             }
         }
@@ -4234,7 +4238,7 @@ export class RollForm extends FormApplication {
         }
         const messageData = {
             name: cardName,
-            rollTypeImgUrl: CONFIG.exaltedthird.rollTypeTargetImages[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.ability] || "systems/exaltedthird/assets/icons/d10.svg",
+            rollTypeImgUrl: CONFIG.exaltedthird.rollTypeTargetImages[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.attackType] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.ability] || "systems/exaltedthird/assets/icons/d10.svg",
             rollTypeLabel: CONFIG.exaltedthird.rollTypeTargetLabels[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[this.object.ability] || "Ex3.Roll",
             messageContent: content,
             rollData: this.object,

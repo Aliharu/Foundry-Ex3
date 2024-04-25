@@ -1998,6 +1998,9 @@ export default class CharacterBuilder extends FormApplication {
     if (actorData.system.details.exalt === 'dragonblooded') {
       actorData.system.settings.hasaura = true;
     }
+    if (actorData.system.details.exalt === 'sidereals') {
+      actorData.system.settings.showmaidens = true;
+    }
     if (actorData.system.details.exalt === 'mortal') {
       actorData.system.settings.showanima = false;
     }
