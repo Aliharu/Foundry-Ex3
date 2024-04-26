@@ -24,6 +24,15 @@ export class ItemData extends CommonItemData {
             quantity: new fields.NumberField({ initial: 1 }),
         }
     }
+    static migrateData(source) {
+        if (typeof source.hasevocations === 'string') {
+            source.hasevocations = true;
+        }
+        if (typeof source.exceptional === 'string') {
+            source.exceptional = true;
+        }
+        return super.migrateData(source);
+    }
 }
 
 export class ItemCustomAbilityData extends CommonItemData {
@@ -45,6 +54,19 @@ export class ItemCustomAbilityData extends CommonItemData {
                 weapons: traitField(),
             }),
         }
+    }
+
+    static migrateData(source) {
+        if (typeof source.favored === 'string') {
+            source.favored = true;
+        }
+        if (typeof source.siderealmartialart === 'string') {
+            source.siderealmartialart = true;
+        }
+        if (typeof source.excellency === 'string') {
+            source.excellency = true;
+        }
+        return super.migrateData(source);
     }
 }
 
@@ -89,6 +111,18 @@ export class ItemWeaponData extends CommonItemData {
             }),
         }
     }
+    static migrateData(source) {
+        if (typeof source.resetinitiative === 'string') {
+            source.resetinitiative = true;
+        }
+        if (typeof source.equipped === 'string') {
+            source.equipped = true;
+        }
+        if (typeof source.hasevocations === 'string') {
+            source.hasevocations = true;
+        }
+        return super.migrateData(source);
+    }
 }
 
 export class ItemArmorData extends CommonItemData {
@@ -109,6 +143,16 @@ export class ItemArmorData extends CommonItemData {
                 armortags: traitField(),
             }),
         }
+    }
+
+    static migrateData(source) {
+        if (typeof source.equipped === 'string') {
+            source.equipped = true;
+        }
+        if (typeof source.hasevocations === 'string') {
+            source.hasevocations = true;
+        }
+        return super.migrateData(source);
     }
 }
 
@@ -244,6 +288,13 @@ export class ItemActionData extends CommonItemData {
             oldKey: new fields.StringField({ initial: "" }),
         }
     }
+
+    static migrateData(source) {
+        if (typeof source.activatable === 'string') {
+            source.activatable = true;
+        }
+        return super.migrateData(source);
+    }
 }
 
 export class ItemDestinyData extends CommonItemData {
@@ -282,6 +333,13 @@ export class ItemSpellData extends CommonItemData {
             duration: new fields.StringField({ initial: "" }),
             shaping: new fields.BooleanField({ initial: false }),
         }
+    }
+
+    static migrateData(source) {
+        if (typeof source.activatable === 'string') {
+            source.activatable = true;
+        }
+        return super.migrateData(source);
     }
 }
 
@@ -476,5 +534,118 @@ export class ItemCharmData extends CommonItemData {
                 dicerollertriggers: new fields.ObjectField({ initial: {} }),
             }),
         }
+    }
+
+    /** @inheritdoc */
+    static migrateData(source) {
+        if (typeof source.diceroller.enabled === 'string') {
+            source.diceroller.enabled = true;
+        }
+        if (typeof source.diceroller.rolltwice === 'string') {
+            source.diceroller.rolltwice = true;
+        }
+        if (typeof source.diceroller.rerollfailed === 'string') {
+            source.diceroller.rerollfailed = true;
+        }
+        if (typeof source.diceroller.alsotriggernines === 'string') {
+            source.diceroller.alsotriggernines = true;
+        }
+        if (typeof source.diceroller.excludeonesfromrerolls === 'string') {
+            source.diceroller.excludeonesfromrerolls = true;
+        }
+        if (typeof source.diceroller.ignorelegendarysize === 'string') {
+            source.diceroller.ignorelegendarysize = true;
+        }
+        if(typeof source.diceroller.reroll.one === 'string') {
+            source.diceroller.reroll.one = true;
+        }
+        if(typeof source.diceroller.reroll.two === 'string') {
+            source.diceroller.reroll.two = true;
+        }
+        if(typeof source.diceroller.reroll.three === 'string') {
+            source.diceroller.reroll.three = true;
+        }
+        if(typeof source.diceroller.reroll.four === 'string') {
+            source.diceroller.reroll.four = true;
+        }
+        if(typeof source.diceroller.reroll.five === 'string') {
+            source.diceroller.reroll.five = true;
+        }
+        if(typeof source.diceroller.reroll.six === 'string') {
+            source.diceroller.reroll.six = true;
+        }
+        if(typeof source.diceroller.reroll.seven === 'string') {
+            source.diceroller.reroll.seven = true;
+        }
+        if(typeof source.diceroller.reroll.eight === 'string') {
+            source.diceroller.reroll.eight = true;
+        }
+        if(typeof source.diceroller.reroll.nine === 'string') {
+            source.diceroller.reroll.nine = true;
+        }
+        if(typeof source.diceroller.reroll.ten === 'string') {
+            source.diceroller.reroll.ten = true;
+        }
+        //Damage
+        if(typeof source.diceroller.damage.reroll.one === 'string') {
+            source.diceroller.damage.reroll.one = true;
+        }
+        if(typeof source.diceroller.damage.reroll.two === 'string') {
+            source.diceroller.damage.reroll.two = true;
+        }
+        if(typeof source.diceroller.damage.reroll.three === 'string') {
+            source.diceroller.damage.reroll.three = true;
+        }
+        if(typeof source.diceroller.damage.reroll.four === 'string') {
+            source.diceroller.damage.reroll.four = true;
+        }
+        if(typeof source.diceroller.damage.reroll.five === 'string') {
+            source.diceroller.damage.reroll.five = true;
+        }
+        if(typeof source.diceroller.damage.reroll.six === 'string') {
+            source.diceroller.damage.reroll.six = true;
+        }
+        if(typeof source.diceroller.damage.reroll.seven === 'string') {
+            source.diceroller.damage.reroll.seven = true;
+        }
+        if(typeof source.diceroller.damage.reroll.eight === 'string') {
+            source.diceroller.damage.reroll.eight = true;
+        }
+        if(typeof source.diceroller.damage.reroll.nine === 'string') {
+            source.diceroller.damage.reroll.nine = true;
+        }
+        if(typeof source.diceroller.damage.reroll.ten === 'string') {
+            source.diceroller.damage.reroll.ten = true;
+        }
+        if (typeof source.diceroller.damage.rolltwice === 'string') {
+            source.diceroller.damage.rolltwice = true;
+        }
+        if (typeof source.diceroller.damage.rerollfailed === 'string') {
+            source.diceroller.damage.rerollfailed = true;
+        }
+        if (typeof source.diceroller.damage.alsotriggernines === 'string') {
+            source.diceroller.damage.alsotriggernines = true;
+        }
+        if (typeof source.diceroller.damage.threshholdtodamage === 'string') {
+            source.diceroller.damage.threshholdtodamage = true;
+        }
+        if (typeof source.diceroller.damage.doublerolleddamage === 'string') {
+            source.diceroller.damage.doublerolleddamage = true;
+        }
+        if (typeof source.diceroller.damage.excludeonesfromrerolls === 'string') {
+            source.diceroller.damage.excludeonesfromrerolls = true;
+        }
+
+        //Opposed
+        if (typeof source.diceroller.opposedbonuses.enabled === 'string') {
+            source.diceroller.opposedbonuses.enabled = true;
+        }
+        if (typeof source.diceroller.opposedbonuses.alsotriggertwos === 'string') {
+            source.diceroller.opposedbonuses.alsotriggertwos = true;
+        }
+        if (typeof source.activatable === 'string') {
+            source.activatable = true;
+        }
+        return super.migrateData(source);
     }
 }
