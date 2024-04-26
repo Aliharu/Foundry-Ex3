@@ -109,6 +109,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _prepareActorSheetData(sheetData) {
+    const actorData = sheetData.actor;
+
     for (let [key, setting] of Object.entries(sheetData.system.settings.rollsettings)) {
       setting.name = CONFIG.exaltedthird.rolltypes[key];
     }
@@ -118,6 +120,48 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     for (let [key, setting] of Object.entries(sheetData.system.settings.staticcapsettings)) {
       setting.name = CONFIG.exaltedthird.statictypes[key];
     }
+
+    var currentParryPenalty = 0;
+    var currentEvasionPenalty = 0;
+    var currentOnslaughtPenalty = 0;
+    var currentDefensePenalty = 0;
+
+    for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
+      for (const change of effect.changes) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
+          currentEvasionPenalty += (change.value * -1);
+        }
+        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
+          currentParryPenalty += (change.value * -1);
+        }
+      }
+      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
+        currentOnslaughtPenalty += (effect.changes[0].value * -1);
+      }
+      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
+        currentDefensePenalty += (effect.changes[0].value * -1);
+      }
+    }
+    if (actorData.effects.some(e => e.statuses.has('prone'))) {
+      currentParryPenalty += 1;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.effects.some(e => e.statuses.has('surprised'))) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.effects.some(e => e.statuses.has('grappled')) || actorData.effects.some(e => e.statuses.has('grappling'))) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.system.health.penalty !== 'inc') {
+      currentParryPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
+      currentEvasionPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
+    }
+    sheetData.system.currentParryPenalty = currentParryPenalty;
+    sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
+    sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
+    sheetData.system.currentDefensePenalty = currentDefensePenalty;
   }
 
   _prepareCharacterData(sheetData) {
