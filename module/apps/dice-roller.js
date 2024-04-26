@@ -205,12 +205,26 @@ export class RollForm extends FormApplication {
             this.object.addStatuses = [];
             this.object.addSelfStatuses = [];
             this.object.addOppose = {
-                defense: 0,
-                dice: 0,
-                soak: 0,
-                guile: 0,
-                resolve: 0,
-                hardness: 0,
+                addedBonus: {
+                    dice: 0,
+                    successes: 0,
+                    defense: 0,
+                    soak: 0,
+                    guile: 0,
+                    resolve: 0,
+                    hardness: 0,
+                    damage: 0,
+                },
+                manualBonus: {
+                    dice: 0,
+                    successes: 0,
+                    defense: 0,
+                    soak: 0,
+                    guile: 0,
+                    resolve: 0,
+                    hardness: 0,
+                    damage: 0,
+                }
             }
             this.object.craft = {
                 divineInsperationTechnique: false,
@@ -1140,6 +1154,16 @@ export class RollForm extends FormApplication {
         if (item.system.diceroller.triggerontens !== 'none') {
             this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
         }
+        if(this.object.rollType === 'useOpposingCharms') {
+            this.object.addOppose.addedBonus.dice += this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
+            this.object.addOppose.addedBonus.successes += this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
+            this.object.addOppose.addedBonus.defense += this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
+            this.object.addOppose.addedBonus.soak += this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
+            this.object.addOppose.addedBonus.hardness += this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
+            this.object.addOppose.addedBonus.damage += this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
+            this.object.addOppose.addedBonus.resolve += this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
+            this.object.addOppose.addedBonus.guile += this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
+        }
         this._calculateAnimaGain();
         this.render();
     }
@@ -1351,22 +1375,32 @@ export class RollForm extends FormApplication {
         if (this.object.showTargets) {
             const targetValues = Object.values(this.object.targets);
             if (targetValues.length === 1) {
+                targetValues[0].rollData.diceModifier += data.dice;
+                targetValues[0].rollData.successModifier += data.successes;
                 targetValues[0].rollData.guile += data.guile;
                 targetValues[0].rollData.resolve += data.resolve;
                 targetValues[0].rollData.defense += data.defense;
                 targetValues[0].rollData.soak += data.soak;
                 targetValues[0].rollData.hardness += data.hardness;
-                targetValues[0].rollData.diceModifier += data.dice;
+                targetValues[0].rollData.damageModifier += data.damage;
+                if (this.object.rollType === 'damage') {
+                    targetValues[0].rollData.attackSuccesses += data.successes;
+                }
             }
             else {
                 for (const target of targetValues) {
                     if (target.actor.id === data.actor._id || targetValues.length === 1) {
+                        target.rollData.diceModifier += data.dice;
+                        target.rollData.successModifier += data.successes;
                         target.rollData.guile += data.guile;
                         target.rollData.resolve += data.resolve;
                         target.rollData.defense += data.defense;
                         target.rollData.soak += data.soak;
                         target.rollData.hardness += data.hardness;
-                        target.rollData.diceModifier += data.dice;
+                        target.rollData.damageModifier += data.damage;
+                        if (this.object.rollType === 'damage') {
+                            target.rollData.attackSuccesses += data.successes;
+                        }
                     }
                 }
             }
@@ -1381,6 +1415,11 @@ export class RollForm extends FormApplication {
             }
             if (this.object.rollType === 'social') {
                 this.object.difficulty += data.resolve;
+            }
+            this.object.successModifier += data.successes;
+            this.object.damage.damageDice += data.damage;
+            if (this.object.rollType === 'damage') {
+                this.object.attackSuccesses += data.successes;
             }
         }
         this.render();
@@ -1860,6 +1899,17 @@ export class RollForm extends FormApplication {
                 }
                 this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
                 this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
+
+                if(this.object.rollType === 'useOpposingCharms') {
+                    this.object.addOppose.addedBonus.dice -= this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
+                    this.object.addOppose.addedBonus.successes -= this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
+                    this.object.addOppose.addedBonus.defense -= this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
+                    this.object.addOppose.addedBonus.soak -= this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
+                    this.object.addOppose.addedBonus.hardness -= this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
+                    this.object.addOppose.addedBonus.damage -= this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
+                    this.object.addOppose.addedBonus.resolve -= this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
+                    this.object.addOppose.addedBonus.guile -= this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
+                }
             }
             this._calculateAnimaGain();
             this.render();
@@ -2084,12 +2134,14 @@ export class RollForm extends FormApplication {
         }
         const data = {
             charmList: addingCharms,
-            defense: this.object.addOppose.defense,
-            dice: this.object.addOppose.dice,
-            soak: this.object.addOppose.soak,
-            guile: this.object.addOppose.guile,
-            resolve: this.object.addOppose.resolve,
-            hardness: this.object.addOppose.hardness,
+            dice: this.object.addOppose.manualBonus.dice,
+            successes: this.object.addOppose.manualBonus.successes,
+            defense: this.object.addOppose.manualBonus.defense,
+            soak: this.object.addOppose.manualBonus.soak,
+            guile: this.object.addOppose.manualBonus.guile,
+            resolve: this.object.addOppose.manualBonus.resolve,
+            hardness: this.object.addOppose.manualBonus.hardness,
+            damage: this.object.addOppose.manualBonus.damage,
         }
 
         // if (game.rollForm) {
@@ -2621,6 +2673,17 @@ export class RollForm extends FormApplication {
         if (!this._isAttackRoll() && this.object.rollType !== 'base') {
             await this._updateCharacterResources();
         }
+        if(this._isAttackRoll()) {
+            this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
+            this.object.attackSuccesses = this.object.total;
+            if (this.object.target) {
+                this.object.target.rollData.attackSuccesses = this.object.total;
+            }
+        }
+        else {
+            this.object.threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+        }
+        await this._addTriggerBonuses('afterRoll');
     }
 
     async _diceRoll() {
@@ -2805,22 +2868,23 @@ export class RollForm extends FormApplication {
     async _attackRoll() {
         // Accuracy
         if (this.object.rollType !== 'damage') {
-            await this._accuracyRoll();
+            await this._baseAbilityDieRoll();
         }
         else {
-            this.object.thereshholdSuccesses = 0;
+            this.object.thresholdSuccesses = 0;
         }
-        if ((this.object.thereshholdSuccesses >= 0 && this.object.rollType !== 'accuracy') || this.object.rollType === 'damage') {
+        if ((this.object.thresholdSuccesses >= 0 && this.object.rollType !== 'accuracy') || this.object.rollType === 'damage') {
             if (this.object.rollType === 'damage' && this.object.attackSuccesses < this.object.defense) {
-                this.object.thereshholdSuccesses = this.object.attackSuccesses - this.object.defense;
+                this.object.thresholdSuccesses = this.object.attackSuccesses - this.object.defense;
                 await this.missAttack(false);
             }
             else {
                 await this._damageRoll();
+                await this._addTriggerBonuses('afterDamage');
             }
         }
         else {
-            if (this.object.thereshholdSuccesses < 0 && this.object.rollType !== 'accuracy') {
+            if (this.object.thresholdSuccesses < 0 && this.object.rollType !== 'accuracy') {
                 await this.missAttack();
             }
         }
@@ -2853,7 +2917,7 @@ export class RollForm extends FormApplication {
                         successModifier: this.object.successModifier,
                         total: this.object.total,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thereshholdSuccesses,
+                        threshholdSuccesses: this.object.thresholdSuccesses,
                         targetActorId: this.object.target?.actor?._id,
                         targetTokenId: this.object.target?.id,
                     }
@@ -2928,7 +2992,7 @@ export class RollForm extends FormApplication {
                         </div>
                     </div>
                     <h4 class="dice-formula">${this.object.total || 0} Successes vs ${this.object.defense} Defense</h4>
-                    <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+                    <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
                     <h4 class="dice-total">Attack Missed!</h4>
                 </div>
             </div>`;
@@ -2945,7 +3009,7 @@ export class RollForm extends FormApplication {
                         successModifier: this.object.successModifier,
                         total: this.object.total || 0,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thereshholdSuccesses
+                        threshholdSuccesses: this.object.thresholdSuccesses
                     }
                 }
             });
@@ -2979,7 +3043,7 @@ export class RollForm extends FormApplication {
                     </div>
                 </div>
                 <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
-                <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+                <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
             `
         }
         var messageContent = `
@@ -2997,15 +3061,6 @@ export class RollForm extends FormApplication {
             content: messageContent,
             type: CONST.CHAT_MESSAGE_TYPES.OTHER,
         });
-    }
-
-    async _accuracyRoll() {
-        await this._baseAbilityDieRoll();
-        this.object.thereshholdSuccesses = this.object.total - this.object.defense;
-        this.object.attackSuccesses = this.object.total;
-        if (this.object.target) {
-            this.object.target.rollData.attackSuccesses = this.object.total;
-        }
     }
 
     async _damageRoll() {
@@ -3028,7 +3083,7 @@ export class RollForm extends FormApplication {
             dice += Math.max(0, this.object.attackSuccesses - this.object.defense);
         }
         else if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
-            dice += this.object.thereshholdSuccesses;
+            dice += this.object.thresholdSuccesses;
         }
         if (this.object.targetSpecificDamageMod) {
             dice += this.object.targetSpecificDamageMod;
@@ -3065,6 +3120,8 @@ export class RollForm extends FormApplication {
             this.object.damage.damageSuccessModifier += Math.min(dice, this.object.damage.diceToSuccesses);
             dice = Math.max(0, dice - this.object.damage.diceToSuccesses);
         }
+
+        await this._addTriggerBonuses('beforeDamage');
         if (this.object.attackType === 'decisive' && dice <= (this.object.hardness - this.object.damage.ignoreHardness)) {
             return this._failedDecisive(dice);
         }
@@ -3320,7 +3377,7 @@ export class RollForm extends FormApplication {
                     </div>
                 </div>
                 <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
-                <h4 class="dice-formula">${this.object.thereshholdSuccesses} Threshhold Successes</h4>
+                <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
             `
         }
         else {
@@ -3355,7 +3412,7 @@ export class RollForm extends FormApplication {
                     successModifier: this.object.successModifier,
                     total: this.object.total,
                     defense: this.object.defense,
-                    threshholdSuccesses: this.object.thereshholdSuccesses,
+                    threshholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
                     attackerCombatantId: this._getActorCombatant()?._id || null,
                     targetId: this.object.target?.id || null,
@@ -3459,7 +3516,7 @@ export class RollForm extends FormApplication {
                     ]
                 });
             }
-            if (this.object.triggerKnockdown && this.object.thereshholdSuccesses >= 0) {
+            if (this.object.triggerKnockdown && this.object.thresholdSuccesses >= 0) {
                 this.object.updateTargetActorData = true;
                 this._addStatusEffect('prone');
             }
@@ -3518,7 +3575,7 @@ export class RollForm extends FormApplication {
                 }
             }
             if (this.object.target.actor.system.grapplecontrolrounds.value > 0) {
-                this.object.newTargetData.system.grapplecontrolrounds.value = Math.max(0, this.object.newTargetData.system.grapplecontrolrounds.value - (this.object.thereshholdSuccesses >= 0 ? 2 : 1));
+                this.object.newTargetData.system.grapplecontrolrounds.value = Math.max(0, this.object.newTargetData.system.grapplecontrolrounds.value - (this.object.thresholdSuccesses >= 0 ? 2 : 1));
             }
         }
         var actorToken = this._getActorToken();

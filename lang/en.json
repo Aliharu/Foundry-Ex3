@@ -1047,5 +1047,19 @@
     "Ex3.Cancel": "Cancel",
     "Ex3.ManualBonuses": "Manual Bonuses",
     "Ex3.Dialog": "Dialog",
-    "Ex3.RollResults": "Roll Results"
+    "Ex3.RollResults": "Roll Results",
+
+    "Ex3.InflictDicePenalty": "Inflict Dice Penalty",
+    "Ex3.CharmAddedAmount": "Charm Added Amount",
+    "Ex3.MartialArtsTier": "Martial Arts Tier",
+    "Ex3.SiderealMATier": "Sidereal MA Tier",
+    "Ex3.HasStatus": "Has Status",
+    "Ex3.TargetHasStatus": "Target Has Status",
+    "Ex3.TargetIsBattlegroup": "Target Is Battlegroup",
+    "Ex3.TargetIsCrashed": "Target Is Crashed",
+    "Ex3.CrashedTheTarget": "Crashed The Target",
+    "Ex3.DamageLevelsDealt": "Damage Levels Dealt",
+    "Ex3.NoInitiativeReset": "No Initiative Reset",
+    "Ex3.Formula": "Formula",
+    "Ex3.ThresholdSuccesses": "Threshold Successes"
 }
