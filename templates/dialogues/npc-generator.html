@@ -92,12 +92,7 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
         <select name="object.character.caste" data-type="String">
-          {{#select data.character.caste}}
-          {{#each data.availableCastes as |label caste|}}
-          <option value="{{caste}}">{{localize label}}</option>
-          {{/each}}
-          <option value="">{{localize "Ex3.None"}}</option>
-          {{/select}}
+          {{selectOptions data.availableCastes selected=data.character.caste localize=true}}
         </select>
       </div>
       {{/if}}

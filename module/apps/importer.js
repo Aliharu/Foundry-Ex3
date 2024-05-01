@@ -2,7 +2,7 @@
 export default class Importer extends FormApplication {
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: "importer",
             title: "Importer",
             template: "systems/exaltedthird/templates/dialogues/importer.html",

@@ -112,12 +112,7 @@
                 <div class="key">
                     {{#if ../useDropdown}}
                     <select name="changes.{{i}}.key" value="{{change.key}}">
-                        {{#select change.key}}
-                        <option value=""></option>
-                        {{#each ../activeEffectChanges as |label key|}}
-                        <option value="{{key}}">{{localize label}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions ../activeEffectChanges selected=change.key localize=true}}
                     </select>
                     {{else}}
                     <input type="text" name="changes.{{i}}.key" value="{{change.key}}"/>

@@ -39,7 +39,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["exaltedthird", "sheet", "actor"],
       template: "systems/exaltedthird/templates/actor/actor-sheet.html",
       width: 800,
@@ -1873,7 +1873,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                 }
                 else {
                   let totalHealth = 0;
-                  const targetActorData = duplicate(target.actor);
+                  const targetActorData = foundry.utils.duplicate(target.actor);
                   for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
                     totalHealth += health_level.value;
                   }
@@ -1907,7 +1907,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                   ${resultsMessage}
               </div>
           </div>`;
-          ChatMessage.create({ user: game.user.id, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: roll, content: messageContent });
+          ChatMessage.create({ user: game.user.id, style: CONST.CHAT_MESSAGE_STYLES.OTHER, roll: roll, content: messageContent });
         }
       }
       else {
@@ -2701,7 +2701,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _assignToActorField(fields, value) {
-    const actorData = duplicate(this.actor)
+    const actorData = foundry.utils.duplicate(this.actor)
     // update actor owned items
     if (fields.length === 2 && fields[0] === 'items') {
       for (const i of actorData.items) {
@@ -2724,7 +2724,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   _onDotCounterEmpty(event) {
     event.preventDefault()
-    const actorData = duplicate(this.actor)
+    const actorData = foundry.utils.duplicate(this.actor)
     const element = event.currentTarget
     const parent = $(element.parentNode)
     const fieldStrings = parent[0].dataset.name
@@ -2736,7 +2736,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _setupButtons(html) {
-    const actorData = duplicate(this.actor);
+    const actorData = foundry.utils.duplicate(this.actor);
     html.find('.set-pool-personal').each(function (i) {
       if (actorData.system.settings.charmmotepool === 'personal') {
         $(this).css("color", '#F9B516');
@@ -2750,7 +2750,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   _setupDotCounters(html) {
-    const actorData = duplicate(this.actor)
+    const actorData = foundry.utils.duplicate(this.actor)
     html.find('.resource-value').each(function () {
       const value = Number(this.dataset.value);
       $(this).find('.resource-value-step').each(function (i) {
@@ -2808,7 +2808,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Get the type of item to create.
     const type = header.dataset.type;
     // Grab any data associated with this control.
-    const data = duplicate(header.dataset);
+    const data = foundry.utils.duplicate(header.dataset);
     // Initialize a default name.
     const name = `New ${type.capitalize()}`;
     // Prepare the item object.
@@ -2891,7 +2891,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
     };
@@ -2930,7 +2930,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
     };
@@ -2972,7 +2972,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async _lunarSync() {
     const lunar = game.actors.get(this.actor.system.lunarform.actorid);
     if (lunar) {
-      const actorData = duplicate(this.actor);
+      const actorData = foundry.utils.duplicate(this.actor);
 
       const template = "systems/exaltedthird/templates/dialogues/lunar-sync.html";
       const html = await renderTemplate(template);
@@ -3054,12 +3054,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
             for (let item of lunar.items) {
               if ((item.type === 'charm' || item.type === 'spell' || item.type === 'specialty' || item.type === 'ritual' || item.type === 'intimacy') && !this.actor.items.filter(actorItem => actorItem.type === item.type).find(actorItem => actorItem.name === item.name)) {
-                newItems.push(duplicate(item));
+                newItems.push(foundry.utils.duplicate(item));
               }
             }
             for (let effect of lunar.effects) {
               if (!this.actor.effects.find(actorEffect => actorEffect.name === effect.label)) {
-                newEffects.push(duplicate(effect));
+                newEffects.push(foundry.utils.duplicate(effect));
               }
             }
             if (newItems) {

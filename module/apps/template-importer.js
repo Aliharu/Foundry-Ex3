@@ -202,7 +202,7 @@ export default class TemplateImporter extends FormApplication {
   async updatePrereqs(charmsList) {
     const filteredCharms = charmsList.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None');
     for (const charm of filteredCharms) {
-      const charmData = duplicate(charm);
+      const charmData = foundry.utils.duplicate(charm);
       const splitPrereqs = charm.system.prerequisites.split(',');
       const newPrereqs = [];
       for (const prereq of splitPrereqs) {

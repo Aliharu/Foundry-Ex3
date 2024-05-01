@@ -194,7 +194,7 @@ export class ExaltedThirdActor extends Actor {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this, token }),
     };
@@ -292,7 +292,7 @@ export class ExaltedThirdActor extends Actor {
 
   async calculateCharacterMotes() {
     await this.calculateCommitMotes('peripheral');
-    const actorData = duplicate(this);
+    const actorData = foundry.utils.duplicate(this);
     actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
     actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
     actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);
@@ -314,7 +314,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async calculateDerivedStats(type) {
-    const actorData = duplicate(this);
+    const actorData = foundry.utils.duplicate(this);
     var armoredSoakValue = 0;
 
     var staticAttributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type]?.attribute]?.value || 0;
@@ -458,7 +458,7 @@ export class ExaltedThirdActor extends Actor {
 
   async rollEmbeddedItem(itemId, personal = false) {
 
-    const actorData = duplicate(this);
+    const actorData = foundry.utils.duplicate(this);
 
     let item = this.items.find(x => x.id == itemId);
 
@@ -1158,7 +1158,7 @@ export class ExaltedThirdActor extends Actor {
         ChatMessage.create({
           user: game.user.id,
           content: messageContent,
-          type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flags: {
             "exaltedthird": {
               targetActorId: target.actor.id,
@@ -1177,7 +1177,7 @@ export class ExaltedThirdActor extends Actor {
       ChatMessage.create({
         user: game.user.id,
         content: messageContent,
-        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flags: {
           "exaltedthird": {
             targetActorId: null,
@@ -1194,7 +1194,7 @@ export class ExaltedThirdActor extends Actor {
       ChatMessage.create({
         user: game.user.id,
         content: messageContent,
-        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flags: {
           "exaltedthird": {
             targetActorId: null,
@@ -1237,7 +1237,7 @@ export class ExaltedThirdActor extends Actor {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this, token }),
     };
@@ -1256,7 +1256,7 @@ export async function addDefensePenalty(actor, label = "Defense Penalty") {
   }
   const existingPenalty = actor.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
   if (existingPenalty) {
-    let changes = duplicate(existingPenalty.changes);
+    let changes = foundry.utils.duplicate(existingPenalty.changes);
     changes[0].value = changes[0].value - 1;
     changes[1].value = changes[1].value - 1;
     existingPenalty.update({ changes });
@@ -1300,7 +1300,7 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
   }
   const existingPenalty = actor.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
   if (existingPenalty) {
-    let changes = duplicate(existingPenalty.changes);
+    let changes = foundry.utils.duplicate(existingPenalty.changes);
     if (changes[0].value < -1) {
       changes[0].value = parseInt(changes[0].value) + 1;
       changes[1].value = parseInt(changes[1].value) + 1;
@@ -1313,7 +1313,7 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
 }
 
 export async function spendEmbeddedItem(actor, item) {
-  const actorData = await duplicate(actor);
+  const actorData = await foundry.utils.duplicate(actor);
   let updateActive = null;
 
   if (item.type === 'charm') {

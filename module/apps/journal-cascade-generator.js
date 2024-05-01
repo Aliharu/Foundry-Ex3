@@ -13,7 +13,7 @@ export default class JournalCascadeGenerator extends FormApplication {
   }
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["dialog", `solar-background`],
       popOut: true,
       template: "systems/exaltedthird/templates/dialogues/journal-cascade-generator.html",
@@ -33,7 +33,7 @@ export default class JournalCascadeGenerator extends FormApplication {
   }
 
   async _updateObject(event, formData) {
-    mergeObject(this, formData);
+    foundry.utils.mergeObject(this, formData);
   }
 
   async generateJournals() {

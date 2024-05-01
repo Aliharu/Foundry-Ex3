@@ -4,7 +4,7 @@ export class RollForm extends FormApplication {
         this.actor = actor;
 
         if (data.rollId) {
-            this.object = duplicate(this.actor.system.savedRolls[data.rollId]);
+            this.object = foundry.utils.duplicate(this.actor.system.savedRolls[data.rollId]);
             this.object.skipDialog = data.skipDialog || true;
             this.object.isSavedRoll = true;
         }
@@ -713,7 +713,7 @@ export class RollForm extends FormApplication {
     _setupSingleTarget(target) {
         if (target) {
             this.object.target = target;
-            this.object.newTargetData = duplicate(target.actor);
+            this.object.newTargetData = foundry.utils.duplicate(target.actor);
             this.object.updateTargetActorData = false;
             this.object.updateTargetInitiative = false;
             if (this.object.rollType === 'command') {
@@ -872,7 +872,7 @@ export class RollForm extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
             popOut: true,
             template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
@@ -941,7 +941,7 @@ export class RollForm extends FormApplication {
                         rollData.targets = null;
                         const addedCharmsConvertArray = [];
                         for (let i = 0; i < this.object.addedCharms.length; i++) {
-                            addedCharmsConvertArray.push(duplicate(this.object.addedCharms[i]));
+                            addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
                             addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
                         }
                         this.object.addedCharms = addedCharmsConvertArray;
@@ -969,7 +969,7 @@ export class RollForm extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        mergeObject(this, formData);
+        foundry.utils.mergeObject(this, formData);
     }
 
     _autoAddCharm(charm) {
@@ -2068,7 +2068,7 @@ export class RollForm extends FormApplication {
             if (this.object.showTargets) {
                 for (const target of Object.values(this.object.targets)) {
                     this.object.target = target;
-                    this.object.newTargetData = duplicate(target.actor);
+                    this.object.newTargetData = foundry.utils.duplicate(target.actor);
                     this.object.updateTargetActorData = false;
                     this.object.updateTargetInitiative = false;
                     this.object.newTargetInitiative = null;
@@ -2122,7 +2122,7 @@ export class RollForm extends FormApplication {
             if (this.object.showTargets) {
                 for (const target of Object.values(this.object.targets)) {
                     this.object.target = target;
-                    this.object.newTargetData = duplicate(target.actor);
+                    this.object.newTargetData = foundry.utils.duplicate(target.actor);
                     this.object.updateTargetActorData = false;
                     if (this.object.rollType === 'social') {
                         this.object.difficulty = target.rollData.resolve;
@@ -2164,7 +2164,7 @@ export class RollForm extends FormApplication {
     async useOpposingCharms() {
         const addingCharms = [];
         for (const charm of this.object.addedCharms) {
-            const newCharm = duplicate(charm);
+            const newCharm = foundry.utils.duplicate(charm);
             newCharm.timesAdded = charm.timesAdded;
             addingCharms.push(newCharm);
         }
@@ -2461,7 +2461,7 @@ export class RollForm extends FormApplication {
         }
         else {
             const data = this.actor.system;
-            const actorData = duplicate(this.actor);
+            const actorData = foundry.utils.duplicate(this.actor);
             if (this.actor.type === 'character') {
                 if (data.attributes[this.object.attribute]) {
                     dice += data.attributes[this.object.attribute]?.value || 0;
@@ -2740,7 +2740,7 @@ export class RollForm extends FormApplication {
 
 
         messageContent = await this._createChatMessageContent(messageContent, 'Dice Roll');
-        ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+        ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, style: CONST.CHAT_MESSAGE_STYLES.OTHER, roll: this.object.roll });
     }
 
     async _abilityRoll() {
@@ -2814,7 +2814,7 @@ export class RollForm extends FormApplication {
                         }
                     }
                     else {
-                        const actorData = duplicate(this.actor);
+                        const actorData = foundry.utils.duplicate(this.actor);
                         actorData.system.craft.experience.simple.value += craftXPGained;
                         this.actor.update(actorData);
                     }
@@ -2825,7 +2825,7 @@ export class RollForm extends FormApplication {
             }
             this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
-                const actorData = duplicate(this.actor);
+                const actorData = foundry.utils.duplicate(this.actor);
                 actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
                 this.actor.update(actorData);
             }
@@ -2865,7 +2865,7 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: theContent,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             roll: this.object.roll,
             flags: {
                 "exaltedthird": {
@@ -2945,7 +2945,7 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
                 roll: this.object.roll,
                 flags: {
                     "exaltedthird": {
@@ -3038,7 +3038,7 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll || undefined,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER, roll: this.object.roll || undefined,
                 flags: {
                     "exaltedthird": {
                         dice: this.object.dice,
@@ -3064,7 +3064,7 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             });
         }
     }
@@ -3097,7 +3097,7 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
-            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
     }
 
@@ -3442,7 +3442,7 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             rolls: this.object.roll ? [this.object.roll, diceRollResults.roll] : [diceRollResults.roll],
             flags: {
                 "exaltedthird": {
@@ -3482,7 +3482,7 @@ export class RollForm extends FormApplication {
         if (this.object.triggerSelfDefensePenalty > 0) {
             const existingPenalty = this.actor.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
             if (existingPenalty) {
-                let changes = duplicate(existingPenalty.changes);
+                let changes = foundry.utils.duplicate(existingPenalty.changes);
                 changes[0].value = changes[0].value - this.object.triggerSelfDefensePenalty;
                 changes[1].value = changes[1].value - this.object.triggerSelfDefensePenalty;
                 existingPenalty.update({ changes });
@@ -4215,7 +4215,7 @@ export class RollForm extends FormApplication {
                 projectStatus = `<h4 class="dice-total">Craft Project Failed</h4>`;
             }
             if (craftSuccess) {
-                const actorData = duplicate(this.actor);
+                const actorData = foundry.utils.duplicate(this.actor);
                 var silverXPGained = 0;
                 var goldXPGained = 0;
                 var whiteXPGained = 0;
@@ -4304,7 +4304,7 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             roll: this.object.roll,
             flags: {
                 "exaltedthird": {
@@ -5072,7 +5072,7 @@ export class RollForm extends FormApplication {
                 [`system.sorcery.motes.max`]: actorSorceryMoteCap
             });
         }
-        const actorData = duplicate(this.actor);
+        const actorData = foundry.utils.duplicate(this.actor);
         var newLevel = actorData.system.anima.level;
         var newValue = actorData.system.anima.value;
         if (this.object.cost.anima > 0) {
@@ -5593,7 +5593,7 @@ export class Prophecy extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
             popOut: true,
             template: "systems/exaltedthird/templates/dialogues/prophecy.html",
@@ -5613,7 +5613,7 @@ export class Prophecy extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        mergeObject(this, formData);
+        foundry.utils.mergeObject(this, formData);
     }
 
     activateListeners(html) {
@@ -5644,7 +5644,7 @@ export class Prophecy extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: cardContent,
-                type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             });
             game.rollForm = new RollForm(this.actor, {}, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
             this.close();

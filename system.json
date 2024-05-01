@@ -7,8 +7,8 @@
   "version": "2.8.2",
   "compatibility": {
     "minimum": "11",
-    "verified": "11",
-    "maximum": "11"
+    "verified": "12",
+    "maximum": "12"
   },
   "authors": [
     {

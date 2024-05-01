@@ -534,7 +534,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   //New round
   if (update && update.round) {
     for (var combatant of combat.combatants) {
-      const actorData = duplicate(combatant.actor)
+      const actorData = foundry.utils.duplicate(combatant.actor)
       var missingPersonal = (combatant.actor.system.motes.personal.max - combatant.actor.system.motes.personal.committed) - combatant.actor.system.motes.personal.value;
       var missingPeripheral = (combatant.actor.system.motes.peripheral.max - combatant.actor.system.motes.peripheral.committed) - combatant.actor.system.motes.peripheral.value;
       var restorePersonal = 0;
@@ -648,7 +648,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (defensePenalty) {
           await defensePenalty.delete();
         }
-        const actorData = duplicate(currentCombatant.actor);
+        const actorData = foundry.utils.duplicate(currentCombatant.actor);
         if (currentCombatant.actor.system.grapplecontrolrounds.value > 0) {
           actorData.system.grapplecontrolrounds.value -= 1;
         }
@@ -702,7 +702,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
     if (combat.previous.combatantId) {
       var previousCombatant = combat.combatants.get(combat.previous.combatantId);
       if (previousCombatant?.actor) {
-        const previousActorData = duplicate(previousCombatant.actor);
+        const previousActorData = foundry.utils.duplicate(previousCombatant.actor);
         if (previousActorData.system.battlegroup) {
           previousActorData.system.commandbonus.value = 0;
         }
@@ -741,7 +741,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
 Hooks.on("deleteCombat", (entity, deleted) => {
   for (const combatant of entity.combatants) {
     if (combatant?.actor) {
-      const previousActorData = duplicate(combatant.actor);
+      const previousActorData = foundry.utils.duplicate(combatant.actor);
       const endSceneItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene');
       if (endSceneItems?.length) {
         for (const item of endSceneItems) {
@@ -783,7 +783,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
 
   if (command === "/info") {
     const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/npc</b> NPC creator</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
     };
     ChatMessage.create(chatData);
@@ -796,7 +796,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/xp") {
     if (isNaN(parseInt(commands[1]))) {
       const chatData = {
-        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         content: `Invalid number input`,
       };
       ChatMessage.create(chatData);
@@ -810,7 +810,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
       actor.update({ "system.experience.standard.value": Math.ceil(newStandardValue), "system.experience.standard.total": Math.ceil(newStandardTotal) });
     });
     const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: `${parseInt(commands[1] || 0)} experience granted`,
     };
     ChatMessage.create(chatData);
@@ -819,7 +819,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/exaltxp") {
     if (isNaN(parseInt(commands[1]))) {
       const chatData = {
-        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         content: `Invalid number input`,
       };
       ChatMessage.create(chatData);
@@ -833,7 +833,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
       actor.update({ "system.experience.exalt.value": Math.ceil(newExaltValue), "system.experience.exalt.total": Math.ceil(newExaltTotal) });
     });
     const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: `${parseInt(commands[1] || 0)} exalt experience granted`,
     };
     ChatMessage.create(chatData);
@@ -843,7 +843,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
     const tokens = canvas.scene?.tokens;
     for (const token of tokens) {
       if (token.actor) {
-        const actorData = duplicate(token.actor);
+        const actorData = foundry.utils.duplicate(token.actor);
         const endSceneItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene');
         for (const item of endSceneItems) {
           item.system.active = false;
@@ -874,7 +874,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
       }
     }
     const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: 'New Scene',
     };
     ChatMessage.create(chatData);
@@ -997,7 +997,7 @@ Hooks.once("ready", async function () {
     }
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
-        let updateData = duplicate(actor);
+        let updateData = foundry.utils.duplicate(actor);
         const doNotUpdate = ['command', 'grapple', 'joinbattle', 'movement', 'readintentions', 'social', 'sorcery', 'resistance'];
         for (let [key, pool] of Object.entries(updateData.system.pools)) {
           if (!doNotUpdate.includes(key)) {
@@ -1026,13 +1026,13 @@ Hooks.once("ready", async function () {
 
   if (isNewerVersion("1.9.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     const chatData = {
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div><b>/npc</b> NPC creator</div>',
     };
     ChatMessage.create(chatData);
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
-        let updateData = duplicate(actor);
+        let updateData = foundry.utils.duplicate(actor);
         if (updateData.system.creaturetype !== 'exalt') {
           updateData.system.details.creaturesubtype = updateData.system.details.exalt;
           updateData.system.details.exalt = 'other';
@@ -1048,7 +1048,7 @@ Hooks.once("ready", async function () {
   if (isNewerVersion("1.10.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
-        let updateData = duplicate(actor);
+        let updateData = foundry.utils.duplicate(actor);
         if (updateData.system.creaturetype !== 'exalt') {
           updateData.system.details.creaturesubtype = updateData.system.details.exalt;
           updateData.system.details.exalt = 'other';
@@ -1108,7 +1108,7 @@ Hooks.once("ready", async function () {
             [`type`]: 'ritual',
           });
         }
-        let updateData = duplicate(actor);
+        let updateData = foundry.utils.duplicate(actor);
         if (updateData.system.details.exalt !== 'other' && updateData.system.details.exalt !== 'exigent') {
           updateData.system.details.caste = updateData.system.details.caste.toLowerCase().replace(/\s+/g, "");
           await actor.update(updateData, { enforceTypes: false });
@@ -1827,7 +1827,7 @@ async function applyDamageDialogue(targetUuid, damageContext) {
 }
 
 async function dealHealthDamage(actor, damageValue, damageType) {
-  const actorData = duplicate(actor);
+  const actorData = foundry.utils.duplicate(actor);
   let totalHealth = 0;
   let sizeDamaged = 0;
 

@@ -97,7 +97,7 @@ export default class NPCGenerator extends FormApplication {
   }
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       popOut: true,
       template: "systems/exaltedthird/templates/dialogues/npc-generator.html",
@@ -140,7 +140,7 @@ export default class NPCGenerator extends FormApplication {
   }
 
   async _updateObject(event, formData) {
-    mergeObject(this, formData);
+    foundry.utils.mergeObject(this, formData);
   }
 
   activateListeners(html) {
@@ -577,7 +577,7 @@ export default class NPCGenerator extends FormApplication {
         if (availableCharms.length === 0) {
           break;
         }
-        var charm = duplicate(availableCharms[Math.floor(Math.random() * availableCharms.length)]);
+        var charm = foundry.utils.duplicate(availableCharms[Math.floor(Math.random() * availableCharms.length)]);
         charmIds.push(charm._id);
         itemData.push(charm);
       }
@@ -793,7 +793,7 @@ export default class NPCGenerator extends FormApplication {
       const itemRituals = game.items.filter((item) => item.type === 'ritual');
 
       if (itemRituals) {
-        var ritual = duplicate(itemRituals[Math.floor(Math.random() * itemRituals.length)]);
+        var ritual = foundry.utils.duplicate(itemRituals[Math.floor(Math.random() * itemRituals.length)]);
         itemData.push(ritual);
       }
       else {
@@ -835,9 +835,9 @@ export default class NPCGenerator extends FormApplication {
         if (i === spells.length) {
           break;
         }
-        var spell = duplicate(spells[Math.floor(Math.random() * spells.length)]);
+        var spell = foundry.utils.duplicate(spells[Math.floor(Math.random() * spells.length)]);
         while (itemData.find(e => e.name === spell.name) && loopBreaker < 50) {
-          spell = duplicate(spells[Math.floor(Math.random() * spells.length)]);
+          spell = foundry.utils.duplicate(spells[Math.floor(Math.random() * spells.length)]);
           loopBreaker++;
         }
         itemData.push(spell);

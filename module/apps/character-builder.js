@@ -374,7 +374,7 @@ export default class CharacterBuilder extends FormApplication {
   }
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       popOut: true,
       template: "systems/exaltedthird/templates/dialogues/character-builder.html",
@@ -429,7 +429,7 @@ export default class CharacterBuilder extends FormApplication {
         ChatMessage.create({
           user: game.user.id,
           content: `<div>In progress character <b>${this.object.character.name || this.object.character.defaultName}</b> has been saved to this chat message</div><div><button class="resume-character">${game.i18n.localize('Ex3.Resume')}</button></div>`,
-          type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flags: {
             "exaltedthird": {
               character: this.object,
@@ -465,7 +465,7 @@ export default class CharacterBuilder extends FormApplication {
   }
 
   async _updateObject(event, formData) {
-    mergeObject(this, formData);
+    foundry.utils.mergeObject(this, formData);
   }
 
   activateListeners(html) {
@@ -891,7 +891,7 @@ export default class CharacterBuilder extends FormApplication {
             if (!item.flags?.core?.sourceId) {
               item.updateSource({ "flags.core.sourceId": item.uuid });
             }
-            const newItem = duplicate(item);
+            const newItem = foundry.utils.duplicate(item);
             newItem.itemCount = 1;
             this.getEnritchedHTML(newItem);
             if (item.type === 'ritual') {
@@ -948,7 +948,7 @@ export default class CharacterBuilder extends FormApplication {
           if (!item.flags?.core?.sourceId) {
             item.updateSource({ "flags.core.sourceId": item.uuid });
           }
-          const newItem = duplicate(item);
+          const newItem = foundry.utils.duplicate(item);
           newItem.itemCount = 1;
           this.getEnritchedHTML(newItem);
 
@@ -1301,7 +1301,7 @@ export default class CharacterBuilder extends FormApplication {
       itemObject.updateSource({ "flags.core.sourceId": itemObject.uuid });
     }
 
-    const newItem = duplicate(itemObject);
+    const newItem = foundry.utils.duplicate(itemObject);
 
     switch (newItem.type) {
       case 'charm':
@@ -1966,7 +1966,7 @@ export default class CharacterBuilder extends FormApplication {
     ChatMessage.create({
       user: game.user.id,
       content: `${actorData.name} created using the character creator`,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 
@@ -2161,7 +2161,7 @@ export default class CharacterBuilder extends FormApplication {
     const armorList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/armorList.json', {}, { int: 30000 });
 
     for (const weapon of Object.values(this.object.character.weapons)) {
-      itemData.push(duplicate(weapon));
+      itemData.push(foundry.utils.duplicate(weapon));
     }
 
     for (const randomWeapon of Object.values(this.object.character.randomWeapons)) {
@@ -2215,10 +2215,10 @@ export default class CharacterBuilder extends FormApplication {
       );
     }
     for (const armor of Object.values(this.object.character.armors)) {
-      itemData.push(duplicate(armor));
+      itemData.push(foundry.utils.duplicate(armor));
     }
     for (const item of Object.values(this.object.character.items)) {
-      itemData.push(duplicate(item));
+      itemData.push(foundry.utils.duplicate(item));
     }
     itemData.push(
       {
@@ -2351,19 +2351,19 @@ export default class CharacterBuilder extends FormApplication {
     }
 
     for (const charm of Object.values(this.object.character.charms)) {
-      itemData.push(duplicate(charm));
+      itemData.push(foundry.utils.duplicate(charm));
     }
 
     for (const evocation of Object.values(this.object.character.evocations)) {
-      itemData.push(duplicate(evocation));
+      itemData.push(foundry.utils.duplicate(evocation));
     }
 
     for (const otherCharm of Object.values(this.object.character.otherCharms)) {
-      itemData.push(duplicate(otherCharm));
+      itemData.push(foundry.utils.duplicate(otherCharm));
     }
 
     for (const martialArtsCharm of Object.values(this.object.character.martialArtsCharms)) {
-      itemData.push(duplicate(martialArtsCharm));
+      itemData.push(foundry.utils.duplicate(martialArtsCharm));
     }
 
     var baseCharms = game.items.filter((charm) => charm.type === 'charm' && (charm.system.essence <= this.object.character.essence || this.object.character.supernal === charm.system.ability));
@@ -2374,7 +2374,7 @@ export default class CharacterBuilder extends FormApplication {
   async _getCharacterSpells(itemData) {
     if (this.object.character.ritual.name) {
       if (this.object.character.ritual._id) {
-        itemData.push(await duplicate(this.object.character.ritual));
+        itemData.push(await foundry.utils.duplicate(this.object.character.ritual));
       }
       else {
         itemData.push(
@@ -2387,7 +2387,7 @@ export default class CharacterBuilder extends FormApplication {
     }
     if (this.object.character.necromancyRitual.name) {
       if (this.object.character.necromancyRitual._id) {
-        itemData.push(await duplicate(this.object.character.necromancyRitual));
+        itemData.push(await foundry.utils.duplicate(this.object.character.necromancyRitual));
       }
       else {
         itemData.push(
@@ -2399,7 +2399,7 @@ export default class CharacterBuilder extends FormApplication {
       }
     }
     for (const spell of Object.values(this.object.character.spells)) {
-      itemData.push(await duplicate(spell));
+      itemData.push(await foundry.utils.duplicate(spell));
     }
 
     var spells = game.items.filter((spell) => spell.type === 'spell');
@@ -2428,9 +2428,9 @@ export default class CharacterBuilder extends FormApplication {
         if (i === spells.length) {
           break;
         }
-        var spell = await duplicate(spells[Math.floor(Math.random() * spells.length)]);
+        var spell = await foundry.utils.duplicate(spells[Math.floor(Math.random() * spells.length)]);
         while (itemData.find(e => e.name === spell.name) && loopBreaker < 50) {
-          spell = await duplicate(spells[Math.floor(Math.random() * spells.length)]);
+          spell = await foundry.utils.duplicate(spells[Math.floor(Math.random() * spells.length)]);
           loopBreaker++;
         }
         itemData.push(spell);

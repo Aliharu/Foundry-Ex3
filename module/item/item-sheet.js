@@ -22,7 +22,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["exaltedthird", "sheet", "item"],
       width: 520,
       height: 480,
@@ -184,14 +184,14 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     html.on("dragstart", "a.embeded-item-pill", this._onDragEmbeddedItem);
 
     html.find('.toggle-charm-dice').mousedown(ev => {
-      const itemData = duplicate(this.item);
+      const itemData = foundry.utils.duplicate(this.item);
       itemData.system.diceroller.settings.noncharmdice = !itemData.system.diceroller.settings.noncharmdice;
       this.item.update(itemData);
     });
 
 
     html.find('.toggle-charm-successes').mousedown(ev => {
-      const itemData = duplicate(this.item);
+      const itemData = foundry.utils.duplicate(this.item);
       itemData.system.diceroller.settings.noncharmsuccesses = !itemData.system.diceroller.settings.noncharmsuccesses;
       this.item.update(itemData);
     });
@@ -387,7 +387,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   }
 
   _setupButtons(html) {
-    const itemData = duplicate(this.item);
+    const itemData = foundry.utils.duplicate(this.item);
     html.find('.non-charm-dice').each(function (i) {
       if (itemData.system.diceroller.settings.noncharmdice) {
         $(this).css("color", '#F9B516');
