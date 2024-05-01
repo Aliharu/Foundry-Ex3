@@ -434,6 +434,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.merits - sheetData.system.charcreation.available.merits))) * 2;
     sheetData.system.charcreation.spent.experience += (Math.max(0, (sheetData.system.charcreation.spent.specialties - sheetData.system.charcreation.available.specialties))) * 2;
     sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheets");
+
+    sheetData.system.experience.standard.remaining = sheetData.system.experience.standard.total - sheetData.system.experience.standard.value;
+    sheetData.system.experience.exalt.remaining = sheetData.system.experience.exalt.total - sheetData.system.experience.exalt.value;
   }
 
   _prepareNPCData(sheetData) {
@@ -995,6 +998,248 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.subtract-onslaught-penalty').mousedown(ev => {
       subtractDefensePenalty(this.actor, 'Onslaught');
+    });
+
+    html.find('.test-button').mousedown(ev => {
+      let effectsData = [
+        'diceModifier',
+        'successModifier',
+        'doubleSuccess',
+        'decreaseTargetNumber',
+        'rerollDice',
+        'diceToSuccesses',
+        'reduceDifficulty',
+        'rerollDieFace',
+        'rollTwice',
+        'excludeOnes',
+        'rerollFailed',
+        'triggerOnTens',
+        'triggerNinesAndTens',
+        'triggerTensCap',
+
+        //Damage
+        'damageDice',
+        'damageSuccessModifier',
+        'doubleSuccess-damage',
+        'decreaseTargetNumber-damage',
+        'rerollDice-damage',
+        'diceToSuccesses-damage',
+        'reduceDifficulty-damage',
+        'rerollDieFace-damage',
+        'rollTwice-damage',
+        'excludeOnes-damage',
+        'rerollFailed-damage',
+        'triggerOnTens-damage',
+        'triggerNinesAndTens-damage',
+        'triggerTensCap-damage',
+        'threshholdToDamage',
+        'ignoreSoak',
+        'overwhelming',
+        'postSoakDamage',
+        'noInitiativeReset',
+        //Costs
+        'motes-spend',
+        'muteMotes-spend',
+        'initiative-spend',
+        'anima-spend',
+        'willpower-spend',
+        'grappleControl-spend',
+        'health-spend',
+        'aura-spend',
+        'penumbra-spend',
+        'silverXp-spend',
+        'goldXp-spend',
+        'whiteXp-spend',
+        //restore
+        'motes-restore',
+        'initiative-restore',
+        'health-restore',
+        'willpower-restore',
+        //Other
+        'triggerSelfDefensePenalty',
+        'triggerTargetDefensePenalty',
+        'activateAura',
+        'ignoreLegendarySize',
+        'inflictDicePenalty',
+        //Defense
+        'defense',
+        'soak',
+        'hardness',
+        'resolve',
+        'guile',
+      ];
+      let itemData = [];
+      for (const triggerEffect of effectsData) {
+        if (triggerEffect === 'activateAura' || triggerEffect === 'aura-spend') {
+          itemData.push(
+            {
+              name: triggerEffect,
+              type: 'charm',
+              system: {
+                ability: 'archery',
+                triggers: {
+                  dicerollertriggers: {
+                    0: {
+                      name: triggerEffect,
+                      triggerTime: "beforeRoll",
+                      bonuses: {
+                        0: {
+                          effect: triggerEffect,
+                          value: "fire"
+                        }
+                      },
+                      requirements: {}
+                    }
+                  }
+                }
+              }
+            }
+          );
+        } else {
+          itemData.push(
+            {
+              name: triggerEffect,
+              type: 'charm',
+              system: {
+                ability: 'archery',
+                triggers: {
+                  dicerollertriggers: {
+                    0: {
+                      name: triggerEffect,
+                      triggerTime: "beforeRoll",
+                      bonuses: {
+                        0: {
+                          effect: triggerEffect,
+                          value: (triggerEffect === "triggerOnTens" || triggerEffect === "triggerOnTens-damage") ? "extrasuccess" : "1"
+                        }
+                      },
+                      requirements: {}
+                    }
+                  }
+                }
+              }
+            }
+          );
+        }
+      }
+      Actor.create({
+        name: "Trigger Man",
+        type: "character",
+        system: {
+          settings: {
+            hasaura: true,
+          }
+        },
+        items: itemData
+      });
+      let restrictionsData = [
+        {
+          restriction: "attackType",
+          value: "withering",
+        },
+        {
+          restriction: "charmAddedAmount",
+          value: "1",
+        }, 
+        {
+          restriction: "range",
+          value: "short",
+        },
+        {
+          restriction: "martialArtsLevel",
+          value: "mastery",
+        },
+        {
+          restriction: "smaEnlightenment",
+          value: "true",
+        },
+        {
+          restriction: "materialResonance",
+          value: "soulsteel",
+        },
+        {
+          restriction: "materialStandard",
+          value: "soulsteel",
+        },
+        {
+          restriction: "materialDissonance",
+          value: "soulsteel",
+        },
+        {
+          restriction: "formula",
+          value: "essence > 1",
+        },
+        {
+          restriction: "hasStatus",
+          value: "prone",
+        },
+        {
+          restriction: "targetHasStatus",
+          value: "prone",
+        },
+        {
+          restriction: "targetIsBattlegroup",
+          value: "true",
+        },
+        {
+          restriction: "targetIsCrashed",
+          value: "true",
+        },
+        {
+          restriction: "thresholdSuccesses",
+          value: "true",
+        },
+        {
+          restriction: "damageLevelsDealt",
+          value: "1",
+        },
+        {
+          restriction: "crashedTheTarget",
+          value: "true",
+        },
+      ]
+      let itemRescrictionData = [];
+      for (const restrictionEffect of restrictionsData) {
+        itemRescrictionData.push(
+          {
+            name: restrictionEffect.restriction,
+            type: 'charm',
+            system: {
+              ability: 'archery',
+              triggers: {
+                dicerollertriggers: {
+                  0: {
+                    name: restrictionEffect.restriction,
+                    triggerTime: "beforeRoll",
+                    bonuses: {
+                      0: {
+                        effect: 'diceModifier',
+                        value: "1"
+                      }
+                    },
+                    requirements: {
+                      0: {
+                        requirement: restrictionEffect.restriction,
+                        value: restrictionEffect.value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        );
+      }
+      Actor.create({
+        name: "Requirement Man",
+        type: "character",
+        system: {
+          settings: {
+            hasaura: true,
+          }
+        },
+        items: itemRescrictionData
+      });
     });
 
     html.find('.add-new-item').click(async ev => {
@@ -1582,7 +1827,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.actor.actionRoll(
         {
           rollType: this.actor.system.savedRolls[li.data("saved-roll-id")].rollType,
-          rollId: li.data("saved-roll-id") 
+          rollId: li.data("saved-roll-id")
         }
       );
     });
@@ -2663,35 +2908,35 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 * @param {boolean} createMessage   Whether to automatically create a ChatMessage entity (if true), or only return
 *                                  the prepared message data (if false)
 */
-async _displayCard(item, cardType = "") {
-  const token = this.actor.token
-  if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
-    if (item.system.active) {
-      cardType = "Deactivate";
+  async _displayCard(item, cardType = "") {
+    const token = this.actor.token
+    if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
+      if (item.system.active) {
+        cardType = "Deactivate";
+      }
+      else {
+        cardType = "Activate";
+      }
     }
-    else {
-      cardType = "Activate";
-    }
-  }
-  const templateData = {
-    actor: this.actor,
-    tokenId: token?.uuid || null,
-    item: item,
-    labels: this.labels,
-    cardType: cardType,
-  };
-  const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+    const templateData = {
+      actor: this.actor,
+      tokenId: token?.uuid || null,
+      item: item,
+      labels: this.labels,
+      cardType: cardType,
+    };
+    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
 
-  // Create the ChatMessage data object
-  const chatData = {
-    user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-    content: html,
-    speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
-  };
-  // Create the Chat Message or return its data
-  return ChatMessage.create(chatData);
-}
+    // Create the ChatMessage data object
+    const chatData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
+    };
+    // Create the Chat Message or return its data
+    return ChatMessage.create(chatData);
+  }
 
   _addOpposingCharm(event) {
     event.preventDefault();
@@ -2720,6 +2965,8 @@ async _displayCard(item, cardType = "") {
     if (game.settings.get("exaltedthird", "spendChatCards")) {
       this._displayCard(item, "Spent");
     }
+    // Test
+    // game.rollForm.addCharm(item);
   }
 
   async _lunarSync() {

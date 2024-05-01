@@ -344,6 +344,14 @@
             {{#if rollData.restore.health }}{{rollData.restore.health}}h', {{/if}}
             {{#if rollData.restore.initiative }}{{ rollData.restore.initiative }}i, {{/if}}
         </div>
+        {{#if rollData.steal.motes.max }}
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.Steal"}}</b>
+        </div>
+        <div>
+            {{ rollData.steal.motes.gained }}/{{ rollData.steal.motes.max }}m
+        </div>
+        {{/if}}
         <div class="roll-card-header">
             <b>{{localize "Ex3.Charms"}}</b>
         </div>
@@ -470,5 +478,14 @@
         <div class="flexrow 1">
             {{{messageContent}}}
         </div>
+        {{#each rollData.triggerMessages as |message index|}}
+            <div class="dice-roll" style="margin-top: 5px;">
+                <div class="dice-result">
+                    <h4 class="dice-total">
+                        {{message}}
+                    </h4>
+                </div>
+            </div>
+        {{/each}}
     </div>
 </div>
