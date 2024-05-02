@@ -2510,7 +2510,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async sheetSettings() {
     let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': this.actor.system.details.exalt === 'exigent' });
+    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': this.actor.system.details.exalt === 'exigent', selects: CONFIG.exaltedthird.selects });
     new Dialog({
       title: `Settings`,
       content: html,
