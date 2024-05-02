@@ -19,14 +19,7 @@
         <div>
           <div class="resource-label">{{localize "Ex3.Aura"}}</div>
           <select name="system.details.aura" data-type="String">
-            {{#select system.details.aura}}
-            <option value="none">{{localize "Ex3.None"}}</option>
-            <option value="air">{{localize "Ex3.Air"}}</option>
-            <option value="earth">{{localize "Ex3.Earth"}}</option>
-            <option value="fire">{{localize "Ex3.Fire"}}</option>
-            <option value="water">{{localize "Ex3.Water"}}</option>
-            <option value="wood">{{localize "Ex3.Wood"}}</option>
-            {{/select}}
+            {{selectOptions selects.elements selected=system.details.aura localize=true}}
           </select>
         </div>
         {{/if}}
@@ -39,24 +32,7 @@
       </div>
       <div class="grid grid-2col flexrow">
         <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-            {{#select system.details.exalt}}
-            <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-            <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-            <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-            <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-            <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-            <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-            <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-            <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-            <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-            <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-            <option value="mortal">{{localize "Ex3.Mortal"}}</option>
-            <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-            <option value="solar">{{localize "Ex3.Solar"}}</option>
-            <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-            <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-            <option value="other">{{localize "Ex3.Other"}}</option>
-            {{/select}}
+            {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
           </select></h1>
         {{#if availableCastes}}
         <h1 class="charname"> <select name="system.details.caste" data-type="String">
@@ -141,33 +117,22 @@
         <div>
           <div>
             <select name="system.charcreation.physical" data-type="String">
-              {{#select system.charcreation.physical}}
-              <option value="primary">{{localize "Ex3.Primary"}}</option>
-              <option value="secondary">{{localize "Ex3.Secondary"}}</option>
-              <option value="tertiary">{{localize "Ex3.Tertiary"}}</option>
-              {{/select}}
+              {{selectOptions selects.attributePriority selected=system.charcreation.physical localize=true}}
             </select>
           </div>
         </div>
         <div>
           <div>
             <select name="system.charcreation.social" data-type="String">
-              {{#select system.charcreation.social}}
-              <option value="primary">{{localize "Ex3.Primary"}}</option>
-              <option value="secondary">{{localize "Ex3.Secondary"}}</option>
-              <option value="tertiary">{{localize "Ex3.Tertiary"}}</option>
-              {{/select}}
+              {{selectOptions selects.attributePriority selected=system.charcreation.social localize=true}}
+
             </select>
           </div>
         </div>
         <div>
           <div>
             <select name="system.charcreation.mental" data-type="String">
-              {{#select system.charcreation.mental}}
-              <option value="primary">{{localize "Ex3.Primary"}}</option>
-              <option value="secondary">{{localize "Ex3.Secondary"}}</option>
-              <option value="tertiary">{{localize "Ex3.Tertiary"}}</option>
-              {{/select}}
+              {{selectOptions selects.attributePriority selected=system.charcreation.mental localize=true}}
             </select>
           </div>
         </div>
@@ -276,11 +241,7 @@
           <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
             <select name="system.abilities.{{key}}.prefattribute" value="{{ability.prefattribute}}" data-type="String">
-              {{#select ability.prefattribute}}
-              {{#each ../attributeList as |label attribute|}}
-              <option value="{{attribute}}">{{localize label}}</option>
-              {{/each}}
-              {{/select}}
+              {{selectOptions ../attributeList selected=ability.prefattribute localize=true}}
             </select>
           </div>
           <div class="flexrow flex-center mt-1">
@@ -656,31 +617,21 @@
           <div>
             <label class="resource-label">{{localize "Ex3.BirthSign"}}: </label>
             <select name="system.details.birthsign" data-type="String">
-              {{#select system.details.birthsign}}
               {{#each signList as |signCategory signCategoryType|}}
               <optgroup label="{{signCategory.label}}">
-                {{#each signCategory.signs as |sign signType|}}
-                <option value="{{signType}}">{{localize sign}}</option>
-                {{/each}}
+                {{selectOptions signCategory.signs selected=../system.details.birthsign localize=true}}
               </optgroup>
               {{/each}}
-              <option value="">{{localize "Ex3.None"}}</option>
-              {{/select}}
             </select>
           </div>
           <div>
             <label class="resource-label">{{localize "Ex3.ExaltationSign"}}: </label>
             <select name="system.details.exaltsign" data-type="String">
-              {{#select system.details.exaltsign}}
               {{#each signList as |signCategory signCategoryType|}}
               <optgroup label="{{signCategory.label}}">
-                {{#each signCategory.signs as |sign signType|}}
-                <option value="{{signType}}">{{localize sign}}</option>
-                {{/each}}
+                {{selectOptions signCategory.signs selected=../system.details.exaltsign localize=true}}
               </optgroup>
               {{/each}}
-              <option value="">{{localize "Ex3.None"}}</option>
-              {{/select}}
             </select>
           </div>
           <div>
@@ -703,12 +654,7 @@
         <div>
           <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
           <select name="system.sizecategory" data-type="String">
-            {{#select system.sizecategory}}
-            <option value="standard">{{localize "Ex3.Standard"}}</option>
-            <option value="legendary">{{localize "Ex3.Legendary"}}</option>
-            <option value="tiny">{{localize "Ex3.Tiny"}}</option>
-            <option value="minuscule">{{localize "Ex3.Minuscule"}}</option>
-            {{/select}}
+            {{selectOptions selects.sizeCategory selected=system.sizecategory localize=true}}
           </select>
         </div>
         <!-- <div class="grid flex-group-center">

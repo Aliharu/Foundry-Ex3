@@ -109,11 +109,7 @@
                 <label class="resource-label">{{localize "Ex3.Attribute"}} </label>
             </div>
             <select name="system.settings.rollsettings.{{key}}.attribute" value="{{roll.attribute}}" data-type="String">
-                {{#select roll.attribute}}
-                {{#each ../attributeList as |label attribute|}}
-                <option value="{{attribute}}">{{localize label}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions ../selects.attributes selected=roll.attribute localize=true}}
             </select>
         </div>
         <div class="flexrow flex-center">
@@ -121,12 +117,7 @@
                 <label class="resource-label">{{localize "Ex3.Ability"}} </label>
             </div>
             <select name="system.settings.rollsettings.{{key}}.ability" value="{{roll.ability}}" data-type="String" style="max-width: 52%;">
-                {{#select roll.ability}}
-                {{#each ../abilityList as |label ability|}}
-                <option value="{{ability}}">{{localize label}}</option>
-                {{/each}}
-                <option value="none">{{localize "Ex3.None"}}</option>
-                {{/select}}
+                {{selectOptions ../selects.abilities selected=roll.ability localize=true}}
             </select>
         </div>
         {{#if roll.appearanceattribute}}
@@ -134,11 +125,7 @@
             <label class="resource-label">{{localize "Ex3.Appearance"}} </label>
             <select name="system.settings.rollsettings.{{key}}.appearanceattribute" value="{{roll.appearanceattribute}}"
                 data-type="String">
-                {{#select roll.appearanceattribute}}
-                {{#each ../attributeList as |label attribute|}}
-                <option value="{{attribute}}">{{localize label}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions ../attributeList selected=roll.appearanceattribute localize=true}}
             </select>
         </div>
         {{/if}}
@@ -194,11 +181,7 @@
                 </div>
                 <select name="system.settings.staticcapsettings.{{key}}.attribute" value="{{setting.attribute}}"
                     data-type="String">
-                    {{#select setting.attribute}}
-                    {{#each ../attributeList as |label attribute|}}
-                    <option value="{{attribute}}">{{localize label}}</option>
-                    {{/each}}
-                    {{/select}}
+                    {{selectOptions ../attributeList selected=setting.attribute localize=true}}
                 </select>
             </div>
             <div class="flexrow flex-center">
@@ -207,12 +190,7 @@
                 </div>
                 <select name="system.settings.staticcapsettings.{{key}}.ability" value="{{setting.ability}}"
                     data-type="String" style="max-width: 52%;">
-                    {{#select setting.ability}}
-                    {{#each ../abilityList as |label ability|}}
-                    <option value="{{ability}}">{{localize label}}</option>
-                    {{/each}}
-                    <option value="none">{{localize "Ex3.None"}}</option>
-                    {{/select}}
+                    {{selectOptions ../selects.abilities selected=setting.ability localize=true}}
                 </select>
             </div>
             {{#ifNotEquals key 'soak'}}
@@ -272,12 +250,7 @@
     <div class="d-flex flex-center">
         <label class="resource-label">{{localize "Ex3.Lunar"}}:</label>
         <select class="ml-1" name="system.lunarform.actorid" data-type="String">
-            {{#select system.lunarform.actorid}}
-            {{#each characterLunars as |actor id|}}
-            <option value="{{actor.id}}">{{actor.label}}</option>
-            {{/each}}
-            <option value="">{{localize "Ex3.None"}}</option>
-            {{/select}}
+            {{selectOptions characterLunars selected=system.lunarform.actorid localize=true}}
         </select>
         <div class="ml-1">
             <button class="roll-button lunar-sync"><i class="fa-solid fa-rotate"></i>{{localize "Ex3.Sync"}}</button>

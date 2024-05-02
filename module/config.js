@@ -1050,6 +1050,12 @@ exaltedthird.siderealSigns = {
       sword: "Ex3.Sword",
     },
   },
+  none: {
+    label: "None",
+    signs: {
+      '': 'Ex3.None',
+    }
+  }
 }
 
 exaltedthird.oxBody = {
@@ -1325,6 +1331,83 @@ exaltedthird.maidens = [
   "endings"
 ];
 
-exaltedthird.selects = [
-
-]
+exaltedthird.selects = {
+  exaltTypes: {
+    abyssal: "Ex3.Abyssal",
+    alchemical: "Ex3.Alchemical",
+    dragonblooded: "Ex3.Dragonblooded",
+    dreamsouled: "Ex3.DreamSouled",
+    exigent: "Ex3.Exigent",
+    getimian: "Ex3.Getimian",
+    hearteater: "Ex3.Hearteater",
+    infernal: "Ex3.Infernal",
+    liminal: "Ex3.Liminal",
+    lunar: "Ex3.Lunar",
+    mortal: "Ex3.Mortal",
+    sidereal: "Ex3.Sidereal",
+    solar: "Ex3.Solar",
+    sovereign: "Ex3.Sovereign",
+    umbral: "Ex3.Umbral",
+    other: "Ex3.Other"
+  },
+  attributePriority: {
+    primary: 'Ex3.Primary',
+    secondary: 'Ex3.Secondary',
+    tertiary: "Ex3.Tertiary"
+  },
+  elements: {
+    none: 'Ex3.None',
+    air: 'Ex3.Air',
+    earth: 'Ex3.Earth',
+    fire: 'Ex3.Fire',
+    water: 'Ex3.Water',
+    wood: 'Ex3.Wood',
+  },
+  sizeCategory: {
+    standard: 'Ex3.Standard',
+    legendary: 'Ex3.Legendary',
+    tiny: 'Ex3.Tiny',
+    minuscule: 'Ex3.Minuscule',
+  },
+  attributes: {
+    '': 'Ex3.None',
+    strength: 'Ex3.Strength',
+    dexterity: 'Ex3.Dexterity',
+    stamina: 'Ex3.Stamina',
+    charisma: 'Ex3.Charisma',
+    manipulation: 'Ex3.Manipulation',
+    appearance: 'Ex3.Appearance',
+    perception: 'Ex3.Perception',
+    intelligence: 'Ex3.Intelligence',
+    wits: 'Ex3.Wits',
+  },
+  abilities: {
+    none: 'Ex3.None',
+    archery: 'Ex3.Archery',
+    athletics: 'Ex3.Athletics',
+    awareness: 'Ex3.Awareness',
+    brawl: 'Ex3.Brawl',
+    bureaucracy: 'Ex3.Bureaucracy',
+    craft: 'Ex3.Craft',
+    dodge: 'Ex3.Dodge',
+    integrity: 'Ex3.Integrity',
+    investigation: 'Ex3.Investigation',
+    larceny: 'Ex3.Larceny',
+    linguistics: 'Ex3.Linguistics',
+    lore: 'Ex3.Lore',
+    martialarts: 'Ex3.MartialArts',
+    medicine: 'Ex3.Medicine',
+    melee: 'Ex3.Melee',
+    occult: 'Ex3.Occult',
+    performance: 'Ex3.Performance',
+    presence: 'Ex3.Presence',
+    resistance: 'Ex3.Resistance',
+    ride: 'Ex3.Ride',
+    sail: 'Ex3.Sail',
+    socialize: 'Ex3.Socialize',
+    stealth: 'Ex3.Stealth',
+    survival: 'Ex3.Survival',
+    thrown: 'Ex3.Thrown',
+    war: 'Ex3.War',
+  }
+};

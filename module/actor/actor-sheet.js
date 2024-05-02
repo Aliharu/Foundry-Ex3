@@ -84,12 +84,20 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.activeSpell = context.items?.find(item => item.system?.shaping);
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
-    context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
-      return {
-        id: actor.id,
-        label: actor.name
-      }
-    });
+    context.selects = CONFIG.exaltedthird.selects;
+    let characterLunars = {
+        '': 'Ex3.None'
+    }
+    for(const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id)) {
+      characterLunars[lunar.id] = lunar.name;
+    }
+    // context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
+    //   return {
+    //     id: actor.id,
+    //     label: actor.name
+    //   }
+    // });
+    context.characterLunars = characterLunars;
     this._prepareTraits(context.system.traits);
     this._prepareActorSheetData(context);
     this._prepareCharacterItems(context);
