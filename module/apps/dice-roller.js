@@ -3504,12 +3504,12 @@ export class RollForm extends FormApplication {
                     },
                     changes: [
                         {
-                            "key": "data.evasion.value",
+                            "key": "system.evasion.value",
                             "value": (this.object.triggerSelfDefensePenalty * -1),
                             "mode": 2
                         },
                         {
-                            "key": "data.parry.value",
+                            "key": "system.parry.value",
                             "value": (this.object.triggerSelfDefensePenalty * -1),
                             "mode": 2
                         }
@@ -3593,7 +3593,7 @@ export class RollForm extends FormApplication {
                         },
                         changes: [
                             {
-                                "key": "data.soak.value",
+                                "key": "system.soak.value",
                                 "value": (Math.ceil(this.object.target.actor.system.soak.value / 2)) * -1,
                                 "mode": 2
                             }
@@ -4021,12 +4021,12 @@ export class RollForm extends FormApplication {
                     },
                     changes: [
                         {
-                            "key": "data.evasion.value",
+                            "key": "system.evasion.value",
                             "value": number * -1,
                             "mode": 2
                         },
                         {
-                            "key": "data.parry.value",
+                            "key": "system.parry.value",
                             "value": number * -1,
                             "mode": 2
                         }
@@ -4059,12 +4059,12 @@ export class RollForm extends FormApplication {
                 },
                 changes: [
                     {
-                        "key": "data.evasion.value",
+                        "key": "system.evasion.value",
                         "value": number * -1,
                         "mode": 2
                     },
                     {
-                        "key": "data.parry.value",
+                        "key": "system.parry.value",
                         "value": number * -1,
                         "mode": 2
                     }
