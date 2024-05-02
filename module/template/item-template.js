@@ -413,7 +413,7 @@ export class ItemCharmData extends CommonItemData {
                 doublesuccess: new fields.NumberField({ initial: 11 }),
                 decreasetargetnumber: new fields.NumberField({ initial: 0 }),
                 rerolldice: new fields.StringField({ initial: "0" }),
-                diceToSuccesses: new fields.NumberField({ initial: "0" }),
+                diceToSuccesses: new fields.StringField({ initial: "0" }),
                 reducedifficulty: new fields.StringField({ initial: "0" }),
                 rerollfailed: new fields.BooleanField({ initial: false }),
                 rolltwice: new fields.BooleanField({ initial: false }),
