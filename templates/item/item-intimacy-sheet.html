@@ -23,20 +23,13 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Strength"}}</div>
                     <select name="system.strength" data-type="String">
-                        {{#select system.strength}}
-                        <option value="minor">{{localize "Ex3.Minor"}}</option>
-                        <option value="major">{{localize "Ex3.Major"}}</option>
-                        <option value="defining">{{localize "Ex3.Defining"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.intimacyStrengths selected=system.strength localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <select name="system.intimacytype" data-type="String">
-                        {{#select system.intimacytype}}
-                        <option value="tie">{{localize "Ex3.Tie"}}</option>
-                        <option value="principle">{{localize "Ex3.Principle"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.intimacyTypes selected=system.intimacytype localize=true}}
                     </select>
                 </div>
             </div>

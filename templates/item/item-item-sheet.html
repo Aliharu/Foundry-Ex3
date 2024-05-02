@@ -7,11 +7,7 @@
                 <div class="resource">
                     <label class="resource-label">{{localize "Ex3.Type"}}</label>
                     <select name="system.itemtype" value="{{system.itemtype}}" data-type="String">
-                        {{#select system.itemtype}}
-                        <option value="item">{{localize "Ex3.Item"}}</option>
-                        <option value="artifact">{{localize "Ex3.Artifact"}}</option>
-                        <option value="hearthstone">{{localize "Ex3.Hearthstone"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.itemTypes selected=system.itemtype localize=true}}
                     </select>
                 </div>
                 <div class="resource">

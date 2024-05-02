@@ -101,7 +101,7 @@ export class ExaltedThirdItem extends Item {
       if (this.type === 'weapon') {
         if (updateData.system?.weighttype === 'bolt') {
           updateData.system.witheringaccuracy = 4;
-          updateData.system.damageattribute = 'none';
+          updateData.system.damageattribute = '';
           if (this.actor) {
             updateData.system.witheringdamage = this.actor.system.essence.value + 10;
             updateData.system.overwhelming = this.actor.system.essence.value + 1;

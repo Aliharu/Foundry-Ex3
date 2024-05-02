@@ -37,24 +37,14 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <select name="system.abilitytype" data-type="String">
-                        {{#select system.abilitytype}}
-                        <option value="craft">{{localize "Ex3.Craft"}}</option>
-                        <option value="martialart">{{localize "Ex3.MartialArt"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.customAbilityTypes selected=system.abilitytype localize=true}}
                     </select>
                 </div>
                 {{#ifEquals system.abilitytype 'martialart'}}
                     <div>
                         <div class="resource-label">{{localize "Ex3.ArmorAllowance"}}</div>
                         <select name="system.armorallowance" data-type="String">
-                            {{#select system.armorallowance}}
-                            <option value="none">{{localize "Ex3.NoArmor"}}</option>
-                            <option value="light">{{localize "Ex3.Light"}}</option>
-                            <option value="medium">{{localize "Ex3.Medium"}}</option>
-                            <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-                            <option value="">{{localize "Ex3.NotSet"}}</option>
-                            {{/select}}
+                            {{selectOptions selects.martialArtsArmorAllowances selected=system.armorallowance localize=true}}
                         </select>
                     </div>
                 {{/ifEquals}}
@@ -78,26 +68,14 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Nature"}}</div>
                     <select name="system.nature" data-type="String">
-                        {{#select system.nature}}
-                        <option value="">{{localize "Ex3.None"}}</option>
-                        <option value="flowing">{{localize "Ex3.Flowing"}}</option>
-                        <option value="still">{{localize "Ex3.Still"}}</option>
-                        <option value="both">{{localize "Ex3.Both"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.smaNatures selected=system.nature localize=true}}
                     </select>
                 </div>
                 {{/if}}
                 <div>
                     <div class="resource-label">{{localize "Ex3.Maiden"}}</div>
                     <select name="system.maiden" data-type="String">
-                        {{#select system.maiden}}
-                        <option value="">{{localize "Ex3.None"}}</option>
-                        <option value="journeys">{{localize "Ex3.Journeys"}}</option>
-                        <option value="serenity">{{localize "Ex3.Serenity"}}</option>
-                        <option value="battles">{{localize "Ex3.Battles"}}</option>
-                        <option value="secrets">{{localize "Ex3.Secrets"}}</option>
-                        <option value="endings">{{localize "Ex3.Endings"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.maidens selected=system.maiden localize=true}}
                     </select>
                 </div>
             </div>

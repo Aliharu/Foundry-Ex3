@@ -121,6 +121,15 @@ export class ItemWeaponData extends CommonItemData {
         if (typeof source.hasevocations === 'string') {
             source.hasevocations = true;
         }
+        if(source.attribute === 'none') {
+            source.attribute = '';
+        }
+        if(source.ability === 'none') {
+            source.ability = '';
+        }
+        if(source.damageattribute === 'none') {
+            source.damageattribute = '';
+        }
         return super.migrateData(source);
     }
 }
@@ -281,8 +290,8 @@ export class ItemActionData extends CommonItemData {
             ...commonData,
             ...activatableData(),
             lunarstats: new fields.SchemaField({
-                attribute: new fields.StringField({ initial: "none" }),
-                ability: new fields.StringField({ initial: "none" }),
+                attribute: new fields.StringField({ initial: "" }),
+                ability: new fields.StringField({ initial: "" }),
             }),
             value: new fields.NumberField({ initial: 0 }),
             oldKey: new fields.StringField({ initial: "" }),
@@ -292,6 +301,12 @@ export class ItemActionData extends CommonItemData {
     static migrateData(source) {
         if (typeof source.activatable === 'string') {
             source.activatable = true;
+        }
+        if(source.lunarstats?.attribute === 'none') {
+            source.lunarstats.attribute = '';
+        }
+        if(source.lunarstats?.ability === 'none') {
+            source.lunarstats.ability = '';
         }
         return super.migrateData(source);
     }
@@ -417,7 +432,7 @@ export class ItemCharmData extends CommonItemData {
                 reducedifficulty: new fields.StringField({ initial: "0" }),
                 rerollfailed: new fields.BooleanField({ initial: false }),
                 rolltwice: new fields.BooleanField({ initial: false }),
-                activateAura: new fields.StringField({ initial: "none" }),
+                activateAura: new fields.StringField({ initial: "" }),
                 selfdefensepenalty: new fields.NumberField({ initial: 0 }),
                 targetdefensepenalty: new fields.NumberField({ initial: 0 }),
                 triggerontens: new fields.StringField({ initial: "none" }),
@@ -661,6 +676,10 @@ export class ItemCharmData extends CommonItemData {
             }
             if (typeof source.diceroller.opposedbonuses.alsotriggertwos === 'string') {
                 source.diceroller.opposedbonuses.alsotriggertwos = true;
+            }
+
+            if(source.diceroller.activateAura === 'none') {
+                source.diceroller.activateAura = '';
             }
         }
 

@@ -19,7 +19,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         spiritshape: new fields.StringField({ initial: "" }),
         birthsign: new fields.StringField({ initial: "" }),
         exaltsign: new fields.StringField({ initial: "" }),
-        aura: new fields.StringField({ initial: "none" }),
+        aura: new fields.StringField({ initial: "" }),
         ideal: new fields.StringField({ initial: "" }),
         supernal: new fields.StringField({ initial: "" }),
         apocalyptic: new fields.StringField({ initial: "" }),
@@ -193,6 +193,13 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       ship: shipData(),
       warstrider: warstriderData(),
     }
+  }
+
+  static migrateData(source) {
+    if(source.details?.aura === 'none') {
+      source.details.aura = '';
+    }
+    return super.migrateData(source);
   }
 }
 

@@ -3044,7 +3044,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             }
             for (let item of this.actor.items.filter(item => item.type === 'action')) {
               if (lunar.type === 'character') {
-                if (item.system.lunarstats.attribute !== 'none' && item.system.lunarstats.ability !== 'none') {
+                if (item.system.lunarstats.attribute && item.system.lunarstats.ability) {
                   let lunarActionPool = lunar.system.attributes[item.system.lunarstats.attribute].value + lunar.system.abilities[item.system.lunarstats.ability].value;
                   item.update({
                     [`system.value`]: Math.max(item.system.value, lunarActionPool),

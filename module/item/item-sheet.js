@@ -50,14 +50,25 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.charmAbilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities));
     context.charmAbilityListSectioned = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmAbilitiesSectioned));
     context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
+    context.abilityList[''] = "Ex3.None";
     context.charmExaltType = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes));
-    context.parentItemList = [];
+    context.parentItemList = {
+      '': 'Ex3.None'
+    }
+    context.showParentItemList = false;
+    context.selects = CONFIG.exaltedthird.selects;
     if (itemData.type === 'charm') {
       if (itemData.system.ability === 'evocation') {
-        context.parentItemList = game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations);
+        for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations)) {
+          context.parentItemList[evocation.id] = evocation.name;
+        }
+        context.showParentItemList = true;
       }
       if (itemData.system.ability === 'martialarts') {
-        context.parentItemList = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart');
+        for (const martialArt of game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart')) {
+          context.parentItemList[martialArt.id] = martialArt.name;
+        }
+        context.showParentItemList = true;
       }
     }
     // if(itemData.type === 'merit') {
@@ -66,12 +77,14 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     //   }
     // }
     context.childCharms = game.items.filter(charm => charm.type === 'charm' && charm.system.parentitemid === itemData._id);
-    context.lunarForms = game.actors.filter(actor => actor.type === 'npc' && actor.system.lunarform.enabled).map((actor) => {
-      return {
-        id: actor.id,
-        label: actor.name
-      }
-    });
+
+    let lunarForms = {
+      '': 'Ex3.None'
+    }
+    for (const lunarForm of game.actors.filter(actor => actor.type === 'npc' && actor.system.lunarform.enabled)) {
+      lunarForms[lunarForm.id] = lunarForm.name;
+    }
+    context.lunarForms = lunarForms;
     if (this.object?.parent) {
       for (const customAbility of this.object.parent.customabilities) {
         context.abilityList[customAbility._id] = customAbility.name;

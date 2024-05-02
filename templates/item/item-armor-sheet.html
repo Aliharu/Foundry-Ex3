@@ -58,12 +58,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <select name="system.weighttype" data-type="String">
-                        {{#select system.weighttype}}
-                        <option value="light">{{localize "Ex3.Light"}}</option>
-                        <option value="medium">{{localize "Ex3.Medium"}}</option>
-                        <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.armorWeights selected=system.weighttype localize=true}}
                     </select>
                 </div>
                 <div class="resource">

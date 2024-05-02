@@ -224,7 +224,7 @@ export class RollForm extends FormApplication {
                     doubleThresholdSuccessCap: 0,
                 }
             }
-            this.object.activateAura = 'none';
+            this.object.activateAura = '';
             this.object.addStatuses = [];
             this.object.addSelfStatuses = [];
             this.object.addOppose = {
@@ -317,7 +317,7 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.weapon.ability || "archery";
                     }
-                    if (this.object.attackType === 'withering' || this.actor.type === "npc" || (data.weapon.ability === 'none' && data.weapon.attribute === 'none')) {
+                    if (this.object.attackType === 'withering' || this.actor.type === "npc" || (data.weapon.ability && data.weapon.attribute)) {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
                         this.object.baseAccuracy = data.weapon.witheringaccuracy || 0;
                         this.object.weaponAccuracy = data.weapon.witheringaccuracy || 0;
@@ -936,7 +936,6 @@ export class RollForm extends FormApplication {
                         rollData.name = results;
                         rollData.id = uniqueId;
                         rollData.target = null;
-                        rollData.target = null;
                         rollData.showTargets = false;
                         rollData.targets = null;
                         const addedCharmsConvertArray = [];
@@ -1160,7 +1159,7 @@ export class RollForm extends FormApplication {
             this.object.settings.damage.excludeOnesFromRerolls = item.system.diceroller.damage.excludeonesfromrerolls;
         }
 
-        if (item.system.diceroller.activateAura !== 'none') {
+        if (item.system.diceroller.activateAura && item.system.diceroller.activateAura !== 'none') {
             this.object.activateAura = item.system.diceroller.activateAura;
         }
         if (item.system.diceroller.triggerontens !== 'none') {
@@ -1909,7 +1908,7 @@ export class RollForm extends FormApplication {
                     this.object.settings.damage.excludeOnesFromRerolls = false;
                 }
                 if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
-                    this.object.activateAura = 'none';
+                    this.object.activateAura = '';
                 }
                 if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
                     this.object.settings.triggerOnTens = 'none';
@@ -4953,7 +4952,7 @@ export class RollForm extends FormApplication {
             this.object.damage.rollTwice = false;
             this.object.damage.triggerOnTens = 'none';
             this.object.damage.triggerTensCap = 'none';
-            this.object.activateAura = 'none';
+            this.object.activateAura = '';
             for (var rerollValue in this.object.reroll) {
                 this.object.reroll[rerollValue].cap = 0;
             }
@@ -5152,7 +5151,7 @@ export class RollForm extends FormApplication {
         if (this.actor.system.anima.value !== newValue) {
             animaTokenMagic(this.actor, newValue);
         }
-        if (this.object.activateAura !== 'none') {
+        if (this.object.activateAura && this.object.activateAura !== 'none') {
             actorData.system.details.aura = this.object.activateAura;
         }
         var restoreMotes = this.object.restore.motes + this.object.steal.motes.gained;

@@ -38,46 +38,25 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
                     <select name="system.attribute" data-type="String">
-                        {{#select system.attribute}}
-                        {{#each attributeList as |label attribute|}}
-                        <option value="{{attribute}}">{{localize label}}</option>
-                        {{/each}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.attributes selected=system.attribute localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Ability"}}</div>
                     <select name="system.ability" data-type="String">
-                        {{#select system.ability}}
-                        {{#each abilityList as |label ability|}}
-                        <option value="{{ability}}">{{localize label}}</option>
-                        {{/each}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        {{/select}}
+                        {{selectOptions abilityList selected=system.ability localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Damage"}}</div>
                     <select name="system.damageattribute" data-type="String">
-                        {{#select system.damageattribute}}
-                        {{#each attributeList as |label ability|}}
-                        <option value="{{ability}}">{{localize label}}</option>
-                        {{/each}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.attributes selected=system.damageattribute localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <select name="system.weapontype" data-type="String">
-                        {{#select system.weapontype}}
-                        <option value="melee">{{localize "Ex3.Melee"}}</option>
-                        <option value="bolt">{{localize "Ex3.Bolt"}}</option>
-                        <option value="ranged">{{localize "Ex3.Ranged"}}</option>
-                        <option value="siege">{{localize "Ex3.Siege"}}</option>
-                        <option value="thrown">{{localize "Ex3.Thrown"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.weaponTypes selected=system.weapontype localize=true}}
                     </select>
                 </div>
             </div>
@@ -109,10 +88,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.DecisiveDamageDice"}}</div>
                     <select name="system.decisivedamagetype" data-type="String">
-                        {{#select system.decisivedamagetype}}
-                        <option value="initiative">{{localize "Ex3.Initiative"}}</option>
-                        <option value="static">{{localize "Ex3.Static"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.decisiveDamageTypes selected=system.decisivedamagetype localize=true}}
                     </select>
                 </div>
                 {{#ifEquals system.decisivedamagetype 'static'}}
@@ -142,14 +118,7 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.Type"}}</div>
                         <select name="system.weighttype" data-type="String">
-                            {{#select system.weighttype}}
-                            <option value="light">{{localize "Ex3.Light"}}</option>
-                            <option value="medium">{{localize "Ex3.Medium"}}</option>
-                            <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-                            <option value="bolt">{{localize "Ex3.Bolt"}}</option>
-                            <option value="siege">{{localize "Ex3.Siege"}}</option>
-                            <option value="other">{{localize "Ex3.Other"}}</option>
-                            {{/select}}
+                            {{selectOptions selects.weaponWeightTypes selected=system.weighttype localize=true}}
                         </select>
                     </div>
                     <div class="resource">
@@ -182,11 +151,7 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.TargetStat"}}</div>
                         <select name="system.targetstat" data-type="String">
-                            {{#select system.targetstat}}
-                            <option value="defense">{{localize "Ex3.Defense"}}</option>
-                            <option value="resolve">{{localize "Ex3.Resolve"}}</option>
-                            <option value="guile">{{localize "Ex3.Guile"}}</option>
-                            {{/select}}
+                            {{selectOptions selects.targetDefenseStats selected=system.targetstat localize=true}}
                         </select>
                     </div>
                 </div>
@@ -215,14 +180,7 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.DamageType"}}</div>
                         <select name="system.poison.damagetype" data-type="String">
-                            {{#select system.poison.damagetype}}
-                            <option value="none">{{localize "Ex3.None"}}</option>
-                            <option value="initiative.bashing">{{localize "Ex3.InitiativeBashing"}}</option>
-                            <option value="initiative.lethal">{{localize "Ex3.InitiativeLethal"}}</option>
-                            <option value="bashing">{{localize "Ex3.Bashing"}}</option>
-                            <option value="lethal">{{localize "Ex3.Lethal"}}</option>
-                            <option value="none">{{localize "Ex3.Aggravated"}}</option>
-                            {{/select}}
+                            {{selectOptions selects.poisonDamageTypes selected=system.poison.damagetype localize=true}}
                         </select>
                     </div>
                 </div>
@@ -232,29 +190,7 @@
                 <div>
                     <label class="resource-label mr-1">{{localize "Ex3.Preset"}}: </label>
                     <select name="system.attackeffectpreset" data-type="String">
-                        {{#select system.attackeffectpreset}}
-                        <option value="arrow">{{localize "Ex3.Arrow"}}</option>
-                        <option value="bite">{{localize "Ex3.Bite"}}</option>
-                        <option value="brawl">{{localize "Ex3.Brawl"}}</option>
-                        <option value="claws">{{localize "Ex3.Claws"}}</option>
-                        <option value="fireball">{{localize "Ex3.Fireball"}}</option>
-                        <option value="firebreath">{{localize "Ex3.Firebreath"}}</option>
-                        <option value="flamepiece">{{localize "Ex3.Flamepiece"}}</option>
-                        <option value="glaive">{{localize "Ex3.Glaive"}}</option>
-                        <option value="goremaul">{{localize "Ex3.Goremaul"}}</option>
-                        <option value="greatsaxe">{{localize "Ex3.Greataxe"}}</option>
-                        <option value="greatsword">{{localize "Ex3.Greatsword"}}</option>
-                        <option value="handaxe">{{localize "Ex3.Handaxe"}}</option>
-                        <option value="lightning">{{localize "Ex3.Lightning"}}</option>
-                        <option value="quarterstaff">{{localize "Ex3.Quarterstaff"}}</option>
-                        <option value="rapier">{{localize "Ex3.Rapier"}}</option>
-                        <option value="scimitar">{{localize "Ex3.Scimitar"}}</option>
-                        <option value="shortsword">{{localize "Ex3.Shortsword"}}</option>
-                        <option value="spear">{{localize "Ex3.Spear"}}</option>
-                        <option value="sword">{{localize "Ex3.Sword"}}</option>
-                        <option value="throwdagger">{{localize "Ex3.ThrownDagger"}}</option>
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.attackEffectPresets selected=system.attackeffectpreset localize=true}}
                     </select>
                     <div>
                         <label class="resource-label mr-1">{{localize "Ex3.CustomInput"}}: </label>

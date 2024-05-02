@@ -33,21 +33,13 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <select name="system.ritualtype" data-type="String">
-                        {{#select system.ritualtype}}
-                        <option value="necromancy">{{localize "Ex3.Necromancy"}}</option>
-                        <option value="sorcery">{{localize "Ex3.Sorcery"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.ritualTypes selected=system.ritualtype localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
                     <select name="system.endtrigger" data-type="String">
-                        {{#select system.endtrigger}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        <option value="startturn">{{localize "Ex3.StartTurn"}}</option>
-                        <option value="endturn">{{localize "Ex3.EndTurn"}}</option>
-                        <option value="endscene">{{localize "Ex3.EndScene"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
                     </select>
                 </div>
             </div>

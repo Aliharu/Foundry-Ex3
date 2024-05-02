@@ -28,26 +28,13 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Type"}}</div>
                     <select name="system.merittype" data-type="String">
-                        {{#select system.merittype}}
-                        <option value="">{{localize "Ex3.None"}}</option>
-                        <option value="flaw">{{localize "Ex3.Flaw"}}</option>
-                        <option value="story">{{localize "Ex3.Story"}}</option>
-                        <option value="innate">{{localize "Ex3.Innate"}}</option>
-                        <option value="purchased">{{localize "Ex3.Purchased"}}</option>
-                        <option value="sorcery">{{localize "Ex3.Sorcery"}}</option>
-                        <option value="thaumaturgy">{{localize "Ex3.Thaumaturgy"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.meritTypes selected=system.merittype localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
                     <select name="system.endtrigger" data-type="String">
-                        {{#select system.endtrigger}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        <option value="startturn">{{localize "Ex3.StartTurn"}}</option>
-                        <option value="endturn">{{localize "Ex3.EndTurn"}}</option>
-                        <option value="endscene">{{localize "Ex3.EndScene"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
                     </select>
                 </div>
             </div>
@@ -58,21 +45,6 @@
                 </div>
                 <input type="text" name="system.archetypename" value="{{system.archetypename}}" />
             </div>
-            <!-- {{#if parentItemList}}
-            <div>
-                <div class="flex-center">
-                    <div class="resource-label">{{localize "Ex3.Ritual"}}</div>
-                </div>
-                <select name="system.parentitemid" data-type="String">
-                    {{#select system.parentitemid}}
-                    <option value="">{{localize "Ex3.None"}}</option>
-                    {{#each parentItemList as |item|}}
-                    <option value="{{item._id}}">{{item.name}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-            </div>
-            {{/if}} -->
             {{/ifEquals}}
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>

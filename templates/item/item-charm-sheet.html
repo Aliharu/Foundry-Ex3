@@ -6,41 +6,18 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="system.ability" data-type="String">
-                    {{#select system.ability}}
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                        {{#each charmCategory.entries as |entry entryType|}}
-                        <option value="{{entryType}}">{{localize entry}}</option>
-                        {{/each}}
+                        {{selectOptions charmCategory.entries selected=../system.ability localize=true}}
                     </optgroup>
                     {{/each}}
-                    {{/select}}
                 </select>
                 <select name="system.requirement" data-type="String">
-                    {{#select system.requirement}}
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    {{/select}}
+                    {{selectOptions selects.abilityRequirementLevels selected=system.requirement localize=false}}
                 </select>
                 <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
                 <select name="system.essence" data-type="String">
-                    {{#select system.essence}}
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    {{/select}}
+                    {{selectOptions selects.essenceLevels selected=system.essence localize=false}}
                 </select>
             </div>
         </div>
@@ -151,25 +128,13 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.HealthType"}}</div>
                     <select name="system.cost.healthtype" data-type="String">
-                        {{#select system.cost.healthtype}}
-                        <option value="bashing">{{localize "Ex3.Bashing"}}</option>
-                        <option value="lethal">{{localize "Ex3.Lethal"}}</option>
-                        <option value="aggravated">{{localize "Ex3.Aggravated"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.damageTypes selected=system.cost.healthtype localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Aura"}}</div>
                     <select name="system.cost.aura" data-type="String">
-                        {{#select system.cost.aura}}
-                        <option value=""></option>
-                        <option value="any">{{localize "Ex3.Any"}}</option>
-                        <option value="air">{{localize "Ex3.Air"}}</option>
-                        <option value="earth">{{localize "Ex3.Earth"}}</option>
-                        <option value="fire">{{localize "Ex3.Fire"}}</option>
-                        <option value="water">{{localize "Ex3.Water"}}</option>
-                        <option value="wood">{{localize "Ex3.Wood"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.costElements selected=system.cost.aura localize=true}}
                     </select>
                 </div>
                 <div>
@@ -433,15 +398,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
                     <select name="system.diceroller.triggerontens" data-type="String">
-                        {{#select system.diceroller.triggerontens}}
-                        <option value="none">{{localize "Ex3.Nothing"}}</option>
-                        <option value="damage">{{localize "Ex3.Damage"}}</option>
-                        <option value="extraSuccess">{{localize "Ex3.ExtraSuccess"}}</option>
-                        <option value="ignoreHardness">{{localize "Ex3.IgnoreHardness"}}</option>
-                        <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
-                        <option value="rerolllDie">{{localize "Ex3.RerollDie"}}</option>
-                        <option value="restoreMote">{{localize "Ex3.RestoreMote"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.triggerOnTensOptions selected=system.diceroller.triggerontens localize=true}}
                     </select>
                 </div>
                 <div>
@@ -675,11 +632,7 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
                         <select name="system.diceroller.damage.triggerontens" data-type="String">
-                            {{#select system.diceroller.damage.triggerontens}}
-                            <option value="none">{{localize "Ex3.Nothing"}}</option>
-                            <option value="subtractTargetInitiative">{{localize "Ex3.SubtractTargetInitiative"}}
-                            </option>
-                            {{/select}}
+                            {{selectOptions selects.triggerOnTensDamageOptions selected=system.diceroller.damage.triggerontens localize=true}}
                         </select>
                     </div>
                     <div>
@@ -716,14 +669,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
                     <select name="system.diceroller.activateAura" data-type="String">
-                        {{#select system.diceroller.activateAura}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        <option value="air">{{localize "Ex3.Air"}}</option>
-                        <option value="earth">{{localize "Ex3.Earth"}}</option>
-                        <option value="fire">{{localize "Ex3.Fire"}}</option>
-                        <option value="water">{{localize "Ex3.Water"}}</option>
-                        <option value="wood">{{localize "Ex3.Wood"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.elements selected=system.diceroller.activateAura localize=true}}
                     </select>
                 </div>
                 <div>
@@ -814,14 +760,7 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</div>
                         <select name="system.diceroller.opposedbonuses.triggeronones" data-type="String">
-                            {{#select system.diceroller.opposedbonuses.triggeronones}}
-                            <option value="none">{{localize "Ex3.Nothing"}}</option>
-                            <option value="soak">{{localize "Ex3.IncreaseSoak"}}</option>
-                            <option value="defense">{{localize "Ex3.IncreaseDefense"}}</option>
-                            <option value="rerollSuccesses">{{localize "Ex3.RerollSuccesses"}}</option>
-                            <option value="subtractInitiative">{{localize "Ex3.SubtractEnemyInitiative"}}</option>
-                            <option value="subtractSuccesses">{{localize "Ex3.SubtractEnemySuccesses"}}</option>
-                            {{/select}}
+                        {{selectOptions selects.triggerOnOnesOptions selected=system.diceroller.opposedbonuses.triggeronones localize=true}}
                         </select>
                     </div>
                     <div>
@@ -1087,11 +1026,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
                     <select name="system.charmtype" data-type="String">
-                        {{#select system.charmtype}}
-                        {{#each charmExaltType as |label type|}}
-                        <option value="{{type}}">{{localize label}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions charmExaltType selected=system.charmtype localize=true}}
                     </select>
                 </div>
                 <div>
@@ -1104,32 +1039,13 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
                     <select name="system.endtrigger" data-type="String">
-                        {{#select system.endtrigger}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        <option value="startturn">{{localize "Ex3.StartTurn"}}</option>
-                        <option value="endturn">{{localize "Ex3.EndTurn"}}</option>
-                        <option value="endscene">{{localize "Ex3.EndScene"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.AutoAddToRolls"}}</div>
                     <select name="system.autoaddtorolls" data-type="String">
-                        {{#select system.autoaddtorolls}}
-                        <option value="">{{localize "Ex3.None"}}</option>
-                        <option value="action">{{localize "Ex3.CharacterRolls"}}</option>
-                        <option value="opposedRolls">{{localize "Ex3.OpposedRolls"}}</option>
-                        <option value="sameAbility">{{localize "Ex3.SameAbilityAttribute"}}</option>
-                        <option value="attacks">{{localize "Ex3.Attacks"}}</option>
-                        <option value="command">{{localize "Ex3.Command"}}</option>
-                        <option value="grapple">{{localize "Ex3.Grapple"}}</option>
-                        <option value="joinBattle">{{localize "Ex3.JoinBattle"}}</option>
-                        <option value="movement">{{localize "Ex3.Movement"}}</option>
-                        <option value="readIntentions">{{localize "Ex3.ReadIntentions"}}</option>
-                        <option value="resistance">{{localize "Ex3.Resistance"}}</option>
-                        <option value="social">{{localize "Ex3.Social"}}</option>
-                        <option value="sorcery">{{localize "Ex3.Sorcery"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
                     </select>
                 </div>
                 <div>
@@ -1156,20 +1072,12 @@
                 <input placeholder="Previous Charms from: " type="number" name="system.numberprerequisites.number"
                     value="{{system.numberprerequisites.number}}" />
                 <select name="system.numberprerequisites.ability" data-type="String">
-                    {{#select system.numberprerequisites.ability}}
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                        {{#each charmCategory.entries as |entry entryType|}}
-                        <option value="{{entryType}}">{{localize entry}}</option>
-                        {{/each}}
+                        {{selectOptions charmCategory.entries selected=../system.numberprerequisites.ability localize=true}}
                     </optgroup>
                     {{/each}}
-                    <option value="combat">{{localize "Ex3.AnyCombatAbility"}}</option>
-                    <option value="physicalAttribute">{{localize "Ex3.PhysicalAttribute"}}</option>
-                    <option value="mentalAttribute">{{localize "Ex3.MentalAttribute"}}</option>
-                    <option value="socialAttribute">{{localize "Ex3.SocialAttribute"}}</option>
-                    <option value="">{{localize "Ex3.None"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.previousCharmsPrerequisitesOptions selected=system.numberprerequisites.ability localize=true}}
                 </select>
             </div>
             <div class="d-flex flex-center resource-label">
@@ -1178,17 +1086,12 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="system.archetype.ability" data-type="String">
-                    {{#select system.archetype.ability}}
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                        {{#each charmCategory.entries as |entry entryType|}}
-                        <option value="{{entryType}}">{{localize entry}}</option>
-                        {{/each}}
+                        {{selectOptions charmCategory.entries selected=../system.archetype.ability localize=true}}
                     </optgroup>
                     {{/each}}
-                    <option value="combat">{{localize "Ex3.AnyCombatAbility"}}</option>
-                    <option value="">{{localize "Ex3.None"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.uniqueArchetypeAbilityOptions selected=system.archetype.ability localize=true}}
                 </select>
             </div>
             <div class="flex-center mt-1">
@@ -1224,7 +1127,7 @@
             </div>
             <textarea type="text" name="system.archetype.prerequisites"
                 rows="4">{{system.archetype.prerequisites}}</textarea>
-            {{#if parentItemList}}
+            {{#if showParentItemList}}
             <div>
                 {{#ifEquals system.ability 'evocation'}}
                 <div class="flex-center">
@@ -1236,12 +1139,7 @@
                 </div>
                 {{/ifEquals}}
                 <select name="system.parentitemid" data-type="String">
-                    {{#select system.parentitemid}}
-                    <option value="">{{localize "Ex3.None"}}</option>
-                    {{#each parentItemList as |item|}}
-                    <option value="{{item._id}}">{{item.name}}</option>
-                    {{/each}}
-                    {{/select}}
+                    {{selectOptions parentItemList selected=system.parentitemid localize=true}}
                 </select>
             </div>
             {{/if}}

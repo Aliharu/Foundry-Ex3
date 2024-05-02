@@ -33,23 +33,13 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
                     <select name="system.lunarstats.attribute" data-type="String">
-                        {{#select system.lunarstats.attribute}}
-                        {{#each attributeList as |label attribute|}}
-                        <option value="{{attribute}}">{{localize label}}</option>
-                        {{/each}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.attributes selected=system.lunarstats.attribute localize=true}}
                     </select>
                 </div>
                 <div>
                     <div class="resource-label">{{localize "Ex3.Ability"}}</div>
                     <select name="system.lunarstats.ability" data-type="String">
-                        {{#select system.lunarstats.ability}}
-                        {{#each abilityList as |label ability|}}
-                        <option value="{{ability}}">{{localize label}}</option>
-                        {{/each}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.abilities selected=system.lunarstats.ability localize=true}}
                     </select>
                 </div>
             </div>

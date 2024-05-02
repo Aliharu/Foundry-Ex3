@@ -6,11 +6,7 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="system.ability" data-type="String">
-                    {{#select system.ability}}
-                        {{#each abilityList as |label ability|}}
-                        <option value="{{ability}}">{{localize label}}</option>
-                        {{/each}}
-                    {{/select}}
+                    {{selectOptions abilityList selected=system.ability localize=true}}
                 </select>
             </div>
         </div>

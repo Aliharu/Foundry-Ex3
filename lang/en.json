@@ -1095,5 +1095,7 @@
 
     "Ex3.FirstCircle": "First Circle",
     "Ex3.SecondCircle": "Second Circle",
-    "Ex3.ThirdCircle": "Third Circle"
+    "Ex3.ThirdCircle": "Third Circle",
+
+    "Ex3.NonSameAbilityAttribute": "Non-Same Ability Attribute"
 }
