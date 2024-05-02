@@ -3,68 +3,32 @@
         <div class="grid grid-2col flex-group-center">
             <label className="resource-label">Spend motes from:</label>
             <select id="charmMotePool" name="settings.charmmotepool" data-type="String">
-                {{#select settings.charmmotepool}}
-                <option value="personal">{{localize "Ex3.Personal"}}</option>
-                <option value="peripheral">{{localize "Ex3.Peripheral"}}</option>
-                {{/select}}
+                {{selectOptions selects.motePools selected=settings.charmmotepool localize=true}}
             </select>
             <label className="resource-label">{{localize "Ex3.MaxAnima"}}:</label>
             <select id="maxAnima" name="maxAnima" data-type="String">
-                {{#select maxAnima}}
-                <option value="3">{{localize "Ex3.Bonfire"}}</option>
-                <option value="4">{{localize "Ex3.Transcendent"}}</option>
-                {{/select}}
+                {{selectOptions selects.maxAnima selected=maxAnima localize=true}}
             </select>
             <label className="resource-label">{{localize "Ex3.MartialArtsMastery"}}:</label>
             <select id="martialArtsMastery" name="settings.martialartsmastery" data-type="String">
-                {{#select settings.martialartsmastery}}
-                <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
-                <option value="standard">{{localize "Ex3.Standard"}}</option>
-                <option value="mastery">{{localize "Ex3.Mastery"}}</option>
-                {{/select}}
+                {{selectOptions selects.martialArtsMastery selected=settings.martialartsmastery localize=true}}
             </select>
             <label className="resource-label">{{localize "Ex3.SheetBackground"}}:</label>
             <select id="sheetBackground" name="settings.sheetbackground" data-type="String">
-                {{#select settings.sheetbackground}}
-                <option value="default">{{localize "Ex3.Default"}}</option>
-                <option value="db">{{localize "Ex3.Dragonblooded"}}</option>
-                <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-                <option value="janest">{{localize "Ex3.Janest"}}</option>
-                <option value="leaves">{{localize "Ex3.Leaves"}}</option>
-                <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-                <option value="puppeteer">{{localize "Ex3.Puppeteer"}}</option>
-                <option value="solar">{{localize "Ex3.Solar"}}</option>
-                <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-                <option value="tree">{{localize "Ex3.Tree"}}</option>
-                {{/select}}
+                {{selectOptions selects.sheetBackgrounds selected=settings.sheetbackground localize=true}}
             </select>
             <label className="resource-label">{{localize "Ex3.SorceryCircle"}}:</label>
             <select id="sorceryCircle" name="settings.sorcerycircle" data-type="String">
-                {{#select settings.sorcerycircle}}
-                <option value="none">{{localize "Ex3.None"}}</option>
-                <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
-                <option value="celestial">{{localize "Ex3.Celestial"}}</option>
-                <option value="solar">{{localize "Ex3.Solar"}}</option>
-                {{/select}}
+                {{selectOptions selects.sorceryCircles selected=settings.sorcerycircle localize=true}}
             </select>
             <label className="resource-label">{{localize "Ex3.NecromancyCircle"}}:</label>
             <select id="necromancyCircle" name="settings.necromancycircle" data-type="String">
-                {{#select settings.necromancycircle}}
-                <option value="none">{{localize "Ex3.None"}}</option>
-                <option value="ivory">{{localize "Ex3.Ivory"}}</option>
-                <option value="shadow">{{localize "Ex3.Shadow"}}</option>
-                <option value="void">{{localize "Ex3.Void"}}</option>
-                {{/select}}
+                {{selectOptions selects.necromancyCircles selected=settings.necromancycircle localize=true}}
             </select>
             {{#if showExigentType}}
             <label className="resource-label">{{localize "Ex3.ExigentType"}}:</label>
             <select id="exigentType" name="settings.exigenttype" data-type="String">
-                {{#select settings.exigenttype}}
-                <option value="none">{{localize "Ex3.None"}}</option>
-                <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
-                <option value="celestial">{{localize "Ex3.Celestial"}}</option>
-                <option value="">{{localize "Ex3.None"}}</option>
-                {{/select}}
+                {{selectOptions selects.exigentTypes selected=settings.exigenttype localize=true}}
             </select>
             {{/if}}
             <label className="resource-label">{{localize "Ex3.SMAEnlightenment"}}:</label>

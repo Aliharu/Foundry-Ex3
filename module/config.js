@@ -1437,8 +1437,50 @@ exaltedthird.selects = {
     other: 'Ex3.Other',
   },
   drill: {
-    0: 'Ex3.Poor',
-    1: 'Ex3.Average',
-    2: 'Ex3.Elite',
+    "0": 'Ex3.Poor',
+    "1": 'Ex3.Average',
+    "2": 'Ex3.Elite',
+  },
+  motePools: {
+    personal: "Ex3.Personal",
+    peripheral: "Ex3.Peripheral",
+  },
+  maxAnima: {
+    "3": "Ex3.Bonfire",
+    "4": "Ex3.Transcendent",
+  },
+  martialArtsMastery: {
+    terrestrial: "Ex3.Terrestrial",
+    standard: "Ex3.Standard",
+    mastery: "Ex3.Mastery",
+  },
+  sheetBackgrounds: {
+    default: "Ex3.Default",
+    db: "Ex3.Dragonblooded",
+    exigent: "Ex3.Exigent",
+    janest: "Ex3.Janest",
+    leaves: "Ex3.Leaves",
+    lunar: "Ex3.Lunar",
+    puppeteer: "Ex3.Puppeteer",
+    solar: "Ex3.Solar",
+    sovereign: "Ex3.Sovereign",
+    tree: "Ex3.Tree",
+  },
+  sorceryCircles: {
+    none: "Ex3.None",
+    terrestrial: "Ex3.Terrestrial",
+    celestial: "Ex3.Celestial",
+    solar: "Ex3.Solar",
+  },
+  necromancyCircles: {
+    none: "Ex3.None",
+    ivory: "Ex3.Ivory",
+    shadow: "Ex3.Shadow",
+    void: "Ex3.Void",
+  },
+  exigentTypes: {
+    '': "Ex3.None",
+    terrestrial: "Ex3.Terrestrial",
+    celestial: "Ex3.Celestial",
   }
 };
