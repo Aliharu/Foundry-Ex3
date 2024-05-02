@@ -1932,7 +1932,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.delete-saved-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
       var key = li.data("saved-roll-id");
-      const rollDeleteString = "data.savedRolls.-=" + key;
+      const rollDeleteString = "system.savedRolls.-=" + key;
 
       let deleteConfirm = new Dialog({
         title: "Delete",

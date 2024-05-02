@@ -932,7 +932,7 @@ export class RollForm extends FormApplication {
                     default: true,
                     callback: html => {
                         let results = document.getElementById('name').value;
-                        let uniqueId = this.object.id || randomID(16);
+                        let uniqueId = this.object.id || foundry.utils.randomID(16);
                         rollData.name = results;
                         rollData.id = uniqueId;
                         rollData.target = null;
@@ -947,7 +947,7 @@ export class RollForm extends FormApplication {
                         this.object.addedCharms = addedCharmsConvertArray;
 
                         let updates = {
-                            "data.savedRolls": {
+                            "system.savedRolls": {
                                 [uniqueId]: rollData
                             }
                         };
