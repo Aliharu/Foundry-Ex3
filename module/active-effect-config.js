@@ -6,12 +6,12 @@ export default class ExaltedActiveEffectConfig extends ActiveEffectConfig {
     }
 
     async getData() {
-        let data = await super.getData();
+        let context = await super.getData();
 
-        data.useDropdown = game.settings.get("exaltedthird", "useActiveEffectsDropdown");
+        context.useDropdown = game.settings.get("exaltedthird", "useActiveEffectsDropdown");
 
-        data.activeEffectChanges = exaltedthird.activeEffectChanges;
+        context.activeEffectChanges = exaltedthird.activeEffectChanges;
 
-        return data;
+        return context;
     }
 }

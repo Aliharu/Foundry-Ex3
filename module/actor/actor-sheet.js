@@ -86,9 +86,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
     context.selects = CONFIG.exaltedthird.selects;
     let characterLunars = {
-        '': 'Ex3.None'
+      '': 'Ex3.None'
     }
-    for(const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id)) {
+    for (const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id)) {
       characterLunars[lunar.id] = lunar.name;
     }
     // context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
@@ -1009,245 +1009,249 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.test-button').mousedown(ev => {
-      let effectsData = [
-        'diceModifier',
-        'successModifier',
-        'doubleSuccess',
-        'decreaseTargetNumber',
-        'rerollDice',
-        'diceToSuccesses',
-        'reduceDifficulty',
-        'rerollDieFace',
-        'rollTwice',
-        'excludeOnes',
-        'rerollFailed',
-        'triggerOnTens',
-        'triggerNinesAndTens',
-        'triggerTensCap',
+      // let effectsData = [
+      //   'diceModifier',
+      //   'successModifier',
+      //   'doubleSuccess',
+      //   'decreaseTargetNumber',
+      //   'rerollDice',
+      //   'diceToSuccesses',
+      //   'reduceDifficulty',
+      //   'rerollDieFace',
+      //   'rollTwice',
+      //   'excludeOnes',
+      //   'rerollFailed',
+      //   'triggerOnTens',
+      //   'triggerNinesAndTens',
+      //   'triggerTensCap',
 
-        //Damage
-        'damageDice',
-        'damageSuccessModifier',
-        'doubleSuccess-damage',
-        'decreaseTargetNumber-damage',
-        'rerollDice-damage',
-        'diceToSuccesses-damage',
-        'reduceDifficulty-damage',
-        'rerollDieFace-damage',
-        'rollTwice-damage',
-        'excludeOnes-damage',
-        'rerollFailed-damage',
-        'triggerOnTens-damage',
-        'triggerNinesAndTens-damage',
-        'triggerTensCap-damage',
-        'threshholdToDamage',
-        'ignoreSoak',
-        'overwhelming',
-        'postSoakDamage',
-        'noInitiativeReset',
-        //Costs
-        'motes-spend',
-        'muteMotes-spend',
-        'initiative-spend',
-        'anima-spend',
-        'willpower-spend',
-        'grappleControl-spend',
-        'health-spend',
-        'aura-spend',
-        'penumbra-spend',
-        'silverXp-spend',
-        'goldXp-spend',
-        'whiteXp-spend',
-        //restore
-        'motes-restore',
-        'initiative-restore',
-        'health-restore',
-        'willpower-restore',
-        //Other
-        'triggerSelfDefensePenalty',
-        'triggerTargetDefensePenalty',
-        'activateAura',
-        'ignoreLegendarySize',
-        'inflictDicePenalty',
-        //Defense
-        'defense',
-        'soak',
-        'hardness',
-        'resolve',
-        'guile',
-      ];
-      let itemData = [];
-      for (const triggerEffect of effectsData) {
-        if (triggerEffect === 'activateAura' || triggerEffect === 'aura-spend') {
-          itemData.push(
-            {
-              name: triggerEffect,
-              type: 'charm',
-              system: {
-                ability: 'archery',
-                triggers: {
-                  dicerollertriggers: {
-                    0: {
-                      name: triggerEffect,
-                      triggerTime: "beforeRoll",
-                      bonuses: {
-                        0: {
-                          effect: triggerEffect,
-                          value: "fire"
-                        }
-                      },
-                      requirements: {}
-                    }
-                  }
-                }
-              }
-            }
-          );
-        } else {
-          itemData.push(
-            {
-              name: triggerEffect,
-              type: 'charm',
-              system: {
-                ability: 'archery',
-                triggers: {
-                  dicerollertriggers: {
-                    0: {
-                      name: triggerEffect,
-                      triggerTime: "beforeRoll",
-                      bonuses: {
-                        0: {
-                          effect: triggerEffect,
-                          value: (triggerEffect === "triggerOnTens" || triggerEffect === "triggerOnTens-damage") ? "extrasuccess" : "1"
-                        }
-                      },
-                      requirements: {}
-                    }
-                  }
-                }
-              }
-            }
-          );
-        }
-      }
-      Actor.create({
-        name: "Trigger Man",
-        type: "character",
-        system: {
-          settings: {
-            hasaura: true,
-          }
-        },
-        items: itemData
-      });
-      let restrictionsData = [
-        {
-          restriction: "attackType",
-          value: "withering",
-        },
-        {
-          restriction: "charmAddedAmount",
-          value: "1",
-        }, 
-        {
-          restriction: "range",
-          value: "short",
-        },
-        {
-          restriction: "martialArtsLevel",
-          value: "mastery",
-        },
-        {
-          restriction: "smaEnlightenment",
-          value: "true",
-        },
-        {
-          restriction: "materialResonance",
-          value: "soulsteel",
-        },
-        {
-          restriction: "materialStandard",
-          value: "soulsteel",
-        },
-        {
-          restriction: "materialDissonance",
-          value: "soulsteel",
-        },
-        {
-          restriction: "formula",
-          value: "essence > 1",
-        },
-        {
-          restriction: "hasStatus",
-          value: "prone",
-        },
-        {
-          restriction: "targetHasStatus",
-          value: "prone",
-        },
-        {
-          restriction: "targetIsBattlegroup",
-          value: "true",
-        },
-        {
-          restriction: "targetIsCrashed",
-          value: "true",
-        },
-        {
-          restriction: "thresholdSuccesses",
-          value: "true",
-        },
-        {
-          restriction: "damageLevelsDealt",
-          value: "1",
-        },
-        {
-          restriction: "crashedTheTarget",
-          value: "true",
-        },
-      ]
-      let itemRescrictionData = [];
-      for (const restrictionEffect of restrictionsData) {
-        itemRescrictionData.push(
-          {
-            name: restrictionEffect.restriction,
-            type: 'charm',
-            system: {
-              ability: 'archery',
-              triggers: {
-                dicerollertriggers: {
-                  0: {
-                    name: restrictionEffect.restriction,
-                    triggerTime: "beforeRoll",
-                    bonuses: {
-                      0: {
-                        effect: 'diceModifier',
-                        value: "1"
-                      }
-                    },
-                    requirements: {
-                      0: {
-                        requirement: restrictionEffect.restriction,
-                        value: restrictionEffect.value
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        );
-      }
-      Actor.create({
-        name: "Requirement Man",
-        type: "character",
-        system: {
-          settings: {
-            hasaura: true,
-          }
-        },
-        items: itemRescrictionData
-      });
+      //   //Damage
+      //   'damageDice',
+      //   'damageSuccessModifier',
+      //   'doubleSuccess-damage',
+      //   'decreaseTargetNumber-damage',
+      //   'rerollDice-damage',
+      //   'diceToSuccesses-damage',
+      //   'reduceDifficulty-damage',
+      //   'rerollDieFace-damage',
+      //   'rollTwice-damage',
+      //   'excludeOnes-damage',
+      //   'rerollFailed-damage',
+      //   'triggerOnTens-damage',
+      //   'triggerNinesAndTens-damage',
+      //   'triggerTensCap-damage',
+      //   'threshholdToDamage',
+      //   'ignoreSoak',
+      //   'overwhelming',
+      //   'postSoakDamage',
+      //   'noInitiativeReset',
+      //   //Costs
+      //   'motes-spend',
+      //   'muteMotes-spend',
+      //   'initiative-spend',
+      //   'anima-spend',
+      //   'willpower-spend',
+      //   'grappleControl-spend',
+      //   'health-spend',
+      //   'aura-spend',
+      //   'penumbra-spend',
+      //   'silverXp-spend',
+      //   'goldXp-spend',
+      //   'whiteXp-spend',
+      //   //restore
+      //   'motes-restore',
+      //   'initiative-restore',
+      //   'health-restore',
+      //   'willpower-restore',
+      //   //Other
+      //   'triggerSelfDefensePenalty',
+      //   'triggerTargetDefensePenalty',
+      //   'activateAura',
+      //   'ignoreLegendarySize',
+      //   'inflictDicePenalty',
+      //   //Defense
+      //   'defense',
+      //   'soak',
+      //   'hardness',
+      //   'resolve',
+      //   'guile',
+      // ];
+      // let itemData = [];
+      // for (const triggerEffect of effectsData) {
+      //   if (triggerEffect === 'activateAura' || triggerEffect === 'aura-spend') {
+      //     itemData.push(
+      //       {
+      //         name: triggerEffect,
+      //         type: 'charm',
+      //         system: {
+      //           ability: 'archery',
+      //           triggers: {
+      //             dicerollertriggers: {
+      //               0: {
+      //                 name: triggerEffect,
+      //                 triggerTime: "beforeRoll",
+      //                 bonuses: {
+      //                   0: {
+      //                     effect: triggerEffect,
+      //                     value: "fire"
+      //                   }
+      //                 },
+      //                 requirements: {}
+      //               }
+      //             }
+      //           }
+      //         }
+      //       }
+      //     );
+      //   } else {
+      //     itemData.push(
+      //       {
+      //         name: triggerEffect,
+      //         type: 'charm',
+      //         system: {
+      //           ability: 'archery',
+      //           triggers: {
+      //             dicerollertriggers: {
+      //               0: {
+      //                 name: triggerEffect,
+      //                 triggerTime: "beforeRoll",
+      //                 bonuses: {
+      //                   0: {
+      //                     effect: triggerEffect,
+      //                     value: (triggerEffect === "triggerOnTens" || triggerEffect === "triggerOnTens-damage") ? "extrasuccess" : "1"
+      //                   }
+      //                 },
+      //                 requirements: {}
+      //               }
+      //             }
+      //           }
+      //         }
+      //       }
+      //     );
+      //   }
+      // }
+      // Actor.create({
+      //   name: "Trigger Man",
+      //   type: "character",
+      //   system: {
+      //     settings: {
+      //       hasaura: true,
+      //     }
+      //   },
+      //   items: itemData
+      // });
+      // let restrictionsData = [
+      //   {
+      //     restriction: "attackType",
+      //     value: "withering",
+      //   },
+      //   {
+      //     restriction: "charmAddedAmount",
+      //     value: "1",
+      //   }, 
+      //   {
+      //     restriction: "range",
+      //     value: "short",
+      //   },
+      //   {
+      //     restriction: "martialArtsLevel",
+      //     value: "mastery",
+      //   },
+      //   {
+      //     restriction: "smaEnlightenment",
+      //     value: "true",
+      //   },
+      //   {
+      //     restriction: "materialResonance",
+      //     value: "soulsteel",
+      //   },
+      //   {
+      //     restriction: "materialStandard",
+      //     value: "soulsteel",
+      //   },
+      //   {
+      //     restriction: "materialDissonance",
+      //     value: "soulsteel",
+      //   },
+      //   {
+      //     restriction: "formula",
+      //     value: "essence > 1",
+      //   },
+      //   {
+      //     restriction: "hasStatus",
+      //     value: "prone",
+      //   },
+      //   {
+      //     restriction: "targetHasStatus",
+      //     value: "prone",
+      //   },
+      //   {
+      //     restriction: "targetIsBattlegroup",
+      //     value: "true",
+      //   },
+      //   {
+      //     restriction: "targetIsCrashed",
+      //     value: "true",
+      //   },
+      //   {
+      //     restriction: "thresholdSuccesses",
+      //     value: "true",
+      //   },
+      //   {
+      //     restriction: "damageLevelsDealt",
+      //     value: "1",
+      //   },
+      //   {
+      //     restriction: "crashedTheTarget",
+      //     value: "true",
+      //   },
+      // ]
+      // let itemRescrictionData = [];
+      // for (const restrictionEffect of restrictionsData) {
+      //   itemRescrictionData.push(
+      //     {
+      //       name: restrictionEffect.restriction,
+      //       type: 'charm',
+      //       system: {
+      //         ability: 'archery',
+      //         triggers: {
+      //           dicerollertriggers: {
+      //             0: {
+      //               name: restrictionEffect.restriction,
+      //               triggerTime: "beforeRoll",
+      //               bonuses: {
+      //                 0: {
+      //                   effect: 'diceModifier',
+      //                   value: "1"
+      //                 }
+      //               },
+      //               requirements: {
+      //                 0: {
+      //                   requirement: restrictionEffect.restriction,
+      //                   value: restrictionEffect.value
+      //                 }
+      //               }
+      //             }
+      //           }
+      //         }
+      //       }
+      //     }
+      //   );
+      // }
+      // Actor.create({
+      //   name: "Requirement Man",
+      //   type: "character",
+      //   system: {
+      //     settings: {
+      //       hasaura: true,
+      //     }
+      //   },
+      //   items: itemRescrictionData
+      // });
+
+      // const actorData = foundry.utils.duplicate(this.actor);
+      // actorData.system.health.value -= 1;
+      // this.actor.update(actorData);
     });
 
     html.find('.add-new-item').click(async ev => {

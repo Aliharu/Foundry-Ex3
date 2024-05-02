@@ -468,21 +468,21 @@ export class ExaltedThirdActor extends Actor {
 
     if (item.type === 'charm') {
       if (item.system.cost.motes > 0) {
-        if (data.data.motes.peripheral.value > 0 && !personal) {
-          data.data.motes.peripheral.value = Math.max(0, data.data.motes.peripheral.value - item.system.cost.motes);
+        if (system.motes.peripheral.value > 0 && !personal) {
+          system.motes.peripheral.value = Math.max(0, system.motes.peripheral.value - item.system.cost.motes);
         }
         else {
-          data.data.motes.personal.value = Math.max(0, data.data.motes.personal.value - item.system.cost.motes);
+          system.motes.personal.value = Math.max(0, system.motes.personal.value - item.system.cost.motes);
         }
       }
-      data.data.willpower.value = Math.max(0, data.data.willpower.value - item.system.cost.willpower);
+      system.willpower.value = Math.max(0, system.willpower.value - item.system.cost.willpower);
       if (this.type === 'character') {
-        data.data.craft.experience.silver.value = Math.max(0, data.data.craft.experience.silver.value - item.system.cost.silverxp);
-        data.data.craft.experience.gold.value = Math.max(0, data.data.craft.experience.gold.value - item.system.cost.goldxp);
-        data.data.craft.experience.white.value = Math.max(0, data.data.craft.experience.white.value - item.system.cost.whitexp);
+        system.craft.experience.silver.value = Math.max(0, system.craft.experience.silver.value - item.system.cost.silverxp);
+        system.craft.experience.gold.value = Math.max(0, system.craft.experience.gold.value - item.system.cost.goldxp);
+        system.craft.experience.white.value = Math.max(0, system.craft.experience.white.value - item.system.cost.whitexp);
       }
-      if (data.data.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
-        data.data.details.aura = "none";
+      if (system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
+        system.details.aura = "none";
       }
       if (item.system.cost.initiative > 0) {
         let combat = game.combat;
@@ -498,8 +498,8 @@ export class ExaltedThirdActor extends Actor {
         }
       }
       if (item.system.cost.anima > 0) {
-        var newLevel = data.data.anima.level;
-        var newValue = data.data.anima.value;
+        var newLevel = system.anima.level;
+        var newValue = system.anima.value;
         for (var i = 0; i < item.system.cost.anima; i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
@@ -518,22 +518,22 @@ export class ExaltedThirdActor extends Actor {
             newValue = 0;
           }
         }
-        data.data.anima.level = newLevel;
-        data.data.anima.value = newValue;
+        system.anima.level = newLevel;
+        system.anima.value = newValue;
       }
       if (item.system.cost.health > 0) {
         let totalHealth = 0;
-        for (let [key, health_level] of Object.entries(data.data.health.levels)) {
+        for (let [key, health_level] of Object.entries(system.health.levels)) {
           totalHealth += health_level.value;
         }
         if (item.system.cost.healthtype === 'bashing') {
-          data.data.health.bashing = Math.min(totalHealth - data.data.health.aggravated - data.data.health.lethal, data.data.health.bashing + item.system.cost.health);
+          system.health.bashing = Math.min(totalHealth - system.health.aggravated - system.health.lethal, system.health.bashing + item.system.cost.health);
         }
         else if (item.system.cost.healthtype === 'lethal') {
-          data.data.health.lethal = Math.min(totalHealth - data.data.health.bashing - data.data.health.aggravated, data.data.health.lethal + item.system.cost.health);
+          system.health.lethal = Math.min(totalHealth - system.health.bashing - system.health.aggravated, system.health.lethal + item.system.cost.health);
         }
         else {
-          data.data.health.aggravated = Math.min(totalHealth - data.data.health.bashing - data.data.health.lethal, data.data.health.aggravated + item.system.cost.health);
+          system.health.aggravated = Math.min(totalHealth - system.health.bashing - system.health.lethal, system.health.aggravated + item.system.cost.health);
         }
       }
     }
@@ -1277,12 +1277,12 @@ export async function addDefensePenalty(actor, label = "Defense Penalty") {
       },
       changes: [
         {
-          "key": "data.evasion.value",
+          "key": "system.evasion.value",
           "value": -1,
           "mode": 2
         },
         {
-          "key": "data.parry.value",
+          "key": "system.parry.value",
           "value": -1,
           "mode": 2
         }

@@ -3490,7 +3490,7 @@ export class RollForm extends FormApplication {
             else {
                 this.actor.createEmbeddedDocuments('ActiveEffect', [{
                     name: 'Defense Penalty',
-                    icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+                    img: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
                     origin: this.actor.uuid,
                     disabled: false,
                     duration: {
@@ -3504,12 +3504,12 @@ export class RollForm extends FormApplication {
                     },
                     changes: [
                         {
-                            "key": "data.evasion.value",
+                            "key": "system.evasion.value",
                             "value": (this.object.triggerSelfDefensePenalty * -1),
                             "mode": 2
                         },
                         {
-                            "key": "data.parry.value",
+                            "key": "system.parry.value",
                             "value": (this.object.triggerSelfDefensePenalty * -1),
                             "mode": 2
                         }
@@ -3528,7 +3528,7 @@ export class RollForm extends FormApplication {
                 this.object.updateTargetActorData = true;
                 this.object.newTargetData.effects.push({
                     name: this.object.poison.name || "Poison",
-                    icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
+                    img: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
                     origin: this.actor.uuid,
                     disabled: false,
                     duration: {
@@ -3543,12 +3543,12 @@ export class RollForm extends FormApplication {
                     },
                     changes: [
                         {
-                            "key": `data.damage.round.${this.object.poison.damagetype}`,
+                            "key": `system.damage.round.${this.object.poison.damagetype}`,
                             "value": this.object.poison.damage,
                             "mode": 0
                         },
                         {
-                            "key": `data.dicemodifier.value`,
+                            "key": `system.dicemodifier.value`,
                             "value": this.object.poison.penalty * -1,
                             "mode": 2
                         },
@@ -3580,7 +3580,7 @@ export class RollForm extends FormApplication {
                 if (this.object.gambit === 'revealWeakness') {
                     this.object.newTargetData.effects.push({
                         name: 'Reveal Weakness',
-                        icon: 'systems/exaltedthird/assets/icons/hammer-break.svg',
+                        img: 'systems/exaltedthird/assets/icons/hammer-break.svg',
                         origin: this.object.target.actor.uuid,
                         disabled: false,
                         duration: {
@@ -3593,7 +3593,7 @@ export class RollForm extends FormApplication {
                         },
                         changes: [
                             {
-                                "key": "data.soak.value",
+                                "key": "system.soak.value",
                                 "value": (Math.ceil(this.object.target.actor.system.soak.value / 2)) * -1,
                                 "mode": 2
                             }
@@ -4007,7 +4007,7 @@ export class RollForm extends FormApplication {
             else {
                 this.object.newTargetData.effects.push({
                     name: game.i18n.localize('Ex3.Onslaught'),
-                    icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
+                    img: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                     origin: this.object.target.actor.uuid,
                     disabled: false,
                     duration: {
@@ -4021,12 +4021,12 @@ export class RollForm extends FormApplication {
                     },
                     changes: [
                         {
-                            "key": "data.evasion.value",
+                            "key": "system.evasion.value",
                             "value": number * -1,
                             "mode": 2
                         },
                         {
-                            "key": "data.parry.value",
+                            "key": "system.parry.value",
                             "value": number * -1,
                             "mode": 2
                         }
@@ -4046,7 +4046,7 @@ export class RollForm extends FormApplication {
         else {
             this.object.newTargetData.effects.push({
                 name: game.i18n.localize('Ex3.DefensePenalty'),
-                icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+                img: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
                 origin: this.object.target.actor.uuid,
                 disabled: false,
                 duration: {
@@ -4059,12 +4059,12 @@ export class RollForm extends FormApplication {
                 },
                 changes: [
                     {
-                        "key": "data.evasion.value",
+                        "key": "system.evasion.value",
                         "value": number * -1,
                         "mode": 2
                     },
                     {
-                        "key": "data.parry.value",
+                        "key": "system.parry.value",
                         "value": number * -1,
                         "mode": 2
                     }
