@@ -197,11 +197,7 @@
                 <label class="resource-label">{{localize "Ex3.Drill"}}</label>
                 <div class="charname"> <select name="system.drill.value" value="{{system.drill.value}}"
                         data-type="String">
-                        {{#select system.drill.value}}
-                        <option value="0">{{localize "Ex3.Poor"}}</option>
-                        <option value="1">{{localize "Ex3.Average"}}</option>
-                        <option value="2">{{localize "Ex3.Elite"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.drill selected=system.drill localize=true}}
                     </select></div>
             </div>
             <div>

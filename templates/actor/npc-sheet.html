@@ -18,14 +18,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Aura"}}</div>
                     <select name="system.details.aura" data-type="String">
-                        {{#select system.details.aura}}
-                        <option value="none">{{localize "Ex3.None"}}</option>
-                        <option value="air">{{localize "Ex3.Air"}}</option>
-                        <option value="earth">{{localize "Ex3.Earth"}}</option>
-                        <option value="fire">{{localize "Ex3.Fire"}}</option>
-                        <option value="water">{{localize "Ex3.Water"}}</option>
-                        <option value="wood">{{localize "Ex3.Wood"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.elements selected=system.details.aura localize=true}}
                     </select>
                 </div>
                 {{/if}}
@@ -39,52 +32,17 @@
             </div>
             <div class="grid grid-3col flexrow">
                 <h1 class="charname"> <select name="system.creaturetype" data-type="String">
-                        {{#select system.creaturetype}}
-                        <option value="animal">{{localize "Ex3.Animal"}}</option>
-                        <option value="behemoth">{{localize "Ex3.Behemoth"}}</option>
-                        <option value="construct">{{localize "Ex3.Construct"}}</option>
-                        <option value="demon">{{localize "Ex3.Demon"}}</option>
-                        <option value="elemental">{{localize "Ex3.Elemental"}}</option>
-                        <option value="exalt">{{localize "Ex3.Exalt"}}</option>
-                        <option value="fae">{{localize "Ex3.Fae"}}</option>
-                        <option value="god">{{localize "Ex3.God"}}</option>
-                        <option value="magiccreature">{{localize "Ex3.MagicCreature"}}</option>
-                        <option value="mortal">{{localize "Ex3.Mortal"}}</option>
-                        <option value="undead">{{localize "Ex3.Undead"}}</option>
-                        <option value="wyldmonster">{{localize "Ex3.WyldMonster"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.creatureTypes selected=system.creaturetype localize=true}}
                     </select></h1>
                 {{#ifEquals system.creaturetype 'demon'}}
                 <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
-                        {{#select system.details.creaturesubtype}}
-                        <option value="first">{{localize "Ex3.First"}} {{localize "Ex3.Circle"}}</option>
-                        <option value="second">{{localize "Ex3.Second"}} {{localize "Ex3.Circle"}}</option>
-                        <option value="third">{{localize "Ex3.Third"}} {{localize "Ex3.Circle"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.demons selected=system.creaturesubtype localize=true}}
                     </select></h1>
                 {{/ifEquals}}
 
                 {{#ifEquals system.creaturetype 'exalt'}}
                 <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                        {{#select system.details.exalt}}
-                        <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-                        <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-                        <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-                        <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-                        <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-                        <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-                        <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-                        <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-                        <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-                        <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-                        <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-                        <option value="solar">{{localize "Ex3.Solar"}}</option>
-                        <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-                        <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
+                    {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
                     </select></h1>
                 {{#if availableCastes}}
                 <h1 class="charname"> <select name="system.details.caste" data-type="String">
@@ -98,11 +56,7 @@
 
                 {{#ifEquals system.creaturetype 'fae'}}
                 <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
-                        {{#select system.details.creaturesubtype}}
-                        <option value="creature">{{localize "Ex3.Creature"}}</option>
-                        <option value="raksha">{{localize "Ex3.Raksha"}}</option>
-                        <option value="other">{{localize "Ex3.Other"}}</option>
-                        {{/select}}
+                    {{selectOptions selects.exaltTypes selected=system.details.creaturesubtype localize=true}}
                     </select></h1>
                 {{/ifEquals}}
             </div>
@@ -163,12 +117,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
                     <select name="system.sizecategory" data-type="String">
-                        {{#select system.sizecategory}}
-                        <option value="standard">{{localize "Ex3.Standard"}}</option>
-                        <option value="legendary">{{localize "Ex3.Legendary"}}</option>
-                        <option value="tiny">{{localize "Ex3.Tiny"}}</option>
-                        <option value="minuscule">{{localize "Ex3.Minuscule"}}</option>
-                        {{/select}}
+                        {{selectOptions selects.sizeCategory selected=system.sizecategory localize=true}}
                     </select>
                 </div>
                 {{#ifEquals system.details.exalt 'abyssal'}}

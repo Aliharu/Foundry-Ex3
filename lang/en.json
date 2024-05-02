@@ -1091,5 +1091,9 @@
     "Ex3.MaterialResonance": "Material Resonance",
     "Ex3.MaterialStandard": "Material Standard",
     "Ex3.MaterialDissonance": "Material Dissonance",
-    "Ex3.InitiativeDamageDealt": "Initiative Damage Dealt"
+    "Ex3.InitiativeDamageDealt": "Initiative Damage Dealt",
+
+    "Ex3.FirstCircle": "First Circle",
+    "Ex3.SecondCircle": "Second Circle",
+    "Ex3.ThirdCircle": "Third Circle"
 }

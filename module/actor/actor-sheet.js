@@ -698,7 +698,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       if (trait.custom) {
         trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
       }
-      trait.cssClass = !isEmpty(trait.selected) ? "" : "inactive";
+      trait.cssClass = !foundry.utils.isEmpty(trait.selected) ? "" : "inactive";
     }
   }
 

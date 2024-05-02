@@ -1409,5 +1409,36 @@ exaltedthird.selects = {
     survival: 'Ex3.Survival',
     thrown: 'Ex3.Thrown',
     war: 'Ex3.War',
+  },
+  creatureTypes: {
+    animal: 'Ex3.Animal',
+    behemoth: 'Ex3.Behemoth',
+    construct: 'Ex3.Construct',
+    demon: 'Ex3.Demon',
+    elemental: 'Ex3.Elemental',
+    exalt: 'Ex3.Exalt',
+    fae: 'Ex3.Fae',
+    god: 'Ex3.God',
+    magiccreature: 'Ex3.MagicCreature',
+    mortal: 'Ex3.Mortal',
+    undead: 'Ex3.Undead',
+    wyldmonster: 'Ex3.WyldMonster',
+    other: 'Ex3.Other',
+  },
+  demons: {
+    first: 'Ex3.FirstCircle',
+    second: 'Ex3.SecondCircle',
+    third: 'Ex3.ThirdCircle',
+    other: 'Ex3.Other',
+  },
+  wyldCreatures: {
+    creature: 'Ex3.Creature',
+    raksha: 'Ex3.Raksha',
+    other: 'Ex3.Other',
+  },
+  drill: {
+    0: 'Ex3.Poor',
+    1: 'Ex3.Average',
+    2: 'Ex3.Elite',
   }
 };
