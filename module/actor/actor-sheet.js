@@ -1249,9 +1249,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       //   items: itemRescrictionData
       // });
 
-      // const actorData = foundry.utils.duplicate(this.actor);
-      // actorData.system.health.value -= 1;
-      // this.actor.update(actorData);
+      const actorData = foundry.utils.duplicate(this.actor);
+      actorData.system.evasion.value -= 1;
+      this.actor.update(actorData);
     });
 
     html.find('.add-new-item').click(async ev => {

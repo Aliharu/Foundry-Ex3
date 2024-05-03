@@ -1807,7 +1807,7 @@ async function applyDamageDialogue(targetUuid, damageContext) {
   const actor = target?.documentName === 'Token' ? target?.actor : target;
 
   const template = "systems/exaltedthird/templates/dialogues/damage-dialogue.html"
-  const html = await renderTemplate(template, { 'damageContext': damageContext });
+  const html = await renderTemplate(template, { 'damageContext': damageContext, damageTypes: CONFIG.exaltedthird.selects.damageTypes });
   let confirmed = false
   new Dialog({
     title: `Apply Damage to ${actor.name}`,

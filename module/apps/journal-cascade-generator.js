@@ -1,8 +1,12 @@
 export default class JournalCascadeGenerator extends FormApplication {
   constructor(app, options, object, data) {
     super(object, options);
-
-    this.object.folders = game.collections.get("Item")?._formatFolderSelectOptions() ?? [];
+    
+    this.object.folders = game.collections.get("Item")?._formatFolderSelectOptions()
+    .reduce((acc, folder) => {
+        acc[folder.id] = folder.name;
+        return acc;
+    }, {}) ?? {};
     
     this.object.characters = game.actors
     .filter(actor => actor.type === 'character')

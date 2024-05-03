@@ -11,11 +11,7 @@
             {{#ifEquals data.rollType 'damage'}}
             <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
             <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
-                {{#select data.attackType}}
-                <option value="withering">{{localize "Ex3.Withering"}}</option>
-                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
-                <option value="gambit">{{localize "Ex3.Gambit"}}</option>
-                {{/select}}
+                {{selectOptions selects.attackTypes selected=data.attackType localize=true}}
             </select>
             {{#if data.showTargets}}
             {{else}}
@@ -80,11 +76,7 @@
             <div class="resource flex-center grid grid-2col">
                 <label class="resource-label">{{localize "Ex3.DamageType"}}</label>
                 <select name="object.damage.type" value="{{data.damage.type}}" data-type="String">
-                    {{#select data.damage.type}}
-                    <option value="bashing">{{localize "Ex3.Bashing"}}</option>
-                    <option value="lethal">{{localize "Ex3.Lethal"}}</option>
-                    <option value="aggravated">{{localize "Ex3.Aggravated"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.damageTypes selected=data.damage.type localize=true}}
                 </select>
                 <label class="resource-label">{{localize "Ex3.DoubleRolledDamage"}} </label>
                 <div>
@@ -104,11 +96,7 @@
                 {{#ifEquals data.damage.decisiveDamageType 'initiative'}}
                 <label class="resource-label">{{localize "Ex3.MultiTargetDivide"}}</label>
                 <select name="object.damage.decisiveDamageCalculation" data-type="String">
-                    {{#select data.damage.decisiveDamageCalculation}}
-                    <option value="evenSplit">{{localize "Ex3.EvenSplit"}}</option>
-                    <option value="half">{{localize "Ex3.Half"}}</option>
-                    <option value="thirds">{{localize "Ex3.Thirds"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.decisiveSplits selected=data.damage.decisiveDamageCalculation localize=true}}
                 </select>
                 {{/ifEquals}}
                 {{/ifEquals}}
@@ -154,14 +142,7 @@
                 {{#ifEquals data.rollType 'damage'}}
                 <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
                 <select name="object.activateAura" data-type="String">
-                    {{#select data.activateAura}}
-                    <option value="none">{{localize "Ex3.None"}}</option>
-                    <option value="air">{{localize "Ex3.Air"}}</option>
-                    <option value="earth">{{localize "Ex3.Earth"}}</option>
-                    <option value="fire">{{localize "Ex3.Fire"}}</option>
-                    <option value="water">{{localize "Ex3.Water"}}</option>
-                    <option value="wood">{{localize "Ex3.Wood"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.elements selected=data.activateAura localize=true}}
                 </select>
                 {{/ifEquals}}
                 {{/ifEquals}}
@@ -375,41 +356,11 @@
             <div>
                 <div class="resource-label">{{localize "Ex3.Gambit"}}</div>
                 <select id="gambit" name="object.gambit" data-type="String">
-                    {{#select data.gambit}}
-                    <optgroup label="Standard">
-                        <option value="grapple">{{localize "Ex3.Grapple"}}</option>
-                        <option value="disarm">{{localize "Ex3.Disarm"}}</option>
-                        <option value="distract">{{localize "Ex3.Distract"}}</option>
-                        <option value="unhorse">{{localize "Ex3.Unhorse"}}</option>
+                    {{#each selects.gambits as |gambitCategory gambitCategoryType|}}
+                    <optgroup label="{{gambitCategory.label}}">
+                      {{selectOptions gambitCategory.gambitTypes selected=../data.gambit localize=true}}
                     </optgroup>
-                    {{#if data.useEssenceGambit}}
-                    <optgroup label="Essence">
-                        <option value="knockback">{{localize "Ex3.Knockback"}}</option>
-                        <option value="knockdown">{{localize "Ex3.Knockdown"}}</option>
-                        <option value="pilfer">{{localize "Ex3.Pilfer"}}</option>
-                        <option value="pull">{{localize "Ex3.Pull"}}</option>
-                        <option value="revealWeakness">{{localize "Ex3.RevealWeakness"}}</option>
-                    </optgroup>
-                    {{/if}}
-                    <optgroup label="Adversaries">
-                        <option value="bind">{{localize "Ex3.Bind"}}</option>
-                        <option value="detonate">{{localize "Ex3.Detonate"}}</option>
-                        <option value="goad">{{localize "Ex3.Goad"}}</option>
-                        <option value="leech">{{localize "Ex3.Leech"}}</option>
-                        <option value="pileon">{{localize "Ex3.PileOn"}}</option>
-                        <option value="riposte">{{localize "Ex3.Riposte"}}</option>
-                    </optgroup>
-                    <optgroup label="Warstrider">
-                        <option value="blockvision">{{localize "Ex3.BlockVision"}}</option>
-                        <option value="disablearm">{{localize "Ex3.DisableArm"}}</option>
-                        <option value="disableleg">{{localize "Ex3.DisableLeg"}}</option>
-                        <option value="breachframe">{{localize "Ex3.BreachFrame"}}</option>
-                    </optgroup>
-                    <optgroup label="Exalt Specific">
-                        <option value="entangle">{{localize "Ex3.Entangle"}}</option>
-                    </optgroup>
-                    <option value="none">{{localize "Ex3.None"}}</option>
-                    {{/select}}
+                    {{/each}}
                 </select>
             </div>
         </div>

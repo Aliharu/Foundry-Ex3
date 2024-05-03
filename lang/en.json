@@ -1097,5 +1097,15 @@
     "Ex3.SecondCircle": "Second Circle",
     "Ex3.ThirdCircle": "Third Circle",
 
-    "Ex3.NonSameAbilityAttribute": "Non-Same Ability Attribute"
+    "Ex3.NonSameAbilityAttribute": "Non-Same Ability Attribute",
+
+    "Ex3.Terrestrial1": "Terrestrial 1",
+    "Ex3.Celestial1": "Celestial 1",
+    "Ex3.Solar1": "Solar 1",
+    "Ex3.Terrestrial2": "Terrestrial 2",
+    "Ex3.Celestial2": "Celestial 2",
+    "Ex3.Solar2": "Solar 2",
+    "Ex3.Terrestrial3": "Terrestrial 3",
+    "Ex3.Celestial3": "Celestial 3",
+    "Ex3.Solar3": "Solar 3"
 }

@@ -2,6 +2,11 @@ export class RollForm extends FormApplication {
     constructor(actor, options, object, data) {
         super(object, options);
         this.actor = actor;
+        this.selects = CONFIG.exaltedthird.selects;
+        this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
+        this.rollableAbilities['willpower'] = "Ex3.Willpower";
+        this.rollablePools = CONFIG.exaltedthird.npcpools;
+        this.rollablePools['willpower'] = "Ex3.Willpower";
 
         if (data.rollId) {
             this.object = foundry.utils.duplicate(this.actor.system.savedRolls[data.rollId]);
@@ -258,6 +263,8 @@ export class RollForm extends FormApplication {
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
+
+
                 if (this.actor.type === 'character') {
                     if (this._isAttackRoll()) {
                         this.object.attribute = this.actor.system.settings.rollsettings['attacks'].attribute;
@@ -415,8 +422,29 @@ export class RollForm extends FormApplication {
         this.object.attributes = CONFIG.exaltedthird.attributes;
         this.object.abilities = CONFIG.exaltedthird.abilities;
         this.object.npcPools = CONFIG.exaltedthird.npcpools;
+        this.object.stuntsList = {
+            "none": "Ex3.NoStunt",
+            "one": "Ex3.LevelOneStunt",
+        };
+        if(this.object.bankableStunts) {
+            this.object.stuntsList['bank'] = "Ex3.BankStunt";
+        } else {
+            this.object.stuntsList['two'] = "Ex3.LevelTwoStunt";
+            this.object.stuntsList['three'] = "Ex3.LevelThreeStunt";
+        }
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
+            if(this.actor.customAbilities) {
+                // Add custom abilities from actor.customAbilities
+                for (const [id, ability] of Object.entries(this.actor.customAbilities)) {
+                    this.rollableAbilities[id] = ability.name;
+                }
+            }
+            if(this.actor.actions) {
+                for (const [id, pool] of Object.entries(this.actor.actions)) {
+                    this.rollablePools[id] = pool.name;
+                }
+            }
             this.object.showTargets = 0;
             if (this.actor.customabilities) {
                 this.object.customAbilities = this.actor.customabilities;
@@ -492,9 +520,13 @@ export class RollForm extends FormApplication {
                 }
             }
             this.object.motePool = this.actor.system?.settings?.charmmotepool || 'peripheral';
-            this.object.spells = this.actor.items.filter(item => item.type === 'spell' && item.system.cost);
+            this.object.spells = this.actor.items.filter(item => item.type === 'spell' && item.system.cost).reduce((acc, spell) => {
+                acc[spell.id] = spell.name;
+                return acc;
+            }, {}) ?? {};
+            this.object.spells[''] = 'Ex3.None';
             if (data.rollType === 'sorcery') {
-                const activeSpell = this.object.spells.find(spell => spell.system.shaping);
+                const activeSpell = this.actor.items.filter(item => item.type === 'spell' && item.system.cost).find(spell => spell.system.shaping);
                 if (data.spell) {
                     const fullSpell = this.actor.items.get(data.spell);
                     if (!activeSpell || activeSpell.id !== data.spell) {
@@ -741,7 +773,7 @@ export class RollForm extends FormApplication {
                     icon: 'fas fa-cog',
                     onclick: async (ev) => {
                         let confirmed = false;
-                        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll });
+                        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll, 'selects': this.selects });
                         new Dialog({
                             title: `Dice Roll Settings`,
                             content: html,
@@ -961,8 +993,16 @@ export class RollForm extends FormApplication {
     }
 
     getData() {
+        this.selects = CONFIG.exaltedthird.selects;
+        this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
+        this.rollableAbilities['willpower'] = "Ex3.Willpower";
+        this.rollablePools = CONFIG.exaltedthird.npcpools;
+        this.rollablePools['willpower'] = "Ex3.Willpower";
         return {
             actor: this.actor,
+            selects: this.selects,
+            rollableAbilities: this.rollableAbilities,
+            rollablePools: this.rollablePools,
             data: this.object,
         };
     }
@@ -2211,6 +2251,11 @@ export class RollForm extends FormApplication {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             }
         }
+        this.object.specialtyList = this.object.specialtyList.reduce((acc, actor) => {
+            acc[actor.id] = actor.name;
+            return acc;
+        }, {});
+        this.object.specialtyList[''] = "Ex3.NoSpecialty";
     }
 
     // Dovie'andi se tovya sagain.

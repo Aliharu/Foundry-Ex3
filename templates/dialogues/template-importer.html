@@ -65,12 +65,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.Folder"}} </label>
       <select id="folder" name="folder" value="{{folder}}" data-type="String">
-        {{#select folder}}
-          <option value=""></option>
-          {{#each folders as |folder|}}
-          <option value="{{folder.id}}">{{ folder.name }}</option>
-          {{/each}}
-        {{/select}}
+          {{selectOptions folders selected=folder localize=true}}
       </select>
     </div>
 

@@ -16,22 +16,12 @@
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.MotePool"}}</label>
         <select class="update-motes" name="object.motePool" data-type="String">
-            {{#select data.motePool}}
-            <option value="personal">{{localize "Ex3.Personal"}}</option>
-            <option value="peripheral">{{localize "Ex3.Peripheral"}}</option>
-            {{/select}}
+            {{selectOptions selects.motePools selected=data.motePool localize=true}}
         </select>
         {{#if actor.system.settings.hasaura}}
         <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
         <select name="object.activateAura" data-type="String">
-            {{#select data.activateAura}}
-            <option value="none">{{localize "Ex3.None"}}</option>
-            <option value="air">{{localize "Ex3.Air"}}</option>
-            <option value="earth">{{localize "Ex3.Earth"}}</option>
-            <option value="fire">{{localize "Ex3.Fire"}}</option>
-            <option value="water">{{localize "Ex3.Water"}}</option>
-            <option value="wood">{{localize "Ex3.Wood"}}</option>
-            {{/select}}
+            {{selectOptions selects.elements selected=data.activateAura localize=true}}
         </select>
         {{/if}}
         <label class="resource-label">{{localize "Ex3.AnimaAfter"}}</label>
@@ -93,15 +83,7 @@
         <div>
             <div class="resource-label">{{localize "Ex3.Aura"}}</div>
             <select name="object.cost.aura" data-type="String">
-                {{#select data.cost.aura}}
-                <option value=""></option>
-                <option value="any">{{localize "Ex3.Any"}}</option>
-                <option value="air">{{localize "Ex3.Air"}}</option>
-                <option value="earth">{{localize "Ex3.Earth"}}</option>
-                <option value="fire">{{localize "Ex3.Fire"}}</option>
-                <option value="water">{{localize "Ex3.Water"}}</option>
-                <option value="wood">{{localize "Ex3.Wood"}}</option>
-                {{/select}}
+                {{selectOptions selects.costElements selected=data.cost.aura localize=true}}
             </select>
         </div>
         <div>

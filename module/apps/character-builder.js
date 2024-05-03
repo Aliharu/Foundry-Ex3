@@ -461,6 +461,7 @@ export default class CharacterBuilder extends FormApplication {
   getData() {
     return {
       data: this.object,
+      selects: CONFIG.exaltedthird.selects,
     };
   }
 

@@ -17,25 +17,13 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Range"}}</label>
                 <select name="object.range" value="{{data.range}}" data-type="String">
-                    {{#select data.range}}
-                    <option value="close">Close</option>
-                    <option value="short">Short</option>
-                    <option value="medium">Medium</option>
-                    <option value="long">Long</option>
-                    <option value="extreme">Extreme</option>
-                    {{/select}}
+                    {{selectOptions selects.ranges selected=data.range localize=true}}
                 </select>
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.Weapon"}}</label>
                 <select name="object.weaponType" value="{{data.weaponType}}" data-type="String">
-                    {{#select data.weaponType}}
-                    <option value="melee">{{localize "Ex3.Melee"}}</option>
-                    <option value="bolt">{{localize "Ex3.Bolt"}}</option>
-                    <option value="ranged">{{localize "Ex3.Ranged"}}</option>
-                    <option value="siege">{{localize "Ex3.Siege"}}</option>
-                    <option value="thrown">{{localize "Ex3.Thrown"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.weaponTypes selected=data.weaponType localize=true}}
                 </select>
             </div>
         </div>
@@ -46,11 +34,7 @@
         <div class="resource grid grid-2col flex-center">
             <label class="resource-label">{{localize "Ex3.AttackType"}}:</label>
             <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
-                {{#select data.attackType}}
-                <option value="withering">{{localize "Ex3.Withering"}}</option>
-                <option value="decisive">{{localize "Ex3.Decisive"}}</option>
-                <option value="gambit">{{localize "Ex3.Gambit"}}</option>
-                {{/select}}
+                {{selectOptions selects.attackTypes selected=data.attackType localize=true}}
             </select>
         </div>
         {{/ifEquals}}

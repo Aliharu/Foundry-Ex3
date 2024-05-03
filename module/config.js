@@ -1350,6 +1350,12 @@ exaltedthird.selects = {
     umbral: "Ex3.Umbral",
     other: "Ex3.Other"
   },
+  exigentNames: {
+    "architect": "Ex3.Architect",
+    "janest": "Ex3.Janest",
+    "puppeteer": "Ex3.Puppeteer",
+    "": "Ex3.Other",
+  },
   attributePriority: {
     primary: 'Ex3.Primary',
     secondary: 'Ex3.Secondary',
@@ -1391,7 +1397,7 @@ exaltedthird.selects = {
     wits: 'Ex3.Wits',
   },
   abilities: {
-    none: 'Ex3.None',
+    '': 'Ex3.None',
     archery: 'Ex3.Archery',
     athletics: 'Ex3.Athletics',
     awareness: 'Ex3.Awareness',
@@ -1815,4 +1821,109 @@ exaltedthird.selects = {
     "9": "9",
     "10": "10",
   },
+  //Dice Roller
+  ranges: {
+    "close": "Ex3.Close",
+    "short": "Ex3.Short",
+    "medium": "Ex3.Medium",
+    "long": "Ex3.Long",
+    "extreme": "Ex3.Extreme",
+  },
+  attackTypes: {
+    "withering": "Ex3.Withering",
+    "decisive": "Ex3.Decisive",
+    "gambit": "Ex3.Gambit",
+  },
+  decisiveSplits: {
+    "evenSplit": "Ex3.EvenSplit",
+    "half": "Ex3.Half",
+    "thirds": "Ex3.Thirds",
+  },
+  craftRatings: {
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+  },
+  craftFinesseRatings: {
+    "1": "1",
+    "3": "3",
+    "5": "5",
+  },
+  craftAmbitionRatings: {
+    "5": "Ex3.Terrestrial1",
+    "10": "Ex3.Terrestrial2",
+    "20": "Ex3.Terrestrial3",
+    "25": "Ex3.Celestial1",
+    "30": "Ex3.Celestial2",
+    "35": "Ex3.Celestial3",
+    "40": "Ex3.Solar1",
+    "50": "Ex3.Solar2",
+    "75": "Ex3.Solar3",
+  },
+  supportingIntimacyValues: {
+    "0": "Ex3.None",
+    "1": "Ex3.Minor",
+    "2": "Ex3.Major",
+    "3": "Ex3.Defining",
+  },
+  opposedIntimacyValues: {
+    "0": "Ex3.None",
+    "2": "Ex3.Minor",
+    "3": "Ex3.Major",
+    "4": "Ex3.Defining",
+  },
+  gambits: {
+    standard: {
+      label: "Standard",
+      gambitTypes: {
+        grapple: "Ex3.Grapple",
+        disarm: "Ex3.Disarm",
+        distract: "Ex3.Distract",
+        unhorse: "Ex3.Unhorse",
+      },
+    },
+    essence: {
+      label: "Essence",
+      gambitTypes: {
+        knockback: "Ex3.Knockback",
+        knockdown: "Ex3.Knockdown",
+        pilfer: "Ex3.Pilfer",
+        pull: "Ex3.Pull",
+        revealWeakness: "Ex3.RevealWeakness",
+      },
+    },
+    adversaries: {
+      label: "Adversaries",
+      gambitTypes: {
+        bind: "Ex3.Bind",
+        detonate: "Ex3.Detonate",
+        goad: "Ex3.Goad",
+        leech: "Ex3.Leech",
+        pileon: "Ex3.PileOn",
+        riposte: "Ex3.Riposte",
+      },
+    },
+    warstrider: {
+      label: "Warstrider",
+      gambitTypes: {
+        blockvision: "Ex3.BlockVision",
+        disablearm: "Ex3.DisableArm",
+        disableleg: "Ex3.DisableLeg",
+        breachframe: "Ex3.BreachFrame",
+      },
+    },
+    exaltSpecific: {
+      label: "Exalt Specific",
+      gambitTypes: {
+        entangle: "Ex3.Entangle",
+      },
+    },
+    none: {
+      label: "None",
+      gambitTypes: {
+        none: "Ex3.None",
+      },
+    },
+  }
 };

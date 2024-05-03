@@ -37,14 +37,7 @@
         <div>
             <div class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</div>
             <select id="triggerOnOnes" name="settings.triggerOnOnes" data-type="String">
-                {{#select settings.triggerOnOnes}}
-                <option value="none">{{localize "Ex3.Nothing"}}</option>
-                <option value="soak">{{localize "Ex3.IncreaseEnemySoak"}}</option>
-                <option value="defense">{{localize "Ex3.IncreaseEnemyDefense"}}</option>
-                <option value="rerollSuccesses">{{localize "Ex3.RerollSuccesses"}}</option>
-                <option value="subtractInitiative">{{localize "Ex3.SubtractInitiative"}}</option>
-                <option value="subtractSuccesses">{{localize "Ex3.SubtractSuccesses"}}</option>
-                {{/select}}
+                {{selectOptions selects.triggerOnOnesOptions selected=settings.triggerOnOnes localize=true}}
             </select>
         </div>
         <div>
@@ -56,15 +49,7 @@
         <div>
             <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
             <select id="triggerOnTens" name="settings.triggerOnTens" data-type="String">
-                {{#select settings.triggerOnTens}}
-                <option value="none">{{localize "Ex3.Nothing"}}</option>
-                <option value="damage">{{localize "Ex3.Damage"}}</option>
-                <option value="extraSuccess">{{localize "Ex3.ExtraSuccess"}}</option>
-                <option value="ignoreHardness">{{localize "Ex3.IgnoreHardness"}}</option>
-                <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
-                <option value="rerolllDie">{{localize "Ex3.RerollDie"}}</option>
-                <option value="restoreMote">{{localize "Ex3.RestoreMote"}}</option>
-                {{/select}}
+                {{selectOptions selects.triggerOnTensOptions selected=settings.triggerOnTens localize=true}}
             </select>
         </div>
         <div>
@@ -130,10 +115,7 @@
         <div>
             <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
             <select id="DamageTriggerOnTens" name="settings.damage.triggerOnTens" data-type="String">
-                {{#select settings.damage.triggerOnTens}}
-                <option value="none">{{localize "Ex3.Nothing"}}</option>
-                <option value="subtractTargetInitiative">{{localize "Ex3.SubtractTargetInitiative"}}</option>
-                {{/select}}
+                {{selectOptions selects.triggerOnTensDamageOptions selected=settings.damage.triggerOnTens localize=true}}
             </select>
         </div>
         <div>

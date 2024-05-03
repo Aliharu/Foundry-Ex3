@@ -20,12 +20,7 @@
       <div>
         <label class="resource-label">{{localize ambition.label}}:</label>
         <select id="{{key}}" class="ambition-rerender" name="object.ambitions.{{key}}.value">
-            <!-- {{selectOptions ../data.selects.ambitionLevels selected=ambition.value localize=true}} -->
-            {{#select ambition.value}}
-            {{#numLoopCertainStart 5 1}}
-            <option value="{{this}}">{{this}}</option>
-            {{/numLoopCertainStart}}
-            {{/select}}
+            {{selectOptions ../data.selects.ambitionLevels selected=ambition.value localize=true}}
         </select>
         <label>{{localize "Ex3.Max"}}: {{../data.maxAmbition}}</label>
         <div>

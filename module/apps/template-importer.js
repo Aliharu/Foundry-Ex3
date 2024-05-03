@@ -18,7 +18,12 @@ export default class TemplateImporter extends FormApplication {
     else {
       collection = game.collections.get("Item");
     }
-    this.folders = collection?._formatFolderSelectOptions() ?? [];
+
+    this.folders = collection?._formatFolderSelectOptions()
+    .reduce((acc, folder) => {
+        acc[folder.id] = folder.name;
+        return acc;
+    }, {}) ?? {};
   }
 
   static get defaultOptions() {
@@ -1944,8 +1949,15 @@ export default class TemplateImporter extends FormApplication {
       else {
         collection = game.collections.get("Item");
       }
-      this.folders = collection?._formatFolderSelectOptions() ?? [];
-      if (!this.folders.map(folder => folder.id).includes(this.folder)) {
+
+      let folderData = collection?._formatFolderSelectOptions() ?? {};
+
+      this.folders = folderData
+      .reduce((acc, folder) => {
+          acc[folder.id] = folder.name;
+          return acc;
+      }, {});
+      if (!folderData.map(folder => folder.id).includes(this.folder)) {
         this.folder = '';
       }
       else {

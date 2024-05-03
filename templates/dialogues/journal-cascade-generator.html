@@ -10,12 +10,7 @@
       {{#ifEquals data.type 'folder'}}
       <label class="resource-label">{{localize "Ex3.Folder"}}: </label>
       <select name="object.folder" data-type="String">
-        {{#select data.folder}}
-        <option value=""></option>
-        {{#each data.folders as |folder|}}
-        <option value="{{folder.id}}">{{ folder.name }}</option>
-        {{/each}}
-        {{/select}}
+        {{selectOptions data.folders selected=data.folder localize=true}}
       </select>
       {{/ifEquals}}
     </div>

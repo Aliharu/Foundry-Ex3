@@ -7,26 +7,12 @@
 
     <!-- <label class="resource-label">{{localize "Ex3.Attribute"}}</label> -->
     <select class="update-roller" name="object.attribute" value="{{data.attribute}}" data-type="String">
-        {{#select data.attribute}}
-        {{#each data.attributes as |attribute key|}}
-        <option value="{{key}}">{{localize attribute}}</option>
-        {{/each}}
-        <option value="none">{{localize "Ex3.None"}}</option>
-        {{/select}}
+        {{selectOptions selects.attributes selected=data.attribute localize=true}}
     </select>
 
     <!-- <label class="resource-label">{{localize "Ex3.Ability"}}</label> -->
     <select class="update-roller update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
-        {{#select data.ability}}
-        {{#each data.abilities as |ability key|}}
-        <option value="{{key}}">{{localize ability}}</option>
-        {{/each}}
-        {{#each actor.customabilities as |action key|}}
-        <option value="{{action._id}}">{{action.name}}</option>
-        {{/each}}
-        <option value="willpower">{{localize "Ex3.Willpower"}}</option>
-        <option value="none">{{localize "Ex3.None"}}</option>
-        {{/select}}
+        {{selectOptions rollableAbilities selected=data.ability localize=true}}
     </select>
 
     {{/ifEquals}}
@@ -34,15 +20,7 @@
     {{#if data.showPool}}
     {{#ifEquals data.characterType 'npc'}}
     <select name="object.pool" value="{{data.pool}}" data-type="String">
-        {{#select data.pool}}
-        {{#each data.npcPools as |pool key|}}
-        <option value="{{key}}">{{localize pool}}</option>
-        {{/each}}
-        {{#each actor.actions as |action key|}}
-        <option value="{{action._id}}">{{action.name}}</option>
-        {{/each}}
-        <option value="willpower">{{localize "Ex3.Willpower"}}</option>
-        {{/select}}
+        {{selectOptions rollablePools selected=data.ability localize=true}}
     </select>
     {{/ifEquals}}
     {{/if}}
@@ -50,27 +28,13 @@
     {{#if data.specialtyList}}
     <!-- <label class="resource-label">{{localize "Ex3.Specialty"}}</label> -->
     <select class="update-roller" name="object.specialty" value="{{data.specialty}}" data-type="String">
-        {{#select data.specialty}}
-        <option value="">{{localize "Ex3.NoSpecialty"}}</option>
-        {{#each data.specialtyList as |item id|}}
-        <option value="{{id}}">{{item.name}}</option>
-        {{/each}}
-        {{/select}}
+        {{selectOptions data.specialtyList selected=data.specialty localize=true}}
     </select>
     {{/if}}
 
     <!-- <label class="resource-label">{{localize "Ex3.StuntLevel"}}</label> -->
     <select name="object.stunt" value="{{data.stunt}}" data-type="String">
-        {{#select data.stunt}}
-        <option value="none">{{localize "Ex3.NoStunt"}}</option>
-        <option value="one">{{localize "Ex3.LevelOneStunt"}}</option>
-        {{#if data.bankableStunts}}
-        <option value="bank">{{localize "Ex3.BankStunt"}}</option>
-        {{else}}
-        <option value="two">{{localize "Ex3.LevelTwoStunt"}}</option>
-        <option value="three">{{localize "Ex3.LevelThreeStunt"}}</option>
-        {{/if}}
-        {{/select}}
+        {{selectOptions data.stuntsList selected=data.stunt localize=true}}
     </select>
 </div>
 {{/ifEquals}}
@@ -116,12 +80,7 @@
 <div class="resource d-flex flex-center">
     <div>
         <select class="spell" name="object.spell" value="{{data.spell}}" data-type="String">
-            {{#select data.spell}}
-                {{#each data.spells as |spell key|}}
-                <option value="{{spell._id}}">{{spell.name}}</option>
-                {{/each}}
-                <option value="">{{localize "Ex3.None"}}</option>
-            {{/select}}
+            {{selectOptions data.spells selected=data.spell localize=true}}
         </select>
     </div>
 </div>
@@ -272,23 +231,13 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
                 <select name="object.supportedIntimacy" value="{{data.supportedIntimacy}}" data-type="String">
-                    {{#select data.supportedIntimacy}}
-                    <option value="0">{{localize "Ex3.None"}}</option>
-                    <option value="1">{{localize "Ex3.Minor"}}</option>
-                    <option value="2">{{localize "Ex3.Major"}}</option>
-                    <option value="3">{{localize "Ex3.Defining"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.supportedIntimacy selected=data.supportedIntimacy localize=true}}
                 </select>
             </div>
             <div>
                 <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
                 <select name="object.opposedIntimacy" value="{{data.opposedIntimacy}}" data-type="String">
-                    {{#select data.opposedIntimacy}}
-                    <option value="0">{{localize "Ex3.None"}}</option>
-                    <option value="2">{{localize "Ex3.Minor"}}</option>
-                    <option value="3">{{localize "Ex3.Major"}}</option>
-                    <option value="4">{{localize "Ex3.Defining"}}</option>
-                    {{/select}}
+                    {{selectOptions selects.opposedIntimacyValues selected=data.opposedIntimacy localize=true}}
                 </select>
             </div>
             <div>
@@ -347,23 +296,13 @@
                     <div>
                         <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
                         <select name="object.targets.{{id}}.rollData.supportedIntimacy" value="{{target.rollData.supportedIntimacy}}" data-type="String">
-                            {{#select target.rollData.supportedIntimacy}}
-                            <option value="0">{{localize "Ex3.None"}}</option>
-                            <option value="1">{{localize "Ex3.Minor"}}</option>
-                            <option value="2">{{localize "Ex3.Major"}}</option>
-                            <option value="3">{{localize "Ex3.Defining"}}</option>
-                            {{/select}}
+                            {{selectOptions selects.supportingIntimacyValues selected=target.rollData.supportedIntimacy localize=true}}
                         </select>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
                         <select name="object.targets.{{id}}.rollData.opposedIntimacy" value="{{target.rollData.opposedIntimacy}}" data-type="String">
-                            {{#select target.rollData.opposedIntimacy}}
-                            <option value="0">{{localize "Ex3.None"}}</option>
-                            <option value="2">{{localize "Ex3.Minor"}}</option>
-                            <option value="3">{{localize "Ex3.Major"}}</option>
-                            <option value="4">{{localize "Ex3.Defining"}}</option>
-                            {{/select}}
+                            {{selectOptions selects.opposedIntimacyValues selected=target.rollData.opposedIntimacy localize=true}}
                         </select>
                     </div>
                     <div>
@@ -426,27 +365,13 @@
     <div>
         <div class="resource-label">{{localize "Ex3.Ambition"}}</div>
         <select id="working-ambition" name="object.ambition" value="{{data.ambition}}" data-type="String">
-            {{#select data.ambition}}
-            <option value="5">{{localize "Ex3.Terrestrial"}} 1</option>
-            <option value="10">{{localize "Ex3.Terrestrial"}} 2</option>
-            <option value="20">{{localize "Ex3.Terrestrial"}} 3</option>
-            <option value="25">{{localize "Ex3.Celestial"}} 1</option>
-            <option value="30">{{localize "Ex3.Celestial"}} 2</option>
-            <option value="35">{{localize "Ex3.Celestial"}} 3</option>
-            <option value="40">{{localize "Ex3.Solar"}} 1</option>
-            <option value="50">{{localize "Ex3.Solar"}} 2</option>
-            <option value="75">{{localize "Ex3.Solar"}} 3</option>
-            {{/select}}
+            {{selectOptions selects.craftAmbitionRatings selected=data.ambition localize=true}}
         </select>
     </div>
     <div>
         <div class="resource-label">{{localize "Ex3.Finesse"}} </div>
         <select id="working-finesse" name="object.finesse" value="{{data.finesse}}" data-type="String">
-            {{#select data.finesse}}
-            <option value="1">1</option>
-            <option value="3">3</option>
-            <option value="5">5</option>
-            {{/select}}
+            {{selectOptions selects.craftFinesseRatings selected=data.finesse localize=true}}
         </select>
     </div>
 </div>
@@ -457,24 +382,14 @@
     <div>
         <div class="resource-label">{{localize "Ex3.CraftType"}}</div>
         <select id="craft-type" name="object.craftType" value="{{data.craftType}}" data-type="String">
-            {{#select data.craftType}}
-            <option value="basic">{{localize "Ex3.Basic"}}</option>
-            <option value="major">{{localize "Ex3.Major"}}</option>
-            <option value="superior">{{localize "Ex3.Superior"}}</option>
-            <option value="legendary">{{localize "Ex3.Legendary"}}</option>
-            {{/select}}
+            {{selectOptions selects.craftTypes selected=data.craftType localize=true}}
         </select>
     </div>
     {{#ifEquals data.craftType 'superior'}}
     <div>
         <div class="resource-label">{{localize "Ex3.CraftRating"}}</div>
         <select id="craft-rating" name="object.craftRating" value="{{data.craftRating}}" data-type="String">
-            {{#select data.craftRating}}
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            {{/select}}
+            {{selectOptions selects.craftRatings selected=data.craftRating localize=true}}
         </select>
     </div>
     {{/ifEquals}}
