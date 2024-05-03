@@ -10,7 +10,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   constructor(...args) {
     super(...args);
     if (this.object.type === "charm") {
-      this.options.width = this.position.width = 614;
+      this.options.width = this.position.width = 615;
       this.options.height = this.position.height = 850;
     }
     if (this.object.type === "weapon") {

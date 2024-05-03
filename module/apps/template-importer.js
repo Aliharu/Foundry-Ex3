@@ -282,27 +282,27 @@ export default class TemplateImporter extends FormApplication {
       costString = costString.trim();
       if (costString.includes('m')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.motes = parseInt(num);
+        charmData.system.cost.motes = parseInt(num) || 0;
       }
       if (costString.includes('i')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.initiative = parseInt(num);
+        charmData.system.cost.initiative = parseInt(num) || 0;
       }
       if (costString.includes('a')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.anima = parseInt(num);
+        charmData.system.cost.anima = parseInt(num) || 0;
       }
       if (costString.includes('Penumbra')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.penumbra = parseInt(num);
+        charmData.system.cost.penumbra = parseInt(num) || 0;
       }
       if (costString.includes('wp')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.willpower = parseInt(num);
+        charmData.system.cost.willpower = parseInt(num) || 0;
       }
       if (costString.includes('hl')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.health = parseInt(num);
+        charmData.system.cost.health = parseInt(num) || 0;
         if (costString.includes('ahl')) {
           charmData.system.cost.healthtype = 'aggravated';
         }
@@ -327,19 +327,19 @@ export default class TemplateImporter extends FormApplication {
       }
       if (costString.includes('gxp')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.goldxp = parseInt(num);
+        charmData.system.cost.goldxp = parseInt(num) || 0;
       }
       else if (costString.includes('sxp')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.silverxp = parseInt(num);
+        charmData.system.cost.silverxp = parseInt(num) || 0;
       }
       else if (costString.includes('wxp')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.whitexp = parseInt(num);
+        charmData.system.cost.whitexp = parseInt(num) || 0;
       }
       else if (costString.includes('xp')) {
         var num = costString.replace(/[^0-9]/g, '');
-        charmData.system.cost.xp = parseInt(num);
+        charmData.system.cost.xp = parseInt(num) || 0;
       }
     }
   }
@@ -396,11 +396,11 @@ export default class TemplateImporter extends FormApplication {
         costString = costString.trim();
         if (costString.includes('sm') || costString.includes('nm')) {
           var num = costString.replace(/[^0-9]/g, '');
-          spellData.system.cost = parseInt(num);
+          spellData.system.cost = parseInt(num) || 0;
         }
         if (costString.includes('wp')) {
           var num = costString.replace(/[^0-9]/g, '');
-          spellData.system.willpower = parseInt(num);
+          spellData.system.willpower = parseInt(num) || 0;
         }
       }
 
@@ -1222,11 +1222,11 @@ export default class TemplateImporter extends FormApplication {
                   costString = costString.trim();
                   if (costString.includes('sm')) {
                     var num = costString.replace(/[^0-9]/g, '');
-                    spellSystemData.cost = parseInt(num);
+                    spellSystemData.cost = parseInt(num) || 0;
                   }
                   if (costString.includes('wp')) {
                     var num = costString.replace(/[^0-9]/g, '');
-                    spellSystemData.willpower = parseInt(num);
+                    spellSystemData.willpower = parseInt(num) || 0;
                   }
                 }
                 index++;
@@ -1246,27 +1246,27 @@ export default class TemplateImporter extends FormApplication {
                 var costString = costArray[i].trim();
                 if (costString.includes('m')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.motes = parseInt(num);
+                  charmSystemData.cost.motes = parseInt(num) || 0;
                 }
                 if (costString.includes('i')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.initiative = parseInt(num);
+                  charmSystemData.cost.initiative = parseInt(num) || 0;
                 }
                 if (costString.includes('a')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.anima = parseInt(num);
+                  charmSystemData.cost.anima = parseInt(num) || 0;
                 }
                 if (costString.includes('Penumbra')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.penumbra = parseInt(num);
+                  charmSystemData.cost.penumbra = parseInt(num) || 0;
                 }
                 if (costString.includes('wp')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.willpower = parseInt(num);
+                  charmSystemData.cost.willpower = parseInt(num) || 0;
                 }
                 if (costString.includes('hl')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.health = parseInt(num);
+                  charmSystemData.cost.health = parseInt(num) || 0;
                   if (costString.includes('ahl')) {
                     charmSystemData.cost.healthtype = 'aggravated';
                   }
@@ -1291,19 +1291,19 @@ export default class TemplateImporter extends FormApplication {
                 }
                 if (costString.includes('gxp')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.goldxp = parseInt(num);
+                  charmSystemData.cost.goldxp = parseInt(num) || 0;
                 }
                 else if (costString.includes('sxp')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.silverxp = parseInt(num);
+                  charmSystemData.cost.silverxp = parseInt(num) || 0;
                 }
                 else if (costString.includes('wxp')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.whitexp = parseInt(num);
+                  charmSystemData.cost.whitexp = parseInt(num) || 0;
                 }
                 else if (costString.includes('xp')) {
                   var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.xp = parseInt(num);
+                  charmSystemData.cost.xp = parseInt(num) || 0;
                 }
               }
               charmSystemData.type = charmDataArray[1]?.trim() || '';
