@@ -24,6 +24,7 @@ export default class TemplateImporter extends FormApplication {
         acc[folder.id] = folder.name;
         return acc;
     }, {}) ?? {};
+    this.folders[''] = "Ex3.None";
   }
 
   static get defaultOptions() {
@@ -1957,6 +1958,7 @@ export default class TemplateImporter extends FormApplication {
           acc[folder.id] = folder.name;
           return acc;
       }, {});
+      this.folders[''] = "Ex3.None";
       if (!folderData.map(folder => folder.id).includes(this.folder)) {
         this.folder = '';
       }
