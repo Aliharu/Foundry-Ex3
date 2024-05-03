@@ -46,7 +46,11 @@ export default class ItemSearch extends Application {
   getData() {
     let data = super.getData();
     data.filters = this.filters;
+    data.selects = CONFIG.exaltedthird.selects;
     data.items = this.items;
+    data.charmAbilities = CONFIG.exaltedthird.charmabilities;
+    data.charmExaltType = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes));
+
     return data;
   }
 

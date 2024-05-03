@@ -68,6 +68,8 @@ export default class TemplateImporter extends FormApplication {
     data.showError = this.showError;
     data.error = this.error;
     data.errorSection = this.errorSection;
+    data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
+    data.selects = CONFIG.exaltedthird.selects;
     if (this.type === 'charm') {
       data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
     }

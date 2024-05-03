@@ -6,6 +6,7 @@ export default class NPCGenerator extends FormApplication {
     this.object.characterType = 'npc';
     this.object.availableCastes = {};
     this.object.abilityList = CONFIG.exaltedthird.abilities;
+    this.object.selects = CONFIG.exaltedthird.selects;
     this.object.character = {
       name: '',
       defaultName: 'New NPC',

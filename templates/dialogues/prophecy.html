@@ -4,16 +4,11 @@
       <div>
         <label class="resource-label">{{localize "Ex3.Sign"}}:</label>
         <select class="sign-select" name="object.sign" data-type="String">
-          {{#select data.sign}}
           {{#each data.signList as |signCategory signCategoryType|}}
           <optgroup label="{{signCategory.label}}">
-            {{#each signCategory.signs as |sign signType|}}
-            <option value="{{signType}}">{{localize sign}}</option>
-            {{/each}}
+            {{selectOptions signCategory.signs selected=../data.sign localize=true}}
           </optgroup>
           {{/each}}
-          <option value="">{{localize "Ex3.None"}}</option>
-          {{/select}}
         </select>
       </div>
     </div>
@@ -25,6 +20,7 @@
       <div>
         <label class="resource-label">{{localize ambition.label}}:</label>
         <select id="{{key}}" class="ambition-rerender" name="object.ambitions.{{key}}.value">
+            <!-- {{selectOptions ../data.selects.ambitionLevels selected=ambition.value localize=true}} -->
             {{#select ambition.value}}
             {{#numLoopCertainStart 5 1}}
             <option value="{{this}}">{{this}}</option>
@@ -46,11 +42,7 @@
         <div>
           <label class="resource-label">{{localize data.means.cooperation.label}}:</label>
           <select id="cooperation" class="means-rerender" name="object.means.cooperation.value" data-type="String">
-              {{#select data.means.cooperation.value}}
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              {{/select}}
+            {{selectOptions data.selects.cooperationLevels selected=data.means.cooperation.value localize=true}}
           </select>
           <div>
             {{data.means.cooperation.text}}
@@ -62,11 +54,7 @@
       <div>
         <label class="resource-label">{{localize data.means.cosignatories.label}}:</label>
         <select id="cosignatories" class="means-rerender" name="object.means.cosignatories.value" data-type="String">
-            {{#select data.means.cosignatories.value}}
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            {{/select}}
+            {{selectOptions data.selects.cooperationLevels selected=data.means.cosignatories.value localize=true}}
         </select>
         <div>
           {{data.means.cosignatories.text}}
@@ -77,11 +65,7 @@
       <div>
         <label class="resource-label">{{localize data.means.intervalTime.label}}:</label>
         <select name="object.means.intervalTime.value" data-type="String">
-            {{#select data.means.intervalTime.value}}
-            <option value="0">{{localize "Ex3.OneWeek"}}</option>
-            <option value="1">{{localize "Ex3.OneMonth"}}</option>
-            <option value="2">{{localize "Ex3.ThreeMonths"}}</option>
-            {{/select}}
+            {{selectOptions data.selects.intervalTimesLevels selected=data.means.intervalTime.value localize=true}}
         </select>
       </div>
     </div>

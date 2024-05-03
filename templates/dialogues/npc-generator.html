@@ -16,48 +16,19 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Template"}}</div>
         <select id="template" name="object.template" value="{{data.template}}" data-type="String">
-          {{#select data.template}}
-          <option value="custom">{{localize "Ex3.Custom"}}</option>
-          <option value="assassin">{{localize "Ex3.Assassin"}}</option>
-          <option value="detective">{{localize "Ex3.Detective"}}</option>
-          <option value="eliteWarrior">{{localize "Ex3.EliteWarrior"}}</option>
-          <option value="godOrDemon">{{localize "Ex3.God/Demon"}}</option>
-          <option value="merchant">{{localize "Ex3.Merchant"}}</option>
-          <option value="mortalSorcerer">{{localize "Ex3.MortalSorcerer"}}</option>
-          <option value="socialite">{{localize "Ex3.Socialite"}}</option>
-          <option value="trainedSoldier">{{localize "Ex3.TrainedSoldier"}}</option>
-          <option value="wyldMutantWarrior">{{localize "Ex3.WyldMutantWarrior"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcTemplates selected=data.template localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.PoolNumbers"}}</div>
         <select name="object.poolNumbers" value="{{data.poolNumbers}}" data-type="String">
-          {{#select data.poolNumbers}}
-          <option value="low">{{localize "Ex3.Low"}}</option>
-          <option value="mid">{{localize "Ex3.Middle"}}</option>
-          <option value="high">{{localize "Ex3.High"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.poolNumberTypes selected=data.poolNumbers localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.NPCType"}}</div>
         <select name="object.character.npcType" data-type="String">
-          {{#select data.character.npcType}}
-          <option value="animal">{{localize "Ex3.Animal"}}</option>
-          <option value="behemoth">{{localize "Ex3.Behemoth"}}</option>
-          <option value="construct">{{localize "Ex3.Construct"}}</option>
-          <option value="demon">{{localize "Ex3.Demon"}}</option>
-          <option value="elemental">{{localize "Ex3.Elemental"}}</option>
-          <option value="exalt">{{localize "Ex3.Exalt"}}</option>
-          <option value="fae">{{localize "Ex3.Fae"}}</option>
-          <option value="god">{{localize "Ex3.God"}}</option>
-          <option value="magiccreature">{{localize "Ex3.MagicCreature"}}</option>
-          <option value="mortal">{{localize "Ex3.Mortal"}}</option>
-          <option value="undead">{{localize "Ex3.Undead"}}</option>
-          <option value="wyldmonster">{{localize "Ex3.WyldMonster"}}</option>
-          <option value="other">{{localize "Ex3.Other"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.creatureTypes selected=data.character.npcType localize=true}}
         </select>
       </div>
     </div>
@@ -69,23 +40,7 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
         <select id="exalt" name="object.character.exalt" data-type="String">
-          {{#select data.character.exalt}}
-          <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-          <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-          <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-          <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-          <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-          <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-          <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-          <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-          <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-          <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-          <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-          <option value="solar">{{localize "Ex3.Solar"}}</option>
-          <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-          <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-          <option value="other">{{localize "Ex3.Other"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.exaltTypes selected=data.character.exalt localize=true}}
         </select>
       </div>
       {{#if data.availableCastes}}
@@ -110,12 +65,7 @@
       <div>
         <div class="resource-label">{{localize skill.label}}</div>
         <select name="object.character.skills.{{key}}.value" data-type="String">
-          {{#select skill.value}}
-          <option value="weak">{{localize "Ex3.Weak"}}</option>
-          <option value="skilled">{{localize "Ex3.Skilled"}}</option>
-          <option value="exceptional">{{localize "Ex3.Exceptional"}}</option>
-          <option value="legendary">{{localize "Ex3.Legendary"}}</option>
-          {{/select}}
+          {{selectOptions ../data.selects.skillLevels selected=skill.value localize=true}}
         </select>
       </div>
       {{/each}}
@@ -127,26 +77,13 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
         <select name="object.character.sorcerer" data-type="String">
-          {{#select data.character.sorcerer}}
-          <option value="none">{{localize "Ex3.None"}}</option>
-          <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
-          <option value="celestial">{{localize "Ex3.Celestial"}}</option>
-          <option value="solar">{{localize "Ex3.Solar"}}</option>
-          <option value="ivory">{{localize "Ex3.Ivory"}}</option>
-          <option value="shadow">{{localize "Ex3.Shadow"}}</option>
-          <option value="void">{{localize "Ex3.Void"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcSpellCircles selected=data.character.sorcerer localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
         <select name="object.character.sizeCategory" data-type="String">
-          {{#select data.character.sizeCategory}}
-          <option value="standard">{{localize "Ex3.Standard"}}</option>
-          <option value="legendary">{{localize "Ex3.Legendary"}}</option>
-          <option value="tiny">{{localize "Ex3.Tiny"}}</option>
-          <option value="minuscule">{{localize "Ex3.Minuscule"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.sizeCategory selected=data.character.sizeCategory localize=true}}
         </select>
       </div>
       {{#each data.character.numberTraits as |trait key|}}
@@ -176,11 +113,7 @@
         <label class="resource-label">{{localize "Ex3.Drill"}}</label>
         <div class="charname"> <select name="object.character.battlegroupStats.drill"
             value="{{data.character.battlegroupStats.drill}}" data-type="String">
-            {{#select data.character.battlegroupStats.drill}}
-            <option value="0">{{localize "Ex3.Poor"}}</option>
-            <option value="1">{{localize "Ex3.Average"}}</option>
-            <option value="2">{{localize "Ex3.Elite"}}</option>
-            {{/select}}
+            {{selectOptions data.selects.drill selected=data.character.battlegroupStats.drill localize=true}}
           </select></div>
       </div>
       <div>
@@ -213,34 +146,19 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Type"}}</div>
         <select class="rerender" name="object.character.equipment.primaryWeapon.type" data-type="String">
-          {{#select data.character.equipment.primaryWeapon.type}}
-          <option value="random">{{localize "Ex3.Random"}}</option>
-          <option value="set">{{localize "Ex3.Set"}}</option>
-          <option value="none">{{localize "Ex3.None"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.primaryWeapon.type localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.Type"}}</div>
         <select name="object.character.equipment.primaryWeapon.weaponType" data-type="String">
-          {{#select data.character.equipment.primaryWeapon.weaponType}}
-          <option value="any">{{localize "Ex3.Any"}}</option>
-          <option value="melee">{{localize "Ex3.Melee"}}</option>
-          <option value="ranged">{{localize "Ex3.Ranged"}}</option>
-          <option value="thrown">{{localize "Ex3.Thrown"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcWeaponType selected=data.character.equipment.primaryWeapon.weaponType localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.Weight"}}</div>
         <select name="object.character.equipment.primaryWeapon.weight" data-type="String">
-          {{#select data.character.equipment.primaryWeapon.weight}}
-          <option value="any">{{localize "Ex3.Any"}}</option>
-          <option value="light">{{localize "Ex3.Light"}}</option>
-          <option value="medium">{{localize "Ex3.Medium"}}</option>
-          <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-          <option value="siege">{{localize "Ex3.Siege"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcWeaponWeight selected=data.character.equipment.primaryWeapon.weight localize=true}}
         </select>
       </div>
       <div>
@@ -256,34 +174,19 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Type"}}</div>
         <select class="rerender" name="object.character.equipment.secondaryWeapon.type" data-type="String">
-          {{#select data.character.equipment.secondaryWeapon.type}}
-          <option value="random">{{localize "Ex3.Random"}}</option>
-          <option value="set">{{localize "Ex3.Set"}}</option>
-          <option value="none">{{localize "Ex3.None"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.secondaryWeapon.type localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.WeaponType"}}</div>
         <select name="object.character.equipment.secondaryWeapon.weaponType" data-type="String">
-          {{#select data.character.equipment.secondaryWeapon.weaponType}}
-          <option value="any">{{localize "Ex3.Any"}}</option>
-          <option value="melee">{{localize "Ex3.Melee"}}</option>
-          <option value="ranged">{{localize "Ex3.Ranged"}}</option>
-          <option value="thrown">{{localize "Ex3.Thrown"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcWeaponType selected=data.character.equipment.secondaryWeapon.weaponType localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.Weight"}}</div>
         <select name="object.character.equipment.secondaryWeapon.weight" data-type="String">
-          {{#select data.character.equipment.secondaryWeapon.weight}}
-          <option value="any">{{localize "Ex3.Any"}}</option>
-          <option value="light">{{localize "Ex3.Light"}}</option>
-          <option value="medium">{{localize "Ex3.Medium"}}</option>
-          <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-          <option value="siege">{{localize "Ex3.Siege"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcWeaponWeight selected=data.character.equipment.secondaryWeapon.weight localize=true}}
         </select>
       </div>
       <div>
@@ -299,22 +202,13 @@
       <div>
         <div class="resource-label">{{localize "Ex3.Type"}}</div>
         <select class="rerender" name="object.character.equipment.armor.type" data-type="String">
-          {{#select data.character.equipment.armor.type}}
-          <option value="random">{{localize "Ex3.Random"}}</option>
-          <option value="set">{{localize "Ex3.Set"}}</option>
-          <option value="none">{{localize "Ex3.None"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.armor.type localize=true}}
         </select>
       </div>
       <div>
         <div class="resource-label">{{localize "Ex3.Weight"}}</div>
         <select name="object.character.equipment.armor.weight" data-type="String">
-          {{#select data.character.equipment.armor.weight}}
-          <option value="any">{{localize "Ex3.Any"}}</option>
-          <option value="light">{{localize "Ex3.Light"}}</option>
-          <option value="medium">{{localize "Ex3.Medium"}}</option>
-          <option value="heavy">{{localize "Ex3.Heavy"}}</option>
-          {{/select}}
+          {{selectOptions data.selects.npcArmorType selected=data.character.equipment.armor.weight localize=true}}
         </select>
       </div>
       <div>

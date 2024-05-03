@@ -1697,5 +1697,122 @@ exaltedthird.selects = {
     'spear': "Ex3.Spear",
     'throwdagger': "Ex3.ThrownDagger",
     'none': "Ex3.None",
-  }
+  },
+  //Template Importer
+  templateItemTypes: {
+    'armor': "Ex3.Armor",
+    'hearthstone': "Ex3.Hearthstone",
+    'item': "Ex3.Item",
+    'martialArt': "Ex3.MartialArt",
+    'merit': "Ex3.Merit",
+    'ritual': "Ex3.ShapingRitual",
+    'weapon': "Ex3.Weapon",
+  },
+  //Prophecies
+  ambitionLevels: {
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+  },
+  cooperationLevels: {
+    "0": "0",
+    "1": "1",
+    "2": "2",
+  },
+  intervalTimesLevels: {
+    "0": "Ex3.OneWeek",
+    "1": "Ex3.OneMonth",
+    "2": "Ex3.ThreeMonths",
+  },
+  //NPC Generator
+  npcTemplates: {
+    'custom': "Ex3.Custom",
+    'assassin': "Ex3.Assassin",
+    'detective': "Ex3.Detective",
+    'eliteWarrior': "Ex3.EliteWarrior",
+    'godOrDemon': "Ex3.God/Demon",
+    'merchant': "Ex3.Merchant",
+    'mortalSorcerer': "Ex3.MortalSorcerer",
+    'socialite': "Ex3.Socialite",
+    'trainedSoldier': "Ex3.TrainedSoldier",
+    'wyldMutantWarrior': "Ex3.WyldMutantWarrior",
+  },
+  poolNumberTypes: {
+    'low': "Ex3.Low",
+    'mid': "Ex3.Middle",
+    'high': "Ex3.High",
+  },
+  skillLevels: {
+    'weak': "Ex3.Weak",
+    'skilled': "Ex3.Skilled",
+    'exceptional': "Ex3.Exceptional",
+    'legendary': "Ex3.Legendary",
+  },
+  npcSpellCircles: {
+    terrestrial: "Ex3.Terrestrial",
+    celestial: "Ex3.Celestial",
+    solar: "Ex3.Solar",
+    ivory: "Ex3.Ivory",
+    shadow: "Ex3.Shadow",
+    void: "Ex3.Void",
+  },
+  npcItemCategory: {
+    random: "Ex3.Random",
+    set: "Ex3.Set",
+    none: "Ex3.None",
+  },
+  npcWeaponType: {
+    any: "Ex3.Any",
+    melee: "Ex3.Melee",
+    ranged: "Ex3.Ranged",
+    thrown: "Ex3.Thrown",
+  },
+  npcWeaponWeight: {
+    any: "Ex3.Any",
+    light: "Ex3.Light",
+    medium: "Ex3.Medium",
+    heavy: "Ex3.Heavy",
+    siege: "Ex3.Siege",
+  },
+  npcArmorType: {
+    any: "Ex3.Any",
+    light: "Ex3.Light",
+    medium: "Ex3.Medium",
+    heavy: "Ex3.Heavy",
+  },
+  //Template importer
+  templateImporterTypes: {
+    character: "Ex3.Character",
+    folder: "Ex3.Folder",
+  },
+  templateImporterMainTextOptions: {
+    description: "Ex3.Description",
+    summary: "Ex3.Summary",
+  },
+  //Item Search
+  searchAbilityRequirementLevels: {
+    "": "",
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+  },
+  searchEssenceLevels: {
+    "": "",
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9",
+    "10": "10",
+  },
 };

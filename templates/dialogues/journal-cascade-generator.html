@@ -3,10 +3,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.Type"}}: </label>
       <select id="cascade-type" name="object.type" data-type="String">
-        {{#select data.type}}
-        <option value="character">{{localize "Ex3.Character"}}</option>
-        <option value="folder">{{localize "Ex3.Folder"}}</option>
-        {{/select}}
+        {{selectOptions data.selects.templateImporterTypes selected=data.type localize=true}}
       </select>
     </div>
     <div>
@@ -16,9 +13,7 @@
         {{#select data.folder}}
         <option value=""></option>
         {{#each data.folders as |folder|}}
-        <option value="{{folder.id}}">
-          {{folder.name}}{{#if folder.folder}}({{folder.folder.name}}){{/if}}
-        </option>
+        <option value="{{folder.id}}">{{ folder.name }}</option>
         {{/each}}
         {{/select}}
       </select>
@@ -28,14 +23,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.Character"}}: </label>
       <select name="object.character" data-type="String">
-        {{#select data.character}}
-        <option value=""></option>
-        {{#each data.characters as |character|}}
-        <option value="{{character.id}}">
-          {{character.name}}
-        </option>
-        {{/each}}
-        {{/select}}
+        {{selectOptions data.characters selected=data.character localize=true}}
       </select>
     </div>
     <!-- <div class="d-flex resource-label" style="align-items: center;">
@@ -46,10 +34,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.MainText"}}: </label>
       <select name="object.mainText" data-type="String">
-        {{#select data.mainText}}
-        <option value="description">{{localize "Ex3.Description"}}</option>
-        <option value="summary">{{localize "Ex3.Summary"}}</option>
-        {{/select}}
+        {{selectOptions data.selects.templateImporterMainTextOptions selected=data.mainText localize=true}}
       </select>
     </div>
     <div class="check-button">

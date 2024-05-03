@@ -5545,6 +5545,7 @@ export class Prophecy extends FormApplication {
         this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
         this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
         this.object.signList = CONFIG.exaltedthird.siderealSigns;
+        this.object.selects = CONFIG.exaltedthird.selects;
         this.object.totalUsedAmbition = 4;
         this.object.ambitions = {
             duration: {

@@ -1,14 +1,24 @@
 export default class JournalCascadeGenerator extends FormApplication {
   constructor(app, options, object, data) {
     super(object, options);
-    this.object.folders = game.folders.filter(folder => folder.type === 'Item').sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-    this.object.characters = game.actors.filter(actor => actor.type === 'character').sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+
+    this.object.folders = game.collections.get("Item")?._formatFolderSelectOptions() ?? [];
+    
+    this.object.characters = game.actors
+    .filter(actor => actor.type === 'character')
+    .sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+    .reduce((acc, actor) => {
+        acc[actor.id] = actor.name;
+        return acc;
+    }, {});
+    this.object.characters[''] = "Ex3.None";
     this.object.folder = '';
     this.object.character = '';
     this.object.mainText = 'description';
     this.object.type = 'character';
     this.object.includeSpells = true;
     this.object.useLinks = true;
+    this.object.selects = CONFIG.exaltedthird.selects;
     this.object.filterByPrerequisiteCharms = false;
   }
 

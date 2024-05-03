@@ -40,29 +40,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.CharmType"}} </label>
       <select id="charmType" name="charmType" value="{{charmType}}" data-type="String">
-          {{#select charmType}}
-          <option value="abyssal">{{localize "Ex3.Abyssal"}}</option>
-          <option value="alchemical">{{localize "Ex3.Alchemical"}}</option>
-          <option value="architect">{{localize "Ex3.Architect"}}</option>
-          <option value="dragonblooded">{{localize "Ex3.Dragonblooded"}}</option>
-          <option value="dreamsouled">{{localize "Ex3.DreamSouled"}}</option>
-          <option value="eclipse">{{localize "Ex3.Eclipse"}}</option>
-          <option value="evocation">{{localize "Ex3.Evocation"}}</option>
-          <option value="exigent">{{localize "Ex3.Exigent"}}</option>
-          <option value="getimian">{{localize "Ex3.Getimian"}}</option>
-          <option value="hearteater">{{localize "Ex3.Hearteater"}}</option>
-          <option value="infernal">{{localize "Ex3.Infernal"}}</option>
-          <option value="janest">{{localize "Ex3.Janest"}}</option>
-          <option value="liminal">{{localize "Ex3.Liminal"}}</option>
-          <option value="lunar">{{localize "Ex3.Lunar"}}</option>
-          <option value="martialarts">{{localize "Ex3.MartialArts"}}</option>
-          <option value="puppeteer">{{localize "Ex3.Puppeteer"}}</option>
-          <option value="sidereal">{{localize "Ex3.Sidereal"}}</option>
-          <option value="solar">{{localize "Ex3.Solar"}}</option>
-          <option value="sovereign">{{localize "Ex3.Sovereign"}}</option>
-          <option value="umbral">{{localize "Ex3.Umbral"}}</option>
-          <option value="other">{{localize "Ex3.Other"}}</option>
-          {{/select}}
+          {{selectOptions charmTypes selected=charmType localize=true}}
       </select>
     </div>
     {{/ifEquals}}
@@ -71,14 +49,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.Circle"}} </label>
       <select id="spellCircle" name="spellCircle" value="{{spellCircle}}" data-type="String">
-          {{#select spellCircle}}
-          <option value="terrestrial">{{localize "Ex3.Terrestrial"}}</option>
-          <option value="celestial">{{localize "Ex3.Celestial"}}</option>
-          <option value="solar">{{localize "Ex3.Solar"}}</option>
-          <option value="ivory">{{localize "Ex3.Ivory"}}</option>
-          <option value="shadow">{{localize "Ex3.Shadow"}}</option>
-          <option value="void">{{localize "Ex3.Void"}}</option>
-          {{/select}}
+          {{selectOptions selects.allSpellCircles selected=spellCircle localize=true}}
       </select>
     </div>
     {{/ifEquals}}
@@ -87,15 +58,7 @@
     <div>
       <label class="resource-label">{{localize "Ex3.ItemType"}} </label>
       <select id="itemType" name="itemType" value="{{itemType}}" data-type="String">
-          {{#select itemType}}
-          <option value="armor">{{localize "Ex3.Armor"}}</option>
-          <option value="hearthstone">{{localize "Ex3.Hearthstone"}}</option>
-          <option value="item">{{localize "Ex3.Item"}}</option>
-          <option value="martialArt">{{localize "Ex3.MartialArt"}}</option>
-          <option value="merit">{{localize "Ex3.Merit"}}</option>
-          <option value="ritual">{{localize "Ex3.ShapingRitual"}}</option>
-          <option value="weapon">{{localize "Ex3.Weapon"}}</option>
-          {{/select}}
+        {{selectOptions selects.templateItemTypes selected=itemType localize=true}}
       </select>
     </div>
     {{/ifEquals}}
