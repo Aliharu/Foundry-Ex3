@@ -1331,6 +1331,160 @@ exaltedthird.maidens = [
   "endings"
 ];
 
+exaltedthird.bonusTypes = {
+  none: {
+    label: "Ex3.None",
+    bonuses: {
+      "": "Ex3.None",
+    }
+  },
+  diceRoll: {
+    label: "Ex3.DiceRoll",
+    bonuses: {
+      diceModifier: "Ex3.DiceModifier",
+      successModifier: "Ex3.SuccessModifier",
+      doubleSuccess: "Ex3.DoubleSuccess",
+      decreaseTargetNumber: "Ex3.DecreaseTargetNumber",
+      rerollNumber: "Ex3.RerollNumberDice",
+      diceToSuccesses: "Ex3.DicetoSuccesses",
+      reduceDifficulty: "Ex3.ReduceDifficulty",
+      rerollDieFace: "Ex3.RerollDieFace",
+      rollTwice: "Ex3.RollTwiceKeepHighest",
+      excludeOnes: "Ex3.ExcludeOnesFromRerolls",
+      rerollFailed: "Ex3.RerollFailed",
+      triggerOnTens: "Ex3.TriggerTens",
+      triggerNinesAndTens: "Ex3.TriggerNines&Tens",
+      triggerTensCap: "Ex3.TriggerTensCap",
+    },
+  },
+  damage: {
+    label: "Ex3.Damage",
+    bonuses: {
+      damageDice: "Ex3.DamageDiceModifier",
+      damageSuccessModifier: "Ex3.DamageSuccessModifier",
+      'doubleSuccess-damage': "Ex3.DamageDoubleSuccess",
+      'diceToSuccesses-damage': "Ex3.DamageDicetoSuccesses",
+      'decreaseTargetNumber-damage': "Ex3.DamageDecreaseTargetNumber",
+      'rerollDieFace-damage': "Ex3.DamageRerollDieFace",
+      'rerollNumber-damage': "Ex3.DamageRerollNumberDice",
+      'rollTwice-damage': "Ex3.DamageRollTwiceKeepHighest",
+      'excludeOnes-damage': "Ex3.DamageExcludeOnesFromRerolls",
+      'rerollFailed-damage': "Ex3.DamageRerollFailed",
+      'triggerOnTens-damage': "Ex3.DamageTriggerTens",
+      'triggerTensCap-damage': "Ex3.DamageTriggerTensCap",
+      'triggerNinesAndTens-damage': "Ex3.DamageTriggerNines&Tens",
+      threshholdToDamage: "Ex3.ThreshholdToDamage",
+      doubleRolledDamage: "Ex3.DoubleRolledDamage",
+      resetInit: "Ex3.ResetInitiative",
+      ignoreSoak: "Ex3.IgnoreSoak",
+      ignoreHardness: "Ex3.IgnoreHardness",
+      overwhelming: "Ex3.Overwhelming",
+      postSoakDamage: "Ex3.PostSoakDamage",
+      reduceGambitDifficulty: "Ex3.ReduceGambitDifficulty",
+      setDamageType: "Ex3.SetDamageType",
+    }
+  },
+  spend: {
+    label: "Ex3.Spend",
+    bonuses: {
+      'motes-spend': "Ex3.Motes",
+      'muteMotes-spend': "Ex3.MuteMotes",
+      'initiative-spend': "Ex3.Initiative",
+      'anima-spend': "Ex3.Anima",
+      'willpower-spend': "Ex3.Willpower",
+      'grappleControl-spend': "Ex3.GrappleControl",
+      'health-spend': "Ex3.Health",
+      'aura-spend': "Ex3.Aura",
+      'penumbra-spend': "Ex3.Penumbra",
+      'silverxp-spend': "Ex3.SilverXP",
+      'goldxp-spend': "Ex3.GoldXP",
+      'whitexp-spend': "Ex3.WhiteXP",
+    }
+  },
+  restore: {
+    label: "Ex3.Restore",
+    bonuses: {
+      'motes-restore': "Ex3.RestoreMotes",
+      'willpower-restore': "Ex3.RestoreWillpower",
+      'health-restore': "Ex3.RestoreHealth",
+      'initiative-restore': "Ex3.RestoreInitiative",
+    }
+  },
+  steal: {
+    label: "Ex3.Steal",
+    bonuses: {
+      'motes-steal': "Ex3.StealMotes",
+    }
+  },
+  other: {
+    label: "Ex3.Other",
+    bonuses: {
+      triggerSelfDefensePenalty: "Ex3.SelfDefensePenalty",
+      triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
+      activateAura: "Ex3.ActivateAura",
+      ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
+      inflictDicePenalty: "Ex3.InflictDicePenalty",
+      displayMessage: "Ex3.DisplayMessage",
+    }
+  },
+  defense: {
+    label: "Ex3.Defense",
+    bonuses: {
+      defense: "Ex3.Defense",
+      soak: "Ex3.Soak",
+      hardness: "Ex3.Hardness",
+      resolve: "Ex3.Resolve",
+      guile: "Ex3.Guile",
+    }
+  }
+}
+
+exaltedthird.requirementTypes = {
+  none: {
+    label: "Ex3.None",
+    requirements: {
+      "": "Ex3.None"
+    }
+  },
+  roll: {
+    label: "Ex3.Roll",
+    requirements: {
+      attackType: "Ex3.AttackType",
+      charmAddedAmount: "Ex3.CharmAddedAmount",
+      range: "Ex3.Range",
+    },
+  },
+  character: {
+    label: "Ex3.Character",
+    requirements: {
+      martialArtsLevel: "Ex3.MartialArtsTier",
+      smaEnlightenment: "Ex3.SMAEnlightenment",
+      materialResonance: "Ex3.MaterialResonance",
+      materialStandard: "Ex3.MaterialStandard",
+      materialDissonance: "Ex3.MaterialDissonance",
+      formula: "Ex3.Formula",
+      hasStatus: "Ex3.HasStatus",
+    },
+  },
+  target: {
+    label: "Ex3.Target",
+    requirements: {
+      targetHasStatus: "Ex3.TargetHasStatus",
+      targetIsBattlegroup: "Ex3.TargetIsBattlegroup",
+      targetIsCrashed: "Ex3.TargetIsCrashed",
+    },
+  },
+  rollResults: {
+    label: "Ex3.RollResults",
+    requirements: {
+      thresholdSuccesses: "Ex3.ThresholdSuccesses",
+      initiativeDamageDealt: "Ex3.InitiativeDamageDealt",
+      damageLevelsDealt: "Ex3.DamageLevelsDealt",
+      crashedTheTarget: "Ex3.CrashedTheTarget",
+    },
+  },
+}
+
 exaltedthird.selects = {
   exaltTypes: {
     abyssal: "Ex3.Abyssal",
@@ -1925,5 +2079,11 @@ exaltedthird.selects = {
         none: "Ex3.None",
       },
     },
+  },
+  triggerTimes: {
+    "beforeRoll": "Ex3.BeforeRoll",
+    "afterRoll": "Ex3.AfterRoll",
+    "beforeDamageRoll": "Ex3.BeforeDamageRoll",
+    "afterDamageRoll": "Ex3.AfterDamageRoll",
   }
 };

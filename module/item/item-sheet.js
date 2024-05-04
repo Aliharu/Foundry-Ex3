@@ -57,6 +57,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     }
     context.showParentItemList = false;
     context.selects = CONFIG.exaltedthird.selects;
+
+    context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
+    context.requirementTypes = CONFIG.exaltedthird.requirementTypes;
     if (itemData.type === 'charm') {
       if (itemData.system.ability === 'evocation') {
         for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations)) {

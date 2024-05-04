@@ -27,7 +27,7 @@
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
         <a class="item" data-tab="bonuses">{{localize "Ex3.Dice"}}</a>
-        <!-- <a class="item" data-tab="triggers">{{localize "Ex3.Triggers"}}</a> -->
+        <a class="item" data-tab="triggers">{{localize "Ex3.Triggers"}}</a>
         <a class="item" data-tab="macros">{{localize "Ex3.Macros"}}</a>
         <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
     </nav>
@@ -802,12 +802,7 @@
                         </div>
                         <div class="d-flex" style="align-items:center; margin-bottom: 10px;justify-content:center;">
                             <select name="system.triggers.dicerollertriggers.{{index}}.triggerTime" data-type="String">
-                                {{#select trigger.triggerTime}}
-                                <option value="beforeRoll">{{localize "Ex3.BeforeRoll"}}</option>
-                                <option value="afterRoll">{{localize "Ex3.AfterRoll"}}</option>
-                                <option value="beforeDamageRoll">{{localize "Ex3.BeforeDamageRoll"}}</option>
-                                <option value="afterDamageRoll">{{localize "Ex3.AfterDamageRoll"}}</option>
-                                {{/select}}
+                                {{selectOptions ../selects.triggerTimes selected=trigger.triggerTime localize=true}}
                             </select>
                             <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers"
                                 data-index="{{index}}"><i class="fas fa-trash"
@@ -826,91 +821,11 @@
                         <div class="resource-label">{{localize "Ex3.Effect"}}</div>
                         <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.effect"
                             data-type="String">
-                            {{#select bonus.effect}}
-                            <option value="">{{localize "Ex3.None"}}</option>
-                            <optgroup label="{{localize 'Ex3.DiceRoll'}}">
-                                <option value="diceModifier">{{localize "Ex3.DiceModifier"}}</option>
-                                <option value="successModifier">{{localize "Ex3.SuccessModifier"}}</option>
-                                <option value="doubleSuccess">{{localize "Ex3.DoubleSuccess"}}+</option>
-                                <option value="decreaseTargetNumber">{{localize "Ex3.DecreaseTargetNumber"}}</option>
-                                <option value="rerollNumber">{{localize "Ex3.RerollNumberDice"}}</option>
-                                <option value="diceToSuccesses">{{localize "Ex3.DicetoSuccesses"}}</option>
-                                <option value="reduceDifficulty">{{localize "Ex3.ReduceDifficulty"}}</option>
-                                <option value="rerollDieFace">{{localize "Ex3.RerollDieFace"}}</option>
-                                <option value="rollTwice">{{localize "Ex3.RollTwiceKeepHighest"}}</option>
-                                <option value="excludeOnes">{{localize "Ex3.ExcludeOnesFromRerolls"}}</option>
-                                <option value="rerollFailed">{{localize "Ex3.RerollFailed"}}</option>
-                                <option value="triggerOnTens">{{localize "Ex3.TriggerTens"}}</option>
-                                <option value="triggerNinesAndTens">{{localize "Ex3.TriggerNines&Tens"}}</option>
-                                <option value="triggerTensCap">{{localize "Ex3.TriggerTensCap"}}</option>
-                                <!-- New -->
-                                <!-- <option value="doubleThresholdSuccesses">{{localize "Ex3.DoubleThresholdSuccesses"}}</option> -->
+                            {{#each ../../bonusTypes as |bonusesCategory bonusesCategoryType|}}
+                            <optgroup label="{{localize bonusesCategory.label}}">
+                              {{selectOptions bonusesCategory.bonuses selected=bonus.effect localize=true}}
                             </optgroup>
-                            <optgroup label="{{localize 'Ex3.Damage'}}">
-                                <option value="damageDice">{{localize "Ex3.DamageDiceModifier"}}</option>
-                                <option value="damageSuccessModifier">{{localize "Ex3.DamageSuccessModifier"}}</option>
-                                <option value="doubleSuccess-damage">{{localize "Ex3.DamageDoubleSuccess"}}+</option>
-                                <option value="diceToSuccesses-damage">{{localize "Ex3.DamageDicetoSuccesses"}}</option>
-                                <option value="decreaseTargetNumber-damage">{{localize "Ex3.DamageDecreaseTargetNumber"}}</option>
-                                <option value="rerollDieFace-damage">{{localize "Ex3.DamageRerollDieFace"}}</option>
-                                <option value="rerollNumber-damage">{{localize "Ex3.DamageRerollNumberDice"}}</option>
-                                <option value="rollTwice-damage">{{localize "Ex3.DamageRollTwiceKeepHighest"}}</option>
-                                <option value="excludeOnes-damage">{{localize "Ex3.DamageExcludeOnesFromRerolls"}}</option>
-                                <option value="rerollFailed-damage">{{localize "Ex3.DamageRerollFailed"}}</option>
-                                <option value="triggerOnTens-damage">{{localize "Ex3.DamageTriggerTens"}}</option>
-                                <option value="triggerTensCap-damage">{{localize "Ex3.DamageTriggerTensCap"}}</option>
-                                <option value="triggerNinesAndTens-damage">{{localize "Ex3.DamageTriggerNines&Tens"}}</option>
-                                <!-- <option value="doubleThresholdSuccesses-damage">{{localize "Ex3.DamageDoubleThresholdSuccesses"}}</option> -->
-                                <option value="threshholdToDamage">{{localize "Ex3.ThreshholdToDamage"}}</option>
-                                <option value="doubleRolledDamage">{{localize "Ex3.DoubleRolledDamage"}}</option>
-                                <option value="resetInit">{{localize "Ex3.ResetInitiative"}}</option>
-                                <option value="ignoreSoak">{{localize "Ex3.IgnoreSoak"}}</option>
-                                <option value="ignoreHardness">{{localize "Ex3.IgnoreHardness"}}</option>
-                                <option value="overwhelming">{{localize "Ex3.Overwhelming"}}</option>
-                                <option value="postSoakDamage">{{localize "Ex3.PostSoakDamage"}}</option>
-                                <option value="reduceGambitDifficulty">{{localize "Ex3.ReduceGambitDifficulty"}}</option>
-                                <option value="setDamageType">{{localize "Ex3.SetDamageType"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Spend'}}">
-                                <option value="motes-spend">{{localize "Ex3.Motes"}}</option>
-                                <option value="muteMotes-spend">{{localize "Ex3.MuteMotes"}}</option>
-                                <option value="initiative-spend">{{localize "Ex3.Initiative"}}</option>
-                                <option value="anima-spend">{{localize "Ex3.Anima"}}</option>
-                                <option value="willpower-spend">{{localize "Ex3.Willpower"}}</option>
-                                <option value="grappleControl-spend">{{localize "Ex3.GrappleControl"}}</option>
-                                <option value="health-spend">{{localize "Ex3.Health"}}</option>
-                                <option value="aura-spend">{{localize "Ex3.Aura"}}</option>
-                                <option value="penumbra-spend">{{localize "Ex3.Penumbra"}}</option>
-                                <option value="silverxp-spend">{{localize "Ex3.SilverXP"}}</option>
-                                <option value="goldxp-spend">{{localize "Ex3.GoldXP"}}</option>
-                                <option value="whitexp-spend">{{localize "Ex3.WhiteXP"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Restore'}}">
-                                <option value="motes-restore">{{localize "Ex3.RestoreMotes"}}</option>
-                                <option value="willpower-restore">{{localize "Ex3.RestoreWillpower"}}</option>
-                                <option value="health-restore">{{localize "Ex3.RestoreHealth"}}</option>
-                                <option value="initiative-restore">{{localize "Ex3.RestoreInitiative"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Steal'}}">
-                                <option value="motes-steal">{{localize "Ex3.StealMotes"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Other'}}">
-                                <option value="triggerSelfDefensePenalty">{{localize "Ex3.SelfDefensePenalty"}}</option>
-                                <option value="triggerTargetDefensePenalty">{{localize "Ex3.TargetDefensePenalty"}}
-                                </option>
-                                <option value="activateAura">{{localize "Ex3.ActivateAura"}}</option>
-                                <option value="ignoreLegendarySize">{{localize "Ex3.IgnoreLegendarySize"}}</option>
-                                <option value="inflictDicePenalty">{{localize "Ex3.InflictDicePenalty"}}</option>
-                                <option value="displayMessage">{{localize "Ex3.DisplayMessage"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Defense'}}"> 
-                                <option value="defense">{{localize "Ex3.Defense"}}</option>
-                                <option value="soak">{{localize "Ex3.Soak"}}</option>
-                                <option value="hardness">{{localize "Ex3.Hardness"}}</option>
-                                <option value="resolve">{{localize "Ex3.Resolve"}}</option>
-                                <option value="guile">{{localize "Ex3.Guile"}}</option>
-                            </optgroup>
-                            {{/select}}
+                            {{/each}}
                         </select>
                     </div>
                     <div>
@@ -939,35 +854,13 @@
                         <select
                             name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.requirement"
                             data-type="String">
-                            {{#select requirement.requirement}}
-                            <option value="">{{localize "Ex3.None"}}</option>
-                            <optgroup label="{{localize 'Ex3.Roll'}}">
-                                <option value="attackType">{{localize "Ex3.AttackType"}}</option>
-                                <option value="charmAddedAmount">{{localize "Ex3.CharmAddedAmount"}}</option>
-                                <option value="range">{{localize "Ex3.Range"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Character'}}">
-                                <option value="martialArtsLevel">{{localize "Ex3.MartialArtsTier"}}</option>
-                                <option value="smaEnlightenment">{{localize "Ex3.SMAEnlightenment"}}</option>
-                                <option value="materialResonance">{{localize "Ex3.MaterialResonance"}}</option>
-                                <option value="materialStandard">{{localize "Ex3.MaterialStandard"}}</option>
-                                <option value="materialDissonance">{{localize "Ex3.MaterialDissonance"}}</option>
-                                <option value="formula">{{localize "Ex3.Formula"}}</option>
-                                <option value="hasStatus">{{localize "Ex3.HasStatus"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.Target'}}">
-                                <option value="targetHasStatus">{{localize "Ex3.TargetHasStatus"}}</option>
-                                <option value="targetIsBattlegroup">{{localize "Ex3.TargetIsBattlegroup"}}</option>
-                                <option value="targetIsCrashed">{{localize "Ex3.TargetIsCrashed"}}</option>
-                            </optgroup>
-                            <optgroup label="{{localize 'Ex3.RollResults'}}">
-                                <option value="thresholdSuccesses">{{localize "Ex3.ThresholdSuccesses"}}+</option>
-                                <option value="initiativeDamageDealt">{{localize "Ex3.InitiativeDamageDealt"}}+</option>
-                                <option value="damageLevelsDealt">{{localize "Ex3.DamageLevelsDealt"}}+</option>
-                                <option value="crashedTheTarget">{{localize "Ex3.CrashedTheTarget"}}</option>
-                            </optgroup>
-                            {{/select}}
+                        {{#each ../../requirementTypes as |requirementCategory requirementCategoryType|}}
+                        <optgroup label="{{localize requirementCategory.label}}">
+                          {{selectOptions requirementCategory.requirements selected=requirement.requirement localize=true}}
+                        </optgroup>
+                        {{/each}}
                         </select>
+
                     </div>
                     <div>
                         <div class="resource-label" style="margin-right: 30px;">{{localize "Ex3.Value"}}</div>
