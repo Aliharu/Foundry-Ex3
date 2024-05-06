@@ -353,8 +353,7 @@ async function handleSocket({ type, id, data, actorId, crasherId = null, addStat
       for (const status of addStatuses) {
         const effectExists = targetedActor.effects.find(e => e.statuses.has(status));
         if (!effectExists) {
-          const effect = CONFIG.statusEffects.find(e => e.id === status);
-          await game.canvas.tokens.get(id).toggleEffect(effect);
+          await game.canvas.tokens.get(id).actor.toggleStatusEffect(status);
         }
       }
       if (deleteEffects) {

@@ -20,7 +20,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async _preUpdate(updateData, options, user) {
-    await super._preUpdate(updateData, options, user);
+    if ( (await super._preUpdate(updateData, options, user)) === false ) return false;
     const exalt = updateData.system?.details?.exalt || this.system.details.exalt;
     const essenceLevel = updateData.system?.essence?.value || this.system.essence.value;
     const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;

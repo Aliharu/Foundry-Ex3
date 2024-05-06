@@ -1107,5 +1107,10 @@
     "Ex3.Solar2": "Solar 2",
     "Ex3.Terrestrial3": "Terrestrial 3",
     "Ex3.Celestial3": "Celestial 3",
-    "Ex3.Solar3": "Solar 3"
+    "Ex3.Solar3": "Solar 3",
+
+    "Ex3.Short": "Short",
+    "Ex3.Long": "Long",
+    "Ex3.Close": "Close",
+    "Ex3.Extreme": "Extreme"
 }

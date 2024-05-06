@@ -53,7 +53,7 @@ export function abilityField(prefAttribute, ability) {
         favored: new fields.BooleanField({ initial: false }),
         caste: new fields.BooleanField({ initial: false }),
         excellency: new fields.BooleanField({ initial: false }),
-        value: new fields.NumberField({ initial: 1 }),
+        value: new fields.NumberField({ initial: 0 }),
         prefattribute: new fields.StringField({ initial: prefAttribute }),
         maiden: new fields.StringField({ initial: CONFIG.exaltedthird.abilityMaidens[ability] || "" }),
     });

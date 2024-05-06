@@ -3665,8 +3665,7 @@ export class RollForm extends FormApplication {
         for (const status of this.object.addSelfStatuses) {
             const effectExists = this.actor?.effects.find(e => e.statuses.has(status));
             if (!effectExists && actorToken) {
-                const effect = CONFIG.statusEffects.find(e => e.id === status);
-                await actorToken.toggleEffect(effect);
+                await actorToken.actor.toggleStatusEffect(status);
             }
         }
     }
@@ -4176,8 +4175,7 @@ export class RollForm extends FormApplication {
             for (const status of this.object.addStatuses) {
                 const effectExists = this.object.target.actor.effects.find(e => e.statuses.has(status));
                 if (!effectExists) {
-                    const effect = CONFIG.statusEffects.find(e => e.id === status);
-                    await this.object.target.toggleEffect(effect);
+                    await this.object.target.actor.toggleStatusEffect(status);
                 }
             }
             if (this.object.deleteEffects) {
