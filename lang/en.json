@@ -1112,5 +1112,18 @@
     "Ex3.Short": "Short",
     "Ex3.Long": "Long",
     "Ex3.Close": "Close",
-    "Ex3.Extreme": "Extreme"
+    "Ex3.Extreme": "Extreme",
+
+    "Ex3.SpendMotes": "Spend Motes",
+    "Ex3.SpendMuteMotes": "Spend Mute Motes",
+    "Ex3.SpendInitiative": "Spend Initiative",
+    "Ex3.SpendAnima": "Spend Anima",
+    "Ex3.SpendWillpower": "Spend Willpower",
+    "Ex3.SpendGrappleControl": "Spend Grapple Control",
+    "Ex3.SpendHealth": "Spend Health",
+    "Ex3.SpendAura": "Spend Aura",
+    "Ex3.SpendPenumbra": "Spend Penumbra",
+    "Ex3.SpendSilverXP": "Spend Silver XP",
+    "Ex3.SpendGoldXP": "Spend Gold XP",
+    "Ex3.SpendWhiteXP": "Spend White XP"
 }
