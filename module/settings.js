@@ -138,6 +138,15 @@ export function registerSettings() {
         config: true,
     });
 
+    game.settings.register("exaltedthird", "rollButtonTarget", {
+        name: game.i18n.localize('Ex3.RollButtonTarget'),
+        hint: game.i18n.localize('Ex3.RollButtonTargetDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: true
+    });
+
     game.settings.register("exaltedthird", "unifiedCharacterCreation", {
         name: game.i18n.localize('Ex3.UnifiedCharacterCreation'),
         hint: game.i18n.localize('Ex3.UnifiedCharacterCreationDescription'),

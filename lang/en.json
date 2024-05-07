@@ -659,6 +659,10 @@
     "Ex3.DisengageCost": "Disengage Cost",
     "Ex3.DisengageCostDescription": "Disengage Costs 2 Initiative",
 
+    "Ex3.RollButtonTarget": "Roll Button Target",
+    "Ex3.RollButtonTargetDescription": "If enabled roll buttons will on the tokens that are currently targetted by the user and if there are no targets will default to the proper character (Attacker for gain withering, Target for Damage).  If disabled it will always use the Attacker/Defender.",
+
+
     "Ex3.BankableStuntsDescription": "Changes stunts to work like how they do in Exalted Essence.  Stunts are limited to 1 level and can now be banked.",
 
     "Ex3.MaxAnima": "Max Anima",
@@ -680,6 +684,7 @@
     "Ex3.GainAttackInitiative": "Gain Attack Initiative",
 
     "Ex3.NoTargets": "No Targets",
+    "Ex3.NoValidTargets": "No Valid Targets",
     "Ex3.NoTargetsSelected": "No Targets Selected",
     "Ex3.NoCurrentCombat": "No Current Combat",
     "Ex3.NoCombatant": "No Combatant",

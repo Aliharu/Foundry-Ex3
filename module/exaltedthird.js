@@ -1684,13 +1684,13 @@ async function createItemMacro(data, slot) {
 function applyDecisiveDamage(message) {
   let targetedTokens = Array.from(game.user.targets);
   // If there are not any controlled tokens, issue a warning.
-  if (!targetedTokens?.length) {
+  if (!targetedTokens?.length || !game.settings.get("exaltedthird", "rollButtonTarget")) {
     const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.targetId);
     if (targetToken) {
       targetedTokens = [targetToken];
     }
     else {
-      return ui.notifications.warn('Ex3.NoTargets', {
+      return ui.notifications.warn('Ex3.NoValidTargets', {
         localize: true,
       });
     }
@@ -1713,13 +1713,13 @@ function applyDecisiveDamage(message) {
 function applyWitheringDamage(message) {
   let targetedTokens = Array.from(game.user.targets);
   // If there are not any controlled tokens, issue a warning.
-  if (!targetedTokens?.length) {
+  if (!targetedTokens?.length || !game.settings.get("exaltedthird", "rollButtonTarget")) {
     const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.targetId);
     if (targetToken) {
       targetedTokens = [targetToken];
     }
     else {
-      return ui.notifications.warn('Ex3.NoTargets', {
+      return ui.notifications.warn('Ex3.NoValidTargets', {
         localize: true,
       });
     }
@@ -1765,13 +1765,13 @@ function applyWitheringDamage(message) {
 function gainAttackInitiative(message) {
   let targetedTokens = Array.from(game.user.targets);
   // If there are not any controlled tokens, issue a warning.
-  if (!targetedTokens?.length) {
+  if (!targetedTokens?.length || !game.settings.get("exaltedthird", "rollButtonTarget")) {
     const targetToken = game.canvas.tokens.get(message?.flags?.exaltedthird?.attackerTokenId);
     if (targetToken) {
       targetedTokens = [targetToken];
     }
     else {
-      return ui.notifications.warn('Ex3.NoTargets', {
+      return ui.notifications.warn('Ex3.NoValidTargets', {
         localize: true,
       });
     }
