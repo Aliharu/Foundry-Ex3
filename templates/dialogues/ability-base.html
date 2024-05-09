@@ -231,7 +231,7 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
                 <select name="object.supportedIntimacy" value="{{data.supportedIntimacy}}" data-type="String">
-                    {{selectOptions selects.supportedIntimacy selected=data.supportedIntimacy localize=true}}
+                    {{selectOptions selects.supportingIntimacyValues selected=data.supportedIntimacy localize=true}}
                 </select>
             </div>
             <div>
@@ -296,13 +296,13 @@
                     <div>
                         <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
                         <select name="object.targets.{{id}}.rollData.supportedIntimacy" value="{{target.rollData.supportedIntimacy}}" data-type="String">
-                            {{selectOptions selects.supportingIntimacyValues selected=target.rollData.supportedIntimacy localize=true}}
+                            {{selectOptions ../selects.supportingIntimacyValues selected=target.rollData.supportedIntimacy localize=true}}
                         </select>
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
                         <select name="object.targets.{{id}}.rollData.opposedIntimacy" value="{{target.rollData.opposedIntimacy}}" data-type="String">
-                            {{selectOptions selects.opposedIntimacyValues selected=target.rollData.opposedIntimacy localize=true}}
+                            {{selectOptions ../selects.opposedIntimacyValues selected=target.rollData.opposedIntimacy localize=true}}
                         </select>
                     </div>
                     <div>
