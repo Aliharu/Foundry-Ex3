@@ -23,17 +23,25 @@ export class ExaltedThirdActor extends Actor {
     if ( (await super._preUpdate(updateData, options, user)) === false ) return false;
     const exalt = updateData.system?.details?.exalt || this.system.details.exalt;
     const essenceLevel = updateData.system?.essence?.value || this.system.essence.value;
+    const creatureType = updateData.system?.creaturetype || this.system.creaturetype;
+    const caste = updateData.system?.details?.caste || this.system.details.caste;
     const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;
-    if (updateData.system?.battlegroup && !this.system.battlegroup) {
-      updateData.system.health = {
-        "levels": {
-          "zero": {
-            "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.three.value + this.system.health.levels.four.value + 1,
-          }
+    if(this.type === 'npc') {
+      if (updateData.system?.battlegroup && !this.system.battlegroup) {
+        if(updateData.system?.health?.levels) {
+          updateData.system.health.levels.zero.value = this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.three.value + this.system.health.levels.four.value + 1;
+        } else {
+          updateData.system.health = {
+            "levels": {
+              "zero": {
+                "value": this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.three.value + this.system.health.levels.four.value + 1,
+              }
+            }
+          };
         }
-      };
+      }
     }
-    if (updateData.system?.details?.exalt || updateData.system?.essence?.value || updateData.system?.creaturetype) {
+    if (exalt !== this.system.details.exalt || essenceLevel !== this.system.essence.value || creatureType !== this.system.creaturetype) {
       if (this.type === 'character') {
         updateData.system.motes = {
           personal: {
@@ -47,22 +55,26 @@ export class ExaltedThirdActor extends Actor {
             committed: this.system.motes.peripheral.committed
           }
         };
-        if (updateData.system?.details?.exalt) {
+        if (exalt) {
           updateData.system.traits = {
-            resonance: this.calculateResonance(updateData.system?.details?.exalt),
-            dissonance: this.calculateDissonance(updateData.system?.details?.exalt),
+            resonance: this.calculateResonance(exalt),
+            dissonance: this.calculateDissonance(exalt),
           };
         }
       }
       else {
         var personalMotes = essenceLevel * 10;
         var peripheralmotes = 0;
-        if (updateData.system?.creaturetype === 'god' || updateData.system?.creaturetype === 'undead' || updateData.system?.creaturetype === 'demon') {
+        if (creatureType === 'god' || creatureType === 'undead' || creatureType === 'demon') {
           personalMotes += 50;
         }
-        if ((updateData.system?.creaturetype || this.system.creaturetype) === 'exalt') {
-          peripheralmotes = this.calculateMaxExaltedMotes('peripheral', updateData.system?.details?.exalt || this.system.details.exalt, essenceLevel);
-          personalMotes = this.calculateMaxExaltedMotes('personal', updateData.system?.details?.exalt || this.system.details.exalt, essenceLevel);
+        if (creatureType === 'exalt') {
+          peripheralmotes = this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel);
+          personalMotes = this.calculateMaxExaltedMotes('personal', exalt, essenceLevel);
+        }
+        if(creatureType === 'mortal') {
+          personalMotes = 0;
+          peripheralmotes = 0;
         }
         updateData.system.motes = {
           personal: {
@@ -77,9 +89,9 @@ export class ExaltedThirdActor extends Actor {
           }
         };
       }
-      if (updateData.system?.details?.exalt) {
+      if (exalt) {
         let hasAura = false;
-        if (updateData.system?.details?.exalt === 'dragonblooded') {
+        if (exalt === 'dragonblooded') {
           hasAura = true;
         }
         if (updateData.system?.settings) {
@@ -92,11 +104,11 @@ export class ExaltedThirdActor extends Actor {
         }
       }
     }
-    if (updateData.system?.details?.caste && this.type === 'character') {
-      const lowecaseCaste = updateData.system?.details?.caste.toLowerCase();
+    if (caste !== this.system.details.caste && this.type === 'character') {
+      const lowecaseCaste = caste.toLowerCase();
       const attributes = updateData.system?.attributes || this.system.attributes;
       const abilities = updateData.system?.abilities || this.system.abilities;
-      for (let [key, attribute] of Object.entries(this.system.attributes)) {
+      for (let [key, attribute] of Object.entries(attributes)) {
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           attributes[key].favored = true;
           attributes[key].caste = true;
@@ -105,7 +117,7 @@ export class ExaltedThirdActor extends Actor {
           attributes[key].caste = false;
         }
       }
-      for (let [key, ability] of Object.entries(this.system.abilities)) {
+      for (let [key, ability] of Object.entries(abilities)) {
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           abilities[key].favored = true;
           abilities[key].caste = true;

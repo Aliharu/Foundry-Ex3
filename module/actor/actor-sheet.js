@@ -908,6 +908,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.showDialogue('craft');
     });
 
+    html.find('.show-workings').mousedown(ev => {
+      this.showDialogue('workings');
+    });
+
     html.find('.show-health').mousedown(ev => {
       this.showDialogue('health');
     });
@@ -1148,7 +1152,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         {
           restriction: "charmAddedAmount",
           value: "1",
-        }, 
+        },
         {
           restriction: "range",
           value: "short",
@@ -2462,6 +2466,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         break;
       case 'health':
         template = "systems/exaltedthird/templates/dialogues/health-dialogue.html";
+        break;
+      case 'workings':
+        template = "systems/exaltedthird/templates/dialogues/workings-dialogue.html";
         break;
       default:
         break;

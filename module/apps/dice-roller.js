@@ -2241,6 +2241,8 @@ export class RollForm extends FormApplication {
             }
             else if (customAbility.system.abilitytype === 'martialarts') {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'martialarts');
+            } else {
+                this.object.specialtyList = []
             }
         }
         else {
@@ -3990,11 +3992,6 @@ export class RollForm extends FormApplication {
                     break;
                 case 'thresholdSuccesses':
                     if (this.object.thresholdSuccesses < this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
-                        fufillsRequirements = false;
-                    }
-                    break;
-                case 'crashedTheTarget':
-                    if (!this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
                         fufillsRequirements = false;
                     }
                     break;

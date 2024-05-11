@@ -19,166 +19,96 @@ export class ExaltedThirdItem extends Item {
 
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user);
-    if (updateData.system?.weighttype && updateData.system?.weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
-      const equipmentChart = {
-        light: {
-          accuracy: 4,
-          damage: 7,
-          defense: 0,
-          overwhelming: 1,
-          attunement: 5,
-          soak: 3,
-          hardness: 0,
-          penalty: 0,
-        },
-        medium: {
-          accuracy: 2,
-          damage: 9,
-          defense: 1,
-          overwhelming: 1,
-          attunement: 5,
-          soak: 5,
-          hardness: 0,
-          penalty: 1,
-        },
-        heavy: {
-          accuracy: 0,
-          damage: 11,
-          defense: -1,
-          overwhelming: 1,
-          attunement: 5,
-          soak: 7,
-          hardness: 0,
-          penalty: 2,
-        },
-        siege: {
-          accuracy: -3,
-          damage: 15,
-          defense: 0,
-          overwhelming: 3,
-          attunement: 5,
-        },
-      };
-      const artifactEquipmentChart = {
-        light: {
-          accuracy: 5,
-          damage: 10,
-          defense: 0,
-          overwhelming: 3,
-          attunement: 5,
-          soak: 5,
-          hardness: 4,
-          penalty: 0,
-        },
-        medium: {
-          accuracy: 3,
-          damage: 12,
-          defense: 1,
-          overwhelming: 4,
-          attunement: 5,
-          soak: 8,
-          hardness: 7,
-          penalty: 1,
-        },
-        heavy: {
-          accuracy: 1,
-          damage: 14,
-          defense: 0,
-          overwhelming: 5,
-          attunement: 5,
-          soak: 11,
-          hardness: 10,
-          penalty: 2,
-        },
-        siege: {
-          accuracy: -2,
-          damage: 20,
-          defense: 0,
-          overwhelming: 5,
-          attunement: 5,
-        },
-      };
-      if (this.type === 'weapon') {
-        if (updateData.system?.weighttype === 'bolt') {
-          updateData.system.witheringaccuracy = 4;
-          updateData.system.damageattribute = '';
-          if (this.actor) {
-            updateData.system.witheringdamage = this.actor.system.essence.value + 10;
-            updateData.system.overwhelming = this.actor.system.essence.value + 1;
-          }
+    const equipmentChart = CONFIG.exaltedthird.equipmentStats;
+    const artifactEquipmentChart = CONFIG.exaltedthird.artifactEquipmentStats;
+    if(this.type === 'weapon' || this.type === 'armor') {
+      const equipped = updateData.system?.equipped || this.system.equipped;
+      const weighttype = updateData.system?.weighttype || this.system.weighttype;
+      if (equipped !== this.system.equipped) {
+        for (const effect of this.effects) {
+          effect.update({ disabled: !updateData.system?.equipped });
         }
-        else {
-          if (this.system.traits.weapontags?.value?.includes('artifact')) {
-            updateData.system.witheringaccuracy = artifactEquipmentChart[updateData.system?.weighttype].accuracy;
-            updateData.system.witheringdamage = artifactEquipmentChart[updateData.system?.weighttype].damage;
-            updateData.system.overwhelming = artifactEquipmentChart[updateData.system?.weighttype].overwhelming;
-            updateData.system.attunement = artifactEquipmentChart[updateData.system?.weighttype].attunement;
+      }
+      if (weighttype !== this.system.weightype && updateData.system?.weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
+        if (this.type === 'weapon') {
+          const weaponType = updateData.system?.weapontype || this.system.weapontype;
+          if (updateData.system?.weighttype === 'bolt') {
+            updateData.system.witheringaccuracy = 4;
+            updateData.system.damageattribute = '';
+            if (this.actor) {
+              updateData.system.witheringdamage = this.actor.system.essence.value + 10;
+              updateData.system.overwhelming = this.actor.system.essence.value + 1;
+            }
           }
           else {
-            updateData.system.witheringaccuracy = equipmentChart[updateData.system?.weighttype].accuracy;
-            updateData.system.witheringdamage = equipmentChart[updateData.system?.weighttype].damage;
-            updateData.system.overwhelming = equipmentChart[updateData.system?.weighttype].overwhelming;
+            if(weighttype === 'siege') {
+              updateData.system.weapontype = 'siege';
+            }
+            if (this.system.traits.weapontags?.value?.includes('artifact')) {
+              updateData.system.witheringaccuracy = artifactEquipmentChart[weighttype].accuracy;
+              updateData.system.witheringdamage = artifactEquipmentChart[weighttype].damage;
+              updateData.system.overwhelming = artifactEquipmentChart[weighttype].overwhelming;
+              updateData.system.attunement = artifactEquipmentChart[weighttype].attunement;
+            }
+            else {
+              updateData.system.witheringaccuracy = equipmentChart[weighttype].accuracy;
+              updateData.system.witheringdamage = equipmentChart[weighttype].damage;
+              updateData.system.overwhelming = equipmentChart[weighttype].overwhelming;
+              updateData.system.attunement = 0;
+            }
+            if (weaponType === 'ranged') {
+              updateData.system.defense = 0;
+              if (this.system.traits.weapontags?.value?.includes('artifact')) {
+                updateData.system.witheringaccuracy = artifactEquipmentChart['light'].accuracy;
+              }
+              else {
+                updateData.system.witheringaccuracy = equipmentChart['light'].accuracy;
+              }
+            }
+            else if (weaponType === 'thrown') {
+              updateData.system.defense = 0;
+              if (this.system.traits.weapontags?.value?.includes('artifact')) {
+                updateData.system.witheringaccuracy = 4;
+              }
+              else {
+                updateData.system.witheringaccuracy = 3;
+              }
+            }
+            else {
+              if (this.system.traits.weapontags?.value?.includes('artifact')) {
+                updateData.system.defense = artifactEquipmentChart[updateData.system?.weighttype].defense;
+              }
+              else {
+                updateData.system.defense = equipmentChart[updateData.system?.weighttype].defense;
+              }
+            }
+          }
+        }
+        if (this.type === 'armor') {
+          if (this.system.traits.armortags?.value?.includes('artifact')) {
+            if (weighttype === 'light') {
+              updateData.system.attunement = 4;
+            }
+            else if (weighttype === 'heavy') {
+              updateData.system.attunement = 6;
+            }
+            else {
+              updateData.system.attunement = 5;
+            }
+            updateData.system.soak = artifactEquipmentChart[weighttype].soak;
+            updateData.system.hardness = artifactEquipmentChart[weighttype].hardness;
+            updateData.system.penalty = artifactEquipmentChart[weighttype].penalty;
+          }
+          else {
+            updateData.system.soak = equipmentChart[weighttype].soak;
+            updateData.system.hardness = equipmentChart[weighttype].hardness;
+            updateData.system.penalty = equipmentChart[weighttype].penalty;
             updateData.system.attunement = 0;
           }
-          if (this.system.weapontype === 'ranged') {
-            updateData.system.defense = 0;
-            if (this.system.traits.weapontags?.value?.includes('artifact')) {
-              updateData.system.witheringaccuracy = artifactEquipmentChart['light'].accuracy;
-            }
-            else {
-              updateData.system.witheringaccuracy = equipmentChart['light'].accuracy;
-            }
-          }
-          else if (this.system.weapontype === 'thrown') {
-            updateData.system.defense = 0;
-            if (this.system.traits.weapontags?.value?.includes('artifact')) {
-              updateData.system.witheringaccuracy = 4;
-            }
-            else {
-              updateData.system.witheringaccuracy = 3;
-            }
-          }
-          else {
-            if (this.system.traits.weapontags?.value?.includes('artifact')) {
-              updateData.system.defense = artifactEquipmentChart[updateData.system?.weighttype].defense;
-            }
-            else {
-              updateData.system.defense = equipmentChart[updateData.system?.weighttype].defense;
-            }
-          }
-          if(updateData.system?.weighttype === 'siege') {
-            updateData.system.weapontype = 'siege';
-          }
-        }
-      }
-      if (this.type === 'armor') {
-        if (this.system.traits.armortags?.value?.includes('artifact')) {
-          if (updateData.system?.weighttype === 'light') {
-            updateData.system.attunement = 4;
-          }
-          else if (updateData.system?.weighttype === 'heavy') {
-            updateData.system.attunement = 6;
-          }
-          else {
-            updateData.system.attunement = 5;
-          }
-          updateData.system.soak = artifactEquipmentChart[updateData.system?.weighttype].soak;
-          updateData.system.hardness = artifactEquipmentChart[updateData.system?.weighttype].hardness;
-          updateData.system.penalty = artifactEquipmentChart[updateData.system?.weighttype].penalty;
-        }
-        else {
-          updateData.system.soak = equipmentChart[updateData.system?.weighttype].soak;
-          updateData.system.hardness = equipmentChart[updateData.system?.weighttype].hardness;
-          updateData.system.penalty = equipmentChart[updateData.system?.weighttype].penalty;
-          updateData.system.attunement = 0;
         }
       }
     }
-    if ((this.type === 'weapon' || this.type === 'armor') && updateData.system?.equipped !== undefined) {
-      for (const effect of this.effects) {
-        effect.update({ disabled: !updateData.system?.equipped });
-      }
-    }
+
     // Won't work due to conflicts with active effects
     // if (this.type === 'weapon' || this.type === 'armor') {
     //   if(updateData.system?.equipped !== undefined) {
