@@ -41,7 +41,37 @@ export default class TemplateImporter extends FormApplication {
   }
 
   _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
+    let buttons = [
+      {
+        label: "Close",
+        class: "close",
+        icon: "fas fa-times",
+        onclick: () => {
+          let applyChanges = false;
+          new Dialog({
+            title: 'Close?',
+            content: 'Are you sure?',
+            buttons: {
+              delete: {
+                icon: '<i class="fas fa-check"></i>',
+                label: 'Close',
+                callback: () => applyChanges = true
+              },
+              cancel: {
+                icon: '<i class="fas fa-times"></i>',
+                label: 'Cancel'
+              },
+            },
+            default: "cancel",
+            close: html => {
+              if (applyChanges) {
+                this.close();
+              }
+            }
+          }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        }
+      }
+    ];
     const helpButton = {
       label: game.i18n.localize('Ex3.Help'),
       class: 'help-dialogue',
@@ -1129,7 +1159,7 @@ export default class TemplateImporter extends FormApplication {
               itemDescription += textArray[index].trim();
               itemDescription += '\n';
             }
-            else if (textArray[index].trim().toLowerCase() === 'escort') {
+            else if (textArray[index].trim().toLowerCase() === 'escort' || textArray[index].trim().toLowerCase().includes('protectors:')) {
               itemType = 'escort';
               index++;
               newItem = true;
@@ -1621,7 +1651,7 @@ export default class TemplateImporter extends FormApplication {
       if (!textArray[index].includes("Attack")) {
         var meritString = textArray[index].replace('Merits:', '');
         index++;
-        while (!textArray[index].includes("Attack")) {
+        while (!textArray[index].includes("Attack") && !textArray[index].includes("Specialties")) {
           meritString += textArray[index];
           index++;
         }
@@ -1665,6 +1695,48 @@ export default class TemplateImporter extends FormApplication {
               }
             );
           }
+        }
+      }
+      if(textArray[index].includes('Specialties')) {
+        this.errorSection = 'Specialties';
+        if (!textArray[index].includes("Attack")) {
+          var specialtiesString = textArray[index].replace('Specialties:', '');
+          index++;
+          while (!textArray[index].includes("Attack")) {
+            specialtiesString += " ";
+            specialtiesString += textArray[index];
+            index++;
+          }
+          specialtiesString = specialtiesString.replace(/,(?=[^()]*\))/g, '');
+          var specialtyArray = specialtiesString.split(/,|;/);
+          for (let ability of specialtyArray) {
+            if (ability) {
+              var specialtyText = ''
+              specialtyText = ability.match(/\(([^)]+)\)/)[1];
+              ability = ability.replace(/\([^()]*\)/g, "").replace("  ", " ");
+              if (ability.toLowerCase().includes('craft')) {
+                trimmedName = 'craft';
+              }
+              else if (ability.toLowerCase().includes('martial arts')) {
+                trimmedName = 'martialarts';
+              }
+              else {
+                var abilitySpecificArray = ability.trim().split(' ');
+                trimmedName = abilitySpecificArray[0].trim().toLowerCase();
+              }
+              itemData.push(
+                {
+                  type: 'specialty',
+                  img: this.getImageUrl('specialty'),
+                  name: specialtyText.trim(),
+                  system: {
+                    ability: trimmedName,
+                  }
+                }
+              ); 
+            }
+          }
+
         }
       }
       this.errorSection = 'Attacks';
@@ -1839,6 +1911,7 @@ export default class TemplateImporter extends FormApplication {
       if (folder) {
         actorData.folder = folder;
       }
+      actorData.system.settings.editmode = false;
       await Actor.create(actorData);
     }
     catch (error) {
