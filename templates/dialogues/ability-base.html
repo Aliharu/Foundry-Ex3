@@ -20,7 +20,7 @@
     {{#if data.showPool}}
     {{#ifEquals data.characterType 'npc'}}
     <select name="object.pool" value="{{data.pool}}" data-type="String">
-        {{selectOptions rollablePools selected=data.ability localize=true}}
+        {{selectOptions rollablePools selected=data.pool localize=true}}
     </select>
     {{/ifEquals}}
     {{/if}}

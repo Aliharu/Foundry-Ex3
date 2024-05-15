@@ -747,6 +747,7 @@
     "Ex3.AlsoTriggerNines": "Also Trigger Nines",
     "Ex3.TriggerOnTens": "Trigger On Tens",
     "Ex3.TriggerTensCap": "Trigger Tens Cap",
+    "Ex3.FullExcellency": "Full Excellency",
     "Ex3.TriggerOnesCap": "Trigger Ones Cap",
     "Ex3.SubractInitiative": "Subract Initiative",
     "Ex3.IncreaseEnemySoak": "Increase Enemy Soak",
@@ -1078,6 +1079,7 @@
     "Ex3.SetDamageType": "Set Damage Type",
     "Ex3.ReduceGambitDifficulty": "Reduce Gambit Difficulty",
     "Ex3.StealMotes": "Steal Motes",
+    "Ex3.StealInitiative": "Steal Initiative",
 
     "Ex3.DamageDiceModifier": "Damage Dice Modifier",
     "Ex3.DamageSuccessModifier": "Damage Success Modifier",

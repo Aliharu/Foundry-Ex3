@@ -29,7 +29,7 @@ export class ExaltedThirdItem extends Item {
           effect.update({ disabled: !updateData.system?.equipped });
         }
       }
-      if (weighttype !== this.system.weightype && updateData.system?.weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
+      if (weighttype && weighttype !== this.system.weightype && weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
         if (this.type === 'weapon') {
           const weaponType = updateData.system?.weapontype || this.system.weapontype;
           if (updateData.system?.weighttype === 'bolt') {
@@ -157,6 +157,9 @@ export class ExaltedThirdItem extends Item {
     }
     if (type === 'specialability' || type === 'customability') {
       return "icons/svg/aura.svg";
+    }
+    if (type === 'customability') {
+      return "systems/exaltedthird/assets/icons/d10.svg";
     }
     if (type === 'craftproject') {
       return "systems/exaltedthird/assets/icons/anvil-impact.svg";

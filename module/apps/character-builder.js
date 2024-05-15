@@ -1464,7 +1464,7 @@ export default class CharacterBuilder extends FormApplication {
     if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal') {
       this.object.creationData.available.casteAbilities = 5;
     }
-    if (ev?.target?.name === 'object.character.caste') {
+    if (ev?.target?.name === 'object.character.caste' || ev?.target?.name === 'object.character.exigent') {
       for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
         if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
           attribute.favored = true;
@@ -1480,6 +1480,10 @@ export default class CharacterBuilder extends FormApplication {
           if (this.object.character.exalt !== 'solar' && this.object.character.exalt !== 'abyssal') {
             ability.favored = true;
           }
+          ability.caste = true;
+        }
+        else if(this.object.character.exalt === 'exigent' && casteAbilitiesMap[this.object.character.exigent.toLowerCase()]?.includes(key)) {
+          ability.favored = true;
           ability.caste = true;
         }
         else {
@@ -1642,6 +1646,9 @@ export default class CharacterBuilder extends FormApplication {
       favoredAttributesSpent += Math.max(0, attributesSpent[key].favored - Math.max(0, this.object.creationData.available.attributes[key] - attributesSpent[key].unFavored));
     }
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
+      if(ability.favored && !ability.caste && ability.value === 0) {
+        ability.value = 1;
+      }
       this.object.creationData.spent.abovethree += Math.max(0, (ability.value - 3));
       if (ability.favored) {
         aboveThreeFavored += Math.max(0, (ability.value - 3));
@@ -1654,11 +1661,17 @@ export default class CharacterBuilder extends FormApplication {
         aboveThreeUnFavored += Math.max(0, (ability.value - 3));
       }
 
-      if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
-        this.object.creationData.spent.favoredAbilities++;
-      }
-      else if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
-        this.object.creationData.spent.casteAbilities++;
+      if(this.object.character.exigent !== 'janest') {
+        if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
+          this.object.creationData.spent.favoredAbilities++;
+        }
+        else if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
+          this.object.creationData.spent.casteAbilities++;
+        }
+      } else {
+        if (!casteAbilitiesMap[this.object.character.exigent.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
+          this.object.creationData.spent.favoredAbilities++;
+        }
       }
     }
     for (let craft of Object.values(this.object.character.crafts)) {
@@ -1774,7 +1787,11 @@ export default class CharacterBuilder extends FormApplication {
     event.preventDefault()
     const index = Number(event.currentTarget.dataset.index);
     if (this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value === 1 && index === 0) {
-      this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = 0;
+      if(this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].favored && !this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].caste) {
+        ui.notifications.notify(`Favored abilities must have at least 1 dot assigned to them.`);
+      } else {
+        this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = 0;
+      }
     }
     else {
       this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = index + 1;
@@ -2069,12 +2086,19 @@ export default class CharacterBuilder extends FormApplication {
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       actorData.system.abilities[key].value = ability.value;
       actorData.system.abilities[key].favored = ability.favored;
-      if (((Object.entries(ability.charms).length > 0) || (ability.favored && ability.value > 0)) && (this.object.character.exalt === 'solar' || this.object.character.exalt === 'sidereal')) {
+      if (((Object.entries(ability.charms).length > 0) || (ability.favored && ability.value > 0)) && (CONFIG.exaltedthird.abilityExalts.includes(this.object.character.exalt) || this.object.character.exigent === 'janest')) {
         actorData.system.abilities[key].excellency = true;
       }
-      if (Object.values(ability.charms).some(charm => charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) {
+      if (Object.values(ability.charms).some(charm => charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) { 
         actorData.system.abilities[key].excellency = true;
       }
+    }
+    if(this.object.character.exigent === 'janest') {
+      actorData.system.abilities.athletics.excellency = true;
+      actorData.system.abilities.awareness.excellency = true;
+      actorData.system.abilities.presence.excellency = true;
+      actorData.system.abilities.resistance.excellency = true;
+      actorData.system.abilities.survival.excellency = true;
     }
 
     actorData.system.charcreation.physical = this.object.creationData.physical;

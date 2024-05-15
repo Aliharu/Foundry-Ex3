@@ -526,6 +526,13 @@ exaltedthird.abilitiesList = [
   'war',
 ];
 
+exaltedthird.abilityExalts = [
+  'solar',
+  'sidereal',
+  'abyssal',
+  'infernal'
+]
+
 exaltedthird.npcpools = {
   command: 'Ex3.Command',
   grapple: 'Ex3.GrappleControl',
@@ -1434,6 +1441,7 @@ exaltedthird.bonusTypes = {
       triggerOnTens: "Ex3.TriggerTens",
       triggerNinesAndTens: "Ex3.TriggerNines&Tens",
       triggerTensCap: "Ex3.TriggerTensCap",
+      fullExcellency: "Ex3.FullExcellency"
     },
   },
   damage: {
@@ -1493,6 +1501,7 @@ exaltedthird.bonusTypes = {
     label: "Ex3.Steal",
     bonuses: {
       'motes-steal': "Ex3.StealMotes",
+      'initiative-steal': "Ex3.StealInitiative",
     }
   },
   other: {

@@ -126,6 +126,7 @@ export class RollForm extends FormApplication {
             this.object.range = 'close';
 
             this.object.isFlurry = false;
+            this.object.isClash = false;
             this.object.armorPenalty = (this.object.rollType === 'rush' || this.object.rollType === 'disengage');
             this.object.willpower = false;
 
@@ -324,7 +325,7 @@ export class RollForm extends FormApplication {
                         this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
                         this.object.ability = data.weapon.ability || "archery";
                     }
-                    if (this.object.attackType === 'withering' || this.actor.type === "npc" || (data.weapon.ability && data.weapon.attribute)) {
+                    if (this.object.attackType === 'withering' || this.actor.type === "npc" || (!data.weapon.ability && !data.weapon.attribute)) {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
                         this.object.baseAccuracy = data.weapon.witheringaccuracy || 0;
                         this.object.weaponAccuracy = data.weapon.witheringaccuracy || 0;
@@ -434,15 +435,15 @@ export class RollForm extends FormApplication {
         }
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
-            if(this.actor.customAbilities) {
-                // Add custom abilities from actor.customAbilities
-                for (const [id, ability] of Object.entries(this.actor.customAbilities)) {
-                    this.rollableAbilities[id] = ability.name;
+            if(this.actor.customabilities) {
+                // Add custom abilities from actor.customabilities
+                for (const [id, ability] of Object.entries(this.actor.customabilities)) {
+                    this.rollableAbilities[ability._id] = ability.name;
                 }
             }
             if(this.actor.actions) {
                 for (const [id, pool] of Object.entries(this.actor.actions)) {
-                    this.rollablePools[id] = pool.name;
+                    this.rollablePools[pool._id] = pool.name;
                 }
             }
             this.object.showTargets = 0;
@@ -870,7 +871,7 @@ export class RollForm extends FormApplication {
                                 else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
                                     specialAttack.show = true;
                                 }
-                                else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense') {
+                                else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense' || specialAttack.id === 'clash') {
                                     specialAttack.show = true;
                                 }
                                 else {
@@ -994,10 +995,8 @@ export class RollForm extends FormApplication {
 
     getData() {
         this.selects = CONFIG.exaltedthird.selects;
-        this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
-        this.rollableAbilities['willpower'] = "Ex3.Willpower";
-        this.rollablePools = CONFIG.exaltedthird.npcpools;
-        this.rollablePools['willpower'] = "Ex3.Willpower";
+        // this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
+        // this.rollableAbilities['willpower'] = "Ex3.Willpower";
         return {
             actor: this.actor,
             selects: this.selects,
@@ -1707,6 +1706,9 @@ export class RollForm extends FormApplication {
                 else if (id === 'flurry') {
                     this.object.isFlurry = true;
                 }
+                else if (id === 'clash') {
+                    this.object.isClash = true;
+                }
                 else {
                     this.object.cost.initiative += 1;
                 }
@@ -2174,16 +2176,26 @@ export class RollForm extends FormApplication {
                     this.object.supportedIntimacy = target.rollData.supportedIntimacy;
                     this.object.appearanceBonus = target.rollData.appearanceBonus;
                     await this._abilityRoll();
+                    this._inflictOnTarget();
                     if (this.object.updateTargetActorData) {
                         await this._updateTargetActor();
+                    }
+                    if (this.object.updateTargetInitiative) {
+                        await this._updateTargetInitiative();
                     }
                 }
             }
         }
         else {
             await this._abilityRoll();
+            if (this.object.target) {
+                this._inflictOnTarget();
+            }
             if (this.object.updateTargetActorData) {
                 await this._updateTargetActor();
+            }
+            if (this.object.updateTargetInitiative) {
+                await this._updateTargetInitiative();
             }
         }
     }
@@ -2196,6 +2208,17 @@ export class RollForm extends FormApplication {
                 this.object.steal.motes.gained += (spentPeripheral + spentPersonal);
                 this.object.newTargetData.system.motes.peripheral.value = Math.max(0, this.object.newTargetData.system.motes.peripheral.value - spentPeripheral);
                 this.object.newTargetData.system.motes.personal.value = Math.max(0, this.object.newTargetData.system.motes.personal.value - spentPersonal);
+            }
+            if (this.object.steal.initiative.max) {
+                this.object.restore.initiative += this.object.steal.initiative.max;
+
+                if (this.object.newTargetInitiative) {
+                    this.object.updateTargetInitiative = true;
+                    this.object.newTargetInitiative -= this.object.steal.initiative.max;
+                    if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
+                        this.object.crashed = true;
+                    }
+                }
             }
         }
     }
@@ -2355,11 +2378,6 @@ export class RollForm extends FormApplication {
             8: 0,
             9: 0,
             10: 0,
-        }
-
-        if (diceModifiers.preRollMacros.length > 0) {
-            let results = {};
-            results = diceModifiers.preRollMacros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), results);
         }
         //Base Roll
         let rollResults = await this._rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled);
@@ -2601,12 +2619,9 @@ export class RollForm extends FormApplication {
         if (dice < 0) {
             dice = 0;
         }
-        this.object.dice = dice;
-        this.object.successes = successes;
-
 
         var rollModifiers = {
-            successModifier: this.object.successes,
+            successModifier: successes,
             doubleSuccess: this.object.doubleSuccess,
             targetNumber: this.object.targetNumber,
             reroll: this.object.reroll,
@@ -2620,12 +2635,12 @@ export class RollForm extends FormApplication {
 
         for (let charm of this.object.addedCharms) {
             if (charm.system.prerollmacro) {
-                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.prerollmacro);
-                rollModifiers.preRollMacros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                let macro = new Function('rollResult', 'dice', 'rollModifiers', charm.system.prerollmacro);
+                rollModifiers.preRollMacros.push((rollResult, dice, rollModifiers) => {
                     try {
                         this.object.currentMacroCharm = charm;
                         this.object.opposedCharmMacro = false;
-                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                        return macro.call(this, rollResult, dice, rollModifiers) ?? rollResult
                     } catch (e) {
                         ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
                         console.error(e);
@@ -2651,12 +2666,12 @@ export class RollForm extends FormApplication {
 
         for (let charm of this.object.opposingCharms) {
             if (charm.system.prerollmacro) {
-                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.prerollmacro);
-                rollModifiers.preRollMacros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                let macro = new Function('rollResult', 'dice', 'rollModifiers', charm.system.prerollmacro);
+                rollModifiers.preRollMacros.push((rollResult, dice, rollModifiers) => {
                     try {
                         this.object.opposedCharmMacro = true;
                         this.object.currentMacroCharm = charm;
-                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                        return macro.call(this, rollResult, dice, rollModifiers) ?? rollResult
                     } catch (e) {
                         ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
                         console.error(e);
@@ -2679,6 +2694,17 @@ export class RollForm extends FormApplication {
                 });
             }
         }
+
+        if (rollModifiers.preRollMacros.length > 0) {
+            let results = {};
+            results = rollModifiers.preRollMacros.reduce((carry, macro, rollModifiers) => macro(carry, dice), results);
+            if(results && results.dice) {
+                dice = results.dice;
+            }
+        }
+
+        this.object.dice = dice;
+        this.object.successes = successes;
 
         const diceRollResults = await this._calculateRoll(dice, rollModifiers);
         this.object.roll = diceRollResults.roll;
@@ -3302,6 +3328,10 @@ export class RollForm extends FormApplication {
         this.object.damageThresholdSuccesses = 0;
 
         if (this._damageRollType('decisive')) {
+            if(this.object.isClash) {
+                total += 1;
+                this.object.triggerTargetDefensePenalty += 2;
+            }
             typeSpecificResults = `<h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4><h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
             if (this._useLegendarySize('decisive')) {
                 typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
@@ -3335,6 +3365,10 @@ export class RollForm extends FormApplication {
         else {
             let targetResults = ``;
             let crashed = false;
+            if(this.object.isClash) {
+                total += 3;
+                this.object.triggerTargetDefensePenalty += 2;
+            }
             this.object.initiativeDamageDealt = total;
             if (this.object.target && game.combat) {
                 if (this.object.targetCombatant && this.object.newTargetInitiative !== null) {
@@ -3753,6 +3787,19 @@ export class RollForm extends FormApplication {
                                 case 'rerollDieFace':
                                     this._getRerollFormulaCap(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                     break;
+                                case 'fullExcellency':
+                                    let excellencyResults = this.actor.type === 'character' ? this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : this.actor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
+                                    if(excellencyResults) {
+                                        this.object.diceModifier += (excellencyResults.dice - this.object.charmDiceAdded);
+                                        this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
+                                        this.object.targetNumber = Math.max(4, this.object.targetNumber - excellencyResults.targetNumber);
+                                        if(cleanedValue !== 'free') {
+                                            this.object.cost.motes += excellencyResults.cost || excellencyResults.dice;
+                                        }
+                                    } else {
+                                        ui.notifications.error(`<p>Trigger bonus Error: Full Excellency does not support this exalt type due to untrackable dice cap variables</p>`);
+                                    }
+                                    break;
                                 case 'excludeOnes':
                                 case 'ignoreLegendarySize':
                                     this.object.settings[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
@@ -3885,6 +3932,7 @@ export class RollForm extends FormApplication {
                                     this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                     break;
                                 case 'motes-steal':
+                                case 'initiative-steal':
                                     const stealKey = bonus.effect.replace('-steal', '');
                                     this.object.steal[stealKey].max += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                     break;
@@ -5009,6 +5057,7 @@ export class RollForm extends FormApplication {
         if (this.object.specialAttacksList === undefined) {
             this.object.specialAttacksList = [
                 { id: 'aim', name: "Aim", added: false, show: false, description: '+3 Attack Dice', img: 'systems/exaltedthird/assets/icons/targeting.svg' },
+                { id: 'clash', name: "Clash", added: false, show: false, description: 'On successful attack gain +3 initiative withering damage or +1 level of Decisive damage.  Inflict a -2 defense penalty on the target.', img: 'systems/exaltedthird/assets/icons/sword-clash.svg' },
                 { id: 'chopping', name: "Chopping", added: false, show: false, description: 'Cost: 1i and reduce defense by 1. Increase damage by 3 on withering.  -2 hardness on decisive', img: 'systems/exaltedthird/assets/icons/battered-axe.svg' },
                 { id: 'flurry', name: "Flurry", added: false, show: this._isAttackRoll(), description: 'Cost: 3 dice and reduce defense by 1.', img: 'systems/exaltedthird/assets/icons/spinning-blades.svg' },
                 { id: 'fulldefense', name: "Flurry Full Defense", added: false, show: false, description: '3 Dice and 2 Initiative cost and add the full defense effect to token.  -1 Defense for flurrying', img: 'icons/svg/shield.svg' },

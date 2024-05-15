@@ -20,15 +20,15 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async _preUpdate(updateData, options, user) {
-    if ( (await super._preUpdate(updateData, options, user)) === false ) return false;
+    if ((await super._preUpdate(updateData, options, user)) === false) return false;
     const exalt = updateData.system?.details?.exalt || this.system.details.exalt;
     const essenceLevel = updateData.system?.essence?.value || this.system.essence.value;
     const creatureType = updateData.system?.creaturetype || this.system.creaturetype;
     const caste = updateData.system?.details?.caste || this.system.details.caste;
     const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;
-    if(this.type === 'npc') {
+    if (this.type === 'npc') {
       if (updateData.system?.battlegroup && !this.system.battlegroup) {
-        if(updateData.system?.health?.levels) {
+        if (updateData.system?.health?.levels) {
           updateData.system.health.levels.zero.value = this.system.health.levels.zero.value + this.system.health.levels.one.value + this.system.health.levels.two.value + this.system.health.levels.three.value + this.system.health.levels.four.value + 1;
         } else {
           updateData.system.health = {
@@ -72,7 +72,7 @@ export class ExaltedThirdActor extends Actor {
           peripheralmotes = this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel);
           personalMotes = this.calculateMaxExaltedMotes('personal', exalt, essenceLevel);
         }
-        if(creatureType === 'mortal') {
+        if (creatureType === 'mortal') {
           personalMotes = 0;
           peripheralmotes = 0;
         }
@@ -104,6 +104,7 @@ export class ExaltedThirdActor extends Actor {
         }
       }
     }
+
     if (caste !== this.system.details.caste && this.type === 'character') {
       const lowecaseCaste = caste.toLowerCase();
       const attributes = updateData.system?.attributes || this.system.attributes;
@@ -116,14 +117,31 @@ export class ExaltedThirdActor extends Actor {
         else {
           attributes[key].caste = false;
         }
+        if (exalt === 'lunar') {
+          const attributeValue = attributes[key]?.value || this.system.attributes[key].value;
+          if (attributes[key].favored && (attributeValue >= 3 || this.items.some(charm => charm.type === 'charm' && charm.system.ability === key))) {
+            attributes[key].excellency = true;
+          }
+          else if (attributeValue >= 5 || this.items.some(charm => charm.type === 'charm' && charm.system.ability === key)) {
+            attributes[key].excellency = true;
+          }
+        }
       }
       for (let [key, ability] of Object.entries(abilities)) {
+        const abilityValue = abilities[key]?.value || this.system.abilities[key]?.value;
+
         if (casteAbilitiesMap[lowecaseCaste]?.includes(key)) {
           abilities[key].favored = true;
           abilities[key].caste = true;
         }
         else {
           abilities[key].caste = false;
+        }
+        if ((this.items.some(charm => charm.type === 'charm' && charm.system.ability === key) || (ability.favored && abilityValue > 0)) && CONFIG.exaltedthird.abilityExalts.includes(caste)) {
+          abilities[key].excellency = true;
+        }
+        if (this.items.some(charm => charm.type === 'charm' && charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) {
+          abilities[key].excellency = true;
         }
       }
       updateData.system.attributes = attributes;
@@ -929,6 +947,180 @@ export class ExaltedThirdActor extends Actor {
     actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
     actorData.destinies = destinies;
     actorData.shapes = shapes;
+  }
+
+  getCharacterDiceCapValue(ability, attribute, hasSpecialty) {
+    let diceCap = 0;
+    let abilityValue = 0;
+    let targetNumber = 0;
+    let attributeValue = this.system.attributes[attribute]?.value || 0;
+    if (ability === 'willpower') {
+      return null;
+    }
+    if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
+      abilityValue = this.customabilities.find(x => x._id === ability).system?.points || 0;
+    }
+    if (this.system.abilities[ability]) {
+      abilityValue = this.system.abilities[ability]?.value || 0;
+    }
+
+    switch (this.system.details.exalt) {
+      case 'abyssal':
+      case 'solar':
+      case 'infernal':
+        diceCap = abilityValue + attributeValue;
+        break;
+      case 'dragonblooded':
+        diceCap = abilityValue + (hasSpecialty ? 1 : 0);
+        break;
+      case 'lunar':
+        diceCap = attributeValue + this._getHighestAttributeNumber(attribute, this.system.attributes, true);
+        break;
+      case 'sidereal':
+        diceCap = Math.min(5, Math.max(3, this.system.essence.value));
+        if (abilityValue === 5) {
+          if (this.system.essence.value >= 3) {
+            targetNumber = 3;
+          }
+          else {
+            targetNumber = 2;
+          }
+        }
+        else if (abilityValue >= 3) {
+          targetNumber = 1;
+        }
+        break;
+      case 'umbral':
+        diceCap = Math.min(10, abilityValue + this.system.penumbra.value);
+        break;
+      case 'liminal':
+        if (this.system.anima.value >= 1) {
+          diceCap = attributeValue + this.system.essence.value;
+        }
+        else {
+          diceCap = attributeValue;
+        }
+        break;
+      case 'sovereign':
+        diceCap = Math.min(Math.max(this.system.essence.value, 3) + this.system.anima.value, 10);
+        break;
+      default:
+        return null;
+    }
+
+    return {
+      dice: diceCap,
+      targetNumber: targetNumber,
+      cost: diceCap,
+    };
+  }
+
+  getNpcDiceCapValue(pool) {
+    if(this.system.creaturetype !== 'exalt') {
+      return null;
+    }
+    var dicePool = 0;
+    if (parseInt(pool)) {
+      dicePool = pool;
+    } else {
+      if (this.actions && this.actions.some(action => action._id === pool)) {
+        dicePool = this.actions.find(x => x._id === pool).system.value;
+      }
+      else if (this.system.pools[pool]) {
+        dicePool = this.system.pools[pool].value;
+      }
+    }
+    var diceTier = "zero";
+    var diceMap = {
+      'zero': 0,
+      'two': 2,
+      'three': 3,
+      'seven': 7,
+      'eleven': 11,
+    };
+    if (dicePool <= 2) {
+      diceTier = "two";
+    }
+    else if (dicePool <= 6) {
+      diceTier = "three";
+    }
+    else if (dicePool <= 10) {
+      diceTier = "seven";
+    }
+    else {
+      diceTier = "eleven";
+    }
+    if (['abyssal', 'solar', 'infernal', 'alchemical'].includes(this.system.details.exalt)) {
+      diceMap = {
+        'zero': 0,
+        'two': 2,
+        'three': 5,
+        'seven': 7,
+        'eleven': 10,
+      };
+    }
+    if (this.system.details.exalt === 'getimian') {
+      diceMap = {
+        'zero': 0,
+        'two': 2,
+        'three': 5,
+        'seven': 6,
+        'eleven': 10,
+      };
+    }
+    if (this.system.details.exalt === "dragonblooded") {
+      diceMap = {
+        'zero': 0,
+        'two': 0,
+        'three': 2,
+        'seven': 4,
+        'eleven': 6,
+      };
+    }
+    if (this.system.details.exalt === "liminal") {
+      diceMap = {
+        'zero': 0,
+        'two': 1,
+        'three': 2,
+        'seven': 4,
+        'eleven': 5,
+      };
+    }
+    if (this.system.details.exalt === "sidereal") {
+      dicePool = this.system.essence.value;
+    }
+     else if (this.system.details.exalt === "lunar") {
+      diceMap = {
+        'zero': 0,
+        'two': 1,
+        'three': 2,
+        'seven': 4,
+        'eleven': 5,
+      };
+      if (diceTier === 'two') {
+        dicePool = 1;
+      }
+      dicePool = diceTier === 'seven' ? (diceMap[diceTier] * 2) - 1 : diceMap[diceTier] * 2;
+    } else {
+      dicePool = diceMap[diceTier];
+    }
+    return {
+      dice: dicePool,
+      targetNumber: 0,
+      cost: dicePool,
+    };
+  }
+
+  _getHighestAttributeNumber(usedAttribute, attributes, syncedLunar = false) {
+    var highestAttributeNumber = 0;
+    var highestAttribute = "strength";
+    for (let [name, attribute] of Object.entries(attributes)) {
+      if (attribute.value > highestAttributeNumber && (!syncedLunar || name !== usedAttribute)) {
+        highestAttributeNumber = attribute.value;
+        highestAttribute = name;
+      }
+    }
+    return highestAttributeNumber;
   }
 
   _getStaticCap(actorData, type, value) {

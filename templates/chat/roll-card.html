@@ -346,10 +346,18 @@
         </div>
         {{#if rollData.steal.motes.max }}
         <div class="roll-card-header">
-            <b>{{localize "Ex3.Steal"}}</b>
+            <b>{{localize "Ex3.StealMotes"}}</b>
         </div>
         <div>
             {{ rollData.steal.motes.gained }}/{{ rollData.steal.motes.max }}m
+        </div>
+        {{/if}}
+        {{#if rollData.steal.initiative.max }}
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.StealInitiative"}}</b>
+        </div>
+        <div>
+            {{ rollData.steal.initiative.gained }}/{{ rollData.steal.initiative.max }}m
         </div>
         {{/if}}
         <div class="roll-card-header">
