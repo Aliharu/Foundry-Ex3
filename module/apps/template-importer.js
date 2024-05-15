@@ -1962,6 +1962,9 @@ export default class TemplateImporter extends FormApplication {
     if (type === 'armor') {
       return "systems/exaltedthird/assets/icons/breastplate.svg";
     }
+    if (type === 'customability') {
+      return "systems/exaltedthird/assets/icons/d10.svg";
+    }
     if (type === 'charm') {
       return "icons/svg/explosion.svg";
     }
