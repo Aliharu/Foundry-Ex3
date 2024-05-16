@@ -12,7 +12,7 @@ export function onManageActiveEffect(event, owner) {
     case "create":
       return owner.createEmbeddedDocuments("ActiveEffect", [{
         label: game.i18n.localize("Ex3.EffectNew"),
-        img: "icons/svg/aura.svg",
+        icon: "icons/svg/aura.svg",
         origin: owner.uuid,
         "duration.rounds": li.dataset.effectType === "temporary" ? 1 : undefined,
         disabled: li.dataset.effectType === "inactive"

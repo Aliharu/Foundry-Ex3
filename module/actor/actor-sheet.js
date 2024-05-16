@@ -1919,7 +1919,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                   ${resultsMessage}
               </div>
           </div>`;
-          ChatMessage.create({ user: game.user.id, style: CONST.CHAT_MESSAGE_STYLES.OTHER, roll: roll, content: messageContent });
+          ChatMessage.create({ user: game.user.id, style: CONST.CHAT_MESSAGE_TYPES.OTHER, roll: roll, content: messageContent });
         }
       }
       else {
@@ -2906,7 +2906,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
     };
@@ -2945,7 +2945,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this.actor, token }),
     };

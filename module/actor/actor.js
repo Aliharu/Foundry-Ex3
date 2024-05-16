@@ -224,7 +224,7 @@ export class ExaltedThirdActor extends Actor {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this, token }),
     };
@@ -1362,7 +1362,7 @@ export class ExaltedThirdActor extends Actor {
         ChatMessage.create({
           user: game.user.id,
           content: messageContent,
-          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          style: CONST.CHAT_MESSAGE_TYPES.OTHER,
           flags: {
             "exaltedthird": {
               targetActorId: target.actor.id,
@@ -1381,7 +1381,7 @@ export class ExaltedThirdActor extends Actor {
       ChatMessage.create({
         user: game.user.id,
         content: messageContent,
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_TYPES.OTHER,
         flags: {
           "exaltedthird": {
             targetActorId: null,
@@ -1398,7 +1398,7 @@ export class ExaltedThirdActor extends Actor {
       ChatMessage.create({
         user: game.user.id,
         content: messageContent,
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_TYPES.OTHER,
         flags: {
           "exaltedthird": {
             targetActorId: null,
@@ -1441,7 +1441,7 @@ export class ExaltedThirdActor extends Actor {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this, token }),
     };

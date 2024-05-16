@@ -429,7 +429,7 @@ export default class CharacterBuilder extends FormApplication {
         ChatMessage.create({
           user: game.user.id,
           content: `<div>In progress character <b>${this.object.character.name || this.object.character.defaultName}</b> has been saved to this chat message</div><div><button class="resume-character">${game.i18n.localize('Ex3.Resume')}</button></div>`,
-          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          style: CONST.CHAT_MESSAGE_TYPES.OTHER,
           flags: {
             "exaltedthird": {
               character: this.object,
@@ -1984,7 +1984,7 @@ export default class CharacterBuilder extends FormApplication {
     ChatMessage.create({
       user: game.user.id,
       content: `${actorData.name} created using the character creator`,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
     });
   }
 

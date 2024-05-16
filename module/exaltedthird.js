@@ -159,18 +159,18 @@ Hooks.once('init', async function () {
     return `${initDice}d10cs>=7ds>=10 + 3`;
   }
 
-  foundry.dice.terms.Die.prototype.constructor.MODIFIERS["ds"] = "doubleSuccess";
+  Die.prototype.constructor.MODIFIERS["ds"] = "doubleSuccess";
   //add said function to the Die prototype
-  foundry.dice.terms.Die.prototype.doubleSuccess = function (modifier) {
+  Die.prototype.doubleSuccess = function (modifier) {
     const rgx = /(?:ds)([<>=]+)?([0-9]+)?/i;
     const match = modifier.match(rgx);
-    if (!match) return false;
+    if ( !match ) return false;
     let [comparison, target] = match.slice(1);
     comparison = comparison || "=";
     target = parseInt(target) ?? this.faces;
-    for (let r of this.results) {
+    for ( let r of this.results ) {
       let success = DiceTerm.compareResult(r.result, comparison, target);
-      if (!r.success) {
+      if(!r.success) {
         r.success = success;
       }
       r.count += (success ? 1 : 0);
@@ -782,7 +782,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
 
   if (command === "/info") {
     const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/npc</b> NPC creator</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
     };
     ChatMessage.create(chatData);
@@ -795,7 +795,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/xp") {
     if (isNaN(parseInt(commands[1]))) {
       const chatData = {
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_TYPES.OTHER,
         content: `Invalid number input`,
       };
       ChatMessage.create(chatData);
@@ -809,7 +809,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
       actor.update({ "system.experience.standard.value": Math.ceil(newStandardValue), "system.experience.standard.total": Math.ceil(newStandardTotal) });
     });
     const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: `${parseInt(commands[1] || 0)} experience granted`,
     };
     ChatMessage.create(chatData);
@@ -818,7 +818,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/exaltxp") {
     if (isNaN(parseInt(commands[1]))) {
       const chatData = {
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        style: CONST.CHAT_MESSAGE_TYPES.OTHER,
         content: `Invalid number input`,
       };
       ChatMessage.create(chatData);
@@ -832,7 +832,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
       actor.update({ "system.experience.exalt.value": Math.ceil(newExaltValue), "system.experience.exalt.total": Math.ceil(newExaltTotal) });
     });
     const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: `${parseInt(commands[1] || 0)} exalt experience granted`,
     };
     ChatMessage.create(chatData);
@@ -873,7 +873,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
       }
     }
     const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: 'New Scene',
     };
     ChatMessage.create(chatData);
@@ -1025,7 +1025,7 @@ Hooks.once("ready", async function () {
 
   if (foundry.utils.isNewerVersion("1.9.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div><b>/npc</b> NPC creator</div>',
     };
     ChatMessage.create(chatData);
