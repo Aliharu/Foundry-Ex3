@@ -1075,7 +1075,7 @@ exaltedthird.statusEffects = [
   },
   {
     icon: 'systems/exaltedthird/assets/icons/hidden.svg',
-    id: 'Hidden',
+    id: 'hidden',
     label: 'Ex3.Hidden',
   },
   {
