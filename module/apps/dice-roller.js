@@ -427,7 +427,7 @@ export class RollForm extends FormApplication {
             "none": "Ex3.NoStunt",
             "one": "Ex3.LevelOneStunt",
         };
-        if(this.object.bankableStunts) {
+        if (this.object.bankableStunts) {
             this.object.stuntsList['bank'] = "Ex3.BankStunt";
         } else {
             this.object.stuntsList['two'] = "Ex3.LevelTwoStunt";
@@ -435,13 +435,13 @@ export class RollForm extends FormApplication {
         }
         this._migrateNewData(data);
         if (this.object.rollType !== 'base') {
-            if(this.actor.customabilities) {
+            if (this.actor.customabilities) {
                 // Add custom abilities from actor.customabilities
                 for (const [id, ability] of Object.entries(this.actor.customabilities)) {
                     this.rollableAbilities[ability._id] = ability.name;
                 }
             }
-            if(this.actor.actions) {
+            if (this.actor.actions) {
                 for (const [id, pool] of Object.entries(this.actor.actions)) {
                     this.rollablePools[pool._id] = pool.name;
                 }
@@ -2252,6 +2252,21 @@ export class RollForm extends FormApplication {
             data: data,
             actorId: this.actor._id,
         });
+        const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/added-opposing-charms-card.html", {
+            actor: this.actor,
+            addingCharms: addingCharms,
+        });
+        ChatMessage.create({
+            user: game.user.id,
+            content: messageContent,
+            style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            flags: {
+                "exaltedthird": {
+                    targetActorId: null,
+                    targetTokenId: null,
+                }
+            },
+        });
         await this._updateCharacterResources();
         this.close();
     }
@@ -2698,7 +2713,7 @@ export class RollForm extends FormApplication {
         if (rollModifiers.preRollMacros.length > 0) {
             let results = {};
             results = rollModifiers.preRollMacros.reduce((carry, macro, rollModifiers) => macro(carry, dice), results);
-            if(results && results.dice) {
+            if (results && results.dice) {
                 dice = results.dice;
             }
         }
@@ -3110,7 +3125,7 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
                 roll: this.object.roll || undefined,
                 flags: {
                     "exaltedthird": {
@@ -3329,7 +3344,7 @@ export class RollForm extends FormApplication {
         this.object.damageThresholdSuccesses = 0;
 
         if (this._damageRollType('decisive')) {
-            if(this.object.isClash) {
+            if (this.object.isClash) {
                 total += 1;
                 this.object.triggerTargetDefensePenalty += 2;
             }
@@ -3366,7 +3381,7 @@ export class RollForm extends FormApplication {
         else {
             let targetResults = ``;
             let crashed = false;
-            if(this.object.isClash) {
+            if (this.object.isClash) {
                 total += 3;
                 this.object.triggerTargetDefensePenalty += 2;
             }
@@ -3790,11 +3805,11 @@ export class RollForm extends FormApplication {
                                     break;
                                 case 'fullExcellency':
                                     let excellencyResults = this.actor.type === 'character' ? this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : this.actor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
-                                    if(excellencyResults) {
+                                    if (excellencyResults) {
                                         this.object.diceModifier += (excellencyResults.dice - this.object.charmDiceAdded);
                                         this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
                                         this.object.targetNumber = Math.max(4, this.object.targetNumber - excellencyResults.targetNumber);
-                                        if(cleanedValue !== 'free') {
+                                        if (cleanedValue !== 'free') {
                                             this.object.cost.motes += excellencyResults.cost || excellencyResults.dice;
                                         }
                                     } else {
@@ -3983,6 +3998,11 @@ export class RollForm extends FormApplication {
                 cleanedValue = cleanedValue === "true";
             }
             switch (requirementObject.requirement) {
+                case 'hasAura':
+                    if (this.actor.system.details.aura !== cleanedValue) {
+                        fufillsRequirements = false;
+                    }
+                    break;
                 case 'attackType':
                     if (this.object.attackType !== cleanedValue) {
                         fufillsRequirements = false;

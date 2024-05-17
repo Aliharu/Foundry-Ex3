@@ -1545,6 +1545,7 @@ exaltedthird.requirementTypes = {
   character: {
     label: "Ex3.Character",
     requirements: {
+      hasAura: 'Ex3.HasAura',
       martialArtsLevel: "Ex3.MartialArtsTier",
       smaEnlightenment: "Ex3.SMAEnlightenment",
       materialResonance: "Ex3.MaterialResonance",

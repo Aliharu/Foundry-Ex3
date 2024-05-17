@@ -194,7 +194,7 @@ export default class ItemSearch extends Application {
 }
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
-  const button = $(`<button class="item-search"><i class="fas fa-suitcase"></i>${game.i18n.localize("Ex3.ItemSearch")}</button>`);
+  const button = $(`<button class="item-search"><i class="fas fa-suitcase"> </i>${game.i18n.localize("Ex3.ItemSearch")}</button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {

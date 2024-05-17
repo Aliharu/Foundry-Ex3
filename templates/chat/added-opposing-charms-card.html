@@ -1,0 +1,13 @@
+<div class="exaltedthird chat-card item-card" data-actor-id="{{actor.id}}">
+    <header class="card-header flexrow item-row">
+        <img src="{{actor.img}}" title="{{actor.name}}" width="36" height="36" />
+        <h3 class="item-name">{{actor.name}}: Added Opposing Charms</h3>
+    </header>
+    <div class="card-content item-description">
+        {{#each addingCharms as |charm index|}}
+        <div class="mt-1">
+            <a class="content-link" data-link data-uuid="{{charm.uuid}}"><i class="fas fa-suitcase"> </i>{{charm.name}}(x{{charm.timesAdded}})</a>
+        </div>
+        {{/each}}
+    </div>
+</div>
