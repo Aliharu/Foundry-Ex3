@@ -1398,6 +1398,15 @@ export class RollForm extends FormApplication {
         if (parseInt(formula)) {
             return parseInt(formula);
         }
+        if(formula?.toLowerCase() === 'threshholdduccesses') {
+            return this.object.threshholdSuccesses || 0;
+        }
+        if(formula?.toLowerCase() === 'damagedealt') {
+            return this.object.damageLevelsDealt || 0;
+        }
+        if(formula?.toLowerCase() === 'initiativedamagedealt') {
+            return this.object.initiativeDamageDealt || 0;
+        }
         if (formula.includes('target-')) {
             formula = formula.replace('target-', '');
             if (this.object.target?.actor) {
@@ -2131,7 +2140,7 @@ export class RollForm extends FormApplication {
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
 
                     await this._attackRoll();
-                    this._inflictOnTarget();
+                    await this._inflictOnTarget();
                     if (this.object.updateTargetActorData) {
                         await this._updateTargetActor();
                     }
@@ -2149,7 +2158,7 @@ export class RollForm extends FormApplication {
                     await this._updateTargetInitiative();
                 }
             }
-            this._postAttackResults();
+            await this._postAttackResults();
         }
         else if (this.object.rollType === 'base') {
             await this._diceRoll();
@@ -2176,7 +2185,7 @@ export class RollForm extends FormApplication {
                     this.object.supportedIntimacy = target.rollData.supportedIntimacy;
                     this.object.appearanceBonus = target.rollData.appearanceBonus;
                     await this._abilityRoll();
-                    this._inflictOnTarget();
+                    await this._inflictOnTarget();
                     if (this.object.updateTargetActorData) {
                         await this._updateTargetActor();
                     }
@@ -2189,7 +2198,7 @@ export class RollForm extends FormApplication {
         else {
             await this._abilityRoll();
             if (this.object.target) {
-                this._inflictOnTarget();
+                await this._inflictOnTarget();
             }
             if (this.object.updateTargetActorData) {
                 await this._updateTargetActor();
@@ -2200,7 +2209,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _inflictOnTarget() {
+    async _inflictOnTarget() {
         if (this.object.target) {
             if (this.object.steal.motes.max) {
                 this.object.updateTargetActorData = true;
