@@ -1153,7 +1153,7 @@ export default class TemplateImporter extends FormApplication {
               charmSystemData.ability = 'occult';
             }
             else if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
-              itemType = 'quality';
+              itemType = 'shape';
               index++;
               newItem = true;
               itemDescription += textArray[index].trim();

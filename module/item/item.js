@@ -29,10 +29,10 @@ export class ExaltedThirdItem extends Item {
           effect.update({ disabled: !updateData.system?.equipped });
         }
       }
-      if (weighttype && weighttype !== this.system.weightype && weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
+      if (weighttype && weighttype !== this.system.weighttype && weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
         if (this.type === 'weapon') {
           const weaponType = updateData.system?.weapontype || this.system.weapontype;
-          if (updateData.system?.weighttype === 'bolt') {
+          if (weaponType === 'bolt') {
             updateData.system.witheringaccuracy = 4;
             updateData.system.damageattribute = '';
             if (this.actor) {
@@ -76,10 +76,10 @@ export class ExaltedThirdItem extends Item {
             }
             else {
               if (this.system.traits.weapontags?.value?.includes('artifact')) {
-                updateData.system.defense = artifactEquipmentChart[updateData.system?.weighttype].defense;
+                updateData.system.defense = artifactEquipmentChart[weighttype].defense;
               }
               else {
-                updateData.system.defense = equipmentChart[updateData.system?.weighttype].defense;
+                updateData.system.defense = equipmentChart[weighttype].defense;
               }
             }
           }
@@ -108,29 +108,6 @@ export class ExaltedThirdItem extends Item {
         }
       }
     }
-
-    // Won't work due to conflicts with active effects
-    // if (this.type === 'weapon' || this.type === 'armor') {
-    //   if(updateData.system?.equipped !== undefined) {
-    //     if(this.type === 'weapon') {
-    //       if(this.actor) {
-    //         let defenseChange = updateData.system?.defense || this.system.defense;
-    //         defenseChange = defenseChange * (updateData.system.equipped ? 1 : -1);
-    //         await this.actor.update({[`system.parry.value`]: this.actor.system.parry.value + defenseChange});
-    //       }
-    //     }
-    //     if(this.type === 'armor') {
-    //       if(this.actor) {
-    //         let defenseChange = updateData.system?.penalty || this.system.penalty;
-    //         if(defenseChange < 0) {
-    //           defenseChange *= -1;
-    //         }
-    //         defenseChange = defenseChange * (updateData.system.equipped ? -1 : 1);
-    //         await this.actor.update({[`system.evasion.value`]: this.actor.system.evasion.value + defenseChange});
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   getImageUrl(type) {

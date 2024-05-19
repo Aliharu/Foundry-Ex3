@@ -139,6 +139,13 @@ exaltedthird.equipmentStats = {
     overwhelming: 3,
     attunement: 5,
   },
+  bolt: {
+    accuracy: 5,
+    damage: 10,
+    defense: 0,
+    overwhelming: 1,
+    attunement: 0,
+  }
 };
 exaltedthird.artifactEquipmentStats = {
   light: {
