@@ -1398,13 +1398,13 @@ export class RollForm extends FormApplication {
         if (parseInt(formula)) {
             return parseInt(formula);
         }
-        if(formula?.toLowerCase() === 'threshholdduccesses') {
+        if (formula?.toLowerCase() === 'thresholdsuccesses') {
             return this.object.threshholdSuccesses || 0;
         }
-        if(formula?.toLowerCase() === 'damagedealt') {
+        if (formula?.toLowerCase() === 'damagedealt') {
             return this.object.damageLevelsDealt || 0;
         }
-        if(formula?.toLowerCase() === 'initiativedamagedealt') {
+        if (formula?.toLowerCase() === 'initiativedamagedealt') {
             return this.object.initiativeDamageDealt || 0;
         }
         if (formula.includes('target-')) {
@@ -4109,6 +4109,20 @@ export class RollForm extends FormApplication {
                         fufillsRequirements = false;
                     }
                     break;
+                case 'rollSucceeded':
+                    if (this._isAttackRoll()) {
+                        if (this.object.total < this.object.defense && cleanedValue === true) {
+                            fufillsRequirements = false;
+                        } else if (this.object.total >= this.object.defense && cleanedValue === false) {
+                            fufillsRequirements = false;
+                        }
+                    } else {
+                        if (this.object.total < this.object.difficulty && cleanedValue === true) {
+                            fufillsRequirements = false;
+                        } else if (this.object.total >= this.object.difficulty && cleanedValue === false) {
+                            fufillsRequirements = false;
+                        }
+                    }
             }
         }
         return fufillsRequirements;
@@ -5350,7 +5364,7 @@ export class RollForm extends FormApplication {
 
     attackSequence() {
         const actorToken = this._getActorToken();
-        if (this.object.target && actorToken && game.settings.get("exaltedthird", "attackEffects")) {
+        if (game.modules.get("sequencer")?.active && this.object.target && actorToken && game.settings.get("exaltedthird", "attackEffects")) {
             if (this.object.attackEffectPreset !== 'none') {
                 let effectsMap = {
                     'arrow': 'jb2a.arrow.physical.white.01.05ft',
@@ -5469,7 +5483,7 @@ export class RollForm extends FormApplication {
 export async function animaTokenMagic(actor, newAnimaValue) {
     const tokenId = actor.token?.id || actor.getActiveTokens()[0]?.id;
     const actorToken = canvas.tokens.placeables.filter(x => x.id === tokenId)[0];
-    if (game.settings.get("exaltedthird", "animaTokenMagic") && actorToken) {
+    if (game.modules.get("tokenmagic")?.active && game.settings.get("exaltedthird", "animaTokenMagic") && actorToken) {
         let effectColor = Number(`0x${actor.system.details.animacolor.replace('#', '')}`);
         let sovereign =
             [{

@@ -1573,6 +1573,7 @@ exaltedthird.requirementTypes = {
   rollResults: {
     label: "Ex3.RollResults",
     requirements: {
+      rollSucceeded: "Ex3.RollSucceeded",
       thresholdSuccesses: "Ex3.ThresholdSuccesses",
       initiativeDamageDealt: "Ex3.InitiativeDamageDealt",
       damageLevelsDealt: "Ex3.DamageLevelsDealt",
@@ -2005,14 +2006,6 @@ exaltedthird.selects = {
     'skilled': "Ex3.Skilled",
     'exceptional': "Ex3.Exceptional",
     'legendary': "Ex3.Legendary",
-  },
-  npcSpellCircles: {
-    terrestrial: "Ex3.Terrestrial",
-    celestial: "Ex3.Celestial",
-    solar: "Ex3.Solar",
-    ivory: "Ex3.Ivory",
-    shadow: "Ex3.Shadow",
-    void: "Ex3.Void",
   },
   npcItemCategory: {
     random: "Ex3.Random",

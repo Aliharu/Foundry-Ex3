@@ -431,7 +431,7 @@ export default class NPCGenerator extends FormApplication {
     actorData.system.pools.readintentions.value = this._getCharacterPool(this.object.character.skills.perception.value);
     actorData.system.pools.resistance.value = this._getCharacterPool(this.object.character.skills.body.value);
     actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
-    if (this.object.character.sorcerer !== 'none') {
+    if (this.object.character.sorcerer) {
       actorData.system.pools.sorcery.value = this._getCharacterPool(this.object.character.skills.mind.value);
     }
     actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
@@ -650,6 +650,7 @@ export default class NPCGenerator extends FormApplication {
     actorData.system.creaturetype = this.object.character.npcType;
     actorData.system.details.exalt = this.object.character.exalt;
     actorData.system.details.caste = this.object.character.caste;
+    actorData.system.settings.editmode = false;
 
     const animaList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/animaEffectsList.json', {}, { int: 30000 });
     if (animaList[this.object.character.caste]) {
@@ -790,7 +791,7 @@ export default class NPCGenerator extends FormApplication {
       bigString += ritual.pageref;
       bigString += '\n\n';
     }
-    if (this.object.character.sorcerer !== 'none' && this.object.characterType === 'npc') {
+    if (this.object.character.sorcerer && this.object.characterType === 'npc') {
       const itemRituals = game.items.filter((item) => item.type === 'ritual');
 
       if (itemRituals) {

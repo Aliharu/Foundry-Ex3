@@ -1066,6 +1066,7 @@
     "Ex3.TargetIsCrashed": "Target Is Crashed",
     "Ex3.CrashedTheTarget": "Crashed The Target",
     "Ex3.DamageLevelsDealt": "Damage Levels Dealt",
+    "Ex3.RollSucceeded": "Roll Succeeded",
     "Ex3.NoInitiativeReset": "No Initiative Reset",
     "Ex3.Formula": "Formula",
     "Ex3.ThresholdSuccesses": "Threshold Successes",
@@ -1093,7 +1094,7 @@
     "Ex3.DamageRerollFailed": "Damage Reroll Failed",
     "Ex3.DamageTriggerTens": "Damage Trigger Tens",
     "Ex3.DamageTriggerTensCap": "Damage Trigger Tens Cap",
-    "Ex3.DamageTriggerNines&Tens": "Damage Trigger Nines",
+    "Ex3.DamageTriggerNines&Tens": "Damage Trigger Nines & Tens",
 
     "Ex3.MaterialResonance": "Material Resonance",
     "Ex3.MaterialStandard": "Material Standard",
