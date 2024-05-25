@@ -2300,8 +2300,8 @@ export class RollForm extends FormApplication {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === this.object.ability);
             }
         }
-        this.object.specialtyList = this.object.specialtyList.reduce((acc, actor) => {
-            acc[actor.id] = actor.name;
+        this.object.specialtyList = this.object.specialtyList.reduce((acc, specialty) => {
+            acc[specialty._id] = specialty.name;
             return acc;
         }, {});
         this.object.specialtyList[''] = "Ex3.NoSpecialty";

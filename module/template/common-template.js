@@ -185,3 +185,29 @@ export function activatableData() {
         endtrigger: new fields.StringField({ initial: "none" }),
     };
 }
+
+export function triggerData() {
+    return {
+        triggers: new fields.SchemaField({
+            dicerollertriggers: new fields.ObjectField({ initial: {} }),
+            // dicerollertriggers: new fields.ArrayField(
+            //     new fields.SchemaField({
+            //         name: new fields.StringField({ initial: "" }),
+            //         triggerTime: new fields.StringField({ initial: "beforeRoll" }),
+            //         bonuses: new fields.ArrayField(
+            //             new fields.SchemaField({
+            //                 resctriction: new fields.StringField({ initial: "" }),
+            //                 value: new fields.StringField({ initial: "" }),
+            //             }),
+            //         ),
+            //         requirements: new fields.ArrayField(
+            //             new fields.SchemaField({
+            //                 resctriction: new fields.StringField({ initial: "" }),
+            //                 value: new fields.StringField({ initial: "" }),
+            //             }),
+            //         ),
+            //     }),
+            // ),
+        }),
+    };
+}

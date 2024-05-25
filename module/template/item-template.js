@@ -1,4 +1,4 @@
-import { activatableData, artifactData, equipmentData, traitField } from "./common-template.js";
+import { activatableData, artifactData, equipmentData, traitField, triggerData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -365,6 +365,7 @@ export class ItemCharmData extends CommonItemData {
         return {
             ...commonData,
             ...activatableData(),
+            ...triggerData(),
             summary: new fields.StringField({ initial: "" }),
             prerollmacro: new fields.StringField({ initial: "" }),
             macro: new fields.StringField({ initial: "" }),
@@ -545,27 +546,6 @@ export class ItemCharmData extends CommonItemData {
                 }),
             }),
             autoaddtorolls: new fields.StringField({ initial: "" }),
-            triggers: new fields.SchemaField({
-                dicerollertriggers: new fields.ObjectField({ initial: {} }),
-                // dicerollertriggers: new fields.ArrayField(
-                //     new fields.SchemaField({
-                //         name: new fields.StringField({ initial: "" }),
-                //         triggerTime: new fields.StringField({ initial: "beforeRoll" }),
-                //         bonuses: new fields.ArrayField(
-                //             new fields.SchemaField({
-                //                 resctriction: new fields.StringField({ initial: "" }),
-                //                 value: new fields.StringField({ initial: "" }),
-                //             }),
-                //         ),
-                //         requirements: new fields.ArrayField(
-                //             new fields.SchemaField({
-                //                 resctriction: new fields.StringField({ initial: "" }),
-                //                 value: new fields.StringField({ initial: "" }),
-                //             }),
-                //         ),
-                //     }),
-                // ),
-            }),
         }
     }
 
