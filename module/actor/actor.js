@@ -59,6 +59,7 @@ export class ExaltedThirdActor extends Actor {
           updateData.system.traits = {
             resonance: this.calculateResonance(exalt),
             dissonance: this.calculateDissonance(exalt),
+            classifications: this.calculateClassifications(exalt),
           };
         }
       }
@@ -341,6 +342,7 @@ export class ExaltedThirdActor extends Actor {
     await this.calculateDerivedStats('natural-soak');
     await this.calculateDerivedStats('armored-soak');
     await this.calculateDerivedStats('resonance');
+    await this.calculateDerivedStats('classifications');
   }
 
   async calculateDerivedStats(type) {
@@ -401,6 +403,9 @@ export class ExaltedThirdActor extends Actor {
       actorData.system.traits.resonance = this.calculateResonance(this.system.details.exalt);
       actorData.system.traits.dissonance = this.calculateDissonance(this.system.details.exalt);
     }
+    if (type === 'classifications' || type === 'all') {
+      actorData.system.traits.classifications = this.calculateClassifications(this.system.details.exalt);
+    }
     if (type === 'hardness' || type === 'all') {
       let hardness = 0
       for (let armor of this.armor) {
@@ -412,11 +417,11 @@ export class ExaltedThirdActor extends Actor {
         actorData.system.hardness.value = hardness;
       }
     }
-    this.update(actorData);
+    await this.update(actorData);
   }
 
   calculateResonance(exaltType) {
-    var resonance = {
+    let resonance = {
       value: [],
       custom: "",
     }
@@ -452,7 +457,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   calculateDissonance(exaltType) {
-    var dissonance = {
+    let dissonance = {
       value: [],
       custom: "",
     }
@@ -484,6 +489,23 @@ export class ExaltedThirdActor extends Actor {
       dissonance.value = dissonanceChart[exaltType];
     }
     return dissonance;
+  }
+
+  calculateClassifications(exaltType) {
+    let classifications = {
+      value: [],
+      custom: "",
+    }
+
+    if (exaltType === 'abyssal' || exaltType === 'infernal') {
+      classifications.value = ['creatureofdarkness', 'enemyoffate'];
+    }
+
+    if (exaltType === 'mortal') {
+      classifications.value = ['mortal'];
+    }
+
+    return classifications;
   }
 
   async rollEmbeddedItem(itemId, personal = false) {
@@ -1016,7 +1038,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   getNpcDiceCapValue(pool) {
-    if(this.system.creaturetype !== 'exalt') {
+    if (this.system.creaturetype !== 'exalt') {
       return null;
     }
     var dicePool = 0;
@@ -1089,7 +1111,7 @@ export class ExaltedThirdActor extends Actor {
     if (this.system.details.exalt === "sidereal") {
       dicePool = this.system.essence.value;
     }
-     else if (this.system.details.exalt === "lunar") {
+    else if (this.system.details.exalt === "lunar") {
       diceMap = {
         'zero': 0,
         'two': 1,
