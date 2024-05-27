@@ -9,7 +9,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
   constructor(...args) {
     super(...args);
-    if (this.object.type === "charm") {
+    if (this.object.type === "charm" || this.object.type === "spell" || this.object.type === "merit" || this.object.type === "specialability") {
       this.options.width = this.position.width = 615;
       this.options.height = this.position.height = 850;
     }

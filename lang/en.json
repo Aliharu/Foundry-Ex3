@@ -307,6 +307,8 @@
     "Ex3.Specialties": "Specialties",
     "Ex3.Resonance": "Resonance",
     "Ex3.Dissonance": "Dissonance",
+    "Ex3.Classifications": "Classifications",
+    "Ex3.HasClassification": "Has Classification",
     "Ex3.Weapon": "Weapon",
     "Ex3.Merit": "Merit",
     "Ex3.Item": "Item",
@@ -873,6 +875,7 @@
     "Ex3.Soil": "Soil",
     "Ex3.God/Demon": "God/Demon",
     "Ex3.Tree": "Tree",
+    "Ex3.Mountain": "Mountain",
     "Ex3.Leaves": "Leaves",
     "Ex3.Sync": "Sync",
     "Ex3.Activatable": "Activatable",
@@ -1058,10 +1061,13 @@
 
     "Ex3.InflictDicePenalty": "Inflict Dice Penalty",
     "Ex3.CharmAddedAmount": "Charm Added Amount",
+    "Ex3.ItemAddedAmount": "Item Added Amount",
+
     "Ex3.MartialArtsTier": "Martial Arts Tier",
     "Ex3.SiderealMATier": "Sidereal MA Tier",
     "Ex3.HasStatus": "Has Status",
     "Ex3.TargetHasStatus": "Target Has Status",
+    "Ex3.TargetHasClassification": "Target Has Classification",
     "Ex3.TargetIsBattlegroup": "Target Is Battlegroup",
     "Ex3.TargetIsCrashed": "Target Is Crashed",
     "Ex3.CrashedTheTarget": "Crashed The Target",
@@ -1104,6 +1110,8 @@
     "Ex3.FirstCircle": "First Circle",
     "Ex3.SecondCircle": "Second Circle",
     "Ex3.ThirdCircle": "Third Circle",
+
+    "Ex3.NoName": "No Name",
 
     "Ex3.NonSameAbilityAttribute": "Non-Same Ability Attribute",
 

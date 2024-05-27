@@ -21,6 +21,7 @@ export function registerSettings() {
             "janest": "Ex3.Janest",
             "leaves": "Ex3.Leaves",
             "lunar": "Ex3.Lunar",
+            "mountain": "Ex3.Mountain",
             "puppeteer": "Ex3.Puppeteer",
             "solar": "Ex3.Solar",
             "sovereign": "Ex3.Sovereign",

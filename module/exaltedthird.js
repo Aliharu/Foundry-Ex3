@@ -135,6 +135,7 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/dialogues/damage-roll.html",
     "systems/exaltedthird/templates/dialogues/added-charm-list.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
+    "systems/exaltedthird/templates/item/item-trigger-tab.html",
     "systems/exaltedthird/templates/actor/effects-tab.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",
     "systems/exaltedthird/templates/actor/header-exalt-data.html",
@@ -263,6 +264,9 @@ Hooks.once('init', async function () {
   });
 
   Handlebars.registerHelper("charmCostDisplay", function (cost) {
+    if(!cost) {
+      return '';
+    }
     let costString = '';
     if (cost.motes > 0 || cost.commitmotes > 0) {
       costString += `${cost.motes || cost.commitmotes}m, `

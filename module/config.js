@@ -729,6 +729,17 @@ exaltedthird.dissonance = {
   "whitejade": "White Jade",
 };
 
+exaltedthird.classifications = {
+  "creatureofdarkness": "Creature of Darkness",
+  "demon": "Demon",
+  "enemyoffate": "Enemy of Fate",
+  "fae": "Fae",
+  "ghost": "Ghost",
+  "mortal": "Mortal",
+  "spirit": "Spirit",
+  "undead": "Undead",
+};
+
 exaltedthird.weapons = {
   "axes": "Axes",
   "batons": "Batons",
@@ -1545,7 +1556,7 @@ exaltedthird.requirementTypes = {
     label: "Ex3.Roll",
     requirements: {
       attackType: "Ex3.AttackType",
-      charmAddedAmount: "Ex3.CharmAddedAmount",
+      charmAddedAmount: "Ex3.ItemAddedAmount",
       range: "Ex3.Range",
     },
   },
@@ -1558,6 +1569,7 @@ exaltedthird.requirementTypes = {
       materialResonance: "Ex3.MaterialResonance",
       materialStandard: "Ex3.MaterialStandard",
       materialDissonance: "Ex3.MaterialDissonance",
+      hasClassification: "Ex3.HasClassification",
       formula: "Ex3.Formula",
       hasStatus: "Ex3.HasStatus",
     },
@@ -1568,6 +1580,7 @@ exaltedthird.requirementTypes = {
       targetHasStatus: "Ex3.TargetHasStatus",
       targetIsBattlegroup: "Ex3.TargetIsBattlegroup",
       targetIsCrashed: "Ex3.TargetIsCrashed",
+      targetHasClassification: "Ex3.TargetHasClassification",
     },
   },
   rollResults: {
@@ -1727,6 +1740,7 @@ exaltedthird.selects = {
     janest: "Ex3.Janest",
     leaves: "Ex3.Leaves",
     lunar: "Ex3.Lunar",
+    mountain: "Ex3.Mountain",
     puppeteer: "Ex3.Puppeteer",
     solar: "Ex3.Solar",
     sovereign: "Ex3.Sovereign",

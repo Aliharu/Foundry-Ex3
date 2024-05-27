@@ -126,6 +126,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         languages: traitField(),
         resonance: traitField(),
         dissonance: traitField(),
+        classifications: traitField(),
       }),
       settings: new fields.SchemaField({
         charmmotepool: new fields.StringField({ initial: "peripheral" }),

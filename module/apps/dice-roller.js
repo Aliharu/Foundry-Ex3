@@ -469,6 +469,25 @@ export class RollForm extends FormApplication {
             }
             if (this.object.charmList === undefined) {
                 this.object.charmList = this.object.rollType === 'useOpposingCharms' ? this.actor.defensecharms : this.actor.rollcharms;
+                if (this.object.rollType !== 'useOpposingCharms') {
+                    this.object.charmList = { ...this.object.charmList, ...this.actor.spells };
+                }
+                if (this.actor.merits.some(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0)) {
+                    this.object.charmList['merits'] = {
+                        name: game.i18n.localize("Ex3.Merits"),
+                        list: this.actor.merits.filter(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
+                        visible: true,
+                        collapse: true,
+                    }
+                }
+                if (this.actor.specialabilities.some(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0)) {
+                    this.object.charmList['specialabilities'] = {
+                        name: game.i18n.localize("Ex3.SpecialAbilities"),
+                        list: this.actor.specialabilities.filter(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
+                        visible: true,
+                        collapse: true,
+                    }
+                }
                 for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
                     charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
                     for (const charm of charmlist.list) {
@@ -1041,7 +1060,7 @@ export class RollForm extends FormApplication {
             this.object.addedCharms.push(item);
         }
         for (var charmlist of Object.values(this.object.charmList)) {
-            for (const charm of charmlist.list.filter(charm => charm.system.diceroller.enabled)) {
+            for (const charm of charmlist.list.filter(charm => charm.type !== 'charm' || charm.system.diceroller.enabled)) {
                 var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
                 if (existingAddedCharm) {
                     charm.charmAdded = true;
@@ -1049,183 +1068,187 @@ export class RollForm extends FormApplication {
                 }
             }
         }
-        if (addCosts) {
-            if (item.system.keywords.toLowerCase().includes('mute')) {
-                this.object.cost.muteMotes += item.system.cost.motes;
-            }
-            else {
-                this.object.cost.motes += item.system.cost.motes;
-            }
-            this.object.cost.anima += item.system.cost.anima;
-            this.object.cost.penumbra += item.system.cost.penumbra;
-            this.object.cost.willpower += item.system.cost.willpower;
-            this.object.cost.silverxp += item.system.cost.silverxp;
-            this.object.cost.goldxp += item.system.cost.goldxp;
-            this.object.cost.whitexp += item.system.cost.whitexp;
-            this.object.cost.initiative += item.system.cost.initiative;
-            this.object.cost.grappleControl += item.system.cost.grapplecontrol;
-
-
-            if (item.system.cost.aura) {
-                this.object.cost.aura = item.system.cost.aura;
-            }
-            if (item.system.cost.health > 0) {
-                if (item.system.cost.healthtype === 'bashing') {
-                    this.object.cost.healthbashing += item.system.cost.health;
-                }
-                else if (item.system.cost.healthtype === 'lethal') {
-                    this.object.cost.healthlethal += item.system.cost.health;
+        if (item.system.cost) {
+            if (addCosts) {
+                if (item.system.keywords.toLowerCase().includes('mute')) {
+                    this.object.cost.muteMotes += item.system.cost.motes;
                 }
                 else {
-                    this.object.cost.healthaggravated += item.system.cost.health;
+                    this.object.cost.motes += item.system.cost.motes;
+                }
+                this.object.cost.anima += item.system.cost.anima;
+                this.object.cost.penumbra += item.system.cost.penumbra;
+                this.object.cost.willpower += item.system.cost.willpower;
+                this.object.cost.silverxp += item.system.cost.silverxp;
+                this.object.cost.goldxp += item.system.cost.goldxp;
+                this.object.cost.whitexp += item.system.cost.whitexp;
+                this.object.cost.initiative += item.system.cost.initiative;
+                this.object.cost.grappleControl += item.system.cost.grapplecontrol;
+
+
+                if (item.system.cost.aura) {
+                    this.object.cost.aura = item.system.cost.aura;
+                }
+                if (item.system.cost.health > 0) {
+                    if (item.system.cost.healthtype === 'bashing') {
+                        this.object.cost.healthbashing += item.system.cost.health;
+                    }
+                    else if (item.system.cost.healthtype === 'lethal') {
+                        this.object.cost.healthlethal += item.system.cost.health;
+                    }
+                    else {
+                        this.object.cost.healthaggravated += item.system.cost.health;
+                    }
                 }
             }
-        }
 
-        this.object.restore.motes += item.system.restore.motes;
-        this.object.restore.willpower += item.system.restore.willpower;
-        this.object.restore.health += item.system.restore.health;
-        this.object.restore.initiative += item.system.restore.initiative;
-
-        this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
-        this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
-        this.object.triggerSelfDefensePenalty += item.system.diceroller.selfdefensepenalty;
-        this.object.triggerTargetDefensePenalty += item.system.diceroller.targetdefensepenalty;
-        if (!item.system.diceroller.settings.noncharmdice) {
-            this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
+            this.object.restore.motes += item.system.restore.motes;
+            this.object.restore.willpower += item.system.restore.willpower;
+            this.object.restore.health += item.system.restore.health;
+            this.object.restore.initiative += item.system.restore.initiative;
         }
-        if (!item.system.diceroller.settings.noncharmsuccesses) {
-            this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
-        }
-        if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
-            this.object.doubleSuccess = item.system.diceroller.doublesuccess;
-        }
-        this.object.targetNumber -= item.system.diceroller.decreasetargetnumber;
-        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
-            if (rerollValue) {
-                this.object.reroll[rerollKey].status = true;
+        if (item.system.diceroller) {
+            this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
+            this.object.successModifier += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+            this.object.triggerSelfDefensePenalty += item.system.diceroller.selfdefensepenalty;
+            this.object.triggerTargetDefensePenalty += item.system.diceroller.targetdefensepenalty;
+            if (!item.system.diceroller.settings.noncharmdice) {
+                this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
             }
-        }
-        if (item.system.diceroller.rerollfailed) {
-            this.object.rerollFailed = item.system.diceroller.rerollfailed;
-        }
-        if (item.system.diceroller.rolltwice) {
-            this.object.rollTwice = item.system.diceroller.rolltwice;
-        }
-        this.object.rerollNumber += this._getFormulaValue(item.system.diceroller.rerolldice);
-        this.object.diceToSuccesses += this._getFormulaValue(item.system.diceroller.diceToSuccesses);
+            if (!item.system.diceroller.settings.noncharmsuccesses) {
+                this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+            }
+            if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
+                this.object.doubleSuccess = item.system.diceroller.doublesuccess;
+            }
+            this.object.targetNumber -= item.system.diceroller.decreasetargetnumber;
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
+                if (rerollValue) {
+                    this.object.reroll[rerollKey].status = true;
+                }
+            }
+            if (item.system.diceroller.rerollfailed) {
+                this.object.rerollFailed = item.system.diceroller.rerollfailed;
+            }
+            if (item.system.diceroller.rolltwice) {
+                this.object.rollTwice = item.system.diceroller.rolltwice;
+            }
+            this.object.rerollNumber += this._getFormulaValue(item.system.diceroller.rerolldice);
+            this.object.diceToSuccesses += this._getFormulaValue(item.system.diceroller.diceToSuccesses);
 
-        if (this.object.showTargets) {
-            const targetValues = Object.values(this.object.targets);
-            for (const target of targetValues) {
-                target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-                target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+            if (this.object.showTargets) {
+                const targetValues = Object.values(this.object.targets);
+                for (const target of targetValues) {
+                    target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                    target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                    target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                    if (this.object.rollType === 'damage') {
+                        target.rollData.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                    }
+                }
+            }
+            else {
+                this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                 if (this.object.rollType === 'damage') {
-                    target.rollData.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                    this.object.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 }
             }
-        }
-        else {
-            this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-            this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
-            if (this.object.rollType === 'damage') {
-                this.object.attackSuccesses += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
+                if (rerollValue) {
+                    this.object.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
+                }
             }
+            for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
+                if (value) {
+                    this.object.settings.doubleSucccessCaps[key] += this._getFormulaValue(value);
+                }
+            }
+            if (item.system.diceroller.ignorelegendarysize) {
+                this.object.settings.ignoreLegendarySize = item.system.diceroller.ignorelegendarysize;
+            }
+            if (item.system.diceroller.excludeonesfromrerolls) {
+                this.object.settings.excludeOnesFromRerolls = item.system.diceroller.excludeonesfromrerolls;
+            }
+
+            this.object.damage.damageDice += this._getFormulaValue(item.system.diceroller.damage.bonusdice);
+            this.object.damage.damageSuccessModifier += this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
+            if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
+                this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
+            }
+            this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
+            this.object.overwhelming += this._getFormulaValue(item.system.diceroller.damage.overwhelming);
+            this.object.damage.postSoakDamage += this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
+            this.object.damage.diceToSuccesses += this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
+                if (rerollValue) {
+                    this.object.damage.reroll[rerollKey].status = true;
+                }
+            }
+            if (item.system.diceroller.damage.rerollfailed) {
+                this.object.damage.rerollFailed = item.system.diceroller.damage.rerollfailed;
+            }
+            if (item.system.diceroller.damage.rolltwice) {
+                this.object.damage.rollTwice = item.system.diceroller.damage.rolltwice;
+            }
+            this.object.damage.rerollNumber += this._getFormulaValue(item.system.diceroller.damage.rerolldice);
+            if (item.system.diceroller.damage.threshholdtodamage) {
+                this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
+            }
+            if (item.system.diceroller.damage.doublerolleddamage) {
+                this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
+            }
+            if (item.system.diceroller.damage.doublerolleddamage) {
+                this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
+            }
+            this.object.damage.ignoreSoak += this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+            this.object.damage.ignoreHardness += this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
+
+            for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
+                if (rerollValue) {
+                    this.object.damage.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
+                }
+            }
+            for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
+                if (value) {
+                    this.object.settings.damage.doubleSucccessCaps[key] += this._getFormulaValue(value);
+                }
+            }
+            if (item.system.diceroller.damage.excludeonesfromrerolls) {
+                this.object.settings.damage.excludeOnesFromRerolls = item.system.diceroller.damage.excludeonesfromrerolls;
+            }
+
+            if (item.system.diceroller.activateAura && item.system.diceroller.activateAura !== 'none') {
+                this.object.activateAura = item.system.diceroller.activateAura;
+            }
+            if (item.system.diceroller.triggerontens !== 'none') {
+                this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
+                this.object.settings.alsoTriggerNines = item.system.diceroller.alsotriggernines;
+            }
+            this.object.settings.triggerTensCap += this._getFormulaValue(item.system.diceroller.triggertenscap);
+
+            if (item.system.diceroller.damage.triggerontens !== 'none') {
+                this.object.settings.damage.triggerOnTens = item.system.diceroller.damage.triggerontens;
+                this.object.settings.damage.alsoTriggerNines = item.system.diceroller.damage.alsotriggernines;
+            }
+            this.object.settings.damage.triggerTensCap += this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
+            if (item.system.diceroller.triggerontens !== 'none') {
+                this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
+            }
+            if (this.object.rollType === 'useOpposingCharms') {
+                this.object.addOppose.addedBonus.dice += this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
+                this.object.addOppose.addedBonus.successes += this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
+                this.object.addOppose.addedBonus.defense += this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
+                this.object.addOppose.addedBonus.soak += this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
+                this.object.addOppose.addedBonus.hardness += this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
+                this.object.addOppose.addedBonus.damage += this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
+                this.object.addOppose.addedBonus.resolve += this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
+                this.object.addOppose.addedBonus.guile += this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
+            }
+            this._calculateAnimaGain();
         }
 
-        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
-            if (rerollValue) {
-                this.object.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
-            }
-        }
-        for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
-            if (value) {
-                this.object.settings.doubleSucccessCaps[key] += this._getFormulaValue(value);
-            }
-        }
-        if (item.system.diceroller.ignorelegendarysize) {
-            this.object.settings.ignoreLegendarySize = item.system.diceroller.ignorelegendarysize;
-        }
-        if (item.system.diceroller.excludeonesfromrerolls) {
-            this.object.settings.excludeOnesFromRerolls = item.system.diceroller.excludeonesfromrerolls;
-        }
-
-        this.object.damage.damageDice += this._getFormulaValue(item.system.diceroller.damage.bonusdice);
-        this.object.damage.damageSuccessModifier += this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
-        if (item.system.diceroller.damage.doublesuccess < this.object.damage.doubleSuccess) {
-            this.object.damage.doubleSuccess = item.system.diceroller.damage.doublesuccess;
-        }
-        this.object.damage.targetNumber -= item.system.diceroller.damage.decreasetargetnumber;
-        this.object.overwhelming += this._getFormulaValue(item.system.diceroller.damage.overwhelming);
-        this.object.damage.postSoakDamage += this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
-        this.object.damage.diceToSuccesses += this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
-        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
-            if (rerollValue) {
-                this.object.damage.reroll[rerollKey].status = true;
-            }
-        }
-        if (item.system.diceroller.damage.rerollfailed) {
-            this.object.damage.rerollFailed = item.system.diceroller.damage.rerollfailed;
-        }
-        if (item.system.diceroller.damage.rolltwice) {
-            this.object.damage.rollTwice = item.system.diceroller.damage.rolltwice;
-        }
-        this.object.damage.rerollNumber += this._getFormulaValue(item.system.diceroller.damage.rerolldice);
-        if (item.system.diceroller.damage.threshholdtodamage) {
-            this.object.damage.threshholdToDamage = item.system.diceroller.damage.threshholdtodamage;
-        }
-        if (item.system.diceroller.damage.doublerolleddamage) {
-            this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
-        }
-        if (item.system.diceroller.damage.doublerolleddamage) {
-            this.object.damage.doubleRolledDamage = item.system.diceroller.damage.doublerolleddamage;
-        }
-        this.object.damage.ignoreSoak += this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
-        this.object.damage.ignoreHardness += this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
-
-        for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
-            if (rerollValue) {
-                this.object.damage.reroll[rerollKey].cap += this._getFormulaValue(rerollValue);
-            }
-        }
-        for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
-            if (value) {
-                this.object.settings.damage.doubleSucccessCaps[key] += this._getFormulaValue(value);
-            }
-        }
-        if (item.system.diceroller.damage.excludeonesfromrerolls) {
-            this.object.settings.damage.excludeOnesFromRerolls = item.system.diceroller.damage.excludeonesfromrerolls;
-        }
-
-        if (item.system.diceroller.activateAura && item.system.diceroller.activateAura !== 'none') {
-            this.object.activateAura = item.system.diceroller.activateAura;
-        }
-        if (item.system.diceroller.triggerontens !== 'none') {
-            this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
-            this.object.settings.alsoTriggerNines = item.system.diceroller.alsotriggernines;
-        }
-        this.object.settings.triggerTensCap += this._getFormulaValue(item.system.diceroller.triggertenscap);
-
-        if (item.system.diceroller.damage.triggerontens !== 'none') {
-            this.object.settings.damage.triggerOnTens = item.system.diceroller.damage.triggerontens;
-            this.object.settings.damage.alsoTriggerNines = item.system.diceroller.damage.alsotriggernines;
-        }
-        this.object.settings.damage.triggerTensCap += this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
-        if (item.system.diceroller.triggerontens !== 'none') {
-            this.object.settings.triggerOnTens = item.system.diceroller.triggerontens;
-        }
-        if (this.object.rollType === 'useOpposingCharms') {
-            this.object.addOppose.addedBonus.dice += this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
-            this.object.addOppose.addedBonus.successes += this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
-            this.object.addOppose.addedBonus.defense += this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
-            this.object.addOppose.addedBonus.soak += this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
-            this.object.addOppose.addedBonus.hardness += this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
-            this.object.addOppose.addedBonus.damage += this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
-            this.object.addOppose.addedBonus.resolve += this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
-            this.object.addOppose.addedBonus.guile += this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
-        }
-        this._calculateAnimaGain();
         //Test
         // this._addBonuses(item, 'beforeRoll', "benefit");
         this.render();
@@ -1818,170 +1841,174 @@ export class RollForm extends FormApplication {
                     }
                 }
 
-                if (item.system.keywords.toLowerCase().includes('mute')) {
-                    this.object.cost.muteMotes -= item.system.cost.motes;
-                }
-                else {
-                    this.object.cost.motes -= item.system.cost.motes;
-                }
-                this.object.cost.anima -= item.system.cost.anima;
-                this.object.cost.penumbra -= item.system.cost.penumbra;
-                this.object.cost.willpower -= item.system.cost.willpower;
-                this.object.cost.silverxp -= item.system.cost.silverxp;
-                this.object.cost.goldxp -= item.system.cost.goldxp;
-                this.object.cost.whitexp -= item.system.cost.whitexp;
-                this.object.cost.initiative -= item.system.cost.initiative;
-                this.object.cost.grappleControl -= item.system.cost.grapplecontrol;
-
-                if (item.system.cost.aura === this.object.cost.aura) {
-                    this.object.cost.aura = "";
-                }
-
-                if (item.system.cost.health > 0) {
-                    if (item.system.cost.healthtype === 'bashing') {
-                        this.object.cost.healthbashing -= item.system.cost.health;
-                    }
-                    else if (item.system.cost.healthtype === 'lethal') {
-                        this.object.cost.healthlethal -= item.system.cost.health;
+                if (item.system.cost) {
+                    if (item.system.keywords.toLowerCase().includes('mute')) {
+                        this.object.cost.muteMotes -= item.system.cost.motes;
                     }
                     else {
-                        this.object.cost.healthaggravated -= item.system.cost.health;
+                        this.object.cost.motes -= item.system.cost.motes;
                     }
-                }
-                this.object.restore.motes -= item.system.restore.motes;
-                this.object.restore.willpower -= item.system.restore.willpower;
-                this.object.restore.health -= item.system.restore.health;
-                this.object.restore.initiative -= item.system.restore.initiative;
+                    this.object.cost.anima -= item.system.cost.anima;
+                    this.object.cost.penumbra -= item.system.cost.penumbra;
+                    this.object.cost.willpower -= item.system.cost.willpower;
+                    this.object.cost.silverxp -= item.system.cost.silverxp;
+                    this.object.cost.goldxp -= item.system.cost.goldxp;
+                    this.object.cost.whitexp -= item.system.cost.whitexp;
+                    this.object.cost.initiative -= item.system.cost.initiative;
+                    this.object.cost.grappleControl -= item.system.cost.grapplecontrol;
 
-                this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
-                this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-
-                this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
-                this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
-
-                if (!item.system.diceroller.settings.noncharmdice) {
-                    this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
-                }
-                if (!item.system.diceroller.settings.noncharmsuccesses) {
-                    this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
-                }
-                this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
-                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
-                    if (rerollValue) {
-                        this.object.reroll[rerollKey].status = false;
+                    if (item.system.cost.aura === this.object.cost.aura) {
+                        this.object.cost.aura = "";
                     }
-                }
-                if (item.system.diceroller.rolltwice) {
-                    this.object.rollTwice = false;
-                }
-                if (item.system.diceroller.rerollfailed) {
-                    this.object.rerollFailed = false;
-                }
-                this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
-                this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
-                if (this.object.showTargets) {
-                    const targetValues = Object.values(this.object.targets);
-                    for (const target of targetValues) {
-                        target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        if (this.object.rollType === 'damage') {
-                            target.rollData.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+
+                    if (item.system.cost.health > 0) {
+                        if (item.system.cost.healthtype === 'bashing') {
+                            this.object.cost.healthbashing -= item.system.cost.health;
+                        }
+                        else if (item.system.cost.healthtype === 'lethal') {
+                            this.object.cost.healthlethal -= item.system.cost.health;
+                        }
+                        else {
+                            this.object.cost.healthaggravated -= item.system.cost.health;
                         }
                     }
-                }
-                else {
-                    this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                    this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                    if (this.object.rollType === 'damage') {
-                        this.object.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-                    }
+                    this.object.restore.motes -= item.system.restore.motes;
+                    this.object.restore.willpower -= item.system.restore.willpower;
+                    this.object.restore.health -= item.system.restore.health;
+                    this.object.restore.initiative -= item.system.restore.initiative;
                 }
 
+                if (item.system.diceroller) {
+                    this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
+                    this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
 
-                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
-                    if (rerollValue) {
-                        this.object.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
-                    }
-                }
-                for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
-                    if (value) {
-                        this.object.settings.doubleSucccessCaps[key] -= this._getFormulaValue(value);
-                    }
-                }
-                if (item.system.diceroller.ignorelegendarysize) {
-                    this.object.settings.ignoreLegendarySize = false;
-                }
-                if (item.system.diceroller.excludeonesfromrerolls) {
-                    this.object.settings.excludeOnesFromRerolls = false;
-                }
+                    this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
+                    this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
 
-                this.object.damage.damageDice -= this._getFormulaValue(item.system.diceroller.damage.bonusdice);
-                this.object.damage.damageSuccessModifier -= this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
-                this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
-                this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
-                this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
-                this.object.damage.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
-
-                this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
-                this.object.damage.ignoreHardness -= this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
-
-                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
-                    if (rerollValue) {
-                        this.object.damage.reroll[rerollKey].status = false;
+                    if (!item.system.diceroller.settings.noncharmdice) {
+                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
                     }
-                }
-                if (item.system.diceroller.damage.rerollfailed) {
-                    this.object.damage.rerollFailed = false;
-                }
-                if (item.system.diceroller.damage.rolltwice) {
-                    this.object.damage.rollTwice = false;
-                }
-                this.object.damage.rerollNumber -= this._getFormulaValue(item.system.diceroller.damage.rerolldice);
-                if (item.system.diceroller.damage.threshholdtodamage) {
-                    this.object.damage.threshholdToDamage = false;
-                }
-                if (item.system.diceroller.damage.doublerolleddamage) {
-                    this.object.damage.doubleRolledDamage = false;
-                }
-                this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
-                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
-                    if (rerollValue) {
-                        this.object.damage.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
+                    if (!item.system.diceroller.settings.noncharmsuccesses) {
+                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
                     }
-                }
-                for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
-                    if (value) {
-                        this.object.settings.damage.doubleSucccessCaps[key] -= this._getFormulaValue(value);
+                    this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
+                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
+                        if (rerollValue) {
+                            this.object.reroll[rerollKey].status = false;
+                        }
                     }
-                }
-                if (item.system.diceroller.damage.excludeonesfromrerolls) {
-                    this.object.settings.damage.excludeOnesFromRerolls = false;
-                }
-                if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
-                    this.object.activateAura = '';
-                }
-                if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
-                    this.object.settings.triggerOnTens = 'none';
-                    this.object.settings.alsoTriggerNines = false;
-                }
-                this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
-                if (item.system.diceroller.damage.triggerontens !== 'none') {
-                    this.object.settings.damage.triggerOnTens = 'none';
-                    this.object.settings.damage.alsoTriggerNines = false;
-                }
-                this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
-                this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
+                    if (item.system.diceroller.rolltwice) {
+                        this.object.rollTwice = false;
+                    }
+                    if (item.system.diceroller.rerollfailed) {
+                        this.object.rerollFailed = false;
+                    }
+                    this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
+                    this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
+                    if (this.object.showTargets) {
+                        const targetValues = Object.values(this.object.targets);
+                        for (const target of targetValues) {
+                            target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                            target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                            target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                            if (this.object.rollType === 'damage') {
+                                target.rollData.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                            }
+                        }
+                    }
+                    else {
+                        this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        if (this.object.rollType === 'damage') {
+                            this.object.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                        }
+                    }
 
-                if (this.object.rollType === 'useOpposingCharms') {
-                    this.object.addOppose.addedBonus.dice -= this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
-                    this.object.addOppose.addedBonus.successes -= this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
-                    this.object.addOppose.addedBonus.defense -= this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
-                    this.object.addOppose.addedBonus.soak -= this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
-                    this.object.addOppose.addedBonus.hardness -= this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
-                    this.object.addOppose.addedBonus.damage -= this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
-                    this.object.addOppose.addedBonus.resolve -= this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
-                    this.object.addOppose.addedBonus.guile -= this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
+
+                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
+                        if (rerollValue) {
+                            this.object.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
+                        }
+                    }
+                    for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
+                        if (value) {
+                            this.object.settings.doubleSucccessCaps[key] -= this._getFormulaValue(value);
+                        }
+                    }
+                    if (item.system.diceroller.ignorelegendarysize) {
+                        this.object.settings.ignoreLegendarySize = false;
+                    }
+                    if (item.system.diceroller.excludeonesfromrerolls) {
+                        this.object.settings.excludeOnesFromRerolls = false;
+                    }
+
+                    this.object.damage.damageDice -= this._getFormulaValue(item.system.diceroller.damage.bonusdice);
+                    this.object.damage.damageSuccessModifier -= this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
+                    this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
+                    this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
+                    this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
+                    this.object.damage.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
+
+                    this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+                    this.object.damage.ignoreHardness -= this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
+
+                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
+                        if (rerollValue) {
+                            this.object.damage.reroll[rerollKey].status = false;
+                        }
+                    }
+                    if (item.system.diceroller.damage.rerollfailed) {
+                        this.object.damage.rerollFailed = false;
+                    }
+                    if (item.system.diceroller.damage.rolltwice) {
+                        this.object.damage.rollTwice = false;
+                    }
+                    this.object.damage.rerollNumber -= this._getFormulaValue(item.system.diceroller.damage.rerolldice);
+                    if (item.system.diceroller.damage.threshholdtodamage) {
+                        this.object.damage.threshholdToDamage = false;
+                    }
+                    if (item.system.diceroller.damage.doublerolleddamage) {
+                        this.object.damage.doubleRolledDamage = false;
+                    }
+                    this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
+                        if (rerollValue) {
+                            this.object.damage.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
+                        }
+                    }
+                    for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
+                        if (value) {
+                            this.object.settings.damage.doubleSucccessCaps[key] -= this._getFormulaValue(value);
+                        }
+                    }
+                    if (item.system.diceroller.damage.excludeonesfromrerolls) {
+                        this.object.settings.damage.excludeOnesFromRerolls = false;
+                    }
+                    if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
+                        this.object.activateAura = '';
+                    }
+                    if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
+                        this.object.settings.triggerOnTens = 'none';
+                        this.object.settings.alsoTriggerNines = false;
+                    }
+                    this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
+                    if (item.system.diceroller.damage.triggerontens !== 'none') {
+                        this.object.settings.damage.triggerOnTens = 'none';
+                        this.object.settings.damage.alsoTriggerNines = false;
+                    }
+                    this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
+                    this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
+
+                    if (this.object.rollType === 'useOpposingCharms') {
+                        this.object.addOppose.addedBonus.dice -= this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
+                        this.object.addOppose.addedBonus.successes -= this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
+                        this.object.addOppose.addedBonus.defense -= this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
+                        this.object.addOppose.addedBonus.soak -= this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
+                        this.object.addOppose.addedBonus.hardness -= this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
+                        this.object.addOppose.addedBonus.damage -= this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
+                        this.object.addOppose.addedBonus.resolve -= this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
+                        this.object.addOppose.addedBonus.guile -= this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
+                    }
                 }
             }
             this._calculateAnimaGain();
@@ -4063,6 +4090,11 @@ export class RollForm extends FormApplication {
                         fufillsRequirements = false;
                     }
                     break;
+                case 'hasClassification':
+                    if (!charm.actor.system.traits.classifications.value.includes(cleanedValue)) {
+                        fufillsRequirements = false;
+                    }
+                    break;
                 case 'formula':
                     if (!this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
                         fufillsRequirements = false;
@@ -4091,6 +4123,11 @@ export class RollForm extends FormApplication {
                         fufillsRequirements = false;
                     }
                     else if (!this.object.target.actor.system.battlegroup) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'targetHasClassification':
+                    if (!this.object.target.actor.system.traits.classifications.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
                     break;

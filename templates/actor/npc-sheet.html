@@ -42,7 +42,7 @@
 
                 {{#ifEquals system.creaturetype 'exalt'}}
                 <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                    {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
+                        {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
                     </select></h1>
                 {{#if availableCastes}}
                 <h1 class="charname"> <select name="system.details.caste" data-type="String">
@@ -56,7 +56,7 @@
 
                 {{#ifEquals system.creaturetype 'fae'}}
                 <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
-                    {{selectOptions selects.exaltTypes selected=system.details.creaturesubtype localize=true}}
+                        {{selectOptions selects.exaltTypes selected=system.details.creaturesubtype localize=true}}
                     </select></h1>
                 {{/ifEquals}}
             </div>
@@ -164,6 +164,19 @@
                     <input type="number" name="system.speed.value" value="{{system.speed.value}}" data-dtype="Number" />
                 </div>
                 {{/ifEquals}}
+            </div>
+            <div class="flex-group-left">
+                <div class="mt-1">
+                    <label class="resource-label">{{localize "Ex3.Classifications"}}</label>
+                    <a class="trait-selector" data-options="classifications" data-target="system.traits.classifications">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <div class="mt-1">
+                        {{#each system.traits.classifications.selected as |v k|}}
+                        <li class="tag {{k}}">{{v}}</li>
+                        {{/each}}
+                    </div>
+                </div>
             </div>
             <div>
                 <textarea type="text" name="system.qualities" rows="12">{{system.qualities}}</textarea>
@@ -312,6 +325,28 @@
 
         {{!-- Biography Tab --}}
         <div class="tab biography" data-group="primary" data-tab="description">
+            <div class="mt-1">
+                <label class="resource-label">{{localize "Ex3.Resonance"}}</label>
+                <a class="trait-selector" data-options="resonance" data-target="system.traits.resonance">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <div class="mt-1">
+                    {{#each system.traits.resonance.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="mt-1">
+                <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
+                <a class="trait-selector" data-options="dissonance" data-target="system.traits.dissonance">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <div class="mt-1">
+                    {{#each system.traits.dissonance.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                    {{/each}}
+                </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/biography-tab.html}}
         </div>
     </section>

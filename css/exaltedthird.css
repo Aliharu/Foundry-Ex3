@@ -503,6 +503,11 @@
   background-size: cover;
 }
 
+.mountain-background .window-content {
+  background: url("../assets/backgrounds/mountain-background.jpg");
+  background-size: cover;
+}
+
 .exigent-background .window-content {
   background: url("../assets/backgrounds/exigent-background.jpg");
   background-size: cover;

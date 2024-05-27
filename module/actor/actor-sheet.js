@@ -681,6 +681,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       "languages": CONFIG.exaltedthird.languages,
       "resonance": CONFIG.exaltedthird.resonance,
       "dissonance": CONFIG.exaltedthird.dissonance,
+      "classifications": CONFIG.exaltedthird.classifications,
     };
     for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];

@@ -1,0 +1,99 @@
+<div class="resource flex-center mb-1" style="font-size: 17px;">
+    <a><i class="fas fa-info-circle show-roll-triggers-link cursor-pointer"></i></a> <label
+        class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger"
+            title="Create trigger" data-type="dicerollertriggers"><i class="fas fa-plus"></i></a></label>
+</div>
+{{#each system.triggers.dicerollertriggers as |trigger index|}}
+<div class="flex-group-center mb-1">
+    <div class="grid grid-2col flex-center">
+        <div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Name"}}</label>
+            </div>
+            <div class="d-flex" style="align-items:center; margin-bottom: 10px;">
+                <input name="system.triggers.dicerollertriggers.{{index}}.name" class="trigger-name"
+                    value="{{trigger.name}}" type="text" data-index="{{index}}"
+                    data-type="dicerollertriggers">
+            </div>
+        </div>
+        <div>
+            <div style="margin-right: 30px;">
+                <label class="resource-label">{{localize "Ex3.TriggerTime"}}</label>
+            </div>
+            <div class="d-flex" style="align-items:center; margin-bottom: 10px;justify-content:center;">
+                <select name="system.triggers.dicerollertriggers.{{index}}.triggerTime" data-type="String">
+                    {{selectOptions ../selects.triggerTimes selected=trigger.triggerTime localize=true}}
+                </select>
+                <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers"
+                    data-index="{{index}}"><i class="fas fa-trash"
+                        style="margin-right: 15px; margin-left:15px;"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="resource flex-center mb-1" style="font-size: 17px;">
+        <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control add-trigger-subitem"
+                title="Create bonus" data-type="dicerollertriggers" data-subtype="bonuses"
+                data-index="{{index}}"><i class="fas fa-plus"></i></a></label>
+    </div>
+    <div class="grid grid-2col flex-center">
+        {{#each trigger.bonuses as |bonus bonusIndex|}}
+        <div>
+            <div class="resource-label">{{localize "Ex3.Effect"}}</div>
+            <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.effect"
+                data-type="String">
+                {{#each ../../bonusTypes as |bonusesCategory bonusesCategoryType|}}
+                <optgroup label="{{localize bonusesCategory.label}}">
+                  {{selectOptions bonusesCategory.bonuses selected=bonus.effect localize=true}}
+                </optgroup>
+                {{/each}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label" style="margin-right: 30px;">{{localize "Ex3.Value"}}*</div>
+            <div class="d-flex" style="align-items:center;">
+                <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    value="{{bonus.value}}" type="text">
+                <a class="item-control delete-trigger-subitem" title="Delete bonus"
+                    data-type="dicerollertriggers" data-index="{{index}}" data-subindex="{{bonusIndex}}"
+                    data-subtype="bonuses"><i class="fas fa-trash"
+                        style="margin-right: 15px; margin-left: 15px;"></i></a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    <div class="resource flex-center mb-1" style="font-size: 17px;">
+        <label class="resource-label">{{localize "Ex3.Requirements"}} <a
+                class="item-control add-trigger-subitem" title="Create requirement"
+                data-type="dicerollertriggers" data-subtype="requirements" data-index="{{index}}"><i
+                    class="fas fa-plus"></i></a></label>
+    </div>
+    <div class="grid grid-2col flex-center">
+        {{#each trigger.requirements as |requirement requirementIndex|}}
+        <div>
+            <div class="resource-label">{{localize "Ex3.Requirement"}}</div>
+            <select
+                name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.requirement"
+                data-type="String">
+            {{#each ../../requirementTypes as |requirementCategory requirementCategoryType|}}
+            <optgroup label="{{localize requirementCategory.label}}">
+              {{selectOptions requirementCategory.requirements selected=requirement.requirement localize=true}}
+            </optgroup>
+            {{/each}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label" style="margin-right: 30px;">{{localize "Ex3.Value"}}</div>
+            <div class="d-flex" style="align-items:center;">
+                <input
+                    name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    value="{{requirement.value}}" type="text">
+                <a class="item-control delete-trigger-subitem" title="Delete bonus"
+                    data-type="dicerollertriggers" data-index="{{index}}"
+                    data-subindex="{{requirementIndex}}" data-subtype="requirements"><i class="fas fa-trash"
+                        style="margin-right: 15px; margin-left: 15px;"></i></a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{/each}}
