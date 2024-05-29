@@ -1912,7 +1912,11 @@ export default class TemplateImporter extends FormApplication {
         actorData.folder = folder;
       }
       actorData.system.settings.editmode = false;
-      await Actor.create(actorData);
+      const actor = await Actor.create(actorData);
+      if(actorData.system.creaturetype === 'exalt') {
+        await actor.calculateDerivedStats('resonance');
+      }
+      await actor.calculateDerivedStats('classifications');
     }
     catch (error) {
       console.log(error);

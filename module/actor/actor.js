@@ -55,13 +55,6 @@ export class ExaltedThirdActor extends Actor {
             committed: this.system.motes.peripheral.committed
           }
         };
-        if (exalt) {
-          updateData.system.traits = {
-            resonance: this.calculateResonance(exalt),
-            dissonance: this.calculateDissonance(exalt),
-            classifications: this.calculateClassifications(exalt),
-          };
-        }
       }
       else {
         var personalMotes = essenceLevel * 10;
@@ -103,6 +96,11 @@ export class ExaltedThirdActor extends Actor {
             hasaura: hasAura
           }
         }
+        updateData.system.traits = {
+          resonance: this.calculateResonance(exalt),
+          dissonance: this.calculateDissonance(exalt),
+          classifications: this.calculateClassifications(exalt, creatureType || 'exalt'),
+        };
       }
     }
 
@@ -404,7 +402,7 @@ export class ExaltedThirdActor extends Actor {
       actorData.system.traits.dissonance = this.calculateDissonance(this.system.details.exalt);
     }
     if (type === 'classifications' || type === 'all') {
-      actorData.system.traits.classifications = this.calculateClassifications(this.system.details.exalt);
+      actorData.system.traits.classifications = this.calculateClassifications(this.system.details.exalt, this.system.creaturetype || 'exalt');
     }
     if (type === 'hardness' || type === 'all') {
       let hardness = 0
@@ -435,6 +433,8 @@ export class ExaltedThirdActor extends Actor {
       "infernal": ['orichalcum'],
       "liminal": [],
       "lunar": ['moonsilver'],
+      "mortal": [],
+      "other": [],
       "sidereal": ['starmetal'],
       "soverign": [],
       "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
@@ -451,7 +451,7 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     else {
-      resonance.value = resonanceChart[exaltType];
+      resonance.value = resonanceChart[exaltType] ?? [];
     }
     return resonance;
   }
@@ -471,6 +471,8 @@ export class ExaltedThirdActor extends Actor {
       "infernal": [],
       "liminal": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "lunar": [],
+      "mortal": [],
+      "other": [],
       "sidereal": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "solar": [],
       "soverign": ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
@@ -486,23 +488,34 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     else {
-      dissonance.value = dissonanceChart[exaltType];
+      dissonance.value = dissonanceChart[exaltType] ?? [];
     }
     return dissonance;
   }
 
-  calculateClassifications(exaltType) {
+  calculateClassifications(exaltType, creatureType='exalt') {
     let classifications = {
       value: [],
       custom: "",
     }
 
-    if (exaltType === 'abyssal' || exaltType === 'infernal') {
-      classifications.value = ['creatureofdarkness', 'enemyoffate'];
-    }
-
-    if (exaltType === 'mortal') {
-      classifications.value = ['mortal'];
+    if(this.type === 'character' || creatureType === 'exalt') {
+      if (exaltType === 'abyssal' || exaltType === 'infernal') {
+        classifications.value = ['creatureofdarkness', 'enemyoffate'];
+      }
+      if (exaltType === 'mortal') {
+        classifications.value = ['mortal'];
+      }
+    } else {
+      const creatureTypeClassifications = {
+        undead: ['creatureofdarkness', 'enemyoffate', 'undead'],
+        demon: ['creatureofdarkness', 'demon', 'enemyoffate', 'spirit'],
+        elemental: ['spirit'],
+        mortal: ['mortal'],
+        fae: ['fae', 'enemyoffate'],
+        god: ['spirit'],
+      };
+      classifications.value = creatureTypeClassifications[creatureType] ?? [];
     }
 
     return classifications;

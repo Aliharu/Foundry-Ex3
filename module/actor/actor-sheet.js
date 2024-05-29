@@ -1,5 +1,6 @@
-import { animaTokenMagic, Prophecy, RollForm } from "../apps/dice-roller.js";
+import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import Importer from "../apps/importer.js";
+import { Prophecy } from "../apps/prophecy.js";
 import TraitSelector from "../apps/trait-selector.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";

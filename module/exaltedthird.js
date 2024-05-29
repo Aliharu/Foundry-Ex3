@@ -7,7 +7,7 @@ import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
 import * as Chat from "./chat.js";
 
-import { Prophecy, RollForm } from "./apps/dice-roller.js";
+import { RollForm } from "./apps/dice-roller.js";
 import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
@@ -42,6 +42,7 @@ import {
   ItemWeaponData
 } from "./template/item-template.js";
 import { ExaltedCombat } from "./combat/combat.js";
+import { Prophecy } from "./apps/prophecy.js";
 
 Hooks.once('init', async function () {
 
