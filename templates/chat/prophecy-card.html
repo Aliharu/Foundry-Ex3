@@ -1,5 +1,22 @@
 <div class="chat-card exaltedthird">
-    <div class="card-content">{{localize "Ex3.Prophecy"}}: {{sign}}</div>
+    <div class="grid grid-2col" style="text-align:center;">
+        <div>
+            <div>
+                <img class="borderless-image" src="{{actor.img}}" title="{{actor.name}}" width="64" height="64" />
+            </div>
+            <div>
+                <b>{{actor.name}}</b>
+            </div>
+        </div>
+        <div>
+            <img class="borderless-image black-icon" src="systems/exaltedthird/assets/icons/galaxy.svg" width="64" height="64" />
+            <div>
+                <b>{{localize "Ex3.Prophecy"}}</b>
+            </div>
+        </div>
+    </div>
+    <div class="card-content"><b>{{localize "Ex3.Sign"}}:</b> {{sign}}</div>
+    <div class="card-content"><b>{{localize "Ex3.Interval"}}:</b> {{localize data.baseIntervalTime}}</div>
     <div class="resource-content flexrow flex-center flex-between">
         <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Ambition"}}</label>
     </div>
@@ -21,7 +38,7 @@
             <label class="resource-label">{{localize "Ex3.Cosignatories"}}: </label>{{data.means.cosignatories.text}}
         </div>
         <div>
-            <label class="resource-label">{{localize "Ex3.Interval"}}: </label>{{intervalTimeString}}
+            <label class="resource-label">{{localize "Ex3.ExtraIntervalTime"}}: </label>+{{data.means.additionalIntervalTime.value}}
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.Trappings"}}: </label>{{data.trappings.value}}

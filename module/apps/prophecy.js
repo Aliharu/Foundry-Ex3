@@ -92,9 +92,9 @@ export class Prophecy extends FormApplication {
                 bonusIntervals += 1;
             }
 
-            const sign = `The ${this.object.sign.capitalize()}`;
+            const sign = `The ${this.object.sign?.capitalize() || "No Sign"}`;
 
-            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, intervalTimeString: this.object.baseIntervalTime, sign: sign });
+            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, 'actor': this.actor, intervalTimeString: this.object.baseIntervalTime, sign: sign });
 
             ChatMessage.create({
                 user: game.user.id,
