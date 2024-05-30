@@ -22,13 +22,8 @@ export class ExaltedThirdItem extends Item {
     const equipmentChart = CONFIG.exaltedthird.equipmentStats;
     const artifactEquipmentChart = CONFIG.exaltedthird.artifactEquipmentStats;
     if(this.type === 'weapon' || this.type === 'armor') {
-      const equipped = updateData.system?.equipped || this.system.equipped;
-      const weighttype = updateData.system?.weighttype || this.system.weighttype;
-      if (equipped !== this.system.equipped) {
-        for (const effect of this.effects) {
-          effect.update({ disabled: !updateData.system?.equipped });
-        }
-      }
+      const equipped = updateData.system?.equipped ?? this.system.equipped;
+      const weighttype = updateData.system?.weighttype ?? this.system.weighttype;
       if (weighttype && weighttype !== this.system.weighttype && weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
         if (this.type === 'weapon') {
           const weaponType = updateData.system?.weapontype || this.system.weapontype;
@@ -105,6 +100,26 @@ export class ExaltedThirdItem extends Item {
             updateData.system.penalty = equipmentChart[weighttype].penalty;
             updateData.system.attunement = 0;
           }
+        }
+      }
+      if (equipped !== this.system.equipped) {
+        // Issues with active effects
+        // if (this.actor) {
+        //   const defense = updateData.system.defense ?? this.system.defense;
+        //   if(equipped) {
+        //     if(defense) {
+        //       await this.actor.update({ [`system.parry.value`]: this.actor.system.parry.value + defense });
+        //       await this.actor.update({ [`system.evasion.value`]: this.actor.system.evasion.value + defense });
+        //     }
+        //   } else {
+        //     if(defense) {
+        //       await this.actor.update({ [`system.parry.value`]: this.actor.system.parry.value - defense });
+        //       await this.actor.update({ [`system.evasion.value`]: this.actor.system.evasion.value - defense });
+        //     }
+        //   }
+        // }
+        for (const effect of this.effects) {
+          effect.update({ disabled: !equipped });
         }
       }
     }

@@ -1774,25 +1774,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       });
     });
 
-    html.find('.toggle-equipped').click(ev => {
+    html.find('.toggle-item-value').click(ev => {
       ev.preventDefault();
       ev.stopPropagation();
-      // Render the chat card template
+      const key = ev.currentTarget.dataset.key;
       let li = $(ev.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
       item.update({
-        [`system.equipped`]: !item.system.equipped,
-      });
-    });
-
-    html.find('.toggle-visible').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      // Render the chat card template
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      item.update({
-        [`system.visible`]: !item.system.visible,
+        [`system.${key}`]: !item.system[key],
       });
     });
 

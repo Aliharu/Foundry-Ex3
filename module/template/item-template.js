@@ -320,6 +320,7 @@ export class ItemDestinyData extends CommonItemData {
 
         return {
             ...commonData,
+            frayed: new fields.BooleanField({ initial: false }),
         }
     }
 }

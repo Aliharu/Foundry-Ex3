@@ -33,9 +33,9 @@
       </div>
       <div class="item-controls">
         {{#if item.system.equipped}}
-        <a class="item-control toggle-equipped" title="Unequip" style="color:#F9B516;"><i class="fas fa-hand"></i></a>
+        <a class="item-control toggle-item-value" data-key="equipped" title="Unequip" style="color:#F9B516;"><i class="fas fa-hand"></i></a>
         {{else}}
-        <a class="item-control toggle-equipped" title="Equip"><i class="fas fa-hand"></i></a>
+        <a class="item-control toggle-item-value" data-key="equipped" title="Equip"><i class="fas fa-hand"></i></a>
         {{/if}}
         {{#if item.system.poison.apply}}
         <a class="item-control toggle-poison" title="Remove Poison" style="color:green;"><i class="fas fa-flask-round-poison"></i></a>
@@ -121,9 +121,9 @@
       </div>
       <div class="item-controls">
         {{#if item.system.equipped}}
-        <a class="item-control toggle-equipped" title="Unequip" style="color:#F9B516;"><i class="fas fa-helmet-battle"></i></a>
+        <a class="item-control toggle-item-value" data-key="equipped" title="Unequip" style="color:#F9B516;"><i class="fas fa-helmet-battle"></i></a>
         {{else}}
-        <a class="item-control toggle-equipped" title="Equip"><i class="fas fa-helmet-battle"></i></a>
+        <a class="item-control toggle-item-value" data-key="equipped" title="Equip"><i class="fas fa-helmet-battle"></i></a>
         {{/if}}
         <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
