@@ -11,6 +11,7 @@ export class Prophecy extends FormApplication {
         this.object.signList = CONFIG.exaltedthird.siderealSigns;
         this.object.selects = CONFIG.exaltedthird.selects;
         this.object.totalUsedAmbition = 4;
+        this.object.baseIntervalTime = "Ex3.OneHour";
         this.object.ambitions = {
             duration: {
                 label: 'Ex3.Duration',
@@ -44,11 +45,10 @@ export class Prophecy extends FormApplication {
                 value: 0,
                 text: 'No Cosignatories',
             },
-            intervalTime: {
-                label: 'Ex3.IntervalTime',
+            additionalIntervalTime: {
+                label: 'Ex3.ExtraIntervalTime',
                 value: 0,
             },
-
         }
         this.object.trappings = {
             label: 'Ex3.Trappings',
@@ -92,17 +92,9 @@ export class Prophecy extends FormApplication {
                 bonusIntervals += 1;
             }
 
-            const intervalTime = {
-                "0": "One Week",
-                "1": "One Month",
-                "2": "Three Months",
-            };
-
             const sign = `The ${this.object.sign.capitalize()}`;
 
-            let intervalTimeString = intervalTime[this.object.means.intervalTime.value];
-
-            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, intervalTimeString: intervalTimeString, sign: sign });
+            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, intervalTimeString: this.object.baseIntervalTime, sign: sign });
 
             ChatMessage.create({
                 user: game.user.id,
@@ -120,8 +112,8 @@ export class Prophecy extends FormApplication {
                     1: 'One month',
                     2: 'One season',
                     3: 'One year',
-                    4: 'Ten years',
-                    5: 'One hundred years',
+                    4: 'One century',
+                    5: 'One millennium',
                 },
                 frequency: {
                     1: 'Once per story',
@@ -132,9 +124,9 @@ export class Prophecy extends FormApplication {
                 },
                 power: {
                     1: 'Effects only mortals and trivial characters',
-                    2: 'Can affect non-exalts with Essence 1',
-                    3: 'Can affect un-exalted characters with essence 3 or less',
-                    4: 'Can affect any character with less or equal to Sidereal\'s (Essence or 3)',
+                    2: 'Can affect non-exalts with Essence (Sidereals Essence)',
+                    3: 'Can affect un-exalted characters with (Sidereals Essence+2) or less or Exalted with (Sidereals Essence) or less',
+                    4: 'Effects all non-exalted characters and Exalted characters with (Sidereals Essence+2) or less',
                     5: 'All characters',
                 },
                 scope: {
@@ -151,6 +143,8 @@ export class Prophecy extends FormApplication {
             }
             this.object.totalUsedAmbition = prophecyAmbition;
             this.object.ambitions[ev.target.id].text = valueMap[ev.target.id][ev.target.value];
+
+            this._getIntervalTime();
             this.render();
         });
 
@@ -171,6 +165,12 @@ export class Prophecy extends FormApplication {
             this.render();
         });
 
+        html.on("change", ".interval-rerender", ev => {
+            this._getIntervalTime();
+            this.render();
+        });
+
+
         html.on("change", ".sign-select", ev => {
             this.object.maxAmbition = Math.max(3, this.actor.system.essence.value);
             this.object.maxTotalAmbition = (this.actor.system.essence.value * 2) + 5;
@@ -180,5 +180,32 @@ export class Prophecy extends FormApplication {
             }
             this.render();
         });
+    }
+    
+    _getIntervalTime() {
+        const baseTimeMap = {
+            1: "Ex3.OneHour",
+            2: "Ex3.OneDay",
+            3: "Ex3.OneWeek",
+            4: "Ex3.OneMonth",
+            5: "Ex3.OneSeason",
+            6: "Ex3.OneYear",
+        };
+        let timeValue = 1;
+        let maxValue = 1; // Initialize with the smallest possible number
+        for (const key in this.object.ambitions) {
+            if (parseInt(this.object.ambitions[key].value) > maxValue) {
+                maxValue = parseInt(this.object.ambitions[key].value);
+            }
+        }
+        if (maxValue > 4) {
+            timeValue = 3;
+        } else if (maxValue > 2) {
+            timeValue = 2;
+        } else {
+            timeValue = 1;
+        }
+        timeValue = Math.min(timeValue + parseInt(this.object.means.additionalIntervalTime.value), 6);
+        this.object.baseIntervalTime = baseTimeMap[timeValue];
     }
 }

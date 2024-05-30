@@ -71,12 +71,12 @@
     ],
     "journeys": [
         "1m, learn whether a journey would align with destiny.",
-        "5m (0m at Bonfire), Exalt+Allies gain (Essence max 5) non-charm dice on movement actions",
+        "5m (0m at Bonfire), Exalt+Allies gain (Essence max 5) non-charm dice on movement actions or escaping confinemen",
         "1/story, 20m, 1wp, Teleport exalt, circle, and EssenceX2 others within long range to anywhere she is familiar with.  Takes 1 turn and activates at the start of next turn if she hasn't move during that time."
     ],
     "serenity": [
         "1m. learn whether a persons relationship would align with destiny",
-        "5m (0m at Bonfire), She and allies gain (Essence max 5) non charm dice on influence rolls for positive emotions and craft rolls for basic/major projects.  Resolve bonuses from postiive ties increase by one.",
+        "5m (0m at Bonfire), She and allies gain (Essence max 5) non charm dice on influence rolls and read intentions.  Resolve bonuses from postiive ties increase by one.",
         "1/story, 20m, 1wp (Psyche), Take her turn to cause all current participants in the battle to be unable to take hostile actions unless they cite a defining intimacy and spend (Sids Essence or 3) WP or make a hostile action in self defense."
     ],
     "battles": [
@@ -86,7 +86,7 @@
     ],
     "secrets": [
         "1m, learn whether concealing or revealing information aligns with destiny",
-        "5m (0m at Bonfire), She and allies gain +1 non-charm guile and (Essence max 5) non charm dice on manupulation, larceny, and stealth",
+        "5m (0m at Bonfire), She and allies gain +1 non-charm guile and resolve (+2 vs psyche effects and mind reading) and (Essence max 5) non charm dice on manupulation rolls",
         "1/story, 20m, 1wp, 1 Scene, Sidereal, allies, and EssenceX2 others are immune to effects opposing their guile and add (Sids Essence) to resolve.  Un-Exalted characters can't lie or refuse to answer questions unless they spend 1 WP.  Characters with Essence less than the sids cannot resist.  For the next Essence days.  Characters effected by this sign cannot be investigated or scryd."
     ],
     "endings": [

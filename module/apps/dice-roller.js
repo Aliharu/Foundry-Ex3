@@ -1120,7 +1120,11 @@ export class RollForm extends FormApplication {
                 this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
             }
             if (!item.system.diceroller.settings.noncharmsuccesses) {
-                this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+                if(this.actor.system.details.exalt === 'sidereal') {
+                    this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                } else {
+                    this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+                }
             }
             if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
                 this.object.doubleSuccess = item.system.diceroller.doublesuccess;
@@ -1893,7 +1897,11 @@ export class RollForm extends FormApplication {
                         this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
                     }
                     if (!item.system.diceroller.settings.noncharmsuccesses) {
-                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
+                        if(this.actor.system.details.exalt === 'sidereal') {
+                            this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonussuccesses));
+                        } else { 
+                            this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
+                        }
                     }
                     this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
                     for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {

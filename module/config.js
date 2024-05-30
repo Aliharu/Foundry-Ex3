@@ -1742,6 +1742,7 @@ exaltedthird.selects = {
     lunar: "Ex3.Lunar",
     mountain: "Ex3.Mountain",
     puppeteer: "Ex3.Puppeteer",
+    sidereal: "Ex3.Sidereal",
     solar: "Ex3.Solar",
     sovereign: "Ex3.Sovereign",
     tree: "Ex3.Tree",
@@ -1993,9 +1994,10 @@ exaltedthird.selects = {
     "2": "2",
   },
   intervalTimesLevels: {
-    "0": "Ex3.OneWeek",
-    "1": "Ex3.OneMonth",
-    "2": "Ex3.ThreeMonths",
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
   },
   //NPC Generator
   npcTemplates: {
