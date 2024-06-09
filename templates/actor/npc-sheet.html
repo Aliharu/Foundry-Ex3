@@ -347,6 +347,17 @@
                     {{/each}}
                 </div>
             </div>
+            <div class="mt-1">
+                <label class="resource-label">{{localize "Ex3.Languages"}}</label>
+                <a class="trait-selector" data-options="languages" data-target="system.traits.languages">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <div class="mt-1">
+                  {{#each system.traits.languages.selected as |v k|}}
+                  <li class="tag {{k}}">{{v}}</li>
+                  {{/each}}
+                </div>
+              </div>
             {{> systems/exaltedthird/templates/actor/biography-tab.html}}
         </div>
     </section>

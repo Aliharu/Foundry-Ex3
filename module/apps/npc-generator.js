@@ -108,7 +108,8 @@ export default class NPCGenerator extends FormApplication {
       height: 1100,
       resizable: true,
       submitOnChange: true,
-      closeOnSubmit: false
+      closeOnSubmit: false,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
     });
   }
 

@@ -1645,7 +1645,7 @@ export async function spendEmbeddedItem(actor, item) {
             }
           }
         }
-        if (item.system.cost.commitmotes > 0) {
+        if (item.system.cost.commitmotes > 0 || item.system.activatable) {
           updateActive = true;
         }
       }

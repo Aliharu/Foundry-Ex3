@@ -35,6 +35,12 @@
                         {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
                     </select>
                 </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.AutoAddToRolls"}}</div>
+                    <select name="system.autoaddtorolls" data-type="String">
+                        {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
+                    </select>
+                </div>
             </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>

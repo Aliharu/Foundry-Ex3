@@ -1,222 +1,245 @@
 <div class="exaltedthird">
   <form>
-    <div class="resource flex-center mb-2 mt-2">
-      <div>
-        <label class="resource-label">{{localize "Ex3.Name"}} <a><i id="randomName"
-              class="fas fa-dice cursor-pointer"></i></a></label>
-        <input name="object.character.name" value="{{data.character.name}}" type="text"
-          placeholder="{{data.character.defaultName}}">
+    <header>
+      <div class="resource flex-center mb-2 mt-2">
+        <div>
+          <label class="resource-label">{{localize "Ex3.Name"}} <a><i id="randomName"
+                class="fas fa-dice cursor-pointer"></i></a></label>
+          <input name="object.character.name" value="{{data.character.name}}" type="text"
+            placeholder="{{data.character.defaultName}}">
+        </div>
       </div>
-    </div>
-    {{#ifEquals data.characterType 'npc'}}
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.NPC"}}</label>
-    </div>
-    <div class="resource grid grid-3col flex-center mb-2 mt-2">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Template"}}</div>
-        <select id="template" name="object.template" value="{{data.template}}" data-type="String">
-          {{selectOptions data.selects.npcTemplates selected=data.template localize=true}}
-        </select>
+      {{#ifEquals data.characterType 'npc'}}
+      <div class="resource-content flexrow flex-center flex-between mt-2">
+        <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.NPC"}}</label>
       </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.PoolNumbers"}}</div>
-        <select name="object.poolNumbers" value="{{data.poolNumbers}}" data-type="String">
-          {{selectOptions data.selects.poolNumberTypes selected=data.poolNumbers localize=true}}
-        </select>
+      <div class="resource grid grid-4col flex-center mb-2 mt-2">
+        <div>
+          <div class="resource-label">{{localize "Ex3.Template"}}</div>
+          <select id="template" name="object.template" value="{{data.template}}" data-type="String">
+            {{selectOptions data.selects.npcTemplates selected=data.template localize=true}}
+          </select>
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.PoolNumbers"}}</div>
+          <select name="object.poolNumbers" value="{{data.poolNumbers}}" data-type="String">
+            {{selectOptions data.selects.poolNumberTypes selected=data.poolNumbers localize=true}}
+          </select>
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.NPCType"}}</div>
+          <select class="rerender" name="object.character.npcType" data-type="String">
+            {{selectOptions data.selects.creatureTypes selected=data.character.npcType localize=true}}
+          </select>
+        </div>
+        <div>
+          <label class="resource-label">{{localize "Ex3.Essence"}} </label>
+          <input name="object.character.essence" value="{{data.character.essence}}" type="number">
+        </div>
       </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.NPCType"}}</div>
-        <select name="object.character.npcType" data-type="String">
-          {{selectOptions data.selects.creatureTypes selected=data.character.npcType localize=true}}
-        </select>
+      {{/ifEquals}}
+      {{#ifEquals data.character.npcType 'exalt'}}
+      <div class="resource-content flexrow flex-center flex-between">
+        <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Exalt"}}</label>
       </div>
-    </div>
-    {{/ifEquals}}
-    <div class="resource-content flexrow flex-center flex-between">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Description"}}</label>
-    </div>
-    <div class="resource grid grid-3col flex-center">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
-        <select id="exalt" name="object.character.exalt" data-type="String">
-          {{selectOptions data.selects.exaltTypes selected=data.character.exalt localize=true}}
-        </select>
+      <div class="resource grid grid-2col flex-center">
+        <div>
+          <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
+          <select id="exalt" name="object.character.exalt" data-type="String">
+            {{selectOptions data.selects.exaltTypes selected=data.character.exalt localize=true}}
+          </select>
+        </div>
+        {{#if data.availableCastes}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
+          <select name="object.character.caste" data-type="String">
+            {{selectOptions data.availableCastes selected=data.character.caste localize=true}}
+          </select>
+        </div>
+        {{/if}}
       </div>
-      {{#if data.availableCastes}}
-      <div>
-        <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
-        <select name="object.character.caste" data-type="String">
-          {{selectOptions data.availableCastes selected=data.character.caste localize=true}}
-        </select>
+      {{/ifEquals}}
+    </header>
+
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="stats">{{localize "Ex3.Stats"}}</a>
+      <a class="item" data-tab="equipment">{{localize "Ex3.Equipment"}}</a>
+    </nav>
+
+    <section class="sheet-body">
+      <div class="tab" data-group="primary" data-tab="stats">
+        {{#ifEquals data.characterType 'npc'}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Skills"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          {{#each data.character.skills as |skill key|}}
+          <div>
+            <div class="resource-label">{{localize skill.label}}</div>
+            <select name="object.character.skills.{{key}}.value" data-type="String">
+              {{selectOptions ../data.selects.skillLevels selected=skill.value localize=true}}
+            </select>
+          </div>
+          {{/each}}
+        </div>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Traits"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
+            <select name="object.character.sorcerer" data-type="String">
+              {{selectOptions data.selects.allSpellCircles selected=data.character.sorcerer localize=true blank=""}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+            <select name="object.character.sizeCategory" data-type="String">
+              {{selectOptions data.selects.sizeCategory selected=data.character.sizeCategory localize=true}}
+            </select>
+          </div>
+          {{#each data.character.numberTraits as |trait key|}}
+          <div>
+            <label class="resource-label">{{localize trait.label}}</label>
+            <input name="object.character.numberTraits.{{key}}.value" value="{{trait.value}}" type="number">
+          </div>
+          {{/each}}
+          <div>
+            <div class="resource-label">{{localize "Ex3.Battlegroup"}}</div>
+            <input class="rerender" name="object.character.battlegroup" type="checkbox" {{checked
+              data.character.battlegroup}}>
+          </div>
+          {{#each data.character.traits as |trait key|}}
+          <div>
+            <div class="resource-label">{{localize trait.label}}</div>
+            <input name="object.character.traits.{{key}}.value" type="checkbox" {{checked trait.value}}>
+          </div>
+          {{/each}}
+        </div>
+        {{#if data.character.battlegroup}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Battlegroup"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <label class="resource-label">{{localize "Ex3.Drill"}}</label>
+            <div class="charname"> <select name="object.character.battlegroupStats.drill"
+                value="{{data.character.battlegroupStats.drill}}" data-type="String">
+                {{selectOptions data.selects.drill selected=data.character.battlegroupStats.drill localize=true}}
+              </select></div>
+          </div>
+          <div>
+            <label class="resource-label">{{localize "Ex3.Size"}}</label>
+            <input type="number" name="object.character.battlegroupStats.size"
+              value="{{data.character.battlegroupStats.size}}" data-dtype="Number" />
+          </div>
+          <div>
+            <label class="resource-label">{{localize "Ex3.Might"}}</label>
+            <input type="number" name="object.character.battlegroupStats.might"
+              value="{{data.character.battlegroupStats.might}}" data-dtype="Number" />
+          </div>
+        </div>
+        {{/if}}
+        <!-- <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.HomebrewContent"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
+            <input name="object.character.homebew.specialAbilities" value="{{data.character.homebrew.specialAbilities}}"
+              type="number">
+          </div>
+        </div> -->
+        {{/ifEquals}}
       </div>
-      {{/if}}
-      <div>
-        <label class="resource-label">{{localize "Ex3.Essence"}} </label>
-        <input name="object.character.essence" value="{{data.character.essence}}" type="number">
+
+      <div class="tab" data-group="primary" data-tab="equipment">
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.PrimaryWeapon"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select class="rerender" name="object.character.equipment.primaryWeapon.type" data-type="String">
+              {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.primaryWeapon.type
+              localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="object.character.equipment.primaryWeapon.weaponType" data-type="String">
+              {{selectOptions data.selects.npcWeaponType selected=data.character.equipment.primaryWeapon.weaponType
+              localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+            <select name="object.character.equipment.primaryWeapon.weight" data-type="String">
+              {{selectOptions data.selects.npcWeaponWeight selected=data.character.equipment.primaryWeapon.weight
+              localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+            <input name="object.character.equipment.primaryWeapon.artifact" type="checkbox" {{checked
+              data.character.equipment.primaryWeapon.artifact}}>
+          </div>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.SecondaryWeapon"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select class="rerender" name="object.character.equipment.secondaryWeapon.type" data-type="String">
+              {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.secondaryWeapon.type
+              localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.WeaponType"}}</div>
+            <select name="object.character.equipment.secondaryWeapon.weaponType" data-type="String">
+              {{selectOptions data.selects.npcWeaponType selected=data.character.equipment.secondaryWeapon.weaponType
+              localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+            <select name="object.character.equipment.secondaryWeapon.weight" data-type="String">
+              {{selectOptions data.selects.npcWeaponWeight selected=data.character.equipment.secondaryWeapon.weight
+              localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+            <input name="object.character.equipment.secondaryWeapon.artifact" type="checkbox" {{checked
+              data.character.equipment.secondaryWeapon.artifact}}>
+          </div>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Armor"}}</label>
+        </div>
+        <div class="resource grid grid-3col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select class="rerender" name="object.character.equipment.armor.type" data-type="String">
+              {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.armor.type localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+            <select name="object.character.equipment.armor.weight" data-type="String">
+              {{selectOptions data.selects.npcArmorType selected=data.character.equipment.armor.weight localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+            <input name="object.character.equipment.armor.artifact" type="checkbox" {{checked
+              data.character.equipment.armor.artifact}}>
+          </div>
+        </div>
       </div>
-    </div>
-    {{#ifEquals data.characterType 'npc'}}
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Skills"}}</label>
-    </div>
-    <div class="resource grid grid-4col flex-center">
-      {{#each data.character.skills as |skill key|}}
-      <div>
-        <div class="resource-label">{{localize skill.label}}</div>
-        <select name="object.character.skills.{{key}}.value" data-type="String">
-          {{selectOptions ../data.selects.skillLevels selected=skill.value localize=true}}
-        </select>
-      </div>
-      {{/each}}
-    </div>
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Traits"}}</label>
-    </div>
-    <div class="resource grid grid-4col flex-center">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
-        <select name="object.character.sorcerer" data-type="String">
-          {{selectOptions data.selects.allSpellCircles selected=data.character.sorcerer localize=true blank=""}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
-        <select name="object.character.sizeCategory" data-type="String">
-          {{selectOptions data.selects.sizeCategory selected=data.character.sizeCategory localize=true}}
-        </select>
-      </div>
-      {{#each data.character.numberTraits as |trait key|}}
-      <div>
-        <label class="resource-label">{{localize trait.label}}</label>
-        <input name="object.character.numberTraits.{{key}}.value" value="{{trait.value}}" type="number">
-      </div>
-      {{/each}}
-      <div>
-        <div class="resource-label">{{localize "Ex3.Battlegroup"}}</div>
-        <input class="rerender" name="object.character.battlegroup" type="checkbox" {{checked
-          data.character.battlegroup}}>
-      </div>
-      {{#each data.character.traits as |trait key|}}
-      <div>
-        <div class="resource-label">{{localize trait.label}}</div>
-        <input name="object.character.traits.{{key}}.value" type="checkbox" {{checked trait.value}}>
-      </div>
-      {{/each}}
-    </div>
-    {{#if data.character.battlegroup}}
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Battlegroup"}}</label>
-    </div>
-    <div class="resource grid grid-4col flex-center">
-      <div>
-        <label class="resource-label">{{localize "Ex3.Drill"}}</label>
-        <div class="charname"> <select name="object.character.battlegroupStats.drill"
-            value="{{data.character.battlegroupStats.drill}}" data-type="String">
-            {{selectOptions data.selects.drill selected=data.character.battlegroupStats.drill localize=true}}
-          </select></div>
-      </div>
-      <div>
-        <label class="resource-label">{{localize "Ex3.Size"}}</label>
-        <input type="number" name="object.character.battlegroupStats.size"
-          value="{{data.character.battlegroupStats.size}}" data-dtype="Number" />
-      </div>
-      <div>
-        <label class="resource-label">{{localize "Ex3.Might"}}</label>
-        <input type="number" name="object.character.battlegroupStats.might"
-          value="{{data.character.battlegroupStats.might}}" data-dtype="Number" />
-      </div>
-    </div>
-    {{/if}}
-    <!-- <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.HomebrewContent"}}</label>
-    </div>
-    <div class="resource grid grid-4col flex-center">
-      <div>
-        <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
-        <input name="object.character.homebew.specialAbilities" value="{{data.character.homebrew.specialAbilities}}"
-          type="number">
-      </div>
-    </div> -->
-    {{/ifEquals}}
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.PrimaryWeapon"}}</label>
-    </div>
-    <div class="resource grid grid-4col flex-center">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Type"}}</div>
-        <select class="rerender" name="object.character.equipment.primaryWeapon.type" data-type="String">
-          {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.primaryWeapon.type localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Type"}}</div>
-        <select name="object.character.equipment.primaryWeapon.weaponType" data-type="String">
-          {{selectOptions data.selects.npcWeaponType selected=data.character.equipment.primaryWeapon.weaponType localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Weight"}}</div>
-        <select name="object.character.equipment.primaryWeapon.weight" data-type="String">
-          {{selectOptions data.selects.npcWeaponWeight selected=data.character.equipment.primaryWeapon.weight localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
-        <input name="object.character.equipment.primaryWeapon.artifact" type="checkbox" {{checked
-          data.character.equipment.primaryWeapon.artifact}}>
-      </div>
-    </div>
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.SecondaryWeapon"}}</label>
-    </div>
-    <div class="resource grid grid-4col flex-center">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Type"}}</div>
-        <select class="rerender" name="object.character.equipment.secondaryWeapon.type" data-type="String">
-          {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.secondaryWeapon.type localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.WeaponType"}}</div>
-        <select name="object.character.equipment.secondaryWeapon.weaponType" data-type="String">
-          {{selectOptions data.selects.npcWeaponType selected=data.character.equipment.secondaryWeapon.weaponType localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Weight"}}</div>
-        <select name="object.character.equipment.secondaryWeapon.weight" data-type="String">
-          {{selectOptions data.selects.npcWeaponWeight selected=data.character.equipment.secondaryWeapon.weight localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
-        <input name="object.character.equipment.secondaryWeapon.artifact" type="checkbox" {{checked
-          data.character.equipment.secondaryWeapon.artifact}}>
-      </div>
-    </div>
-    <div class="resource-content flexrow flex-center flex-between mt-2">
-      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Armor"}}</label>
-    </div>
-    <div class="resource grid grid-3col flex-center">
-      <div>
-        <div class="resource-label">{{localize "Ex3.Type"}}</div>
-        <select class="rerender" name="object.character.equipment.armor.type" data-type="String">
-          {{selectOptions data.selects.npcItemCategory selected=data.character.equipment.armor.type localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Weight"}}</div>
-        <select name="object.character.equipment.armor.weight" data-type="String">
-          {{selectOptions data.selects.npcArmorType selected=data.character.equipment.armor.weight localize=true}}
-        </select>
-      </div>
-      <div>
-        <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
-        <input name="object.character.equipment.armor.artifact" type="checkbox" {{checked
-          data.character.equipment.armor.artifact}}>
-      </div>
-    </div>
   </form>
+  </section>
   <button type="button" id="generate">{{localize "Ex3.Generate"}}</button>
 </div>

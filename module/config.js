@@ -322,6 +322,7 @@ exaltedthird.exaltcharmtypes = {
   solar: "Ex3.Solar",
   sovereign: "Ex3.Sovereign",
   umbral: "Ex3.Umbral",
+  universal: "Ex3.Universal",
   other: "Ex3.Other"
 };
 
@@ -1842,7 +1843,7 @@ exaltedthird.selects = {
     '': "Ex3.None",
     'action': "Ex3.CharacterRolls",
     'opposedRolls': "Ex3.OpposedRolls",
-    'sameAbility': "Ex3.NonSameAbilityAttribute",
+    'sameAbility': "Ex3.SameAbilityAttribute",
     'attacks': "Ex3.Attacks",
     'command': "Ex3.Command",
     'grapple': "Ex3.Grapple",

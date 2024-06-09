@@ -1045,7 +1045,7 @@ export class RollForm extends FormApplication {
             case 'opposedRolls':
                 return (this.object.rollType === 'useOpposingCharms');
             case 'sameAbility':
-                return (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
+                return charm.type === 'charm' && (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
         }
         if (this.object.rollType === charm.system.autoaddtorolls) {
             return true;
@@ -1065,7 +1065,7 @@ export class RollForm extends FormApplication {
         }
         for (var charmlist of Object.values(this.object.charmList)) {
             for (const charm of charmlist.list.filter(charm => charm.type !== 'charm' || charm.system.diceroller.enabled)) {
-                var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
+                var existingAddedCharm = this.object.addedCharms.find((addedCharm) => addedCharm._id === charm._id);
                 if (existingAddedCharm) {
                     charm.charmAdded = true;
                     charm.timesAdded = existingAddedCharm.timesAdded;
@@ -3044,7 +3044,7 @@ export class RollForm extends FormApplication {
         else {
             this.object.thresholdSuccesses = 0;
         }
-        if ((this.object.thresholdSuccesses >= 0 && this.object.rollType !== 'accuracy') || this.object.rollType === 'damage') {
+        if (this.object.rollType === 'damage' || (this.object.attackSuccesses >= this.object.defense && this.object.rollType !== 'accuracy')) {
             if (this.object.rollType === 'damage' && this.object.attackSuccesses < this.object.defense) {
                 this.object.thresholdSuccesses = this.object.attackSuccesses - this.object.defense;
                 await this.missAttack(false);
@@ -3052,11 +3052,10 @@ export class RollForm extends FormApplication {
             else {
                 await this._damageRoll();
                 await this._addTriggerBonuses('afterDamageRoll');
-
             }
         }
         else {
-            if (this.object.thresholdSuccesses < 0 && this.object.rollType !== 'accuracy') {
+            if (this.object.attackSuccesses < this.object.defense && this.object.rollType !== 'accuracy') {
                 await this.missAttack();
             }
         }

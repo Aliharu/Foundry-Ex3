@@ -531,7 +531,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       endings: 0,
     }
     // Iterate through items, allocating to containers
-    for (let i of sheetData.items) {
+    for (let i of actorData.items) {
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);

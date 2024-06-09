@@ -173,6 +173,7 @@ export class ItemMeritData extends CommonItemData {
             ...commonData,
             ...activatableData(),
             ...triggerData(),
+            autoaddtorolls: new fields.StringField({ initial: "" }),
             merittype: new fields.StringField({ initial: "story" }),
             parentitemid: new fields.StringField({ initial: "" }),
             archetypename: new fields.StringField({ initial: "" }),
@@ -251,6 +252,7 @@ export class ItemSpecialAbilityData extends CommonItemData {
             ...commonData,
             ...activatableData(),
             ...triggerData(),
+            autoaddtorolls: new fields.StringField({ initial: "" }),
         }
     }
 }
@@ -344,6 +346,7 @@ export class ItemSpellData extends CommonItemData {
             ...commonData,
             ...activatableData(),
             ...triggerData(),
+            autoaddtorolls: new fields.StringField({ initial: "" }),
             summary: new fields.StringField({ initial: "" }),
             circle: new fields.StringField({ initial: "terrestrial" }),
             keywords: new fields.StringField({ initial: "" }),

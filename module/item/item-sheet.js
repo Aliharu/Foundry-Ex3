@@ -284,7 +284,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     html.find('.show-roll-triggers-link').click(ev => {
       new Dialog({
         title: `ReadMe`,
-        content: '<div><p><a href="https://github.com/Aliharu/Foundry-Ex3/wiki/Charm-Triggers">Instructions and Syntax.</a></p></div>',
+        content: '<div><p><a href="https://github.com/Aliharu/Foundry-Ex3/wiki/Dice-Roll-Triggers">Instructions and Syntax.</a></p></div>',
         buttons: {
           cancel: { label: "Close" }
         }
