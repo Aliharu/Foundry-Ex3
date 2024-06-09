@@ -592,8 +592,22 @@ export default class CharacterBuilder extends FormApplication {
 
     html.find(".add-item").on("click", async (event) => {
       const type = event.currentTarget.dataset.type;
+      let listIndex = 0;
+      let indexAdd = "0";
+      let indexType = type;
+      if(type === 'weapons') {
+        indexType = 'randomWeapons';
+      }
+      for (const key of Object.keys(this.object.character[indexType])) {
+        if (key !== listIndex.toString()) {
+          break;
+        }
+        listIndex++;
+      }
+      indexAdd = listIndex.toString();
+    
       if (type === 'specialties') {
-        this.object.character.specialties[Object.entries(this.object.character['specialties']).length] = {
+        this.object.character.specialties[indexAdd] = {
           name: 'Specialty',
           system: {
             ability: 'archery',
@@ -601,7 +615,7 @@ export default class CharacterBuilder extends FormApplication {
         };
       }
       else if (type === 'weapons') {
-        this.object.character.randomWeapons[Object.entries(this.object.character['randomWeapons']).length] = {
+        this.object.character.randomWeapons[indexAdd] = {
           type: "random",
           weaponType: "any",
           weight: "any",
@@ -609,7 +623,7 @@ export default class CharacterBuilder extends FormApplication {
         };
       }
       else if (type === 'intimacies') {
-        this.object.character[type][Object.entries(this.object.character[type]).length] = {
+        this.object.character[type][indexAdd] = {
           name: 'Name',
           system: {
             strength: 'minor',
@@ -617,16 +631,8 @@ export default class CharacterBuilder extends FormApplication {
           }
         };
       }
-      else if (type === 'merits') {
-        this.object.character[type][Object.entries(this.object.character[type]).length] = {
-          name: 'Name',
-          system: {
-            points: 0,
-          }
-        };
-      }
       else {
-        this.object.character[type][Object.entries(this.object.character[type]).length] = {
+        this.object.character[type][indexAdd] = {
           name: 'Name',
           system: {
             points: 0,
@@ -903,7 +909,18 @@ export default class CharacterBuilder extends FormApplication {
               }
             }
             else {
-              this.object.character[type][Object.entries(this.object.character[type]).length] = newItem;
+              if (newItem) {
+                let listIndex = 0;
+                let indexAdd = "0";
+                for (const key of Object.keys(this.object.character[type])) {
+                  if (key !== listIndex.toString()) {
+                    break;
+                  }
+                  listIndex++;
+                }
+                indexAdd = listIndex.toString();
+                this.object.character[type][indexAdd] = newItem;
+              }
             }
 
             this.onChange(ev);

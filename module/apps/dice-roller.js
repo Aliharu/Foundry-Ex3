@@ -474,7 +474,7 @@ export class RollForm extends FormApplication {
                     if (this.actor.merits.some(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0)) {
                         this.object.charmList['merits'] = {
                             name: game.i18n.localize("Ex3.Merits"),
-                            list: this.actor.merits.filter(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
+                            list: this.actor.items.filter(merit => merit.type === 'merit' && Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
                             visible: true,
                             collapse: true,
                         }
@@ -482,7 +482,7 @@ export class RollForm extends FormApplication {
                     if (this.actor.specialabilities.some(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0)) {
                         this.object.charmList['specialabilities'] = {
                             name: game.i18n.localize("Ex3.SpecialAbilities"),
-                            list: this.actor.specialabilities.filter(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
+                            list: this.actor.items.filter(merit => merit.type === 'specialability' && Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
                             visible: true,
                             collapse: true,
                         }

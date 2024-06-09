@@ -531,7 +531,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       endings: 0,
     }
     // Iterate through items, allocating to containers
-    for (let i of actorData.items) {
+    for (let i of sheetData.items) {
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);
@@ -580,18 +580,22 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       else if (i.type === 'shape') {
         shapes.push(i);
       }
-      else if (i.type === 'spell') {
-        if (i.system.circle !== undefined) {
-          spells[i.system.circle].list.push(i);
-          spells[i.system.circle].visible = true;
-          spells[i.system.circle].collapse = this.actor.spells ? this.actor.spells[i.system.circle].collapse : true;
-        }
-      }
       else if (i.type === 'action') {
         actions.push(i);
       }
       if (i.system.active) {
         activeItems.push(i);
+      }
+    }
+    let actorSpells = actorData.items.filter((item) => item.type === 'spell');
+    actorSpells = actorSpells.sort(function (a, b) {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+    for (let i of actorSpells) {
+      if (i.system.circle !== undefined) {
+        spells[i.system.circle].list.push(i);
+        spells[i.system.circle].visible = true;
+        spells[i.system.circle].collapse = this.actor.spells ? this.actor.spells[i.system.circle].collapse : true;
       }
     }
 
