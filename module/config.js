@@ -1582,6 +1582,7 @@ exaltedthird.requirementTypes = {
       targetIsBattlegroup: "Ex3.TargetIsBattlegroup",
       targetIsCrashed: "Ex3.TargetIsCrashed",
       targetHasClassification: "Ex3.TargetHasClassification",
+      targetTakenTurn: "Ex3.TargetTakenTurn",
     },
   },
   rollResults: {

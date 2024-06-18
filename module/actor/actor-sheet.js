@@ -3032,6 +3032,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                 }
                 else if (key === 'movement') {
                   lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
+                } else if(key === 'resistance') {
+                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.steady.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.steady.ability);
                 }
                 else {
                   lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[key].ability);

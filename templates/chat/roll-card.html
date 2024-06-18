@@ -267,6 +267,17 @@
                 </div>
             {{/if}}
         {{/if}}
+        {{#if combatStats.inCombat}}
+        <div class="roll-card-header">
+            <b>{{localize "Ex3.Combat"}}</b>
+        </div>
+        <div>
+            <b>{{localize "Ex3.Initiative"}}:</b> {{combatStats.actorInitiative}}
+        </div>
+        <div>
+            <b>{{localize "Ex3.TurnTaken"}}:</b> {{combatStats.turnTaken}}
+        </div>
+        {{/if}}
         {{#if rollData.macroMessages }}
         <div class="roll-card-header">
             <b>{{localize "Ex3.Macros"}}</b>
@@ -382,6 +393,14 @@
                 <b>{{localize "Ex3.Guile"}}: </b>{{rollData.target.actor.system.guile.value}}, 
             </div>
             {{/ifEquals}}
+            {{#if combatStats.inCombat}}
+            <div>
+                <b>{{localize "Ex3.Initiative"}}:</b> {{combatStats.targetInitiative}}
+            </div>
+            <div>
+                <b>{{localize "Ex3.TurnTaken"}}:</b> {{combatStats.targetTurnTaken}}
+            </div>
+            {{/if}}
             {{#if isAttack}}
                 <div>
                     <b>{{localize "Ex3.Parry"}}: </b>{{rollData.target.actor.system.parry.value}}, 

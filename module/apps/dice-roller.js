@@ -1120,7 +1120,7 @@ export class RollForm extends FormApplication {
                 this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
             }
             if (!item.system.diceroller.settings.noncharmsuccesses) {
-                if(this.actor.system.details.exalt === 'sidereal') {
+                if (this.actor.system.details.exalt === 'sidereal') {
                     this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 } else {
                     this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
@@ -1897,9 +1897,9 @@ export class RollForm extends FormApplication {
                         this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
                     }
                     if (!item.system.diceroller.settings.noncharmsuccesses) {
-                        if(this.actor.system.details.exalt === 'sidereal') {
+                        if (this.actor.system.details.exalt === 'sidereal') {
                             this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonussuccesses));
-                        } else { 
+                        } else {
                             this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
                         }
                     }
@@ -4142,6 +4142,17 @@ export class RollForm extends FormApplication {
                         fufillsRequirements = false;
                     }
                     break;
+                case 'targetTakenTurn':
+                    if(cleanedValue) {
+                        if (this.object.targetCombatant?.flags?.acted !== true) {
+                            fufillsRequirements = false;
+                        }
+                    } else {
+                        if (!this.object.targetCombatant?.flags?.acted) {
+                            fufillsRequirements = false;
+                        }
+                    }
+                    break;
                 case 'range':
                     if (this.object.range !== cleanedValue) {
                         fufillsRequirements = false;
@@ -4602,14 +4613,39 @@ export class RollForm extends FormApplication {
     }
 
     async _createChatMessageContent(content, cardName = 'Roll') {
-        var actionName = '';
-        var martialArtName = '';
-        var craftRollName = '';
-        var abilityName = this.object.ability;
+        let actionName = '';
+        let martialArtName = '';
+        let craftRollName = '';
+        let abilityName = this.object.ability;
+        let showSpecialAttacks = false;
+        let initiative = "No Initiative";
+        let turnTaken = false;
+        let combatStats = {
+            inCombat: false,
+            actorInitiative: "No Initiative",
+            targetInitiative: "No Target Initiative",
+            turnTaken: "Turn not taken",
+            targetTurnTaken: "Turn not taken",
+        }
+        if (game.combat) {
+            let combatant = this._getActorCombatant();
+            if (combatant) {
+                combatStats.inCombat = true;
+                if (combatant?.initiative !== null) {
+                    combatStats.actorInitiative = combatant.initiative;
+                    combatStats.turnTaken = combatant.flags?.acted;
+                }
+            }
+            if (this.object.targetCombatant) {
+                if (this.object.targetCombatant?.initiative !== null) {
+                    combatStats.targetInitiative = this.object.targetCombatant.initiative;
+                    combatStats.targetTurnTaken = this.object.targetCombatant.flags?.acted;
+                }
+            }
+        }
         if (this.object.rollType === 'action') {
             actionName = this.actor.actions.find(x => x._id === this.object.actionId).name;
         }
-        var showSpecialAttacks = false
         for (var specialAttack of this.object.specialAttacksList) {
             if (specialAttack.added) {
                 showSpecialAttacks = true
@@ -4626,6 +4662,7 @@ export class RollForm extends FormApplication {
             abilityName: abilityName,
             showSpecialAttacks: showSpecialAttacks,
             rollingActor: this.actor,
+            combatStats: combatStats,
         }
         return await renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
     }
