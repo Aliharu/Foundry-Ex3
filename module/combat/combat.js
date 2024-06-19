@@ -31,6 +31,9 @@ export class ExaltedCombat extends Combat {
       }
       if (value > 0) {
         newVal[`flags.crashedBy`] = null;
+        if(combatant.initiative !== null && combatant.initiative <= 0) {
+          newVal[`flags.crashRecovery`] = 2;
+        }
       }
       await combatant.update(newVal);
     }

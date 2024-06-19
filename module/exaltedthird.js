@@ -536,7 +536,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   }
 
   //New round
-  if (update && update.round) {
+  if (update && update.round && update.round !== 1) {
     for (var combatant of combat.combatants) {
       const actorData = foundry.utils.duplicate(combatant.actor)
       var missingPersonal = (combatant.actor.system.motes.personal.max - combatant.actor.system.motes.personal.committed) - combatant.actor.system.motes.personal.value;
@@ -628,6 +628,12 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
         actorData.system.anima.level = moteResults.newAnimaLevel;
         actorData.system.anima.value = moteResults.newAnimaValue;
+      }
+
+      if(combatant.flags?.crashRecovery) {
+        await combatant.update({
+          [`flags.crashRecovery`]: combatant.flags.crashRecovery - 1,
+        });
       }
 
       await combatant.actor.update(actorData);

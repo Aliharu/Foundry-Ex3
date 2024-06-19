@@ -3108,7 +3108,9 @@ export class RollForm extends FormApplication {
                 this.object.gainedInitiative += 1;
             }
             if (this.object.crashed) {
-                this.object.gainedInitiative += 5;
+                if(!this.object.targetCombatant?.flags.crashRecovery) {
+                    this.object.gainedInitiative += 5;
+                }
             }
             if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
                 this.object.characterInitiative += this.object.gainedInitiative;
@@ -3458,6 +3460,9 @@ export class RollForm extends FormApplication {
                                 if (attackerCombatant && this.object.targetCombatant.id === attackerCombatant.flags?.crashedBy) {
                                     this.object.initiativeShift = true
                                     targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Initiative Shift!</h4>';
+                                }
+                                if(this.object.targetCombatant?.flags?.crashRecovery) {
+                                    targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Target in Crash Recovery, no Initiative Break!</h4>';
                                 }
                             }
                         }
@@ -4138,6 +4143,9 @@ export class RollForm extends FormApplication {
                     }
                     break;
                 case 'targetHasClassification':
+                    if (!this.object.target) {
+                        fufillsRequirements = false;
+                    }
                     if (!this.object.target.actor.system.traits.classifications.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
