@@ -21,7 +21,7 @@ export class RollForm extends FormApplication {
             this.object.diceModifier = 0;
             this.object.successes = data.successModifier || 0;
             this.object.successModifier = data.successModifier || 0;
-            this.object.craftType = data.craftType || 0;
+            this.object.craftType = data.craftType || 'basic';
             this.object.craftRating = data.craftRating || 0;
             this.object.splitAttack = false;
             this.object.rollType = data.rollType;
@@ -57,8 +57,8 @@ export class RollForm extends FormApplication {
                 healthaggravated: 0,
                 grappleControl: 0,
                 silverxp: 0,
-                goldxp: 0,
-                whitexp: 0,
+                goldxp: this.object.craftType === 'superior' ? 10 : 0,
+                whitexp: this.object.craftType === 'legendary' ? 10 : 0,
                 aura: "",
             };
             this.object.restore = {
@@ -1649,6 +1649,12 @@ export class RollForm extends FormApplication {
             this.object.intervals = 1;
             this.object.difficulty = 1;
             this.object.goalNumber = 0;
+            if(this.object.craftType === 'superior') {
+                this.object.cost.goldxp = 10;
+            }
+            if(this.object.craftType === 'legendary') {
+                this.object.cost.whitexp = 10;
+            }
             this._getCraftDifficulty();
             this.render();
         });
@@ -3108,7 +3114,7 @@ export class RollForm extends FormApplication {
                 this.object.gainedInitiative += 1;
             }
             if (this.object.crashed) {
-                if(!this.object.targetCombatant?.flags.crashRecovery) {
+                if (!this.object.targetCombatant?.flags.crashRecovery) {
                     this.object.gainedInitiative += 5;
                 }
             }
@@ -3461,7 +3467,7 @@ export class RollForm extends FormApplication {
                                     this.object.initiativeShift = true
                                     targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Initiative Shift!</h4>';
                                 }
-                                if(this.object.targetCombatant?.flags?.crashRecovery) {
+                                if (this.object.targetCombatant?.flags?.crashRecovery) {
                                     targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Target in Crash Recovery, no Initiative Break!</h4>';
                                 }
                             }
@@ -3817,6 +3823,13 @@ export class RollForm extends FormApplication {
             rerollldie: 'rerolllDie',
             restoremote: 'restoreMote',
         }
+        const triggerOnesMap = {
+            'soak': 'soak',
+            'defense': 'defense',
+            'rerollsuccesses': 'rerollSuccesses',
+            'subtractinitiative': 'subtractInitiative',
+            'subtractsuccesses': 'subtractSuccesses',
+        }
         const triggerTensDamageMap = {
             subtracttargettnitiative: 'subtractTargetInitiative',
         }
@@ -3883,7 +3896,7 @@ export class RollForm extends FormApplication {
                                     if (triggerTensMap[cleanedValue]) {
                                         this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
                                     } else {
-                                        this.object.settings.damage.triggerOnTens = cleanedValue;
+                                        this.object.settings.triggerOnTens = cleanedValue;
                                     }
                                     break;
                                 case 'triggerNinesAndTens':
@@ -3894,6 +3907,23 @@ export class RollForm extends FormApplication {
                                     break;
                                 case 'triggerTensCap':
                                     this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                    break;
+                                case 'triggerOnOnes':
+                                    if (triggerOnesMap[cleanedValue]) {
+                                        this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
+                                    } else {
+                                        this.object.settings.triggerOnOnes = cleanedValue;
+                                    }
+                                    break;
+                                case 'triggerOnesAndTwos':
+                                    if (triggerOnesMap[cleanedValue]) {
+                                        this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
+                                        this.object.settings.alsoTriggerTwos = true;
+                                    }
+                                    break;
+                                case 'triggerOnesCap':
+                                    this.object.settings.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                    break;
                                 case 'reduceDifficulty':
                                     if (this.object.showTargets) {
                                         const targetValues = Object.values(this.object.targets);
@@ -4151,7 +4181,7 @@ export class RollForm extends FormApplication {
                     }
                     break;
                 case 'targetTakenTurn':
-                    if(cleanedValue) {
+                    if (cleanedValue) {
                         if (this.object.targetCombatant?.flags?.acted !== true) {
                             fufillsRequirements = false;
                         }
@@ -4444,14 +4474,12 @@ export class RollForm extends FormApplication {
                         goldXPGained = (parseInt(this.object.craftRating) * 2) * this.object.intervals;
                     }
                     projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${goldXPGained} Gold XP Gained (-10)</h4><h4 class="dice-total">${whiteXPGained} White XP Gained</h4>`;
-                    goldXPGained -= 10;
                 }
                 else if (this.object.craftType === "legendary") {
                     if (this.object.objectivesCompleted > 0) {
                         whiteXPGained += 10;
                     }
                     projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${whiteXPGained} White XP Gained (-10)</h4>`;
-                    whiteXPGained -= 10;
                 }
                 else {
                     projectStatus = `<h4 class="dice-total">Craft Project Success</h4>`;
@@ -4528,7 +4556,7 @@ export class RollForm extends FormApplication {
     }
 
     _getActorCombatant() {
-        if (game.combat && (this.actor.token || this.actor.getActiveTokens()[0])) {
+        if (game.combat && (this.actor?.token || this.actor?.getActiveTokens()[0])) {
             const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
             return game.combat.combatants.find(c => c.tokenId === tokenId);
         }

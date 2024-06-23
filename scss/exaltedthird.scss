@@ -210,8 +210,8 @@
 }
 
 .exaltedthird .health-boxes {
-  height: 17px;
-  width: 17px;
+  height: var(--font-size-16);
+  width: var(--font-size-16);
 }
 
 .exaltedthird .resource-counter .resource-counter-step[data-state="-"] {
@@ -408,10 +408,11 @@
 
 .chat-card {
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--font-size-12);
+
 
   .roll-card-header {
-    font-size: 16px;
+    font-size: var(--font-size-16);
     border-bottom: 1px solid black;
   }
 

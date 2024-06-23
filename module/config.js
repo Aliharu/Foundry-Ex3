@@ -1460,6 +1460,9 @@ exaltedthird.bonusTypes = {
       triggerOnTens: "Ex3.TriggerTens",
       triggerNinesAndTens: "Ex3.TriggerNines&Tens",
       triggerTensCap: "Ex3.TriggerTensCap",
+      triggerOnOnes: "Ex3.TriggerOnOnes",
+      triggerOnesAndTwos: "Ex3.TriggerOnes&Twos",
+      triggerOnesCap: "Ex3.TriggerOnesCap",
       fullExcellency: "Ex3.FullExcellency"
     },
   },

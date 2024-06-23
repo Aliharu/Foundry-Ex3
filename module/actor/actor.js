@@ -493,13 +493,13 @@ export class ExaltedThirdActor extends Actor {
     return dissonance;
   }
 
-  calculateClassifications(exaltType, creatureType='exalt') {
+  calculateClassifications(exaltType, creatureType = 'exalt') {
     let classifications = {
       value: [],
       custom: "",
     }
 
-    if(this.type === 'character' || creatureType === 'exalt') {
+    if (this.type === 'character' || creatureType === 'exalt') {
       if (exaltType === 'abyssal' || exaltType === 'infernal') {
         classifications.value = ['creatureofdarkness', 'enemyoffate'];
       }
@@ -1260,12 +1260,13 @@ export class ExaltedThirdActor extends Actor {
    */
   getRollData() {
     const data = { ...super.getRollData() };
-    var currentParryPenalty = 0;
-    var currentEvasionPenalty = 0;
-    var currentOnslaughtPenalty = 0;
-    var currentDefensePenalty = 0;
-    var totalHealth = 0;
-    var currentPenalty = 0;
+    let currentParryPenalty = 0;
+    let currentEvasionPenalty = 0;
+    let currentOnslaughtPenalty = 0;
+    let currentDefensePenalty = 0;
+    let totalHealth = 0;
+    let currentPenalty = 0;
+    let coverBonus = 0;
 
     if (this.system.battlegroup) {
       currentPenalty = 0;
@@ -1303,6 +1304,17 @@ export class ExaltedThirdActor extends Actor {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
+
+    if (this.effects.some(e => e.statuses.has('lightcover'))) {
+      coverBonus += 1;
+    }
+    if (this.effects.some(e => e.statuses.has('heavycover'))) {
+      coverBonus += 2;
+    }
+    if (this.effects.some(e => e.statuses.has('fullcover'))) {
+      coverBonus += 3;
+    }
+
     if (currentPenalty !== 'inc') {
       currentParryPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
       currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
@@ -1328,6 +1340,7 @@ export class ExaltedThirdActor extends Actor {
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
     data.armorpenalty = { 'value': armorPenalty };
+    data.cover = { 'value': coverBonus };
     data.initiative = { 'value': 0 };
 
     if (!data.size) {

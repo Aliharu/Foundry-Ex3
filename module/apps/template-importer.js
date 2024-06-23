@@ -3,6 +3,7 @@ export default class TemplateImporter extends FormApplication {
     super(type)
     this.type = type;
     this.charmType = 'other';
+    this.listingName = '';
     this.spellCircle = 'terrestrial';
     this.itemType = 'armor';
     this.folder = '';
@@ -96,6 +97,7 @@ export default class TemplateImporter extends FormApplication {
     let data = super.getData();
     data.type = this.type;
     data.charmType = this.charmType;
+    data.listingName = this.listingName;
     data.spellCircle = this.spellCircle;
     data.itemType = this.itemType;
     data.folder = this.folder;
@@ -127,6 +129,7 @@ export default class TemplateImporter extends FormApplication {
   async createCharm(html) {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     var charmType = html.find('#charmType').val();
+    var listingName = html.find('#listingName').val();
     var folder = await this._getFolder(html);
 
     var index = 0;
@@ -136,6 +139,7 @@ export default class TemplateImporter extends FormApplication {
         type: 'charm',
         system: {
           charmtype: charmType,
+          listingname: listingName,
           cost: {
             "motes": 0,
             "commitmotes": 0,
@@ -1983,6 +1987,13 @@ export default class TemplateImporter extends FormApplication {
   activateListeners(html) {
     html.on("change", "#charmType", ev => {
       this.charmType = ev.currentTarget.value;
+      this.textBox = html.find('#template-text').val();
+      this.folder = html.find('#folder').val();
+      this.render();
+    });
+
+    html.on("change", "#listingName", ev => {
+      this.listingName = ev.currentTarget.value;
       this.textBox = html.find('#template-text').val();
       this.folder = html.find('#folder').val();
       this.render();

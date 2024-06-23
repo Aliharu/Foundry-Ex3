@@ -504,18 +504,23 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         ev.stopPropagation();
         let actor = null;
 
-        if (game.user.character) {
-          actor = game.user.character;
-        }
-        else if (message.flags?.exaltedthird?.targetActorId) {
+        if (message.flags?.exaltedthird?.targetActorId) {
           actor = canvas.tokens.placeables.find(t => t.id === message.flags?.exaltedthird?.targetTokenId)?.actor;
           if (!actor) {
             actor = game.actors.get(message.flags?.exaltedthird?.targetActorId);
           }
+          if (actor.permission < 3 || (!game.user.isGM && !actor.system.lunarform?.enabled)) {
+            actor = null;
+          }
         }
-        else {
-          ui.notifications.error(`Error finding target and no character.`);
+
+        if (!actor && game.user.character) {
+          actor = game.user.character;
         }
+        if(!actor) {
+          ui.notifications.error(`Error: Could not find proper tokens actor and the logged in user has no set character to default to.`);
+        }
+
         if (actor) {
           actor.actionRoll(
             {
