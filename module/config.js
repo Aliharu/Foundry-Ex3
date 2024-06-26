@@ -99,6 +99,7 @@ exaltedthird.activeEffectChanges = {
   'system.damage.round.bashing': 'Ex3.BashingDamageRound',
   'system.damage.round.lethal': 'Ex3.LethalDamageRound',
   'system.damage.round.aggravated': 'Ex3.AggravatedDamageRound',
+  'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
 };
 
 exaltedthird.equipmentStats = {

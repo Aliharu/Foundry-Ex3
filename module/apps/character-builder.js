@@ -1406,6 +1406,14 @@ export default class CharacterBuilder extends FormApplication {
       case 'spell':
         this.object.character.spells[Object.entries(this.object.character.spells).length] = newItem;
         break;
+      case 'specialty':
+        this.object.character.specialties[Object.entries(this.object.character.specialties).length] = {
+          name: newItem.name,
+          system: {
+            ability: newItem.system.ability,
+          }
+        };
+        break;
       case 'merit':
         this.object.character.merits[Object.entries(this.object.character.merits).length] = newItem;
         break;

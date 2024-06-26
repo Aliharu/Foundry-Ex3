@@ -321,7 +321,7 @@
           data-type="specialty"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
       <div class="attributes grid grid-3col flex-group-center">
         {{#each actor.specialties as |item id|}}
-        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+        <li class="item flexrow flex-center" data-item-id="{{item._id}}">
           {{#if ../system.settings.editmode}}
           <div class="item-controls ability-item-edit">
             <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
@@ -330,7 +330,7 @@
           {{/if}}
           <label class="resource-label">{{localize item.name}} ({{getAbilityDisplay ../this
             item.system.ability}})</label>
-        </div>
+        </li>
         {{/each}}
       </div>
       {{#if system.settings.editmode}}
