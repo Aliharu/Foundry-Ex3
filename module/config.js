@@ -1694,6 +1694,10 @@ exaltedthird.selects = {
     thrown: 'Ex3.Thrown',
     war: 'Ex3.War',
   },
+  characterTypes: {
+    character: 'Ex3.Character',
+    npc: 'Ex3.NPC',
+  },
   creatureTypes: {
     animal: 'Ex3.Animal',
     behemoth: 'Ex3.Behemoth',

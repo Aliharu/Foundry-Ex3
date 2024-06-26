@@ -10,7 +10,7 @@ export default class NPCGenerator extends FormApplication {
     this.object.character = {
       name: '',
       defaultName: 'New NPC',
-      npcType: "mortal",
+      classificationType: "mortal",
       exalt: "other",
       caste: "",
       essence: 1,
@@ -648,7 +648,7 @@ export default class NPCGenerator extends FormApplication {
     actorData.name = this.object.character.name || this.object.character.defaultName;
     actorData.prototypeToken.name = this.object.character.name || this.object.character.defaultName;
     actorData.system.essence.value = this.object.character.essence;
-    actorData.system.creaturetype = this.object.character.npcType;
+    actorData.system.creaturetype = this.object.character.classificationType;
     actorData.system.details.exalt = this.object.character.exalt;
     actorData.system.details.caste = this.object.character.caste;
     actorData.system.settings.editmode = false;
@@ -671,7 +671,7 @@ export default class NPCGenerator extends FormApplication {
         actorData.system.motes.personal.max += 50;
       }
     }
-    if (this.object.character.npcType === 'exalt') {
+    if (this.object.character.classificationType === 'exalt') {
       actorData.system.motes.personal.value = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value) - actorData.system.motes.peripheral.committed;
       actorData.system.motes.personal.max = this.calculateMaxExaltedMotes('personal', actorData.system.details.exalt, actorData.system.essence.value);
       actorData.system.motes.peripheral.value = this.calculateMaxExaltedMotes('peripheral', actorData.system.details.exalt, actorData.system.essence.value - actorData.system.motes.peripheral.committed);

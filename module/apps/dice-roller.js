@@ -2542,7 +2542,7 @@ export class RollForm extends FormApplication {
 
         if (diceModifiers.macros.length > 0) {
             let newResults = { ...rollResults, results: diceRoll, total };
-            newResults = diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), newResults);
+            newResults = await diceModifiers.macros.reduce((carry, macro) => macro(carry, dice, diceModifiers, doublesRolled, numbersRerolled), newResults);
             total = newResults.total;
             rollResults = newResults;
         }
@@ -2718,12 +2718,13 @@ export class RollForm extends FormApplication {
                 });
             }
             if (charm.system.macro) {
-                let macro = new Function('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
-                rollModifiers.macros.push((rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
+                const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+                let macro = new AsyncFunction('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
+                rollModifiers.macros.push(async (rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
                     try {
                         this.object.currentMacroCharm = charm;
                         this.object.opposedCharmMacro = false;
-                        return macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
+                        return await macro.call(this, rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) ?? rollResult
                     } catch (e) {
                         ui.notifications.error(`<p>There was an error in your macro syntax for "${charm.name}":</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
                         console.error(e);

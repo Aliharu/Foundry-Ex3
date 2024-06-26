@@ -331,14 +331,16 @@ export class ExaltedThirdActor extends Actor {
 
   async calculateAllDerivedStats() {
     await this.calculateCharacterMotes();
-    await this.calculateDerivedStats('parry');
-    await this.calculateDerivedStats('evasion');
-    await this.calculateDerivedStats('guile');
-    await this.calculateDerivedStats('resolve');
-    await this.calculateDerivedStats('hardness');
-    await this.calculateDerivedStats('soak');
-    await this.calculateDerivedStats('natural-soak');
+    if(this.type === 'character') {
+      await this.calculateDerivedStats('parry');
+      await this.calculateDerivedStats('evasion');
+      await this.calculateDerivedStats('guile');
+      await this.calculateDerivedStats('resolve');
+      await this.calculateDerivedStats('natural-soak');
+    }
     await this.calculateDerivedStats('armored-soak');
+    await this.calculateDerivedStats('soak');
+    await this.calculateDerivedStats('hardness');
     await this.calculateDerivedStats('resonance');
     await this.calculateDerivedStats('classifications');
   }
@@ -347,7 +349,7 @@ export class ExaltedThirdActor extends Actor {
     const actorData = foundry.utils.duplicate(this);
     var armoredSoakValue = 0;
 
-    var staticAttributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type]?.attribute]?.value || 0;
+    var staticAttributeValue = actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.value || 0;
     var staticAbilityValue = 0;
     if (actorData.system.settings.staticcapsettings[type]?.ability && actorData.system.settings.staticcapsettings[type]?.ability !== 'none') {
       if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === actorData.system.settings.staticcapsettings[type].ability)) {
@@ -360,16 +362,20 @@ export class ExaltedThirdActor extends Actor {
     if (type === 'natural-soak') {
       actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute]?.value;
     }
-    if (type === 'soak' || type === 'armored-soak' || type === 'all') {
+    if(type === 'soak'  || type === 'armored-soak' || type === 'all') {
       for (let armor of this.armor) {
         if (armor.system.equipped) {
           armoredSoakValue = armoredSoakValue + armor.system.soak;
         }
       }
-      if (type === 'armored-soak' || type === 'all') {
+      if(type === 'armored-soak' || type === 'all') {
         actorData.system.armoredsoak.value = armoredSoakValue;
       }
-      if (type === 'soak' || type === 'all') {
+    }
+    if (type === 'soak' || type === 'all') {
+      if(this.type === 'npc') {
+        actorData.system.soak.value = actorData.system.naturalsoak.value + armoredSoakValue;
+      } else {
         actorData.system.soak.value = staticAttributeValue + armoredSoakValue;
       }
     }

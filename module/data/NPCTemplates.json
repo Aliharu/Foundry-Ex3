@@ -1,7 +1,7 @@
 {
   "custom": {
     "defaultName": "New NPC",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -120,7 +120,7 @@
   },
   "assassin": {
     "defaultName": "Assassin",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -241,7 +241,7 @@
   },
   "detective": {
     "defaultName": "Detective",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -362,7 +362,7 @@
   },
   "merchant": {
     "defaultName": "Merchant",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -483,7 +483,7 @@
   },
   "mortalSorcerer": {
     "defaultName": "Mortal Sorcerer",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -603,7 +603,7 @@
   },
   "eliteWarrior": {
     "defaultName": "Elite Warrior",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -724,7 +724,7 @@
   },
   "godOrDemon": {
     "defaultName": "God or Demon",
-    "npcType": "god",
+    "classificationType": "god",
     "exalt": "other",
     "essence": 3,
     "skills": {
@@ -845,7 +845,7 @@
   },
   "socialite": {
     "defaultName": "Socialite",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -966,7 +966,7 @@
   },
   "trainedSoldier": {
     "defaultName": "Trained Soldier",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {
@@ -1087,7 +1087,7 @@
   },
   "wyldMutantWarrior": {
     "defaultName": "Wyld Mutant",
-    "npcType": "mortal",
+    "classificationType": "mortal",
     "exalt": "other",
     "essence": 1,
     "skills": {

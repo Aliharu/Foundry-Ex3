@@ -27,9 +27,9 @@
           </select>
         </div>
         <div>
-          <div class="resource-label">{{localize "Ex3.NPCType"}}</div>
-          <select class="rerender" name="object.character.npcType" data-type="String">
-            {{selectOptions data.selects.creatureTypes selected=data.character.npcType localize=true}}
+          <div class="resource-label">{{localize "Ex3.Type"}}</div>
+          <select class="rerender" name="object.character.classificationType" data-type="String">
+            {{selectOptions data.selects.creatureTypes selected=data.character.classificationType localize=true}}
           </select>
         </div>
         <div>
@@ -38,7 +38,7 @@
         </div>
       </div>
       {{/ifEquals}}
-      {{#ifEquals data.character.npcType 'exalt'}}
+      {{#ifEquals data.character.classificationType 'exalt'}}
       <div class="resource-content flexrow flex-center flex-between">
         <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Exalt"}}</label>
       </div>
