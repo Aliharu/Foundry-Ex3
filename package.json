@@ -1,7 +1,7 @@
 {
-  "name": "bonfire",
+  "name": "exaltedthird",
   "version": "1.0.0",
-  "description": "CSS compiler for the Bonfire system",
+  "description": "CSS compiler for the Exalted Third system",
   "scripts": {
     "build": "gulp build",
     "compile": "gulp css",
@@ -11,7 +11,7 @@
   "browserslist": [
     "last 3 versions"
   ],
-  "author": "John Doe",
+  "author": "Aliharu",
   "license": "MIT",
   "private": true,
   "devDependencies": {
