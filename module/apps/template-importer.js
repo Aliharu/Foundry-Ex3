@@ -34,7 +34,7 @@ export default class TemplateImporter extends FormApplication {
     options.id = "ex3-template-importer";
     options.template = "systems/exaltedthird/templates/dialogues/template-importer.html"
     options.resizable = true;
-    options.height = 940;
+    options.height = 980;
     options.width = 860;
     options.minimizable = true;
     options.title = "Template Importer"

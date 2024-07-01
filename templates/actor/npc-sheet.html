@@ -122,14 +122,18 @@
                 </div>
                 {{#ifEquals system.details.exalt 'abyssal'}}
                 <div>
-                    <label class="resource-label">{{localize "Ex3.Apocalyptic"}}</label>
-                    <input type="text" name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" />
+                    <div class="resource-label">{{localize "Ex3.Apocalyptic"}}</div>
+                    <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
+                        {{selectOptions selects.abilities selected=system.details.apocalyptic localize=true}}
+                    </select>
                 </div>
                 {{/ifEquals}}
                 {{#ifEquals system.details.exalt 'solar'}}
                 <div>
-                    <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
-                    <input type="text" name="system.details.supernal" value="{{system.details.supernal}}" />
+                    <div class="resource-label">{{localize "Ex3.Supernal"}}</div>
+                    <select name="system.details.supernal" value="{{system.details.supernal}}" data-type="String">
+                        {{selectOptions selects.abilities selected=system.details.supernal localize=true}}
+                    </select>
                 </div>
                 {{/ifEquals}}
                 {{#ifEquals system.details.exalt 'lunar'}}
@@ -168,7 +172,8 @@
             <div class="flex-group-left">
                 <div class="mt-1">
                     <label class="resource-label">{{localize "Ex3.Classifications"}}</label>
-                    <a class="trait-selector" data-options="classifications" data-target="system.traits.classifications">
+                    <a class="trait-selector" data-options="classifications"
+                        data-target="system.traits.classifications">
                         <i class="fas fa-edit"></i>
                     </a>
                     <div class="mt-1">
@@ -350,14 +355,14 @@
             <div class="mt-1">
                 <label class="resource-label">{{localize "Ex3.Languages"}}</label>
                 <a class="trait-selector" data-options="languages" data-target="system.traits.languages">
-                  <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit"></i>
                 </a>
                 <div class="mt-1">
-                  {{#each system.traits.languages.selected as |v k|}}
-                  <li class="tag {{k}}">{{v}}</li>
-                  {{/each}}
+                    {{#each system.traits.languages.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                    {{/each}}
                 </div>
-              </div>
+            </div>
             {{> systems/exaltedthird/templates/actor/biography-tab.html}}
         </div>
     </section>

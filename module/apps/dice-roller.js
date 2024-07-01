@@ -479,10 +479,18 @@ export class RollForm extends FormApplication {
                             collapse: true,
                         }
                     }
-                    if (this.actor.specialabilities.some(merit => Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0)) {
+                    if (this.actor.specialabilities.some(sAbility => Object.keys(sAbility.system.triggers.dicerollertriggers)?.length > 0)) {
                         this.object.charmList['specialabilities'] = {
                             name: game.i18n.localize("Ex3.SpecialAbilities"),
-                            list: this.actor.items.filter(merit => merit.type === 'specialability' && Object.keys(merit.system.triggers.dicerollertriggers)?.length > 0),
+                            list: this.actor.items.filter(sAbility => sAbility.type === 'specialability' && Object.keys(sAbility.system.triggers.dicerollertriggers)?.length > 0),
+                            visible: true,
+                            collapse: true,
+                        }
+                    }
+                    if (this.actor.gear.some(item => Object.keys(item.system.triggers.dicerollertriggers)?.length > 0)) {
+                        this.object.charmList['items'] = {
+                            name: game.i18n.localize("Ex3.Items"),
+                            list: this.actor.items.filter(item => item.type === 'item' && Object.keys(item.system.triggers.dicerollertriggers)?.length > 0),
                             visible: true,
                             collapse: true,
                         }

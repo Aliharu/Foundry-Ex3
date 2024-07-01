@@ -20,6 +20,9 @@ export class ItemData extends CommonItemData {
             ...commonData,
             ...artifactData(),
             ...equipmentData(),
+            ...activatableData(),
+            ...triggerData(),
+            autoaddtorolls: new fields.StringField({ initial: "" }),
             itemtype: new fields.StringField({ initial: "item" }),
             quantity: new fields.NumberField({ initial: 1 }),
         }

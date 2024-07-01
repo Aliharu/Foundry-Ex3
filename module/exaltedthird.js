@@ -340,14 +340,14 @@ async function handleSocket({ type, id, data, actorId, crasherId = null, addStat
   const targetedActor = game.canvas.tokens.get(id)?.actor;
 
   if (type === 'createGeneratedCharacter') {
-    var actor = await Actor.create(data);
-    actor.update({
-      permission: {
-        default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
-        [id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+    let actor = await Actor.create(data);
+    await actor.update({
+      ownership: {
+        default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
+        [id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
       },
     });
-    actor.calculateAllDerivedStats();
+    await actor.calculateAllDerivedStats();
   }
   if (type === 'updateInitiative') {
     game.combat.setInitiative(id, data, crasherId);

@@ -1,3 +1,10 @@
+const attributeAbilityMap = {
+  "weak": 1,
+  "skilled": 3,
+  "exceptional": 4,
+  "legendary": 5,
+}
+
 export default class CharacterBuilder extends FormApplication {
   constructor(app, options, object, data) {
     super(object, options);
@@ -704,7 +711,7 @@ export default class CharacterBuilder extends FormApplication {
       const itemType = event.currentTarget.dataset.item;
       const ritualType = event.currentTarget.dataset.ritual;
 
-      let items = this._getItemList(event);
+      let items = await this._getItemList(event);
 
       const sectionList = {};
 
@@ -948,7 +955,7 @@ export default class CharacterBuilder extends FormApplication {
           closeImportItem: { label: "Close" }
         },
         render: (html) => {
-          html.find('.add-item').click(ev => {
+          html.find('.add-item').click(async ev => {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
             let item = items.find((item) => item._id === li.data("item-id"));
@@ -957,7 +964,7 @@ export default class CharacterBuilder extends FormApplication {
             }
             const newItem = foundry.utils.duplicate(item);
             newItem.itemCount = 1;
-            this.getEnritchedHTML(newItem);
+            await this.getEnritchedHTML(newItem);
             if (item.type === 'ritual') {
               if (ritualType === 'sorcery') {
                 this.object.character.ritual = newItem;
@@ -980,7 +987,7 @@ export default class CharacterBuilder extends FormApplication {
               }
             }
 
-            this.onChange(ev);
+            await this.onChange(ev);
             html.find('.closeImportItem').trigger('click');
           });
 
@@ -1017,7 +1024,7 @@ export default class CharacterBuilder extends FormApplication {
         };
       }
       else {
-        const items = this._getItemList(event);
+        const items = await this._getItemList(event);
         var item = items[Math.floor(Math.random() * items.length)];
         if (item) {
           if (!item.flags?.core?.sourceId) {
@@ -1025,7 +1032,7 @@ export default class CharacterBuilder extends FormApplication {
           }
           const newItem = foundry.utils.duplicate(item);
           newItem.itemCount = 1;
-          this.getEnritchedHTML(newItem);
+          await this.getEnritchedHTML(newItem);
 
           if (item.type === 'ritual') {
             if (item.system.ritualtype === 'necromancy') {
@@ -1135,7 +1142,7 @@ export default class CharacterBuilder extends FormApplication {
     itemToItemAssociation.bind(html[0]);
   }
 
-  _getItemList(event) {
+  async _getItemList(event) {
     const type = event.currentTarget.dataset.type;
     const itemType = event.currentTarget.dataset.item;
     const itemRitual = event.currentTarget.dataset.ritual;
@@ -1320,7 +1327,7 @@ export default class CharacterBuilder extends FormApplication {
     }
     items = items.filter(item => !itemIds.includes(item._id));
     for (var item of items) {
-      this.getEnritchedHTML(item);
+      await this.getEnritchedHTML(item);
     }
     return items;
   }
@@ -1731,7 +1738,7 @@ export default class CharacterBuilder extends FormApplication {
       favoredAttributesSpent += Math.max(0, attributesSpent[key].favored - Math.max(0, this.object.creationData.available.attributes[key] - attributesSpent[key].unFavored));
     }
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
-      if (ability.favored && !ability.caste && ability.value === 0) {
+      if (ability.favored && !ability.caste && ability.value === 0 && key !== 'martialarts') {
         ability.value = 1;
       }
       this.object.creationData.spent.abovethree += Math.max(0, (ability.value - 3));
@@ -2056,8 +2063,8 @@ export default class CharacterBuilder extends FormApplication {
 
     actorData.items = itemData;
     if (game.user.isGM) {
-      var actor = await Actor.create(actorData);
-      actor.calculateAllDerivedStats();
+      let actor = await Actor.create(actorData);
+      await actor.calculateAllDerivedStats();
     }
     else {
       game.socket.emit('system.exaltedthird', {
@@ -2304,49 +2311,7 @@ export default class CharacterBuilder extends FormApplication {
       '2i/round, (L in Crash), 3 rounds, -3, Damage',
       '1L/minute, 10 minutes, -5, Damage',
     ]
-    const attributeAbilityMap = {
-      "weak": 1,
-      "skilled": 3,
-      "exceptional": 4,
-      "legendary": 5,
-    }
 
-    var charmToPoolMap = {
-      archery: 'combat',
-      athletics: 'strength',
-      awareness: 'perception',
-      brawl: 'combat',
-      bureaucracy: 'mind',
-      craft: 'mind',
-      dodge: 'agility',
-      integrity: 'mind',
-      investigation: 'social',
-      larceny: 'agility',
-      linguistics: 'mind',
-      lore: 'mind',
-      medicine: 'mind',
-      melee: 'combat',
-      occult: 'mind',
-      performance: 'social',
-      presence: 'social',
-      resistance: 'body',
-      ride: 'agility',
-      sail: 'agility',
-      socialize: 'social',
-      stealth: 'agility',
-      survival: 'body',
-      thrown: 'combat',
-      war: 'combat',
-      strength: 'strength',
-      dexterity: 'agility',
-      stamina: 'body',
-      appearance: 'social',
-      charisma: 'social',
-      manipulation: 'social',
-      wits: 'mind',
-      perception: 'perception',
-      intelligence: 'mind',
-    }
     if (this.object.character.traits.commander.value) {
       actorData.system.pools.command.value = this._getCharacterPool(this.object.character.skills.combat.value);
     }
@@ -2441,7 +2406,7 @@ export default class CharacterBuilder extends FormApplication {
     itemData.push(
       {
         type: 'weapon',
-        img: "icons/svg/sword.svg",
+        img: "systems/exaltedthird/assets/icons/fist.svg",
         name: 'Grapple',
         system: {
           witheringaccuracy: 4 + this._getCharacterPool(this.object.character.skills.combat.value),
@@ -2513,6 +2478,7 @@ export default class CharacterBuilder extends FormApplication {
       const weaponCopy = foundry.utils.duplicate(weapon);
       if (this.object.characterType === 'npc') {
         weaponCopy.system.witheringaccuracy += this._getCharacterPool(this.object.character.skills.combat.value);
+        weaponCopy.system.witheringdamage += attributeAbilityMap[this.object.character.skills.strength.value];
       }
       itemData.push(weaponCopy);
     }
@@ -2579,11 +2545,11 @@ export default class CharacterBuilder extends FormApplication {
     itemData.push(
       {
         type: 'weapon',
-        img: "icons/svg/sword.svg",
+        img: 'systems/exaltedthird/assets/icons/fist.svg',
         name: 'Unarmed',
         system: {
-          witheringaccuracy: 4,
-          witheringdamage: 7,
+          witheringaccuracy: 4 + (this.object.characterType === 'npc' ? this._getCharacterPool(this.object.character.skills.combat.value) : 0),
+          witheringdamage: 7 + (this.object.characterType === 'npc' ? attributeAbilityMap[this.object.character.skills.strength.value] : 0),
           overwhelming: 1,
           defense: 0,
           weapontype: 'melee',
@@ -2802,7 +2768,7 @@ export default class CharacterBuilder extends FormApplication {
       name: weapon.name,
       system: {
         witheringaccuracy: weapon.witheringaccuracy,
-        witheringdamage: weapon.witheringdamage + ((weapon.traits.weapontags.value.includes('flame') || weapon.traits.weapontags.value.includes('crossbow')) ? 4 : (this.object.character.attributes.strength.value)),
+        witheringdamage: weapon.witheringdamage + ((weapon.traits.weapontags.value.includes('flame') || weapon.traits.weapontags.value.includes('crossbow')) ? 4 : (this.object.characterType === 'npc' ? attributeAbilityMap[this.object.character.skills.strength.value] : 0)),
         overwhelming: weapon.overwhelming,
         defense: weapon.defense,
         traits: weapon.traits,
