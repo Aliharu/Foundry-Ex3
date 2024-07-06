@@ -82,6 +82,7 @@ export class ItemWeaponData extends CommonItemData {
             ...commonData,
             ...equipmentData(),
             ...artifactData(),
+            ...triggerData(),
             weighttype: new fields.StringField({ initial: "other" }),
             witheringaccuracy: new fields.NumberField({ initial: 0 }),
             witheringdamage: new fields.NumberField({ initial: 0 }),

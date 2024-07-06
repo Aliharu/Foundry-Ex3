@@ -1160,7 +1160,7 @@ export default class CharacterBuilder extends FormApplication {
     if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
       items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
       if (itemType === 'charm') {
-        if (this.object.exalt === 'exigent') {
+        if (this.object.character.exalt === 'exigent') {
           items = items.filter(charm => charm.system.charmtype === this.object.character.exigent || charm.system.charmtype === 'universal');
         } else {
           items = items.filter(charm => charm.system.charmtype === this.object.character.exalt || charm.system.charmtype === 'universal');

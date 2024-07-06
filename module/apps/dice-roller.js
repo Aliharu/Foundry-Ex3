@@ -495,6 +495,14 @@ export class RollForm extends FormApplication {
                             collapse: true,
                         }
                     }
+                    if (this.actor.weapons.some(item => Object.keys(item.system.triggers.dicerollertriggers)?.length > 0)) {
+                        this.object.charmList['weapons'] = {
+                            name: game.i18n.localize("Ex3.Weapons"),
+                            list: this.actor.items.filter(item => item.type === 'weapon' && Object.keys(item.system.triggers.dicerollertriggers)?.length > 0),
+                            visible: true,
+                            collapse: true,
+                        }
+                    }
                 }
                 for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
                     charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
@@ -570,7 +578,7 @@ export class RollForm extends FormApplication {
             }
 
             for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
-                for (const charm of charmlist.list.filter(charm => charm.system.active && this._autoAddCharm(charm))) {
+                for (const charm of charmlist.list.filter(charm => (charm.system.active && this._autoAddCharm(charm)) || (charm.type === 'weapon' && data.weapon?.parent?.id === charm.id))) {
                     this.addCharm(charm, false);
                 }
             }

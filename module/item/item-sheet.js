@@ -9,13 +9,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
   constructor(...args) {
     super(...args);
-    if (this.object.type === "charm" || this.object.type === "spell" || this.object.type === "merit" || this.object.type === "specialability" || this.object.type === "item") {
+    if (this.object.type === "charm" || this.object.type === "spell" || this.object.type === "merit" || this.object.type === "specialability" || this.object.type === "item" || this.object.type === "weapon") {
       this.options.width = this.position.width = 615;
       this.options.height = this.position.height = 850;
-    }
-    if (this.object.type === "weapon") {
-      this.options.width = this.position.width = 675;
-      this.options.height = this.position.height = 600;
     }
     this.options.classes = [...this.options.classes, this.getTypeSpecificCSSClasses()];
   }
