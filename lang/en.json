@@ -664,6 +664,8 @@
     "Ex3.UseEssenceGambitsDescription": "Adds gambits from Essence that are missing from Exalted Third Edition.  Changes: Each gambit costs 1 less than Essence, pilfer does not give any power because that mechanic is not in Ex3, and Reveal Weakness will always half the targets soak until the next successful withering attack against them.  Defense penalties are calculated based off the gambits initiative roll.",
     "Ex3.DisengageCost": "Disengage Cost",
     "Ex3.DisengageCostDescription": "Disengage Costs 2 Initiative",
+    "Ex3.sortDice": "Sort Dice Rolls",
+    "Ex3.sortDiceDescription": "If selected, the dice roller will sort the results from 10 to 1. Otherwise, the dice will be shown in the order they were rolled.",
 
     "Ex3.RollButtonTarget": "Roll Button Target",
     "Ex3.RollButtonTargetDescription": "If enabled roll buttons will on the tokens that are currently targetted by the user and if there are no targets will default to the proper character (Attacker for gain withering, Target for Damage).  If disabled it will always use the Attacker/Defender.",

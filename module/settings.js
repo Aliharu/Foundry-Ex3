@@ -149,6 +149,16 @@ export function registerSettings() {
         default: true
     });
 
+    game.settings.register("exaltedthird", "sortDice", {
+        name: game.i18n.localize('Ex3.sortDice'),
+        hint: game.i18n.localize('Ex3.sortDiceDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        ruleChange: false,
+        default: true
+    });
+
     game.settings.register("exaltedthird", "unifiedCharacterCreation", {
         name: game.i18n.localize('Ex3.UnifiedCharacterCreation'),
         hint: game.i18n.localize('Ex3.UnifiedCharacterCreationDescription'),

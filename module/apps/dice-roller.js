@@ -2485,7 +2485,7 @@ export class RollForm extends FormApplication {
 
         possibleRerolls = 0;
         possibleSuccessRerolls = 0;
-        for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
+        for (const diceResult of this._sortDice(diceRoll)) {
             if (diceModifiers.rerollNumber > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
                 possibleRerolls++;
                 diceResult.rerolled = true;
@@ -2507,7 +2507,7 @@ export class RollForm extends FormApplication {
             rerolledDice += possibleRerolls;
             var rerollNumDiceResults = await this._rollTheDice(diceToReroll, diceModifiers, doublesRolled, numbersRerolled);
             diceToReroll = 0
-            for (const diceResult of rerollNumDiceResults.results.sort((a, b) => a.result - b.result)) {
+            for (const diceResult of this._sortDice(rerollNumDiceResults.results)) {
                 if (diceModifiers.rerollNumber > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
                     possibleRerolls++;
                     diceToReroll++;
@@ -2523,7 +2523,7 @@ export class RollForm extends FormApplication {
             successRerolledDice += possibleSuccessRerolls;
             var rerollNumDiceResults = await this._rollTheDice(successesToReroll, diceModifiers, doublesRolled, numbersRerolled);
             successesToReroll = 0
-            for (const diceResult of rerollNumDiceResults.results.sort((a, b) => a.result - b.result)) {
+            for (const diceResult of this._sortDice(rerollNumDiceResults.results)) {
                 if (diceModifiers.rerollSuccesses > possibleSuccessRerolls && !diceResult.rerolled && diceResult.result >= this.object.targetNumber) {
                     possibleSuccessRerolls++;
                     successesToReroll++;
@@ -2567,7 +2567,7 @@ export class RollForm extends FormApplication {
         rollResults.roll.dice[0].results = diceRoll;
 
         let diceDisplay = "";
-        for (let dice of diceRoll.sort((a, b) => b.result - a.result)) {
+        for (let dice of this._sortDice(diceRoll)) {
             if (dice.successCanceled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
             else if (dice.doubled) {
                 diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
@@ -5615,6 +5615,20 @@ export class RollForm extends FormApplication {
                 console.error(e);
             }
         }
+    }
+
+    _sortDice(diceRoll, ignoreSetting = false){
+        //ignoreSetting = true will always sort dice
+
+        var sortedDice;
+
+        if(game.settings.get('exaltedthird','sortDice') || ignoreSetting === true){  
+            sortedDice = diceRoll.sort((a, b) => b.result - a.result);
+        }else{
+            sortedDice = diceRoll;
+        }
+        
+        return sortedDice;
     }
 }
 
