@@ -411,6 +411,7 @@
     "Ex3.MaxInitiativeGain": "Max Initiative Gain",
     "Ex3.DivineInspirationTechnique": "Divine Inspiration Technique",
     "Ex3.HolisticMiracleUnderstanding": "Holistic Miracle Understanding",
+    "Ex3.FirstMovementoftheDemiurge": "First Movementof the Demiurge",
     "Ex3.Personal": "Personal",
     "Ex3.Peripheral": "Peripheral",
     "Ex3.CommitM": "Commit.M",
@@ -887,6 +888,8 @@
     "Ex3.Sync": "Sync",
     "Ex3.Activatable": "Activatable",
 
+    "Ex3.SpecificCharm": "Specific Charm",
+
     "Ex3.UseActiveEffectsDropdown": "Use Active Effects Dropdown",
     "Ex3.UseActiveEffectsDropdownDescription": "Use a dropdown list for the key in active effects rather than an open input",
 
@@ -1155,5 +1158,8 @@
     "Ex3.SpendPenumbra": "Spend Penumbra",
     "Ex3.SpendSilverXP": "Spend Silver XP",
     "Ex3.SpendGoldXP": "Spend Gold XP",
-    "Ex3.SpendWhiteXP": "Spend White XP"
+    "Ex3.SpendWhiteXP": "Spend White XP",
+    "Ex3.RisingSunSlash": "Rising Sun Slash",
+    "Ex3.RisingSunSlashGC": "Rising Sun Slash GC",
+    "Ex3.GoldenCalibration": "Golden Calibration"
 }

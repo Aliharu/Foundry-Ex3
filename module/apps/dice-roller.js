@@ -26,6 +26,7 @@ export class RollForm extends FormApplication {
             this.object.splitAttack = false;
             this.object.rollType = data.rollType;
             this.object.targetStat = 'defense';
+            this.object.specialty = '';
             this.object.attackType = data.attackType || data.rollType || 'withering';
             if (this.object.rollType === 'damage' || this.object.rollType === 'accuracy') {
                 this.object.attackType = 'withering';
@@ -259,6 +260,12 @@ export class RollForm extends FormApplication {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
             };
+            this.object.specificCharms = {
+                divineInsperationTechnique: false,
+                holisticMiracleUnderstanding: false,
+                risingSunSlash: false,
+                firstMovementoftheDemiurge: false,
+            }
             this.object.triggers = [];
             this.object.spell = "";
             if (this.object.rollType !== 'base') {
@@ -730,10 +737,9 @@ export class RollForm extends FormApplication {
                 effectiveResolve += 1;
                 effectiveGuile += 1;
             }
-            if (target.actor.system.health.penalty !== 'inc') {
-                effectiveEvasion -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
-                effectiveParry -= Math.max(0, target.actor.system.health.penalty - target.actor.system.health.penaltymod);
-            }
+            effectiveEvasion -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
+            effectiveParry -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
+            
             if (this.object.targetStat === 'resolve') {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
                 target.rollData.defense = effectiveResolve;
@@ -1665,10 +1671,10 @@ export class RollForm extends FormApplication {
             this.object.intervals = 1;
             this.object.difficulty = 1;
             this.object.goalNumber = 0;
-            if(this.object.craftType === 'superior') {
+            if (this.object.craftType === 'superior') {
                 this.object.cost.goldxp = 10;
             }
-            if(this.object.craftType === 'legendary') {
+            if (this.object.craftType === 'legendary') {
                 this.object.cost.whitexp = 10;
             }
             this._getCraftDifficulty();
@@ -2539,7 +2545,7 @@ export class RollForm extends FormApplication {
             total += rerollNumDiceResults.total;
         }
         total += diceModifiers.successModifier;
-        if (this.object.craft.divineInsperationTechnique || this.object.craft.holisticMiracleUnderstanding) {
+        if (this.object.specificCharms.divineInsperationTechnique || this.object.specificCharms.holisticMiracleUnderstanding) {
             let newCraftDice = Math.floor(total / 3);
             let remainder = total % 3;
             while (newCraftDice > 0) {
@@ -2553,6 +2559,105 @@ export class RollForm extends FormApplication {
                 if (this.object.craft.holisticMiracleUnderstanding) {
                     newCraftDice * 4;
                 }
+            }
+        }
+
+        if (this.object.specificCharms.firstMovementoftheDemiurge) {
+            let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {})
+            let facesConsumed = {};
+            let depth = 0;
+            let diceCoverted = 0;
+            let faces = Array.from({ length: 11 - diceModifiers.targetNumber }, (v, k) => k + diceModifiers.targetNumber);
+            let failures = diceRoll.filter(d => d.active && !d.success).sort((a, b) => b.result - a.result);
+
+            let faceCheck = () => {
+                let result = faces.some(f => {
+                    let facesLeft = (faceCount[f] || 0) - (facesConsumed[f] || 0)
+                    return facesLeft >= 3
+                })
+                return result;
+            };
+
+            while (faceCheck()) {
+                let transformedFailures = [];
+                // for every triple-success, transform a failure into a 10
+                if (!failures.length) break;
+
+                faces.forEach(f => {
+                    facesConsumed[f] = facesConsumed[f] || 0;
+                    let facesLeft = (faceCount[f] || 0) - (facesConsumed[f] || 0);
+                    if (facesLeft >= 3 && failures.length > 0) for (let i = 0; i < Math.min(failures.length, Math.floor(facesLeft / 3)); i++) {
+                        facesConsumed[f] += 3;
+                        faceCount[10]++;
+                        diceCoverted++;
+                        let oldDie = failures.pop();
+                        oldDie.rerolled = true;
+                        numbersRerolled[oldDie.result]++;
+                        let transformedDie = ({
+                            ...oldDie,
+                            result: 10,
+                            success: true,
+                            count: 1,
+                        })
+                        total++
+                        if (10 >= diceModifiers.doubleSuccess) {
+                            total++
+                            doublesRolled[10]++;
+                            transformedDie.doubled = true;
+                        }
+                        transformedFailures.push(oldDie)
+                        diceRoll.push(transformedDie);
+                    }
+                });
+                // Reroll Exploding 10s if needed
+                if (diceModifiers.reroll.ten && transformedFailures.length > 0) {
+                    transformedFailures.forEach(f => f.rerolled = true);
+                    numbersRerolled[10] += transformedFailures.length;
+                    depth++
+                    let moreResults = await this._rollTheDice(transformedFailures.length, diceModifiers, doublesRolled, numbersRerolled)
+                    total += moreResults.total;
+                    moreResults.results.forEach(r => faceCount[r.result]++);
+                    diceRoll.push(...moreResults.results);
+                }
+            }
+            if(diceCoverted) {
+                (this.object.triggerMessages || []).push(`First Movement of the Demiurge: Converted ${diceCoverted} dice to 10s`);
+            }
+        }
+
+        if(diceModifiers.type === 'standard' && this.object.specificCharms.risingSunSlash) {
+            let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {});
+            if(faceCount[7] && faceCount[8] && faceCount[9] && faceCount[10]) {
+                total += 1;
+                let moreResults = await this._rollTheDice(this.actor.system.essence.value, diceModifiers, doublesRolled, numbersRerolled)
+                total += moreResults.total;
+                diceRoll.push(...moreResults.results);
+                (this.object.triggerMessages || []).push(`Rising Sun Slash Triggered: ${this.actor.system.essence.value} Dice and 1 Success added`);
+            }
+            else {
+                this.object.cost.motes--;
+            }
+        }
+
+        if(diceModifiers.type === 'standard' && this.object.specificCharms.risingSunSlashGc) {
+            let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {});
+            let triggerCharm = false;
+            let biggestSet = 0;
+            for (var face of Object.values(faceCount)) {
+                if(face >= 3) {
+                    triggerCharm = true;
+                }
+                biggestSet = face;
+            }
+            if(triggerCharm) {
+                total += 1;
+                let moreResults = await this._rollTheDice(this.actor.system.essence.value, diceModifiers, doublesRolled, numbersRerolled)
+                total += moreResults.total;
+                diceRoll.push(...moreResults.results);
+                (this.object.triggerMessages || []).push(`Rising Sun Slash Triggered: ${this.actor.system.essence.value} Dice and 1 Success added`);
+            }
+            else {
+                this.object.cost.motes--;
             }
         }
 
@@ -2659,12 +2764,12 @@ export class RollForm extends FormApplication {
                 successes += Math.min(dice, this.object.diceToSuccesses);
                 dice = Math.max(0, dice - this.object.diceToSuccesses);
             }
-            if (this.object.woundPenalty && data.health.penalty !== 'inc') {
+            if (this.object.woundPenalty) {
                 if (data.warstrider.equipped) {
                     dice -= data.warstrider.health.penalty;
                 }
                 else {
-                    dice -= Math.max(0, data.health.penalty - data.health.penaltymod);
+                    dice -= Math.max(0, (data.health.penalty === 'inc' ? 4 : data.health.penalty) - data.health.penaltymod);
                 }
             }
             if (this.object.isFlurry) {
@@ -2716,6 +2821,7 @@ export class RollForm extends FormApplication {
             settings: this.object.settings,
             preRollMacros: [],
             macros: [],
+            type: 'standard',
         }
 
         for (let charm of this.object.addedCharms) {
@@ -2734,7 +2840,7 @@ export class RollForm extends FormApplication {
                 });
             }
             if (charm.system.macro) {
-                const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+                const AsyncFunction = Object.getPrototypeOf(async function () { }).constructor;
                 let macro = new AsyncFunction('rollResult', 'dice', 'diceModifiers', 'doublesRolled', 'numbersRerolled', charm.system.macro);
                 rollModifiers.macros.push(async (rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) => {
                     try {
@@ -3334,6 +3440,7 @@ export class RollForm extends FormApplication {
             settings: this.object.settings.damage,
             preRollMacros: [],
             macros: [],
+            type: 'damage',
         }
 
         for (let charm of this.object.addedCharms) {
@@ -4077,6 +4184,11 @@ export class RollForm extends FormApplication {
                                     break;
                                 case 'displayMessage':
                                     (this.object.triggerMessages || []).push(bonus.value);
+                                    break;
+                                case 'specificCharm':
+                                    if (this.object.specificCharms[bonus.value] !== undefined) {
+                                        this.object.specificCharms[bonus.value] = true;
+                                    }
                                     break;
                             }
                         }
@@ -5617,17 +5729,17 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _sortDice(diceRoll, ignoreSetting = false){
+    _sortDice(diceRoll, ignoreSetting = false) {
         //ignoreSetting = true will always sort dice
 
         var sortedDice;
 
-        if(game.settings.get('exaltedthird','sortDice') || ignoreSetting === true){  
+        if (game.settings.get('exaltedthird', 'sortDice') || ignoreSetting === true) {
             sortedDice = diceRoll.sort((a, b) => b.result - a.result);
-        }else{
+        } else {
             sortedDice = diceRoll;
         }
-        
+
         return sortedDice;
     }
 }

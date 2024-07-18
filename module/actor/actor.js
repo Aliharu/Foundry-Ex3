@@ -804,10 +804,8 @@ export class ExaltedThirdActor extends Actor {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
-    if (actorData.system.health.penalty !== 'inc') {
-      currentParryPenalty += Math.max(0, data.health.penalty - data.health.penaltymod);
-      currentEvasionPenalty += Math.max(0, data.health.penalty - data.health.penaltymod);
-    }
+    currentParryPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : data.health.penalty) - data.health.penaltymod);
+    currentEvasionPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : data.health.penalty) - data.health.penaltymod);
     data.currentParryPenalty = currentParryPenalty;
     data.currentEvasionPenalty = currentEvasionPenalty;
     data.currentOnslaughtPenalty = currentOnslaughtPenalty;
@@ -1320,11 +1318,8 @@ export class ExaltedThirdActor extends Actor {
     if (this.effects.some(e => e.statuses.has('fullcover'))) {
       coverBonus += 3;
     }
-
-    if (currentPenalty !== 'inc') {
-      currentParryPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
-      currentEvasionPenalty += Math.max(0, currentPenalty - data.health.penaltymod);
-    }
+    currentParryPenalty += Math.max(0, (currentPenalty === 'inc' ? 4 : currentPenalty) - data.health.penaltymod);
+    currentEvasionPenalty += Math.max(0, (currentPenalty === 'inc' ? 4 : currentPenalty) - data.health.penaltymod);
 
     data.nonsurprisedevasionpenalty = { 'value': currentEvasionPenalty };
     data.nonsurprisedparrypenalty = { 'value': currentParryPenalty };
@@ -1664,9 +1659,9 @@ export async function spendEmbeddedItem(actor, item) {
             }
           }
         }
-        if (item.system.cost.commitmotes > 0 || item.system.activatable) {
-          updateActive = true;
-        }
+      }
+      if (item.system.cost.commitmotes > 0 || item.system.activatable) {
+        updateActive = true;
       }
       actorData.system.anima.level = newLevel;
       actorData.system.anima.value = newValue;

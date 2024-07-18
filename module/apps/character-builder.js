@@ -2062,7 +2062,7 @@ export default class CharacterBuilder extends FormApplication {
     await this._getCharacterEquipment(actorData, itemData);
 
     actorData.items = itemData;
-    if (game.user.isGM) {
+    if (Actor.canUserCreate(game.user)) {
       let actor = await Actor.create(actorData);
       await actor.calculateAllDerivedStats();
     }

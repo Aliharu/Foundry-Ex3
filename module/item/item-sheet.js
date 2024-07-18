@@ -54,6 +54,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.selects = CONFIG.exaltedthird.selects;
 
     context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
+    context.specificCharmTriggers = CONFIG.exaltedthird.specificCharmTriggers;
     context.requirementTypes = CONFIG.exaltedthird.requirementTypes;
     if (itemData.type === 'charm') {
       if (itemData.system.ability === 'evocation') {

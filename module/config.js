@@ -1536,6 +1536,7 @@ exaltedthird.bonusTypes = {
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
       inflictDicePenalty: "Ex3.InflictDicePenalty",
       displayMessage: "Ex3.DisplayMessage",
+      specificCharm: "Ex3.SpecificCharm"
     }
   },
   defense: {
@@ -1546,6 +1547,30 @@ exaltedthird.bonusTypes = {
       hardness: "Ex3.Hardness",
       resolve: "Ex3.Resolve",
       guile: "Ex3.Guile",
+    }
+  }
+}
+
+exaltedthird.specificCharmTriggers = {
+  none: {
+    label: "Ex3.None",
+    charms: {
+      "": "Ex3.None"
+    }
+  },
+  solar: {
+    label: "Ex3.Solar",
+    charms: {
+      divineInspirationTechnique: "Ex3.DivineInspirationTechnique",
+      holisticMiracleUnderstanding: "Ex3.HolisticMiracleUnderstanding",
+      risingSunSlash: "Ex3.RisingSunSlash",
+      firstMovementoftheDemiurge : "Ex3.FirstMovementoftheDemiurge",
+    }
+  },
+  goldenCalibration: {
+    label: "Ex3.GoldenCalibration",
+    charms: {
+      risingSunSlashGc: "Ex3.RisingSunSlash",
     }
   }
 }

@@ -163,10 +163,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       currentParryPenalty += 2;
       currentEvasionPenalty += 2;
     }
-    if (actorData.system.health.penalty !== 'inc') {
-      currentParryPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
-      currentEvasionPenalty += Math.max(0, sheetData.system.health.penalty - sheetData.system.health.penaltymod);
-    }
+    currentParryPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : sheetData.system.health.penalty) - sheetData.system.health.penaltymod);
+    currentEvasionPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : sheetData.system.health.penalty) - sheetData.system.health.penaltymod);
     sheetData.system.currentParryPenalty = currentParryPenalty;
     sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
     sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
