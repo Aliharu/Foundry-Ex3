@@ -2556,7 +2556,7 @@ export class RollForm extends FormApplication {
                 total += craftDiceRollResults.total;
                 newCraftDice = Math.floor((rollSuccessTotal + remainder) / 3);
                 remainder = rollSuccessTotal % 3;
-                if (this.object.craft.holisticMiracleUnderstanding) {
+                if (this.object.specificCharms.holisticMiracleUnderstanding) {
                     newCraftDice * 4;
                 }
             }

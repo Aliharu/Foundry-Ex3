@@ -301,10 +301,6 @@
             <b>{{localize "Ex3.AddedDefensePenalty"}}: </b>{{rollData.triggerSelfDefensePenalty}}
         </div>
         {{#ifEquals rollData.rollType 'craft'}}
-        <div>
-            {{#if rollData.craft.divineInsperationTechnique}}{{localize "Ex3.DivineInspirationTechnique"}}{{/if}}
-            {{#if rollData.craft.holisticMiracleUnderstanding}}{{localize "Ex3.HolisticMiracleUnderstanding"}}{{/if}}
-        </div>
         {{#if rollData.finished}}
         <div>
             <b>{{localize "Ex3.CraftType"}}</b>: {{rollData.craftType}},
