@@ -2545,7 +2545,7 @@ export class RollForm extends FormApplication {
             total += rerollNumDiceResults.total;
         }
         total += diceModifiers.successModifier;
-        if (this.object.specificCharms.divineInsperationTechnique || this.object.specificCharms.holisticMiracleUnderstanding) {
+        if (this.object.specificCharms?.divineInsperationTechnique || this.object.specificCharms?.holisticMiracleUnderstanding) {
             let newCraftDice = Math.floor(total / 3);
             let remainder = total % 3;
             while (newCraftDice > 0) {
@@ -2556,13 +2556,13 @@ export class RollForm extends FormApplication {
                 total += craftDiceRollResults.total;
                 newCraftDice = Math.floor((rollSuccessTotal + remainder) / 3);
                 remainder = rollSuccessTotal % 3;
-                if (this.object.specificCharms.holisticMiracleUnderstanding) {
+                if (this.object.specificCharms?.holisticMiracleUnderstanding) {
                     newCraftDice * 4;
                 }
             }
         }
 
-        if (this.object.specificCharms.firstMovementoftheDemiurge) {
+        if (this.object.specificCharms?.firstMovementoftheDemiurge) {
             let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {})
             let facesConsumed = {};
             let depth = 0;
@@ -2625,7 +2625,7 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if(diceModifiers.type === 'standard' && this.object.specificCharms.risingSunSlash) {
+        if(diceModifiers.type === 'standard' && this.object.specificCharms?.risingSunSlash) {
             let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {});
             if(faceCount[7] && faceCount[8] && faceCount[9] && faceCount[10]) {
                 total += 1;
@@ -2639,7 +2639,7 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if(diceModifiers.type === 'standard' && this.object.specificCharms.risingSunSlashGc) {
+        if(diceModifiers.type === 'standard' && this.object.specificCharms?.risingSunSlashGc) {
             let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {});
             let triggerCharm = false;
             let biggestSet = 0;
