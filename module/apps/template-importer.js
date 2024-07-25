@@ -689,6 +689,7 @@ export default class TemplateImporter extends FormApplication {
     this.errorSection = 'Initial Info';
     try {
       actorData.name = textArray[0].trim();
+      actorData.prototypeToken.name = textArray[0].trim();
       var actorDescription = '';
       while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:') && !textArray[index].includes('Intimacies:')) {
         actorDescription += textArray[index];
@@ -986,21 +987,21 @@ export default class TemplateImporter extends FormApplication {
       var soakArray = textArray[index].replace('Soak/Hardness:', '').replace(/ *\([^)]*\) */g, "").split('/');
 
       actorData.system.soak.value = parseInt(soakArray[0].replace(/[^0-9]/g, ''));
+      actorData.system.hardness.value = parseInt(soakArray[1].replace(/[^0-9]/g, ''));
 
-      if (soakArray[1].includes('(')) {
-        var hardnessArray = soakArray[1].replace(')', '').split('(');
-        actorData.system.hardness.value = parseInt(hardnessArray[0].replace(/[^0-9]/g, ''));
-        itemData.push(
-          {
-            type: 'armor',
-            img: this.getImageUrl('armor'),
-            name: hardnessArray[1].trim(),
-          }
-        );
+      if (textArray[index].includes('(')) {
+        const match = textArray[index].match(/\(([^)]+)\)/);
+        if (match) {
+          itemData.push(
+            {
+              type: 'armor',
+              img: this.getImageUrl('armor'),
+              name: match[1],
+            }
+          );
+        }
       }
-      else {
-        actorData.system.hardness.value = parseInt(soakArray[1].replace(/[^0-9]/g, ''));
-      }
+
       index++;
       itemData.push(...this._getItemData(textArray, index, actorData));
       actorData.items = itemData;
@@ -1467,6 +1468,7 @@ export default class TemplateImporter extends FormApplication {
     var textArray = html.find('#template-text').val().split(/\r?\n/);
     try {
       actorData.name = textArray[0].trim();
+      actorData.prototypeToken.name = textArray[0].trim();
       var actorDescription = '';
       var addingIntimacies = false;
       var intimacyString = '';

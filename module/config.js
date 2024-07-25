@@ -1485,6 +1485,7 @@ exaltedthird.bonusTypes = {
       'triggerNinesAndTens-damage': "Ex3.DamageTriggerNines&Tens",
       threshholdToDamage: "Ex3.ThreshholdToDamage",
       doubleRolledDamage: "Ex3.DoubleRolledDamage",
+      doublePreRolledDamage: "Ex3.DoublePreRolledDamage",
       resetInit: "Ex3.ResetInitiative",
       ignoreSoak: "Ex3.IgnoreSoak",
       ignoreHardness: "Ex3.IgnoreHardness",
@@ -1492,6 +1493,7 @@ exaltedthird.bonusTypes = {
       postSoakDamage: "Ex3.PostSoakDamage",
       reduceGambitDifficulty: "Ex3.ReduceGambitDifficulty",
       setDamageType: "Ex3.SetDamageType",
+      gainInitiative: "Ex3.GainInitiative",
     }
   },
   spend: {
@@ -1536,7 +1538,8 @@ exaltedthird.bonusTypes = {
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
       inflictDicePenalty: "Ex3.InflictDicePenalty",
       displayMessage: "Ex3.DisplayMessage",
-      specificCharm: "Ex3.SpecificCharm"
+      specificCharm: "Ex3.SpecificCharm",
+      inflictStatus: "Ex3.InflictStatus"
     }
   },
   defense: {
@@ -1551,29 +1554,55 @@ exaltedthird.bonusTypes = {
   }
 }
 
-exaltedthird.specificCharmTriggers = {
-  none: {
-    label: "Ex3.None",
-    charms: {
-      "": "Ex3.None"
-    }
+exaltedthird.triggerBonusDropdowns = {
+  statuses: {
+    aiming: "Ex3.Aiming",
+    prone: "Ex3.Prone",
+    lightcover: "Ex3.LightCover",
+    heavycover: "Ex3.HeavyCover",
+    fullcover: "Ex3.FullCover",
+    grappled: "Ex3.Grappled",
+    grappling: "Ex3.Grappling",
+    disarmed: "Ex3.Disarmed",
+    fulldefense: "Ex3.FullDefense",
+    surprised: "Ex3.Surprised",
+    bleeding: "EFFECT.StatusBleeding",
+    poisoned: "EFFECT.StatusPoison",
+    burning: "EFFECT.StatusBurning",
+    dematerialized: "Ex3.Dematerialized",
+    blind: "EFFECT.StatusBlind",
+    paralyzed: "Ex3.Paralyzed",
+    entangled: "Ex3.Entangled",
+    mounted: "Ex3.Mounted",
+    hidden: "Ex3.Hidden",
+    incapacitated: "Ex3.Incapacitated"
   },
-  solar: {
-    label: "Ex3.Solar",
-    charms: {
-      divineInspirationTechnique: "Ex3.DivineInspirationTechnique",
-      holisticMiracleUnderstanding: "Ex3.HolisticMiracleUnderstanding",
-      risingSunSlash: "Ex3.RisingSunSlash",
-      firstMovementoftheDemiurge : "Ex3.FirstMovementoftheDemiurge",
-    }
-  },
-  goldenCalibration: {
-    label: "Ex3.GoldenCalibration",
-    charms: {
-      risingSunSlashGc: "Ex3.RisingSunSlash",
+  specificCharmTriggers: {
+    none: {
+      label: "Ex3.None",
+      charms: {
+        "": "Ex3.None"
+      }
+    },
+    solar: {
+      label: "Ex3.Solar",
+      charms: {
+        divineInspirationTechnique: "Ex3.DivineInspirationTechnique",
+        holisticMiracleUnderstanding: "Ex3.HolisticMiracleUnderstanding",
+        risingSunSlash: "Ex3.RisingSunSlash",
+        firstMovementoftheDemiurge : "Ex3.FirstMovementoftheDemiurge",
+      }
+    },
+    goldenCalibration: {
+      label: "Ex3.GoldenCalibration",
+      charms: {
+        risingSunSlashGc: "Ex3.RisingSunSlash",
+      }
     }
   }
 }
+
+
 
 exaltedthird.requirementTypes = {
   none: {

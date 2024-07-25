@@ -53,11 +53,16 @@
                 {{#ifEquals bonus.effect 'specificCharm'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{#each ../../specificCharmTriggers as |specificCharmCategory specificCharmCategoryType|}}
+                    {{#each ../../triggerBonusDropdowns.specificCharmTriggers as |specificCharmCategory specificCharmCategoryType|}}
                     <optgroup label="{{localize specificCharmCategory.label}}">
                         {{selectOptions specificCharmCategory.charms selected=bonus.value localize=true}}
                     </optgroup>
                     {{/each}}
+                </select>
+                {{else ifEquals bonus.effect 'inflictStatus'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=bonus.value localize=true blank=''}}
                 </select>
                 {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"

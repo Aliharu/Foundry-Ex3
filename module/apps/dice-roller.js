@@ -739,7 +739,7 @@ export class RollForm extends FormApplication {
             }
             effectiveEvasion -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
             effectiveParry -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
-            
+
             if (this.object.targetStat === 'resolve') {
                 target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
                 target.rollData.defense = effectiveResolve;
@@ -2620,14 +2620,14 @@ export class RollForm extends FormApplication {
                     diceRoll.push(...moreResults.results);
                 }
             }
-            if(diceCoverted) {
+            if (diceCoverted) {
                 (this.object.triggerMessages || []).push(`First Movement of the Demiurge: Converted ${diceCoverted} dice to 10s`);
             }
         }
 
-        if(diceModifiers.type === 'standard' && this.object.specificCharms?.risingSunSlash) {
+        if (diceModifiers.type === 'standard' && this.object.specificCharms?.risingSunSlash) {
             let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {});
-            if(faceCount[7] && faceCount[8] && faceCount[9] && faceCount[10]) {
+            if (faceCount[7] && faceCount[8] && faceCount[9] && faceCount[10]) {
                 total += 1;
                 let moreResults = await this._rollTheDice(this.actor.system.essence.value, diceModifiers, doublesRolled, numbersRerolled)
                 total += moreResults.total;
@@ -2639,17 +2639,17 @@ export class RollForm extends FormApplication {
             }
         }
 
-        if(diceModifiers.type === 'standard' && this.object.specificCharms?.risingSunSlashGc) {
+        if (diceModifiers.type === 'standard' && this.object.specificCharms?.risingSunSlashGc) {
             let faceCount = diceRoll.filter(d => d.active && d.success).reduce((carry, d) => ({ ...carry, [d.result]: (carry[d.result] || 0) + 1 }), {});
             let triggerCharm = false;
             let biggestSet = 0;
             for (var face of Object.values(faceCount)) {
-                if(face >= 3) {
+                if (face >= 3) {
                     triggerCharm = true;
                 }
                 biggestSet = face;
             }
-            if(triggerCharm) {
+            if (triggerCharm) {
                 total += 1;
                 let moreResults = await this._rollTheDice(this.actor.system.essence.value, diceModifiers, doublesRolled, numbersRerolled)
                 total += moreResults.total;
@@ -3749,7 +3749,7 @@ export class RollForm extends FormApplication {
 
         if (this.actor.system.battlegroup) {
             if (this.object.target && game.combat) {
-                if (this.object.targetCombatant && this.object.targetCombatant.initiative != null && this.object.targetCombatant.initiative <= 0) {
+                if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null && this.object.targetCombatant.initiative <= 0) {
                     this.dealHealthDamage(total);
                 }
             }
@@ -4120,6 +4120,7 @@ export class RollForm extends FormApplication {
                                     break;
                                 case 'threshholdToDamage':
                                 case 'doubleRolledDamage':
+                                case 'doublePreRolledDamage':
                                 case 'resetInit':
                                     this.object.damage[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                     break;
@@ -4176,6 +4177,9 @@ export class RollForm extends FormApplication {
                                 case 'setDamageType':
                                     this.object.damage.type = cleanedValue;
                                     break;
+                                case 'gainInitiative':
+                                    this.object.damage.gainInitiative = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                    break;
                                 case 'doubleThresholdSuccesses':
                                     this.object.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                     break;
@@ -4188,6 +4192,11 @@ export class RollForm extends FormApplication {
                                 case 'specificCharm':
                                     if (this.object.specificCharms[bonus.value] !== undefined) {
                                         this.object.specificCharms[bonus.value] = true;
+                                    }
+                                    break;
+                                case 'inflictStatus':
+                                    if(CONFIG.exaltedthird.statusEffects.some(status => status.id === cleanedValue)) {
+                                        this._addStatusEffect(cleanedValue);
                                     }
                                     break;
                             }
@@ -5606,10 +5615,7 @@ export class RollForm extends FormApplication {
     }
 
     _addStatusEffect(name, statusType = "addStatuses", value = 0) {
-        switch (name) {
-            default:
-                this.object[statusType].push(name);
-        }
+        this.object[statusType].push(name);
     }
 
     attackSequence() {

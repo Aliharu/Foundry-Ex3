@@ -54,7 +54,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.selects = CONFIG.exaltedthird.selects;
 
     context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
-    context.specificCharmTriggers = CONFIG.exaltedthird.specificCharmTriggers;
+    context.triggerBonusDropdowns = CONFIG.exaltedthird.triggerBonusDropdowns;
     context.requirementTypes = CONFIG.exaltedthird.requirementTypes;
     if (itemData.type === 'charm') {
       if (itemData.system.ability === 'evocation') {
@@ -332,13 +332,13 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       if (event.currentTarget.dataset?.type === 'archetype') {
         const items = this.object.system.archetype.charmprerequisites;
         items.splice(itemIndex, 1);
-        setProperty(formData, `system.archetype.charmprerequisites`, items);
+        foundry.utils.setProperty(formData, `system.archetype.charmprerequisites`, items);
         this.object.update(formData);
       }
       else {
         const items = this.object.system.charmprerequisites;
         items.splice(itemIndex, 1);
-        setProperty(formData, `system.charmprerequisites`, items);
+        foundry.utils.setProperty(formData, `system.charmprerequisites`, items);
         this.object.update(formData);
       }
     });
@@ -511,7 +511,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       }
 
       let formData = {};
-      setProperty(formData, `system${otherTabactive ? '.archetype' : ''}.charmprerequisites`, items);
+      foundry.utils.setProperty(formData, `system${otherTabactive ? '.archetype' : ''}.charmprerequisites`, items);
 
       obj.update(formData);
     }
