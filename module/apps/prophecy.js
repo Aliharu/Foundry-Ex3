@@ -100,7 +100,7 @@ export class Prophecy extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: cardContent,
-                type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             });
             game.rollForm = new RollForm(this.actor, {}, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
             this.close();

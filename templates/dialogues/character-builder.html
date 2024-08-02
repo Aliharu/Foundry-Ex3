@@ -16,13 +16,13 @@
             {{selectOptions selects.characterTypes selected=data.characterType localize=true}}
           </select>
         </div>
+        {{#ifEquals data.characterType 'npc'}}
         <div>
           <div class="resource-label">{{localize "Ex3.Classification"}}</div>
           <select name="object.character.classificationType" data-type="String">
             {{selectOptions selects.creatureTypes selected=data.character.classificationType localize=true}}
           </select>
         </div>
-        {{#ifEquals data.characterType 'npc'}}
         <div>
           <div class="resource-label">{{localize "Ex3.PoolNumbers"}}</div>
           <select name="object.poolNumbers" value="{{data.poolNumbers}}" data-type="String">

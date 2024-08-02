@@ -2335,7 +2335,7 @@ export class RollForm extends FormApplication {
         ChatMessage.create({
             user: game.user.id,
             content: messageContent,
-            style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             flags: {
                 "exaltedthird": {
                     targetActorId: null,
@@ -3004,7 +3004,7 @@ export class RollForm extends FormApplication {
 
 
         messageContent = await this._createChatMessageContent(messageContent, 'Dice Roll');
-        ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, type: CONST.CHAT_MESSAGE_TYPES.ROLL, roll: this.object.roll });
+        ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, style: CONST.CHAT_MESSAGE_STYLES.OTHER, rolls: [this.object.roll] });
     }
 
     async _abilityRoll() {
@@ -3129,8 +3129,8 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: theContent,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-            roll: this.object.roll,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+            rolls: [this.object.roll],
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
@@ -3208,8 +3208,8 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-                roll: this.object.roll,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+                rolls: [this.object.roll],
                 flags: {
                     "exaltedthird": {
                         dice: this.object.dice,
@@ -3303,8 +3303,8 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-                roll: this.object.roll || undefined,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+                rolls: this.object.roll ? [this.object.roll] : [],
                 flags: {
                     "exaltedthird": {
                         dice: this.object.dice,
@@ -3330,7 +3330,7 @@ export class RollForm extends FormApplication {
                 user: game.user.id,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 content: messageContent,
-                type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             });
         }
     }
@@ -3363,7 +3363,7 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
-            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
     }
 
@@ -3720,7 +3720,7 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             rolls: this.object.roll ? [this.object.roll, diceRollResults.roll] : [diceRollResults.roll],
             flags: {
                 "exaltedthird": {
@@ -3768,7 +3768,7 @@ export class RollForm extends FormApplication {
             else {
                 this.actor.createEmbeddedDocuments('ActiveEffect', [{
                     name: 'Defense Penalty',
-                    icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+                    img: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
                     origin: this.actor.uuid,
                     disabled: false,
                     duration: {
@@ -3806,7 +3806,7 @@ export class RollForm extends FormApplication {
                 this.object.updateTargetActorData = true;
                 this.object.newTargetData.effects.push({
                     name: this.object.poison.name || "Poison",
-                    icon: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
+                    img: 'icons/skills/toxins/poison-bottle-corked-fire-green.webp',
                     origin: this.actor.uuid,
                     disabled: false,
                     duration: {
@@ -3858,7 +3858,7 @@ export class RollForm extends FormApplication {
                 if (this.object.gambit === 'revealWeakness') {
                     this.object.newTargetData.effects.push({
                         name: 'Reveal Weakness',
-                        icon: 'systems/exaltedthird/assets/icons/hammer-break.svg',
+                        img: 'systems/exaltedthird/assets/icons/hammer-break.svg',
                         origin: this.object.target.actor.uuid,
                         disabled: false,
                         duration: {
@@ -4374,7 +4374,7 @@ export class RollForm extends FormApplication {
             else {
                 this.object.newTargetData.effects.push({
                     name: game.i18n.localize('Ex3.Onslaught'),
-                    icon: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
+                    img: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                     origin: this.object.target.actor.uuid,
                     disabled: false,
                     duration: {
@@ -4413,7 +4413,7 @@ export class RollForm extends FormApplication {
         else {
             this.object.newTargetData.effects.push({
                 name: game.i18n.localize('Ex3.DefensePenalty'),
-                icon: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
+                img: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
                 origin: this.object.target.actor.uuid,
                 disabled: false,
                 duration: {
@@ -4668,8 +4668,8 @@ export class RollForm extends FormApplication {
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-            roll: this.object.roll,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+            rolls: [this.object.roll],
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,

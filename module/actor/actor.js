@@ -57,31 +57,22 @@ export class ExaltedThirdActor extends Actor {
         };
       }
       else {
-        var personalMotes = essenceLevel * 10;
-        var peripheralmotes = 0;
-        if (creatureType === 'god' || creatureType === 'undead' || creatureType === 'demon') {
-          personalMotes += 50;
+        if(creatureType === 'exalt') {
+          let peripheralmotes = this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel);
+          let personalMotes = this.calculateMaxExaltedMotes('personal', exalt, essenceLevel);
+          updateData.system.motes = {
+            personal: {
+              max: personalMotes,
+              value: (personalMotes - (updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed)),
+              committed: updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed
+            },
+            peripheral: {
+              max: peripheralmotes,
+              value: (peripheralmotes - (updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed)),
+              committed: updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed
+            }
+          };
         }
-        if (creatureType === 'exalt') {
-          peripheralmotes = this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel);
-          personalMotes = this.calculateMaxExaltedMotes('personal', exalt, essenceLevel);
-        }
-        if (creatureType === 'mortal') {
-          personalMotes = 0;
-          peripheralmotes = 0;
-        }
-        updateData.system.motes = {
-          personal: {
-            max: personalMotes,
-            value: (personalMotes - (updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed)),
-            committed: updateData.system?.motes?.personal?.committed || this.system.motes.personal.committed
-          },
-          peripheral: {
-            max: peripheralmotes,
-            value: (peripheralmotes - (updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed)),
-            committed: updateData.system?.motes?.peripheral?.committed || this.system.motes.peripheral.committed
-          }
-        };
       }
       if (exalt) {
         let hasAura = false;
@@ -223,7 +214,7 @@ export class ExaltedThirdActor extends Actor {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this, token }),
     };
@@ -1411,7 +1402,7 @@ export class ExaltedThirdActor extends Actor {
         ChatMessage.create({
           user: game.user.id,
           content: messageContent,
-          style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flags: {
             "exaltedthird": {
               targetActorId: target.actor.id,
@@ -1430,7 +1421,7 @@ export class ExaltedThirdActor extends Actor {
       ChatMessage.create({
         user: game.user.id,
         content: messageContent,
-        style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flags: {
           "exaltedthird": {
             targetActorId: null,
@@ -1447,7 +1438,7 @@ export class ExaltedThirdActor extends Actor {
       ChatMessage.create({
         user: game.user.id,
         content: messageContent,
-        style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flags: {
           "exaltedthird": {
             targetActorId: null,
@@ -1490,7 +1481,7 @@ export class ExaltedThirdActor extends Actor {
     // Create the ChatMessage data object
     const chatData = {
       user: game.user.id,
-      style: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: ChatMessage.getSpeaker({ actor: this, token }),
     };
