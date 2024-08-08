@@ -221,6 +221,7 @@
     "Ex3.Overwhelming": "Overwhelming",
     "Ex3.PostSoakDamage": "Post Soak Damage",
     "Ex3.ThreshholdToDamage": "Threshhold To Damage",
+    "Ex3.CappedThreshholdToDamage": "Capped Threshhold To Damage",
     "Ex3.DoubleRolledDamage": "Double Rolled Damage",
     "Ex3.DoublePreRolledDamage": "Double Pre Rolled Damage",
     "Ex3.ResetInitiative": "Reset Initiative",
@@ -971,6 +972,9 @@
     "Ex3.Sign": "Sign",
     "Ex3.Maidens": "Maidens",
 
+    "Ex3.Yes": "Yes",
+    "Ex3.No": "No",
+
     "Ex3.Archetype": "Archetype",
 
     "Ex3.AlternatePrerequisites": "Alternate Prerequisites",
@@ -1093,6 +1097,7 @@
     "Ex3.CrashedTheTarget": "Crashed The Target",
     "Ex3.DamageLevelsDealt": "Damage Levels Dealt",
     "Ex3.RollSucceeded": "Roll Succeeded",
+    "Ex3.YesOrNoPrompt": "Yes Or No Prompt",
     "Ex3.NoInitiativeReset": "No Initiative Reset",
     "Ex3.Formula": "Formula",
     "Ex3.ThresholdSuccesses": "Threshold Successes",
@@ -1166,5 +1171,9 @@
     "Ex3.SpendWhiteXP": "Spend White XP",
     "Ex3.RisingSunSlash": "Rising Sun Slash",
     "Ex3.RisingSunSlashGC": "Rising Sun Slash GC",
-    "Ex3.GoldenCalibration": "Golden Calibration"
+    "Ex3.GoldenCalibration": "Golden Calibration",
+
+    "Ex3.Defenses": "Defenses",
+    "Ex3.RollBonus": "Roll Bonus",
+    "Ex3.NPCAbilities": "NPC Abilities"
 }

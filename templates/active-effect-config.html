@@ -4,7 +4,7 @@
     <header class="sheet-header">
         <img class="effect-icon" src="{{ data.img }}" data-edit="img">
         <h1 class="effect-title">
-            <input name="name" type="text" value="{{data.name}}" placeholder="{{ localize 'Name' }}"/>
+            <input name="name" type="text" value="{{data.name}}" placeholder="{{ localize 'Name' }}" />
         </h1>
     </header>
 
@@ -27,19 +27,20 @@
 
         <div class="form-group stacked">
             <label>{{ localize "EFFECT.Description" }}</label>
-            {{editor descriptionHTML target="description" button=false editable=editable engine="prosemirror" collaborate=false}}
+            {{editor descriptionHTML target="description" button=false editable=editable engine="prosemirror"
+            collaborate=false}}
         </div>
 
         <div class="form-group">
             <label>{{ localize "EFFECT.Disabled" }}</label>
-            <input type="checkbox" name="disabled" {{ checked data.disabled }}/>
+            <input type="checkbox" name="disabled" {{ checked data.disabled }} />
         </div>
 
         {{#if isActorEffect}}
         <div class="form-group">
             <label>{{ localize "EFFECT.Origin" }}</label>
             <div class="form-fields">
-                <input type="text" name="origin" value="{{ data.origin }}" disabled/>
+                <input type="text" name="origin" value="{{ data.origin }}" disabled />
             </div>
         </div>
         {{/if}}
@@ -48,7 +49,7 @@
         <div class="form-group">
             <label>{{ labels.transfer.name }}</label>
             <div class="form-fields">
-                <input type="checkbox" name="transfer" {{checked data.transfer}}/>
+                <input type="checkbox" name="transfer" {{checked data.transfer}} />
             </div>
             <p class="hint">{{ labels.transfer.hint }}</p>
         </div>
@@ -60,29 +61,29 @@
         <div class="form-group">
             <label>{{ localize "EFFECT.DurationSecs" }}</label>
             <div class="form-fields">
-                <input type="number" name="duration.seconds" value="{{ data.duration.seconds }}"/>
+                <input type="number" name="duration.seconds" value="{{ data.duration.seconds }}" />
             </div>
         </div>
         <div class="form-group">
             <label>{{ localize "EFFECT.StartTime" }}</label>
             <div class="form-fields">
-                <input type="number" name="duration.startTime" value="{{ data.duration.startTime }}"/>
+                <input type="number" name="duration.startTime" value="{{ data.duration.startTime }}" />
             </div>
         </div>
-        <hr/>
+        <hr />
         <div class="form-group">
             <label>{{ localize "EFFECT.DurationTurns" }}</label>
             <div class="form-fields">
                 <label>{{ localize "COMBAT.Rounds" }}</label>
-                <input type="number" name="duration.rounds" value="{{ data.duration.rounds }}"/>
+                <input type="number" name="duration.rounds" value="{{ data.duration.rounds }}" />
                 <label>{{ localize "COMBAT.Turns" }}</label>
-                <input type="number" name="duration.turns" value="{{ data.duration.turns }}"/>
+                <input type="number" name="duration.turns" value="{{ data.duration.turns }}" />
             </div>
         </div>
         <div class="form-group">
             <label>{{ localize "EFFECT.Combat" }}</label>
             <div class="form-fields">
-                <input type="text" name="duration.combat" value="{{ data.duration.combat }}" disabled/>
+                <input type="text" name="duration.combat" value="{{ data.duration.combat }}" disabled />
             </div>
         </div>
 
@@ -90,9 +91,9 @@
             <label>{{ localize "EFFECT.StartTurns" }}</label>
             <div class="form-fields">
                 <label>{{ localize "COMBAT.Round" }}</label>
-                <input type="number" name="duration.startRound" value="{{ data.duration.startRound }}"/>
+                <input type="number" name="duration.startRound" value="{{ data.duration.startRound }}" />
                 <label>{{ localize "COMBAT.Turn" }}</label>
-                <input type="number" name="duration.startTurn" value="{{ data.duration.startTurn }}"/>
+                <input type="number" name="duration.startTurn" value="{{ data.duration.startTurn }}" />
             </div>
         </div>
     </section>
@@ -113,10 +114,15 @@
                 <div class="key">
                     {{#if ../useDropdown}}
                     <select name="changes.{{i}}.key" value="{{change.key}}">
-                        {{selectOptions ../activeEffectChanges selected=change.key localize=true}}
+                        {{#each ../activeEffectChanges as |changesCategory changesCategoryType|}}
+                        <optgroup label="{{localize changesCategory.label}}">
+                            {{selectOptions changesCategory.effectList selected=change.key
+                            localize=true}}
+                        </optgroup>
+                        {{/each}}
                     </select>
                     {{else}}
-                    <input type="text" name="changes.{{i}}.key" value="{{change.key}}"/>
+                    <input type="text" name="changes.{{i}}.key" value="{{change.key}}" />
                     {{/if}}
                 </div>
                 <div class="mode">
@@ -125,7 +131,7 @@
                     </select>
                 </div>
                 <div class="value">
-                    <input type="text" name="changes.{{i}}.value" value="{{change.value}}"/>
+                    <input type="text" name="changes.{{i}}.value" value="{{change.value}}" />
                 </div>
                 <div class="effect-controls">
                     <a class="effect-control" data-action="delete"><i class="fas fa-trash"></i></a>

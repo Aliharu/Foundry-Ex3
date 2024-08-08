@@ -16,91 +16,137 @@ export const exaltedthird = {};
 // };
 
 exaltedthird.activeEffectChanges = {
-  '': 'Ex3.None',
-  'system.attributes.strength.value': 'Ex3.Strength',
-  'system.attributes.dexterity.value': 'Ex3.Dexterity',
-  'system.attributes.stamina.value': 'Ex3.Stamina',
-  'system.attributes.charisma.value': 'Ex3.Charisma',
-  'system.attributes.manipulation.value': 'Ex3.Manipulation',
-  'system.attributes.appearance.value': 'Ex3.Appearance',
-  'system.attributes.perception.value': 'Ex3.Perception',
-  'system.attributes.intelligence.value': 'Ex3.Intelligence',
-  'system.attributes.wits.value': 'Ex3.Wits',
-  'system.abilities.archery.value': 'Ex3.Archery',
-  'system.abilities.athletics.value': 'Ex3.Athletics',
-  'system.abilities.awareness.value': 'Ex3.Awareness',
-  'system.abilities.brawl.value': 'Ex3.Brawl',
-  'system.abilities.bureaucracy.value': 'Ex3.Bureaucracy',
-  'system.abilities.craft.value': 'Ex3.Craft',
-  'system.abilities.dodge.value': 'Ex3.Dodge',
-  'system.abilities.integrity.value': 'Ex3.Integrity',
-  'system.abilities.investigation.value': 'Ex3.Investigation',
-  'system.abilities.larceny.value': 'Ex3.Larceny',
-  'system.abilities.linguistics.value': 'Ex3.Linguistics',
-  'system.abilities.lore.value': 'Ex3.Lore',
-  'system.abilities.martialarts.value': 'Ex3.MartialArts',
-  'system.abilities.medicine.value': 'Ex3.Medicine',
-  'system.abilities.melee.value': 'Ex3.Melee',
-  'system.abilities.occult.value': 'Ex3.Occult',
-  'system.abilities.performance.value': 'Ex3.Performance',
-  'system.abilities.presence.value': 'Ex3.Presence',
-  'system.abilities.resistance.value': 'Ex3.Resistance',
-  'system.abilities.ride.value': 'Ex3.Ride',
-  'system.abilities.sail.value': 'Ex3.Sail',
-  'system.abilities.socialize.value': 'Ex3.Socialize',
-  'system.abilities.stealth.value': 'Ex3.Stealth',
-  'system.abilities.survival.value': 'Ex3.Survival',
-  'system.abilities.thrown.value': 'Ex3.Thrown',
-  'system.abilities.war.value': 'Ex3.War',
-  'system.appearance.value': 'Ex3.Appearance(NPC)',
-  'system.pools.command.value': 'Ex3.Command(NPC)',
-  'system.pools.grapple.value': 'Ex3.GrappleControl(NPC)',
-  'system.pools.joinbattle.value': 'Ex3.JoinBattle(NPC)',
-  'system.pools.movement.value': 'Ex3.Movement(NPC)',
-  'system.pools.readintentions.value': 'Ex3.ReadIntentions(NPC)',
-  'system.pools.resistance.value': 'Ex3.Resistance(NPC)',
-  'system.pools.social.value': 'Ex3.Social(NPC)',
-  'system.sorcery.value': 'Ex3.Sorcery(NPC)',
-  "system.settings.rollsettings.attacks.bonus": "Ex3.Attacks",
-  "system.settings.rollsettings.attackrollsettings.withering.bonus": "Ex3.WitheringAttacks",
-  "system.settings.rollsettings.attackrollsettings.decisive.bonus": "Ex3.DecisiveAttacks",
-  "system.settings.rollsettings.attackrollsettings.gambit.bonus": "Ex3.Gambits",
-  "system.settings.rollsettings.attackrollsettings.withering.damage": "Ex3.WitheringAttackDamage",
-  "system.settings.rollsettings.attackrollsettings.decisive.damage": "Ex3.DecisiveAttackDamage",
-  "system.settings.rollsettings.attackrollsettings.gambit.damage": "Ex3.GambitInitiative",
-  "system.settings.rollsettings.attackrollsettings.withering.overwhelming": "Ex3.Overwhelming",
-  "system.settings.rollsettings.command.bonus": "Ex3.Command",
-  "system.settings.rollsettings.craft.bonus": "Ex3.Craft",
-  "system.settings.rollsettings.disengage.bonus": "Ex3.Disengage",
-  "system.settings.rollsettings.grapplecontrol.bonus": "Ex3.GrappleControl",
-  "system.settings.rollsettings.joinbattle.bonus": "Ex3.JoinBattle",
-  "system.settings.rollsettings.readintentions.bonus": "Ex3.ReadIntentions",
-  "system.settings.rollsettings.rush.bonus": "Ex3.Rush",
-  "system.settings.rollsettings.social.bonus": "Ex3.Social",
-  "system.settings.rollsettings.sorcery.bonus": "Ex3.Sorcery",
-  "system.resolve.value": 'Ex3.Resolve',
-  "system.guile.value": 'Ex3.Guile',
-  "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
-  "system.parry.value": 'Ex3.Parry',
-  "system.evasion.value": 'Ex3.Evasion',
-  "system.soak.value": 'Ex3.Soak',
-  "system.naturalsoak.value": 'Ex3.NaturalSoak',
-  "system.armoredsoak.value": 'Ex3.ArmoredSoak',
-  "system.hardness.value": 'Ex3.Hardness',
-  'system.effectivestrength.value': 'Ex3.EffectiveStrength',
-  'system.dicemodifier.value': 'Ex3.DiceModifier',
-  'system.baseinitiative.value': 'Ex3.BaseInitiative',
-  'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
-  'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
-  'system.motes.cost.round': 'Ex3.MoteCostPerRound',
-  'system.motes.cost.turn': 'Ex3.MoteCostPerTurn',
-  'system.damage.round.initiative.bashing': 'Ex3.InitiativeDamageRoundBashing',
-  'system.damage.round.initiative.lethal': 'Ex3.InitiativeDamageRoundLethal',
-  'system.damage.round.bashing': 'Ex3.BashingDamageRound',
-  'system.damage.round.lethal': 'Ex3.LethalDamageRound',
-  'system.damage.round.aggravated': 'Ex3.AggravatedDamageRound',
-  'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
-};
+  none: {
+    label: "Ex3.None",
+    effectList: {
+      "": "Ex3.None",
+    }
+  },
+  attributes: {
+    label: "Ex3.Attributes",
+    effectList: {
+      'system.attributes.strength.value': 'Ex3.Strength',
+      'system.attributes.dexterity.value': 'Ex3.Dexterity',
+      'system.attributes.stamina.value': 'Ex3.Stamina',
+      'system.attributes.charisma.value': 'Ex3.Charisma',
+      'system.attributes.manipulation.value': 'Ex3.Manipulation',
+      'system.attributes.appearance.value': 'Ex3.Appearance',
+      'system.attributes.perception.value': 'Ex3.Perception',
+      'system.attributes.intelligence.value': 'Ex3.Intelligence',
+      'system.attributes.wits.value': 'Ex3.Wits',
+    }
+  },
+  abilities: {
+    label: "Ex3.Abilities",
+    effectList: {
+      'system.abilities.archery.value': 'Ex3.Archery',
+      'system.abilities.athletics.value': 'Ex3.Athletics',
+      'system.abilities.awareness.value': 'Ex3.Awareness',
+      'system.abilities.brawl.value': 'Ex3.Brawl',
+      'system.abilities.bureaucracy.value': 'Ex3.Bureaucracy',
+      'system.abilities.craft.value': 'Ex3.Craft',
+      'system.abilities.dodge.value': 'Ex3.Dodge',
+      'system.abilities.integrity.value': 'Ex3.Integrity',
+      'system.abilities.investigation.value': 'Ex3.Investigation',
+      'system.abilities.larceny.value': 'Ex3.Larceny',
+      'system.abilities.linguistics.value': 'Ex3.Linguistics',
+      'system.abilities.lore.value': 'Ex3.Lore',
+      'system.abilities.martialarts.value': 'Ex3.MartialArts',
+      'system.abilities.medicine.value': 'Ex3.Medicine',
+      'system.abilities.melee.value': 'Ex3.Melee',
+      'system.abilities.occult.value': 'Ex3.Occult',
+      'system.abilities.performance.value': 'Ex3.Performance',
+      'system.abilities.presence.value': 'Ex3.Presence',
+      'system.abilities.resistance.value': 'Ex3.Resistance',
+      'system.abilities.ride.value': 'Ex3.Ride',
+      'system.abilities.sail.value': 'Ex3.Sail',
+      'system.abilities.socialize.value': 'Ex3.Socialize',
+      'system.abilities.stealth.value': 'Ex3.Stealth',
+      'system.abilities.survival.value': 'Ex3.Survival',
+      'system.abilities.thrown.value': 'Ex3.Thrown',
+      'system.abilities.war.value': 'Ex3.War',
+    }
+  },
+  npcAbilities: {
+    label: "Ex3.NPCAbilities",
+    effectList: {
+      'system.appearance.value': 'Ex3.Appearance(NPC)',
+      'system.pools.command.value': 'Ex3.Command(NPC)',
+      'system.pools.grapple.value': 'Ex3.GrappleControl(NPC)',
+      'system.pools.joinbattle.value': 'Ex3.JoinBattle(NPC)',
+      'system.pools.movement.value': 'Ex3.Movement(NPC)',
+      'system.pools.readintentions.value': 'Ex3.ReadIntentions(NPC)',
+      'system.pools.resistance.value': 'Ex3.Resistance(NPC)',
+      'system.pools.social.value': 'Ex3.Social(NPC)',
+      'system.sorcery.value': 'Ex3.Sorcery(NPC)',
+    }
+  },
+  rollBonus: {
+    label: "Ex3.RollBonus",
+    effectList: {
+      "system.settings.rollsettings.attacks.bonus": "Ex3.Attacks",
+      "system.settings.rollsettings.attackrollsettings.withering.bonus": "Ex3.WitheringAttacks",
+      "system.settings.rollsettings.attackrollsettings.decisive.bonus": "Ex3.DecisiveAttacks",
+      "system.settings.rollsettings.attackrollsettings.gambit.bonus": "Ex3.Gambits",
+      "system.settings.rollsettings.attackrollsettings.withering.damage": "Ex3.WitheringAttackDamage",
+      "system.settings.rollsettings.attackrollsettings.decisive.damage": "Ex3.DecisiveAttackDamage",
+      "system.settings.rollsettings.attackrollsettings.gambit.damage": "Ex3.GambitInitiative",
+      "system.settings.rollsettings.attackrollsettings.withering.overwhelming": "Ex3.Overwhelming",
+      "system.settings.rollsettings.command.bonus": "Ex3.Command",
+      "system.settings.rollsettings.craft.bonus": "Ex3.Craft",
+      "system.settings.rollsettings.disengage.bonus": "Ex3.Disengage",
+      "system.settings.rollsettings.grapplecontrol.bonus": "Ex3.GrappleControl",
+      "system.settings.rollsettings.joinbattle.bonus": "Ex3.JoinBattle",
+      "system.settings.rollsettings.readintentions.bonus": "Ex3.ReadIntentions",
+      "system.settings.rollsettings.rush.bonus": "Ex3.Rush",
+      "system.settings.rollsettings.social.bonus": "Ex3.Social",
+      "system.settings.rollsettings.sorcery.bonus": "Ex3.Sorcery",
+    }
+  },
+  defenses: {
+    label: "Ex3.Defenses",
+    effectList: {
+      "system.resolve.value": 'Ex3.Resolve',
+      "system.guile.value": 'Ex3.Guile',
+      "system.parry.value": 'Ex3.Parry',
+      "system.evasion.value": 'Ex3.Evasion',
+      "system.soak.value": 'Ex3.Soak',
+      "system.naturalsoak.value": 'Ex3.NaturalSoak',
+      "system.armoredsoak.value": 'Ex3.ArmoredSoak',
+      "system.hardness.value": 'Ex3.Hardness',
+    }
+  },
+  otherModifiers: {
+    label: "Ex3.OtherModifiers",
+    effectList: {
+      "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
+      'system.effectivestrength.value': 'Ex3.EffectiveStrength',
+      'system.dicemodifier.value': 'Ex3.DiceModifier',
+      'system.baseinitiative.value': 'Ex3.BaseInitiative',
+      'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
+      'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
+      'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
+    }
+  },
+  motes: {
+    label: "Ex3.Motes",
+    effectList: {
+      'system.motes.cost.round': 'Ex3.MoteCostPerRound',
+      'system.motes.cost.turn': 'Ex3.MoteCostPerTurn',
+    }
+  },
+  damage: {
+    label: "Ex3.Damage",
+    effectList: {
+      'system.damage.round.initiative.bashing': 'Ex3.InitiativeDamageRoundBashing',
+      'system.damage.round.initiative.lethal': 'Ex3.InitiativeDamageRoundLethal',
+      'system.damage.round.bashing': 'Ex3.BashingDamageRound',
+      'system.damage.round.lethal': 'Ex3.LethalDamageRound',
+      'system.damage.round.aggravated': 'Ex3.AggravatedDamageRound',
+    }
+  },
+
+}
 
 exaltedthird.equipmentStats = {
   light: {
@@ -1482,6 +1528,7 @@ exaltedthird.bonusTypes = {
       'decreaseTargetNumber-damage': "Ex3.DamageDecreaseTargetNumber",
       'rerollDieFace-damage': "Ex3.DamageRerollDieFace",
       'rerollNumber-damage': "Ex3.DamageRerollNumberDice",
+      cappedThreshholdToDamage: "Ex3.CappedThreshholdToDamage",
       'rollTwice-damage': "Ex3.DamageRollTwiceKeepHighest",
       'excludeOnes-damage': "Ex3.DamageExcludeOnesFromRerolls",
       'rerollFailed-damage': "Ex3.DamageRerollFailed",
@@ -1544,7 +1591,7 @@ exaltedthird.bonusTypes = {
       inflictDicePenalty: "Ex3.InflictDicePenalty",
       displayMessage: "Ex3.DisplayMessage",
       specificCharm: "Ex3.SpecificCharm",
-      inflictStatus: "Ex3.InflictStatus"
+      inflictStatus: "Ex3.InflictStatus",
     }
   },
   defense: {
@@ -1659,6 +1706,12 @@ exaltedthird.requirementTypes = {
       crashedTheTarget: "Ex3.CrashedTheTarget",
     },
   },
+  other: {
+    label: "Ex3.Other",
+    requirements: {
+      booleanPrompt: "Ex3.YesOrNoPrompt",
+    },
+  }
 }
 
 exaltedthird.selects = {

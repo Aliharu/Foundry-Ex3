@@ -181,6 +181,7 @@ export class RollForm extends FormApplication {
                 triggerTensCap: 0,
                 type: 'lethal',
                 threshholdToDamage: false,
+                cappedThreshholdToDamage: 0,
                 resetInit: true,
                 maxInitiativeGain: null,
                 doubleRolledDamage: false,
@@ -1067,7 +1068,7 @@ export class RollForm extends FormApplication {
             case 'opposedRolls':
                 return (this.object.rollType === 'useOpposingCharms');
             case 'sameAbility':
-                return charm.type === 'charm' && (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
+                return (charm.type === 'charm' || charm.type === 'merit') && (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
         }
         if (this.object.rollType === charm.system.autoaddtorolls) {
             return true;
@@ -3389,6 +3390,9 @@ export class RollForm extends FormApplication {
         else if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
             dice += this.object.thresholdSuccesses;
         }
+        if (this.object.damage.cappedThreshholdToDamage && this.object.defense < this.object.attackSuccesses) {
+            dice += Math.min(this.object.damage.cappedThreshholdToDamage, this.object.attackSuccesses - this.object.defense);
+        }
         if (this.object.targetSpecificDamageMod) {
             dice += this.object.targetSpecificDamageMod;
         }
@@ -3913,7 +3917,7 @@ export class RollForm extends FormApplication {
         this.object.newTargetData.effects = this.object.newTargetData.effects.filter(i => i.flags.exaltedthird?.statusId !== type);
     }
 
-    _addTriggerBonuses(type = 'beforeRoll') {
+    async _addTriggerBonuses(type = 'beforeRoll') {
         if (!this.object.bonusesTriggered) {
             this.object.bonusesTriggered = {
                 beforeRoll: false,
@@ -3923,16 +3927,16 @@ export class RollForm extends FormApplication {
             }
         }
         for (const charm of this.object.addedCharms) {
-            this._addBonuses(charm, type, "benefit");
+            await this._addBonuses(charm, type, "benefit");
         }
         for (const charm of this.object.opposingCharms) {
-            this._addBonuses(charm, type, "opposed");
+            await this._addBonuses(charm, type, "opposed");
         }
         // Triggers should only happen once, except for ones involving defense charms
         this.object.bonusesTriggered[type] = true;
     }
 
-    _addBonuses(charm, type, bonusType = "benefit") {
+    async _addBonuses(charm, type, bonusType = "benefit") {
         const doublesChart = {
             '7': 'sevens',
             '8': 'eights',
@@ -3959,7 +3963,7 @@ export class RollForm extends FormApplication {
         }
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             try {
-                if (this._triggerRequirementsMet(charm, trigger, bonusType)) {
+                if (await this._triggerRequirementsMet(charm, trigger, bonusType)) {
                     for (const bonus of Object.values(trigger.bonuses)) {
                         if ((!this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
                             let cleanedValue = bonus.value.toLowerCase().trim();
@@ -4064,6 +4068,7 @@ export class RollForm extends FormApplication {
                                     break;
                                 case 'damageDice':
                                 case 'damageSuccessModifier':
+                                case 'cappedThreshholdToDamage':
                                     this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                     break;
                                 case 'rerollDice-damage':
@@ -4195,7 +4200,7 @@ export class RollForm extends FormApplication {
                                     }
                                     break;
                                 case 'inflictStatus':
-                                    if(CONFIG.exaltedthird.statusEffects.some(status => status.id === cleanedValue)) {
+                                    if (CONFIG.exaltedthird.statusEffects.some(status => status.id === cleanedValue)) {
                                         this._addStatusEffect(cleanedValue);
                                     }
                                     break;
@@ -4210,7 +4215,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _triggerRequirementsMet(charm, trigger, bonusType = "benefit") {
+    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit") {
         let fufillsRequirements = true;
         for (const requirementObject of Object.values(trigger.requirements)) {
             let cleanedValue = requirementObject.value.toLowerCase().trim();
@@ -4358,6 +4363,26 @@ export class RollForm extends FormApplication {
                             fufillsRequirements = false;
                         }
                     }
+                case 'booleanPrompt':
+                    let value = await Dialog.wait({
+                        modal: true,
+                        title: game.i18n.localize('Ex3.Requirement'),
+                        content: `<div class="resource"><label class="resource-label">${requirementObject.value}</label></div>`,
+                        buttons: {
+                            Yes: {
+                                label: game.i18n.localize('Ex3.Yes'),
+                                callback: (html) => true
+                            },
+                            No: {
+                                label: game.i18n.localize('Ex3.No'),
+                                callback: (html) => false
+                            }
+                        }
+                    });
+                    if (!value) {
+                        fufillsRequirements = false;
+                    }
+                    break;
             }
         }
         return fufillsRequirements;
@@ -5251,6 +5276,9 @@ export class RollForm extends FormApplication {
         }
         if (this.object.damage.threshholdToDamage === undefined) {
             this.object.damage.threshholdToDamage = false;
+        }
+        if (this.object.damage.cappedThreshholdToDamage === undefined) {
+            this.object.damage.cappedThreshholdToDamage = 0;
         }
         if (this.object.weaponTags === undefined) {
             this.object.weaponTags = {};

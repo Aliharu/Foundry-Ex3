@@ -181,6 +181,8 @@ export class ItemMeritData extends CommonItemData {
             merittype: new fields.StringField({ initial: "story" }),
             parentitemid: new fields.StringField({ initial: "" }),
             archetypename: new fields.StringField({ initial: "" }),
+            attribute: new fields.StringField({ initial: "" }),
+            ability: new fields.StringField({ initial: "" }),
             points: new fields.NumberField({ initial: 0 }),
         }
     }
