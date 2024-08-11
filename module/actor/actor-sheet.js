@@ -2825,11 +2825,16 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       type: type,
       system: data
     };
+    if(type === 'charm') {
+      if(Object.keys(CONFIG.exaltedthird.exaltcharmtypes).includes(this.actor.system.details.exalt)) {
+        itemData.system.charmtype = this.actor.system.details.exalt;
+      }
+    }
     // Remove the type from the dataset since it's in the itemData.type prop.
     delete itemData.system["type"];
 
     // Finally, create the item!
-    return this.actor.createEmbeddedDocuments("Item", [itemData])
+    return this.actor.createEmbeddedDocuments("Item", [itemData]);
   }
 
   /**

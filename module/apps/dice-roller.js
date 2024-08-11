@@ -86,6 +86,7 @@ export class RollForm extends FormApplication {
                     gained: 0,
                 },
             };
+            this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
             this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft'].indexOf(data.rollType) !== -1);
@@ -103,6 +104,9 @@ export class RollForm extends FormApplication {
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerTargetDefensePenalty = 0;
+            this.object.onslaughtAddition = 1;
+            this.object.magicOnslaughtAddition = 0;
+
             this.object.triggerKnockdown = false;
             this.object.triggerFullDefense = false;
             this.object.macroMessages = '';
@@ -1068,7 +1072,7 @@ export class RollForm extends FormApplication {
             case 'opposedRolls':
                 return (this.object.rollType === 'useOpposingCharms');
             case 'sameAbility':
-                return (charm.type === 'charm' || charm.type === 'merit') && (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute);
+                return (charm.type === 'charm' || charm.type === 'merit') && (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute || (charm.system.attribute && charm.system.attribute === this.object.attribute));
         }
         if (this.object.rollType === charm.system.autoaddtorolls) {
             return true;
@@ -2296,6 +2300,9 @@ export class RollForm extends FormApplication {
                         this.object.crashed = true;
                     }
                 }
+            }
+            if(this.object.targetDoesntResetOnslaught) {
+                this.object.newTargetData.system.dontresetonslaught = true;
             }
         }
     }
@@ -3804,7 +3811,10 @@ export class RollForm extends FormApplication {
         }
         if (this.object.target) {
             if (game.settings.get("exaltedthird", "calculateOnslaught")) {
-                this._addOnslaught(1);
+                this._addOnslaught(this.object.onslaughtAddition);
+                if(this.object.magicOnslaughtAddition) {
+                    this._addOnslaught(this.object.magicOnslaughtAddition, true);
+                }
             }
             if (this.object.attackType === 'decisive' && this.object.attackSuccess && this.object.poison && this.object.poison.apply && this.object.poison.damagetype !== 'none') {
                 this.object.updateTargetActorData = true;
@@ -3977,6 +3987,8 @@ export class RollForm extends FormApplication {
                                 case 'diceToSuccesses':
                                 case 'triggerSelfDefensePenalty':
                                 case 'triggerTargetDefensePenalty':
+                                case 'onslaughtAddition':
+                                case 'magicOnslaughtAddition':
                                     this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                     break;
                                 case 'doubleSuccess':
@@ -4023,8 +4035,6 @@ export class RollForm extends FormApplication {
                                 case 'triggerOnTens':
                                     if (triggerTensMap[cleanedValue]) {
                                         this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
-                                    } else {
-                                        this.object.settings.triggerOnTens = cleanedValue;
                                     }
                                     break;
                                 case 'triggerNinesAndTens':
@@ -4039,8 +4049,6 @@ export class RollForm extends FormApplication {
                                 case 'triggerOnOnes':
                                     if (triggerOnesMap[cleanedValue]) {
                                         this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
-                                    } else {
-                                        this.object.settings.triggerOnOnes = cleanedValue;
                                     }
                                     break;
                                 case 'triggerOnesAndTwos':
@@ -4105,8 +4113,6 @@ export class RollForm extends FormApplication {
                                 case 'triggerOnTens-damage':
                                     if (triggerTensDamageMap[cleanedValue]) {
                                         this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
-                                    } else {
-                                        this.object.settings.damage.triggerOnTens = cleanedValue;
                                     }
                                     break;
                                 case 'triggerNinesAndTens-damage':
@@ -4197,6 +4203,11 @@ export class RollForm extends FormApplication {
                                 case 'specificCharm':
                                     if (this.object.specificCharms[bonus.value] !== undefined) {
                                         this.object.specificCharms[bonus.value] = true;
+                                    }
+                                    break;
+                                case 'otherEffect':
+                                    if(bonus.value === 'targetDoesntResetOnslaught') {
+                                        this.object.targetDoesntResetOnslaught = true;
                                     }
                                     break;
                                 case 'inflictStatus':
@@ -5299,6 +5310,10 @@ export class RollForm extends FormApplication {
         }
         if (this.object.triggerTargetDefensePenalty === undefined) {
             this.object.triggerTargetDefensePenalty = 0;
+        }
+        if(this.object.onslaughtAddition === undefined) {
+            this.object.onslaughtAddition = 1;
+            this.object.magicOnslaughtAddition = 0;
         }
         if (this.object.damage.ignoreHardness === undefined) {
             this.object.damage.ignoreHardness = 0;

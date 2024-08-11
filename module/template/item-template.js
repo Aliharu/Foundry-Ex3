@@ -390,7 +390,7 @@ export class ItemCharmData extends CommonItemData {
                     name: new fields.StringField({ initial: "" }),
                 }),
             ),
-            charmtype: new fields.StringField({ initial: "" }),
+            charmtype: new fields.StringField({ initial: "other" }),
             type: new fields.StringField({ initial: "supplemental" }),
             duration: new fields.StringField({ initial: "instant" }),
             keywords: new fields.StringField({ initial: "" }),

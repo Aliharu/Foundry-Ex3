@@ -1584,14 +1584,17 @@ exaltedthird.bonusTypes = {
   other: {
     label: "Ex3.Other",
     bonuses: {
-      triggerSelfDefensePenalty: "Ex3.SelfDefensePenalty",
-      triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
       activateAura: "Ex3.ActivateAura",
+      displayMessage: "Ex3.DisplayMessage",
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
       inflictDicePenalty: "Ex3.InflictDicePenalty",
-      displayMessage: "Ex3.DisplayMessage",
-      specificCharm: "Ex3.SpecificCharm",
       inflictStatus: "Ex3.InflictStatus",
+      magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
+      onslaughtAddition: "Ex3.AddOnslaught",
+      triggerSelfDefensePenalty: "Ex3.SelfDefensePenalty",
+      triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
+      specificCharm: "Ex3.SpecificCharm",
+      otherEffect: "Ex3.OtherEffect",
     }
   },
   defense: {
@@ -1607,6 +1610,31 @@ exaltedthird.bonusTypes = {
 }
 
 exaltedthird.triggerBonusDropdowns = {
+  triggerOnTensOptions: {
+    'damage': "Ex3.Damage",
+    'extraSuccess': "Ex3.ExtraSuccess",
+    'ignoreHardness': "Ex3.IgnoreHardness",
+    'postSoakDamage': "Ex3.PostSoakDamage",
+    'rerolllDie': "Ex3.RerollDie",
+    'restoreMote': "Ex3.RestoreMote",
+  },
+  triggerOnOnesOptions: {
+    'soak': "Ex3.IncreaseSoak",
+    'defense': "Ex3.IncreaseDefense",
+    'rerollSuccesses': "Ex3.RerollSuccesses",
+    'subtractInitiative': "Ex3.SubtractEnemyInitiative",
+    'subtractSuccesses': "Ex3.SubtractEnemySuccesses",
+  },
+  triggerOnTensDamageOptions: {
+    'subtractTargetInitiative': "Ex3.SubtractTargetInitiative",
+  },
+  elements: {
+    air: 'Ex3.Air',
+    earth: 'Ex3.Earth',
+    fire: 'Ex3.Fire',
+    water: 'Ex3.Water',
+    wood: 'Ex3.Wood',
+  },
   statuses: {
     aiming: "Ex3.Aiming",
     prone: "Ex3.Prone",
@@ -1630,6 +1658,9 @@ exaltedthird.triggerBonusDropdowns = {
     routing: "Ex3.Routing",
     incapacitated: "Ex3.Incapacitated"
   },
+  otherEffects: {
+    targetDoesntResetOnslaught: "Ex3.TargetDoesntResetOnslaughtNextTurn",
+  },
   specificCharmTriggers: {
     none: {
       label: "Ex3.None",
@@ -1651,9 +1682,12 @@ exaltedthird.triggerBonusDropdowns = {
       charms: {
         risingSunSlashGc: "Ex3.RisingSunSlash",
       }
-    }
+    },
   }
-}
+};
+
+exaltedthird.triggerRequirementDropdowns = {
+};
 
 
 

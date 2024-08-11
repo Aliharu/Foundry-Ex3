@@ -180,6 +180,8 @@
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
     "Ex3.TargetDefensePenalty": "Target Defense Penalty",
+    "Ex3.AddOnslaught": "Add Onslaught",
+    "Ex3.AddMagicOnslaught": "Add Magic Onslaught",
     "Ex3.AccuracyModifiers": "Accuracy Modifiers",
     "Ex3.DamageModifiers": "Damage Modifiers",
     "Ex3.DiceRollTriggers": "Dice Roll Triggers",
@@ -893,6 +895,10 @@
     "Ex3.Activatable": "Activatable",
 
     "Ex3.SpecificCharm": "Specific Charm",
+
+    "Ex3.OtherEffect": "Other Effect",
+
+    "Ex3.TargetDoesntResetOnslaughtNextTurn": "Target Doesn't Reset Onslaught (1 Turn)",
 
     "Ex3.UseActiveEffectsDropdown": "Use Active Effects Dropdown",
     "Ex3.UseActiveEffectsDropdownDescription": "Use a dropdown list for the key in active effects rather than an open input",
