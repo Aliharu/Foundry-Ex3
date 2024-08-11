@@ -57,7 +57,7 @@ export class ExaltedThirdActor extends Actor {
         };
       }
       else {
-        if(creatureType === 'exalt') {
+        if (creatureType === 'exalt') {
           let peripheralmotes = this.calculateMaxExaltedMotes('peripheral', exalt, essenceLevel);
           let personalMotes = this.calculateMaxExaltedMotes('personal', exalt, essenceLevel);
           updateData.system.motes = {
@@ -322,7 +322,7 @@ export class ExaltedThirdActor extends Actor {
 
   async calculateAllDerivedStats() {
     await this.calculateCharacterMotes();
-    if(this.type === 'character') {
+    if (this.type === 'character') {
       await this.calculateDerivedStats('parry');
       await this.calculateDerivedStats('evasion');
       await this.calculateDerivedStats('guile');
@@ -353,18 +353,18 @@ export class ExaltedThirdActor extends Actor {
     if (type === 'natural-soak') {
       actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute]?.value;
     }
-    if(type === 'soak'  || type === 'armored-soak' || type === 'all') {
+    if (type === 'soak' || type === 'armored-soak' || type === 'all') {
       for (let armor of this.armor) {
         if (armor.system.equipped) {
           armoredSoakValue = armoredSoakValue + armor.system.soak;
         }
       }
-      if(type === 'armored-soak' || type === 'all') {
+      if (type === 'armored-soak' || type === 'all') {
         actorData.system.armoredsoak.value = armoredSoakValue;
       }
     }
     if (type === 'soak' || type === 'all') {
-      if(this.type === 'npc') {
+      if (this.type === 'npc') {
         actorData.system.soak.value = actorData.system.naturalsoak.value + armoredSoakValue;
       } else {
         actorData.system.soak.value = staticAttributeValue + armoredSoakValue;
@@ -1563,15 +1563,8 @@ export async function spendEmbeddedItem(actor, item) {
   if (item.type === 'charm') {
     if (item.system.active) {
       updateActive = false;
-      if (actorData.system.settings.charmmotepool === 'personal') {
-        if (item.system.cost.commitmotes > 0) {
-          actorData.system.motes.personal.committed -= item.system.cost.commitmotes;
-        }
-      }
-      else {
-        if (item.system.cost.commitmotes > 0) {
-          actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
-        }
+      if (item.system.cost.commitmotes > 0) {
+        actorData.system.motes[item.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= item.system.cost.commitmotes;
       }
     }
     else {
@@ -1732,6 +1725,7 @@ export async function spendEmbeddedItem(actor, item) {
   if (updateActive !== null) {
     await item.update({
       [`system.active`]: updateActive,
+      [`flags.exaltedthird.poolCommitted`]: updateActive ? actorData.system.settings.charmmotepool : null,
     });
     for (const effect of actor.allApplicableEffects()) {
       if (effect._sourceName === item.name) {
