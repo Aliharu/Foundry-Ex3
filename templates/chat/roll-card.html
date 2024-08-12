@@ -108,10 +108,10 @@
             <b>{{localize "Ex3.DicetoSuccesses"}}:</b> {{rollData.diceToSuccesses}}
         </div>
         <div>
-            <b>{{localize "Ex3.TriggerOnOnes"}}:</b> {{rollData.settings.triggerOnOnes}}
+            <b>{{localize "Ex3.TriggerOnOnes"}}:</b> {{rollData.settings.triggerOnOnes}} {{#if rollData.settings.triggerOnesCap}} ({{localize "Ex3.Cap"}}{{ rollData.settings.triggerOnesCap }}) {{/if}}
         </div>
         <div>
-            <b>{{localize "Ex3.TriggerOnTens"}}:</b> {{rollData.settings.triggerOnTens}}
+            <b>{{localize "Ex3.TriggerOnTens"}}:</b> {{rollData.settings.triggerOnTens}} {{#if rollData.settings.triggerTensCap}} ({{localize "Ex3.Cap"}}{{ rollData.settings.triggerTensCap }}) {{/if}}
         </div>
         <div>
             {{#if rollData.rerollFailed}}<b>{{localize "Ex3.RerollAllFailedOnce"}}</b>{{/if}}{{#if rollData.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
@@ -171,6 +171,12 @@
                     <b>{{localize "Ex3.ExcludeOnesFromRerolls"}}</b>
                 </div>
                 {{/if}}
+                <div>
+                    <b>{{localize "Ex3.TriggerOnOnes"}}:</b> {{rollData.settings.damage.triggerOnOnes}} {{#if rollData.settings.damage.triggerOnOnes}} ({{localize "Ex3.Cap"}}: {{ rollData.settings.damage.triggerOnesCap }}) {{/if}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.TriggerOnTens"}}:</b> {{rollData.settings.damage.triggerOnTens}} {{#if rollData.settings.damage.triggerTensCap}} ({{localize "Ex3.Cap"}}: {{ rollData.settings.damage.triggerTensCap }}) {{/if}}
+                </div>
                 <div>
                     {{#if rollData.damage.rerollFailed}}<b>{{localize "Ex3.RerollAllFailedOnce"}}</b>{{/if}}{{#if rollData.damage.rollTwice}}, <b>{{localize "Ex3.RollTwice"}}</b>{{/if}}
                 </div>

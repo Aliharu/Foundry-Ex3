@@ -17,7 +17,6 @@ import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
 import { ExaltedCombatant } from "./combat/combatant.js";
 import ExaltedActiveEffect from "./active-effect.js";
 import ExaltedActiveEffectConfig from "./active-effect-config.js";
-import NPCGenerator from "./apps/npc-generator.js";
 import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
 import CharacterBuilder from "./apps/character-builder.js";
 import { CharacterData, NpcData } from "./template/actor-template.js";
@@ -50,7 +49,6 @@ Hooks.once('init', async function () {
 
   game.exaltedthird = {
     applications: {
-      NPCGenerator,
       TraitSelector,
       ItemSearch,
       TemplateImporter,
@@ -418,7 +416,7 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 Hooks.on("renderActorDirectory", (app, html, data) => {
   let buttons = {
     character: {
-      label: game.i18n.localize("Ex3.Character"), callback: () => {
+      label: `${game.i18n.localize("Ex3.Character")} / ${game.i18n.localize("Ex3.NPC")}`, callback: () => {
         new CharacterBuilder(null, {}, {}, {}).render(true);
       }
     },
@@ -427,12 +425,6 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
     buttons['save'] = {
       label: game.i18n.localize("Ex3.Import"), callback: () => {
         game.templateImporter = new TemplateImporter("qc").render(true);
-      }
-    };
-
-    buttons['npc'] = {
-      label: game.i18n.localize("Ex3.NPC"), callback: () => {
-        new NPCGenerator(null, {}, {}, {}).render(true);
       }
     };
   }
@@ -799,13 +791,9 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/info") {
     const chatData = {
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/npc</b> NPC creator</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
     };
     ChatMessage.create(chatData);
-    return false;
-  }
-  if (command === '/npc') {
-    new NPCGenerator(null, {}, {}, {}).render(true);
     return false;
   }
   if (command === "/xp") {

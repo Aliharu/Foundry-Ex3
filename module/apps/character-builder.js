@@ -75,7 +75,7 @@ export default class CharacterBuilder extends FormApplication {
           name: '',
           defaultName: 'New Character',
           classificationType: "exalt",
-          exalt: "solar",
+          exalt: "mortal",
           caste: "",
           exigent: "",
           supernal: "",

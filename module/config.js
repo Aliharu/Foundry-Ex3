@@ -1503,6 +1503,7 @@ exaltedthird.bonusTypes = {
       doubleSuccess: "Ex3.DoubleSuccess",
       decreaseTargetNumber: "Ex3.DecreaseTargetNumber",
       rerollNumber: "Ex3.RerollNumberDice",
+      rerollNumberDescending: "Ex3.RerollNumberDiceDescending",
       diceToSuccesses: "Ex3.DicetoSuccesses",
       reduceDifficulty: "Ex3.ReduceDifficulty",
       rerollDieFace: "Ex3.RerollDieFace",
@@ -1528,6 +1529,7 @@ exaltedthird.bonusTypes = {
       'decreaseTargetNumber-damage': "Ex3.DamageDecreaseTargetNumber",
       'rerollDieFace-damage': "Ex3.DamageRerollDieFace",
       'rerollNumber-damage': "Ex3.DamageRerollNumberDice",
+      'rerollNumberDescending-damage': "Ex3.DamageRerollNumberDiceDescending",
       cappedThreshholdToDamage: "Ex3.CappedThreshholdToDamage",
       'rollTwice-damage': "Ex3.DamageRollTwiceKeepHighest",
       'excludeOnes-damage': "Ex3.DamageExcludeOnesFromRerolls",
@@ -1535,6 +1537,9 @@ exaltedthird.bonusTypes = {
       'triggerOnTens-damage': "Ex3.DamageTriggerTens",
       'triggerTensCap-damage': "Ex3.DamageTriggerTensCap",
       'triggerNinesAndTens-damage': "Ex3.DamageTriggerNines&Tens",
+      'triggerOnOnes-damage': "Ex3.DamageTriggerOnes",
+      'triggerOnesCap-damage': "Ex3.DamageTriggerOnesCap",
+      'triggerOnesAndTwos-damage': "Ex3.DamageTriggerOnes&Twos",
       threshholdToDamage: "Ex3.ThreshholdToDamage",
       doubleRolledDamage: "Ex3.DoubleRolledDamage",
       doublePreRolledDamage: "Ex3.DoublePreRolledDamage",
@@ -1627,6 +1632,9 @@ exaltedthird.triggerBonusDropdowns = {
   },
   triggerOnTensDamageOptions: {
     'subtractTargetInitiative': "Ex3.SubtractTargetInitiative",
+  },
+  triggerOnOnesDamageOptions: {
+    'subtractDamageSuccesses': "Ex3.SubtractEnemyDamageSuccesses",
   },
   elements: {
     air: 'Ex3.Air',

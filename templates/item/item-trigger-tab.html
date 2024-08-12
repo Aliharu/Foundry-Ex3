@@ -99,6 +99,16 @@
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.triggerOnTensDamageOptions selected=bonus.value localize=true blank=''}}
                 </select>
+                {{else ifEquals bonus.effect 'triggerOnOnes-damage'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesDamageOptions selected=bonus.value localize=true blank=''}}
+                </select>
+                {{else ifEquals bonus.effect 'triggerOnesAndTwos-damage'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesDamageOptions selected=bonus.value localize=true blank=''}}
+                </select>
                 {{else ifEquals bonus.effect 'activateAura'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">

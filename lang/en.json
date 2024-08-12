@@ -776,6 +776,7 @@
     "Ex3.SubtractTargetInitiative": "Subtract Target Initiative",
     "Ex3.SubtractEnemyInitiative": "Subtract Enemy Initiative",
     "Ex3.SubtractEnemySuccesses": "Subtract Enemy Successes",
+    "Ex3.SubtractEnemyDamageSuccesses": "Subtract Enemy Damage Successes",
     "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes",
     "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn",
     "Ex3.BaseInitiative": "Base Initiative",
@@ -1077,6 +1078,9 @@
     "Ex3.RerollDieFace": "Reroll Die Face",
     "Ex3.RerollDieFaceCap": "Reroll Die Face Cap",
     "Ex3.RerollNumberDice": "Reroll Number Dice",
+    "Ex3.RerollNumberDiceDescending": "Reroll Num Dice Descending",
+    "Ex3.DamageRerollNumberDiceDescending": "Damage Reroll Num Dice Descending",
+
     "Ex3.RerollFailedOnce": "Reroll Failed Once",
     "Ex3.TriggerTens": "Trigger Tens",
     "Ex3.TriggerNines&Tens": "Trigger Nines & Tens",
@@ -1132,6 +1136,9 @@
     "Ex3.DamageTriggerTens": "Damage Trigger Tens",
     "Ex3.DamageTriggerTensCap": "Damage Trigger Tens Cap",
     "Ex3.DamageTriggerNines&Tens": "Damage Trigger Nines & Tens",
+    "Ex3.DamageTriggerOnes": "Damage Trigger Ones",
+    "Ex3.DamageTriggerOnesCap": "Damage Trigger Ones Cap",
+    "Ex3.DamageTriggerOnes&Twos": "Damage Trigger Ones & Twos",
 
     "Ex3.MaterialResonance": "Material Resonance",
     "Ex3.MaterialStandard": "Material Standard",
@@ -1181,5 +1188,7 @@
 
     "Ex3.Defenses": "Defenses",
     "Ex3.RollBonus": "Roll Bonus",
-    "Ex3.NPCAbilities": "NPC Abilities"
+    "Ex3.NPCAbilities": "NPC Abilities",
+
+    "Ex3.Cap": "Cap"
 }
