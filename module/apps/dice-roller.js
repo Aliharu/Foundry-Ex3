@@ -4433,20 +4433,11 @@ export class RollForm extends FormApplication {
                         }
                     }
                 case 'booleanPrompt':
-                    let value = await Dialog.wait({
-                        modal: true,
-                        title: game.i18n.localize('Ex3.Requirement'),
-                        content: `<div class="resource"><label class="resource-label">${requirementObject.value}</label></div>`,
-                        buttons: {
-                            Yes: {
-                                label: game.i18n.localize('Ex3.Yes'),
-                                callback: (html) => true
-                            },
-                            No: {
-                                label: game.i18n.localize('Ex3.No'),
-                                callback: (html) => false
-                            }
-                        }
+                    const value = await foundry.applications.api.DialogV2.confirm({
+                        window: { title: game.i18n.localize('Ex3.Requirement') },
+                        content: `<p>${requirementObject.value}</p>`,
+                        classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+                        modal: true
                     });
                     if (!value) {
                         fufillsRequirements = false;

@@ -862,6 +862,14 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           cancel: { label: "Close" }
         },
       }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+
+      // new foundry.applications.api.DialogV2({
+      //   window: { title: game.i18n.localize("Ex3.Keywords") },
+      //   content: html,
+      //   buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close"), callback: () => {} }],
+      //   classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      //   modal: true,
+      // }).render(true);
     });
 
     html.find('.exalt-xp').mousedown(ev => {

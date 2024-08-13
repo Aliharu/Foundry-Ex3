@@ -27,7 +27,7 @@ import {
   ItemCraftData,
   ItemCraftProjectData,
   ItemCustomAbilityData,
-  ItemData, 
+  ItemData,
   ItemDestinyData,
   ItemInitiationData,
   ItemIntimacyData,
@@ -80,7 +80,7 @@ Hooks.once('init', async function () {
     craftproject: ItemCraftProjectData,
     customability: ItemCustomAbilityData,
     martialart: ItemMartialArtData,
-    destiny: ItemDestinyData, 
+    destiny: ItemDestinyData,
     intimacy: ItemIntimacyData,
     item: ItemData,
     merit: ItemMeritData,
@@ -153,7 +153,7 @@ Hooks.once('init', async function () {
     else {
       initDice = actor.system.pools.joinbattle.value;
     }
-    if(actor.system.settings.rollStunts) {
+    if (actor.system.settings.rollStunts) {
       initDice += 2;
     }
     return `${initDice}d10cs>=7ds>=10 + 3`;
@@ -164,13 +164,13 @@ Hooks.once('init', async function () {
   foundry.dice.terms.Die.prototype.doubleSuccess = function (modifier) {
     const rgx = /(?:ds)([<>=]+)?([0-9]+)?/i;
     const match = modifier.match(rgx);
-    if ( !match ) return false;
+    if (!match) return false;
     let [comparison, target] = match.slice(1);
     comparison = comparison || "=";
     target = parseInt(target) ?? this.faces;
-    for ( let r of this.results ) {
+    for (let r of this.results) {
       let success = DiceTerm.compareResult(r.result, comparison, target);
-      if(!r.success) {
+      if (!r.success) {
         r.success = success;
       }
       r.count += (success ? 1 : 0);
@@ -263,7 +263,7 @@ Hooks.once('init', async function () {
   });
 
   Handlebars.registerHelper("charmCostDisplay", function (cost) {
-    if(!cost) {
+    if (!cost) {
       return '';
     }
     let costString = '';
@@ -414,28 +414,33 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
-  let buttons = {
-    character: {
+  let buttons = [
+    {
+      action: 'generate',
       label: `${game.i18n.localize("Ex3.Character")} / ${game.i18n.localize("Ex3.NPC")}`, callback: () => {
         new CharacterBuilder(null, {}, {}, {}).render(true);
       }
-    },
-  };
+    }
+  ];
   if (game.user.isGM) {
-    buttons['save'] = {
-      label: game.i18n.localize("Ex3.Import"), callback: () => {
-        game.templateImporter = new TemplateImporter("qc").render(true);
+    buttons.push(
+      {
+        action: 'import',
+        label: game.i18n.localize("Ex3.Import"), callback: () => {
+          game.templateImporter = new TemplateImporter("qc").render(true);
+        }
       }
-    };
+    );
   }
   const button = $(`<button class="tempalte-importer"><i class="fas fa-user"></i>${game.i18n.localize("Ex3.Create")}</button>`);
   html.find(".directory-footer").append(button);
   button.click(ev => {
-    new Dialog({
-      title: game.i18n.localize("Ex3.Create"),
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.Create") },
       content: ``,
-      buttons: buttons
-    }, { classes: ["dialog", `solar-background`] }).render(true);
+      buttons: buttons,
+      classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
+    }).render(true);
   });
 });
 
@@ -509,7 +514,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         if (!actor && game.user.character) {
           actor = game.user.character;
         }
-        if(!actor) {
+        if (!actor) {
           ui.notifications.error(`Error: Could not find proper tokens actor and the logged in user has no set character to default to.`);
         }
 
@@ -627,7 +632,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         actorData.system.anima.value = moteResults.newAnimaValue;
       }
 
-      if(combatant.flags?.crashRecovery) {
+      if (combatant.flags?.crashRecovery) {
         await combatant.update({
           [`flags.crashRecovery`]: combatant.flags.crashRecovery - 1,
         });
@@ -1292,7 +1297,7 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    
+
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     ui.notifications.notify(`Migration Complete`);
   }
