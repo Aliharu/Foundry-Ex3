@@ -135,6 +135,11 @@
   }
 }
 
+.application {
+  .window-content {
+    overflow-y: auto;
+  }
+}
 
 .exaltedthird .window-content .abilities,
 .exaltedthird.sheet.actor .window-content .abilities {

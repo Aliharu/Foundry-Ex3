@@ -855,21 +855,24 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find(".charms-cheat-sheet").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
-      new Dialog({
-        title: `Keywords`,
-        content: html,
-        buttons: {
-          cancel: { label: "Close" }
-        },
-      }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
-
-      // new foundry.applications.api.DialogV2({
-      //   window: { title: game.i18n.localize("Ex3.Keywords") },
+      // new Dialog({
+      //   title: `Keywords`,
       //   content: html,
-      //   buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close"), callback: () => {} }],
-      //   classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-      //   modal: true,
-      // }).render(true);
+      //   buttons: {
+      //     cancel: { label: "Close" }
+      //   },
+      // }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
+        content: html,
+        position: {
+          width: 1000,
+          height: 1000
+        },
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close")}],
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      }).render(true);
     });
 
     html.find('.exalt-xp').mousedown(ev => {
