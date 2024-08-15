@@ -439,7 +439,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
       window: { title: game.i18n.localize("Ex3.Create") },
       content: ``,
       buttons: buttons,
-      classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
+      classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
     }).render(true);
   });
 });

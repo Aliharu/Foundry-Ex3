@@ -306,7 +306,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
           height: 1000, width: 1000,
         },
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
     });
 
@@ -316,7 +316,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         window: { title: game.i18n.localize("Ex3.Formulas"), resizable: true },
         content: html,
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
     });
 

@@ -850,7 +850,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           height: 1000
         },
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
     });
 
@@ -2319,7 +2319,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       window: { title: game.i18n.localize("Ex3.InfoDialog"), resizable: true },
       content: html,
       buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      position: {
+        width: 500,
+      },
     }).render(true);
   }
 
@@ -2401,15 +2404,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             hasaura: result.hasAura.checked,
             issorcerer: result.isSorcerer.checked,
             iscrafter: result.isCrafter.checked,
-            showmaidens: result.showMaidens.checked, 
+            showmaidens: result.showMaidens.checked,
           }
-          if(result.exigentType) {
+          if (result.exigentType) {
             newSettings.exigenttype = result.exigentType.value;
           }
           if (this.actor.type === 'npc' && result.lunarFormEnabled) {
             this.actor.update({ [`system.lunarform.enabled`]: result.lunarFormEnabled.checked });
           }
-          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(result.maxAnima.value) }); 
+          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(result.maxAnima.value) });
         }
       }
     }).render({ force: true });
