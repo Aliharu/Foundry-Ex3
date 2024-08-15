@@ -427,4 +427,50 @@
         </tr>
         {{/ifEquals}}
     </table>
+
+    {{#ifEquals exalt 'dragonblooded'}}
+    <p><b>Essence Advancement</b></p>
+    <table>
+        <tr style="text-align:center;">
+            <th>Essence</th>
+            <th>XP</th>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 3</td>
+            <td>75</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 4</td>
+            <td>250</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 5</td>
+            <td>325</td>
+        </tr>
+    </table>
+    {{else}}
+    <p><b>Essence Advancement</b></p>
+    <table>
+        <tr style="text-align:center;">
+            <th>Essence</th>
+            <th>XP</th>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 2</td>
+            <td>50</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 3</td>
+            <td>125</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 4</td>
+            <td>200</td>
+        </tr>
+        <tr style="text-align:center;">
+            <td>Essence 5</td>
+            <td>300</td>
+        </tr>
+    </table>
+    {{/ifEquals}}
 </div>

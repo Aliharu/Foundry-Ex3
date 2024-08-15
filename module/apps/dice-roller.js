@@ -826,52 +826,65 @@ export class RollForm extends FormApplication {
                     id: "roller-settings",
                     icon: 'fas fa-cog',
                     onclick: async (ev) => {
-                        let confirmed = false;
                         const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll, 'selects': this.selects });
-                        new Dialog({
-                            title: `Dice Roll Settings`,
+
+                        new foundry.applications.api.DialogV2({
+                            window: { title: game.i18n.localize("Ex3.DiceRollSettings"), resizable: true },
                             content: html,
-                            buttons: {
-                                roll: { label: "Save", callback: () => confirmed = true },
+                            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+                            buttons: [{
+                                action: "choice",
+                                label: game.i18n.localize("Ex3.Save"),
+                                default: true,
+                                callback: (event, button, dialog) => button.form.elements
+                            }, {
+                                action: "cancel",
+                                label: game.i18n.localize("Ex3.Cancel"),
+                                callback: (event, button, dialog) => false
+                            }],
+                            position: {
+                                 width: 500,
                             },
-                            close: html => {
-                                if (confirmed) {
-                                    this.object.settings.doubleSucccessCaps.sevens = parseInt(html.find('#sevensCap').val() || 0);
-                                    this.object.settings.doubleSucccessCaps.eights = parseInt(html.find('#eightsCap').val() || 0);
-                                    this.object.settings.doubleSucccessCaps.nines = parseInt(html.find('#ninesCap').val() || 0);
-                                    this.object.settings.doubleSucccessCaps.tens = parseInt(html.find('#tensCap').val() || 0);
-                                    this.object.settings.excludeOnesFromRerolls = html.find('#excludeOnesFromRerolls').is(":checked");
-                                    this.object.settings.triggerOnOnes = html.find('#triggerOnOnes').val() || 'none';
-                                    this.object.settings.triggerOnTens = html.find('#triggerOnTens').val() || 'none';
+                            submit: result => {
+                                if (result) {
 
-                                    this.object.settings.alsoTriggerTwos = html.find('#alsoTriggerTwos').is(":checked");
-                                    this.object.settings.alsoTriggerNines = html.find('#alsoTriggerNines').is(":checked");
+                                    this.object.settings.doubleSucccessCaps.sevens = parseInt(result.sevensCap?.value || 0);
+                                    this.object.settings.doubleSucccessCaps.eights = parseInt(result.eightsCap?.value || 0);
+                                    this.object.settings.doubleSucccessCaps.nines = parseInt(result.ninesCap?.value || 0);
+                                    this.object.settings.doubleSucccessCaps.tens = parseInt(result.tensCap?.value || 0);
+                                    this.object.settings.excludeOnesFromRerolls = result.excludeOnesFromRerolls.checked;
+                                    this.object.settings.triggerOnOnes = result.triggerOnOnes?.value || 'none';
+                                    this.object.settings.triggerOnTens = result.triggerOnTens?.value || 'none';
 
-                                    this.object.settings.triggerTensCap = parseInt(html.find('#triggerTensCap').val() || 0);
-                                    this.object.settings.triggerOnesCap = parseInt(html.find('#triggerOnesCap').val() || 0);
+                                    this.object.settings.alsoTriggerTwos = result.alsoTriggerTwos.checked;
+                                    this.object.settings.alsoTriggerNines = result.alsoTriggerNines.checked;
 
-                                    this.object.triggerSelfDefensePenalty = parseInt(html.find('#selfDefensePenalty').val() || 0);
-                                    this.object.triggerTargetDefensePenalty = parseInt(html.find('#targetDefensePenalty').val() || 0);
+                                    this.object.settings.triggerTensCap = parseInt(result.triggerTensCap?.value || 0);
+                                    this.object.settings.triggerOnesCap = parseInt(result.triggerOnesCap?.value || 0);
 
-                                    this.object.settings.ignoreLegendarySize = html.find('#ignoreLegendarySize').is(":checked");
-                                    this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(html.find('#damageSevensCap').val() || 0);
-                                    this.object.settings.damage.doubleSucccessCaps.eights = parseInt(html.find('#damageEightsCap').val() || 0);
-                                    this.object.settings.damage.doubleSucccessCaps.nines = parseInt(html.find('#damageNinesCap').val() || 0);
-                                    this.object.settings.damage.doubleSucccessCaps.tens = parseInt(html.find('#damageTensCap').val() || 0);
-                                    this.object.settings.damage.excludeOnesFromRerolls = html.find('#damageExcludeOnesFromRerolls').is(":checked");
-                                    this.object.settings.damage.triggerTensCap = parseInt(html.find('#damageTriggerTensCap').val() || 0);
-                                    this.object.settings.damage.alsoTriggerNines = html.find('#damageAlsoTriggerNines').is(":checked");
+                                    this.object.triggerSelfDefensePenalty = parseInt(result.selfDefensePenalty?.value || 0);
+                                    this.object.triggerTargetDefensePenalty = parseInt(result.targetDefensePenalty?.value || 0);
+
+                                    this.object.settings.ignoreLegendarySize = result.ignoreLegendarySize?.checked || false;
+                                    this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(result.damageSevensCap?.value || 0);
+                                    this.object.settings.damage.doubleSucccessCaps.eights = parseInt(result.damageEightsCap?.value || 0);
+                                    this.object.settings.damage.doubleSucccessCaps.nines = parseInt(result.damageNinesCap?.value || 0);
+                                    this.object.settings.damage.doubleSucccessCaps.tens = parseInt(result.damageTensCap?.value || 0);
+                                    this.object.settings.damage.excludeOnesFromRerolls = result.damageExcludeOnesFromRerolls?.checked || false;
+                                    this.object.settings.damage.triggerTensCap = parseInt(result.damageTriggerTensCap?.value || 0);
+                                    this.object.settings.damage.alsoTriggerNines = result.damageAlsoTriggerNines?.checked || false;
+
 
                                     for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
-                                        this.object.reroll[rerollKey].cap = parseInt(html.find(`#reroll-${this.object.reroll[rerollKey].number}-cap`).val() || 0);
+                                        this.object.reroll[rerollKey].cap = parseInt(result[`reroll-${this.object.reroll[rerollKey].number}-cap`].value || 0);
                                     }
 
                                     for (let [rerollKey, rerollValue] of Object.entries(this.object.damage.reroll)) {
-                                        this.object.damage.reroll[rerollKey].cap = parseInt(html.find(`#damage-reroll-${this.object.damage.reroll[rerollKey].number}-cap`).val() || 0);
+                                        this.object.damage.reroll[rerollKey].cap = parseInt(result[`damage-reroll-${this.object.damage.reroll[rerollKey].number}-cap`]?.value || 0);
                                     }
                                 }
                             }
-                        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+                        }).render({ force: true });
                     },
                 };
                 buttons = [settingsButton, ...buttons];
@@ -1007,43 +1020,49 @@ export class RollForm extends FormApplication {
 
     async _saveRoll(rollData) {
         let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
-        new Dialog({
-            title: "Save Roll",
-            content: html,
-            default: 'save',
-            buttons: {
-                save: {
-                    icon: '<i class="fas fa-check"></i>',
-                    label: 'Save',
-                    default: true,
-                    callback: html => {
-                        let results = document.getElementById('name').value;
-                        let uniqueId = this.object.id || foundry.utils.randomID(16);
-                        rollData.name = results;
-                        rollData.id = uniqueId;
-                        rollData.target = null;
-                        rollData.showTargets = false;
-                        rollData.targets = null;
-                        const addedCharmsConvertArray = [];
-                        for (let i = 0; i < this.object.addedCharms.length; i++) {
-                            addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
-                            addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
-                        }
-                        this.object.addedCharms = addedCharmsConvertArray;
 
-                        let updates = {
-                            "system.savedRolls": {
-                                [uniqueId]: rollData
-                            }
-                        };
-                        this.actor.update(updates);
-                        this.saved = true;
-                        ui.notifications.notify(`Saved Roll`);
-                        return;
-                    },
+        new foundry.applications.api.DialogV2({
+            window: { title: game.i18n.localize("Ex3.SaveRoll"), },
+            content: html,
+            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+            buttons: [{
+                action: "save",
+                label: game.i18n.localize("Ex3.Save"),
+                default: true,
+                callback: (event, button, dialog) => button.form.elements
+            }, {
+                action: "cancel",
+                label: game.i18n.localize("Ex3.Cancel"),
+                callback: (event, button, dialog) => false
+            }],
+            submit: result => {
+                if (result && result.name?.value) {
+                    let results = result.name.value;
+                    let uniqueId = this.object.id || foundry.utils.randomID(16);
+                    rollData.name = results;
+                    rollData.id = uniqueId;
+                    rollData.target = null;
+                    rollData.showTargets = false;
+                    rollData.targets = null;
+                    const addedCharmsConvertArray = [];
+                    for (let i = 0; i < this.object.addedCharms.length; i++) {
+                        addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
+                        addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
+                    }
+                    this.object.addedCharms = addedCharmsConvertArray;
+
+                    let updates = {
+                        "system.savedRolls": {
+                            [uniqueId]: rollData
+                        }
+                    };
+                    this.actor.update(updates);
+                    this.saved = true;
+                    ui.notifications.notify(`Saved Roll`);
+                    return;
                 }
             }
-        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        }).render({ force: true });
     }
 
     getData() {

@@ -1088,6 +1088,7 @@
     "Ex3.TriggerOnes&Twos": "Trigger Ones & Twos",
 
     "Ex3.Cancel": "Cancel",
+    "Ex3.Delete": "Delete",
     "Ex3.ManualBonuses": "Manual Bonuses",
     "Ex3.Dialog": "Dialog",
     "Ex3.RollResults": "Roll Results",
@@ -1190,5 +1191,16 @@
     "Ex3.RollBonus": "Roll Bonus",
     "Ex3.NPCAbilities": "NPC Abilities",
 
-    "Ex3.Cap": "Cap"
+    "Ex3.Cap": "Cap",
+    "Ex3.Formulas": "Formulas",
+    "Ex3.CalculateHealth": "Calculate Health",
+    "Ex3.ImportItem": "Import Item",
+    "Ex3.SaveRoll": "Save Roll",
+    "Ex3.DiceRollSettings": "Dice Roll Settings",
+
+
+    "Ex3.ReadMe": "Read Me",
+
+    "Ex3.InfoDialog": "Info Dialog"
+
 }

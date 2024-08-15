@@ -279,13 +279,12 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     });
 
     html.find('.show-roll-triggers-link').click(ev => {
-      new Dialog({
-        title: `ReadMe`,
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
         content: '<div><p><a href="https://github.com/Aliharu/Foundry-Ex3/wiki/Dice-Roll-Triggers">Instructions and Syntax.</a></p></div>',
-        buttons: {
-          cancel: { label: "Close" }
-        }
-      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      }).render(true);
     });
 
     // html.on("change", ".bonus-change", ev => {
@@ -300,24 +299,25 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
     html.find(".charms-cheat-sheet").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
-      new Dialog({
-        title: `Keywords`,
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
         content: html,
-        buttons: {
-          cancel: { label: "Close" }
+        position: {
+          height: 1000, width: 1000,
         },
-      }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      }).render(true);
     });
 
     html.find(".formula-help").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/formula-dialogue.html");
-      new Dialog({
-        title: `Formulas`,
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.Formulas"), resizable: true },
         content: html,
-        buttons: {
-          cancel: { label: "Close" }
-        },
-      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      }).render(true);
     });
 
     html.find(".embeded-item-delete").on("click", (event) => {

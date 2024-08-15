@@ -47,29 +47,16 @@ export default class TemplateImporter extends FormApplication {
         label: "Close",
         class: "close",
         icon: "fas fa-times",
-        onclick: () => {
-          let applyChanges = false;
-          new Dialog({
-            title: 'Close?',
-            content: 'Are you sure?',
-            buttons: {
-              delete: {
-                icon: '<i class="fas fa-check"></i>',
-                label: 'Close',
-                callback: () => applyChanges = true
-              },
-              cancel: {
-                icon: '<i class="fas fa-times"></i>',
-                label: 'Cancel'
-              },
-            },
-            default: "cancel",
-            close: html => {
-              if (applyChanges) {
-                this.close();
-              }
-            }
-          }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        onclick: async () => {
+          const applyChanges = await foundry.applications.api.DialogV2.confirm({
+            window: { title: game.i18n.localize("Ex3.Close") },
+            content: "<p>Are you sure?</p>",
+            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+            modal: true
+          });
+          if (applyChanges) {
+            this.close();
+          }
         }
       }
     ];
@@ -78,15 +65,13 @@ export default class TemplateImporter extends FormApplication {
       class: 'help-dialogue',
       icon: 'fas fa-question',
       onclick: async () => {
-        let confirmed = false;
         const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
-        new Dialog({
-          title: `ReadMe`,
+        new foundry.applications.api.DialogV2({
+          window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
           content: html,
-          buttons: {
-            cancel: { label: "Close", callback: () => confirmed = false }
-          }
-        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+          buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+          classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        }).render(true);
       },
     };
     buttons = [helpButton, ...buttons];

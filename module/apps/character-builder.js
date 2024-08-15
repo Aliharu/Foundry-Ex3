@@ -459,29 +459,16 @@ export default class CharacterBuilder extends FormApplication {
         label: "Close",
         class: "close",
         icon: "fas fa-times",
-        onclick: () => {
-          let applyChanges = false;
-          new Dialog({
-            title: 'Close?',
-            content: 'Any unsaved changed will be lost',
-            buttons: {
-              delete: {
-                icon: '<i class="fas fa-check"></i>',
-                label: 'Close',
-                callback: () => applyChanges = true
-              },
-              cancel: {
-                icon: '<i class="fas fa-times"></i>',
-                label: 'Cancel'
-              },
-            },
-            default: "cancel",
-            close: html => {
-              if (applyChanges) {
-                this.close();
-              }
-            }
-          }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+        onclick: async () => {
+          const applyChanges = await foundry.applications.api.DialogV2.confirm({
+            window: { title: game.i18n.localize("Ex3.Close") },
+            content: "<p>Any unsaved changed will be lost</p>",
+            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+            modal: true
+          });
+          if (applyChanges) {
+            this.close();
+          }
         }
       }
     ];
@@ -507,15 +494,13 @@ export default class CharacterBuilder extends FormApplication {
       class: 'generator-help',
       icon: 'fas fa-question',
       onclick: async () => {
-        let confirmed = false;
         const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dialog-help.html", { 'link': 'https://github.com/Aliharu/Foundry-Ex3/wiki/Character-Creator' });
-        new Dialog({
-          title: `ReadMe`,
+        new foundry.applications.api.DialogV2({
+          window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
           content: html,
-          buttons: {
-            cancel: { label: "Close", callback: () => confirmed = false }
-          }
-        }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+          buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+          classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        }).render(true);
       },
     };
     buttons = [saveButton, helpButton, ...buttons];

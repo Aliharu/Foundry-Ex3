@@ -826,43 +826,22 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     // Delete Inventory Item
-    html.find('.item-delete').click(ev => {
-      let applyChanges = false;
-      new Dialog({
-        title: 'Delete?',
-        content: 'Are you sure you want to delete this item?',
-        buttons: {
-          delete: {
-            icon: '<i class="fas fa-check"></i>',
-            label: 'Delete',
-            callback: () => applyChanges = true
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: 'Cancel'
-          },
-        },
-        default: "delete",
-        close: html => {
-          if (applyChanges) {
-            const li = $(ev.currentTarget).parents(".item");
-            this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
-            li.slideUp(200, () => this.render(false));
-          }
-        }
-      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+    html.find('.item-delete').click(async ev => {
+      const applyChanges = await foundry.applications.api.DialogV2.confirm({
+        window: { title: game.i18n.localize("Ex3.Delete") },
+        content: "<p>Are you sure you want to delete this item?</p>",
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        modal: true
+      });
+      if (applyChanges) {
+        const li = $(ev.currentTarget).parents(".item");
+        this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
+        li.slideUp(200, () => this.render(false));
+      }
     });
 
     html.find(".charms-cheat-sheet").click(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
-      // new Dialog({
-      //   title: `Keywords`,
-      //   content: html,
-      //   buttons: {
-      //     cancel: { label: "Close" }
-      //   },
-      // }, { height: 1000, width: 1000, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
-
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
         content: html,
@@ -870,7 +849,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           width: 1000,
           height: 1000
         },
-        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close")}],
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
         classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
     });
@@ -1468,6 +1447,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
       const template = "systems/exaltedthird/templates/dialogues/import-item.html";
       const html = await renderTemplate(template, { 'sectionList': sectionList });
+
       new Dialog({
         title: `Import Item`,
         content: html,
@@ -1933,31 +1913,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     });
 
-    html.find('.delete-saved-roll').click(ev => {
+    html.find('.delete-saved-roll').click(async ev => {
       let li = $(event.currentTarget).parents(".item");
       var key = li.data("saved-roll-id");
       const rollDeleteString = "system.savedRolls.-=" + key;
 
-      let deleteConfirm = new Dialog({
-        title: "Delete",
-        content: "Delete Saved Roll?",
-        buttons: {
-          Yes: {
-            icon: '<i class="fa fa-check"></i>',
-            label: "Delete",
-            callback: dlg => {
-              this.actor.update({ [rollDeleteString]: null });
-              ui.notifications.notify(`Saved Roll Deleted`);
-            }
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel"
-          },
-        },
-        default: 'Yes'
+      const deleteConfirm = await foundry.applications.api.DialogV2.confirm({
+        window: { title: game.i18n.localize('Ex3.Delete') },
+        content: `<p>Delete Saved Roll?</p>`,
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        modal: true
       });
-      deleteConfirm.render(true);
+      if (deleteConfirm) {
+        this.actor.update({ [rollDeleteString]: null });
+        ui.notifications.notify(`Saved Roll Deleted`);
+      }
     });
 
     $(document.getElementById('chat-log')).on('click', '.chat-card', (ev) => {
@@ -2232,22 +2202,28 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
       templateData.hasOxBody = false;
     }
-
     const html = await renderTemplate(template, templateData);
 
-    new Dialog({
-      title: `Calculate Health`,
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.CalculateHealth") },
       content: html,
-      buttons: {
-        roll: { label: "Save", callback: () => confirmed = true },
-        cancel: { label: "Cancel", callback: () => confirmed = false }
-      },
-      close: html => {
-        if (confirmed) {
-          let zero = parseInt(html.find('#zero').val()) || 0;
-          let one = parseInt(html.find('#one').val()) || 0;
-          let two = parseInt(html.find('#two').val()) || 0;
-          let four = parseInt(html.find('#four').val()) || 0;
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.Save"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
+          let zero = result.zero.value;
+          let one = result.one.value;
+          let two = result.two.value;
+          let four = result.four.value;
           let healthData = {
             levels: {
               zero: {
@@ -2268,7 +2244,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             aggravated: 0,
           }
           if (healthType === 'person') {
-            let three = parseInt(html.find('#three').val()) || 0;
+            let three = result.three.value || 0;
             healthData.levels.three = {
               value: three,
             }
@@ -2278,147 +2254,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             this.actor.update({ [`system.${healthType}.health`]: healthData });
           }
         }
-      },
-      render: (html) => {
-        html.find('.add-ox-body').click(ev => {
-          const oxBodyChart = {
-            solar: {
-              5: {
-                zero: 1,
-                one: 1,
-                two: 1,
-              },
-              4: {
-                one: 1,
-                two: 2,
-              },
-              2: {
-                one: 1,
-                two: 1,
-              },
-            },
-            dragonblooded: {
-              5: {
-                one: 1,
-                two: 2,
-              },
-              4: {
-                one: 1,
-                two: 1,
-              },
-              2: {
-                two: 2,
-              },
-            },
-            lunar: {
-              5: {
-                two: 2,
-                four: 2,
-              },
-              4: {
-                two: 2,
-                four: 1,
-              },
-              2: {
-                two: 2,
-              },
-            },
-            sidereal: {
-              5: {
-                zero: 2,
-              },
-              4: {
-                zero: 1,
-                one: 1,
-              },
-              2: {
-                zero: 1,
-              },
-            },
-            janest: {
-              5: {
-                one: 1,
-                two: 1,
-                four: 2,
-              },
-              4: {
-                one: 1,
-                two: 2,
-              },
-              2: {
-                one: 1,
-                two: 1,
-              },
-            },
-            strawmaiden: {
-              5: {
-                one: 1,
-                two: 1,
-                four: 2,
-              },
-              4: {
-                one: 1,
-                two: 2,
-              },
-              2: {
-                one: 1,
-                two: 1,
-              },
-            },
-            puppeteer: {
-              5: {
-                one: 2,
-              },
-              4: {
-                one: 1,
-                two: 1,
-              },
-              2: {
-                two: 2,
-              },
-            },
-            architect: {
-              5: {
-                one: 1,
-                two: 2,
-              },
-              4: {
-                two: 2,
-                four: 1,
-              },
-              2: {
-                two: 2,
-              },
-            },
-            sovereign: {
-              5: {
-                two: 1,
-                four: 3,
-              },
-              4: {
-                two: 1,
-                four: 2,
-              },
-              2: {
-                two: 1,
-                four: 1,
-              },
-            }
-          }
-
-          if (oxBodyChart[this.actor.system.details.exalt]) {
-            for (let [staminaValue, staminaDetails] of Object.entries(oxBodyChart[this.actor.system.details.exalt]).sort(([keyA], [keyB]) => Number(keyB) - Number(keyA))) {
-              if (this.actor.system.attributes.stamina.value >= parseInt(staminaValue)) {
-                for (let [levelValue, healthLevel] of Object.entries(staminaDetails)) {
-                  html.find(`#${levelValue}`).val((parseInt(html.find(`#${levelValue}`).val()) || 0) + healthLevel);
-                }
-                break;
-              }
-            }
-          }
-        });
-      },
-    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+      }
+    }).render({ force: true });
   }
 
   async recoverHealth(healthType = 'person') {
@@ -2478,31 +2315,37 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         break;
     }
     const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
-    new Dialog({
-      title: `Info Dialogue`,
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.InfoDialog"), resizable: true },
       content: html,
-      buttons: {
-        cancel: { label: "Close" }
-      }
-    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+      buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    }).render(true);
   }
 
   async pickColor() {
     let confirmed = false;
     const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
-    new Dialog({
-      title: `Pick Color`,
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.PickColor") },
       content: html,
-      buttons: {
-        roll: { label: "Save", callback: () => confirmed = true },
-        cancel: { label: "Cancel", callback: () => confirmed = false }
-      },
-      close: html => {
-        if (confirmed) {
-          let color = html.find('#color').val();
-          let animaColor = html.find('#animaColor').val();
-          let initiativeIconColor = html.find('#initiativeIconColor').val();
-          let initiativeIcon = html.find('#initiativeIcon').val();
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.Save"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
+          let color = result.color.value;
+          let animaColor = result.animaColor.value;
+          let initiativeIconColor = result.initiativeIconColor.value;
+          let initiativeIcon = result.initiativeIcon.value;
           if (isColor(color)) {
             this.actor.update({ [`system.details.color`]: color });
           }
@@ -2515,64 +2358,73 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           this.actor.update({ [`system.details.initiativeicon`]: initiativeIcon });
         }
       }
-    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+    }).render({ force: true });
   }
 
   async sheetSettings() {
     let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
     const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': this.actor.system.details.exalt === 'exigent', selects: CONFIG.exaltedthird.selects });
-    new Dialog({
-      title: `Settings`,
+
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.Settings"), },
       content: html,
-      buttons: {
-        save: { label: "Save", callback: () => confirmed = true },
-        cancel: { label: "Close", callback: () => confirmed = false }
-      },
-      close: html => {
-        if (confirmed) {
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.Save"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
           let newSettings = {
-            charmmotepool: html.find('#charmMotePool').val(),
-            martialartsmastery: html.find('#martialArtsMastery').val(),
-            sheetbackground: html.find('#sheetBackground').val(),
-            exigenttype: html.find('#exigentType').val(),
-            sorcerycircle: html.find('#sorceryCircle').val(),
-            necromancycircle: html.find('#necromancyCircle').val(),
-            smaenlightenment: html.find('#smaEnlightenment').is(":checked"),
-            showwarstrider: html.find('#showWarstrider').is(":checked"),
-            showship: html.find('#showShip').is(":checked"),
-            showescort: html.find('#showEscort').is(":checked"),
-            usetenattributes: html.find('#useTenAttributes').is(":checked"),
-            usetenabilities: html.find('#useTenAbilities').is(":checked"),
-            rollStunts: html.find('#rollStunts').is(":checked"),
-            defenseStunts: html.find('#defenseStunts').is(":checked"),
-            showanima: html.find('#showAnima').is(":checked"),
-            editmode: html.find('#editMode').is(":checked"),
-            hasaura: html.find('#hasAura').is(":checked"),
-            issorcerer: html.find('#isSorcerer').is(":checked"),
-            iscrafter: html.find('#isCrafter').is(":checked"),
-            showmaidens: html.find('#showMaidens').is(":checked"),
+            charmmotepool: result.charmMotePool.value,
+            martialartsmastery: result.martialArtsMastery.value,
+            sheetbackground: result.sheetBackground.value,
+            sorcerycircle: result.sorceryCircle.value,
+            necromancycircle: result.necromancyCircle.value,
+            smaenlightenment: result.smaEnlightenment.checked,
+            showwarstrider: result.showWarstrider.checked,
+            showship: result.showShip.checked,
+            showescort: result.showEscort.checked,
+            usetenattributes: result.useTenAttributes?.checked ?? false,
+            usetenabilities: result.useTenAbilities?.checked ?? false,
+            rollStunts: result.rollStunts.checked,
+            defenseStunts: result.defenseStunts.checked,
+            showanima: result.showAnima.checked,
+            editmode: result.editMode.checked,
+            hasaura: result.hasAura.checked,
+            issorcerer: result.isSorcerer.checked,
+            iscrafter: result.isCrafter.checked,
+            showmaidens: result.showMaidens.checked, 
           }
-          if (this.actor.type === 'npc') {
-            this.actor.update({ [`system.lunarform.enabled`]: html.find('#lunarFormEnabled').is(":checked") });
+          if(result.exigentType) {
+            newSettings.exigenttype = result.exigentType.value;
           }
-          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(html.find('#maxAnima').val()) });
+          if (this.actor.type === 'npc' && result.lunarFormEnabled) {
+            this.actor.update({ [`system.lunarform.enabled`]: result.lunarFormEnabled.checked });
+          }
+          this.actor.update({ [`system.settings`]: newSettings, [`system.anima.max`]: parseInt(result.maxAnima.value) }); 
         }
       }
-    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+    }).render({ force: true });
   }
 
   async helpDialogue(type) {
     let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
     const html = await renderTemplate(template, { 'type': type });
-    new Dialog({
-      title: `ReadMe`,
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
       content: html,
-      buttons: {
-        cancel: { label: "Close", callback: () => confirmed = false }
-      }
-    }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+      buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    }).render(true);
   }
 
   _onSquareCounterChange(event) {
@@ -2836,8 +2688,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       type: type,
       system: data
     };
-    if(type === 'charm') {
-      if(Object.keys(CONFIG.exaltedthird.exaltcharmtypes).includes(this.actor.system.details.exalt)) {
+    if (type === 'charm') {
+      if (Object.keys(CONFIG.exaltedthird.exaltcharmtypes).includes(this.actor.system.details.exalt)) {
         itemData.system.charmtype = this.actor.system.details.exalt;
       }
     }
@@ -3000,104 +2852,100 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
       const template = "systems/exaltedthird/templates/dialogues/lunar-sync.html";
       const html = await renderTemplate(template);
-      let confirmed = false;
-      new Dialog({
-        title: `Lunar Sync`,
+
+      const confirmed = await foundry.applications.api.DialogV2.confirm({
+        window: { title: game.i18n.localize("Ex3.LunarSync") },
         content: html,
-        buttons: {
-          save: { label: "Sync", callback: () => confirmed = true },
-          cancel: { label: "Cancel", callback: () => confirmed = false }
-        },
-        close: html => {
-          if (confirmed) {
-            if (actorData.img === 'icons/svg/mystery-man.svg') {
-              actorData.img = "systems/exaltedthird/assets/icons/lunar_animal.webp";
+        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        modal: true
+      });
+      if (confirmed) {
+        if (actorData.img === 'icons/svg/mystery-man.svg') {
+          actorData.img = "systems/exaltedthird/assets/icons/lunar_animal.webp";
+        }
+        actorData.system.health = lunar.system.health;
+        actorData.system.willpower = lunar.system.willpower;
+        actorData.system.essence = lunar.system.essence;
+        actorData.system.motes = lunar.system.motes;
+        actorData.system.resolve = lunar.system.resolve;
+        actorData.system.guile = lunar.system.guile;
+        actorData.system.anima = lunar.system.anima;
+        if (lunar.type === 'npc') {
+          actorData.system.appearance.value = actorData.system.appearance.value;
+        }
+        else {
+          actorData.system.appearance.value = lunar.system.attributes.appearance.value;
+        }
+        actorData.system.evasion.value = Math.max(lunar.system.evasion.value, actorData.system.evasion.value);
+        actorData.system.parry.value = Math.max(lunar.system.parry.value, actorData.system.parry.value);
+        actorData.system.soak.value = Math.max(lunar.system.soak.value, actorData.system.soak.value);
+        actorData.system.armoredsoak.value = Math.max(lunar.system.armoredsoak.value, actorData.system.armoredsoak.value);
+        actorData.system.hardness.value = Math.max(lunar.system.hardness.value, actorData.system.hardness.value);
+        actorData.system.baseinitiative = lunar.system.baseinitiative;
+        actorData.system.details = lunar.system.details;
+        actorData.system.creaturetype = 'exalt';
+
+        for (let [key, pool] of Object.entries(actorData.system.pools)) {
+          let lunarPool = 0;
+          if (lunar.type === 'npc') {
+            lunarPool = lunar.system.pools[key].value;
+          }
+          else {
+            if (key === 'grapple') {
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
             }
-            actorData.system.health = lunar.system.health;
-            actorData.system.willpower = lunar.system.willpower;
-            actorData.system.essence = lunar.system.essence;
-            actorData.system.motes = lunar.system.motes;
-            actorData.system.resolve = lunar.system.resolve;
-            actorData.system.guile = lunar.system.guile;
-            actorData.system.anima = lunar.system.anima;
-            if (lunar.type === 'npc') {
-              actorData.system.appearance.value = actorData.system.appearance.value;
+            else if (key === 'movement') {
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
+            } else if (key === 'resistance') {
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.steady.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.steady.ability);
             }
             else {
-              actorData.system.appearance.value = lunar.system.attributes.appearance.value;
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[key].ability);
             }
-            actorData.system.evasion.value = Math.max(lunar.system.evasion.value, actorData.system.evasion.value);
-            actorData.system.parry.value = Math.max(lunar.system.parry.value, actorData.system.parry.value);
-            actorData.system.soak.value = Math.max(lunar.system.soak.value, actorData.system.soak.value);
-            actorData.system.armoredsoak.value = Math.max(lunar.system.armoredsoak.value, actorData.system.armoredsoak.value);
-            actorData.system.hardness.value = Math.max(lunar.system.hardness.value, actorData.system.hardness.value);
-            actorData.system.baseinitiative = lunar.system.baseinitiative;
-            actorData.system.details = lunar.system.details;
-            actorData.system.creaturetype = 'exalt';
+          }
 
-            for (let [key, pool] of Object.entries(actorData.system.pools)) {
-              let lunarPool = 0;
-              if (lunar.type === 'npc') {
-                lunarPool = lunar.system.pools[key].value;
-              }
-              else {
-                if (key === 'grapple') {
-                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
-                }
-                else if (key === 'movement') {
-                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
-                } else if(key === 'resistance') {
-                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.steady.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.steady.ability);
-                }
-                else {
-                  lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[key].ability);
-                }
-              }
-
-              pool.value = Math.max(pool.value, lunarPool);
+          pool.value = Math.max(pool.value, lunarPool);
+        }
+        for (let item of this.actor.items.filter(item => item.type === 'action')) {
+          if (lunar.type === 'character') {
+            if (item.system.lunarstats.attribute && item.system.lunarstats.ability) {
+              let lunarActionPool = lunar.system.attributes[item.system.lunarstats.attribute].value + lunar.system.abilities[item.system.lunarstats.ability].value;
+              item.update({
+                [`system.value`]: Math.max(item.system.value, lunarActionPool),
+              });
             }
-            for (let item of this.actor.items.filter(item => item.type === 'action')) {
-              if (lunar.type === 'character') {
-                if (item.system.lunarstats.attribute && item.system.lunarstats.ability) {
-                  let lunarActionPool = lunar.system.attributes[item.system.lunarstats.attribute].value + lunar.system.abilities[item.system.lunarstats.ability].value;
-                  item.update({
-                    [`system.value`]: Math.max(item.system.value, lunarActionPool),
-                  });
-                }
-              }
-              else {
-                const lunarAction = lunar.items.filter(item => item.type === 'action').find(lunarActionItem => lunarActionItem.name === item.name);
-                if (lunarAction) {
-                  item.update({
-                    [`system.value`]: Math.max(item.system.value, lunarAction.system.value),
-                  });
-                }
-              }
+          }
+          else {
+            const lunarAction = lunar.items.filter(item => item.type === 'action').find(lunarActionItem => lunarActionItem.name === item.name);
+            if (lunarAction) {
+              item.update({
+                [`system.value`]: Math.max(item.system.value, lunarAction.system.value),
+              });
             }
-
-            const newItems = [];
-            const newEffects = [];
-
-            for (let item of lunar.items) {
-              if ((item.type === 'charm' || item.type === 'spell' || item.type === 'specialty' || item.type === 'ritual' || item.type === 'intimacy') && !this.actor.items.filter(actorItem => actorItem.type === item.type).find(actorItem => actorItem.name === item.name)) {
-                newItems.push(foundry.utils.duplicate(item));
-              }
-            }
-            for (let effect of lunar.effects) {
-              if (!this.actor.effects.find(actorEffect => actorEffect.name === effect.label)) {
-                newEffects.push(foundry.utils.duplicate(effect));
-              }
-            }
-            if (newItems) {
-              this.actor.createEmbeddedDocuments("Item", newItems);
-            }
-            if (newEffects) {
-              this.actor.createEmbeddedDocuments("ActiveEffect", newEffects);
-            }
-            this.actor.update(actorData);
           }
         }
-      }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+
+        const newItems = [];
+        const newEffects = [];
+
+        for (let item of lunar.items) {
+          if ((item.type === 'charm' || item.type === 'spell' || item.type === 'specialty' || item.type === 'ritual' || item.type === 'intimacy') && !this.actor.items.filter(actorItem => actorItem.type === item.type).find(actorItem => actorItem.name === item.name)) {
+            newItems.push(foundry.utils.duplicate(item));
+          }
+        }
+        for (let effect of lunar.effects) {
+          if (!this.actor.effects.find(actorEffect => actorEffect.name === effect.label)) {
+            newEffects.push(foundry.utils.duplicate(effect));
+          }
+        }
+        if (newItems) {
+          this.actor.createEmbeddedDocuments("Item", newItems);
+        }
+        if (newEffects) {
+          this.actor.createEmbeddedDocuments("ActiveEffect", newEffects);
+        }
+        this.actor.update(actorData);
+      }
     }
     else {
       ui.notifications.error(`<p>Linked Lunar not found</p>`);

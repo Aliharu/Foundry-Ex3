@@ -1816,22 +1816,26 @@ async function applyDamageDialogue(targetUuid, damageContext) {
 
   const template = "systems/exaltedthird/templates/dialogues/damage-dialogue.html"
   const html = await renderTemplate(template, { 'damageContext': damageContext, damageTypes: CONFIG.exaltedthird.selects.damageTypes });
-  let confirmed = false
-  new Dialog({
-    title: `Apply Damage to ${actor.name}`,
+  new foundry.applications.api.DialogV2({
+    window: { title: `Apply Damage to ${actor.name}` },
     content: html,
-    buttons: {
-      save: { label: "Confirm", callback: () => confirmed = true },
-      cancel: { label: "Cancel", callback: () => confirmed = false }
-    },
-    close: html => {
-      if (confirmed) {
-        let characterDamage = Number(html.find('#damageValue').val());
-        let damageType = html.find('#damageType').val();
-        dealHealthDamage(actor, characterDamage, damageType);
+    classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    buttons: [{
+      action: "choice",
+      label: game.i18n.localize("Ex3.Save"),
+      default: true,
+      callback: (event, button, dialog) => button.form.elements
+    }, {
+      action: "cancel",
+      label: game.i18n.localize("Ex3.Cancel"),
+      callback: (event, button, dialog) => false
+    }],
+    submit: result => {
+      if (result) {
+        dealHealthDamage(actor, Number(result.damageValue.value), result.damageType.value);
       }
     }
-  }, { classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }).render(true);
+  }).render({ force: true });
 }
 
 async function dealHealthDamage(actor, damageValue, damageType) {
