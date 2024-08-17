@@ -59,11 +59,35 @@
 //     position: { width: 860, height: 980 },
 //     actions: {
 //       showHelpDialog: TemplateImporter2.showHelpDialog
+//       import: TemplateImporter2.importTemplate,
 //     }
 //   };
 
 //   static async myFormHandler(event, form, formData) {
 //     // Do things with the returned FormData
+//     const formObject = foundry.utils.expandObject(formData.object);
+//     if (formObject.type) {
+//       let collection;
+//       if (formObject.type === 'qc' || formObject.type === 'adversary') {
+//         collection = game.collections.get("Actor");
+//       }
+//       else {
+//         collection = game.collections.get("Item");
+//       }
+
+//       this.data.folders = collection?._formatFolderSelectOptions()
+//         .reduce((acc, folder) => {
+//           acc[folder.id] = folder.name;
+//           return acc;
+//         }, {}) ?? {};
+//       this.data.folders[''] = "Ex3.None";
+//       // this.data.type = formObject.type;
+//     }
+//     for (let key in formObject) {
+//       if (formObject.hasOwnProperty(key) && this.data.hasOwnProperty(key)) {
+//         this.data[key] = formObject[key];
+//       }
+//     }
 //     this.render();
 //   }
 
@@ -76,22 +100,13 @@
 //   async _prepareContext(_options) {
 //     this.data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
 //     this.data.selects = CONFIG.exaltedthird.selects;
-//     if (this.data.type === 'charm') {
-//       this.data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
-//     }
-//     if (this.data.type === 'spell') {
-//       this.data.templateHint = game.i18n.localize("Ex3.SpellImportHint");
-//     }
-//     if (this.data.type === 'adversary') {
-//       this.data.templateHint = game.i18n.localize("Ex3.AdversaryImportHint");
-//     }
-//     if (this.data.type === 'qc') {
-//       this.data.templateHint = game.i18n.localize("Ex3.QCImportHint");
-//     }
-//     if (this.data.type === 'other') {
-//       this.data.templateHint = game.i18n.localize("Ex3.OtherImportHint");
-//     }
+//     const hintMap = { 'charm': 'CharmImportHint', 'spell': 'SpellImportHint', 'adversary': 'AdversaryImportHint', 'qc': 'QCImportHint', 'other': 'OtherImportHint' }
+//     this.data.templateHint = game.i18n.localize(`Ex3.${hintMap[this.data.type]}`);
 //     return this.data;
+//   }
+
+//   async importTemplate() {
+    
 //   }
 
 //   static async showHelpDialog(event, target) {
