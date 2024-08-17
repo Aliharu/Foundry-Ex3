@@ -1121,7 +1121,7 @@ export class RollForm extends FormApplication {
                 }
             }
         }
-        if (item.system.cost) {
+        if (item.system.cost && !item.system.activatable) {
             if (addCosts) {
                 if (item.system.keywords.toLowerCase().includes('mute')) {
                     this.object.cost.muteMotes += item.system.cost.motes;
