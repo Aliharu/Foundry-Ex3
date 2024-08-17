@@ -826,7 +826,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'intimacy',
-                  img: this.getImageUrl('intimacy'),
+                  img: CONFIG.exaltedthird.itemIcons['intimacy'], 
                   name: intimacyArray[1].trim(),
                   system: {
                     description: intimacyArray[1].trim(),
@@ -840,7 +840,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'intimacy',
-                  img: this.getImageUrl('intimacy'),
+                  img: CONFIG.exaltedthird.itemIcons['intimacy'],
                   name: intimacyArray[0].trim(),
                   system: {
                     description: intimacyArray[0].trim(),
@@ -918,7 +918,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'intimacy',
-                  img: this.getImageUrl('intimacy'),
+                  img: CONFIG.exaltedthird.itemIcons['intimacy'], 
                   name: intimacyArray[1].trim(),
                   system: {
                     description: intimacyArray[1].trim(),
@@ -932,7 +932,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'intimacy',
-                  img: this.getImageUrl('intimacy'),
+                  img: CONFIG.exaltedthird.itemIcons['intimacy'],
                   name: intimacyArray[0].trim(),
                   system: {
                     description: intimacyArray[0].trim(),
@@ -980,7 +980,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'action',
-                img: this.getImageUrl('action'),
+                img: CONFIG.exaltedthird.itemIcons['action'], 
                 name: name,
                 system: {
                   value: parseInt(actionSplit[1].trim())
@@ -1059,7 +1059,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.push(
           {
             type: 'weapon',
-            img: this.getImageUrl('weapon'),
+            img: CONFIG.exaltedthird.itemIcons['weapon'], 
             name: attackName.trim(),
             system: {
               description: weaponDescription,
@@ -1102,7 +1102,7 @@ export default class TemplateImporter extends FormApplication {
           itemData.push(
             {
               type: 'armor',
-              img: this.getImageUrl('armor'),
+              img: CONFIG.exaltedthird.itemIcons['armor'], 
               name: match[1],
             }
           );
@@ -1305,7 +1305,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: itemType,
-                  img: this.getImageUrl(itemType),
+                  img: CONFIG.exaltedthird.itemIcons[itemType], 
                   name: intimacyArray[1].trim(),
                   system: {
                     description: intimacyArray[1].trim(),
@@ -1486,7 +1486,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: itemType,
-                img: this.getImageUrl(itemType),
+                img: CONFIG.exaltedthird.itemIcons[itemType],
                 name: itemName,
                 system: {
                   description: itemDescription.trim(),
@@ -1502,7 +1502,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: itemType,
-                img: this.getImageUrl(itemType),
+                img: CONFIG.exaltedthird.itemIcons[itemType],
                 name: itemName,
                 system: charmSystemData,
               }
@@ -1516,7 +1516,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: itemType,
-                img: this.getImageUrl(itemType),
+                img: CONFIG.exaltedthird.itemIcons[itemType],
                 name: itemName,
                 system: spellSystemData,
               }
@@ -1605,7 +1605,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'intimacy',
-                img: this.getImageUrl('intimacy'),
+                img: CONFIG.exaltedthird.itemIcons['intimacy'],
                 name: intimacy.trim(),
                 system: {
                   description: intimacy.trim(),
@@ -1750,7 +1750,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'specialty',
-                img: this.getImageUrl('specialty'),
+                img: CONFIG.exaltedthird.itemIcons['specialty'], 
                 name: specialtyText.trim(),
                 system: {
                   ability: trimmedName,
@@ -1800,7 +1800,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'merit',
-                img: this.getImageUrl('merit'),
+                img: CONFIG.exaltedthird.itemIcons['merit'], 
                 name: meritName.trim(),
                 system: {
                   points: meritValue ? meritValue : 0,
@@ -1840,7 +1840,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'specialty',
-                  img: this.getImageUrl('specialty'),
+                  img: CONFIG.exaltedthird.itemIcons['specialty'], 
                   name: specialtyText.trim(),
                   system: {
                     ability: trimmedName,
@@ -1913,7 +1913,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.push(
           {
             type: 'weapon',
-            img: this.getImageUrl('weapon'),
+            img: CONFIG.exaltedthird.itemIcons['weapon'], 
             name: attackName.trim(),
             system: {
               description: weaponDescription,
@@ -1989,7 +1989,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.push(
           {
             type: 'armor',
-            img: this.getImageUrl('armor'),
+            img: CONFIG.exaltedthird.itemIcons['armor'], 
             name: armorName.trim(),
             system: {
               soak: armorValue,
@@ -2057,39 +2057,6 @@ export default class TemplateImporter extends FormApplication {
     } else {
       // Return an empty string if no matches were found
       return '';
-    }
-  }
-
-  getImageUrl(type) {
-    if (type === 'intimacy') {
-      return "systems/exaltedthird/assets/icons/hearts.svg";
-    }
-    if (type === 'spell') {
-      return "systems/exaltedthird/assets/icons/magic-swirl.svg";
-    }
-    if (type === 'ritual') {
-      return "icons/svg/book.svg";
-    }
-    if (type === 'merit') {
-      return "icons/svg/coins.svg"
-    }
-    if (type === 'weapon') {
-      return "icons/svg/sword.svg";
-    }
-    if (type === 'armor') {
-      return "systems/exaltedthird/assets/icons/breastplate.svg";
-    }
-    if (type === 'customability') {
-      return "systems/exaltedthird/assets/icons/d10.svg";
-    }
-    if (type === 'charm') {
-      return "icons/svg/explosion.svg";
-    }
-    if (type === 'specialability') {
-      return "icons/svg/aura.svg";
-    }
-    if (type === 'craftproject') {
-      return "systems/exaltedthird/assets/icons/anvil-impact.svg";
     }
   }
 

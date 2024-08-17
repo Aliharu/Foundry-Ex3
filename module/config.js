@@ -15,6 +15,20 @@ export const exaltedthird = {};
 //     "localtongue": "Ex3.LocalTongue",
 // };
 
+
+exaltedthird.itemIcons = {
+  intimacy: "systems/exaltedthird/assets/icons/hearts.svg",
+  spell: "systems/exaltedthird/assets/icons/magic-swirl.svg",
+  ritual: "icons/svg/book.svg",
+  merit: "icons/svg/coins.svg",
+  weapon: "icons/svg/sword.svg",
+  armor: "systems/exaltedthird/assets/icons/breastplate.svg",
+  customability: "systems/exaltedthird/assets/icons/d10.svg",
+  charm: "icons/svg/explosion.svg",
+  specialability: "icons/svg/aura.svg",
+  craftproject: "systems/exaltedthird/assets/icons/anvil-impact.svg"
+};
+
 exaltedthird.activeEffectChanges = {
   none: {
     label: "Ex3.None",

@@ -13,7 +13,7 @@ export class ExaltedThirdItem extends Item {
   async _preCreate(data, options, user) {
     await super._preCreate(data, options, user);
     if (!data.img || data.img == "icons/svg/item-bag.svg") {
-      this.updateSource({ img: this.getImageUrl(data.type) });
+      this.updateSource({ img: CONFIG.exaltedthird.itemIcons[data.type] }); 
     }
   }
 
