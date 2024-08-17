@@ -1,3 +1,110 @@
+// const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+// export class TemplateImporter2 extends HandlebarsApplicationMixin(ApplicationV2) {
+//   constructor(type) {
+//     super(type);
+
+//     this.data = {
+//       test: '',
+//       type: type,
+//       charmType: 'other',
+//       listingName: '',
+//       spellCircle: 'terrestrial',
+//       itemType: 'armor',
+//       folder: '',
+//       folders: [],
+//       errorText: '',
+//       errorSection: '',
+//       showError: false,
+//       textBox: ''
+//     };
+
+//     let collection;
+//     if (this.data.type === 'qc' || this.data.type === 'adversary') {
+//       collection = game.collections.get("Actor");
+//     }
+//     else {
+//       collection = game.collections.get("Item");
+//     }
+
+//     this.data.folders = collection?._formatFolderSelectOptions()
+//       .reduce((acc, folder) => {
+//         acc[folder.id] = folder.name;
+//         return acc;
+//       }, {}) ?? {};
+//     this.data.folders[''] = "Ex3.None";
+//   }
+
+//   static DEFAULT_OPTIONS = {
+//     window: {
+//       title: "Template Importer", resizable: true, controls: [
+//         {
+//           // font awesome icon
+//           icon: 'fa-solid fa-question',
+//           // string that will be run through localization
+//           label: "Help",
+//           // string that MUST match one of your `actions`
+//           action: "showHelpDialog",
+//         },
+//       ]
+//     },
+//     tag: "form",
+//     form: {
+//       handler: TemplateImporter2.myFormHandler,
+//       submitOnClose: false,
+//       submitOnChange: true,
+//       closeOnSubmit: false
+//     },
+//     classes: [`leaves-background`],
+//     position: { width: 860, height: 980 },
+//     actions: {
+//       showHelpDialog: TemplateImporter2.showHelpDialog
+//     }
+//   };
+
+//   static async myFormHandler(event, form, formData) {
+//     // Do things with the returned FormData
+//     this.render();
+//   }
+
+//   static PARTS = {
+//     form: {
+//       template: "systems/exaltedthird/templates/dialogues/template-importer.html",
+//     },
+//   };
+
+//   async _prepareContext(_options) {
+//     this.data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
+//     this.data.selects = CONFIG.exaltedthird.selects;
+//     if (this.data.type === 'charm') {
+//       this.data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
+//     }
+//     if (this.data.type === 'spell') {
+//       this.data.templateHint = game.i18n.localize("Ex3.SpellImportHint");
+//     }
+//     if (this.data.type === 'adversary') {
+//       this.data.templateHint = game.i18n.localize("Ex3.AdversaryImportHint");
+//     }
+//     if (this.data.type === 'qc') {
+//       this.data.templateHint = game.i18n.localize("Ex3.QCImportHint");
+//     }
+//     if (this.data.type === 'other') {
+//       this.data.templateHint = game.i18n.localize("Ex3.OtherImportHint");
+//     }
+//     return this.data;
+//   }
+
+//   static async showHelpDialog(event, target) {
+//     const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
+//     new foundry.applications.api.DialogV2({
+//       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
+//       content: html,
+//       buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+//       classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+//     }).render(true);
+//   }
+// }
+
 export default class TemplateImporter extends FormApplication {
   constructor(type) {
     super(type)
@@ -21,10 +128,10 @@ export default class TemplateImporter extends FormApplication {
     }
 
     this.folders = collection?._formatFolderSelectOptions()
-    .reduce((acc, folder) => {
+      .reduce((acc, folder) => {
         acc[folder.id] = folder.name;
         return acc;
-    }, {}) ?? {};
+      }, {}) ?? {};
     this.folders[''] = "Ex3.None";
   }
 
@@ -1688,7 +1795,7 @@ export default class TemplateImporter extends FormApplication {
           }
         }
       }
-      if(textArray[index].includes('Specialties')) {
+      if (textArray[index].includes('Specialties')) {
         this.errorSection = 'Specialties';
         if (!textArray[index].includes("Attack")) {
           var specialtiesString = textArray[index].replace('Specialties:', '');
@@ -1724,7 +1831,7 @@ export default class TemplateImporter extends FormApplication {
                     ability: trimmedName,
                   }
                 }
-              ); 
+              );
             }
           }
 
@@ -1904,7 +2011,7 @@ export default class TemplateImporter extends FormApplication {
       }
       actorData.system.settings.editmode = false;
       const actor = await Actor.create(actorData);
-      if(actorData.system.creaturetype === 'exalt') {
+      if (actorData.system.creaturetype === 'exalt') {
         await actor.calculateDerivedStats('resonance');
       }
       await actor.calculateDerivedStats('classifications');
@@ -2032,10 +2139,10 @@ export default class TemplateImporter extends FormApplication {
       let folderData = collection?._formatFolderSelectOptions() ?? {};
 
       this.folders = folderData
-      .reduce((acc, folder) => {
+        .reduce((acc, folder) => {
           acc[folder.id] = folder.name;
           return acc;
-      }, {});
+        }, {});
       this.folders[''] = "Ex3.None";
       if (!folderData.map(folder => folder.id).includes(this.folder)) {
         this.folder = '';
