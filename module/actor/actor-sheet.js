@@ -2073,7 +2073,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   async calculateHealth(healthType = 'person') {
-    let confirmed = false;
     var oxBodyText = '';
 
     if (this.actor.type !== 'npc') {
@@ -2327,7 +2326,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   async pickColor() {
-    let confirmed = false;
     const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.PickColor") },
@@ -2365,7 +2363,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   async sheetSettings() {
-    let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
     const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': this.actor.system.details.exalt === 'exigent', selects: CONFIG.exaltedthird.selects });
 
@@ -2419,7 +2416,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   async helpDialogue(type) {
-    let confirmed = false;
     const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
     const html = await renderTemplate(template, { 'type': type });
     new foundry.applications.api.DialogV2({
