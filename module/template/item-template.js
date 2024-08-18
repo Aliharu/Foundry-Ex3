@@ -47,6 +47,7 @@ export class ItemCustomAbilityData extends CommonItemData {
             favored: new fields.BooleanField({ initial: false }),
             points: new fields.NumberField({ initial: 1 }),
             abilitytype: new fields.StringField({ initial: "other" }),
+            attribute: new fields.StringField({ initial: "default" }),
             maiden: new fields.StringField({ initial: "" }),
             quantity: new fields.NumberField({ initial: 1 }),
             siderealmartialart: new fields.BooleanField({ initial: false }),

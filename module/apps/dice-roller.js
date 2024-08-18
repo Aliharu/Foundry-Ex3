@@ -300,11 +300,14 @@ export class RollForm extends FormApplication {
                         this.object.diceModifier += this.actor.system.settings.rollsettings['craft'].bonus;
                     }
                     this.object.customabilities = this.actor.customabilities;
-                    if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialarts')) {
+                    if (this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.abilitytype === 'martialart')) {
                         this.object.attribute = this.actor.system.abilities['martialarts'].prefattribute;
                     }
                     if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.abilitytype === 'craft')) {
                         this.object.attribute = this.actor.system.abilities['craft'].prefattribute;
+                    }
+                    if (this.object.customabilities.some(craft => craft._id === this.object.ability && craft.system.attribute !== 'default')) {
+                        this.object.attribute = this.object.customabilities.find(craft => craft._id === this.object.ability).system.attribute;
                     }
                     this.object.appearance = this.actor.system.attributes.appearance.value;
                 }

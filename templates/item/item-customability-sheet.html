@@ -40,6 +40,12 @@
                         {{selectOptions selects.customAbilityTypes selected=system.abilitytype localize=true}}
                     </select>
                 </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
+                    <select name="system.attribute" data-type="String">
+                        {{selectOptions selects.customAbilityattributes selected=system.attribute localize=true}}
+                    </select>
+                </div>
                 {{#ifEquals system.abilitytype 'martialart'}}
                     <div>
                         <div class="resource-label">{{localize "Ex3.ArmorAllowance"}}</div>
