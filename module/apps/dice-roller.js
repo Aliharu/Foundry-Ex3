@@ -850,7 +850,6 @@ export class RollForm extends FormApplication {
                             },
                             submit: result => {
                                 if (result) {
-
                                     this.object.settings.doubleSucccessCaps.sevens = parseInt(result.sevensCap?.value || 0);
                                     this.object.settings.doubleSucccessCaps.eights = parseInt(result.eightsCap?.value || 0);
                                     this.object.settings.doubleSucccessCaps.nines = parseInt(result.ninesCap?.value || 0);
@@ -876,7 +875,6 @@ export class RollForm extends FormApplication {
                                     this.object.settings.damage.excludeOnesFromRerolls = result.damageExcludeOnesFromRerolls?.checked || false;
                                     this.object.settings.damage.triggerTensCap = parseInt(result.damageTriggerTensCap?.value || 0);
                                     this.object.settings.damage.alsoTriggerNines = result.damageAlsoTriggerNines?.checked || false;
-
 
                                     for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
                                         this.object.reroll[rerollKey].cap = parseInt(result[`reroll-${this.object.reroll[rerollKey].number}-cap`].value || 0);
@@ -1314,7 +1312,7 @@ export class RollForm extends FormApplication {
         this.render();
     }
 
-    _getFormulaValue(charmValue, opposedCharmActor = null) {
+    _getFormulaValue(charmValue, opposedCharmActor = null, item=null) {
         var rollerValue = 0;
         if (charmValue) {
             if (charmValue.split(' ').length === 3) {
@@ -1324,9 +1322,9 @@ export class RollForm extends FormApplication {
                     negativeValue = true;
                 }
                 var split = charmValue.split(' ');
-                var leftVar = this._getFormulaActorValue(split[0], opposedCharmActor);
+                var leftVar = this._getFormulaActorValue(split[0], opposedCharmActor, item);
                 var operand = split[1];
-                var rightVar = this._getFormulaActorValue(split[2], opposedCharmActor);
+                var rightVar = this._getFormulaActorValue(split[2], opposedCharmActor, item);
                 switch (operand) {
                     case '+':
                         rollerValue = leftVar + rightVar;
@@ -1359,13 +1357,13 @@ export class RollForm extends FormApplication {
                 }
             }
             else {
-                rollerValue = this._getFormulaActorValue(charmValue, opposedCharmActor);
+                rollerValue = this._getFormulaActorValue(charmValue, opposedCharmActor, item);
             }
         }
         return rollerValue;
     }
 
-    _getBooleanFormulaValue(charmValue, opposedCharmActor = null) {
+    _getBooleanFormulaValue(charmValue, opposedCharmActor = null, item=null) {
         if (typeof charmValue === 'boolean') {
             return charmValue;
         }
@@ -1380,8 +1378,8 @@ export class RollForm extends FormApplication {
             // Split the formula string based on operand
             const [leftOperand, operand, rightOperand] = charmValue.split(operandRegex);
 
-            var leftVar = this._getFormulaValue(leftOperand.trim(), opposedCharmActor);
-            var rightVar = this._getFormulaValue(rightOperand.trim(), opposedCharmActor);
+            var leftVar = this._getFormulaValue(leftOperand.trim(), opposedCharmActor, item);
+            var rightVar = this._getFormulaValue(rightOperand.trim(), opposedCharmActor, item);
 
             // Perform operation based on operand
             switch (operand) {
@@ -1472,7 +1470,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _getFormulaActorValue(formula, opposedCharmActor = null) {
+    _getFormulaActorValue(formula, opposedCharmActor = null, item=null) {
         var formulaVal = 0;
         var forumlaActor = this.actor;
         if (opposedCharmActor) {
@@ -1489,6 +1487,9 @@ export class RollForm extends FormApplication {
         }
         if (formula?.toLowerCase() === 'initiativedamagedealt') {
             return this.object.initiativeDamageDealt || 0;
+        }
+        if (formula?.toLowerCase() === 'itemadded' && item) {
+            return item.timesAdded || 0;
         }
         if (formula.includes('target-')) {
             formula = formula.replace('target-', '');
@@ -4325,7 +4326,7 @@ export class RollForm extends FormApplication {
                     }
                     break;
                 case 'charmAddedAmount':
-                    if (charm.timesAdded < cleanedValue) {
+                    if (charm.timesAdded !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -4376,12 +4377,12 @@ export class RollForm extends FormApplication {
                     }
                     break;
                 case 'formula':
-                    if (!this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
+                    if (!this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'thresholdSuccesses':
-                    if (this.object.thresholdSuccesses < this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
+                    if (this.object.thresholdSuccesses < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
