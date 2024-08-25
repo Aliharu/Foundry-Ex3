@@ -375,6 +375,9 @@
         <div class="resource grid grid-3col flex-center" style="align-items:start;">
           <div>
             <div>
+              <div class="resource-label">
+                {{localize "Ex3.Physical"}}
+              </div>
               <select name="object.creationData.physical" data-type="String">
                 {{selectOptions selects.attributePriority selected=data.creationData.physical localize=true}}
               </select>
@@ -382,12 +385,18 @@
           </div>
           <div>
             <div>
+              <div class="resource-label">
+                {{localize "Ex3.Social"}}
+              </div>
               <select name="object.creationData.social" data-type="String">
                 {{selectOptions selects.attributePriority selected=data.creationData.social localize=true}}
               </select>
             </div>
           </div>
           <div>
+            <div class="resource-label">
+              {{localize "Ex3.Mental"}}
+            </div>
             <div>
               <select name="object.creationData.mental" data-type="String">
                 {{selectOptions selects.attributePriority selected=data.creationData.mental localize=true}}
@@ -702,6 +711,8 @@
       <div class="tab flex-center" data-group="primary" data-tab="charms">
         <div class="resource-content flexrow flex-center flex-between mt-2">
           <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Charms"}}
+            <a><i class="fas fa-dice cursor-pointer random-item" title="Random Charm" data-type="charms"
+              data-item="charm"></i></a>
             <a class="item-control import-item" title="Import charm" data-type="charms" data-item="charm"><i
                 class="fas fa-edit"></i></a></label>
         </div>
