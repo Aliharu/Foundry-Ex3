@@ -1448,34 +1448,49 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const template = "systems/exaltedthird/templates/dialogues/import-item.html";
       const html = await renderTemplate(template, { 'sectionList': sectionList });
 
-      new Dialog({
-        title: `Import Item`,
-        content: html,
-        buttons: {
-          closeImportItem: { label: "Close" }
+      await foundry.applications.api.DialogV2.wait({
+        window: {
+          title: "Import Item",
         },
-        render: (html) => {
-          html.find('.add-item').click(ev => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let item = items.find((item) => item._id === li.data("item-id"));
-            if (!item.flags?.core?.sourceId) {
-              item.updateSource({ "flags.core.sourceId": item.uuid });
-            }
-            this.actor.createEmbeddedDocuments("Item", [item]);
-            html.find('.closeImportItem').trigger('click');
+        position: {
+          height: 800,
+          width: 650,
+        },
+        content: html,
+        buttons: [{
+          class: "closeImportItem",
+          label: "Close",
+          action: "closeImportItem",
+        }],
+        render: (event, html) => {
+          html.querySelectorAll('.add-item').forEach(element => {
+            element.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              let li = $(ev.currentTarget).parents(".item");
+              let item = items.find((item) => item._id === li.data("item-id"));
+              if (!item.flags?.core?.sourceId) {
+                item.updateSource({ "flags.core.sourceId": item.uuid });
+              }
+              if(!item._stats?.compendiumSource) {
+                item.updateSource({ "_stats.compendiumSource": item.uuid });
+              }
+              this.actor.createEmbeddedDocuments("Item", [item]);
+              const closeImportItem = html.querySelector('.closeImportItem');
+              if (closeImportItem) {
+                  closeImportItem.click();
+              }
+            });
           });
 
-          html.find('.collapsable').click(ev => {
-            const li = $(ev.currentTarget).next();
-            li.toggle("fast");
+          html.querySelectorAll('.collapsable').forEach(element => {
+            element.addEventListener('click', (ev) => {
+              const li = $(ev.currentTarget).next();
+              li.toggle("fast");
+            });
           });
         },
-      }, {
-        height: 800,
-        width: 650,
-        resizable: true, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
-      }).render(true);
+        classes: ['exaltedthird-dialog',`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      });
     });
 
     html.find('#rollDice').mousedown(ev => {

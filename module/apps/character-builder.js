@@ -933,59 +933,75 @@ export default class CharacterBuilder extends FormApplication {
       }
       const template = "systems/exaltedthird/templates/dialogues/import-item.html";
       const html = await renderTemplate(template, { 'sectionList': sectionList });
-      new Dialog({
-        title: `Import Item`,
+
+      await foundry.applications.api.DialogV2.wait({
+        window: {
+          title: "Import Item",
+        },
+        position: {
+          height: 800,
+          width: 650,
+        },
         content: html,
-        buttons: {
-          closeImportItem: { label: "Close" }
-        },
-        render: (html) => {
-          html.find('.add-item').click(async ev => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let item = items.find((item) => item._id === li.data("item-id"));
-            if (!item.flags?.core?.sourceId) {
-              item.updateSource({ "flags.core.sourceId": item.uuid });
-            }
-            const newItem = foundry.utils.duplicate(item);
-            newItem.itemCount = 1;
-            await this.getEnritchedHTML(newItem);
-            if (item.type === 'ritual') {
-              if (ritualType === 'sorcery') {
-                this.object.character.ritual = newItem;
-              } else {
-                this.object.character.necromancyRitual = newItem;
+        buttons: [{
+          class: "closeImportItem",
+          label: "Close",
+          action: "closeImportItem",
+        }],
+        render: (event, html) => {
+          html.querySelectorAll('.add-item').forEach(element => {
+            element.addEventListener('click', async (ev) => {
+              ev.stopPropagation();
+              let li = $(ev.currentTarget).parents(".item");
+              let item = items.find((item) => item._id === li.data("item-id"));
+              if (!item.flags?.core?.sourceId) {
+                item.updateSource({ "flags.core.sourceId": item.uuid });
               }
-            }
-            else {
-              if (newItem) {
-                let listIndex = 0;
-                let indexAdd = "0";
-                for (const key of Object.keys(this.object.character[type])) {
-                  if (key !== listIndex.toString()) {
-                    break;
-                  }
-                  listIndex++;
+              if(!item._stats?.compendiumSource) {
+                item.updateSource({ "_stats.compendiumSource": item.uuid });
+              }
+              const newItem = foundry.utils.duplicate(item);
+              newItem.itemCount = 1;
+              await this.getEnritchedHTML(newItem);
+              if (item.type === 'ritual') {
+                if (ritualType === 'sorcery') {
+                  this.object.character.ritual = newItem;
+                } else {
+                  this.object.character.necromancyRitual = newItem;
                 }
-                indexAdd = listIndex.toString();
-                this.object.character[type][indexAdd] = newItem;
               }
-            }
-
-            await this.onChange(ev);
-            html.find('.closeImportItem').trigger('click');
+              else {
+                if (newItem) {
+                  let listIndex = 0;
+                  let indexAdd = "0";
+                  for (const key of Object.keys(this.object.character[type])) {
+                    if (key !== listIndex.toString()) {
+                      break;
+                    }
+                    listIndex++;
+                  }
+                  indexAdd = listIndex.toString();
+                  this.object.character[type][indexAdd] = newItem;
+                }
+              }
+  
+              await this.onChange(ev);
+              const closeImportItem = html.querySelector('.closeImportItem');
+              if (closeImportItem) {
+                  closeImportItem.click();
+              }
+            });
           });
 
-          html.find('.collapsable').click(ev => {
-            const li = $(ev.currentTarget).next();
-            li.toggle("fast");
+          html.querySelectorAll('.collapsable').forEach(element => {
+            element.addEventListener('click', (ev) => {
+              const li = $(ev.currentTarget).next();
+              li.toggle("fast");
+            });
           });
         },
-      }, {
-        height: 800,
-        width: 650,
-        resizable: true, classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
-      }).render(true);
+        classes: ['exaltedthird-dialog',`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      });
     });
 
     html.find(".random-item").on("click", async (event) => {
@@ -2550,7 +2566,7 @@ export default class CharacterBuilder extends FormApplication {
     if (this.object.character.exalt !== 'mortal' && this.object.character.exalt !== 'dragonblooded') {
       itemData.push({
         type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
         name: 'Dice Excellency',
         system: {
           description: 'Add 1 die to a roll for 1 mote.',
@@ -2568,7 +2584,7 @@ export default class CharacterBuilder extends FormApplication {
       });
       itemData.push({
         type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
         name: 'Static Excellency',
         system: {
           description: 'Add 1 to a static value for 2 motes.',
@@ -2595,7 +2611,7 @@ export default class CharacterBuilder extends FormApplication {
     if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect') {
       itemData.push({
         type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
         name: 'Soak Excellency',
         system: {
           description: 'Add 1 to a soak for 1 mote.',
@@ -2616,7 +2632,7 @@ export default class CharacterBuilder extends FormApplication {
       });
       itemData.push({
         type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
         name: 'Damage Excellency',
         system: {
           description: 'Add 1 damage to an attack for 1 mote.',
@@ -2639,7 +2655,7 @@ export default class CharacterBuilder extends FormApplication {
     if (this.object.character.exalt === 'sidereal') {
       itemData.push({
         type: 'charm',
-        img: 'icons/magic/light/explosion-star-large-orange.webp',
+        img: 'icons/magic/light/explosion-star-glow-blue-purple.webp',
         name: 'Mote TN Excellency',
         system: {
           description: 'Lower Target Number by 1',
@@ -2652,7 +2668,31 @@ export default class CharacterBuilder extends FormApplication {
           },
           diceroller: {
             decreasetargetnumber: 1,
-          }
+          },
+          "triggers": {
+            "dicerollertriggers": {
+              "0": {
+                "name": "Essence 3 TN WP Cost",
+                "triggerTime": "beforeRoll",
+                "bonuses": {
+                  "0": {
+                    "effect": "willpower-spend",
+                    "value": "1"
+                  }
+                },
+                "requirements": {
+                  "0": {
+                    "requirement": "formula",
+                    "value": "essence >= 3"
+                  },
+                  "1": {
+                    "requirement": "charmAddedAmount",
+                    "value": "3"
+                  }
+                }
+              }
+            }
+          },
         }
       });
     }

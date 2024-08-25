@@ -58,7 +58,7 @@
 //     classes: [`leaves-background`],
 //     position: { width: 860, height: 980 },
 //     actions: {
-//       showHelpDialog: TemplateImporter2.showHelpDialog
+//       showHelpDialog: TemplateImporter2.showHelpDialog,
 //       import: TemplateImporter2.importTemplate,
 //     }
 //   };
@@ -105,7 +105,7 @@
 //     return this.data;
 //   }
 
-//   async importTemplate() {
+//   static async importTemplate() {
     
 //   }
 
@@ -118,6 +118,7 @@
 //       classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
 //     }).render(true);
 //   }
+
 // }
 
 export default class TemplateImporter extends FormApplication {

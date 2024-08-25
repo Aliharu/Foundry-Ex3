@@ -29,6 +29,16 @@ exaltedthird.itemIcons = {
   craftproject: "systems/exaltedthird/assets/icons/anvil-impact.svg"
 };
 
+exaltedthird.excellencyIcons = {
+  solar: "icons/magic/light/explosion-star-large-orange.webp",
+  sidereal: "icons/magic/light/explosion-star-glow-blue-purple.webp",
+  abyssal: "systems/exaltedthird/assets/icons/abyssal-excellency.webp",
+  infernal: "systems/exaltedthird/assets/icons/infernal-excellency.webp",
+  dragonblooded: "systems/exaltedthird/assets/icons/db-excellency.webp",
+  alchemical: "systems/exaltedthird/assets/icons/alchemical-excellency.webp",
+  lunar: "systems/exaltedthird/assets/icons/lunar-excellency.webp",
+}
+
 exaltedthird.activeEffectChanges = {
   none: {
     label: "Ex3.None",

@@ -4039,263 +4039,265 @@ export class RollForm extends FormApplication {
         }
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             try {
-                if (await this._triggerRequirementsMet(charm, trigger, bonusType)) {
-                    for (const bonus of Object.values(trigger.bonuses)) {
-                        if ((!this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
-                            let cleanedValue = bonus.value.toLowerCase().trim();
-                            if (cleanedValue === 'true' || cleanedValue === 'false') {
-                                cleanedValue = cleanedValue === "true";
-                            }
-                            switch (bonus.effect) {
-                                case 'diceModifier':
-                                case 'successModifier':
-                                case 'rerollNumber':
-                                case 'rerollNumberDescending':
-                                case 'diceToSuccesses':
-                                case 'triggerSelfDefensePenalty':
-                                case 'triggerTargetDefensePenalty':
-                                case 'onslaughtAddition':
-                                case 'magicOnslaughtAddition':
-                                    this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'doubleSuccess':
-                                    const { value, cap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    if (value) {
-                                        if (value < this.object.doubleSuccess) {
-                                            this.object.doubleSuccess = value;
-                                        }
-                                        if (doublesChart[value.toString()]) {
-                                            this.object.settings.doubleSucccessCaps[doublesChart[value.toString()]] += cap;
-                                        }
-                                    }
-                                    break;
-                                case 'decreaseTargetNumber':
-                                    this.object.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'rerollDieFace':
-                                    this._getRerollFormulaCap(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'fullExcellency':
-                                    let excellencyResults = this.actor.type === 'character' ? this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : this.actor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
-                                    if (excellencyResults) {
-                                        this.object.diceModifier += (excellencyResults.dice - this.object.charmDiceAdded);
-                                        this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
-                                        this.object.targetNumber = Math.max(4, this.object.targetNumber - excellencyResults.targetNumber);
-                                        if (cleanedValue !== 'free') {
-                                            this.object.cost.motes += excellencyResults.cost || excellencyResults.dice;
-                                        }
-                                    } else {
-                                        ui.notifications.error(`<p>Trigger bonus Error: Full Excellency does not support this exalt type due to untrackable dice cap variables</p>`);
-                                    }
-                                    break;
-                                case 'excludeOnes':
-                                case 'ignoreLegendarySize':
-                                    this.object.settings[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'rerollFailed':
-                                case 'rollTwice':
-                                    this.object[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'activateAura':
-                                    this.object[bonus.effect] = cleanedValue;
-                                    break;
-                                case 'triggerOnTens':
-                                    if (triggerTensMap[cleanedValue]) {
-                                        this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
-                                    }
-                                    break;
-                                case 'triggerNinesAndTens':
-                                    if (triggerTensMap[cleanedValue]) {
-                                        this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
-                                        this.object.settings.alsoTriggerNines = true;
-                                    }
-                                    break;
-                                case 'triggerTensCap':
-                                    this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'triggerOnOnes':
-                                    if (triggerOnesMap[cleanedValue]) {
-                                        this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
-                                    }
-                                    break;
-                                case 'triggerOnesAndTwos':
-                                    if (triggerOnesMap[cleanedValue]) {
-                                        this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
-                                        this.object.settings.alsoTriggerTwos = true;
-                                    }
-                                    break;
-                                case 'triggerOnesCap':
-                                    this.object.settings.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'reduceDifficulty':
-                                    if (this.object.showTargets) {
-                                        const targetValues = Object.values(this.object.targets);
-                                        for (const target of targetValues) {
-                                            target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                            target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                            target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                        }
-                                    }
-                                    else {
-                                        this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                        this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                    }
-                                    break;
-                                case 'damageDice':
-                                case 'damageSuccessModifier':
-                                case 'cappedThreshholdToDamage':
-                                    this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'rerollNumber-damage':
-                                    this.object.damage.rerollNumber += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'rerollNumberDescending-damage':
-                                    this.object.damage.rerollNumberDescending += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'diceToSuccesses-damage':
-                                    this.object.damage.diceToSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'doubleSuccess-damage':
-                                    const { dbValue, dbCap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    if (dbValue) {
-                                        if (dbValue < this.object.damage.doubleSuccess) {
-                                            this.object.damage.doubleSuccess = dbValue;
-                                        }
-                                        if (doublesChart[dbValue.toString()]) {
-                                            this.object.settings.damage.doubleSucccessCaps[doublesChart[dbValue.toString()]] += dbCap;
-                                        }
-                                    }
-                                    break;
-                                case 'decreaseTargetNumber-damage':
-                                    this.object.damage.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'rerollDieFace-damage':
-                                    this._getRerollFormulaCap(cleanedValue, true, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'excludeOnes-damage':
-                                    this.object.settings.damage.excludeOnesFromRerolls = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'rerollFailed-damage':
-                                    this.object.damage.rerollFailed = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'rollTwice-damage':
-                                    this.object.damage.rollTwice = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'triggerOnTens-damage':
-                                    if (triggerTensDamageMap[cleanedValue]) {
-                                        this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
-                                    }
-                                    break;
-                                case 'triggerNinesAndTens-damage':
-                                    if (triggerTensDamageMap[cleanedValue]) {
-                                        this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
-                                        this.object.settings.damage.alsoTriggerNines = true;
-                                    }
-                                    break;
-                                case 'triggerTensCap-damage':
-                                    this.object.settings.damage.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'triggerOnOnes-damage':
-                                    this.object.settings.damage.triggerOnOnes = bonus.value;
-                                    break;
-                                case 'triggerOnesAndTwos-damage':
-                                    this.object.settings.damage.triggerOnOnes = bonus.value;
-                                    this.object.settings.damage.alsoTriggerTwos = true;
-                                    break;
-                                case 'triggerOnesCap-damage':
-                                    this.object.settings.damage.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'ignoreSoak':
-                                case 'ignoreHardness':
-                                case 'postSoakDamage':
-                                    this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'threshholdToDamage':
-                                case 'doubleRolledDamage':
-                                case 'doublePreRolledDamage':
-                                case 'resetInit':
-                                    this.object.damage[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'motes-spend':
-                                case 'initiative-spend':
-                                case 'anima-spend':
-                                case 'willpower-spend':
-                                case 'penumbra-spend':
-                                case 'silverxp-spend':
-                                case 'goldxp-spend':
-                                case 'whitexp-spend':
-                                    const spendKey = bonus.effect.replace('-spend', '');
-                                    this.object.cost[spendKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'muteMotes-spend':
-                                    this.object.cost.muteMotes += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'grappleControl-spend':
-                                    this.object.cost.grappleControl += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'health-spend':
-                                    this._getHealthFormula(cleanedValue);
-                                    break;
-                                case 'aura-spend':
-                                    this.object.cost.aura = cleanedValue;
-                                    break;
-                                case 'motes-restore':
-                                case 'initiative-restore':
-                                case 'health-restore':
-                                case 'willpower-restore':
-                                    const restoreKey = bonus.effect.replace('-restore', '');
-                                    this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'motes-steal':
-                                case 'initiative-steal':
-                                    const stealKey = bonus.effect.replace('-steal', '');
-                                    this.object.steal[stealKey].max += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'reduceGambitDifficulty':
-                                    this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'defense':
-                                case 'soak':
-                                case 'hardness':
-                                case 'resolve':
-                                case 'guile':
-                                    if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
-                                        this.object.difficulty += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-
-                                    } else {
+                for(let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+                    if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex)) {
+                        for (const bonus of Object.values(trigger.bonuses)) {
+                            if ((!this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
+                                let cleanedValue = bonus.value.toLowerCase().trim();
+                                if (cleanedValue === 'true' || cleanedValue === 'false') {
+                                    cleanedValue = cleanedValue === "true";
+                                }
+                                switch (bonus.effect) {
+                                    case 'diceModifier':
+                                    case 'successModifier':
+                                    case 'rerollNumber':
+                                    case 'rerollNumberDescending':
+                                    case 'diceToSuccesses':
+                                    case 'triggerSelfDefensePenalty':
+                                    case 'triggerTargetDefensePenalty':
+                                    case 'onslaughtAddition':
+                                    case 'magicOnslaughtAddition':
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    }
-                                    break;
-                                case 'setDamageType':
-                                    this.object.damage.type = cleanedValue;
-                                    break;
-                                case 'gainInitiative':
-                                    this.object.damage.gainInitiative = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                    break;
-                                case 'doubleThresholdSuccesses':
-                                    this.object.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'doubleThresholdSuccesses-damage':
-                                    this.object.damage.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-                                    break;
-                                case 'displayMessage':
-                                    (this.object.triggerMessages || []).push(bonus.value);
-                                    break;
-                                case 'specificCharm':
-                                    if (this.object.specificCharms[bonus.value] !== undefined) {
-                                        this.object.specificCharms[bonus.value] = true;
-                                    }
-                                    break;
-                                case 'otherEffect':
-                                    if (bonus.value === 'targetDoesntResetOnslaught') {
-                                        this.object.targetDoesntResetOnslaught = true;
-                                    }
-                                    break;
-                                case 'inflictStatus':
-                                    if (CONFIG.exaltedthird.statusEffects.some(status => status.id === cleanedValue)) {
-                                        this._addStatusEffect(cleanedValue);
-                                    }
-                                    break;
+                                        break;
+                                    case 'doubleSuccess':
+                                        const { value, cap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        if (value) {
+                                            if (value < this.object.doubleSuccess) {
+                                                this.object.doubleSuccess = value;
+                                            }
+                                            if (doublesChart[value.toString()]) {
+                                                this.object.settings.doubleSucccessCaps[doublesChart[value.toString()]] += cap;
+                                            }
+                                        }
+                                        break;
+                                    case 'decreaseTargetNumber':
+                                        this.object.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'rerollDieFace':
+                                        this._getRerollFormulaCap(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'fullExcellency':
+                                        let excellencyResults = this.actor.type === 'character' ? this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : this.actor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
+                                        if (excellencyResults) {
+                                            this.object.diceModifier += (excellencyResults.dice - this.object.charmDiceAdded);
+                                            this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
+                                            this.object.targetNumber = Math.max(4, this.object.targetNumber - excellencyResults.targetNumber);
+                                            if (cleanedValue !== 'free') {
+                                                this.object.cost.motes += excellencyResults.cost || excellencyResults.dice;
+                                            }
+                                        } else {
+                                            ui.notifications.error(`<p>Trigger bonus Error: Full Excellency does not support this exalt type due to untrackable dice cap variables</p>`);
+                                        }
+                                        break;
+                                    case 'excludeOnes':
+                                    case 'ignoreLegendarySize':
+                                        this.object.settings[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'rerollFailed':
+                                    case 'rollTwice':
+                                        this.object[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'activateAura':
+                                        this.object[bonus.effect] = cleanedValue;
+                                        break;
+                                    case 'triggerOnTens':
+                                        if (triggerTensMap[cleanedValue]) {
+                                            this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
+                                        }
+                                        break;
+                                    case 'triggerNinesAndTens':
+                                        if (triggerTensMap[cleanedValue]) {
+                                            this.object.settings.triggerOnTens = triggerTensMap[cleanedValue];
+                                            this.object.settings.alsoTriggerNines = true;
+                                        }
+                                        break;
+                                    case 'triggerTensCap':
+                                        this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'triggerOnOnes':
+                                        if (triggerOnesMap[cleanedValue]) {
+                                            this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
+                                        }
+                                        break;
+                                    case 'triggerOnesAndTwos':
+                                        if (triggerOnesMap[cleanedValue]) {
+                                            this.object.settings.triggerOnOnes = triggerOnesMap[cleanedValue];
+                                            this.object.settings.alsoTriggerTwos = true;
+                                        }
+                                        break;
+                                    case 'triggerOnesCap':
+                                        this.object.settings.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'reduceDifficulty':
+                                        if (this.object.showTargets) {
+                                            const targetValues = Object.values(this.object.targets);
+                                            for (const target of targetValues) {
+                                                target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                                target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                                target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                            }
+                                        }
+                                        else {
+                                            this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                            this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                        }
+                                        break;
+                                    case 'damageDice':
+                                    case 'damageSuccessModifier':
+                                    case 'cappedThreshholdToDamage':
+                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'rerollNumber-damage':
+                                        this.object.damage.rerollNumber += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'rerollNumberDescending-damage':
+                                        this.object.damage.rerollNumberDescending += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'diceToSuccesses-damage':
+                                        this.object.damage.diceToSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'doubleSuccess-damage':
+                                        const { dbValue, dbCap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        if (dbValue) {
+                                            if (dbValue < this.object.damage.doubleSuccess) {
+                                                this.object.damage.doubleSuccess = dbValue;
+                                            }
+                                            if (doublesChart[dbValue.toString()]) {
+                                                this.object.settings.damage.doubleSucccessCaps[doublesChart[dbValue.toString()]] += dbCap;
+                                            }
+                                        }
+                                        break;
+                                    case 'decreaseTargetNumber-damage':
+                                        this.object.damage.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'rerollDieFace-damage':
+                                        this._getRerollFormulaCap(cleanedValue, true, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'excludeOnes-damage':
+                                        this.object.settings.damage.excludeOnesFromRerolls = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'rerollFailed-damage':
+                                        this.object.damage.rerollFailed = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'rollTwice-damage':
+                                        this.object.damage.rollTwice = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'triggerOnTens-damage':
+                                        if (triggerTensDamageMap[cleanedValue]) {
+                                            this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
+                                        }
+                                        break;
+                                    case 'triggerNinesAndTens-damage':
+                                        if (triggerTensDamageMap[cleanedValue]) {
+                                            this.object.settings.damage.triggerOnTens = triggerTensDamageMap[cleanedValue];
+                                            this.object.settings.damage.alsoTriggerNines = true;
+                                        }
+                                        break;
+                                    case 'triggerTensCap-damage':
+                                        this.object.settings.damage.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'triggerOnOnes-damage':
+                                        this.object.settings.damage.triggerOnOnes = bonus.value;
+                                        break;
+                                    case 'triggerOnesAndTwos-damage':
+                                        this.object.settings.damage.triggerOnOnes = bonus.value;
+                                        this.object.settings.damage.alsoTriggerTwos = true;
+                                        break;
+                                    case 'triggerOnesCap-damage':
+                                        this.object.settings.damage.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'ignoreSoak':
+                                    case 'ignoreHardness':
+                                    case 'postSoakDamage':
+                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'threshholdToDamage':
+                                    case 'doubleRolledDamage':
+                                    case 'doublePreRolledDamage':
+                                    case 'resetInit':
+                                        this.object.damage[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'motes-spend':
+                                    case 'initiative-spend':
+                                    case 'anima-spend':
+                                    case 'willpower-spend':
+                                    case 'penumbra-spend':
+                                    case 'silverxp-spend':
+                                    case 'goldxp-spend':
+                                    case 'whitexp-spend':
+                                        const spendKey = bonus.effect.replace('-spend', '');
+                                        this.object.cost[spendKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'muteMotes-spend':
+                                        this.object.cost.muteMotes += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'grappleControl-spend':
+                                        this.object.cost.grappleControl += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'health-spend':
+                                        this._getHealthFormula(cleanedValue);
+                                        break;
+                                    case 'aura-spend':
+                                        this.object.cost.aura = cleanedValue;
+                                        break;
+                                    case 'motes-restore':
+                                    case 'initiative-restore':
+                                    case 'health-restore':
+                                    case 'willpower-restore':
+                                        const restoreKey = bonus.effect.replace('-restore', '');
+                                        this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'motes-steal':
+                                    case 'initiative-steal':
+                                        const stealKey = bonus.effect.replace('-steal', '');
+                                        this.object.steal[stealKey].max += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'reduceGambitDifficulty':
+                                        this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'defense':
+                                    case 'soak':
+                                    case 'hardness':
+                                    case 'resolve':
+                                    case 'guile':
+                                        if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
+                                            this.object.difficulty += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+    
+                                        } else {
+                                            this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        }
+                                        break;
+                                    case 'setDamageType':
+                                        this.object.damage.type = cleanedValue;
+                                        break;
+                                    case 'gainInitiative':
+                                        this.object.damage.gainInitiative = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'doubleThresholdSuccesses':
+                                        this.object.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'doubleThresholdSuccesses-damage':
+                                        this.object.damage.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        break;
+                                    case 'displayMessage':
+                                        (this.object.triggerMessages || []).push(bonus.value);
+                                        break;
+                                    case 'specificCharm':
+                                        if (this.object.specificCharms[bonus.value] !== undefined) {
+                                            this.object.specificCharms[bonus.value] = true;
+                                        }
+                                        break;
+                                    case 'otherEffect':
+                                        if (bonus.value === 'targetDoesntResetOnslaught') {
+                                            this.object.targetDoesntResetOnslaught = true;
+                                        }
+                                        break;
+                                    case 'inflictStatus':
+                                        if (CONFIG.exaltedthird.statusEffects.some(status => status.id === cleanedValue)) {
+                                            this._addStatusEffect(cleanedValue);
+                                        }
+                                        break;
+                                }
                             }
                         }
                     }
@@ -4307,7 +4309,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit") {
+    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex) {
         let fufillsRequirements = true;
         for (const requirementObject of Object.values(trigger.requirements)) {
             let cleanedValue = requirementObject.value.toLowerCase().trim();
@@ -4326,7 +4328,7 @@ export class RollForm extends FormApplication {
                     }
                     break;
                 case 'charmAddedAmount':
-                    if (charm.timesAdded !== cleanedValue) {
+                    if (triggerAmountIndex < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
