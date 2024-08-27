@@ -105,8 +105,15 @@
 //     return this.data;
 //   }
 
-//   static async importTemplate() {
-    
+//   static async importTemplate(event, target) {
+//     this.showError = false;
+//     await this.createCharm(event, target);
+//     ui.notifications.notify(`Import Complete`);
+//     this.render();
+//   }
+
+//   async createCharm(event, target) {
+//     console.log(this.data);
 //   }
 
 //   static async showHelpDialog(event, target) {
@@ -118,7 +125,6 @@
 //       classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
 //     }).render(true);
 //   }
-
 // }
 
 export default class TemplateImporter extends FormApplication {
