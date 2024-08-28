@@ -152,32 +152,32 @@
                     {{selectOptions ../../selects.attackTypes selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'range'}}
-                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../selects.ranges selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'range'}}
-                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../selects.ranges selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'hasAura'}}
-                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.elements selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'martialArtsLevel'}}
-                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../selects.martialArtsMastery selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'hasStatus'}}
-                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'targetHasStatus'}}
-                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
                 </select>

@@ -2392,5 +2392,6 @@ exaltedthird.selects = {
     "afterRoll": "Ex3.AfterRoll",
     "beforeDamageRoll": "Ex3.BeforeDamageRoll",
     "afterDamageRoll": "Ex3.AfterDamageRoll",
+    "itemAdded": "Ex3.WhenItemAdded"
   }
 };

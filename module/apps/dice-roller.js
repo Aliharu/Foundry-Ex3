@@ -1307,6 +1307,7 @@ export class RollForm extends FormApplication {
             this._calculateAnimaGain();
         }
 
+        this._addBonuses(item, 'itemAdded', "benefit");
         //Test
         // this._addBonuses(item, 'beforeRoll', "benefit");
         this.render();
@@ -4042,7 +4043,7 @@ export class RollForm extends FormApplication {
                 for(let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
                     if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex)) {
                         for (const bonus of Object.values(trigger.bonuses)) {
-                            if ((!this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
+                            if ((type === 'itemAdded' || !this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
                                 let cleanedValue = bonus.value.toLowerCase().trim();
                                 if (cleanedValue === 'true' || cleanedValue === 'false') {
                                     cleanedValue = cleanedValue === "true";
