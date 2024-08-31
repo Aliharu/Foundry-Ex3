@@ -1,132 +1,3 @@
-// const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-
-// export class TemplateImporter2 extends HandlebarsApplicationMixin(ApplicationV2) {
-//   constructor(type) {
-//     super(type);
-
-//     this.data = {
-//       test: '',
-//       type: type,
-//       charmType: 'other',
-//       listingName: '',
-//       spellCircle: 'terrestrial',
-//       itemType: 'armor',
-//       folder: '',
-//       folders: [],
-//       errorText: '',
-//       errorSection: '',
-//       showError: false,
-//       textBox: ''
-//     };
-
-//     let collection;
-//     if (this.data.type === 'qc' || this.data.type === 'adversary') {
-//       collection = game.collections.get("Actor");
-//     }
-//     else {
-//       collection = game.collections.get("Item");
-//     }
-
-//     this.data.folders = collection?._formatFolderSelectOptions()
-//       .reduce((acc, folder) => {
-//         acc[folder.id] = folder.name;
-//         return acc;
-//       }, {}) ?? {};
-//     this.data.folders[''] = "Ex3.None";
-//   }
-
-//   static DEFAULT_OPTIONS = {
-//     window: {
-//       title: "Template Importer", resizable: true, controls: [
-//         {
-//           // font awesome icon
-//           icon: 'fa-solid fa-question',
-//           // string that will be run through localization
-//           label: "Help",
-//           // string that MUST match one of your `actions`
-//           action: "showHelpDialog",
-//         },
-//       ]
-//     },
-//     tag: "form",
-//     form: {
-//       handler: TemplateImporter2.myFormHandler,
-//       submitOnClose: false,
-//       submitOnChange: true,
-//       closeOnSubmit: false
-//     },
-//     classes: [`leaves-background`],
-//     position: { width: 860, height: 980 },
-//     actions: {
-//       showHelpDialog: TemplateImporter2.showHelpDialog,
-//       import: TemplateImporter2.importTemplate,
-//     }
-//   };
-
-//   static async myFormHandler(event, form, formData) {
-//     // Do things with the returned FormData
-//     const formObject = foundry.utils.expandObject(formData.object);
-//     if (formObject.type) {
-//       let collection;
-//       if (formObject.type === 'qc' || formObject.type === 'adversary') {
-//         collection = game.collections.get("Actor");
-//       }
-//       else {
-//         collection = game.collections.get("Item");
-//       }
-
-//       this.data.folders = collection?._formatFolderSelectOptions()
-//         .reduce((acc, folder) => {
-//           acc[folder.id] = folder.name;
-//           return acc;
-//         }, {}) ?? {};
-//       this.data.folders[''] = "Ex3.None";
-//       // this.data.type = formObject.type;
-//     }
-//     for (let key in formObject) {
-//       if (formObject.hasOwnProperty(key) && this.data.hasOwnProperty(key)) {
-//         this.data[key] = formObject[key];
-//       }
-//     }
-//     this.render();
-//   }
-
-//   static PARTS = {
-//     form: {
-//       template: "systems/exaltedthird/templates/dialogues/template-importer.html",
-//     },
-//   };
-
-//   async _prepareContext(_options) {
-//     this.data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
-//     this.data.selects = CONFIG.exaltedthird.selects;
-//     const hintMap = { 'charm': 'CharmImportHint', 'spell': 'SpellImportHint', 'adversary': 'AdversaryImportHint', 'qc': 'QCImportHint', 'other': 'OtherImportHint' }
-//     this.data.templateHint = game.i18n.localize(`Ex3.${hintMap[this.data.type]}`);
-//     return this.data;
-//   }
-
-//   static async importTemplate(event, target) {
-//     this.showError = false;
-//     await this.createCharm(event, target);
-//     ui.notifications.notify(`Import Complete`);
-//     this.render();
-//   }
-
-//   async createCharm(event, target) {
-//     console.log(this.data);
-//   }
-
-//   static async showHelpDialog(event, target) {
-//     const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
-//     new foundry.applications.api.DialogV2({
-//       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
-//       content: html,
-//       buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-//       classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-//     }).render(true);
-//   }
-// }
-
 export default class TemplateImporter extends FormApplication {
   constructor(type) {
     super(type)
@@ -833,7 +704,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'intimacy',
-                  img: CONFIG.exaltedthird.itemIcons['intimacy'], 
+                  img: CONFIG.exaltedthird.itemIcons['intimacy'],
                   name: intimacyArray[1].trim(),
                   system: {
                     description: intimacyArray[1].trim(),
@@ -925,7 +796,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'intimacy',
-                  img: CONFIG.exaltedthird.itemIcons['intimacy'], 
+                  img: CONFIG.exaltedthird.itemIcons['intimacy'],
                   name: intimacyArray[1].trim(),
                   system: {
                     description: intimacyArray[1].trim(),
@@ -987,7 +858,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'action',
-                img: CONFIG.exaltedthird.itemIcons['action'], 
+                img: CONFIG.exaltedthird.itemIcons['action'],
                 name: name,
                 system: {
                   value: parseInt(actionSplit[1].trim())
@@ -1066,7 +937,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.push(
           {
             type: 'weapon',
-            img: CONFIG.exaltedthird.itemIcons['weapon'], 
+            img: CONFIG.exaltedthird.itemIcons['weapon'],
             name: attackName.trim(),
             system: {
               description: weaponDescription,
@@ -1109,7 +980,7 @@ export default class TemplateImporter extends FormApplication {
           itemData.push(
             {
               type: 'armor',
-              img: CONFIG.exaltedthird.itemIcons['armor'], 
+              img: CONFIG.exaltedthird.itemIcons['armor'],
               name: match[1],
             }
           );
@@ -1312,7 +1183,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: itemType,
-                  img: CONFIG.exaltedthird.itemIcons[itemType], 
+                  img: CONFIG.exaltedthird.itemIcons[itemType],
                   name: intimacyArray[1].trim(),
                   system: {
                     description: intimacyArray[1].trim(),
@@ -1757,7 +1628,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'specialty',
-                img: CONFIG.exaltedthird.itemIcons['specialty'], 
+                img: CONFIG.exaltedthird.itemIcons['specialty'],
                 name: specialtyText.trim(),
                 system: {
                   ability: trimmedName,
@@ -1807,7 +1678,7 @@ export default class TemplateImporter extends FormApplication {
             itemData.push(
               {
                 type: 'merit',
-                img: CONFIG.exaltedthird.itemIcons['merit'], 
+                img: CONFIG.exaltedthird.itemIcons['merit'],
                 name: meritName.trim(),
                 system: {
                   points: meritValue ? meritValue : 0,
@@ -1847,7 +1718,7 @@ export default class TemplateImporter extends FormApplication {
               itemData.push(
                 {
                   type: 'specialty',
-                  img: CONFIG.exaltedthird.itemIcons['specialty'], 
+                  img: CONFIG.exaltedthird.itemIcons['specialty'],
                   name: specialtyText.trim(),
                   system: {
                     ability: trimmedName,
@@ -1920,7 +1791,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.push(
           {
             type: 'weapon',
-            img: CONFIG.exaltedthird.itemIcons['weapon'], 
+            img: CONFIG.exaltedthird.itemIcons['weapon'],
             name: attackName.trim(),
             system: {
               description: weaponDescription,
@@ -1996,7 +1867,7 @@ export default class TemplateImporter extends FormApplication {
         itemData.push(
           {
             type: 'armor',
-            img: CONFIG.exaltedthird.itemIcons['armor'], 
+            img: CONFIG.exaltedthird.itemIcons['armor'],
             name: armorName.trim(),
             system: {
               soak: armorValue,

@@ -35,44 +35,46 @@
     </div>
     {{/if}}
 
-    {{#ifEquals type 'charm'}}
-    <div>
-      <label class="resource-label">{{localize "Ex3.CharmType"}} </label>
-      <select id="charmType" name="charmType" value="{{charmType}}" data-type="String">
-          {{selectOptions charmTypes selected=charmType localize=true}}
-      </select>
-    </div>
-    <div class="d-flex" style="margin-top:7px; margin-bottom: 7px; align-items:center;">
-      <label class="resource-label">{{localize "Ex3.ListingName"}} </label>
-      <input id="listingName" type="text" name="listingName" value="{{listingName}}" style="max-width:75%; margin-left:3px;"/>
-    </div>
-    {{/ifEquals}}
+    <div class="resource grid grid-2col flex-center">
+      <div>
+        <div class="resource-label">{{localize "Ex3.Folder"}}</div>
+        <select id="folder" name="folder" value="{{folder}}" data-type="String">
+            {{selectOptions folders selected=folder localize=true}}
+        </select>
+      </div>
+      {{#ifEquals type 'charm'}}
+      <div>
+        <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
+        <select id="charmType" name="charmType" value="{{charmType}}" data-type="String">
+            {{selectOptions charmTypes selected=charmType localize=true}}
+        </select>
+      </div>
+      <div>
+        <div class="resource-label">{{localize "Ex3.ListingName"}}</div>
+        <input id="listingName" type="text" name="listingName" value="{{listingName}}" style="max-width:75%; margin-left:3px;"/>
+      </div>
+      {{/ifEquals}}
+  
+      {{#ifEquals type 'spell'}}
+      <div>
+        <div class="resource-label">{{localize "Ex3.Circle"}}</div>
+        <select id="spellCircle" name="spellCircle" value="{{spellCircle}}" data-type="String">
+            {{selectOptions selects.allSpellCircles selected=spellCircle localize=true}}
+        </select>
+      </div>
+      {{/ifEquals}}
 
-    {{#ifEquals type 'spell'}}
-    <div>
-      <label class="resource-label">{{localize "Ex3.Circle"}} </label>
-      <select id="spellCircle" name="spellCircle" value="{{spellCircle}}" data-type="String">
-          {{selectOptions selects.allSpellCircles selected=spellCircle localize=true}}
-      </select>
-    </div>
-    {{/ifEquals}}
-
-    {{#ifEquals type 'other'}}
-    <div>
-      <label class="resource-label">{{localize "Ex3.ItemType"}} </label>
-      <select id="itemType" name="itemType" value="{{itemType}}" data-type="String">
-        {{selectOptions selects.templateItemTypes selected=itemType localize=true}}
-      </select>
-    </div>
-    {{/ifEquals}}
-    <div>
-      <label class="resource-label">{{localize "Ex3.Folder"}} </label>
-      <select id="folder" name="folder" value="{{folder}}" data-type="String">
-          {{selectOptions folders selected=folder localize=true}}
-      </select>
+      {{#ifEquals type 'other'}}
+      <div>
+        <div class="resource-label">{{localize "Ex3.ItemType"}}</div>
+        <select id="itemType" name="itemType" value="{{itemType}}" data-type="String">
+          {{selectOptions selects.templateItemTypes selected=itemType localize=true}}
+        </select>
+      </div>
+      {{/ifEquals}}
     </div>
 
     <label class="resource-label">{{ localize "Ex3.Template"}}</label>
     <textarea name="textBox" type="text" id="template-text" rows="40" placeholder='{{templateHint}}'>{{textBox}}</textarea>
-    <button type="button" id="import-template" data-action="import">Import</button>
+    <!-- <button type="button" id="import-template" data-action="import">Import</button> -->
 </div>

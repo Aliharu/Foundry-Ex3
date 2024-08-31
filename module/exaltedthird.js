@@ -12,7 +12,6 @@ import TraitSelector from "./apps/trait-selector.js";
 import { registerSettings } from "./settings.js";
 import ItemSearch from "./apps/item-search.js";
 import Importer from "./apps/importer.js";
-import TemplateImporter from "./apps/template-importer.js";
 import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
 import { ExaltedCombatant } from "./combat/combatant.js";
 import ExaltedActiveEffect from "./active-effect.js";
@@ -42,6 +41,7 @@ import {
 } from "./template/item-template.js";
 import { ExaltedCombat } from "./combat/combat.js";
 import { Prophecy } from "./apps/prophecy.js";
+import { TemplateImporter } from "./apps/template-importer-2.js";
 
 Hooks.once('init', async function () {
 
