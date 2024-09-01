@@ -197,6 +197,33 @@ export class ExaltedThirdActor extends Actor {
     }
   }
 
+  restoreMotes(amount) {
+    var missingPersonal = (this.system.motes.personal.max - this.system.motes.personal.committed) - this.system.motes.personal.value;
+    var missingPeripheral = (this.system.motes.peripheral.max - this.system.motes.peripheral.committed) - this.system.motes.peripheral.value;
+    var restorePersonal = 0;
+    var restorePeripheral = 0;
+    if (missingPeripheral >= amount) {
+      restorePeripheral = amount;
+    }
+    else {
+      if (missingPeripheral > 0) {
+        restorePeripheral = missingPeripheral;
+      }
+      var maxPersonalRestore = amount - restorePeripheral;
+      if (missingPersonal > maxPersonalRestore) {
+        restorePersonal = maxPersonalRestore;
+      }
+      else {
+        restorePersonal = missingPersonal;
+      }
+    }
+
+    this.update({
+      "system.motes.personal.value": this.system.motes.personal.value += restorePersonal,
+      "system.motes.peripheral.value": this.system.motes.peripheral.value += restorePeripheral,
+    });
+  }
+
   async displayEmbeddedItem(itemId) {
     // Render the chat card template
     let item = this.items.find(x => x.id === itemId);

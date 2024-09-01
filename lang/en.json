@@ -1205,6 +1205,11 @@
 
     "Ex3.ReadMe": "Read Me",
 
-    "Ex3.InfoDialog": "Info Dialog"
+    "Ex3.InfoDialog": "Info Dialog",
 
+    "Ex3.GiveXP": "Give XP",
+    "Ex3.Advance": "Advance",
+    "Ex3.AdvanceTime": "Advance Time",
+
+    "Ex3.GiveExperience": "Give Experience"
 }

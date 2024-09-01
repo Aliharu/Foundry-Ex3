@@ -1,3 +1,80 @@
+// const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+// export class ItemSearch2 extends HandlebarsApplicationMixin(ApplicationV2) {
+//   constructor(app) {
+//     super(app);
+
+//     this.filters = {
+//       type: {
+//         "charm": { display: "Charm", value: false },
+//         "spell": { display: "Spell", value: false },
+//         "ritual": { display: "Ritual", value: false },
+//         "merit": { display: "Merit", value: false },
+//       },
+//       attribute: {
+//         name: "",
+//         description: "",
+//         worldItems: false,
+//         lessThen: false,
+//         charmFilters: {
+//           ability: "",
+//           requirement: "",
+//           essence: "",
+//           charmtype: "",
+//         }
+//       },
+//     }
+//   }
+
+//   static DEFAULT_OPTIONS = {
+//     window: {
+//       title: "Item Search", resizable: true,
+//     },
+//     tag: "form",
+//     form: {
+//       handler: ItemSearch2.myFormHandler,
+//       submitOnClose: false,
+//       submitOnChange: true,
+//       closeOnSubmit: false
+//     },
+//     classes: ["dialog", `solar-background`],
+//     position: { width: 631, height: 900 },
+//   };
+
+//   static PARTS = {
+//     form: {
+//       template: "systems/exaltedthird/templates/dialogues/item-search.html",
+//     },
+//   };
+
+//   async _prepareContext(_options) {
+//     // let data = super.getData();
+//     // data.filters = this.filters;
+//     // data.selects = CONFIG.exaltedthird.selects;
+//     // data.items = this.items;
+//     // data.charmAbilities = CONFIG.exaltedthird.charmabilities;
+//     // data.charmExaltType = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes));
+//     return {
+//       filters: this.filters,
+//       selects: CONFIG.exaltedthird.selects,
+//       items: this.items,
+//       charmAbilities: CONFIG.exaltedthird.charmabilities,
+//       charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
+//     };
+//   }
+
+//   static async myFormHandler(event, form, formData) {
+//     // Do things with the returned FormData
+//     const formObject = foundry.utils.expandObject(formData.object);
+//     for (let key in formObject) {
+//       if (formObject.hasOwnProperty(key) && this.hasOwnProperty(key)) {
+//         this[key] = formObject[key];
+//       }
+//     }
+//     this.render();
+//   }
+// }
+
 export default class ItemSearch extends Application {
   constructor(app) {
     super(app)
@@ -103,33 +180,33 @@ export default class ItemSearch extends Application {
             filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.compendium)
             break;
           case "charmFilters":
-            if(this.filters.attribute.lessThen) {
-              if(this.filters.attribute[filter].requirement) {
+            if (this.filters.attribute.lessThen) {
+              if (this.filters.attribute[filter].requirement) {
                 filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || 11) <= parseInt(this.filters.attribute[filter].requirement))
               }
-              if(this.filters.attribute[filter].essence) {
+              if (this.filters.attribute[filter].essence) {
                 filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || 11) <= parseInt(this.filters.attribute[filter].essence))
               }
             }
             else {
-              if(this.filters.attribute[filter].requirement) {
+              if (this.filters.attribute[filter].requirement) {
                 filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || '').toString() === this.filters.attribute[filter].requirement)
               }
-              if(this.filters.attribute[filter].essence) {
+              if (this.filters.attribute[filter].essence) {
                 filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || '').toString() === this.filters.attribute[filter].essence)
               }
             }
-            if(this.filters.attribute[filter].ability) {
+            if (this.filters.attribute[filter].ability) {
               filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.ability === this.filters.attribute[filter].ability)
             }
-            if(this.filters.attribute[filter].charmtype) {
+            if (this.filters.attribute[filter].charmtype) {
               filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.charmtype === this.filters.attribute[filter].charmtype)
             }
             break;
         }
       }
     }
-    
+
     this.filterIds = filteredItems.map(i => i.filterId);
     let list = html.find(".item-row")
     for (let element of list) {
@@ -140,7 +217,6 @@ export default class ItemSearch extends Application {
     }
     return filteredItems;
   }
-
 
   activateListeners(html) {
 
@@ -154,11 +230,12 @@ export default class ItemSearch extends Application {
           id: item.id,
           uuid: item.uuid
         }
-        if (item.compendium)
+        if (item.compendium) {
           transfer.pack = `${item.compendium.metadata.package}.${item.compendium.metadata.name}`;
+        }
         event.dataTransfer.setData("text/plain", JSON.stringify(transfer))
+      })
     })
-  })
 
     html.on("click", ".item-row", ev => {
       let itemId = $(ev.currentTarget).attr("data-item-id")
@@ -194,7 +271,7 @@ export default class ItemSearch extends Application {
 }
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
-  const button = $(`<button class="item-search"><i class="fas fa-suitcase"> </i>${game.i18n.localize("Ex3.ItemSearch")}</button>`);
+  const button = $(`<button class="item-search"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.ItemSearch")}</b></button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {

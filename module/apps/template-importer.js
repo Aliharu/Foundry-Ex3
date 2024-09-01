@@ -1,130 +1,170 @@
-export default class TemplateImporter extends FormApplication {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class TemplateImporter extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(type) {
-    super(type)
-    this.type = type;
-    this.charmType = 'other';
-    this.listingName = '';
-    this.spellCircle = 'terrestrial';
-    this.itemType = 'armor';
-    this.folder = '';
-    this.folders = [];
-    this.errorText = '';
-    this.errorSection = '';
-    this.showError = false;
-    this.textBox = '';
+    super(type);
+
+    this.data = {
+      test: '',
+      type: type,
+      charmType: 'other',
+      listingName: '',
+      spellCircle: 'terrestrial',
+      itemType: 'armor',
+      folder: '',
+      folders: [],
+      errorText: '',
+      errorSection: '',
+      showError: false,
+      textBox: ''
+    };
+
     let collection;
-    if (this.type === 'qc' || this.type === 'adversary') {
+    if (this.data.type === 'qc' || this.data.type === 'adversary') {
       collection = game.collections.get("Actor");
     }
     else {
       collection = game.collections.get("Item");
     }
 
-    this.folders = collection?._formatFolderSelectOptions()
+    this.data.folders = collection?._formatFolderSelectOptions()
       .reduce((acc, folder) => {
         acc[folder.id] = folder.name;
         return acc;
       }, {}) ?? {};
-    this.folders[''] = "Ex3.None";
+    this.data.folders[''] = "Ex3.None";
   }
 
-  static get defaultOptions() {
-    const options = super.defaultOptions;
-    options.classes = ["dialog", `leaves-background`];
-    options.id = "ex3-template-importer";
-    options.template = "systems/exaltedthird/templates/dialogues/template-importer.html"
-    options.resizable = true;
-    options.height = 980;
-    options.width = 860;
-    options.minimizable = true;
-    options.title = "Template Importer"
-    return options;
-  }
+  static DEFAULT_OPTIONS = {
+    window: {
+      title: "Template Importer", resizable: true, controls: [
+        {
+          // font awesome icon
+          icon: 'fa-solid fa-question',
+          // string that will be run through localization
+          label: "Help",
+          // string that MUST match one of your `actions`
+          action: "showHelpDialog",
+        },
+      ]
+    },
+    tag: "form",
+    form: {
+      handler: TemplateImporter.myFormHandler,
+      submitOnClose: false,
+      submitOnChange: true,
+      closeOnSubmit: false
+    },
+    classes: [`leaves-background`],
+    position: { width: 860, height: 1047 },
+    actions: {
+      showHelpDialog: TemplateImporter.showHelpDialog,
+    }
+  };
 
-  _getHeaderButtons() {
-    let buttons = [
-      {
-        label: "Close",
-        class: "close",
-        icon: "fas fa-times",
-        onclick: async () => {
-          const applyChanges = await foundry.applications.api.DialogV2.confirm({
-            window: { title: game.i18n.localize("Ex3.Close") },
-            content: "<p>Are you sure?</p>",
-            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-            modal: true
-          });
-          if (applyChanges) {
-            this.close();
-          }
-        }
+  static async myFormHandler(event, form, formData) {
+    // Do things with the returned FormData
+    const formObject = foundry.utils.expandObject(formData.object);
+    if (formObject.type) {
+      let collection;
+      if (formObject.type === 'qc' || formObject.type === 'adversary') {
+        collection = game.collections.get("Actor");
       }
-    ];
-    const helpButton = {
-      label: game.i18n.localize('Ex3.Help'),
-      class: 'help-dialogue',
-      icon: 'fas fa-question',
-      onclick: async () => {
-        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
-        new foundry.applications.api.DialogV2({
-          window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
-          content: html,
-          buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-          classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-        }).render(true);
-      },
-    };
-    buttons = [helpButton, ...buttons];
-    return buttons;
+      else {
+        collection = game.collections.get("Item");
+      }
+
+      this.data.folders = collection?._formatFolderSelectOptions()
+        .reduce((acc, folder) => {
+          acc[folder.id] = folder.name;
+          return acc;
+        }, {}) ?? {};
+      this.data.folders[''] = "Ex3.None";
+      // this.data.type = formObject.type;
+    }
+    for (let key in formObject) {
+      if (formObject.hasOwnProperty(key) && this.data.hasOwnProperty(key)) {
+        this.data[key] = formObject[key];
+      }
+    }
+
+    if (event.type === 'submit') {
+      this.data.showError = false;
+      await this.importTemplate(event);
+      if(!this.data.showError) {
+        ui.notifications.notify(`Import Complete`);
+      }
+    }
+
+    this.render();
   }
 
-  getData() {
-    let data = super.getData();
-    data.type = this.type;
-    data.charmType = this.charmType;
-    data.listingName = this.listingName;
-    data.spellCircle = this.spellCircle;
-    data.itemType = this.itemType;
-    data.folder = this.folder;
-    data.folders = this.folders;
-    data.textBox = this.textBox;
-    data.showError = this.showError;
-    data.error = this.error;
-    data.errorSection = this.errorSection;
-    data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
-    data.selects = CONFIG.exaltedthird.selects;
-    if (this.type === 'charm') {
-      data.templateHint = game.i18n.localize("Ex3.CharmImportHint");
-    }
-    if (this.type === 'spell') {
-      data.templateHint = game.i18n.localize("Ex3.SpellImportHint");
-    }
-    if (this.type === 'adversary') {
-      data.templateHint = game.i18n.localize("Ex3.AdversaryImportHint");
-    }
-    if (this.type === 'qc') {
-      data.templateHint = game.i18n.localize("Ex3.QCImportHint");
-    }
-    if (this.type === 'other') {
-      data.templateHint = game.i18n.localize("Ex3.OtherImportHint");
-    }
-    return data;
+  static PARTS = {
+    form: {
+      template: "systems/exaltedthird/templates/dialogues/template-importer.html",
+    },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
+  };
+
+  async _prepareContext(_options) {
+    this.data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
+    this.data.selects = CONFIG.exaltedthird.selects;
+    const hintMap = { 'charm': 'CharmImportHint', 'spell': 'SpellImportHint', 'adversary': 'AdversaryImportHint', 'qc': 'QCImportHint', 'other': 'OtherImportHint' }
+    this.data.templateHint = game.i18n.localize(`Ex3.${hintMap[this.data.type]}`);
+    this.data.buttons = [
+      { type: "submit", icon: "fa-solid fa-save", label: "Ex3.Import" }
+    ]
+    return this.data;
   }
 
-  async createCharm(html) {
-    var textArray = html.find('#template-text').val().split(/\r?\n/);
-    var charmType = html.find('#charmType').val();
-    var listingName = html.find('#listingName').val();
-    var folder = await this._getFolder(html);
+  async importTemplate(event) {
+    switch (this.data.type) {
+      case 'charm':
+        await this.createCharms();
+        break;
+      case 'spell':
+        await this.createSpell();
+        break;
+      case 'other':
+        await this.createOther();
+        break;
+      case 'qc':
+        await this.createQuickCharacter();
+        break;
+      case 'adversary':
+        await this.createAdversary();
+        break;
+    }
+  }
 
-    var index = 0;
+  async _getFolder() {
+    var folderId = this.data.folder;
+    var folder = null;
+
+    if (folderId) {
+      folder = game.folders.get(folderId);
+    }
+    return folder;
+  }
+
+  async createCharms() {
+    if (!this.data.textBox) {
+      ui.notifications.notify(`No Text Found`);
+      return;
+    }
+    let textArray = this.data.textBox.split(/\r?\n/);
+    let folder = await this._getFolder();
+
+    let index = 0;
     const charmsList = [];
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
-      var charmData = {
+      let charmData = {
         type: 'charm',
         system: {
-          charmtype: charmType,
-          listingname: listingName,
+          charmtype: this.data.charmType,
+          listingname: this.data.listingName,
           cost: {
             "motes": 0,
             "commitmotes": 0,
@@ -204,7 +244,7 @@ export default class TemplateImporter extends FormApplication {
           // Use substring to get the text after "Archetype"
           const textAfterArchetype = charmData.system.description.substring(index + "Archetype".length + 1);
           charmData.system.archetype.prerequisites = textAfterArchetype.trim(); // Trim whitespace
-          const archetypePrereqCharms = Object.values(game.items.filter(item => item.type === 'charm' && charmType === item.system.charmtype && textAfterArchetype.toLowerCase().includes(item.name.toLowerCase())));
+          const archetypePrereqCharms = Object.values(game.items.filter(item => item.type === 'charm' && this.data.charmType === item.system.charmtype && textAfterArchetype.toLowerCase().includes(item.name.toLowerCase())));
           for (const archetypePrereqCharm of archetypePrereqCharms) {
             charmData.system.archetype.charmprerequisites.push(
               {
@@ -223,33 +263,6 @@ export default class TemplateImporter extends FormApplication {
     }
     if (charmsList) {
       this.updatePrereqs(charmsList);
-    }
-  }
-
-  async updatePrereqs(charmsList) {
-    const filteredCharms = charmsList.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None');
-    for (const charm of filteredCharms) {
-      const charmData = foundry.utils.duplicate(charm);
-      const splitPrereqs = charm.system.prerequisites.split(',');
-      const newPrereqs = [];
-      for (const prereq of splitPrereqs) {
-        const existingCharm = game.items.filter(item => item.type === 'charm' && item.system.charmtype === charm.system.charmtype && item.name.trim() === prereq.trim())[0];
-        if (existingCharm) {
-          charmData.system.charmprerequisites.push(
-            {
-              id: existingCharm.id,
-              name: existingCharm.name
-            }
-          );
-        }
-        else {
-          newPrereqs.push(prereq);
-        }
-      }
-      if (charm.system.charmprerequisites) {
-        charmData.system.prerequisites = newPrereqs.join(", ");
-        await charm.update(charmData);
-      }
     }
   }
 
@@ -387,7 +400,7 @@ export default class TemplateImporter extends FormApplication {
     }
     if (requirementArray.length === 1) {
       var essenceRequirement = requirementArray[0].trim().split(' ');
-      if (this.charmType === 'evocation') {
+      if (this.data.charmType === 'evocation') {
         charmData.system.ability = 'evocation';
       }
       else {
@@ -402,31 +415,57 @@ export default class TemplateImporter extends FormApplication {
     }
   }
 
-  async createSpell(html) {
-    var textArray = html.find('#template-text').val().split(/\r?\n/);
-    var spellCircle = html.find('#spellCircle').val();
+  async updatePrereqs(charmsList) {
+    const filteredCharms = charmsList.filter(charm => charm.system.prerequisites && charm.system.prerequisites !== 'None');
+    for (const charm of filteredCharms) {
+      const charmData = foundry.utils.duplicate(charm);
+      const splitPrereqs = charm.system.prerequisites.split(',');
+      const newPrereqs = [];
+      for (const prereq of splitPrereqs) {
+        const existingCharm = game.items.filter(item => item.type === 'charm' && item.system.charmtype === charm.system.charmtype && item.name.trim() === prereq.trim())[0];
+        if (existingCharm) {
+          charmData.system.charmprerequisites.push(
+            {
+              id: existingCharm.id,
+              name: existingCharm.name
+            }
+          );
+        }
+        else {
+          newPrereqs.push(prereq);
+        }
+      }
+      if (charm.system.charmprerequisites) {
+        charmData.system.prerequisites = newPrereqs.join(", ");
+        await charm.update(charmData);
+      }
+    }
+  }
 
-    var index = 0;
-    var folder = await this._getFolder(html);
+  async createSpell() {
+    let textArray = this.data.textBox.split(/\r?\n/);
+    let folder = await this._getFolder();
+
+    let index = 0;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
-      var spellData = {
+      let spellData = {
         type: 'spell',
         system: {
-          circle: spellCircle,
+          circle: this.data.spellCircle,
         }
       };
       spellData.name = textArray[index];
       index++;
-      var costArray = textArray[index].replace('Cost: ', '').split(',');
+      let costArray = textArray[index].replace('Cost: ', '').split(',');
       index++;
       for (let costString of costArray) {
         costString = costString.trim();
         if (costString.includes('sm') || costString.includes('nm')) {
-          var num = costString.replace(/[^0-9]/g, '');
+          let num = costString.replace(/[^0-9]/g, '');
           spellData.system.cost = parseInt(num) || 0;
         }
         if (costString.includes('wp')) {
-          var num = costString.replace(/[^0-9]/g, '');
+          let num = costString.replace(/[^0-9]/g, '');
           spellData.system.willpower = parseInt(num) || 0;
         }
       }
@@ -435,7 +474,7 @@ export default class TemplateImporter extends FormApplication {
       index++;
       spellData.system.duration = textArray[index].replace('Duration: ', '');
       index++;
-      var description = '';
+      let description = '';
       while (textArray[index] && index !== textArray.length) {
         description += textArray[index];
         description += " ";
@@ -454,23 +493,21 @@ export default class TemplateImporter extends FormApplication {
     }
   }
 
-
-  async createOther(html) {
+  async createOther() {
     const martialArtsWeapons = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/martialArtsWeapons.json', {}, { int: 30000 });
-    var textArray = html.find('#template-text').val().split(/\r?\n/);
-    var itemType = html.find('#itemType').val();
-    var index = 0;
+    let textArray = this.data.textBox.split(/\r?\n/);
+    let index = 0;
 
-    var folder = await this._getFolder(html);
+    let folder = await this._getFolder();
     const weaponTags = CONFIG.exaltedthird.weapontags;
     const armorTags = CONFIG.exaltedthird.armortags;
     while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
       var itemData = {
-        type: itemType,
+        type: this.data.itemType,
         system: {
         }
       };
-      if (itemType === 'hearthstone') {
+      if (this.data.itemType === 'hearthstone') {
         itemData.system.itemtype = 'hearthstone';
         itemData.type = 'item';
         itemData.img = 'systems/exaltedthird/assets/icons/emerald.svg';
@@ -479,15 +516,15 @@ export default class TemplateImporter extends FormApplication {
       itemData.name = textArray[index];
       index++;
       var description = '';
-      if (itemType === 'armor' || itemType === 'weapon') {
+      if (this.data.itemType === 'armor' || this.data.itemType === 'weapon') {
         itemData.system.traits = {};
-        if (itemType === 'armor') {
+        if (this.data.itemType === 'armor') {
           itemData.system.traits.armortags = {
             "value": [],
             "custom": ""
           }
         }
-        if (itemType === 'weapon') {
+        if (this.data.itemType === 'weapon') {
           itemData.system.traits.weapontags = {
             "value": [],
             "custom": ""
@@ -502,26 +539,26 @@ export default class TemplateImporter extends FormApplication {
           for (let tag of tagSplit) {
             if (tag.includes('(')) {
               var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim();
-              if (weaponTags[rangeTag] && itemType === 'weapon') {
+              if (weaponTags[rangeTag] && this.data.itemType === 'weapon') {
                 itemTags.push(rangeTag);
               }
-              else if (armorTags[rangeTag] && itemType === 'armor') {
+              else if (armorTags[rangeTag] && this.data.itemType === 'armor') {
                 itemTags.push(rangeTag);
               }
               tag = tag.replace(/\(([^)]+)\)/g, '');
             }
             tag = tag.replace(/\s+/g, '').replace('-', '').trim();
-            if (weaponTags[tag] && itemType === 'weapon') {
+            if (weaponTags[tag] && this.data.itemType === 'weapon') {
               itemTags.push(tag);
             }
-            else if (armorTags[tag] && itemType === 'armor') {
+            else if (armorTags[tag] && this.data.itemType === 'armor') {
               itemTags.push(tag);
             }
           }
-          if (itemType === 'armor') {
+          if (this.data.itemType === 'armor') {
             itemData.system.traits.armortags.value = itemData.system.traits.armortags.value.concat(itemTags);
           }
-          if (itemType === 'weapon') {
+          if (this.data.itemType === 'weapon') {
             itemData.system.traits.weapontags.value = itemData.system.traits.weapontags.value.concat(itemTags);
           }
           if (itemTags.includes("melee") || itemTags.includes("brawl")) {
@@ -538,11 +575,11 @@ export default class TemplateImporter extends FormApplication {
           }
         }
         if (textArray[index].includes('Attunement:')) {
-          if (itemType === 'armor') {
+          if (this.data.itemType === 'armor') {
             itemData.system.traits.armortags.value.push('artifact');
             itemData.system.hasevocations = true;
           }
-          if (itemType === 'weapon') {
+          if (this.data.itemType === 'weapon') {
             itemData.system.traits.weapontags.value.push('artifact');
             itemData.system.hasevocations = true;
           }
@@ -572,7 +609,7 @@ export default class TemplateImporter extends FormApplication {
 
         index++;
       }
-      if (itemType === 'martialArt') {
+      if (this.data.itemType === 'martialArt') {
         itemData.img = "systems/exaltedthird/assets/icons/punch-blast.svg";
         itemData.type = 'customability';
         itemData.system.abilitytype = 'martialart';
@@ -628,49 +665,13 @@ export default class TemplateImporter extends FormApplication {
     }
   }
 
-  async _getFolder(html) {
-    var folderId = html.find('#folder').val();
-    var folder = null;
-
-    if (folderId) {
-      folder = game.folders.get(folderId);
-    }
-
-    // var folderName = html.find('#folder').val();
-    // var folder = null;
-
-    // var folderType = 'Item';
-
-    // if (this.type === 'qc' || this.type === 'character') {
-    //   folderType = "Actor";
-    // }
-
-    // if (folderName) {
-    //   folder = game.folders.find(folder => {
-    //     return folder.name === folderName && folder.type === folderType;
-    //   });
-
-    //   if (!folder) {
-    //     folder = await Folder.create({ name: folderName, type: folderType });
-    //   }
-    // }
-    return folder;
-  }
-
-  _getStatBlock(adversary = false) {
-    return new Actor.implementation({
-      name: 'New Character',
-      type: adversary ? 'character' : 'npc'
-    }).toObject();
-  }
-
-  async createQuickCharacter(html) {
+  async createQuickCharacter() {
     var actorData = this._getStatBlock(false);
-    var folder = await this._getFolder(html);
+    var folder = await this._getFolder();
     const itemData = [
     ];
     let index = 1;
-    var textArray = html.find('#template-text').val().split(/\r?\n/);
+    var textArray = this.data.textBox.split(/\r?\n/);
     this.errorSection = 'Initial Info';
     try {
       actorData.name = textArray[0].trim();
@@ -999,458 +1000,19 @@ export default class TemplateImporter extends FormApplication {
       console.log(error);
       console.log(textArray);
       console.log(index);
-      this.error = textArray[index];
-      this.showError = true;
+      this.data.error = textArray[index];
+      this.data.showError = true;
     }
   }
 
-  _getHealthLevels(textArray, index, actorData) {
-    var healthArray = textArray[index].replace('Health Levels: ', '').replace('/incap.', '').split('/');
-    for (const health of healthArray) {
-      if (health.includes('0x')) {
-        actorData.system.health.levels.zero.value = parseInt(health.replace('0x', '').replace(/[^0-9]/g, ''));
-      }
-      if (health.includes('1x')) {
-        actorData.system.health.levels.one.value = parseInt(health.replace('1x', '').replace(/[^0-9]/g, ''));
-      }
-      if (health.includes('2x')) {
-        actorData.system.health.levels.two.value = parseInt(health.replace('2x', '').replace(/[^0-9]/g, ''));
-      }
-      if (health.includes('4x')) {
-        actorData.system.health.levels.four.value = parseInt(health.replace('4x', '').replace(/[^0-9]/g, ''));
-      }
-    }
-  }
-
-  _getExaltSpecificData(textArray, index, actorData, isAdversary) {
-    if (!isAdversary) {
-      actorData.system.creaturetype = 'exalt';
-    }
-    actorData.system.settings.showanima = true;
-    actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').toLowerCase().replace(/\s+/g, "").trim();
-    if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'dragonblooded';
-      actorData.system.settings.hasaura = true;
-    }
-    if (['nomood', 'fullmoon', 'changingmoon', 'casteless'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'lunar';
-    }
-    if (['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'solar';
-    }
-    if (['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'sidereal';
-    }
-    if (['dusk', 'midnight', 'daybreak', 'moonshadow', 'day'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'abyssal';
-    }
-    if (['adamant', 'jade', 'moonsilver', 'orichalcum', 'starmetal', 'soulsteel'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'alchemical';
-    }
-    if (['spring', 'summer', 'fall', 'winter'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'getimian';
-    }
-    if (['azimuth', 'ascendant', 'horizon', 'nadir', 'penumbra'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'infernal';
-    }
-    if (['blood', 'breath', 'flesh', 'marrow', 'soil'].includes(actorData.system.details.caste)) {
-      actorData.system.details.exalt = 'liminal';
-    }
-  }
-
-  _getItemData(textArray, index, actorData) {
-    this.errorSection = 'Items';
-    var itemData = [];
-    if (textArray[index] === '') {
-      index++;
-    }
-    var itemType = 'charm';
-    var newItem = true;
-    var itemName = '';
-    var itemDescription = '';
-    var charmSystemData = {
-      description: '',
-      ability: 'other',
-      cost: {
-        "motes": 0,
-        "initiative": 0,
-        "anima": 0,
-        "willpower": 0,
-        "aura": "",
-        "health": 0,
-        "healthtype": "bashing",
-        "silverxp": 0,
-        "goldxp": 0,
-        "whitexp": 0
-      }
-
-    };
-    var spellSystemData = {
-      description: '',
-    };
-    try {
-      while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
-        if (textArray[index] && index !== (textArray.length - 1)) {
-          if (newItem) {
-            if (textArray[index].trim().toLowerCase() === 'merits') {
-              itemType = 'merit';
-              index++;
-              newItem = true;
-            }
-            else if (textArray[index].trim().toLowerCase() === 'intimacies') {
-              itemType = 'intimacy';
-              index++;
-              newItem = true;
-            }
-            else if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations') || textArray[index].trim().toLowerCase() === 'anima') {
-              charmSystemData.listingname = textArray[index].trim();
-              if (textArray[index].trim().toLowerCase().includes('offensive')) {
-                charmSystemData.ability = 'offensive';
-              }
-              else if (textArray[index].trim().toLowerCase().includes('defensive')) {
-                charmSystemData.ability = 'defensive';
-              }
-              else if (textArray[index].trim().toLowerCase().includes('social')) {
-                charmSystemData.ability = 'social';
-              }
-              else if (textArray[index].trim().toLowerCase().includes('mobility') || textArray[index].trim().toLowerCase().includes('movement')) {
-                charmSystemData.ability = 'mobility';
-              }
-              else if (textArray[index].trim().toLowerCase().includes('evocations')) {
-                charmSystemData.ability = 'evocation';
-              }
-              else if (textArray[index].trim().toLowerCase().includes('craft')) {
-                charmSystemData.ability = 'craft';
-              }
-              else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
-                charmSystemData.ability = 'war';
-              }
-              else {
-                charmSystemData.ability = 'other';
-              }
-              itemType = 'charm';
-              index++;
-              newItem = true;
-            }
-            else if (textArray[index].trim().toLowerCase().includes('new merit:')) {
-              itemType = 'merit';
-              newItem = true;
-            }
-            else if (textArray[index].trim().toLowerCase() === 'sorcery' || textArray[index].trim().toLowerCase() === 'necromancy') {
-              itemType = 'spell';
-              index++;
-              newItem = true;
-              charmSystemData.ability = 'occult';
-            }
-            else if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
-              itemType = 'shape';
-              index++;
-              newItem = true;
-              itemDescription += textArray[index].trim();
-              itemDescription += '\n';
-            }
-            else if (textArray[index].trim().toLowerCase() === 'escort' || textArray[index].trim().toLowerCase().includes('protectors:')) {
-              itemType = 'escort';
-              index++;
-              newItem = true;
-              actorData.system.settings.showescort = true;
-            }
-            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits' || textArray[index].trim().toLowerCase() === 'excellency') {
-              itemType = 'specialability';
-              index++;
-              newItem = true;
-            }
-          }
-          if (index > textArray.length - 1) {
-            break;
-          }
-          if (textArray[index].trim() === '') {
-            index++;
-          }
-          if (index > textArray.length - 1) {
-            break;
-          }
-          if (newItem) {
-            if (itemType === 'intimacy') {
-              var intimacyArray = textArray[index].split(':');
-              var intimacyType = 'tie';
-              if (intimacyArray[0].includes('Principle')) {
-                intimacyType = 'principle';
-              }
-              else if (intimacyArray[0].includes('Tie')) {
-                intimacyType = 'tie';
-              }
-              itemData.push(
-                {
-                  type: itemType,
-                  img: CONFIG.exaltedthird.itemIcons[itemType],
-                  name: intimacyArray[1].trim(),
-                  system: {
-                    description: intimacyArray[1].trim(),
-                    intimacytype: intimacyType,
-                    strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
-                  }
-                }
-              );
-            }
-            //First line
-            else if (itemType === 'specialability' || itemType === 'merit') {
-              var titleArray = textArray[index].split(':');
-              itemName = titleArray[0].trim();
-              if (titleArray[0].toLowerCase().includes('new merit')) {
-                itemName = titleArray[1].trim();
-              }
-              else if (titleArray.length === 2) {
-                itemDescription += titleArray[1].trim();
-              }
-              if (itemType === 'merit' && itemName === 'Legendary Size') {
-                actorData.system.sizecategory = 'legendary';
-              }
-              if (itemType === 'merit' && itemName === 'Tiny Creature') {
-                actorData.system.sizecategory = 'tiny';
-              }
-              if (itemType === 'merit' && itemName === 'Minuscule Size') {
-                actorData.system.sizecategory = 'minuscule';
-              }
-              newItem = false;
-            }
-            else if (itemType === 'quality' || itemType === 'escort') {
-              itemDescription += textArray[index].trim();
-              newItem = false;
-            }
-            else if (itemType === 'spell') {
-              if (textArray[index].toLowerCase().includes('shaping ritual')) {
-                var titleArray = textArray[index].split(':');
-                itemName = titleArray[0].trim();
-                if (titleArray.length === 2) {
-                  itemDescription += titleArray[1].trim();
-                }
-                itemType = 'ritual';
-              }
-              else if (!textArray[index].includes('(')) {
-                var titleArray = textArray[index].split(':');
-                itemName = titleArray[0].trim();
-                if (titleArray.length === 2) {
-                  itemDescription += titleArray[1].trim();
-                }
-                itemType = 'ritual';
-              }
-              else if (!(/\d+(\.\d+)?sm/g).test(textArray[index]) && !textArray[index].includes('Ritual')) {
-                itemType = 'charm';
-              }
-              else {
-                itemType = 'spell';
-                var titleArray = (textArray[index] + textArray[index + 1]).split('(');
-                itemName = titleArray[0].trim();
-                var contentArray = titleArray[1].split('):');
-                var spellDataArray = contentArray[0].trim().split(';');
-                itemDescription += contentArray[1].trim();
-                var costArray = spellDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
-                for (let costString of costArray) {
-                  costString = costString.trim();
-                  if (costString.includes('sm')) {
-                    var num = costString.replace(/[^0-9]/g, '');
-                    spellSystemData.cost = parseInt(num) || 0;
-                  }
-                  if (costString.includes('wp')) {
-                    var num = costString.replace(/[^0-9]/g, '');
-                    spellSystemData.willpower = parseInt(num) || 0;
-                  }
-                }
-                index++;
-                spellSystemData.duration = spellDataArray[1]?.trim() || '';
-                spellSystemData.keywords = spellDataArray[2]?.trim() || '';
-              }
-              newItem = false;
-            }
-            if (itemType === 'charm') {
-              var titleArray = textArray[index] + textArray[index + 1];
-              itemName = titleArray.substring(0, titleArray.indexOf('('));
-              var contentArray = titleArray.substring(titleArray.indexOf('(') + 1).split('):');
-              var charmDataArray = contentArray[0].trim().split(';');
-              itemDescription += contentArray[1].trim();
-              var costArray = charmDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
-              for (var i = 0; i < costArray.length; i++) {
-                var costString = costArray[i].trim();
-                if (costString.includes('m')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.motes = parseInt(num) || 0;
-                }
-                if (costString.includes('i')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.initiative = parseInt(num) || 0;
-                }
-                if (costString.includes('a')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.anima = parseInt(num) || 0;
-                }
-                if (costString.includes('Penumbra')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.penumbra = parseInt(num) || 0;
-                }
-                if (costString.includes('wp')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.willpower = parseInt(num) || 0;
-                }
-                if (costString.includes('hl')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.health = parseInt(num) || 0;
-                  if (costString.includes('ahl')) {
-                    charmSystemData.cost.healthtype = 'aggravated';
-                  }
-                  if (costString.includes('lhl')) {
-                    charmSystemData.cost.healthtype = 'lethal';
-                  }
-                }
-                if (costString.includes('Fire')) {
-                  charmSystemData.cost.aura = 'fire';
-                }
-                if (costString.includes('Earth')) {
-                  charmSystemData.cost.aura = 'earth';
-                }
-                if (costString.includes('Air')) {
-                  charmSystemData.cost.aura = 'air';
-                }
-                if (costString.includes('Water')) {
-                  charmSystemData.cost.aura = 'water';
-                }
-                if (costString.includes('Wood')) {
-                  charmSystemData.cost.aura = 'wood';
-                }
-                if (costString.includes('gxp')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.goldxp = parseInt(num) || 0;
-                }
-                else if (costString.includes('sxp')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.silverxp = parseInt(num) || 0;
-                }
-                else if (costString.includes('wxp')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.whitexp = parseInt(num) || 0;
-                }
-                else if (costString.includes('xp')) {
-                  var num = costString.replace(/[^0-9]/g, '');
-                  charmSystemData.cost.xp = parseInt(num) || 0;
-                }
-              }
-              charmSystemData.type = charmDataArray[1]?.trim() || '';
-              charmSystemData.duration = charmDataArray[2]?.trim() || '';
-              if (charmSystemData.type === 'Permanent') {
-                charmSystemData.duration = 'Permanent';
-              }
-              else {
-                charmSystemData.duration = charmDataArray[2]?.trim() || '';
-              }
-              charmSystemData.keywords = charmDataArray[3]?.trim() || '';
-              if (charmSystemData.keywords.toLowerCase().includes('eclipse')) {
-                charmSystemData.charmtype = 'eclipse';
-              }
-              index++;
-              newItem = false;
-            }
-          }
-          else {
-            itemDescription += ` ${textArray[index].trim()}`;
-          }
-        }
-        else {
-          if (index === textArray.length - 1) {
-            itemDescription += ` ${textArray[index].trim()}`;
-          }
-          newItem = true;
-          // Create Items
-          if (itemType === 'specialability' || itemType === 'merit' || itemType === 'ritual') {
-            itemData.push(
-              {
-                type: itemType,
-                img: CONFIG.exaltedthird.itemIcons[itemType],
-                name: itemName,
-                system: {
-                  description: itemDescription.trim(),
-                }
-              }
-            );
-            if (itemType === 'ritual') {
-              itemType = 'spell';
-            }
-          }
-          else if (itemType === 'charm') {
-            charmSystemData.description = itemDescription.trim();
-            itemData.push(
-              {
-                type: itemType,
-                img: CONFIG.exaltedthird.itemIcons[itemType],
-                name: itemName,
-                system: charmSystemData,
-              }
-            );
-            if (charmSystemData.ability === 'occult') {
-              itemType = 'spell';
-            }
-          }
-          else if (itemType === 'spell') {
-            spellSystemData.description = itemDescription.trim();
-            itemData.push(
-              {
-                type: itemType,
-                img: CONFIG.exaltedthird.itemIcons[itemType],
-                name: itemName,
-                system: spellSystemData,
-              }
-            );
-          }
-          else if (itemType === 'quality') {
-            actorData.system.qualities += itemDescription.trim();
-          }
-          else if (itemType === 'escort') {
-            actorData.system.escort += itemDescription.trim();
-          }
-          charmSystemData = {
-            description: '',
-            ability: charmSystemData.ability,
-            listingname: charmSystemData.listingname,
-            cost: {
-              "motes": 0,
-              "initiative": 0,
-              "anima": 0,
-              "willpower": 0,
-              "aura": "",
-              "health": 0,
-              "healthtype": "bashing",
-              "silverxp": 0,
-              "goldxp": 0,
-              "penumbra": 0,
-              "whitexp": 0
-            }
-          };
-          spellSystemData = {
-            description: '',
-          };
-          itemName = '';
-          itemDescription = '';
-        }
-        index++;
-      }
-      return itemData;
-    } catch (error) {
-      console.log(error);
-      console.log(textArray);
-      console.log(index);
-      this.errorSection = itemType;
-      this.error = textArray[index];
-      this.showError = true;
-    }
-  }
-
-  async createAdversary(html) {
+  async createAdversary() {
     var actorData = this._getStatBlock(true);
-    var folder = await this._getFolder(html);
+    var folder = await this._getFolder();
     const itemData = [
     ];
     let index = 1;
     var readingItems = false;
-    var textArray = html.find('#template-text').val().split(/\r?\n/);
+    var textArray = this.data.textBox.split(/\r?\n/);
     try {
       actorData.name = textArray[0].trim();
       actorData.prototypeToken.name = textArray[0].trim();
@@ -1914,10 +1476,456 @@ export default class TemplateImporter extends FormApplication {
       console.log(textArray);
       console.log(index);
       if (!readingItems) {
-        this.error = textArray[index];
+        this.data.error = textArray[index];
       }
-      this.showError = true;
+      this.data.showError = true;
     }
+  }
+
+  _getHealthLevels(textArray, index, actorData) {
+    var healthArray = textArray[index].replace('Health Levels: ', '').replace('/incap.', '').split('/');
+    for (const health of healthArray) {
+      if (health.includes('0x')) {
+        actorData.system.health.levels.zero.value = parseInt(health.replace('0x', '').replace(/[^0-9]/g, ''));
+      }
+      if (health.includes('1x')) {
+        actorData.system.health.levels.one.value = parseInt(health.replace('1x', '').replace(/[^0-9]/g, ''));
+      }
+      if (health.includes('2x')) {
+        actorData.system.health.levels.two.value = parseInt(health.replace('2x', '').replace(/[^0-9]/g, ''));
+      }
+      if (health.includes('4x')) {
+        actorData.system.health.levels.four.value = parseInt(health.replace('4x', '').replace(/[^0-9]/g, ''));
+      }
+    }
+  }
+
+  _getExaltSpecificData(textArray, index, actorData, isAdversary) {
+    if (!isAdversary) {
+      actorData.system.creaturetype = 'exalt';
+    }
+    actorData.system.settings.showanima = true;
+    actorData.system.details.caste = textArray[index].replace('Caste: ', '').replace('Aspect: ', '').toLowerCase().replace(/\s+/g, "").trim();
+    if (['earth', 'water', 'air', 'fire', 'wood'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'dragonblooded';
+      actorData.system.settings.hasaura = true;
+    }
+    if (['nomoon', 'fullmoon', 'changingmoon', 'casteless'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'lunar';
+    }
+    if (['dawn', 'zenith', 'twilight', 'night', 'eclipse'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'solar';
+    }
+    if (['serenity', 'battles', 'endings', 'journeys', 'secrets'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'sidereal';
+    }
+    if (['dusk', 'midnight', 'daybreak', 'moonshadow', 'day'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'abyssal';
+    }
+    if (['adamant', 'jade', 'moonsilver', 'orichalcum', 'starmetal', 'soulsteel'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'alchemical';
+    }
+    if (['spring', 'summer', 'fall', 'winter'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'getimian';
+    }
+    if (['azimuth', 'ascendant', 'horizon', 'nadir', 'penumbra'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'infernal';
+    }
+    if (['blood', 'breath', 'flesh', 'marrow', 'soil'].includes(actorData.system.details.caste)) {
+      actorData.system.details.exalt = 'liminal';
+    }
+  }
+
+  _getItemData(textArray, index, actorData) {
+    this.errorSection = 'Items';
+    var itemData = [];
+    if (textArray[index] === '') {
+      index++;
+    }
+    var itemType = 'charm';
+    var newItem = true;
+    var itemName = '';
+    var itemDescription = '';
+    var charmSystemData = {
+      description: '',
+      ability: 'other',
+      cost: {
+        "motes": 0,
+        "initiative": 0,
+        "anima": 0,
+        "willpower": 0,
+        "aura": "",
+        "health": 0,
+        "healthtype": "bashing",
+        "silverxp": 0,
+        "goldxp": 0,
+        "whitexp": 0
+      }
+
+    };
+    var spellSystemData = {
+      description: '',
+    };
+    try {
+      while (index < textArray.length && textArray[index].trim().toLowerCase() !== 'end') {
+        if (textArray[index] && index !== (textArray.length - 1)) {
+          if (newItem) {
+            if (textArray[index].trim().toLowerCase() === 'merits') {
+              itemType = 'merit';
+              index++;
+              newItem = true;
+            }
+            else if (textArray[index].trim().toLowerCase() === 'intimacies') {
+              itemType = 'intimacy';
+              index++;
+              newItem = true;
+            }
+            else if (textArray[index].trim().toLowerCase().includes('charms') || textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase().includes('evocations') || textArray[index].trim().toLowerCase() === 'anima') {
+              charmSystemData.listingname = textArray[index].trim();
+              if (textArray[index].trim().toLowerCase().includes('offensive')) {
+                charmSystemData.ability = 'offensive';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('defensive')) {
+                charmSystemData.ability = 'defensive';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('social')) {
+                charmSystemData.ability = 'social';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('mobility') || textArray[index].trim().toLowerCase().includes('movement')) {
+                charmSystemData.ability = 'mobility';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('evocations')) {
+                charmSystemData.ability = 'evocation';
+              }
+              else if (textArray[index].trim().toLowerCase().includes('craft')) {
+                charmSystemData.ability = 'craft';
+              }
+              else if (textArray[index].trim().toLowerCase() === 'war' || textArray[index].trim().toLowerCase() === 'warfare charms' || textArray[index].trim().toLowerCase() === 'war charms') {
+                charmSystemData.ability = 'war';
+              }
+              else {
+                charmSystemData.ability = 'other';
+              }
+              itemType = 'charm';
+              index++;
+              newItem = true;
+            }
+            else if (textArray[index].trim().toLowerCase().includes('new merit:')) {
+              itemType = 'merit';
+              newItem = true;
+            }
+            else if (textArray[index].trim().toLowerCase() === 'sorcery' || textArray[index].trim().toLowerCase() === 'necromancy') {
+              itemType = 'spell';
+              index++;
+              newItem = true;
+              charmSystemData.ability = 'occult';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'shapeshifting') {
+              itemType = 'shape';
+              index++;
+              newItem = true;
+              itemDescription += textArray[index].trim();
+              itemDescription += '\n';
+            }
+            else if (textArray[index].trim().toLowerCase() === 'escort' || textArray[index].trim().toLowerCase().includes('protectors:')) {
+              itemType = 'escort';
+              index++;
+              newItem = true;
+              actorData.system.settings.showescort = true;
+            }
+            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits' || textArray[index].trim().toLowerCase() === 'excellency') {
+              itemType = 'specialability';
+              index++;
+              newItem = true;
+            }
+          }
+          if (index > textArray.length - 1) {
+            break;
+          }
+          if (textArray[index].trim() === '') {
+            index++;
+          }
+          if (index > textArray.length - 1) {
+            break;
+          }
+          if (newItem) {
+            if (itemType === 'intimacy') {
+              var intimacyArray = textArray[index].split(':');
+              var intimacyType = 'tie';
+              if (intimacyArray[0].includes('Principle')) {
+                intimacyType = 'principle';
+              }
+              else if (intimacyArray[0].includes('Tie')) {
+                intimacyType = 'tie';
+              }
+              itemData.push(
+                {
+                  type: itemType,
+                  img: CONFIG.exaltedthird.itemIcons[itemType],
+                  name: intimacyArray[1].trim(),
+                  system: {
+                    description: intimacyArray[1].trim(),
+                    intimacytype: intimacyType,
+                    strength: intimacyArray[0].replace('Principle', '').replace('Tie', '').trim().toLowerCase()
+                  }
+                }
+              );
+            }
+            //First line
+            else if (itemType === 'specialability' || itemType === 'merit') {
+              var titleArray = textArray[index].split(':');
+              itemName = titleArray[0].trim();
+              if (titleArray[0].toLowerCase().includes('new merit')) {
+                itemName = titleArray[1].trim();
+              }
+              else if (titleArray.length === 2) {
+                itemDescription += titleArray[1].trim();
+              }
+              if (itemType === 'merit' && itemName === 'Legendary Size') {
+                actorData.system.sizecategory = 'legendary';
+              }
+              if (itemType === 'merit' && itemName === 'Tiny Creature') {
+                actorData.system.sizecategory = 'tiny';
+              }
+              if (itemType === 'merit' && itemName === 'Minuscule Size') {
+                actorData.system.sizecategory = 'minuscule';
+              }
+              newItem = false;
+            }
+            else if (itemType === 'quality' || itemType === 'escort') {
+              itemDescription += textArray[index].trim();
+              newItem = false;
+            }
+            else if (itemType === 'spell') {
+              if (textArray[index].toLowerCase().includes('shaping ritual')) {
+                var titleArray = textArray[index].split(':');
+                itemName = titleArray[0].trim();
+                if (titleArray.length === 2) {
+                  itemDescription += titleArray[1].trim();
+                }
+                itemType = 'ritual';
+              }
+              else if (!textArray[index].includes('(')) {
+                var titleArray = textArray[index].split(':');
+                itemName = titleArray[0].trim();
+                if (titleArray.length === 2) {
+                  itemDescription += titleArray[1].trim();
+                }
+                itemType = 'ritual';
+              }
+              else if (!(/\d+(\.\d+)?sm/g).test(textArray[index]) && !textArray[index].includes('Ritual')) {
+                itemType = 'charm';
+              }
+              else {
+                itemType = 'spell';
+                var titleArray = (textArray[index] + textArray[index + 1]).split('(');
+                itemName = titleArray[0].trim();
+                var contentArray = titleArray[1].split('):');
+                var spellDataArray = contentArray[0].trim().split(';');
+                itemDescription += contentArray[1].trim();
+                var costArray = spellDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
+                for (let costString of costArray) {
+                  costString = costString.trim();
+                  if (costString.includes('sm')) {
+                    var num = costString.replace(/[^0-9]/g, '');
+                    spellSystemData.cost = parseInt(num) || 0;
+                  }
+                  if (costString.includes('wp')) {
+                    var num = costString.replace(/[^0-9]/g, '');
+                    spellSystemData.willpower = parseInt(num) || 0;
+                  }
+                }
+                index++;
+                spellSystemData.duration = spellDataArray[1]?.trim() || '';
+                spellSystemData.keywords = spellDataArray[2]?.trim() || '';
+              }
+              newItem = false;
+            }
+            if (itemType === 'charm') {
+              var titleArray = textArray[index] + textArray[index + 1];
+              itemName = titleArray.substring(0, titleArray.indexOf('('));
+              var contentArray = titleArray.substring(titleArray.indexOf('(') + 1).split('):');
+              var charmDataArray = contentArray[0].trim().split(';');
+              itemDescription += contentArray[1].trim();
+              var costArray = charmDataArray[0].replace(/\[(.+?)\]/g, '').trim().split(',');
+              for (var i = 0; i < costArray.length; i++) {
+                var costString = costArray[i].trim();
+                if (costString.includes('m')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.motes = parseInt(num) || 0;
+                }
+                if (costString.includes('i')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.initiative = parseInt(num) || 0;
+                }
+                if (costString.includes('a')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.anima = parseInt(num) || 0;
+                }
+                if (costString.includes('Penumbra')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.penumbra = parseInt(num) || 0;
+                }
+                if (costString.includes('wp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.willpower = parseInt(num) || 0;
+                }
+                if (costString.includes('hl')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.health = parseInt(num) || 0;
+                  if (costString.includes('ahl')) {
+                    charmSystemData.cost.healthtype = 'aggravated';
+                  }
+                  if (costString.includes('lhl')) {
+                    charmSystemData.cost.healthtype = 'lethal';
+                  }
+                }
+                if (costString.includes('Fire')) {
+                  charmSystemData.cost.aura = 'fire';
+                }
+                if (costString.includes('Earth')) {
+                  charmSystemData.cost.aura = 'earth';
+                }
+                if (costString.includes('Air')) {
+                  charmSystemData.cost.aura = 'air';
+                }
+                if (costString.includes('Water')) {
+                  charmSystemData.cost.aura = 'water';
+                }
+                if (costString.includes('Wood')) {
+                  charmSystemData.cost.aura = 'wood';
+                }
+                if (costString.includes('gxp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.goldxp = parseInt(num) || 0;
+                }
+                else if (costString.includes('sxp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.silverxp = parseInt(num) || 0;
+                }
+                else if (costString.includes('wxp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.whitexp = parseInt(num) || 0;
+                }
+                else if (costString.includes('xp')) {
+                  var num = costString.replace(/[^0-9]/g, '');
+                  charmSystemData.cost.xp = parseInt(num) || 0;
+                }
+              }
+              charmSystemData.type = charmDataArray[1]?.trim() || '';
+              charmSystemData.duration = charmDataArray[2]?.trim() || '';
+              if (charmSystemData.type === 'Permanent') {
+                charmSystemData.duration = 'Permanent';
+              }
+              else {
+                charmSystemData.duration = charmDataArray[2]?.trim() || '';
+              }
+              charmSystemData.keywords = charmDataArray[3]?.trim() || '';
+              if (charmSystemData.keywords.toLowerCase().includes('eclipse')) {
+                charmSystemData.charmtype = 'eclipse';
+              }
+              index++;
+              newItem = false;
+            }
+          }
+          else {
+            itemDescription += ` ${textArray[index].trim()}`;
+          }
+        }
+        else {
+          if (index === textArray.length - 1) {
+            itemDescription += ` ${textArray[index].trim()}`;
+          }
+          newItem = true;
+          // Create Items
+          if (itemType === 'specialability' || itemType === 'merit' || itemType === 'ritual') {
+            itemData.push(
+              {
+                type: itemType,
+                img: CONFIG.exaltedthird.itemIcons[itemType],
+                name: itemName,
+                system: {
+                  description: itemDescription.trim(),
+                }
+              }
+            );
+            if (itemType === 'ritual') {
+              itemType = 'spell';
+            }
+          }
+          else if (itemType === 'charm') {
+            charmSystemData.description = itemDescription.trim();
+            itemData.push(
+              {
+                type: itemType,
+                img: CONFIG.exaltedthird.itemIcons[itemType],
+                name: itemName,
+                system: charmSystemData,
+              }
+            );
+            if (charmSystemData.ability === 'occult') {
+              itemType = 'spell';
+            }
+          }
+          else if (itemType === 'spell') {
+            spellSystemData.description = itemDescription.trim();
+            itemData.push(
+              {
+                type: itemType,
+                img: CONFIG.exaltedthird.itemIcons[itemType],
+                name: itemName,
+                system: spellSystemData,
+              }
+            );
+          }
+          else if (itemType === 'quality') {
+            actorData.system.qualities += itemDescription.trim();
+          }
+          else if (itemType === 'escort') {
+            actorData.system.escort += itemDescription.trim();
+          }
+          charmSystemData = {
+            description: '',
+            ability: charmSystemData.ability,
+            listingname: charmSystemData.listingname,
+            cost: {
+              "motes": 0,
+              "initiative": 0,
+              "anima": 0,
+              "willpower": 0,
+              "aura": "",
+              "health": 0,
+              "healthtype": "bashing",
+              "silverxp": 0,
+              "goldxp": 0,
+              "penumbra": 0,
+              "whitexp": 0
+            }
+          };
+          spellSystemData = {
+            description: '',
+          };
+          itemName = '';
+          itemDescription = '';
+        }
+        index++;
+      }
+      return itemData;
+    } catch (error) {
+      console.log(error);
+      console.log(textArray);
+      console.log(index);
+      this.data.errorSection = itemType;
+      this.data.error = textArray[index];
+      this.data.showError = true;
+    }
+  }
+
+  _getStatBlock(adversary = false) {
+    return new Actor.implementation({
+      name: 'New Character',
+      type: adversary ? 'character' : 'npc'
+    }).toObject();
   }
 
   getTextInsideParentheses(inputString) {
@@ -1938,100 +1946,13 @@ export default class TemplateImporter extends FormApplication {
     }
   }
 
-  activateListeners(html) {
-    html.on("change", "#charmType", ev => {
-      this.charmType = ev.currentTarget.value;
-      this.textBox = html.find('#template-text').val();
-      this.folder = html.find('#folder').val();
-      this.render();
-    });
-
-    html.on("change", "#listingName", ev => {
-      this.listingName = ev.currentTarget.value;
-      this.textBox = html.find('#template-text').val();
-      this.folder = html.find('#folder').val();
-      this.render();
-    });
-
-    html.on("change", "#spellCircle", ev => {
-      this.spellCircle = ev.currentTarget.value;
-      this.textBox = html.find('#template-text').val();
-      this.folder = html.find('#folder').val();
-      this.render();
-    });
-
-    html.on("change", "#itemType", ev => {
-      this.itemType = ev.currentTarget.value;
-      this.textBox = html.find('#template-text').val();
-      this.folder = html.find('#folder').val();
-      this.render();
-    });
-
-    html.on("change", "#folder", ev => {
-      this.folder = ev.currentTarget.value;
-      this.textBox = html.find('#template-text').val();
-      this.render();
-    });
-
-    html.on("change", ".radio", ev => {
-      if (document.getElementById("charm-radio").checked) {
-        this.type = "charm";
-      } else if (document.getElementById("spell-radio").checked) {
-        this.type = "spell";
-      } else if (document.getElementById("qc-radio").checked) {
-        this.type = "qc";
-      }
-      else if (document.getElementById("adversary-radio").checked) {
-        this.type = "adversary";
-      }
-      else if (document.getElementById("other-radio").checked) {
-        this.type = "other";
-      }
-      this.textBox = html.find('#template-text').val();
-      let collection;
-      if (this.type === 'qc' || this.type === 'adversary') {
-        collection = game.collections.get("Actor");
-      }
-      else {
-        collection = game.collections.get("Item");
-      }
-
-      let folderData = collection?._formatFolderSelectOptions() ?? {};
-
-      this.folders = folderData
-        .reduce((acc, folder) => {
-          acc[folder.id] = folder.name;
-          return acc;
-        }, {});
-      this.folders[''] = "Ex3.None";
-      if (!folderData.map(folder => folder.id).includes(this.folder)) {
-        this.folder = '';
-      }
-      else {
-        this.folder = html.find('#folder').val();
-      }
-      this.render();
-    });
-
-    html.find("#import-template").on("click", async (event) => {
-      this.textBox = html.find('#template-text').val();
-      this.folder = html.find('#folder').val();
-      this.showError = false;
-      if (this.type === 'charm') {
-        await this.createCharm(html);
-      } else if (this.type === 'spell') {
-        await this.createSpell(html);
-      } else if (this.type === 'qc') {
-        await this.createQuickCharacter(html);
-      }
-      else if (this.type === 'adversary') {
-        await this.createAdversary(html);
-      }
-      else if (this.type === 'other') {
-        await this.createOther(html);
-      }
-      ui.notifications.notify(`Import Complete`);
-      this.render();
-    });
+  static async showHelpDialog(event, target) {
+    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
+      content: html,
+      buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    }).render(true);
   }
 }

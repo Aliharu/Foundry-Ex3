@@ -41,7 +41,7 @@ import {
 } from "./template/item-template.js";
 import { ExaltedCombat } from "./combat/combat.js";
 import { Prophecy } from "./apps/prophecy.js";
-import { TemplateImporter } from "./apps/template-importer-2.js";
+import { TemplateImporter } from "./apps/template-importer.js";
 
 Hooks.once('init', async function () {
 
@@ -405,7 +405,7 @@ $(document).ready(() => {
 });
 
 Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"> </i>${game.i18n.localize("Ex3.Import")}</button>`);
+  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.Import")}</b></button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {
@@ -414,39 +414,37 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
-  let buttons = [
-    {
-      action: 'generate',
-      label: `${game.i18n.localize("Ex3.Character")} / ${game.i18n.localize("Ex3.NPC")}`, callback: () => {
-        new CharacterBuilder(null, {}, {}, {}).render(true);
-      }
-    }
-  ];
-  if (game.user.isGM) {
-    buttons.push(
-      {
-        action: 'import',
-        label: game.i18n.localize("Ex3.Import"), callback: () => {
-          game.templateImporter = new TemplateImporter("qc").render(true);
-        }
-      }
-    );
-  }
-  const button = $(`<button class="tempalte-importer"><i class="fas fa-user"></i>${game.i18n.localize("Ex3.Create")}</button>`);
-  html.find(".directory-footer").append(button);
-  button.click(ev => {
-    new foundry.applications.api.DialogV2({
-      window: { title: game.i18n.localize("Ex3.Create") },
-      content: ``,
-      buttons: buttons,
-      classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`]
-    }).render(true);
+  const buttonsText = $(`<div class="flexrow">
+	<button class="character-generator-button">
+		<i class="fas fa-user-plus"></i>
+		<b class="button-text">
+    ${game.i18n.localize("Ex3.Create")}
+		</b>
+	</button>
+
+	${game.user.isGM ? `<button class="template-import-button">
+		<i class="fas fa-file-import"></i>
+		<b class="button-text">
+			${game.i18n.localize("Ex3.Import")}
+		</b>
+	</button>` : ''}
+</div>`);
+
+  html.find(".directory-footer").append(buttonsText);
+
+  html.on("click", ".character-generator-button", () => {
+    new CharacterBuilder(null, {}, {}, {}).render(true);
   });
+
+  html.on("click", ".template-import-button", () => {
+    game.templateImporter = new TemplateImporter("qc").render(true);
+  });
+
 });
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
   if (game.user.isGM) {
-    const button = $(`<button class="item-search"><i class="fas fa-book-open"></i>${game.i18n.localize("Ex3.CharmCardJournals")}</button>`);
+    const button = $(`<button class="item-search"><i class="fas fa-book-open"></i><b>${game.i18n.localize("Ex3.CharmCardJournals")}</b></button>`);
     html.find(".directory-footer").append(button);
 
     button.click(ev => {
@@ -454,6 +452,15 @@ Hooks.on("renderJournalDirectory", (app, html, data) => {
     })
   }
 });
+
+// Hooks.on("renderCompendiumDirectory", (app, html, data) => {
+//   const button = $(`<button class="item-search"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.ItemSearch")}</b></button>`);
+//   html.find(".directory-footer").append(button);
+
+//   button.click(ev => {
+//     game.itemSearch = new ItemSearch2().render(true);
+//   })
+// });
 
 Hooks.on("renderChatMessage", (message, html, data) => {
   html[0]
@@ -796,55 +803,56 @@ Hooks.on("chatMessage", (html, content, msg) => {
   if (command === "/info") {
     const chatData = {
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div>',
+      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp</b> Give xp to player characters</div><div><b>/advancetime</b> Advance time to restore health, motes, and willpower</div>',
     };
     ChatMessage.create(chatData);
     return false;
   }
   if (command === "/xp") {
-    if (isNaN(parseInt(commands[1]))) {
-      const chatData = {
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        content: `Invalid number input`,
-      };
-      ChatMessage.create(chatData);
-      return false;
-    }
     const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
 
-    actors.forEach((actor) => {
-      const newStandardValue = (parseInt(actor.system.experience.standard.value) || 0) + parseInt(commands[1] || 0);
-      const newStandardTotal = (parseInt(actor.system.experience.standard.total) || 0) + parseInt(commands[1] || 0);
-      actor.update({ "system.experience.standard.value": Math.ceil(newStandardValue), "system.experience.standard.total": Math.ceil(newStandardTotal) });
-    });
-    const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      content: `${parseInt(commands[1] || 0)} experience granted`,
-    };
-    ChatMessage.create(chatData);
-    return false;
-  }
-  if (command === "/exaltxp") {
-    if (isNaN(parseInt(commands[1]))) {
-      const chatData = {
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        content: `Invalid number input`,
-      };
-      ChatMessage.create(chatData);
-      return false;
-    }
-    const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.GiveExperience") },
+      content: `
+      <form class="noflex" autocomplete="off">
+      <div class="settings-list">
+          <div class="form-group">
+              <label class="resource-label">Standard XP</label>
+              <div class="form-fields">
+                <input id="standard" type="number" name="standard" value="5" min="0" max="99"/>
+              </div>
+          </div>
+          <div class="form-group">
+            <label>Exalt XP</label>
+            <div class="form-fields">
+                <input id="exalt" type="number" name="exalt" value="0" min="0" max="99"/>
+            </div>
+          </div>
+      </div>
+      </form>`,
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.GiveXP"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
+          actors.forEach((actor) => {
+            const newStandardTotal = (parseInt(actor.system.experience.standard.total) || 0) + parseInt(result?.standard?.value || 0);
+            const newExaltTotal = (parseInt(actor.system.experience.exalt.total) || 0) + parseInt(result?.exalt?.value || 0);
+            actor.update({ "system.experience.standard.total": Math.ceil(newStandardTotal), "system.experience.exalt.total": Math.ceil(newExaltTotal) });
+          });
 
-    actors.forEach((actor) => {
-      const newExaltValue = (parseInt(actor.system.experience.exalt.value) || 0) + parseInt(commands[1] || 0);
-      const newExaltTotal = (parseInt(actor.system.experience.exalt.total) || 0) + parseInt(commands[1] || 0);
-      actor.update({ "system.experience.exalt.value": Math.ceil(newExaltValue), "system.experience.exalt.total": Math.ceil(newExaltTotal) });
-    });
-    const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      content: `${parseInt(commands[1] || 0)} exalt experience granted`,
-    };
-    ChatMessage.create(chatData);
+          ui.notifications.info('Gave out XP points');
+        }
+      }
+    }).render({ force: true });
     return false;
   }
   if (command === "/newscene") {
@@ -886,6 +894,144 @@ Hooks.on("chatMessage", (html, content, msg) => {
       content: 'New Scene',
     };
     ChatMessage.create(chatData);
+    return false;
+  }
+  if (command === '/advancetime') {
+    const actors = game.users.players.filter(c => c.character && c.character.type === 'character').map(u => u.character);
+
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.AdvanceTime") },
+      content: `
+      <form class="noflex" autocomplete="off">
+      <div class="settings-list">
+      <div>Restore motes at 5 per hour<p> Restore WP at 1 per day <p> Health is restored based on the chart on Exalted, p.173</div>
+
+          <div class="form-group">
+              <label class="resource-label">Hours</label>
+              <div class="form-fields">
+                <input id="hours" type="number" name="hours" value="0" min="0" max="99"/>
+              </div>
+          </div>
+          <div class="form-group">
+            <label>Days</label>
+            <div class="form-fields">
+                <input id="days" type="number" name="days" value="0" min="0" max="99"/>
+            </div>
+          </div>
+      </div>
+      </form>`,
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.Advance"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
+          const healingRates = {
+            "0": { bashing: 1, lethal: 24, aggravated: 24 }, // 1 hour bashing, 24 hours (1 day) lethal/aggravated
+            "1": { bashing: 12, lethal: 48, aggravated: 48 }, // 12 hours bashing, 48 hours (2 days) lethal/aggravated
+            "2": { bashing: 24, lethal: 72, aggravated: 72 }, // 24 hours (1 day) bashing, 72 hours (3 days) lethal/aggravated
+            "4": { bashing: 48, lethal: 120, aggravated: 120 }, // 48 hours (2 days) bashing, 120 hours (5 days) lethal/aggravated
+            "inc": { bashing: 0, lethal: 0, aggravated: 0 }   // Treat inc as -4: 48 hours (2 days) bashing, 120 hours (5 days) lethal/aggravated
+          };
+
+          actors.forEach((actor) => {
+            const hours = parseInt(result?.hours?.value || 0);
+            const days = parseInt(result?.days?.value || 0);
+
+            let healingPower = (days * 24) + hours;
+            let bashingHealed = 0;
+            let lethalHealed = 0;
+            let aggHealed = 0;
+            const healthData = JSON.parse(JSON.stringify(actor.system.health));
+
+            const levels = Object.entries(healthData.levels).sort((a, b) => a[1].penalty - b[1].penalty);
+
+            let totalAggravated = healthData.aggravated;
+            let totalLethal = healthData.lethal;
+            let totalBashing = healthData.bashing;
+
+            // Iterate over each health level and assign damage
+            for (let [levelName, levelData] of levels) {
+              let damageApplied = { aggravated: 0, lethal: 0, bashing: 0 };
+
+              // Apply aggravated damage first
+              if (totalAggravated > 0) {
+                let applyAggravated = Math.min(totalAggravated, levelData.value);
+                damageApplied.aggravated = applyAggravated;
+                totalAggravated -= applyAggravated;
+                levelData.value -= applyAggravated;
+              }
+
+              // Then apply lethal damage
+              if (totalLethal > 0) {
+                let applyLethal = Math.min(totalLethal, levelData.value);
+                damageApplied.lethal = applyLethal;
+                totalLethal -= applyLethal;
+                levelData.value -= applyLethal;
+              }
+
+              // Finally, apply bashing damage
+              if (totalBashing > 0) {
+                let applyBashing = Math.min(totalBashing, levelData.value);
+                damageApplied.bashing = applyBashing;
+                totalBashing -= applyBashing;
+                levelData.value -= applyBashing;
+              }
+
+              // Attach the damageApplied object to the level
+              healthData.levels[levelName].damageApplied = damageApplied;
+            }
+
+            for (let [key, healthLevel] of Object.entries(healthData.levels).reverse()) {
+              for (let i = 0; i < healthLevel.damageApplied.bashing; i++) {
+                if (healingPower >= healingRates[healthLevel.penalty].bashing && bashingHealed < actor.system.health.bashing) {
+                  healingPower -= healingRates[healthLevel.penalty].bashing;
+                  bashingHealed++
+                }
+              }
+              for (let i = 0; i < healthLevel.damageApplied.lethal; i++) {
+                if (healingPower >= healingRates[healthLevel.penalty].lethal && bashingHealed < actor.system.health.lethal) {
+                  healingPower -= healingRates[healthLevel.penalty].lethal;
+                  lethalHealed++
+                }
+              }
+              for (let i = 0; i < healthLevel.damageApplied.aggravated; i++) {
+                if (healingPower >= healingRates[healthLevel.penalty].aggravated && bashingHealed < actor.system.health.aggravated) {
+                  healingPower -= healingRates[healthLevel.penalty].aggravated;
+                  aggHealed++
+                }
+              }
+            }
+
+            if (days > 0) {
+              actor.update({
+                "system.willpower.value": Math.min(actor.system.willpower.max, actor.system.willpower.value + days),
+                "system.motes.personal.value": actor.system.motes.personal.max - actor.system.motes.personal.committed,
+                "system.motes.peripheral.value": actor.system.motes.peripheral.max - actor.system.motes.peripheral.committed,
+                "system.health.bashing": Math.max(0, actor.system.health.bashing - bashingHealed),
+                "system.health.lethal": Math.max(0, actor.system.health.lethal - lethalHealed),
+                "system.health.aggravated": Math.max(0, actor.system.health.aggravated - aggHealed),
+              });
+            } else {
+              actor.update({
+                "system.health.bashing": Math.max(0, actor.system.health.bashing - bashingHealed),
+                "system.health.lethal": Math.max(0, actor.system.health.lethal - lethalHealed),
+                "system.health.aggravated": Math.max(0, actor.system.health.aggravated - aggHealed),
+              });
+              actor.restoreMotes(hours * 5);
+            }
+          });
+          ui.notifications.info('Advanced Time');
+        }
+      }
+    }).render({ force: true });
     return false;
   }
 });

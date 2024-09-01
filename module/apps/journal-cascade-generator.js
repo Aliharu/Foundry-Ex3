@@ -1,3 +1,5 @@
+
+
 export default class JournalCascadeGenerator extends FormApplication {
   constructor(app, options, object, data) {
     super(object, options);

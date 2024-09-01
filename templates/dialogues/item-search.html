@@ -32,22 +32,22 @@
       <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
       <select class="charm-filter" name="filters.attribute.charmFilters.ability" data-type="String"
         data-filter="ability">
-        {{selectOptions charmAbilities selected=filters.attribute.charmFilters.ability localize=true}}
+        {{selectOptions charmAbilities selected=filters.attribute.charmFilters.ability localize=true blank=""}}
       </select>
       <label class="resource-label">{{localize "Ex3.Requirement"}}: </label>
       <select class="charm-filter" name="filters.attribute.charmFilters.requirement" data-type="String"
         data-filter="requirement">
-        {{selectOptions selects.searchAbilityRequirementLevels selected=filters.attribute.charmFilters.requirement localize=false}}
+        {{selectOptions selects.searchAbilityRequirementLevels selected=filters.attribute.charmFilters.requirement localize=false blank=""}}
       </select>
       <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
       <select class="charm-filter" name="filters.attribute.charmFilters.essence" data-type="String"
         data-filter="essence">
-        {{selectOptions selects.searchEssenceLevels selected=filters.attribute.charmFilters.essence localize=false}}
+        {{selectOptions selects.searchEssenceLevels selected=filters.attribute.charmFilters.essence localize=false blank=""}}
       </select>
       <label class="resource-label">{{localize "Ex3.CharmType"}}</label>
       <select class="charm-filter" name="filters.attribute.charmFilters.charmtype" data-type="String"
         data-filter="charmtype">
-        {{selectOptions charmExaltType selected=filters.attribute.charmFilters.charmtype localize=true}}
+        {{selectOptions charmExaltType selected=filters.attribute.charmFilters.charmtype localize=true blank=""}}
       </select>
     </div>
   </div>
