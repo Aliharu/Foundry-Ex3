@@ -41,7 +41,7 @@ import {
 } from "./template/item-template.js";
 import { ExaltedCombat } from "./combat/combat.js";
 import { Prophecy } from "./apps/prophecy.js";
-import { TemplateImporter } from "./apps/template-importer.js";
+import TemplateImporter from "./apps/template-importer.js";
 
 Hooks.once('init', async function () {
 
@@ -452,15 +452,6 @@ Hooks.on("renderJournalDirectory", (app, html, data) => {
     })
   }
 });
-
-// Hooks.on("renderCompendiumDirectory", (app, html, data) => {
-//   const button = $(`<button class="item-search"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.ItemSearch")}</b></button>`);
-//   html.find(".directory-footer").append(button);
-
-//   button.click(ev => {
-//     game.itemSearch = new ItemSearch2().render(true);
-//   })
-// });
 
 Hooks.on("renderChatMessage", (message, html, data) => {
   html[0]

@@ -1,6 +1,6 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class TemplateImporter extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class TemplateImporter extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(type) {
     super(type);
 

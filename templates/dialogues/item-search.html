@@ -1,61 +1,69 @@
 <div class="exaltedthird" style="overflow:hidden">
   <div class="item-filter">
+    <h2>{{localize "Ex3.Filter"}}</h2>
+
     <div class="check-button">
       <label class="resource-label">{{localize "Ex3.IncludeWorldItems"}}: </label>
-      <input class="world-filter" type="checkbox" data-filter="worldItems" {{checked filters.attribute.worldItems}} />
+      <input class="world-filter" name="filters.attribute.worldItems" type="checkbox" data-filter="worldItems" {{checked filters.attribute.worldItems}} />
     </div>
     <div class="check-button">
       <label class="resource-label">{{localize "Ex3.UseLessThen"}}: </label>
-      <input class="less-then" type="checkbox" {{checked filters.attribute.lessThen}} />
+      <input class="less-then" name="filters.attribute.lessThen" type="checkbox" {{checked filters.attribute.lessThen}} />
     </div>
-    <h2>{{localize "Ex3.Types"}}</h2>
     <div class="check-button">
       {{#each filters.type as |value filter|}}
       <label class="resource-label">{{localize value.display}}:</label>
-      <input class="filter" type="checkbox" data-filter="{{filter}}" {{checked value.value}} />
+      <input name="filters.type.{{filter}}.value" class="filter" type="checkbox" data-filter="{{filter}}" {{checked value.value}} />
       {{/each}}
     </div>
-
-    <h2>{{localize "Ex3.Filter"}}</h2>
-
     <div class="name filter-top">
       <label class="resource-label">{{localize "Name"}}</label>
-      <input class="name-filter" type="text" data-filter="name" value="{{filters.attribute.name}}" />
+      <input class="name-filter" name="filters.attribute.name" type="text" data-filter="name" value="{{filters.attribute.name}}" />
     </div>
     <div class="description filter-top">
       <label class="resource-label">{{localize "Description"}}</label>
-      <input class="description-filter" type="text" data-filter="description"
+      <input class="description-filter" name="filters.attribute.description" type="text" data-filter="description"
         value="{{filters.attribute.description}}" />
     </div>
-    <h2>{{localize "Ex3.CharmFilters"}}</h2>
-    <div>
-      <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
-      <select class="charm-filter" name="filters.attribute.charmFilters.ability" data-type="String"
-        data-filter="ability">
-        {{selectOptions charmAbilities selected=filters.attribute.charmFilters.ability localize=true blank=""}}
-      </select>
-      <label class="resource-label">{{localize "Ex3.Requirement"}}: </label>
-      <select class="charm-filter" name="filters.attribute.charmFilters.requirement" data-type="String"
-        data-filter="requirement">
-        {{selectOptions selects.searchAbilityRequirementLevels selected=filters.attribute.charmFilters.requirement localize=false blank=""}}
-      </select>
-      <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
-      <select class="charm-filter" name="filters.attribute.charmFilters.essence" data-type="String"
-        data-filter="essence">
-        {{selectOptions selects.searchEssenceLevels selected=filters.attribute.charmFilters.essence localize=false blank=""}}
-      </select>
-      <label class="resource-label">{{localize "Ex3.CharmType"}}</label>
-      <select class="charm-filter" name="filters.attribute.charmFilters.charmtype" data-type="String"
-        data-filter="charmtype">
-        {{selectOptions charmExaltType selected=filters.attribute.charmFilters.charmtype localize=true blank=""}}
-      </select>
+    <div class="resource grid grid-4col flex-center">
+      <div>
+        <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+        <select class="charm-filter" name="filters.attribute.ability" data-type="String"
+          data-filter="ability">
+          {{selectOptions charmAbilities selected=filters.attribute.ability localize=true blank=""}}
+        </select>
+      </div>
+      <div>
+        <label class="resource-label">{{localize "Ex3.Requirement"}}: </label>
+        <select class="charm-filter" name="filters.attribute.requirement" data-type="String"
+          data-filter="requirement">
+          {{selectOptions selects.searchAbilityRequirementLevels selected=filters.attribute.requirement
+          localize=false blank=""}}
+        </select>
+      </div>
+      <div>
+        <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
+        <select class="charm-filter" name="filters.attribute.essence" data-type="String"
+          data-filter="essence">
+          {{selectOptions selects.searchEssenceLevels selected=filters.attribute.essence localize=false
+          blank=""}}
+        </select>
+      </div>
+      <div>
+        <label class="resource-label">{{localize "Ex3.CharmType"}}</label>
+        <select class="charm-filter" name="filters.attribute.charmtype" data-type="String"
+          data-filter="charmtype">
+          {{selectOptions charmExaltType selected=filters.attribute.charmtype localize=true blank=""}}
+        </select>
+      </div>
     </div>
   </div>
   <h2 class="mb-1">{{localize "Ex3.ItemList"}}</h2>
   <div class="query-results">
-    {{#each items as |item|}}
-    <div class="search-item-row item-row cursor-pointer" data-item-id={{item.id}} data-filter-id={{item.filterId}}>
-      <div class="item-image mr-1"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
+    {{#each filteredItems as |item|}}
+    <div class="search-item-row item-row cursor-pointer" data-drag="true" data-item-id={{item.id}} data-filter-id={{item.filterId}}>
+      <div class="item-image mr-1"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
       <div class="item-name">{{item.name}}</div>
     </div>
     {{/each}}
