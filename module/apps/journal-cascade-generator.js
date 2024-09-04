@@ -1,55 +1,102 @@
 
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class JournalCascadeGenerator extends FormApplication {
-  constructor(app, options, object, data) {
-    super(object, options);
-    
+export default class JournalCascadeGenerator extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor(options = {}) {
+    super(options);
+
+    this.object = {
+      folder: '',
+      character: '',
+      mainText: 'description',
+      type: 'character',
+      includeSpells: true,
+      useLinks: true,
+      selects: CONFIG.exaltedthird.selects,
+      filterByPrerequisiteCharms: false,
+    }
+
     this.object.folders = game.collections.get("Item")?._formatFolderSelectOptions()
-    .reduce((acc, folder) => {
+      .reduce((acc, folder) => {
         acc[folder.id] = folder.name;
         return acc;
-    }, {}) ?? {};
-    
+      }, {}) ?? {};
+
     this.object.characters = game.actors
-    .filter(actor => actor.type === 'character')
-    .sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
-    .reduce((acc, actor) => {
+      .filter(actor => actor.type === 'character')
+      .sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+      .reduce((acc, actor) => {
         acc[actor.id] = actor.name;
         return acc;
-    }, {});
-    this.object.characters[''] = "Ex3.None";
-    this.object.folder = '';
-    this.object.character = '';
-    this.object.mainText = 'description';
-    this.object.type = 'character';
-    this.object.includeSpells = true;
-    this.object.useLinks = true;
-    this.object.selects = CONFIG.exaltedthird.selects;
-    this.object.filterByPrerequisiteCharms = false;
+      }, {});
+
+    // this.tabs = [
+    //   {
+    //     tab: "charm",
+    //     label: "Ex3.Charm",
+    //     svg: "icons/svg/explosion.svg",
+    //   },
+    // ];
   }
 
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["dialog", `solar-background`],
-      popOut: true,
-      template: "systems/exaltedthird/templates/dialogues/journal-cascade-generator.html",
-      id: "ex3-journal-cascade-generate",
-      title: 'Generate Charm Journals',
-      width: 550,
-      resizable: true,
+  static DEFAULT_OPTIONS = {
+    window: {
+      title: "Generate Charm Journals",
+    },
+    tag: "form",
+    form: {
+      handler: JournalCascadeGenerator.myFormHandler,
+      submitOnClose: false,
       submitOnChange: true,
       closeOnSubmit: false
-    });
-  }
+    },
+    classes: [`solar-background`],
+    position: { width: 550 },
+  };
 
-  getData() {
+  static PARTS = {
+    // tabs: {
+    //   id: "tabs",
+    //   classes: ["tabs", "tabs-left"],
+    //   template: "templates/generic/tab-navigation.hbs",
+    // },
+    form: {
+      template: "systems/exaltedthird/templates/dialogues/journal-cascade-generator.html",
+    },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
+  };
+
+  async _prepareContext(_options) {
     return {
       data: this.object,
+      buttons: [
+        { type: "submit", icon: "fa-solid fa-save", label: "Ex3.Generate" }
+      ],
+      // tabs: [
+      //   {
+      //     tab: "charm",
+      //     label: "Ex3.Charm",
+      //     svg: "icons/svg/explosion.svg",
+      //   },
+      // ]
     };
   }
 
-  async _updateObject(event, formData) {
-    foundry.utils.mergeObject(this, formData);
+  static async myFormHandler(event, form, formData) {
+    // Do things with the returned FormData
+    const formObject = foundry.utils.expandObject(formData.object);
+
+    for (let key in formObject.object) {
+      this.object[key] = formObject.object[key];
+    }
+
+    if (event.type === 'submit') {
+      await this.generateJournals();
+      ui.notifications.notify(`Generation Complete`);
+    }
+    this.render();
   }
 
   async generateJournals() {
@@ -103,11 +150,11 @@ export default class JournalCascadeGenerator extends FormApplication {
       const nonAbilityCharms = game.items.filter(charm => charm.system.charmtype === 'martialarts' || charm.system.charmtype === 'evocation').filter(charm => {
         if (charm.system.charmtype === 'martialarts') {
           if (charm.system.parentitemid) {
-            return Object.values(fullCharacter.items.filter(item => item.type === 'customability'  || item.system.abilitytype === 'martialart')).some(martialArt => {
+            return Object.values(fullCharacter.items.filter(item => item.type === 'customability' || item.system.abilitytype === 'martialart')).some(martialArt => {
               const sourceId = martialArt.flags?.core?.sourceId || '';
               const sections = sourceId.split('.');
               return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points
-            } );
+            });
           }
           return false;
         }
@@ -129,7 +176,7 @@ export default class JournalCascadeGenerator extends FormApplication {
 
       characterCharms = characterCharms.concat(archetypeCharm);
       characterCharms = characterCharms.concat(nonAbilityCharms);
-      
+
       characterCharms = characterCharms.sort(function (a, b) {
         const sortValueA = a.system.requirement;
         const sortValueB = b.system.requirement;
@@ -178,9 +225,9 @@ export default class JournalCascadeGenerator extends FormApplication {
     const charmsMap = {};
     charms.forEach(charm => {
       let abilityKey = charm.system.ability;
-      if((charm.system.charmtype === "martialarts" || charm.system.charmtype === "evocation" ) && charm.system.parentitemid) {
+      if ((charm.system.charmtype === "martialarts" || charm.system.charmtype === "evocation") && charm.system.parentitemid) {
         let parentItem = game.items.get(charm.system.parentitemid);
-        if(parentItem) {
+        if (parentItem) {
           abilityKey = parentItem.name;
         }
       }
@@ -197,7 +244,7 @@ export default class JournalCascadeGenerator extends FormApplication {
       }
       charm.system.leadsTo = fullCharms.filter(globalCharm => globalCharm.system.charmprerequisites.map(prereqCharm => prereqCharm.id).includes(charm.id));
       charmsMap[abilityKey].push(charm);
-      
+
       if (charm.system.archetype.ability) {
         const charmCopy = JSON.parse(JSON.stringify(charm));
         if (!charmsMap[charmCopy.system.archetype.ability]) {
@@ -404,17 +451,5 @@ export default class JournalCascadeGenerator extends FormApplication {
     };
 
     await JournalEntry.create(journalData);
-  }
-
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    html.on("click", "#generate", ev => {
-      this.generateJournals();
-    });
-
-    html.on("change", "#cascade-type", ev => {
-      this.render();
-    });
   }
 }

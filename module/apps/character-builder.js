@@ -957,7 +957,7 @@ export default class CharacterBuilder extends FormApplication {
               if (!item.flags?.core?.sourceId) {
                 item.updateSource({ "flags.core.sourceId": item.uuid });
               }
-              if(!item._stats?.compendiumSource) {
+              if (!item._stats?.compendiumSource) {
                 item.updateSource({ "_stats.compendiumSource": item.uuid });
               }
               const newItem = foundry.utils.duplicate(item);
@@ -984,11 +984,11 @@ export default class CharacterBuilder extends FormApplication {
                   this.object.character[type][indexAdd] = newItem;
                 }
               }
-  
+
               await this.onChange(ev);
               const closeImportItem = html.querySelector('.closeImportItem');
               if (closeImportItem) {
-                  closeImportItem.click();
+                closeImportItem.click();
               }
             });
           });
@@ -1000,7 +1000,7 @@ export default class CharacterBuilder extends FormApplication {
             });
           });
         },
-        classes: ['exaltedthird-dialog',`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       });
     });
 
