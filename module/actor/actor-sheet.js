@@ -1510,7 +1510,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.prophecy').mousedown(ev => {
-      new Prophecy(this.actor, {classes: `${game.settings.get("exaltedthird", "sheetStyle")}-background`}).render(true);
+      new Prophecy(this.actor, {}).render(true);
     });
 
     html.find('.roll-ability').mousedown(ev => {

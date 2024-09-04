@@ -40,7 +40,7 @@ import {
   ItemWeaponData
 } from "./template/item-template.js";
 import { ExaltedCombat } from "./combat/combat.js";
-import { Prophecy } from "./apps/prophecy.js";
+import Prophecy  from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
 
 Hooks.once('init', async function () {

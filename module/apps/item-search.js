@@ -39,7 +39,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       closeOnSubmit: false
     },
     classes: [`solar-background`],
-    position: { width: 631, height: 900 },
+    position: { width: 850, height: 900 },
   };
 
   static PARTS = {
