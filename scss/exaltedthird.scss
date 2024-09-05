@@ -276,8 +276,9 @@
 }
 
 .exaltedthird .query-results {
-  height: 66%;
+  width: 65%;
   overflow: scroll;
+  overflow-x: hidden;
 
   .search-item-row {
     display: flex;
@@ -587,5 +588,18 @@
         }
       }
     }
+  }
+}
+
+.item-search {
+  display: flex;
+  height: 100%;
+
+  .item-filter {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    width: 35%;
+    padding-right: 25px;
   }
 }

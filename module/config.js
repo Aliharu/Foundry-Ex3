@@ -1981,7 +1981,6 @@ exaltedthird.selects = {
     'endscene': 'Ex3.EndScene',
   },
   meritTypes: {
-    '': "Ex3.None",
     flaw: "Ex3.Flaw",
     story: "Ex3.Story",
     innate: "Ex3.Innate",
@@ -2393,5 +2392,9 @@ exaltedthird.selects = {
     "beforeDamageRoll": "Ex3.BeforeDamageRoll",
     "afterDamageRoll": "Ex3.AfterDamageRoll",
     "itemAdded": "Ex3.WhenItemAdded"
+  },
+  artifactTypes: {
+    mundane: "Ex3.Mundane",
+    artifact: "Ex3.Artifact",
   }
 };

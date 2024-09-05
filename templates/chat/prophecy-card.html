@@ -23,7 +23,7 @@
     <div class="resource">
         {{#each data.ambitions as |ambition key|}}
         <div>
-            <label class="resource-label">{{localize ambition.label}}: </label>{{ambition.text}}
+            <label class="resource-label">{{localize ambition.label}}</label>{{ambition.text}}
         </div>
         {{/each}}
     </div>
@@ -32,13 +32,13 @@
     </div>
     <div>
         <div>
-            <label class="resource-label">{{localize "Ex3.Cooperation"}}: </label>{{data.means.cooperation.text}}
+            <label class="resource-label">{{localize "Ex3.Cooperation"}}</label>{{data.means.cooperation.text}}
         </div>
         <div>
-            <label class="resource-label">{{localize "Ex3.Cosignatories"}}: </label>{{data.means.cosignatories.text}}
+            <label class="resource-label">{{localize "Ex3.Cosignatories"}}</label>{{data.means.cosignatories.text}}
         </div>
         <div>
-            <label class="resource-label">{{localize "Ex3.ExtraIntervalTime"}}: </label>+{{data.means.additionalIntervalTime.value}}
+            <label class="resource-label">{{localize "Ex3.ExtraIntervalTime"}}</label>+{{data.means.additionalIntervalTime.value}}
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.Trappings"}}: </label>{{data.trappings.value}}

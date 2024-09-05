@@ -7,6 +7,7 @@ export class RollForm extends FormApplication {
         this.rollableAbilities['willpower'] = "Ex3.Willpower";
         this.rollablePools = CONFIG.exaltedthird.npcpools;
         this.rollablePools['willpower'] = "Ex3.Willpower";
+        this.messageId = data.preMessageId;
 
         if (data.rollId) {
             this.object = foundry.utils.duplicate(this.actor.system.savedRolls[data.rollId]);
@@ -819,7 +820,19 @@ export class RollForm extends FormApplication {
     }
 
     _getHeaderButtons() {
-        let buttons = super._getHeaderButtons();
+        let buttons = [
+            {
+                label: "Close",
+                class: "close",
+                icon: "fas fa-times",
+                onclick: async () => {
+                    if (this.messageId) {
+                        game.messages.get(this.messageId)?.delete();
+                    }
+                    this.close();
+                }
+            }
+        ];
         // Token Configuration
         if (this.object.rollType !== 'base') {
             if (this.object.rollType !== 'useOpposingCharms') {
@@ -846,7 +859,7 @@ export class RollForm extends FormApplication {
                                 callback: (event, button, dialog) => false
                             }],
                             position: {
-                                 width: 500,
+                                width: 500,
                             },
                             submit: result => {
                                 if (result) {
@@ -1313,7 +1326,7 @@ export class RollForm extends FormApplication {
         this.render();
     }
 
-    _getFormulaValue(charmValue, opposedCharmActor = null, item=null) {
+    _getFormulaValue(charmValue, opposedCharmActor = null, item = null) {
         var rollerValue = 0;
         if (charmValue) {
             if (charmValue.split(' ').length === 3) {
@@ -1364,7 +1377,7 @@ export class RollForm extends FormApplication {
         return rollerValue;
     }
 
-    _getBooleanFormulaValue(charmValue, opposedCharmActor = null, item=null) {
+    _getBooleanFormulaValue(charmValue, opposedCharmActor = null, item = null) {
         if (typeof charmValue === 'boolean') {
             return charmValue;
         }
@@ -1471,7 +1484,7 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _getFormulaActorValue(formula, opposedCharmActor = null, item=null) {
+    _getFormulaActorValue(formula, opposedCharmActor = null, item = null) {
         var formulaVal = 0;
         var forumlaActor = this.actor;
         if (opposedCharmActor) {
@@ -2184,6 +2197,9 @@ export class RollForm extends FormApplication {
 
         html.find('#cancel').click((event) => {
             this.resolve(false);
+            if (this.messageId) {
+                game.messages.get(this.messageId)?.delete();
+            }
             this.close();
         });
 
@@ -4040,7 +4056,7 @@ export class RollForm extends FormApplication {
         }
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             try {
-                for(let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+                for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
                     if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex)) {
                         for (const bonus of Object.values(trigger.bonuses)) {
                             if ((type === 'itemAdded' || !this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
@@ -4263,7 +4279,7 @@ export class RollForm extends FormApplication {
                                     case 'guile':
                                         if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
                                             this.object.difficulty += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
-    
+
                                         } else {
                                             this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
                                         }

@@ -7,7 +7,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
     this.filters = {
       type: {
         "armor": { display: "Armor", value: false },
-        "charm": { display: "Charm", value: false },
+        "charm": { display: "Charm", value: true },
         "item": { display: "Item", value: false },
         "merit": { display: "Merit", value: false },
         "spell": { display: "Spell", value: false },
@@ -18,11 +18,22 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
         name: "",
         description: "",
         worldItems: false,
-        lessThen: false,
         ability: "",
-        requirement: "",
-        essence: "",
-        charmtype: "",
+        requirement: {
+          min: "0",
+          max: "5",
+        },
+        essence: {
+          min: "0",
+          max: "10",
+        },
+        charmType: "",
+        circle: "",
+        ritualType: "",
+        itemType: "",
+        weaponWeight: "",
+        weaponArtifactType: "",
+        armorArtifactType: "",
       },
     }
   }
@@ -38,7 +49,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       submitOnChange: true,
       closeOnSubmit: false
     },
-    classes: [`solar-background`],
+    classes: ['exaltedthird-dialog', `solar-background`],
     position: { width: 850, height: 900 },
   };
 
@@ -64,20 +75,20 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
   _onRender(context, options) {
     this.element.querySelectorAll('.item-row').forEach(element => {
       let dragStarted = false;
-    
+
       element.addEventListener('mousedown', () => {
         dragStarted = false; // Reset the flag on mousedown
       });
-    
+
       element.addEventListener('click', async (ev) => {
         if (dragStarted) return; // Prevent click handler if dragging
         ev.stopPropagation();
         let itemId = $(ev.currentTarget).attr("data-item-id");
         this.items.find(i => i.id == itemId).sheet.render(true);
       });
-    
+
       element.setAttribute("draggable", true);
-    
+
       element.addEventListener("dragstart", event => {
         dragStarted = true; // Set the flag when dragging starts
         event.stopPropagation();
@@ -145,25 +156,10 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
             filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.compendium)
             break;
           case "essence":
-            if (this.filters.attribute.essence) {
-              if (this.filters.attribute.lessThen) {
-                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || 11) <= parseInt(this.filters.attribute.essence))
-              }
-              else {
-                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence || '').toString() === this.filters.attribute.essence)
-
-              }
-            }
+            filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence >= parseInt(this.filters.attribute.essence.min) && i.system.essence <= parseInt(this.filters.attribute.essence.max)))
             break;
           case "requirement":
-            if (this.filters.attribute.requirement) {
-              if (this.filters.attribute.lessThen) {
-                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || 11) <= parseInt(this.filters.attribute.requirement))
-              }
-              else {
-                filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement || '').toString() === this.filters.attribute.requirement)
-              }
-            }
+            filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.requirement >= parseInt(this.filters.attribute.requirement.min) && i.system.requirement <= parseInt(this.filters.attribute.requirement.max)))
             break;
           case "ability":
             if (this.filters.attribute.ability) {
@@ -171,8 +167,56 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
             }
             break;
           case 'charmType':
-            if (this.filters.attribute.charmtype) {
-              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.charmtype === this.filters.attribute.charmtype)
+            if (this.filters.attribute.charmType) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'charm' || i.system.charmtype === this.filters.attribute.charmType)
+            }
+            break;
+          case 'circle':
+            if (this.filters.attribute.circle) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'spell' || i.system.circle === this.filters.attribute.circle)
+            }
+            break;
+          case 'itemType':
+            if (this.filters.attribute.itemType) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'item' || i.system.itemtype === this.filters.attribute.itemType)
+            }
+            break;
+          case 'ritualType':
+            if (this.filters.attribute.ritualType) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'ritual' || i.system.ritualtype === this.filters.attribute.ritualType)
+            }
+            break;
+          case 'weaponWeight':
+            if (this.filters.attribute.weaponWeight) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'weapon' || i.system.weighttype === this.filters.attribute.weaponWeight)
+            }
+            break;
+          case 'armorWeight':
+            if (this.filters.attribute.armorWeight) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'armor' || i.system.weighttype === this.filters.attribute.armorWeight)
+            }
+            break;
+          case 'meritType':
+            if (this.filters.attribute.meritType) {
+              filteredItems = filteredItems.filter((i) => i.type !== 'merit' || i.system.merittype === this.filters.attribute.meritType)
+            }
+            break;
+          case 'weaponArtifactType':
+            if (this.filters.attribute.weaponArtifactType) {
+              if (this.filters.attribute.weaponArtifactType === "artifact") {
+                filteredItems = filteredItems.filter((i) => i.type !== 'weapon' || i.system.traits.weapontags.value.includes('artifact'))
+              } else {
+                filteredItems = filteredItems.filter((i) => i.type !== 'weapon' || !i.system.traits.weapontags.value.includes('artifact'))
+              }
+            }
+            break;
+          case 'armorArtifactType':
+            if (this.filters.attribute.armorArtifactType) {
+              if (this.filters.attribute.armorArtifactType === "artifact") {
+                filteredItems = filteredItems.filter((i) => i.type !== 'armor' || i.system.traits.armortags.value.includes('artifact'))
+              } else {
+                filteredItems = filteredItems.filter((i) => i.type !== 'armor' || !i.system.traits.armortags.value.includes('artifact'))
+              }
             }
             break;
         }
@@ -199,7 +243,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
 }
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
-  const button = $(`<button class="item-search"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.ItemSearch")}</b></button>`);
+  const button = $(`<button class="item-search-button"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.ItemSearch")}</b></button>`);
   html.find(".directory-footer").append(button);
 
   button.click(ev => {

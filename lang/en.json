@@ -615,6 +615,13 @@
     "Ex3.IncludeWorldItems": "Include World Items",
     "Ex3.UseLessThen": "Numerical values will include all values equal to or less then the selected value",
     "Ex3.CharmFilters": "Charm Filters",
+    "Ex3.SpellFilters": "Spell Filters",
+    "Ex3.ItemFilters": "Item Filters",
+    "Ex3.WeaponFilters": "Weapon Filters",
+    "Ex3.MeritFilters": "Merit Filters",
+    "Ex3.ArmorFilters": "Armor Filters",
+    "Ex3.RitualFilters": "Ritual Filters",
+
     "Ex3.Modifiers": "Modifiers",
     "Ex3.OtherModifiers": "Other Modifiers",
     "Ex3.Conditions": "Conditions",
@@ -1211,5 +1218,10 @@
     "Ex3.Advance": "Advance",
     "Ex3.AdvanceTime": "Advance Time",
 
-    "Ex3.GiveExperience": "Give Experience"
+    "Ex3.GiveExperience": "Give Experience",
+
+    "Ex3.ItemTypes": "Item Types",
+    "Ex3.MeritType": "Merit Type",
+    "Ex3.RitualType": "Ritual Type",
+    "Ex3.Mundane": "Mundane"
 }

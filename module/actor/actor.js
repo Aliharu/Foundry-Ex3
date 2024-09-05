@@ -1405,9 +1405,13 @@ export class ExaltedThirdActor extends Actor {
     if (this.type !== 'npc') return;
   }
 
-  actionRoll(data) {
+  async actionRoll(data) {
+    let message = null;
     if (data.rollType !== 'useOpposingCharms') {
-      this.sendTargetingChatMessage(data);
+      message = await this.sendTargetingChatMessage(data);
+    }
+    if(message) {
+      data.preMessageId = message.id;
     }
     if (this.type === 'npc') {
       game.rollForm = new RollForm(this, {}, {}, data).render(true);
@@ -1426,7 +1430,7 @@ export class ExaltedThirdActor extends Actor {
           imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
           rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
         });
-        ChatMessage.create({
+        return await ChatMessage.create({
           user: game.user.id,
           content: messageContent,
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
@@ -1445,7 +1449,7 @@ export class ExaltedThirdActor extends Actor {
         imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
         rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
       });
-      ChatMessage.create({
+      return await ChatMessage.create({
         user: game.user.id,
         content: messageContent,
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
@@ -1462,7 +1466,7 @@ export class ExaltedThirdActor extends Actor {
         imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
         rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
       });
-      ChatMessage.create({
+      return await ChatMessage.create({
         user: game.user.id,
         content: messageContent,
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,

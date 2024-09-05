@@ -444,7 +444,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
   if (game.user.isGM) {
-    const button = $(`<button class="item-search"><i class="fas fa-book-open"></i><b>${game.i18n.localize("Ex3.CharmCardJournals")}</b></button>`);
+    const button = $(`<button class="item-search-button"><i class="fas fa-book-open"></i><b>${game.i18n.localize("Ex3.CharmCardJournals")}</b></button>`);
     html.find(".directory-footer").append(button);
 
     button.click(ev => {
