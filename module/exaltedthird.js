@@ -42,6 +42,7 @@ import {
 import { ExaltedCombat } from "./combat/combat.js";
 import Prophecy  from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
+import CharacterBuilder2 from "./apps/character-builder-2.js";
 
 Hooks.once('init', async function () {
 
@@ -433,7 +434,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(buttonsText);
 
   html.on("click", ".character-generator-button", () => {
-    new CharacterBuilder(null, {}, {}, {}).render(true);
+    new CharacterBuilder2({classes: ["exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}).render(true);
   });
 
   html.on("click", ".template-import-button", () => {

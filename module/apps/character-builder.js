@@ -5,6 +5,7 @@ const attributeAbilityMap = {
   "legendary": 5,
 }
 
+
 export default class CharacterBuilder extends FormApplication {
   constructor(app, options, object, data) {
     super(object, options);

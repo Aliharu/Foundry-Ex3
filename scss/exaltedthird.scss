@@ -603,3 +603,12 @@
     padding-right: 25px;
   }
 }
+
+.application {
+  .flexrow {
+    .dots-checkbox {
+      flex: none;
+    }
+  }
+}
+

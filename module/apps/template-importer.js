@@ -39,11 +39,8 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     window: {
       title: "Template Importer", resizable: true, controls: [
         {
-          // font awesome icon
           icon: 'fa-solid fa-question',
-          // string that will be run through localization
           label: "Help",
-          // string that MUST match one of your `actions`
           action: "showHelpDialog",
         },
       ]
@@ -61,6 +58,18 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       showHelpDialog: TemplateImporter.showHelpDialog,
     }
   };
+
+  async close(options={}) {
+    const applyChanges = await foundry.applications.api.DialogV2.confirm({
+      window: { title: `${game.i18n.localize("Ex3.Close")}?` },
+      content: "<p>Any unsaved changed will be lost</p>",
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      modal: true
+    });
+    if (applyChanges) {
+      super.close();
+    }
+  }
 
   static async myFormHandler(event, form, formData) {
     // Do things with the returned FormData

@@ -1,0 +1,1163 @@
+<div data-drop="true" class="exaltedthird">
+    <header>
+      <div class="resource flex-center mb-2 mt-2">
+        <div>
+          <label class="resource-label">{{localize "Ex3.Name"}} <a><i data-action="randomName"
+                class="fas fa-dice cursor-pointer"></i></a></label>
+          <input name="object.character.name" value="{{data.character.name}}" type="text"
+            placeholder="{{data.character.defaultName}}">
+        </div>
+      </div>
+      <div class="resource grid grid-4col flex-center">
+        <div>
+          <div class="resource-label">{{localize "Ex3.Type"}}</div>
+          <select name="object.characterType" data-type="String">
+            {{selectOptions selects.characterTypes selected=data.characterType localize=true}}
+          </select>
+        </div>
+        {{#ifEquals data.characterType 'npc'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Classification"}}</div>
+          <select name="object.character.classificationType" data-type="String">
+            {{selectOptions selects.creatureTypes selected=data.character.classificationType localize=true}}
+          </select>
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.PoolNumbers"}}</div>
+          <select name="object.poolNumbers" value="{{data.poolNumbers}}" data-type="String">
+            {{selectOptions selects.poolNumberTypes selected=data.poolNumbers localize=true}}
+          </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals data.character.classificationType 'exalt'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
+          <select id="exalt" name="object.character.exalt" data-type="String">
+            {{selectOptions selects.exaltTypes selected=data.character.exalt localize=true}}
+          </select>
+        </div>
+        {{#if data.availableCastes}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
+          <select name="object.character.caste" data-type="String">
+            {{selectOptions data.availableCastes selected=data.character.caste localize=true}}
+          </select>
+        </div>
+        {{/if}}
+        {{/ifEquals}}
+        <div>
+          <label class="resource-label">{{localize "Ex3.Essence"}} </label>
+          <input class="test" name="object.character.essence" value="{{data.character.essence}}" type="number">
+        </div>
+        <div>
+          <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
+          <input name="object.character.willpower" value="{{data.character.willpower}}" type="number">
+        </div>
+        {{#ifEquals data.character.exalt 'exigent'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Exigent"}}</div>
+          <select name="object.character.exigent" data-type="String">
+            {{selectOptions selects.exigentNames selected=data.character.exigent localize=true}}
+          </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals data.character.exalt 'solar'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Supernal"}}</div>
+          <select name="object.character.supernal" data-type="String">
+            {{selectOptions selects.abilities selected=data.character.supernal localize=true}}
+          </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals data.character.exalt 'abyssal'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.Apocalyptic"}}</div>
+          <select name="object.character.supernal" data-type="String">
+            {{selectOptions selects.abilities selected=data.character.supernal localize=true}}
+          </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals data.character.exalt 'lunar'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.SpiritShape"}}</div>
+          <input name="object.character.spiritShape" type="text" value="{{data.character.spiritShape}}" />
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.Tell"}}</div>
+          <input name="object.character.tell" type="text" value="{{data.character.tell}}" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals data.character.exalt 'sidereal'}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.BirthSign"}}</div>
+          <select name="object.character.birthSign" data-type="String">
+            {{#each data.signList as |signCategory signCategoryType|}}
+            <optgroup label="{{signCategory.label}}">
+              {{selectOptions signCategory.signs selected=../data.character.birthsign localize=true}}
+            </optgroup>
+            {{/each}}
+          </select>
+        </div>
+        <div>
+          <div class="resource-label">{{localize "Ex3.ExaltationSign"}}</div>
+          <select name="object.character.exaltSign" data-type="String">
+            {{#each data.signList as |signCategory signCategoryType|}}
+            <optgroup label="{{signCategory.label}}">
+              {{selectOptions signCategory.signs selected=../data.character.exaltSign localize=true}}
+            </optgroup>
+            {{/each}}
+          </select>
+        </div>
+        {{/ifEquals}}
+        {{#if data.oxBodyEnabled}}
+        <div>
+          <div class="resource-label">{{localize "Ex3.OxBodies"}}</div>
+          <input name="object.character.oxBodies" type="number" value="{{data.character.oxBodies}}" />
+        </div>
+        {{/if}}
+      </div>
+    </header>
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <!-- <a class="item" data-tab="overview">{{localize "Ex3.Overview"}}</a>
+      <a class="item" data-tab="attributes">{{localize "Ex3.Attributes"}}</a>
+      <a class="item" data-tab="abilities">{{localize "Ex3.Abilities"}}</a>
+      <a class="item" data-tab="merits">{{localize "Ex3.Merits"}}</a>
+      <a class="item" data-tab="charms">{{localize "Ex3.Charms"}}</a>
+      <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
+      <a class="item" data-tab="equipment">{{localize "Ex3.Equipment"}}</a> -->
+      {{#each tabs as |tab|}}
+      <a class="item {{tab.cssClass}}" data-action="tab" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+        {{localize tab.label}}
+      </a>
+      {{/each}}
+    </nav>
+    <section class="sheet-body">
+      <div class="tab flex-center {{#ifEquals tab 'overview'}}active{{/ifEquals}}" data-group="primary" data-tab="overview">
+        {{#ifEquals data.characterType 'character'}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Overview"}}</label>
+        </div>
+        <table>
+          <tr>
+            <th>{{localize "Ex3.Section"}}</th>
+            <th>{{localize "Ex3.Available"}}</th>
+            <th>{{localize "Ex3.Spent"}}</th>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.PhysicalAttributes"}}</td>
+            <td>{{data.creationData.available.attributes.physical}}</td>
+            <td>{{data.creationData.spent.attributes.physical}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.SocialAttributes"}}</td>
+            <td>{{data.creationData.available.attributes.social}}</td>
+            <td>{{data.creationData.spent.attributes.social}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.MentalAttributes"}}</td>
+            <td>{{data.creationData.available.attributes.mental}}</td>
+            <td>{{data.creationData.spent.attributes.mental}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Abilities"}} (3 or below)</td>
+            <td>{{data.creationData.available.abilities}}</td>
+            <td>{{data.creationData.spent.abilities}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Abilities"}} (above 3)</td>
+            <td></td>
+            <td>{{data.creationData.spent.abovethree}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Specialties"}}</td>
+            <td>{{data.creationData.available.specialties}}</td>
+            <td>{{data.creationData.spent.specialties}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Merits"}}</td>
+            <td>{{data.creationData.available.merits}}</td>
+            <td>{{data.creationData.spent.merits}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+            <td>{{data.creationData.available.charms}}</td>
+            <td>{{data.creationData.spent.charms}}</td>
+          </tr>
+          {{#if data.creationData.available.excellencies}}
+          <tr>
+            <td>{{localize "Ex3.Excellencies"}}</td>
+            <td>{{data.creationData.available.excellencies}}</td>
+            <td>{{data.creationData.spent.excellencies}}</td>
+          </tr>
+          {{/if}}
+          {{#if data.unifiedCharacterCreation}}
+          <tr>
+            <td>{{localize "Ex3.BonusPoints"}}</td>
+            <td>{{data.creationData.available.experience}}</td>
+            <td>{{data.creationData.spent.experience.total}}</td>
+          </tr>
+          {{else}}
+          <tr>
+            <td>{{localize "Ex3.BonusPoints"}}</td>
+            <td>{{data.creationData.available.bonusPoints}}</td>
+            <td>{{data.creationData.spent.bonusPoints.total}}</td>
+          </tr>
+          {{/if}}
+        </table>
+        {{#if data.unifiedCharacterCreation}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Experience"}}</label>
+        </div>
+        <table>
+          <tr>
+            <th>{{localize "Ex3.Section"}}</th>
+            <th>{{localize "Ex3.Cost"}}</th>
+            <th>{{localize "Ex3.Spent"}}</th>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Attributes"}}</td>
+            <td>10 per dot, 8 per favored dot</td>
+            <td>{{data.creationData.spent.experience.attributes}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Abilities"}}</td>
+            <td>5 per dot, 4 per favored dot</td>
+            <td>{{data.creationData.spent.experience.abilities}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Specialties"}}</td>
+            <td>2</td>
+            <td>{{data.creationData.spent.experience.specialties}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Merits"}}</td>
+            <td>2 per dot</td>
+            <td>{{data.creationData.spent.experience.merits}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+            <td>12 per dot, 10 per favored dot</td>
+            <td>{{data.creationData.spent.experience.charms}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Willpower"}}</td>
+            <td>6 per dot</td>
+            <td>{{data.creationData.spent.experience.willpower}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Total"}}</td>
+            <td></td>
+            <td>{{data.creationData.spent.experience.total}}</td>
+          </tr>
+        </table>
+        {{else}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.BonusPoints"}}</label>
+        </div>
+        <table>
+          <tr>
+            <th>{{localize "Ex3.Section"}}</th>
+            <th>{{localize "Ex3.Cost"}}</th>
+            <th>{{localize "Ex3.Spent"}}</th>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Attributes"}}</td>
+            <td>4 per dot, 3 per teriary dot, 3 per caste/favored dot</td>
+            <td>{{data.creationData.spent.bonusPoints.attributes}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Abilities"}}</td>
+            <td>1 per dot, 2 per non-favored</td>
+            <td>{{data.creationData.spent.bonusPoints.abilities}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Specialties"}}</td>
+            <td>1</td>
+            <td>{{data.creationData.spent.bonusPoints.specialties}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Merits"}}</td>
+            <td>1</td>
+            <td>{{data.creationData.spent.bonusPoints.merits}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+            <td>4, 5 per non-favored</td>
+            <td>{{data.creationData.spent.bonusPoints.charms}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Willpower"}}</td>
+            <td>2</td>
+            <td>{{data.creationData.spent.bonusPoints.willpower}}</td>
+          </tr>
+          <tr>
+            <td>{{localize "Ex3.Total"}}</td>
+            <td></td>
+            <td>{{data.creationData.spent.bonusPoints.total}}</td>
+          </tr>
+        </table>
+        {{/if}}
+        {{else}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Skills"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          {{#each data.character.skills as |skill key|}}
+          <div>
+            <div class="resource-label">{{localize skill.label}}</div>
+            <select name="object.character.skills.{{key}}.value" data-type="String">
+              {{selectOptions ../selects.skillLevels selected=skill.value localize=true}}
+            </select>
+          </div>
+          {{/each}}
+        </div>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Traits"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+            <select name="object.character.sizeCategory" data-type="String">
+              {{selectOptions selects.sizeCategory selected=data.character.sizeCategory localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Battlegroup"}}</div>
+            <input class="rerender" name="object.character.battlegroup" type="checkbox" {{checked
+              data.character.battlegroup}}>
+          </div>
+          {{#each data.character.traits as |trait key|}}
+          <div>
+            <div class="resource-label">{{localize trait.label}}</div>
+            <input name="object.character.traits.{{key}}.value" type="checkbox" {{checked trait.value}}>
+          </div>
+          {{/each}}
+        </div>
+        {{#if data.character.battlegroup}}
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Battlegroup"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <label class="resource-label">{{localize "Ex3.Drill"}}</label>
+            <div class="charname"> <select name="object.character.battlegroupStats.drill"
+                value="{{data.character.battlegroupStats.drill}}" data-type="String">
+                {{selectOptions selects.drill selected=data.character.battlegroupStats.drill localize=true}}
+              </select></div>
+          </div>
+          <div>
+            <label class="resource-label">{{localize "Ex3.Size"}}</label>
+            <input type="number" name="object.character.battlegroupStats.size"
+              value="{{data.character.battlegroupStats.size}}" data-dtype="Number" />
+          </div>
+          <div>
+            <label class="resource-label">{{localize "Ex3.Might"}}</label>
+            <input type="number" name="object.character.battlegroupStats.might"
+              value="{{data.character.battlegroupStats.might}}" data-dtype="Number" />
+          </div>
+        </div>
+        {{/if}}
+        <!-- <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.HomebrewContent"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          <div>
+            <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
+            <input name="object.character.homebew.specialAbilities" value="{{data.character.homebrew.specialAbilities}}"
+              type="number">
+          </div>
+        </div> -->
+        {{/ifEquals}}
+      </div>
+
+      <div class="tab flex-center {{#ifEquals tab 'attributes'}}active{{/ifEquals}}" data-group="primary" data-tab="attributes">
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Attributes"}}<a data-action="randomAttributes"><i
+             class="fas fa-dice cursor-pointer"></i></a></label>
+        </div>
+        <div class="resource grid grid-3col flex-center" style="align-items:start;">
+          <div>
+            <div>
+              <div class="resource-label">
+                {{localize "Ex3.Physical"}}
+              </div>
+              <select name="object.creationData.physical" data-type="String">
+                {{selectOptions selects.attributePriority selected=data.creationData.physical localize=true}}
+              </select>
+            </div>
+          </div>
+          <div>
+            <div>
+              <div class="resource-label">
+                {{localize "Ex3.Social"}}
+              </div>
+              <select name="object.creationData.social" data-type="String">
+                {{selectOptions selects.attributePriority selected=data.creationData.social localize=true}}
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="resource-label">
+              {{localize "Ex3.Mental"}}
+            </div>
+            <div>
+              <select name="object.creationData.mental" data-type="String">
+                {{selectOptions selects.attributePriority selected=data.creationData.mental localize=true}}
+              </select>
+            </div>
+          </div>
+          {{#each data.character.attributes as |attribute key|}}
+          <div>
+            <div class="resource-label flexrow flex-center">{{localize attribute.name}}{{#if
+              attribute.caste}}*{{/if}}<input class="dots-checkbox" name="object.character.attributes.{{key}}.favored" type="checkbox"
+                {{checked attribute.favored}}></div>
+            {{#ifEquals ../data.characterType 'character'}}
+
+            <div class="resource-value" data-value="{{attribute.value}}" data-name="object.attributes.{{key}}.value">
+              {{#numLoop 5}}
+              {{#ifGreater attribute.value this}}
+              <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"
+                style="background-color:black;"></span>
+              {{else}}
+              <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"></span>
+              {{/ifGreater}}
+              {{/numLoop}}
+            </div>
+            {{/ifEquals}}
+            {{#if ../data.character.showAttributeCharms}}
+            <div class="resource-label flexrow flex-center"><span>{{localize "Ex3.Random"}} <a><i
+                    class="fas fa-dice cursor-pointer random-item" data-type="charms" data-item="charm"
+                    data-ability="{{key}}"></i></a> <a data-action="importItem" class="item-control import-item" title="Import charm"
+                  data-type="charms" data-item="charm" data-ability="{{key}}"><i class="fas fa-edit"></i></a></span>
+            </div>
+            {{/if}}
+            <ol class="items-list" style="align-items:start;max-height:150px;">
+              {{#each attribute.charms as |item index|}}
+              <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+                <h4 class="item-name">{{item.name}}</h4>
+                <div class="item-image" data-action="deleteSublistCharm" data-type="attributes" data-sublistkey="{{key}}" data-index="{{index}}"><a class="item-control delete-sublist-charm" title="Delete"
+                    ><i
+                      class="fas fa-trash"></i></a></div>
+              </li>
+              <li class="item-description" style="text-align: start;">
+                <div>
+                  {{{charmCostDisplay item.system.cost}}}
+                </div>
+                <div>
+                  <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                    style="text-transform: capitalize;">{{item.system.ability}}</span>
+                  {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+                </div>
+                <div>
+                  <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+                </div>
+                {{#if item.system.keywords}}
+                <div>
+                  <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                </div>
+                {{/if}}
+                <div>
+                  <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                </div>
+                <div>
+                  <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+                  id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+                </div>
+                <div>
+                  {{{item.enritchedHTML}}}
+                </div>
+              </li>
+              {{/each}}
+            </ol>
+          </div>
+          {{/each}}
+          <div>
+            {{data.creationData.spent.attributes.physical}}/{{data.creationData.available.attributes.physical}}
+          </div>
+          <div>
+            {{data.creationData.spent.attributes.social}}/{{data.creationData.available.attributes.social}}
+          </div>
+          <div>
+            {{data.creationData.spent.attributes.mental}}/{{data.creationData.available.attributes.mental}}
+          </div>
+        </div>
+        <div>
+          {{#if data.character.showAttributeCharms}}
+          <div>
+            {{data.creationData.spent.favoredAttributes}}/{{data.creationData.available.favoredAttributes}} Favored
+          </div>
+          {{/if}}
+        </div>
+      </div>
+      <div class="tab flex-center {{#ifEquals tab 'abilities'}}active{{/ifEquals}}" data-group="primary" data-tab="abilities">
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Abilities"}}<a data-action="randomAbilities"><i id="randomAbilities"
+                class="fas fa-dice cursor-pointer"></i></a></label>
+        </div>
+        <div class="resource grid grid-3col flex-center" style="align-items:start">
+          {{#each data.character.abilities as |ability key|}}
+          {{#ifNotEquals key 'martialarts'}}
+          <div>
+            <div class="resource-label flexrow flex-center">
+              {{localize ability.name}}{{#if ability.caste}}*{{/if}}<input class="dots-checkbox"
+                name="object.character.abilities.{{key}}.favored" type="checkbox" {{checked ability.favored}}></div>
+            {{#ifEquals ../data.characterType 'character'}}
+            <div class="resource-value" data-value="{{ability.value}}" data-name="object.abilities.{{key}}.value">
+              {{#numLoop 5}}
+              {{#ifGreater ability.value this}}
+              <span class="resource-value-step" data-type="abilities" data-name="{{key}}" data-index="{{this}}"
+                style="background-color:black;"></span>
+              {{else}}
+              <span class="resource-value-step" data-type="abilities" data-name="{{key}}" data-index="{{this}}"></span>
+              {{/ifGreater}}
+              {{/numLoop}}
+              {{#ifEquals ../data.character.exalt 'sidereal'}}
+              <img class="borderless-image" src="systems/exaltedthird/assets/caste-marks/{{ability.maiden}}.png"
+                title="{{ability.maiden}}" height="14" width="14" />
+              {{/ifEquals}}
+            </div>
+            {{/ifEquals}}
+            {{#if ../data.character.showAbilityCharms}}
+            <div class="resource-label flexrow flex-center"><span>{{localize "Ex3.Charms"}} <a><i
+                    class="fas fa-dice cursor-pointer random-item" data-type="charms" data-item="charm"
+                    data-ability="{{key}}"></i></a> <a data-action="importItem" class="item-control import-item" title="Import charm"
+                  data-type="charms" data-item="charm" data-ability="{{key}}"><i class="fas fa-edit"></i></a></span>
+            </div>
+            {{/if}}
+            <ol class="items-list" style="align-items:start;max-height:150px;">
+              {{#each ability.charms as |item index|}}
+              <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+                <h4 class="item-name">{{item.name}}
+                </h4>
+                <div class="item-image" data-action="deleteSublistCharm" data-sublistkey="{{key}}" data-index="{{index}}" data-type="abilities"><a class="item-control delete-sublist-charm" title="Delete"
+                    ><i
+                      class="fas fa-trash"></i></a></div>
+              </li>
+              <li class="item-description" style="text-align: start;">
+                <div>
+                  {{{charmCostDisplay item.system.cost}}}
+                </div>
+                <div>
+                  <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                    style="text-transform: capitalize;">{{item.system.ability}}</span>
+                  {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+                </div>
+                <div>
+                  <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+                </div>
+                {{#if item.system.keywords}}
+                <div>
+                  <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                </div>
+                {{/if}}
+                <div>
+                  <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                </div>
+                <div>
+                  <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+                  id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+                </div>
+                <div>
+                  {{{item.enritchedHTML}}}
+                </div>
+              </li>
+              {{/each}}
+            </ol>
+          </div>
+          {{/ifNotEquals}}
+          {{/each}}
+        </div>
+        {{#if data.character.showAbilityCharms}}
+        {{#if data.creationData.available.casteAbilities}}
+        <div>
+          {{data.creationData.spent.casteAbilities}}/{{data.creationData.available.casteAbilities}} Caste
+        </div>
+        {{/if}}
+        <div>
+          {{data.creationData.spent.favoredAbilities}}/{{data.creationData.available.favoredAbilities}} Favored
+        </div>
+        {{/if}}
+        <div>
+          {{data.creationData.spent.abilities}}/{{data.creationData.available.abilities}}
+          ({{data.creationData.spent.abovethree}} Above 3)
+        </div>
+        {{#ifEquals data.characterType 'character'}}
+        <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+          <label class="resource-label">{{localize "Ex3.Crafts"}}</label>
+          <a data-action="addItem" class="item-control add-item" title="Create craft" data-type="crafts"><i class="fas fa-plus"></i></a>
+        </div>
+        <div class="resource grid grid-3col flex-center">
+          {{#each data.character.crafts as |craft index|}}
+          <input name="object.character.crafts.{{index}}.name" type="text" value="{{craft.name}}" />
+          <input name="object.character.crafts.{{index}}.system.points" type="number" value="{{craft.system.points}}" />
+          <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="crafts" data-index="{{index}}"><i
+              class="fas fa-trash"></i></a>
+          {{/each}}
+        </div>
+        {{/ifEquals}}
+        <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+          <label class="resource-label"><input name="object.character.abilities.martialarts.favored" type="checkbox"
+              {{checked data.character.abilities.martialarts.favored}}>{{localize "Ex3.MartialArts"}}</label>
+          <a data-action="randomItem" data-type="martialArts"
+          data-item="customability"><i class="fas fa-dice cursor-pointer random-item" title="Random Martial Art"></i></a>
+          <a data-action="addItem" class="item-control add-item" title="Create Martial Art" data-type="martialArts"><i
+              class="fas fa-plus"></i></a>
+          <a data-action="importItem" class="item-control import-item" title="Import" data-type="martialArts" data-item="customability"><i
+              class="fas fa-edit"></i></a>
+        </div>
+        <div class="resource grid grid-3col flex-center">
+          {{#each data.character.martialArts as |martialart index|}}
+          <input name="object.character.martialArts.{{index}}.name" type="text" type="text"
+            value="{{martialart.name}}" />
+          <input name="object.character.martialArts.{{index}}.system.points" type="text" type="number"
+            value="{{martialart.system.points}}" />
+          <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="martialArts" data-index="{{index}}"><i
+              class="fas fa-trash"></i></a>
+          {{/each}}
+        </div>
+        {{#ifEquals data.characterType 'character'}}
+        <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+          <label class="resource-label">{{localize "Ex3.Specialties"}}</label>
+          <a data-action="addItem" class="item-control add-item" title="Create specialty" data-type="specialties"><i
+              class="fas fa-plus"></i></a>
+        </div>
+        <div class="resource grid grid-3col flex-center">
+          {{#each data.character.specialties as |specialty index|}}
+          <input name="object.character.specialties.{{index}}.name" type="text" value="{{specialty.name}}" />
+          <select name="object.character.specialties.{{index}}.system.ability" data-type="String">
+            {{selectOptions ../data.abilityList selected=specialty.system.ability localize=true}}
+          </select>
+          <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="specialties" data-index="{{index}}"><i
+              class="fas fa-trash"></i></a>
+          {{/each}}
+        </div>
+        <div>
+          {{data.creationData.spent.specialties}}/{{data.creationData.available.specialties}}
+        </div>
+        {{/ifEquals}}
+      </div>
+      <div class="tab flex-center {{#ifEquals tab 'merits'}}active{{/ifEquals}}" data-group="primary" data-tab="merits">
+        <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+          <label class="resource-label">{{localize "Ex3.Merits"}}</label>
+          <a data-action="randomItem" class="item-control random-item" title="Random merit" data-type="merits" data-item="merit"><i
+              class="fas fa-dice"></i></a>
+          <a data-action="addItem" class="item-control add-item" title="Create merit" data-type="merits"><i class="fas fa-plus"></i></a>
+          <a data-action="importItem" class="item-control import-item" title="Import merit" data-type="merits" data-item="merit"><i
+              class="fas fa-edit"></i></a>
+        </div>
+        <div class="resource grid grid-2col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.BonusMerits"}}</div>
+            <input name="object.character.bonusMerits.value" type="number"
+              value="{{data.character.bonusMerits.value}}" />
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.BonusMeritSource"}}</div>
+            <input name="object.character.bonusMerits.source" type="text"
+              value="{{data.character.bonusMerits.source}}" />
+          </div>
+        </div>
+        <div class="resource grid grid-3col">
+          {{#each data.character.merits as |merit index|}}
+          <div>
+            <input name="object.character.merits.{{index}}.name" type="text" value="{{merit.name}}" />
+            {{#if merit.system.description}}
+            <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+              <li class="flexrow item-header">
+                <div class="item-name">{{localize "Ex3.Description"}}</div>
+              </li>
+              <div>
+                <i class="fas fa-caret-down"></i>
+              </div>
+            </div>
+            <div style="display:none;text-align:start;">
+              {{{merit.enritchedHTML}}}
+            </div>
+            {{/if}}
+          </div>
+          <input name="object.character.merits.{{index}}.system.points" type="number" value="{{merit.system.points}}" />
+          <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="merits" data-index="{{index}}"><i
+              class="fas fa-trash"></i></a>
+          {{/each}}
+        </div>
+        <div>
+          {{data.creationData.spent.merits}}/{{data.creationData.available.merits}}
+        </div>
+        <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+          <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
+          <a data-action="randomItem" class="item-control random-item" title="Random Specialability" data-type="specialAbilities"
+            data-item="specialability"><i class="fas fa-dice"></i></a>
+          <a class="item-control import-item" data-action="importItem" title="Import Specialability" data-type="specialAbilities"
+            data-item="specialability"><i class="fas fa-edit"></i></a>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.specialAbilities as |specialAbility index|}}
+          <li class="item flexrow item-row" data-item-id="{{specialAbility._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{specialAbility.img}}"
+                title="{{specialAbility.name}}" width="24" height="24" /></div>
+            <h4 class="item-name">{{specialAbility.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Special Ability"
+                data-type="specialAbilities" data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="text-align: start;">
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+      </div>
+      <div class="tab flex-center {{#ifEquals tab 'charms'}}active{{/ifEquals}}" data-group="primary" data-tab="charms">
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Charms"}}
+            <a data-action="randomItem" data-type="charms"
+            data-item="charm"><i class="fas fa-dice cursor-pointer random-item" title="Random Charm" ></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import charm" data-type="charms" data-item="charm"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.charms as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}
+
+              <a class="item-control lower-charm-count" data-action="lowerCharmCount" title="Lower Charm Count" data-type="charms"
+                data-index="{{index}}"><i class="fas fa-minus"></i></a>
+              {{item.itemCount}}
+              <a class="item-control add-charm-count" data-action="addCharmCount" title="Add Charm Count" data-type="charms"
+                data-index="{{index}}"><i class="fas fa-plus"></i></a>
+            </h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm" data-type="charms"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+          {{#ifEquals data.character.exalt 'sidereal'}}
+          <li>
+            <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{data.character.maidenCharms.journeys}},
+            {{localize
+            "Ex3.Serenity"}}:
+            {{data.character.maidenCharms.serenity}}, {{localize "Ex3.Battles"}}:
+            {{data.character.maidenCharms.battles}}, {{localize
+            "Ex3.Secrets"}}: {{data.character.maidenCharms.secrets}}, {{localize "Ex3.Endings"}}:
+            {{data.character.maidenCharms.endings}}
+          </li>
+          {{/ifEquals}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Evocations"}}
+            <a data-action="randomItem" data-type="evocations"
+            data-item="evocation"><i class="fas fa-dice cursor-pointer random-item" title="Random Evocation" ></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import evocation" data-type="evocations" data-item="evocation"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.evocations as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm" data-type="evocations"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.MartialArts"}} {{localize
+            "Ex3.Charms"}}
+            <a data-action="randomItem" data-type="martialArtsCharms"
+            data-item="martialArtCharm"><i class="fas fa-dice cursor-pointer random-item" title="Random MA Charm" ></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import MA charm" data-type="martialArtsCharms"
+              data-item="martialArtCharm"><i class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.martialArtsCharms as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm"
+                data-type="martialArtsCharms" data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Other"}}/{{localize "Ex3.Eclipse"}}
+            {{localize "Ex3.Charms"}}
+            <a data-action="randomItem" data-type="otherCharms"
+            data-item="otherCharm"><i class="fas fa-dice cursor-pointer random-item" title="Random eclipse"></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import evocation" data-type="otherCharms"
+              data-item="otherCharm"><i class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.otherCharms as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm" data-type="otherCharms"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{charmCostDisplay item.system.cost}}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                style="text-transform: capitalize;">{{item.system.ability}}</span>
+              {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+            </div>
+            {{#if item.system.keywords}}
+            <div>
+              <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+            </div>
+            {{/if}}
+            <div>
+              <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+            </div>
+            <div>
+              <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+              id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+            </div>
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2" style="font-size: 24px;">
+          <label class="resource-label">{{localize "Ex3.Sorcery"}}</label>
+        </div>
+        <div class="resource grid grid-4col">
+          <div>
+            <div class="resource-label">{{localize "Ex3.Sorcerer"}}</div>
+            <select name="object.character.sorcerer" data-type="String">
+              {{selectOptions selects.sorceryCircles selected=data.character.sorcerer localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Necromancer"}}</div>
+            <select name="object.character.necromancer" data-type="String">
+              {{selectOptions selects.necromancyCircles selected=data.character.necromancer localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.SorceryRitual"}} <a data-action="randomItem" data-type="rituals"
+              data-item="ritual" data-ritual="sorcery"><i
+                  class="fas fa-dice cursor-pointer random-item" title="Random ritual" ></i></a> <a class="item-control import-item"
+                  data-action="importItem" title="Import ritual" data-type="rituals" data-item="ritual" data-ritual="sorcery"><i
+                  class="fas fa-edit"></i></a>
+              <a class="item-control delete-item" data-action="deleteItem" title="Remove ritual" data-type="ritual" data-ritual="sorcery"><i
+                  class="fas fa-trash"></i></a>
+            </div>
+            <input name="object.character.ritual.name" value="{{data.character.ritual.name}}" type="text">
+            {{#if data.character.ritual.enritchedHTML}}
+            <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+              <li class="flexrow item-header">
+                <div class="item-name">{{localize "Ex3.Description"}}</div>
+              </li>
+              <div>
+                <i class="fas fa-caret-down"></i>
+              </div>
+            </div>
+            <div style="display:none;text-align:start;">
+              {{{data.character.ritual.enritchedHTML}}}
+            </div>
+            {{/if}}
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.NecromancyRitual"}} <a data-action="randomItem" data-type="rituals"
+              data-item="ritual" data-ritual="necromancy"><i
+                  class="fas fa-dice cursor-pointer random-item" title="Random ritual" ></i></a> <a class="item-control import-item" data-action="importItem"
+                title="Import ritual" data-type="rituals" data-item="ritual" data-ritual="necromancy"><i
+                  class="fas fa-edit"></i></a>
+              <a class="item-control delete-item" data-action="deleteItem" title="Remove ritual" data-type="ritual" data-ritual="necromancy"><i
+                  class="fas fa-trash"></i></a>
+            </div>
+            <input name="object.character.necromancyRitual.name" value="{{data.character.necromancyRitual.name}}"
+              type="text">
+            {{#if data.character.necromancyRitual.enritchedHTML}}
+            <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+              <li class="flexrow item-header">
+                <div class="item-name">{{localize "Ex3.Description"}}</div>
+              </li>
+              <div>
+                <i class="fas fa-caret-down"></i>
+              </div>
+            </div>
+            <div style="display:none;text-align:start;">
+              {{{data.character.necromancyRitual.enritchedHTML}}}
+            </div>
+            {{/if}}
+          </div>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Spells"}} <a data-action="randomItem" data-type="spells" data-item="spell"><i
+                class="fas fa-dice cursor-pointer random-item"></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import spell" data-type="spells" data-item="spell"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.spells as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Spell" data-type="spells"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div>
+          {{data.creationData.spent.charms}}/{{data.creationData.available.charms}}
+        </div>
+      </div>
+      <div class="tab flex-center {{#ifEquals tab 'other'}}active{{/ifEquals}}" data-group="primary" data-tab="other">
+        <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+          <label class="resource-label">{{localize "Ex3.Intimacies"}}</label>
+          <a data-action="addItem" class="item-control add-item" title="Create intimacy" data-type="intimacies"><i
+              class="fas fa-plus"></i></a>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+          {{#each data.character.intimacies as |intimacy index|}}
+          <input name="object.character.intimacies.{{index}}.name" type="text" type="text" value="{{intimacy.name}}" />
+          <div>
+            <select name="object.character.intimacies.{{index}}.system.strength" data-type="String">
+              {{selectOptions ../selects.intimacyStrengths selected=intimacy.system.strength localize=true}}
+            </select>
+          </div>
+          <div>
+            <select name="object.character.intimacies.{{index}}.system.intimacytype" data-type="String">
+              {{selectOptions ../selects.intimacyTypes selected=intimacy.system.intimacytype localize=true}}
+            </select>
+          </div>
+          <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="intimacies" data-index="{{index}}"><i
+              class="fas fa-trash"></i></a>
+          {{/each}}
+        </div>
+        <div>
+          {{data.creationData.spent.intimacies}} (Must
+          have 1 defining, 1
+          major, 1 minor, 1 negative tie)
+        </div>
+      </div>
+      <div class="tab flex-center {{#ifEquals tab 'equipment'}}active{{/ifEquals}}" data-group="primary" data-tab="equipment">
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Items"}} <a data-action="randomItem" data-type="items"
+            data-item="item"><i
+                class="fas fa-dice cursor-pointer random-item" title="Import item" ></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import item" data-type="items" data-item="item"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.items as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove item" data-type="items"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Weapons"}}
+            <a data-action="randomItem" data-type="weapons"
+            data-item="weapon"><i class="fas fa-dice cursor-pointer random-item" title="Random weapon" data-type="weapons"
+                data-item="weapon"></i></a>
+            <a data-action="addItem" class="item-control add-item" title="Add weapon" data-type="weapons"><i class="fas fa-plus"></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import weapon" data-type="weapons" data-item="weapon"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.weapons as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Weapon" data-type="weapons"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource grid grid-5col flex-center">
+          {{#each data.character.randomWeapons as |randomWeapon index|}}
+          <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="object.character.randomWeapons.{{index}}.type" data-type="String">
+              {{selectOptions ../selects.npcItemCategory selected=randomWeapon.type localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.WeaponType"}}</div>
+            <select name="object.character.randomWeapons.{{index}}.weaponType" data-type="String">
+              {{selectOptions ../selects.npcWeaponType selected=randomWeapon.weaponType localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+            <select name="object.character.randomWeapons.{{index}}.weight" data-type="String">
+              {{selectOptions ../selects.npcWeaponWeight selected=randomWeapon.weight localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+            <input name="object.character.randomWeapons.{{index}}.artifact" type="checkbox" {{checked
+              randomWeapon.artifact}}>
+          </div>
+          <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="randomWeapons" data-index="{{index}}"><i
+              class="fas fa-trash"></i></a>
+          {{/each}}
+        </div>
+        <div class="resource-content flexrow flex-center flex-between mt-2">
+          <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Armor"}}
+            <a data-action="randomItem" data-type="armors"
+            data-item="armor"><i class="fas fa-dice cursor-pointer random-item" title="Random armor" data-type="armors"
+                data-item="armor"></i></a>
+            <a class="item-control import-item" data-action="importItem" title="Import armor" data-type="armors" data-item="armor"><i
+                class="fas fa-edit"></i></a></label>
+        </div>
+        <ol class="items-list" style="text-align:start;">
+          {{#each data.character.armors as |item index|}}
+          <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove armor" data-type="armors"
+                data-index="{{index}}"><i class="fas fa-trash"></i></a>
+          </li>
+          <li class="item-description" style="    text-align: start;">
+            <div>
+              {{{item.enritchedHTML}}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+        <div class="resource grid grid-3col flex-center">
+          <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="object.character.armor.type" data-type="String">
+              {{selectOptions selects.npcItemCategory selected=data.character.armor.type localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+            <select name="object.character.armor.weight" data-type="String">
+              {{selectOptions selects.npcArmorType selected=data.character.armor.weight localize=true}}
+            </select>
+          </div>
+          <div>
+            <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+            <input name="object.character.armor.artifact" type="checkbox" {{checked data.character.armor.artifact}}>
+          </div>
+        </div>
+      </div>
+    </section>
+</div>

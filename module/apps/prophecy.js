@@ -183,7 +183,6 @@ export default class Prophecy extends HandlebarsApplicationMixin(ApplicationV2) 
 
     static async myFormHandler(event, form, formData) {
         // Do things with the returned FormData
-        const formObject = foundry.utils.expandObject(formData.object);
         foundry.utils.mergeObject(this, formData.object);
 
         if (event.type === 'submit') {
