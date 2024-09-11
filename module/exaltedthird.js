@@ -488,8 +488,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        console.log(message);
-        new CharacterBuilder(null, {}, {}, message.flags?.exaltedthird?.character).render(true);
+        new CharacterBuilder2({classes: ["exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, message.flags?.exaltedthird?.character).render(true);
       });
     });
   html[0]

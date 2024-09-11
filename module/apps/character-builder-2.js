@@ -620,10 +620,8 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         }
       }
     }
-    this.onChange();
 
     if (event.type === 'submit') {
-      ui.notifications.notify(`Generation Complete`);
       const itemData = [
       ];
       var actorData = this._getBaseStatblock();
@@ -650,11 +648,13 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         content: `${actorData.name} created using the character creator`,
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       });
+      ui.notifications.notify(`Generation Complete`);
+    } else {
+      await this.onChange();
     }
-    this.render();
   }
 
-  async onChange() {
+  onChange() {
     if (CONFIG.exaltedthird.castes[this.object.character.exalt]) {
       this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
     }
@@ -709,6 +709,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     for (const [key, category] of categories) {
       category.charms = Object.values(this.object.character.charms).filter(charm => charm.system.ability === key);
     }
+    this.render();
   }
 
   _calculateSpentExperience() {
@@ -1063,7 +1064,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     else {
       this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = index + 1;
     }
-    this.render();
+    this.onChange();
   }
 
   async close(options = {}) {
@@ -1138,7 +1139,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     this.object.creationData.physical = physicalAttribute;
     this.object.creationData.social = socialAttribute;
     this.object.creationData.mental = mentalAttribute;
-    this.render();
+    this.onChange();
   }
 
   static async randomAbilities(event, target) {
@@ -1164,7 +1165,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     for (let i = 0; i < shuffledAbilitiesList.length; i++) {
       this.object.character.abilities[shuffledAbilitiesList[i]].value = (abilityValues[i] || 0)
     }
-    this.render();
+    this.onChange();
   }
 
   static async randomName(event, target) {
@@ -1213,7 +1214,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         this.object.character.name = await this.getAbyssalName();
         break;
     }
-    this.render();
+    this.onChange();
   }
 
   static async addItem(event, target) {
@@ -1265,7 +1266,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         }
       };
     }
-    this.render();
+    this.onChange();
   }
 
   static async importItem(event, target) {
@@ -1562,7 +1563,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
               }
             }
 
-            this.render();
+            this.onChange();
             const closeImportItem = html.querySelector('.closeImportItem');
             if (closeImportItem) {
               closeImportItem.click();
@@ -1598,7 +1599,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     else {
       delete this.object.character[type][target.dataset.index];
     }
-    this.render();
+    this.onChange();
   }
 
   async _onDropItem(event) {
@@ -1696,7 +1697,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         break;
     }
 
-    this.render();
+    this.onChange();
   }
 
   importItemFromCollection(collection, entryId) {
@@ -1721,7 +1722,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     }
     if (index) {
       delete this.object.character.charms[index];
-      this.render();
+      this.onChange();
     }
   }
 
@@ -1731,14 +1732,14 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     if (this.object.character[type][index].itemCount > 0) {
       this.object.character[type][index].itemCount--;
     }
-    this.render();
+    this.onChange();
   }
 
   static async addCharmCount(event, target) {
     const type = target.dataset.type;
     const index = target.dataset.index;
     this.object.character[type][index].itemCount++;
-    this.render();
+    this.onChange();
   }
 
   static async randomItem(event, target) {
@@ -1795,7 +1796,7 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         }
       }
     }
-    this.render();
+    this.onChange();
   }
 
   async _getItemList(target) {
