@@ -1,0 +1,237 @@
+  <section class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="overview">
+    {{#ifEquals data.characterType 'character'}}
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Overview"}}</label>
+    </div>
+    <table>
+      <tr>
+        <th>{{localize "Ex3.Section"}}</th>
+        <th>{{localize "Ex3.Available"}}</th>
+        <th>{{localize "Ex3.Spent"}}</th>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.PhysicalAttributes"}}</td>
+        <td>{{data.creationData.available.attributes.physical}}</td>
+        <td>{{data.creationData.spent.attributes.physical}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.SocialAttributes"}}</td>
+        <td>{{data.creationData.available.attributes.social}}</td>
+        <td>{{data.creationData.spent.attributes.social}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.MentalAttributes"}}</td>
+        <td>{{data.creationData.available.attributes.mental}}</td>
+        <td>{{data.creationData.spent.attributes.mental}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Abilities"}} (3 or below)</td>
+        <td>{{data.creationData.available.abilities}}</td>
+        <td>{{data.creationData.spent.abilities}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Abilities"}} (above 3)</td>
+        <td></td>
+        <td>{{data.creationData.spent.abovethree}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Specialties"}}</td>
+        <td>{{data.creationData.available.specialties}}</td>
+        <td>{{data.creationData.spent.specialties}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Merits"}}</td>
+        <td>{{data.creationData.available.merits}}</td>
+        <td>{{data.creationData.spent.merits}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+        <td>{{data.creationData.available.charms}}</td>
+        <td>{{data.creationData.spent.charms}}</td>
+      </tr>
+      {{#if data.creationData.available.excellencies}}
+      <tr>
+        <td>{{localize "Ex3.Excellencies"}}</td>
+        <td>{{data.creationData.available.excellencies}}</td>
+        <td>{{data.creationData.spent.excellencies}}</td>
+      </tr>
+      {{/if}}
+      {{#if data.unifiedCharacterCreation}}
+      <tr>
+        <td>{{localize "Ex3.BonusPoints"}}</td>
+        <td>{{data.creationData.available.experience}}</td>
+        <td>{{data.creationData.spent.experience.total}}</td>
+      </tr>
+      {{else}}
+      <tr>
+        <td>{{localize "Ex3.BonusPoints"}}</td>
+        <td>{{data.creationData.available.bonusPoints}}</td>
+        <td>{{data.creationData.spent.bonusPoints.total}}</td>
+      </tr>
+      {{/if}}
+    </table>
+    {{#if data.unifiedCharacterCreation}}
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Experience"}}</label>
+    </div>
+    <table>
+      <tr>
+        <th>{{localize "Ex3.Section"}}</th>
+        <th>{{localize "Ex3.Cost"}}</th>
+        <th>{{localize "Ex3.Spent"}}</th>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Attributes"}}</td>
+        <td>10 per dot, 8 per favored dot</td>
+        <td>{{data.creationData.spent.experience.attributes}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Abilities"}}</td>
+        <td>5 per dot, 4 per favored dot</td>
+        <td>{{data.creationData.spent.experience.abilities}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Specialties"}}</td>
+        <td>2</td>
+        <td>{{data.creationData.spent.experience.specialties}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Merits"}}</td>
+        <td>2 per dot</td>
+        <td>{{data.creationData.spent.experience.merits}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+        <td>12 per dot, 10 per favored dot</td>
+        <td>{{data.creationData.spent.experience.charms}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Willpower"}}</td>
+        <td>6 per dot</td>
+        <td>{{data.creationData.spent.experience.willpower}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Total"}}</td>
+        <td></td>
+        <td>{{data.creationData.spent.experience.total}}</td>
+      </tr>
+    </table>
+    {{else}}
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.BonusPoints"}}</label>
+    </div>
+    <table>
+      <tr>
+        <th>{{localize "Ex3.Section"}}</th>
+        <th>{{localize "Ex3.Cost"}}</th>
+        <th>{{localize "Ex3.Spent"}}</th>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Attributes"}}</td>
+        <td>4 per dot, 3 per teriary dot, 3 per caste/favored dot</td>
+        <td>{{data.creationData.spent.bonusPoints.attributes}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Abilities"}}</td>
+        <td>1 per dot, 2 per non-favored</td>
+        <td>{{data.creationData.spent.bonusPoints.abilities}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Specialties"}}</td>
+        <td>1</td>
+        <td>{{data.creationData.spent.bonusPoints.specialties}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Merits"}}</td>
+        <td>1</td>
+        <td>{{data.creationData.spent.bonusPoints.merits}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
+        <td>4, 5 per non-favored</td>
+        <td>{{data.creationData.spent.bonusPoints.charms}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Willpower"}}</td>
+        <td>2</td>
+        <td>{{data.creationData.spent.bonusPoints.willpower}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.Total"}}</td>
+        <td></td>
+        <td>{{data.creationData.spent.bonusPoints.total}}</td>
+      </tr>
+    </table>
+    {{/if}}
+    {{else}}
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Skills"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+      {{#each data.character.skills as |skill key|}}
+      <div>
+        <div class="resource-label">{{localize skill.label}}</div>
+        <select name="object.character.skills.{{key}}.value" data-type="String">
+          {{selectOptions ../selects.skillLevels selected=skill.value localize=true}}
+        </select>
+      </div>
+      {{/each}}
+    </div>
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Traits"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+      <div>
+        <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+        <select name="object.character.sizeCategory" data-type="String">
+          {{selectOptions selects.sizeCategory selected=data.character.sizeCategory localize=true}}
+        </select>
+      </div>
+      <div>
+        <div class="resource-label">{{localize "Ex3.Battlegroup"}}</div>
+        <input class="rerender" name="object.character.battlegroup" type="checkbox" {{checked
+          data.character.battlegroup}}>
+      </div>
+      {{#each data.character.traits as |trait key|}}
+      <div>
+        <div class="resource-label">{{localize trait.label}}</div>
+        <input name="object.character.traits.{{key}}.value" type="checkbox" {{checked trait.value}}>
+      </div>
+      {{/each}}
+    </div>
+    {{#if data.character.battlegroup}}
+    <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Battlegroup"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+      <div>
+        <label class="resource-label">{{localize "Ex3.Drill"}}</label>
+        <div class="charname"> <select name="object.character.battlegroupStats.drill"
+            value="{{data.character.battlegroupStats.drill}}" data-type="String">
+            {{selectOptions selects.drill selected=data.character.battlegroupStats.drill localize=true}}
+          </select></div>
+      </div>
+      <div>
+        <label class="resource-label">{{localize "Ex3.Size"}}</label>
+        <input type="number" name="object.character.battlegroupStats.size"
+          value="{{data.character.battlegroupStats.size}}" data-dtype="Number" />
+      </div>
+      <div>
+        <label class="resource-label">{{localize "Ex3.Might"}}</label>
+        <input type="number" name="object.character.battlegroupStats.might"
+          value="{{data.character.battlegroupStats.might}}" data-dtype="Number" />
+      </div>
+    </div>
+    {{/if}}
+    <!-- <div class="resource-content flexrow flex-center flex-between mt-2">
+      <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.HomebrewContent"}}</label>
+    </div>
+    <div class="resource grid grid-4col flex-center">
+      <div>
+        <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
+        <input name="object.character.homebew.specialAbilities" value="{{data.character.homebrew.specialAbilities}}"
+          type="number">
+      </div>
+    </div> -->
+    {{/ifEquals}}
+  </section>

@@ -434,7 +434,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(buttonsText);
 
   html.on("click", ".character-generator-button", () => {
-    new CharacterBuilder2({classes: ["exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}).render(true);
+    new CharacterBuilder2({classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}).render(true);
   });
 
   html.on("click", ".template-import-button", () => {
@@ -488,7 +488,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        new CharacterBuilder2({classes: ["exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, message.flags?.exaltedthird?.character).render(true);
+        new CharacterBuilder2({classes: ["exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, message.flags?.exaltedthird?.character).render(true);
       });
     });
   html[0]

@@ -1,0 +1,118 @@
+<header data-drop="true">
+  <div class="resource flex-center mb-2 mt-2">
+    <div>
+      <label class="resource-label">{{localize "Ex3.Name"}} <a><i data-action="randomName"
+            class="fas fa-dice cursor-pointer"></i></a></label>
+      <input name="object.character.name" value="{{data.character.name}}" type="text"
+        placeholder="{{data.character.defaultName}}">
+    </div>
+  </div>
+  <div class="resource grid grid-4col flex-center">
+    <div>
+      <div class="resource-label">{{localize "Ex3.Type"}}</div>
+      <select name="object.characterType" data-type="String">
+        {{selectOptions selects.characterTypes selected=data.characterType localize=true}}
+      </select>
+    </div>
+    {{#ifEquals data.characterType 'npc'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Classification"}}</div>
+      <select name="object.character.classificationType" data-type="String">
+        {{selectOptions selects.creatureTypes selected=data.character.classificationType localize=true}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.PoolNumbers"}}</div>
+      <select name="object.poolNumbers" value="{{data.poolNumbers}}" data-type="String">
+        {{selectOptions selects.poolNumberTypes selected=data.poolNumbers localize=true}}
+      </select>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals data.character.classificationType 'exalt'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
+      <select id="exalt" name="object.character.exalt" data-type="String">
+        {{selectOptions selects.exaltTypes selected=data.character.exalt localize=true}}
+      </select>
+    </div>
+    {{#if data.availableCastes}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Caste"}}/{{localize "Ex3.Aspect"}}</div>
+      <select name="object.character.caste" data-type="String">
+        {{selectOptions data.availableCastes selected=data.character.caste localize=true}}
+      </select>
+    </div>
+    {{/if}}
+    {{/ifEquals}}
+    <div>
+      <label class="resource-label">{{localize "Ex3.Essence"}} </label>
+      <input class="test" name="object.character.essence" value="{{data.character.essence}}" type="number">
+    </div>
+    <div>
+      <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
+      <input name="object.character.willpower" value="{{data.character.willpower}}" type="number">
+    </div>
+    {{#ifEquals data.character.exalt 'exigent'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Exigent"}}</div>
+      <select name="object.character.exigent" data-type="String">
+        {{selectOptions selects.exigentNames selected=data.character.exigent localize=true}}
+      </select>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals data.character.exalt 'solar'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Supernal"}}</div>
+      <select name="object.character.supernal" data-type="String">
+        {{selectOptions selects.abilities selected=data.character.supernal localize=true}}
+      </select>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals data.character.exalt 'abyssal'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Apocalyptic"}}</div>
+      <select name="object.character.supernal" data-type="String">
+        {{selectOptions selects.abilities selected=data.character.supernal localize=true}}
+      </select>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals data.character.exalt 'lunar'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.SpiritShape"}}</div>
+      <input name="object.character.spiritShape" type="text" value="{{data.character.spiritShape}}" />
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.Tell"}}</div>
+      <input name="object.character.tell" type="text" value="{{data.character.tell}}" />
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals data.character.exalt 'sidereal'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.BirthSign"}}</div>
+      <select name="object.character.birthSign" data-type="String">
+        {{#each data.signList as |signCategory signCategoryType|}}
+        <optgroup label="{{signCategory.label}}">
+          {{selectOptions signCategory.signs selected=../data.character.birthsign localize=true}}
+        </optgroup>
+        {{/each}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.ExaltationSign"}}</div>
+      <select name="object.character.exaltSign" data-type="String">
+        {{#each data.signList as |signCategory signCategoryType|}}
+        <optgroup label="{{signCategory.label}}">
+          {{selectOptions signCategory.signs selected=../data.character.exaltSign localize=true}}
+        </optgroup>
+        {{/each}}
+      </select>
+    </div>
+    {{/ifEquals}}
+    {{#if data.oxBodyEnabled}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.OxBodies"}}</div>
+      <input name="object.character.oxBodies" type="number" value="{{data.character.oxBodies}}" />
+    </div>
+    {{/if}}
+  </div>
+</header>

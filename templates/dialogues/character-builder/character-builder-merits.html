@@ -1,0 +1,71 @@
+<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="merits" data-drop="true">
+  <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+    <label class="resource-label">{{localize "Ex3.Merits"}}</label>
+    <a data-action="randomItem" class="item-control random-item" title="Random merit" data-type="merits" data-item="merit"><i
+        class="fas fa-dice"></i></a>
+    <a data-action="addItem" class="item-control add-item" title="Create merit" data-type="merits"><i class="fas fa-plus"></i></a>
+    <a data-action="importItem" class="item-control import-item" title="Import merit" data-type="merits" data-item="merit"><i
+        class="fas fa-edit"></i></a>
+  </div>
+  <div class="resource grid grid-2col flex-center">
+    <div>
+      <div class="resource-label">{{localize "Ex3.BonusMerits"}}</div>
+      <input name="object.character.bonusMerits.value" type="number"
+        value="{{data.character.bonusMerits.value}}" />
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.BonusMeritSource"}}</div>
+      <input name="object.character.bonusMerits.source" type="text"
+        value="{{data.character.bonusMerits.source}}" />
+    </div>
+  </div>
+  <div class="resource grid grid-3col">
+    {{#each data.character.merits as |merit index|}}
+    <div>
+      <input name="object.character.merits.{{index}}.name" type="text" value="{{merit.name}}" />
+      {{#if merit.system.description}}
+      <div class="item d-flex flex-between mb-1 item-row cursor-pointer">
+        <li class="flexrow item-header">
+          <div class="item-name">{{localize "Ex3.Description"}}</div>
+        </li>
+        <div>
+          <i class="fas fa-caret-down"></i>
+        </div>
+      </div>
+      <div style="display:none;text-align:start;">
+        {{{merit.enritchedHTML}}}
+      </div>
+      {{/if}}
+    </div>
+    <input name="object.character.merits.{{index}}.system.points" type="number" value="{{merit.system.points}}" />
+    <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="merits" data-index="{{index}}"><i
+        class="fas fa-trash"></i></a>
+    {{/each}}
+  </div>
+  <div>
+    {{data.creationData.spent.merits}}/{{data.creationData.available.merits}}
+  </div>
+  <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+    <label class="resource-label">{{localize "Ex3.SpecialAbilities"}}</label>
+    <a data-action="randomItem" class="item-control random-item" title="Random Specialability" data-type="specialAbilities"
+      data-item="specialability"><i class="fas fa-dice"></i></a>
+    <a class="item-control import-item" data-action="importItem" title="Import Specialability" data-type="specialAbilities"
+      data-item="specialability"><i class="fas fa-edit"></i></a>
+  </div>
+  <ol class="items-list" style="text-align:start;">
+    {{#each data.character.specialAbilities as |specialAbility index|}}
+    <li class="item flexrow item-row" data-item-id="{{specialAbility._id}}">
+      <div class="item-image"><img class="list-item-image" src="{{specialAbility.img}}"
+          title="{{specialAbility.name}}" width="24" height="24" /></div>
+      <h4 class="item-name">{{specialAbility.name}}</h4>
+      <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Special Ability"
+          data-type="specialAbilities" data-index="{{index}}"><i class="fas fa-trash"></i></a>
+    </li>
+    <li class="item-description" style="text-align: start;">
+      <div>
+        {{{item.enritchedHTML}}}
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+</div>

@@ -1,0 +1,29 @@
+<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="other" data-drop="true">
+  <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+    <label class="resource-label">{{localize "Ex3.Intimacies"}}</label>
+    <a data-action="addItem" class="item-control add-item" title="Create intimacy" data-type="intimacies"><i
+        class="fas fa-plus"></i></a>
+  </div>
+  <div class="resource grid grid-4col flex-center">
+    {{#each data.character.intimacies as |intimacy index|}}
+    <input name="object.character.intimacies.{{index}}.name" type="text" type="text" value="{{intimacy.name}}" />
+    <div>
+      <select name="object.character.intimacies.{{index}}.system.strength" data-type="String">
+        {{selectOptions ../selects.intimacyStrengths selected=intimacy.system.strength localize=true}}
+      </select>
+    </div>
+    <div>
+      <select name="object.character.intimacies.{{index}}.system.intimacytype" data-type="String">
+        {{selectOptions ../selects.intimacyTypes selected=intimacy.system.intimacytype localize=true}}
+      </select>
+    </div>
+    <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="intimacies" data-index="{{index}}"><i
+        class="fas fa-trash"></i></a>
+    {{/each}}
+  </div>
+  <div>
+    {{data.creationData.spent.intimacies}} (Must
+    have 1 defining, 1
+    major, 1 minor, 1 negative tie)
+  </div>
+</div>

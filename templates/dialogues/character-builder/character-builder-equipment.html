@@ -1,0 +1,121 @@
+<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="equipment" data-drop="true">
+  <div class="resource-content flexrow flex-center flex-between mt-2">
+    <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Items"}} <a data-action="randomItem" data-type="items"
+      data-item="item"><i
+          class="fas fa-dice cursor-pointer random-item" title="Import item" ></i></a>
+      <a class="item-control import-item" data-action="importItem" title="Import item" data-type="items" data-item="item"><i
+          class="fas fa-edit"></i></a></label>
+  </div>
+  <ol class="items-list" style="text-align:start;">
+    {{#each data.character.items as |item index|}}
+    <li class="item flexrow item-row" data-item-id="{{item._id}}">
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
+      <h4 class="item-name">{{item.name}}</h4>
+      <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove item" data-type="items"
+          data-index="{{index}}"><i class="fas fa-trash"></i></a>
+    </li>
+    <li class="item-description" style="    text-align: start;">
+      <div>
+        {{{item.enritchedHTML}}}
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+  <div class="resource-content flexrow flex-center flex-between mt-2">
+    <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Weapons"}}
+      <a data-action="randomItem" data-type="weapons"
+      data-item="weapon"><i class="fas fa-dice cursor-pointer random-item" title="Random weapon" data-type="weapons"
+          data-item="weapon"></i></a>
+      <a data-action="addItem" class="item-control add-item" title="Add weapon" data-type="weapons"><i class="fas fa-plus"></i></a>
+      <a class="item-control import-item" data-action="importItem" title="Import weapon" data-type="weapons" data-item="weapon"><i
+          class="fas fa-edit"></i></a></label>
+  </div>
+  <ol class="items-list" style="text-align:start;">
+    {{#each data.character.weapons as |item index|}}
+    <li class="item flexrow item-row" data-item-id="{{item._id}}">
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
+      <h4 class="item-name">{{item.name}}</h4>
+      <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Weapon" data-type="weapons"
+          data-index="{{index}}"><i class="fas fa-trash"></i></a>
+    </li>
+    <li class="item-description" style="    text-align: start;">
+      <div>
+        {{{item.enritchedHTML}}}
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+  <div class="resource grid grid-5col flex-center">
+    {{#each data.character.randomWeapons as |randomWeapon index|}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Type"}}</div>
+      <select name="object.character.randomWeapons.{{index}}.type" data-type="String">
+        {{selectOptions ../selects.npcItemCategory selected=randomWeapon.type localize=true}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.WeaponType"}}</div>
+      <select name="object.character.randomWeapons.{{index}}.weaponType" data-type="String">
+        {{selectOptions ../selects.npcWeaponType selected=randomWeapon.weaponType localize=true}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+      <select name="object.character.randomWeapons.{{index}}.weight" data-type="String">
+        {{selectOptions ../selects.npcWeaponWeight selected=randomWeapon.weight localize=true}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+      <input name="object.character.randomWeapons.{{index}}.artifact" type="checkbox" {{checked
+        randomWeapon.artifact}}>
+    </div>
+    <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="randomWeapons" data-index="{{index}}"><i
+        class="fas fa-trash"></i></a>
+    {{/each}}
+  </div>
+  <div class="resource-content flexrow flex-center flex-between mt-2">
+    <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Armor"}}
+      <a data-action="randomItem" data-type="armors"
+      data-item="armor"><i class="fas fa-dice cursor-pointer random-item" title="Random armor" data-type="armors"
+          data-item="armor"></i></a>
+      <a class="item-control import-item" data-action="importItem" title="Import armor" data-type="armors" data-item="armor"><i
+          class="fas fa-edit"></i></a></label>
+  </div>
+  <ol class="items-list" style="text-align:start;">
+    {{#each data.character.armors as |item index|}}
+    <li class="item flexrow item-row" data-item-id="{{item._id}}">
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
+      <h4 class="item-name">{{item.name}}</h4>
+      <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove armor" data-type="armors"
+          data-index="{{index}}"><i class="fas fa-trash"></i></a>
+    </li>
+    <li class="item-description" style="    text-align: start;">
+      <div>
+        {{{item.enritchedHTML}}}
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+  <div class="resource grid grid-3col flex-center">
+    <div>
+      <div class="resource-label">{{localize "Ex3.Type"}}</div>
+      <select name="object.character.armor.type" data-type="String">
+        {{selectOptions selects.npcItemCategory selected=data.character.armor.type localize=true}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.Weight"}}</div>
+      <select name="object.character.armor.weight" data-type="String">
+        {{selectOptions selects.npcArmorType selected=data.character.armor.weight localize=true}}
+      </select>
+    </div>
+    <div>
+      <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+      <input name="object.character.armor.artifact" type="checkbox" {{checked data.character.armor.artifact}}>
+    </div>
+  </div>
+</div>

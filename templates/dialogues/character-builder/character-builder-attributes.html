@@ -1,0 +1,121 @@
+<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="attributes" data-drop="true">
+  <div class="resource-content flexrow flex-center flex-between mt-2">
+    <label class="resource-label" style="font-size: 24px;">{{localize "Ex3.Attributes"}}<a data-action="randomAttributes"><i
+       class="fas fa-dice cursor-pointer"></i></a></label>
+  </div>
+  <div class="resource grid grid-3col flex-center" style="align-items:start;">
+    <div>
+      <div>
+        <div class="resource-label">
+          {{localize "Ex3.Physical"}}
+        </div>
+        <select name="object.creationData.physical" data-type="String">
+          {{selectOptions selects.attributePriority selected=data.creationData.physical localize=true}}
+        </select>
+      </div>
+    </div>
+    <div>
+      <div>
+        <div class="resource-label">
+          {{localize "Ex3.Social"}}
+        </div>
+        <select name="object.creationData.social" data-type="String">
+          {{selectOptions selects.attributePriority selected=data.creationData.social localize=true}}
+        </select>
+      </div>
+    </div>
+    <div>
+      <div class="resource-label">
+        {{localize "Ex3.Mental"}}
+      </div>
+      <div>
+        <select name="object.creationData.mental" data-type="String">
+          {{selectOptions selects.attributePriority selected=data.creationData.mental localize=true}}
+        </select>
+      </div>
+    </div>
+    {{#each data.character.attributes as |attribute key|}}
+    <div>
+      <div class="resource-label flexrow flex-center">{{localize attribute.name}}{{#if
+        attribute.caste}}*{{/if}}<input class="dots-checkbox" name="object.character.attributes.{{key}}.favored" type="checkbox"
+          {{checked attribute.favored}}></div>
+      {{#ifEquals ../data.characterType 'character'}}
+
+      <div class="resource-value" data-value="{{attribute.value}}" data-name="object.attributes.{{key}}.value">
+        {{#numLoop 5}}
+        {{#ifGreater attribute.value this}}
+        <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"
+          style="background-color:black;"></span>
+        {{else}}
+        <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"></span>
+        {{/ifGreater}}
+        {{/numLoop}}
+      </div>
+      {{/ifEquals}}
+      {{#if ../data.character.showAttributeCharms}}
+      <div class="resource-label flexrow flex-center"><span>{{localize "Ex3.Random"}} <a><i
+              class="fas fa-dice cursor-pointer random-item" data-type="charms" data-item="charm"
+              data-ability="{{key}}"></i></a> <a data-action="importItem" class="item-control import-item" title="Import charm"
+            data-type="charms" data-item="charm" data-ability="{{key}}"><i class="fas fa-edit"></i></a></span>
+      </div>
+      {{/if}}
+      <ol class="items-list" style="align-items:start;max-height:150px;">
+        {{#each attribute.charms as |item index|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+          <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+              height="24" /></div>
+          <h4 class="item-name">{{item.name}}</h4>
+          <div class="item-image" data-action="deleteSublistCharm" data-type="attributes" data-sublistkey="{{key}}" data-index="{{index}}"><a class="item-control delete-sublist-charm" title="Delete"
+              ><i
+                class="fas fa-trash"></i></a></div>
+        </li>
+        <li class="item-description" style="text-align: start;">
+          <div>
+            {{{charmCostDisplay item.system.cost}}}
+          </div>
+          <div>
+            <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+              style="text-transform: capitalize;">{{item.system.ability}}</span>
+            {{item.system.requirement}}, {{/ifNotEquals}} Essence {{item.system.essence}}
+          </div>
+          <div>
+            <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+          </div>
+          {{#if item.system.keywords}}
+          <div>
+            <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+          </div>
+          {{/if}}
+          <div>
+            <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+          </div>
+          <div>
+            <b>{{localize "Ex3.Prerequisites"}}</b>: {{#each item.system.charmprerequisites as |prereq
+            id|}}<span>{{prereq.name}},</span>{{/each}} {{item.system.prerequisites}}
+          </div>
+          <div>
+            {{{item.enritchedHTML}}}
+          </div>
+        </li>
+        {{/each}}
+      </ol>
+    </div>
+    {{/each}}
+    <div>
+      {{data.creationData.spent.attributes.physical}}/{{data.creationData.available.attributes.physical}}
+    </div>
+    <div>
+      {{data.creationData.spent.attributes.social}}/{{data.creationData.available.attributes.social}}
+    </div>
+    <div>
+      {{data.creationData.spent.attributes.mental}}/{{data.creationData.available.attributes.mental}}
+    </div>
+  </div>
+  <div>
+    {{#if data.character.showAttributeCharms}}
+    <div>
+      {{data.creationData.spent.favoredAttributes}}/{{data.creationData.available.favoredAttributes}} Favored
+    </div>
+    {{/if}}
+  </div>
+</div>

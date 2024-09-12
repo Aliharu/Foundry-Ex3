@@ -484,9 +484,15 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
   };
 
   static PARTS = {
-    form: {
-      template: "systems/exaltedthird/templates/dialogues/character-builder-2.html",
-    },
+    header: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-header.html' },
+    tabs: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-tabs.html' },
+    overview: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-overview.html' },
+    attributes: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-attributes.html' },
+    abilities: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-abilities.html' },
+    merits: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-merits.html' },
+    charms: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-charms.html' },
+    other: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-other.html' },
+    equipment: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-equipment.html' },
     footer: {
       template: "templates/generic/form-footer.hbs",
     },
@@ -568,6 +574,11 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
         { type: "submit", icon: "fa-solid fa-user-plus", label: "Ex3.Generate" }
       ],
     };
+  }
+
+  async _preparePartContext(partId, context) {
+    context.tab = context.tabs.find(item => item.id === partId);
+    return context;
   }
 
   _onRender(context, options) {
