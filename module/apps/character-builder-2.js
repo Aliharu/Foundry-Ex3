@@ -498,6 +498,43 @@ export default class CharacterBuilder2 extends HandlebarsApplicationMixin(Applic
     },
   };
 
+  // async _renderFrame(options) {
+  //   const frame = document.createElement(this.options.tag);
+  //   frame.id = this.id;
+  //   if ( this.options.classes.length ) frame.className = this.options.classes.join(" ");
+  //   if ( !this.hasFrame ) return frame;
+
+  //   // Window applications
+  //   const labels = {
+  //     controls: game.i18n.localize("APPLICATION.TOOLS.ControlsMenu"),
+  //     toggleControls: game.i18n.localize("APPLICATION.TOOLS.ToggleControls"),
+  //     close: game.i18n.localize("APPLICATION.TOOLS.Close")
+  //   }
+  //   const contentClasses = ["window-content", ...this.options.window.contentClasses].join(" ");
+  //   frame.innerHTML = `<header class="window-header">
+  //     <i class="window-icon hidden"></i>
+  //     <h1 class="window-title"></h1>
+  //     <button type="button" class="header-control fa-solid fa-ellipsis-vertical"
+  //             data-tooltip="${labels.toggleControls}" aria-label="${labels.toggleControls}"
+  //             data-action="toggleControls"></button>
+  //     <button type="button" class="header-control fa-solid fa-times"
+  //             data-tooltip="${labels.close}" aria-label="${labels.close}" data-action="close"></button>
+  //   </header>
+  //   <menu class="controls-dropdown"></menu>
+  //   <${this.options.window.contentTag} class="${contentClasses}"></section>
+  //   ${this.options.window.resizable ? `<div class="window-resize-handle"></div>` : ""}`;
+
+  //   // Reference elements
+  //   this.window.header = frame.querySelector(".window-header");
+  //   this.window.title = frame.querySelector(".window-title");
+  //   this.window.icon = frame.querySelector(".window-icon");
+  //   this.window.resize = frame.querySelector(".window-resize-handle");
+  //   this.window.close = frame.querySelector("button[data-action=close]");
+  //   this.window.controls = frame.querySelector("button[data-action=toggleControls]");
+  //   this.window.controlsDropdown = frame.querySelector(".controls-dropdown");
+  //   return frame;
+  // }
+
   #createDragDropHandlers() {
     return this.options.dragDrop.map((d) => {
       d.callbacks = {
