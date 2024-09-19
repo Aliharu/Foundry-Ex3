@@ -1,15 +1,12 @@
-<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+<div class="d-flex flex-between mb-1 cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.Charms"}} 
         {{#ifNotEquals data.rollType 'useOpposingCharms'}}
         {{#ifNotEquals data.diceCap ''}} ({{localize "Ex3.DiceCap"}}: {{data.diceCap}}) {{/ifNotEquals}} {{#if data.charmDiceAdded}}({{data.charmDiceAdded}} Charm Dice){{/if}}
         {{/ifNotEquals}}
     </div>
-    <div>
-        <i class="fas fa-caret-down"></i>
-    </div>
 </div>
-<div id="addedCharmsDropdown" {{#if data.addedCharmsDropdown}} {{else}} style="display:none;" {{/if}}>
+<div>
     <div class="resource flex-center">
         <label class="resource-label">{{localize "Ex3.Details"}}</label>
     </div>
@@ -126,15 +123,12 @@
     </div>
 </div>
 {{#ifGreater data.opposingCharms.length 0}}
-<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+<div class="d-flex flex-between mb-1 cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.OpposingCharms"}}
     </div>
-    <div>
-        <i class="fas fa-caret-down"></i>
-    </div>
 </div>
-<div id="opposedCharmsDropdown" {{#if data.opposedCharmsDropdown}} {{else}} style="display:none;" {{/if}}>
+<div>
     <ol class="items-list">
         {{#each data.opposingCharms as |item id|}}
         <li class="item flexrow item-row" data-item-id="{{item._id}}">

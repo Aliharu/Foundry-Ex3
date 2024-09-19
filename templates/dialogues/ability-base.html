@@ -140,7 +140,7 @@
         <i class="fas fa-caret-down"></i>
     </div>
 </div>
-<div style="display:none;">
+<div id="showOtherModifiers" {{#if data.showOtherModifiers}} {{else}} style="display:none;" {{/if}}>
     <div class="resource grid grid-2col flex-center">
         <label class="resource-label">{{localize "Ex3.RerollFailedDice"}} </label>
         <input name="object.rerollNumber" value="{{data.rerollNumber}}" type="number">
@@ -164,7 +164,7 @@
         <i class="fas fa-caret-down"></i>
     </div>
 </div>
-<div style="display:none;">
+<div id="showConditions" {{#if data.showConditions}} {{else}} style="display:none;" {{/if}}>
     {{#each data.conditions as |condition key|}}
     <div>
         {{condition.name}}

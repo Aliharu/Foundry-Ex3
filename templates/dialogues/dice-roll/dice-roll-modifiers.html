@@ -1,0 +1,14 @@
+<section class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="base">
+    <div class="resource grid grid-2col flex-center">
+        <label class="resource-label">{{localize "Ex3.RerollFailedDice"}} </label>
+        <input name="object.rerollNumber" value="{{data.rerollNumber}}" type="number">
+        <label class="resource-label">{{localize "Ex3.RerollSuccesses"}} </label>
+        <input name="object.rerollSuccesses" value="{{data.rerollSuccesses}}" type="number">
+        <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}} </label>
+        <input type="number" name="object.diceToSuccesses" value="{{data.diceToSuccesses}}">
+        <label class="resource-label">{{localize "Ex3.RerollAllFailedOnce"}} </label>
+        <input type="checkbox" name="object.rerollFailed" {{checked data.rerollFailed}}>
+        <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}} </label>
+        <input type="checkbox" name="object.rollTwice" {{checked data.rollTwice}}>
+    </div>
+</section>

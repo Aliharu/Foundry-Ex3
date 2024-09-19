@@ -1,0 +1,24 @@
+<div class="sheet-body">
+    {{#if data.addingCharms }}
+    {{> systems/exaltedthird/templates/dialogues/add-roll-charm.html}}
+    {{else}}  
+    {{> systems/exaltedthird/templates/dialogues/ability-base.html}}
+    {{#if data.hasIntervals}}
+    <div class="resource grid grid-2col flex-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.Intervals"}}</label>
+            <input type="number" name="object.intervals" value="{{data.intervals}}" >
+        </div>
+        {{#ifEquals data.rollType 'craft'}}
+        {{#if simpleCrafting}}
+        {{else}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.ObjectivesCompleted"}} </label>
+            <input type="number" name="object.objectivesCompleted" value="{{data.objectivesCompleted}}" >
+        </div>
+        {{/if}}
+        {{/ifEquals}}
+    </div>
+    {{/if}}
+    {{/if}}
+</div>

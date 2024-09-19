@@ -16,8 +16,8 @@
                     height="24" /></div>
             <h4 class="item-name">{{attack.name}}</h4>
             <div class="item-controls">
-                {{#if attack.added}} <a class="item-control remove-special-attack" title="Remove Attack"><i
-                        class="fas fa-trash"></i></a> {{else}} <a class="item-control add-special-attack"
+                {{#if attack.added}} <a class="item-control remove-special-attack" data-action="removeSpecialAttack" title="Remove Attack"><i
+                        class="fas fa-trash"></i></a> {{else}} <a class="item-control add-special-attack" data-action="addSpecialAttack"
                     title="Add Attack"><i class="fas fa-plus"></i></a> {{/if}}
         </li>
         <li class="item-description">
@@ -44,8 +44,8 @@
                     height="24" /></div>
             <h4 class="item-name">{{item.name}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
             <div class="item-controls">
-                {{#if item.charmAdded}} <a class="item-control remove-charm" title="Remove Charm"><i
-                        class="fas fa-minus"></i></a> {{/if}} <a class="item-control add-charm" title="Add Charm"><i
+                {{#if item.charmAdded}} <a class="item-control remove-charm" data-action="triggerRemoveCharm" title="Remove Charm"><i
+                        class="fas fa-minus"></i></a> {{/if}} <a class="item-control add-charm" data-action="triggerAddCharm" title="Add Charm"><i
                         class="fas fa-plus"></i></a> 
         </li>
         <li class="item-description">

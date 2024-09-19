@@ -1,6 +1,9 @@
-export class RollForm extends FormApplication {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(actor, options, object, data) {
-        super(object, options);
+        super(options);
+        this.object = {};
         this.actor = actor;
         this.selects = CONFIG.exaltedthird.selects;
         this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
@@ -605,23 +608,278 @@ export class RollForm extends FormApplication {
             this._calculateAnimaGain();
         }
     }
+    static DEFAULT_OPTIONS = {
+        window: {
+            title: "Dice Roller",
+            resizable: true,
+            controls: [
+                {
+                    icon: 'fa-solid fa-dice-d6',
+                    label: "Save Roll",
+                    action: "saveRoll",
+                },
+                {
+                    icon: 'fa-solid fa-cog',
+                    label: "Settings",
+                    action: "editSettings",
+                },
+            ]
+        },
+        tag: "form",
+        form: {
+            handler: RollForm2.myFormHandler,
+            submitOnClose: false,
+            submitOnChange: true,
+            closeOnSubmit: false
+        },
+        classes: [`solar-background`],
+        actions: {
+            saveRoll: RollForm2.saveRoll,
+            editSettings: RollForm2.editSettings,
+            enableAddCharms: RollForm2.enableAddCharms,
+            triggerRemoveCharm: RollForm2.triggerRemoveCharm,
+            triggerAddCharm: RollForm2.triggerAddCharm,
+            addSpecialAttack: RollForm2.addSpecialAttack,
+            removeSpecialAttack: RollForm2.removeSpecialAttack,
+            removeOpposingCharm: RollForm2.removeOpposingCharm,
+        },
+    };
 
-    /**
-   * Get the correct HTML template path to use for rendering this particular sheet
-   * @type {String}
-   */
-    get template() {
-        var template = "systems/exaltedthird/templates/dialogues/ability-roll.html";
-        if (this.object.rollType === 'useOpposingCharms') {
-            template = "systems/exaltedthird/templates/dialogues/use-opposing-charms.html";
+    static PARTS = {
+        tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
+        base: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-2.html",
+        },
+        modifiers: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-modifiers.html",
+        },
+        // abilityRoll: {
+        //     template: "systems/exaltedthird/templates/dialogues/dice-roll/ability-roll-2.html",
+        // },
+        // useOpposingCharms: {
+        //     template: "systems/exaltedthird/templates/dialogues/dice-roll/use-opposing-charms-2.html",
+        // },
+        // attack: {
+        //     template: "systems/exaltedthird/templates/dialogues/dice-roll/attack-roll-2.html",
+        // },
+        footer: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-footer.html",
+        },
+    };
+
+
+    _configureRenderOptions(options) {
+        // This fills in `options.parts` with an array of ALL part keys by default
+        // So we need to call `super` first
+        super._configureRenderOptions(options);
+        // Completely overriding the parts
+        options.parts = ['tabs', 'base'];
+
+        // if (this._isAttackRoll()) {
+        //     options.parts.push('attack');
+        // } else {
+        //     switch (this.object.rollType) {
+        //         case 'useOpposingCharms':
+        //             options.parts.push('useOpposingCharms');
+        //             break;
+        //         case 'base':
+        //             options.parts.push('base');
+        //             break;
+        //         default:
+        //             options.parts.push('abilityRoll');
+        //             break;
+        //     }
+        // }
+        if (!this.object.addingCharms) {
+            options.parts.push('footer');
         }
-        if (this.object.rollType === 'base') {
-            template = "systems/exaltedthird/templates/dialogues/dice-roll.html";
+    }
+
+    resolve = function (value) { return value };
+
+    get resolve() {
+        return this.resolve
+    }
+
+    set resolve(value) {
+        this.resolve = value;
+    }
+
+    async _prepareContext(_options) {
+        if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'base';
+        this.selects = CONFIG.exaltedthird.selects;
+        return {
+            actor: this.actor,
+            selects: this.selects,
+            rollableAbilities: this.rollableAbilities,
+            rollablePools: this.rollablePools,
+            data: this.object,
+            tabs: [
+                {
+                    id: "base",
+                    group: "base",
+                    label: "Ex3.Base",
+                    cssClass: this.tabGroups['primary'] === 'base' ? 'active' : '',
+                },
+            ],
+            buttons: [
+                { type: "submit", icon: "fa-solid fa-dice-d10", label: "Ex3.Roll" },
+                { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
+            ],
+        };
+    }
+
+    async _preparePartContext(partId, context) {
+        context.tab = context.tabs.find(item => item.id === partId);
+        return context;
+    }
+
+    static async myFormHandler(event, form, formData) {
+        // Do things with the returned FormData
+        const formObject = foundry.utils.expandObject(formData.object);
+        const finesseChange = formObject.object.finesse !== undefined && this.object.finesse !== formObject.object.finesse;
+        const ambitionChange = formObject.object.ambition !== undefined && this.object.ambition !== formObject.object.ambition;
+        const gambitChange = formObject.object.gambit !== undefined && this.object.gambit !== formObject.object.gambit;
+        const craftTypeChange = formObject.object.craftType !== undefined && this.object.craftType !== formObject.object.craftType;
+        const craftRating = formObject.object.craftRating !== undefined && this.object.craftRating !== formObject.object.craftRating;
+        const spellChange = formObject.object.spell !== undefined && this.object.spell !== formObject.object.spell;
+
+        foundry.utils.mergeObject(this, formData.object);
+        if (this.object.rollType !== "base") {
+            this.object.diceCap = this._getDiceCap();
+            this._calculateAnimaGain();
+            this._updateSpecialtyList();
+            if (finesseChange) {
+                this.object.difficulty = parseInt(this.object.finesse);
+            }
+            if (ambitionChange) {
+                this.object.goalNumber = parseInt(this.object.ambition);
+            }
+            if (gambitChange) {
+                const gambitCosts = {
+                    'none': 0,
+                    'grapple': 2,
+                    'unhorse': 4,
+                    'distract': 3,
+                    'disarm': 3,
+                    'detonate': 4,
+                    'knockback': 3,
+                    'knockdown': 3,
+                    'pilfer': 2,
+                    'pull': 3,
+                    'revealWeakness': 2,
+                    'bind': 2,
+                    'goad': 3,
+                    'leech': 3,
+                    'pileon': 2,
+                    'riposte': 1,
+                    'blockvision': 3,
+                    'disablearm': 5,
+                    'disableleg': 6,
+                    'breachframe': 9,
+                    'entangle': 2,
+                }
+                this.object.gambitDifficulty = gambitCosts[this.object.gambit];
+                if (this.object.gambit === 'disarm' && this.object.weaponTags['disarming']) {
+                    this.object.gambitDifficulty--;
+                }
+                if ((this.object.gambit === 'knockback' || this.object.gambit === 'knockdown') && this.object.weaponTags['smashing']) {
+                    this.object.gambitDifficulty--;
+                }
+            }
+            if (craftTypeChange) {
+                this.object.intervals = 1;
+                this.object.difficulty = 1;
+                this.object.goalNumber = 0;
+                if (this.object.craftType === 'superior') {
+                    this.object.cost.goldxp = 10;
+                }
+                if (this.object.craftType === 'legendary') {
+                    this.object.cost.whitexp = 10;
+                }
+                this._getCraftDifficulty();
+            }
+            if (craftRating) {
+                if (parseInt(this.object.craftRating) === 2) {
+                    this.object.goalNumber = 30;
+                }
+                if (parseInt(this.object.craftRating) === 3) {
+                    this.object.goalNumber = 50;
+                }
+                if (parseInt(this.object.craftRating) === 4) {
+                    this.object.goalNumber = 75;
+                }
+                if (parseInt(this.object.craftRating) === 5) {
+                    this.object.goalNumber = 100;
+                }
+            }
+            if (spellChange) {
+                const fullSpell = this.actor.items.get(this.object.spell);
+                if (fullSpell) {
+                    this.object.cost.willpower = parseInt(fullSpell.system.willpower);
+                }
+                else {
+                    this.object.cost.willpower = 0;
+                }
+            }
         }
-        else if (this._isAttackRoll()) {
-            template = "systems/exaltedthird/templates/dialogues/attack-roll.html";
+
+        if (event.type === 'submit') {
+            if (this.object.rollType === 'useOpposingCharms') {
+                await this.useOpposingCharms();
+            }
+            else {
+                await this._roll();
+                if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
+                    this.resolve(true);
+                    this.close(false);
+                }
+                if (this.object.splitAttack && this.object.rollType === 'accuracy') {
+                    this.object.rollType = 'damage';
+                }
+            }
         }
-        return template;
+        this.render();
+    }
+
+
+    async _renderFrame(options) {
+        const frame = document.createElement(this.options.tag);
+        frame.id = this.id;
+        if (this.options.classes.length) frame.className = this.options.classes.join(" ");
+        if (!this.hasFrame) return frame;
+
+        // Window applications
+        const labels = {
+            controls: game.i18n.localize("APPLICATION.TOOLS.ControlsMenu"),
+            toggleControls: game.i18n.localize("APPLICATION.TOOLS.ToggleControls"),
+            close: game.i18n.localize("APPLICATION.TOOLS.Close")
+        }
+        const contentClasses = ["window-content", ...this.options.window.contentClasses].join(" ");
+        frame.innerHTML = `<header class="window-header">
+      <i class="window-icon hidden"></i>
+      <h1 class="window-title"></h1>
+        ${this.object.rollType !== 'base' ? `<button type="button" class="header-control fa-solid fa-bolt"
+              data-tooltip="Add Charm" aria-label="Add Charm" data-action="enableAddCharms"></button>` : ''}
+      <button type="button" class="header-control fa-solid fa-ellipsis-vertical"
+              data-tooltip="${labels.toggleControls}" aria-label="${labels.toggleControls}"
+              data-action="toggleControls"></button>
+      <button type="button" class="header-control fa-solid fa-times"
+              data-tooltip="${labels.close}" aria-label="${labels.close}" data-action="close"></button>
+    </header>
+    <menu class="controls-dropdown"></menu>
+    <${this.options.window.contentTag} class="${contentClasses}"></section>
+    ${this.options.window.resizable ? `<div class="window-resize-handle"></div>` : ""}`;
+
+        // Reference elements
+        this.window.header = frame.querySelector(".window-header");
+        this.window.title = frame.querySelector(".window-title");
+        this.window.icon = frame.querySelector(".window-icon");
+        this.window.resize = frame.querySelector(".window-resize-handle");
+        this.window.close = frame.querySelector("button[data-action=close]");
+        this.window.controls = frame.querySelector("button[data-action=toggleControls]");
+        this.window.controlsDropdown = frame.querySelector(".controls-dropdown");
+        return frame;
     }
 
     _setUpMultitargets() {
@@ -819,194 +1077,8 @@ export class RollForm extends FormApplication {
         }
     }
 
-    _getHeaderButtons() {
-        let buttons = [
-            {
-                label: "Close",
-                class: "close",
-                icon: "fas fa-times",
-                onclick: async () => {
-                    if (this.messageId) {
-                        game.messages.get(this.messageId)?.delete();
-                    }
-                    this.close();
-                }
-            }
-        ];
-        // Token Configuration
-        if (this.object.rollType !== 'base') {
-            if (this.object.rollType !== 'useOpposingCharms') {
-                const settingsButton = {
-                    label: game.i18n.localize('Ex3.Settings'),
-                    class: 'roller-settings',
-                    id: "roller-settings",
-                    icon: 'fas fa-cog',
-                    onclick: async (ev) => {
-                        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll, 'selects': this.selects });
-
-                        new foundry.applications.api.DialogV2({
-                            window: { title: game.i18n.localize("Ex3.DiceRollSettings"), resizable: true },
-                            content: html,
-                            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-                            buttons: [{
-                                action: "choice",
-                                label: game.i18n.localize("Ex3.Save"),
-                                default: true,
-                                callback: (event, button, dialog) => button.form.elements
-                            }, {
-                                action: "cancel",
-                                label: game.i18n.localize("Ex3.Cancel"),
-                                callback: (event, button, dialog) => false
-                            }],
-                            position: {
-                                width: 500,
-                            },
-                            submit: result => {
-                                if (result) {
-                                    this.object.settings.doubleSucccessCaps.sevens = parseInt(result.sevensCap?.value || 0);
-                                    this.object.settings.doubleSucccessCaps.eights = parseInt(result.eightsCap?.value || 0);
-                                    this.object.settings.doubleSucccessCaps.nines = parseInt(result.ninesCap?.value || 0);
-                                    this.object.settings.doubleSucccessCaps.tens = parseInt(result.tensCap?.value || 0);
-                                    this.object.settings.excludeOnesFromRerolls = result.excludeOnesFromRerolls.checked;
-                                    this.object.settings.triggerOnOnes = result.triggerOnOnes?.value || 'none';
-                                    this.object.settings.triggerOnTens = result.triggerOnTens?.value || 'none';
-
-                                    this.object.settings.alsoTriggerTwos = result.alsoTriggerTwos.checked;
-                                    this.object.settings.alsoTriggerNines = result.alsoTriggerNines.checked;
-
-                                    this.object.settings.triggerTensCap = parseInt(result.triggerTensCap?.value || 0);
-                                    this.object.settings.triggerOnesCap = parseInt(result.triggerOnesCap?.value || 0);
-
-                                    this.object.triggerSelfDefensePenalty = parseInt(result.selfDefensePenalty?.value || 0);
-                                    this.object.triggerTargetDefensePenalty = parseInt(result.targetDefensePenalty?.value || 0);
-
-                                    this.object.settings.ignoreLegendarySize = result.ignoreLegendarySize?.checked || false;
-                                    this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(result.damageSevensCap?.value || 0);
-                                    this.object.settings.damage.doubleSucccessCaps.eights = parseInt(result.damageEightsCap?.value || 0);
-                                    this.object.settings.damage.doubleSucccessCaps.nines = parseInt(result.damageNinesCap?.value || 0);
-                                    this.object.settings.damage.doubleSucccessCaps.tens = parseInt(result.damageTensCap?.value || 0);
-                                    this.object.settings.damage.excludeOnesFromRerolls = result.damageExcludeOnesFromRerolls?.checked || false;
-                                    this.object.settings.damage.triggerTensCap = parseInt(result.damageTriggerTensCap?.value || 0);
-                                    this.object.settings.damage.alsoTriggerNines = result.damageAlsoTriggerNines?.checked || false;
-
-                                    for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
-                                        this.object.reroll[rerollKey].cap = parseInt(result[`reroll-${this.object.reroll[rerollKey].number}-cap`].value || 0);
-                                    }
-
-                                    for (let [rerollKey, rerollValue] of Object.entries(this.object.damage.reroll)) {
-                                        this.object.damage.reroll[rerollKey].cap = parseInt(result[`damage-reroll-${this.object.damage.reroll[rerollKey].number}-cap`]?.value || 0);
-                                    }
-                                }
-                            }
-                        }).render({ force: true });
-                    },
-                };
-                buttons = [settingsButton, ...buttons];
-            }
-
-            const charmsButton = {
-                label: game.i18n.localize('Ex3.AddCharm'),
-                class: 'add-charm',
-                id: "add-charm",
-                icon: 'fas fa-bolt',
-                onclick: (ev) => {
-                    // this.object.charmList = this.actor.rollcharms;
-                    for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
-                        if (charmlist.collapse === undefined) {
-                            charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
-                        }
-                        for (const charm of charmlist.list) {
-                            if (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute) {
-                                charmlist.collapse = false;
-                            }
-                            if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
-                                charmlist.collapse = false;
-                                var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
-                                charm.charmAdded = true;
-                                charm.timesAdded = addedCharm.timesAdded || 1;
-                            }
-                            else {
-                                charm.charmAdded = false;
-                                charm.timesAdded = 0;
-                            }
-                            this.getEnritchedHTML(charm);
-                        }
-                    }
-                    if (this.object.addingCharms) {
-                        ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.AddCharm')}`;
-                    }
-                    else {
-                        ev.currentTarget.innerHTML = `<i class="fas fa-bolt"></i> ${game.i18n.localize('Ex3.Done')}`;
-                    }
-                    if (this._isAttackRoll()) {
-                        this.object.showSpecialAttacks = true;
-                        if (this.object.rollType !== 'gambit') {
-                            for (var specialAttack of this.object.specialAttacksList) {
-                                if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
-                                    specialAttack.show = true;
-                                }
-                                else if (specialAttack.id === 'impale' && this.object.weaponTags['lance']) {
-                                    specialAttack.show = true;
-                                }
-                                else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
-                                    specialAttack.show = true;
-                                }
-                                else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense' || specialAttack.id === 'clash') {
-                                    specialAttack.show = true;
-                                }
-                                else {
-                                    specialAttack.added = false;
-                                    specialAttack.show = false;
-                                }
-                            }
-                        }
-                    }
-                    this.object.addingCharms = !this.object.addingCharms;
-                    this.render();
-                },
-            };
-            buttons = [charmsButton, ...buttons];
-            const rollButton = {
-                label: this.object.id ? game.i18n.localize('Ex3.Update') : game.i18n.localize('Ex3.Save'),
-                class: 'roll-dice',
-                icon: 'fas fa-dice-d6',
-                onclick: (ev) => {
-                    this._saveRoll(this.object);
-                },
-            };
-            buttons = [rollButton, ...buttons];
-        }
-
-        return buttons;
-    }
-
     async getEnritchedHTML(charm) {
         charm.enritchedHTML = await TextEditor.enrichHTML(charm.system.description, { async: true, secrets: this.actor.isOwner, relativeTo: charm });
-    }
-
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-            popOut: true,
-            template: "systems/exaltedthird/templates/dialogues/dice-roll.html",
-            id: "roll-form",
-            title: game.i18n.localize('Ex3.Dialog'),
-            width: 400,
-            resizable: true,
-            submitOnChange: true,
-            closeOnSubmit: false
-        });
-    }
-
-
-    resolve = function (value) { return value };
-
-    get resolve() {
-        return this.resolve
-    }
-
-    set resolve(value) {
-        this.resolve = value;
     }
 
     /**
@@ -1020,7 +1092,7 @@ export class RollForm extends FormApplication {
             } else {
                 await this._roll();
             }
-            return true;fd
+            return true;
         } else {
             var _promiseResolve;
             this.promise = new Promise(function (promiseResolve) {
@@ -1032,13 +1104,21 @@ export class RollForm extends FormApplication {
         }
     }
 
-    async _saveRoll(rollData) {
+    async close(deleteMessage = true, options = {}) {
+        this.resolve(false);
+        if (this.messageId && deleteMessage) {
+            game.messages.get(this.messageId)?.delete();
+        }
+        super.close();
+    }
+
+    static async saveRoll(rollData) {
         let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
 
         new foundry.applications.api.DialogV2({
             window: { title: game.i18n.localize("Ex3.SaveRoll"), },
             content: html,
-            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+            classes: [this.actor ? this.actor.getSheetBackground() : `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
             buttons: [{
                 action: "save",
                 label: game.i18n.localize("Ex3.Save"),
@@ -1079,6 +1159,507 @@ export class RollForm extends FormApplication {
         }).render({ force: true });
     }
 
+    static async editSettings() {
+        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll, 'selects': this.selects });
+
+        new foundry.applications.api.DialogV2({
+            window: { title: game.i18n.localize("Ex3.DiceRollSettings"), resizable: true },
+            content: html,
+            classes: [this.actor ? this.actor.getSheetBackground() : `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+            buttons: [{
+                action: "choice",
+                label: game.i18n.localize("Ex3.Save"),
+                default: true,
+                callback: (event, button, dialog) => button.form.elements
+            }, {
+                action: "cancel",
+                label: game.i18n.localize("Ex3.Cancel"),
+                callback: (event, button, dialog) => false
+            }],
+            position: {
+                width: 500,
+            },
+            submit: result => {
+                if (result) {
+                    this.object.settings.doubleSucccessCaps.sevens = parseInt(result.sevensCap?.value || 0);
+                    this.object.settings.doubleSucccessCaps.eights = parseInt(result.eightsCap?.value || 0);
+                    this.object.settings.doubleSucccessCaps.nines = parseInt(result.ninesCap?.value || 0);
+                    this.object.settings.doubleSucccessCaps.tens = parseInt(result.tensCap?.value || 0);
+                    this.object.settings.excludeOnesFromRerolls = result.excludeOnesFromRerolls.checked;
+                    this.object.settings.triggerOnOnes = result.triggerOnOnes?.value || 'none';
+                    this.object.settings.triggerOnTens = result.triggerOnTens?.value || 'none';
+
+                    this.object.settings.alsoTriggerTwos = result.alsoTriggerTwos.checked;
+                    this.object.settings.alsoTriggerNines = result.alsoTriggerNines.checked;
+
+                    this.object.settings.triggerTensCap = parseInt(result.triggerTensCap?.value || 0);
+                    this.object.settings.triggerOnesCap = parseInt(result.triggerOnesCap?.value || 0);
+
+                    this.object.triggerSelfDefensePenalty = parseInt(result.selfDefensePenalty?.value || 0);
+                    this.object.triggerTargetDefensePenalty = parseInt(result.targetDefensePenalty?.value || 0);
+
+                    this.object.settings.ignoreLegendarySize = result.ignoreLegendarySize?.checked || false;
+                    this.object.settings.damage.doubleSucccessCaps.sevens = parseInt(result.damageSevensCap?.value || 0);
+                    this.object.settings.damage.doubleSucccessCaps.eights = parseInt(result.damageEightsCap?.value || 0);
+                    this.object.settings.damage.doubleSucccessCaps.nines = parseInt(result.damageNinesCap?.value || 0);
+                    this.object.settings.damage.doubleSucccessCaps.tens = parseInt(result.damageTensCap?.value || 0);
+                    this.object.settings.damage.excludeOnesFromRerolls = result.damageExcludeOnesFromRerolls?.checked || false;
+                    this.object.settings.damage.triggerTensCap = parseInt(result.damageTriggerTensCap?.value || 0);
+                    this.object.settings.damage.alsoTriggerNines = result.damageAlsoTriggerNines?.checked || false;
+
+                    for (let [rerollKey, rerollValue] of Object.entries(this.object.reroll)) {
+                        this.object.reroll[rerollKey].cap = parseInt(result[`reroll-${this.object.reroll[rerollKey].number}-cap`].value || 0);
+                    }
+
+                    for (let [rerollKey, rerollValue] of Object.entries(this.object.damage.reroll)) {
+                        this.object.damage.reroll[rerollKey].cap = parseInt(result[`damage-reroll-${this.object.damage.reroll[rerollKey].number}-cap`]?.value || 0);
+                    }
+                }
+            }
+        }).render({ force: true });
+    }
+
+    static triggerRemoveCharm(event, target) {
+        event.stopPropagation();
+        let li = $(target).parents(".item");
+        let item = this.actor.items.get(li.data("item-id"));
+        const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem.id);
+        const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem.id);
+        if (index > -1) {
+            if (addedCharm.timesAdded > 0) {
+                addedCharm.timesAdded--;
+            }
+            if (addedCharm.timesAdded <= 0) {
+                this.object.addedCharms.splice(index, 1);
+            }
+
+            for (var charmlist of Object.values(this.object.charmList)) {
+                for (const charm of charmlist.list) {
+                    if (charm._id === item.id) {
+                        charm.timesAdded = addedCharm.timesAdded;
+                        if (charm.timesAdded <= 0) {
+                            charm.charmAdded = false;
+                        }
+                    }
+                }
+            }
+
+            if (item.system.cost) {
+                if (item.system.keywords.toLowerCase().includes('mute')) {
+                    this.object.cost.muteMotes -= item.system.cost.motes;
+                }
+                else {
+                    this.object.cost.motes -= item.system.cost.motes;
+                }
+                this.object.cost.anima -= item.system.cost.anima;
+                this.object.cost.penumbra -= item.system.cost.penumbra;
+                this.object.cost.willpower -= item.system.cost.willpower;
+                this.object.cost.silverxp -= item.system.cost.silverxp;
+                this.object.cost.goldxp -= item.system.cost.goldxp;
+                this.object.cost.whitexp -= item.system.cost.whitexp;
+                this.object.cost.initiative -= item.system.cost.initiative;
+                this.object.cost.grappleControl -= item.system.cost.grapplecontrol;
+
+                if (item.system.cost.aura === this.object.cost.aura) {
+                    this.object.cost.aura = "";
+                }
+
+                if (item.system.cost.health > 0) {
+                    if (item.system.cost.healthtype === 'bashing') {
+                        this.object.cost.healthbashing -= item.system.cost.health;
+                    }
+                    else if (item.system.cost.healthtype === 'lethal') {
+                        this.object.cost.healthlethal -= item.system.cost.health;
+                    }
+                    else {
+                        this.object.cost.healthaggravated -= item.system.cost.health;
+                    }
+                }
+                this.object.restore.motes -= item.system.restore.motes;
+                this.object.restore.willpower -= item.system.restore.willpower;
+                this.object.restore.health -= item.system.restore.health;
+                this.object.restore.initiative -= item.system.restore.initiative;
+            }
+
+            if (item.system.diceroller) {
+                this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
+                this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+
+                this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
+                this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
+
+                if (!item.system.diceroller.settings.noncharmdice) {
+                    this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
+                }
+                if (!item.system.diceroller.settings.noncharmsuccesses) {
+                    if (this.actor.system.details.exalt === 'sidereal') {
+                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonussuccesses));
+                    } else {
+                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
+                    }
+                }
+                this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
+                    if (rerollValue) {
+                        this.object.reroll[rerollKey].status = false;
+                    }
+                }
+                if (item.system.diceroller.rolltwice) {
+                    this.object.rollTwice = false;
+                }
+                if (item.system.diceroller.rerollfailed) {
+                    this.object.rerollFailed = false;
+                }
+                this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
+                this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
+                if (this.object.showTargets) {
+                    const targetValues = Object.values(this.object.targets);
+                    for (const target of targetValues) {
+                        target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                        if (this.object.rollType === 'damage') {
+                            target.rollData.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                        }
+                    }
+                }
+                else {
+                    this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                    this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
+                    if (this.object.rollType === 'damage') {
+                        this.object.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                    }
+                }
+
+
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
+                    if (rerollValue) {
+                        this.object.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
+                    }
+                }
+                for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
+                    if (value) {
+                        this.object.settings.doubleSucccessCaps[key] -= this._getFormulaValue(value);
+                    }
+                }
+                if (item.system.diceroller.ignorelegendarysize) {
+                    this.object.settings.ignoreLegendarySize = false;
+                }
+                if (item.system.diceroller.excludeonesfromrerolls) {
+                    this.object.settings.excludeOnesFromRerolls = false;
+                }
+
+                this.object.damage.damageDice -= this._getFormulaValue(item.system.diceroller.damage.bonusdice);
+                this.object.damage.damageSuccessModifier -= this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
+                this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
+                this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
+                this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
+                this.object.damage.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
+
+                this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+                this.object.damage.ignoreHardness -= this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
+
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
+                    if (rerollValue) {
+                        this.object.damage.reroll[rerollKey].status = false;
+                    }
+                }
+                if (item.system.diceroller.damage.rerollfailed) {
+                    this.object.damage.rerollFailed = false;
+                }
+                if (item.system.diceroller.damage.rolltwice) {
+                    this.object.damage.rollTwice = false;
+                }
+                this.object.damage.rerollNumber -= this._getFormulaValue(item.system.diceroller.damage.rerolldice);
+                if (item.system.diceroller.damage.threshholdtodamage) {
+                    this.object.damage.threshholdToDamage = false;
+                }
+                if (item.system.diceroller.damage.doublerolleddamage) {
+                    this.object.damage.doubleRolledDamage = false;
+                }
+                this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
+                for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
+                    if (rerollValue) {
+                        this.object.damage.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
+                    }
+                }
+                for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
+                    if (value) {
+                        this.object.settings.damage.doubleSucccessCaps[key] -= this._getFormulaValue(value);
+                    }
+                }
+                if (item.system.diceroller.damage.excludeonesfromrerolls) {
+                    this.object.settings.damage.excludeOnesFromRerolls = false;
+                }
+                if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
+                    this.object.activateAura = '';
+                }
+                if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
+                    this.object.settings.triggerOnTens = 'none';
+                    this.object.settings.alsoTriggerNines = false;
+                }
+                this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
+                if (item.system.diceroller.damage.triggerontens !== 'none') {
+                    this.object.settings.damage.triggerOnTens = 'none';
+                    this.object.settings.damage.alsoTriggerNines = false;
+                }
+                this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
+                this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
+
+                if (this.object.rollType === 'useOpposingCharms') {
+                    this.object.addOppose.addedBonus.dice -= this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
+                    this.object.addOppose.addedBonus.successes -= this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
+                    this.object.addOppose.addedBonus.defense -= this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
+                    this.object.addOppose.addedBonus.soak -= this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
+                    this.object.addOppose.addedBonus.hardness -= this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
+                    this.object.addOppose.addedBonus.damage -= this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
+                    this.object.addOppose.addedBonus.resolve -= this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
+                    this.object.addOppose.addedBonus.guile -= this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
+                }
+            }
+        }
+        this._calculateAnimaGain();
+        this.render();
+    }
+
+
+    static triggerAddCharm(event, target) {
+        event.stopPropagation();
+        let li = $(target).parents(".item");
+        let item = this.actor.items.get(li.data("item-id"));
+        this.addCharm(item);
+    }
+
+    static addSpecialAttack(event, target) {
+        ev.stopPropagation();
+        let li = $(target).parents(".item");
+        let id = li.data("item-id");
+        for (var specialAttack of this.object.specialAttacksList) {
+            if (specialAttack.id === id) {
+                specialAttack.added = true;
+            }
+        }
+        if (id === 'aim') {
+            this.object.diceModifier += 3;
+        }
+        else if (id === 'impale') {
+            if (this.object.attackType === 'withering') {
+                this.object.damage.damageDice += 5;
+            }
+            else {
+                this.object.damage.damageDice += 3;
+            }
+        }
+        else {
+            if (id === 'knockback' || id === 'knockdown') {
+                this.object.cost.initiative += 2;
+                if (id === 'knockdown') {
+                    this.object.triggerKnockdown = true;
+                }
+            }
+            else if (id === 'flurry') {
+                this.object.isFlurry = true;
+            }
+            else if (id === 'clash') {
+                this.object.isClash = true;
+            }
+            else {
+                this.object.cost.initiative += 1;
+            }
+            if (id === 'chopping' && this.object.attackType === 'withering') {
+                this.object.damage.damageDice += 3;
+            }
+            if (id === 'piercing' && this.object.attackType === 'withering') {
+                this.object.damage.ignoreSoak += 4;
+            }
+            else if (id === 'fulldefense') {
+                this.object.diceModifier -= 3;
+                this.object.cost.initiative += 1;
+                this.object.triggerFullDefense = true;
+            }
+            this.object.triggerSelfDefensePenalty += 1;
+        }
+        this.render();
+    }
+
+    static removeSpecialAttack(event, target) {
+        ev.stopPropagation();
+        let li = $(target).parents(".item");
+        let id = li.data("item-id");
+        for (var specialAttack of this.object.specialAttacksList) {
+            if (specialAttack.id === id) {
+                specialAttack.added = false;
+            }
+        }
+        if (id === 'aim') {
+            this.object.diceModifier -= 3;
+        }
+        else if (id === 'impale') {
+            if (this.object.attackType === 'withering') {
+                this.object.damage.damageDice -= 5;
+            }
+            else {
+                this.object.damage.damageDice -= 3;
+            }
+        }
+        else {
+            if (id === 'knockback' || id === 'knockdown') {
+                this.object.cost.initiative -= 2;
+                if (id === 'knockdown') {
+                    this.object.triggerKnockdown = false;
+                }
+            }
+            else if (id === 'flurry') {
+                this.object.isFlurry = false;
+            }
+            else {
+                this.object.cost.initiative -= 1;
+            }
+            if (id === 'chopping' && this.object.attackType === 'withering') {
+                this.object.damage.damageDice -= 3;
+            }
+            if (id === 'piercing' && this.object.attackType === 'withering') {
+                this.object.damage.ignoreSoak -= 4;
+            }
+            else if (id === 'fulldefense') {
+                this.object.diceModifier += 3;
+                this.object.cost.initiative -= 1;
+                this.object.triggerFullDefense = true;
+            }
+            this.object.triggerSelfDefensePenalty = Math.max(0, this.object.triggerSelfDefensePenalty - 1);
+        }
+        this.render();
+    }
+
+    static removeOpposingCharm() {
+        ev.stopPropagation();
+        let li = $(target).parents(".item");
+        let id = li.data("item-id");
+        const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
+        const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
+        if (charm) {
+            if (charm.timesAdded <= 1) {
+                this.object.opposingCharms.splice(index, 1);
+            }
+            else {
+                charm.timesAdded--;
+            }
+            this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
+            this.object.rerollSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses);
+            this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
+            if (this.object.showTargets) {
+                const targetValues = Object.values(this.object.targets);
+                if (targetValues.length === 1) {
+                    targetValues[0].rollData.guile -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
+                    targetValues[0].rollData.resolve -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
+                    targetValues[0].rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                    targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                    targetValues[0].rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
+                    targetValues[0].rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
+                    targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                    targetValues[0].rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                    targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                    if (this.object.rollType === 'damage') {
+                        targetValues[0].rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                    }
+                }
+                else {
+                    for (const target of targetValues) {
+                        if (target.actor.id === charm.parent.id || targetValues.length === 1) {
+                            target.rollData.guile -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
+                            target.rollData.resolve -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
+                            target.rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                            target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                            target.rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
+                            target.rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
+                            target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                            target.rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                            target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                            if (this.object.rollType === 'damage') {
+                                target.rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                this.object.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                this.object.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
+                this.object.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
+                this.object.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
+                this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
+                this.object.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                this.object.damage.damageDice -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                if (this.object.rollType === 'readIntentions') {
+                    this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
+                }
+                if (this.object.rollType === 'social') {
+                    this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
+                }
+                if (this.object.rollType === 'damage') {
+                    this.object.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                }
+            }
+            this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
+            if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
+                this.object.settings.triggerOnOnes = 'none';
+                this.object.settings.alsoTriggerTwos = false;
+            }
+            this.object.settings.triggerOnesCap -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
+        }
+        this.render();
+    }
+
+    static enableAddCharms() {
+        // this.object.charmList = this.actor.rollcharms;
+        for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
+            if (charmlist.collapse === undefined) {
+                charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
+            }
+            for (const charm of charmlist.list) {
+                if (charm.system.ability === this.object.ability || charm.system.ability === this.object.attribute) {
+                    charmlist.collapse = false;
+                }
+                if (this.object.addedCharms.some((addedCharm) => addedCharm.id === charm._id)) {
+                    charmlist.collapse = false;
+                    var addedCharm = this.object.addedCharms.find((addedCharm) => addedCharm.id === charm._id);
+                    charm.charmAdded = true;
+                    charm.timesAdded = addedCharm.timesAdded || 1;
+                }
+                else {
+                    charm.charmAdded = false;
+                    charm.timesAdded = 0;
+                }
+                this.getEnritchedHTML(charm);
+            }
+        }
+        if (this._isAttackRoll()) {
+            this.object.showSpecialAttacks = true;
+            if (this.object.rollType !== 'gambit') {
+                for (var specialAttack of this.object.specialAttacksList) {
+                    if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
+                        specialAttack.show = true;
+                    }
+                    else if (specialAttack.id === 'impale' && this.object.weaponTags['lance']) {
+                        specialAttack.show = true;
+                    }
+                    else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
+                        specialAttack.show = true;
+                    }
+                    else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense' || specialAttack.id === 'clash') {
+                        specialAttack.show = true;
+                    }
+                    else {
+                        specialAttack.added = false;
+                        specialAttack.show = false;
+                    }
+                }
+            }
+        }
+        this.object.addingCharms = !this.object.addingCharms;
+        this.render();
+    }
+
     getData() {
         this.selects = CONFIG.exaltedthird.selects;
         // this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
@@ -1092,9 +1673,28 @@ export class RollForm extends FormApplication {
         };
     }
 
-    async _updateObject(event, formData) {
-        foundry.utils.mergeObject(this, formData);
+    _onRender(context, options) {
+        this.element.querySelectorAll('.collapsable').forEach(element => {
+            element.addEventListener('click', (ev) => {
+                const li = $(ev.currentTarget).next();
+                if (li.attr('id')) {
+                    this.object[li.attr('id')] = li.is(":hidden");
+                }
+                li.toggle("fast");
+            });
+        });
+
+        this.element.querySelectorAll('.charm-list-collapsable').forEach(element => {
+            element.addEventListener('click', (ev) => {
+                const li = $(ev.currentTarget).next();
+                if (li.attr('id')) {
+                    this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
+                }
+                li.toggle("fast");
+            });
+        });
     }
+
 
     _autoAddCharm(charm) {
         if (!charm.system.autoaddtorolls) {
@@ -1673,556 +2273,6 @@ export class RollForm extends FormApplication {
             this.object.settings.alsoTriggerTwos = charm.system.diceroller.opposedbonuses.alsotriggertwos;
         }
         this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
-    }
-
-    activateListeners(html) {
-        super.activateListeners(html);
-
-        html.on("change", "#gambit", ev => {
-            const gambitCosts = {
-                'none': 0,
-                'grapple': 2,
-                'unhorse': 4,
-                'distract': 3,
-                'disarm': 3,
-                'detonate': 4,
-                'knockback': 3,
-                'knockdown': 3,
-                'pilfer': 2,
-                'pull': 3,
-                'revealWeakness': 2,
-                'bind': 2,
-                'goad': 3,
-                'leech': 3,
-                'pileon': 2,
-                'riposte': 1,
-                'blockvision': 3,
-                'disablearm': 5,
-                'disableleg': 6,
-                'breachframe': 9,
-                'entangle': 2,
-            }
-            this.object.gambitDifficulty = gambitCosts[this.object.gambit];
-            if (this.object.gambit === 'disarm' && this.object.weaponTags['disarming']) {
-                this.object.gambitDifficulty--;
-            }
-            if ((this.object.gambit === 'knockback' || this.object.gambit === 'knockdown') && this.object.weaponTags['smashing']) {
-                this.object.gambitDifficulty--;
-            }
-            this.render();
-        });
-
-        html.on("change", "#craft-type", ev => {
-            this.object.intervals = 1;
-            this.object.difficulty = 1;
-            this.object.goalNumber = 0;
-            if (this.object.craftType === 'superior') {
-                this.object.cost.goldxp = 10;
-            }
-            if (this.object.craftType === 'legendary') {
-                this.object.cost.whitexp = 10;
-            }
-            this._getCraftDifficulty();
-            this.render();
-        });
-
-        html.on("change", "#craft-rating", ev => {
-            if (parseInt(this.object.craftRating) === 2) {
-                this.object.goalNumber = 30;
-            }
-            if (parseInt(this.object.craftRating) === 3) {
-                this.object.goalNumber = 50;
-            }
-            if (parseInt(this.object.craftRating) === 4) {
-                this.object.goalNumber = 75;
-            }
-            if (parseInt(this.object.craftRating) === 5) {
-                this.object.goalNumber = 100;
-            }
-            this.render();
-        });
-
-        html.on("change", "#working-finesse", ev => {
-            this.object.difficulty = parseInt(this.object.finesse);
-            this.render();
-        });
-
-        html.on("change", "#working-ambition", ev => {
-            this.object.goalNumber = parseInt(this.object.ambition);
-            this.render();
-        });
-
-        html.on("change", ".spell", ev => {
-            const fullSpell = this.actor.items.get(this.object.spell);
-            if (fullSpell) {
-                this.object.cost.willpower = parseInt(fullSpell.system.willpower);
-            }
-            else {
-                this.object.cost.willpower = 0;
-            }
-            this.render();
-        });
-
-        html.on("change", "#update-damage-type", ev => {
-            this.render();
-        });
-
-        html.find('#roll-button').click((event) => {
-            if (this.object.rollType === 'useOpposingCharms') {
-                this.useOpposingCharms();
-            }
-            else {
-                this._roll();
-                if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
-                    this.resolve(true);
-                    this.close();
-                }
-            }
-
-        });
-
-        html.find('#save-button').click((event) => {
-            this._saveRoll(this.object);
-            if (this.object.intervals <= 0) {
-                this.close();
-            }
-        });
-
-
-        html.find('.add-special-attack').click((ev) => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let id = li.data("item-id");
-            for (var specialAttack of this.object.specialAttacksList) {
-                if (specialAttack.id === id) {
-                    specialAttack.added = true;
-                }
-            }
-            if (id === 'aim') {
-                this.object.diceModifier += 3;
-            }
-            else if (id === 'impale') {
-                if (this.object.attackType === 'withering') {
-                    this.object.damage.damageDice += 5;
-                }
-                else {
-                    this.object.damage.damageDice += 3;
-                }
-            }
-            else {
-                if (id === 'knockback' || id === 'knockdown') {
-                    this.object.cost.initiative += 2;
-                    if (id === 'knockdown') {
-                        this.object.triggerKnockdown = true;
-                    }
-                }
-                else if (id === 'flurry') {
-                    this.object.isFlurry = true;
-                }
-                else if (id === 'clash') {
-                    this.object.isClash = true;
-                }
-                else {
-                    this.object.cost.initiative += 1;
-                }
-                if (id === 'chopping' && this.object.attackType === 'withering') {
-                    this.object.damage.damageDice += 3;
-                }
-                if (id === 'piercing' && this.object.attackType === 'withering') {
-                    this.object.damage.ignoreSoak += 4;
-                }
-                else if (id === 'fulldefense') {
-                    this.object.diceModifier -= 3;
-                    this.object.cost.initiative += 1;
-                    this.object.triggerFullDefense = true;
-                }
-                this.object.triggerSelfDefensePenalty += 1;
-            }
-            this.render();
-        });
-
-        html.find('.remove-special-attack').click((ev) => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let id = li.data("item-id");
-            for (var specialAttack of this.object.specialAttacksList) {
-                if (specialAttack.id === id) {
-                    specialAttack.added = false;
-                }
-            }
-            if (id === 'aim') {
-                this.object.diceModifier -= 3;
-            }
-            else if (id === 'impale') {
-                if (this.object.attackType === 'withering') {
-                    this.object.damage.damageDice -= 5;
-                }
-                else {
-                    this.object.damage.damageDice -= 3;
-                }
-            }
-            else {
-                if (id === 'knockback' || id === 'knockdown') {
-                    this.object.cost.initiative -= 2;
-                    if (id === 'knockdown') {
-                        this.object.triggerKnockdown = false;
-                    }
-                }
-                else if (id === 'flurry') {
-                    this.object.isFlurry = false;
-                }
-                else {
-                    this.object.cost.initiative -= 1;
-                }
-                if (id === 'chopping' && this.object.attackType === 'withering') {
-                    this.object.damage.damageDice -= 3;
-                }
-                if (id === 'piercing' && this.object.attackType === 'withering') {
-                    this.object.damage.ignoreSoak -= 4;
-                }
-                else if (id === 'fulldefense') {
-                    this.object.diceModifier += 3;
-                    this.object.cost.initiative -= 1;
-                    this.object.triggerFullDefense = true;
-                }
-                this.object.triggerSelfDefensePenalty = Math.max(0, this.object.triggerSelfDefensePenalty - 1);
-            }
-            this.render();
-        });
-
-        html.find('.add-charm').click(ev => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let item = this.actor.items.get(li.data("item-id"));
-            this.addCharm(item);
-        });
-
-        html.find('.remove-charm').click(ev => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let item = this.actor.items.get(li.data("item-id"));
-            const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem.id);
-            const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem.id);
-            if (index > -1) {
-                if (addedCharm.timesAdded > 0) {
-                    addedCharm.timesAdded--;
-                }
-                if (addedCharm.timesAdded <= 0) {
-                    this.object.addedCharms.splice(index, 1);
-                }
-
-                for (var charmlist of Object.values(this.object.charmList)) {
-                    for (const charm of charmlist.list) {
-                        if (charm._id === item.id) {
-                            charm.timesAdded = addedCharm.timesAdded;
-                            if (charm.timesAdded <= 0) {
-                                charm.charmAdded = false;
-                            }
-                        }
-                    }
-                }
-
-                if (item.system.cost) {
-                    if (item.system.keywords.toLowerCase().includes('mute')) {
-                        this.object.cost.muteMotes -= item.system.cost.motes;
-                    }
-                    else {
-                        this.object.cost.motes -= item.system.cost.motes;
-                    }
-                    this.object.cost.anima -= item.system.cost.anima;
-                    this.object.cost.penumbra -= item.system.cost.penumbra;
-                    this.object.cost.willpower -= item.system.cost.willpower;
-                    this.object.cost.silverxp -= item.system.cost.silverxp;
-                    this.object.cost.goldxp -= item.system.cost.goldxp;
-                    this.object.cost.whitexp -= item.system.cost.whitexp;
-                    this.object.cost.initiative -= item.system.cost.initiative;
-                    this.object.cost.grappleControl -= item.system.cost.grapplecontrol;
-
-                    if (item.system.cost.aura === this.object.cost.aura) {
-                        this.object.cost.aura = "";
-                    }
-
-                    if (item.system.cost.health > 0) {
-                        if (item.system.cost.healthtype === 'bashing') {
-                            this.object.cost.healthbashing -= item.system.cost.health;
-                        }
-                        else if (item.system.cost.healthtype === 'lethal') {
-                            this.object.cost.healthlethal -= item.system.cost.health;
-                        }
-                        else {
-                            this.object.cost.healthaggravated -= item.system.cost.health;
-                        }
-                    }
-                    this.object.restore.motes -= item.system.restore.motes;
-                    this.object.restore.willpower -= item.system.restore.willpower;
-                    this.object.restore.health -= item.system.restore.health;
-                    this.object.restore.initiative -= item.system.restore.initiative;
-                }
-
-                if (item.system.diceroller) {
-                    this.object.diceModifier -= this._getFormulaValue(item.system.diceroller.bonusdice);
-                    this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-
-                    this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
-                    this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
-
-                    if (!item.system.diceroller.settings.noncharmdice) {
-                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
-                    }
-                    if (!item.system.diceroller.settings.noncharmsuccesses) {
-                        if (this.actor.system.details.exalt === 'sidereal') {
-                            this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonussuccesses));
-                        } else {
-                            this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
-                        }
-                    }
-                    this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
-                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
-                        if (rerollValue) {
-                            this.object.reroll[rerollKey].status = false;
-                        }
-                    }
-                    if (item.system.diceroller.rolltwice) {
-                        this.object.rollTwice = false;
-                    }
-                    if (item.system.diceroller.rerollfailed) {
-                        this.object.rerollFailed = false;
-                    }
-                    this.object.rerollNumber -= this._getFormulaValue(item.system.diceroller.rerolldice);
-                    this.object.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.diceToSuccesses);
-                    if (this.object.showTargets) {
-                        const targetValues = Object.values(this.object.targets);
-                        for (const target of targetValues) {
-                            target.rollData.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                            target.rollData.resolve += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                            target.rollData.guile += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                            if (this.object.rollType === 'damage') {
-                                target.rollData.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-                            }
-                        }
-                    }
-                    else {
-                        this.object.difficulty += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        this.object.defense += this._getFormulaValue(item.system.diceroller.reducedifficulty);
-                        if (this.object.rollType === 'damage') {
-                            this.object.attackSuccesses -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-                        }
-                    }
-
-
-                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
-                        if (rerollValue) {
-                            this.object.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
-                        }
-                    }
-                    for (let [key, value] of Object.entries(item.system.diceroller.doublesucccesscaps)) {
-                        if (value) {
-                            this.object.settings.doubleSucccessCaps[key] -= this._getFormulaValue(value);
-                        }
-                    }
-                    if (item.system.diceroller.ignorelegendarysize) {
-                        this.object.settings.ignoreLegendarySize = false;
-                    }
-                    if (item.system.diceroller.excludeonesfromrerolls) {
-                        this.object.settings.excludeOnesFromRerolls = false;
-                    }
-
-                    this.object.damage.damageDice -= this._getFormulaValue(item.system.diceroller.damage.bonusdice);
-                    this.object.damage.damageSuccessModifier -= this._getFormulaValue(item.system.diceroller.damage.bonussuccesses);
-                    this.object.damage.targetNumber += item.system.diceroller.damage.decreasetargetnumber;
-                    this.object.overwhelming -= this._getFormulaValue(item.system.diceroller.damage.overwhelming);
-                    this.object.damage.postSoakDamage -= this._getFormulaValue(item.system.diceroller.damage.postsoakdamage);
-                    this.object.damage.diceToSuccesses -= this._getFormulaValue(item.system.diceroller.damage.dicetosuccesses);
-
-                    this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
-                    this.object.damage.ignoreHardness -= this._getFormulaValue(item.system.diceroller.damage.ignorehardness);
-
-                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.reroll)) {
-                        if (rerollValue) {
-                            this.object.damage.reroll[rerollKey].status = false;
-                        }
-                    }
-                    if (item.system.diceroller.damage.rerollfailed) {
-                        this.object.damage.rerollFailed = false;
-                    }
-                    if (item.system.diceroller.damage.rolltwice) {
-                        this.object.damage.rollTwice = false;
-                    }
-                    this.object.damage.rerollNumber -= this._getFormulaValue(item.system.diceroller.damage.rerolldice);
-                    if (item.system.diceroller.damage.threshholdtodamage) {
-                        this.object.damage.threshholdToDamage = false;
-                    }
-                    if (item.system.diceroller.damage.doublerolleddamage) {
-                        this.object.damage.doubleRolledDamage = false;
-                    }
-                    this.object.damage.ignoreSoak -= this._getFormulaValue(item.system.diceroller.damage.ignoresoak);
-                    for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.damage.rerollcap)) {
-                        if (rerollValue) {
-                            this.object.damage.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
-                        }
-                    }
-                    for (let [key, value] of Object.entries(item.system.diceroller.damage.doublesucccesscaps)) {
-                        if (value) {
-                            this.object.settings.damage.doubleSucccessCaps[key] -= this._getFormulaValue(value);
-                        }
-                    }
-                    if (item.system.diceroller.damage.excludeonesfromrerolls) {
-                        this.object.settings.damage.excludeOnesFromRerolls = false;
-                    }
-                    if (addedCharm.timesAdded === 0 && item.system.diceroller.activateAura === this.object.activateAura) {
-                        this.object.activateAura = '';
-                    }
-                    if (addedCharm.timesAdded === 0 && item.system.diceroller.triggerontens === this.object.settings.triggerOnTens) {
-                        this.object.settings.triggerOnTens = 'none';
-                        this.object.settings.alsoTriggerNines = false;
-                    }
-                    this.object.settings.triggerTensCap -= this._getFormulaValue(item.system.diceroller.triggertenscap);
-                    if (item.system.diceroller.damage.triggerontens !== 'none') {
-                        this.object.settings.damage.triggerOnTens = 'none';
-                        this.object.settings.damage.alsoTriggerNines = false;
-                    }
-                    this.object.settings.damage.triggerTensCap -= this._getFormulaValue(item.system.diceroller.damage.triggertenscap);
-                    this.object.settings.triggerOnesCap -= this._getFormulaValue(item.system.diceroller.triggeronescap);
-
-                    if (this.object.rollType === 'useOpposingCharms') {
-                        this.object.addOppose.addedBonus.dice -= this._getFormulaValue(item.system.diceroller.opposedbonuses.dicemodifier);
-                        this.object.addOppose.addedBonus.successes -= this._getFormulaValue(item.system.diceroller.opposedbonuses.successmodifier);
-                        this.object.addOppose.addedBonus.defense -= this._getFormulaValue(item.system.diceroller.opposedbonuses.defense);
-                        this.object.addOppose.addedBonus.soak -= this._getFormulaValue(item.system.diceroller.opposedbonuses.soak);
-                        this.object.addOppose.addedBonus.hardness -= this._getFormulaValue(item.system.diceroller.opposedbonuses.hardness);
-                        this.object.addOppose.addedBonus.damage -= this._getFormulaValue(item.system.diceroller.opposedbonuses.damagemodifier);
-                        this.object.addOppose.addedBonus.resolve -= this._getFormulaValue(item.system.diceroller.opposedbonuses.resolve);
-                        this.object.addOppose.addedBonus.guile -= this._getFormulaValue(item.system.diceroller.opposedbonuses.guile);
-                    }
-                }
-            }
-            this._calculateAnimaGain();
-            this.render();
-        });
-
-        html.find('.remove-opposing-charm').click(ev => {
-            ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let id = li.data("item-id");
-            const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
-            const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
-            if (charm) {
-                if (charm.timesAdded <= 1) {
-                    this.object.opposingCharms.splice(index, 1);
-                }
-                else {
-                    charm.timesAdded--;
-                }
-                this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
-                this.object.rerollSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses);
-                this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
-                if (this.object.showTargets) {
-                    const targetValues = Object.values(this.object.targets);
-                    if (targetValues.length === 1) {
-                        targetValues[0].rollData.guile -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-                        targetValues[0].rollData.resolve -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
-                        targetValues[0].rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
-                        targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
-                        targetValues[0].rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
-                        targetValues[0].rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
-                        targetValues[0].rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
-                        targetValues[0].rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                        targetValues[0].rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                        if (this.object.rollType === 'damage') {
-                            targetValues[0].rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                        }
-                    }
-                    else {
-                        for (const target of targetValues) {
-                            if (target.actor.id === charm.parent.id || targetValues.length === 1) {
-                                target.rollData.guile -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-                                target.rollData.resolve -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
-                                target.rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
-                                target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
-                                target.rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
-                                target.rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
-                                target.rollData.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
-                                target.rollData.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                                target.rollData.damageModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                                if (this.object.rollType === 'damage') {
-                                    target.rollData.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                                }
-                            }
-                        }
-                    }
-                }
-                else {
-                    this.object.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
-                    this.object.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
-                    this.object.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
-                    this.object.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
-                    this.object.diceModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
-                    this.object.successModifier -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                    this.object.damage.damageDice -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
-                    if (this.object.rollType === 'readIntentions') {
-                        this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-                    }
-                    if (this.object.rollType === 'social') {
-                        this.object.difficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
-                    }
-                    if (this.object.rollType === 'damage') {
-                        this.object.attackSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                    }
-                }
-                this.object.damage.targetNumber -= charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
-                if (charm.system.diceroller.opposedbonuses.triggeronones !== 'none') {
-                    this.object.settings.triggerOnOnes = 'none';
-                    this.object.settings.alsoTriggerTwos = false;
-                }
-                this.object.settings.triggerOnesCap -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
-            }
-            this.render();
-        });
-
-        html.find('#done-adding-charms').click(ev => {
-            this.object.addingCharms = false;
-            this.object.showSpecialAttacks = false;
-            this.render();
-        });
-
-        html.on("change", ".update-roller", ev => {
-            this.object.diceCap = this._getDiceCap();
-            this.render();
-        });
-
-        html.on("change", ".update-specialties", ev => {
-            this._updateSpecialtyList();
-            this.render();
-        });
-
-        html.find('#cancel').click((event) => {
-            this.resolve(false);
-            if (this.messageId) {
-                game.messages.get(this.messageId)?.delete();
-            }
-            this.close();
-        });
-
-        html.find('.collapsable').click(ev => {
-            const li = $(ev.currentTarget).next();
-            if (li.attr('id')) {
-                this.object[li.attr('id')] = li.is(":hidden");
-            }
-            li.toggle("fast");
-        });
-
-        html.find('.charm-list-collapsable').click(ev => {
-            const li = $(ev.currentTarget).next();
-            if (li.attr('id')) {
-                this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
-            }
-            li.toggle("fast");
-        });
-
-        html.on("change", ".update-motes", ev => {
-            this._calculateAnimaGain();
-            this.render();
-        });
     }
 
     async _roll() {
@@ -3350,10 +3400,6 @@ export class RollForm extends FormApplication {
                 }
             }
         }
-        if (this.object.splitAttack && this.object.rollType === 'accuracy') {
-            this.object.rollType = 'damage';
-            this.render();
-        }
     }
 
     async missAttack(accuracyRoll = true) {
@@ -4478,7 +4524,7 @@ export class RollForm extends FormApplication {
                     const value = await foundry.applications.api.DialogV2.confirm({
                         window: { title: game.i18n.localize('Ex3.Requirement') },
                         content: `<p>${requirementObject.value}</p>`,
-                        classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+                        classes: ["dialog", this.actor ? this.actor.getSheetBackground() : `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
                         modal: true
                     });
                     if (!value) {

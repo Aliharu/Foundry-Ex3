@@ -1,3 +1,4 @@
+import RollForm2 from "../apps/dice-roller-2.js";
 import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
 import Importer from "../apps/importer.js";
 import Prophecy from "../apps/prophecy.js";
@@ -26,7 +27,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.position.width = this.position.width = game.settings.get("exaltedthird", "compactSheetsNPC") ? 560 : 800;
       this.position.height = this.position.height = game.settings.get("exaltedthird", "compactSheetsNPC") ? 620 : 1061;
     }
-    this.options.classes = [...this.options.classes, this.getTypeSpecificCSSClasses()];
+    this.options.classes = [...this.options.classes, this.actor.getSheetBackground()];
   }
 
   /**
@@ -47,13 +48,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       height: 1061,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
     });
-  }
-
-  getTypeSpecificCSSClasses() {
-    if (this.actor.system.settings.sheetbackground === 'default') {
-      return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
-    }
-    return `${this.actor.system.settings.sheetbackground}-background`;
   }
 
   /* -------------------------------------------- */
@@ -735,7 +729,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         label: game.i18n.localize('Ex3.Roll'),
         class: 'roll-dice',
         icon: 'fas fa-dice-d10',
-        onclick: (ev) => new RollForm(this.actor, { event: ev }, {}, { rollType: 'base' }).render(true),
+        onclick: (ev) => new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'base' }).render(true),
       };
       buttons = [rollButton, ...buttons];
     }
@@ -830,7 +824,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const applyChanges = await foundry.applications.api.DialogV2.confirm({
         window: { title: game.i18n.localize("Ex3.Delete") },
         content: "<p>Are you sure you want to delete this item?</p>",
-        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: [this.actor.getSheetBackground()],
         modal: true
       });
       if (applyChanges) {
@@ -850,7 +844,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           height: 1000
         },
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
       }).render(true);
     });
 
@@ -1489,7 +1483,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             });
           });
         },
-        classes: ['exaltedthird-dialog',`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
       });
     });
 
@@ -1575,13 +1569,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.roll-ma').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: item.id }).render(true);
+      game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'ability', ability: item.id }).render(true);
     });
 
     html.find('.roll-craft').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'ability', ability: item.id }).render(true);
+      game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'ability', ability: item.id }).render(true);
     });
 
     html.find('.join-battle').mousedown(ev => {
@@ -1830,7 +1824,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.quick-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      new RollForm(this.actor, { event: ev }, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
+      new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
     });
 
     html.find('.saved-roll').click(ev => {
@@ -1936,7 +1930,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const deleteConfirm = await foundry.applications.api.DialogV2.confirm({
         window: { title: game.i18n.localize('Ex3.Delete') },
         content: `<p>Delete Saved Roll?</p>`,
-        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: [this.actor.getSheetBackground()],
         modal: true
       });
       if (deleteConfirm) {
@@ -2073,7 +2067,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
       system.motes.personal.max = 10 * system.essence.value;
-      if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon') {
+      if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
         system.motes.personal.max += 50;
       }
       system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
@@ -2221,7 +2215,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.CalculateHealth") },
       content: html,
-      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      classes: [this.actor.getSheetBackground()],
       buttons: [{
         action: "choice",
         label: game.i18n.localize("Ex3.Save"),
@@ -2333,7 +2327,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       window: { title: game.i18n.localize("Ex3.InfoDialog"), resizable: true },
       content: html,
       buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-      classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
       position: {
         width: 500,
       },
@@ -2345,7 +2339,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.PickColor") },
       content: html,
-      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      classes: [this.actor.getSheetBackground()],
       buttons: [{
         action: "choice",
         label: game.i18n.localize("Ex3.Save"),
@@ -2384,7 +2378,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.Settings"), },
       content: html,
-      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      classes: [this.actor.getSheetBackground()],
       buttons: [{
         action: "choice",
         label: game.i18n.localize("Ex3.Save"),
@@ -2437,7 +2431,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
       content: html,
       buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      classes: [this.actor.getSheetBackground()],
     }).render(true);
   }
 
@@ -2751,7 +2745,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async _completeCraft(ev) {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
-    game.rollForm = new RollForm(this.actor, { event: ev }, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
+    game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
   }
 
   async _displayDataChat(event) {
@@ -2870,7 +2864,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const confirmed = await foundry.applications.api.DialogV2.confirm({
         window: { title: game.i18n.localize("Ex3.LunarSync") },
         content: html,
-        classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+        classes: [this.actor.getSheetBackground()],
         modal: true
       });
       if (confirmed) {

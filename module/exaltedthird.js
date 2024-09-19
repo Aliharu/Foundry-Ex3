@@ -17,7 +17,6 @@ import { ExaltedCombatant } from "./combat/combatant.js";
 import ExaltedActiveEffect from "./active-effect.js";
 import ExaltedActiveEffectConfig from "./active-effect-config.js";
 import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
-import CharacterBuilder from "./apps/character-builder.js";
 import { CharacterData, NpcData } from "./template/actor-template.js";
 import {
   ItemActionData,
@@ -42,7 +41,8 @@ import {
 import { ExaltedCombat } from "./combat/combat.js";
 import Prophecy  from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
-import CharacterBuilder2 from "./apps/character-builder-2.js";
+import CharacterBuilder from "./apps/character-builder.js";
+import RollForm2 from "./apps/dice-roller-2.js";
 
 Hooks.once('init', async function () {
 
@@ -65,7 +65,8 @@ Hooks.once('init', async function () {
     weaponAttack: weaponAttack,
     triggerItem: triggerItem,
     roll: roll,
-    RollForm
+    RollForm,
+    RollForm2,
   };
 
   CONFIG.Actor.dataModels = {
@@ -394,14 +395,12 @@ Handlebars.registerHelper('ifNumberValue', function (arg1, arg2, options) {
   return (arg1 >= arg2) ? options.fn(this) : options.inverse(this);
 });
 
-
-
 $(document).ready(() => {
   const diceIconSelector = '#chat-controls .chat-control-icon .fa-dice-d20';
 
   $(document).on('click', diceIconSelector, ev => {
     ev.preventDefault();
-    new RollForm(null, { event: ev }, {}, { rollType: 'base' }).render(true);
+    new RollForm(null, {classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'base' }).render(true);
   });
 });
 
@@ -434,7 +433,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(buttonsText);
 
   html.on("click", ".character-generator-button", () => {
-    new CharacterBuilder2({classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}).render(true);
+    new CharacterBuilder({classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}).render(true);
   });
 
   html.on("click", ".template-import-button", () => {
@@ -488,7 +487,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        new CharacterBuilder2({classes: ["exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, message.flags?.exaltedthird?.character).render(true);
+        new CharacterBuilder({classes: ["exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, message.flags?.exaltedthird?.character).render(true);
       });
     });
   html[0]
@@ -1815,7 +1814,7 @@ async function createItemMacro(data, slot) {
   }
   else {
     const command = `const formActor = await fromUuid("${data.actorId}");
-        game.rollForm = new game.exaltedthird.RollForm(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {}, {}, { rollId: "${data.id}" }).render(true); `;
+        game.rollForm = new game.exaltedthird.RollForm2(${data.actorId.includes('Token') ? 'formActor.actor' : 'formActor'}, {classes: [" exaltedthird exaltedthird-dialog", "${game.settings.get("exaltedthird", "sheetStyle")}-background"]}, {}, { rollId: "${data.id}" }).render(true); `;
     const macro = await Macro.create({
       name: data.name,
       img: 'systems/exaltedthird/assets/icons/d10.svg',
@@ -2025,7 +2024,7 @@ function weaponAttack(itemUuid, attackType = 'withering') {
       const itemName = item?.name ?? itemUuid;
       return ui.notifications.warn(`Could not find item ${itemName}. You may need to delete and recreate this macro.`);
     }
-    game.rollForm = new RollForm(item.parent, {}, {}, { rollType: attackType, weapon: item.system }).render(true);
+    game.rollForm = new RollForm2(item.parent, {classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: attackType, weapon: item.system }).render(true);
   });
 }
 
@@ -2069,5 +2068,5 @@ function triggerItem(itemUuid) {
  * @returns {Promise}
  */
 function roll(actor, object, data) {
-  return new RollForm(actor, object, {}, data).roll();
+  return new RollForm2(actor, {}, {}, data).roll();
 }

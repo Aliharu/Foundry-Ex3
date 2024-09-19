@@ -13,6 +13,17 @@
             <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
                 {{selectOptions selects.attackTypes selected=data.attackType localize=true}}
             </select>
+            {{/ifEquals}}
+        </div>
+        {{#if data.splitAttack}}
+        <div class="dice-tooltip">
+            <div class="dice">
+                <ol class="dice-rolls">{{{data.displayDice}}}</ol>
+            </div>
+        </div>
+        {{/if}}
+        <div class="resource grid grid-2col flex-center">
+            {{#ifEquals data.rollType 'damage'}}
             {{#if data.showTargets}}
             {{else}}
             <div>
@@ -72,7 +83,7 @@
                 <i class="fas fa-caret-down"></i>
             </div>
         </div>
-        <div style="display:none;">
+        <div id="showDamageModifiers" {{#if data.showDamageModifiers}} {{else}} style="display:none;" {{/if}}>
             <div class="resource flex-center grid grid-2col">
                 <label class="resource-label">{{localize "Ex3.DamageType"}}</label>
                 <select name="object.damage.type" value="{{data.damage.type}}" data-type="String">

@@ -1,3 +1,5 @@
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
 const attributeAbilityMap = {
   "weak": 1,
   "skilled": 3,
@@ -5,10 +7,11 @@ const attributeAbilityMap = {
   "legendary": 5,
 }
 
-
-export default class CharacterBuilder extends FormApplication {
-  constructor(app, options, object, data) {
-    super(object, options);
+export default class CharacterBuilder extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor(options, data) {
+    super(options);
+    this.#dragDrop = this.#createDragDropHandlers();
+    this.object = {};
     if (data.character) {
       this.object = data;
       if (!this.object.characterType) {
@@ -435,1029 +438,234 @@ export default class CharacterBuilder extends FormApplication {
       }
     }
     this.object.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
-    this.onChange(null);
+    this.onChange();
   }
 
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-      popOut: true,
-      template: "systems/exaltedthird/templates/dialogues/character-builder.html",
-      id: "ex3-character-builder",
-      title: `Character Builder`,
-      width: 875,
-      height: 1100,
-      resizable: true,
+  static DEFAULT_OPTIONS = {
+    window: {
+      title: "Character Builder",
+      resizable: true, controls: [
+        {
+          icon: 'fa-solid fa-dice-d6',
+          label: "Save",
+          action: "saveCharacter",
+        },
+        {
+          icon: 'fa-solid fa-question',
+          label: "Help",
+          action: "showHelpDialog",
+        },
+      ]
+    },
+    tag: "form",
+    form: {
+      handler: CharacterBuilder.myFormHandler,
+      submitOnClose: false,
       submitOnChange: true,
-      closeOnSubmit: false,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "overview" }]
+      closeOnSubmit: false
+    },
+    classes: [`solar-background`],
+    position: { width: 875, height: 1100 },
+    actions: {
+      showHelpDialog: CharacterBuilder.showHelpDialog,
+      saveCharacter: CharacterBuilder.saveCharacter,
+      randomAttributes: CharacterBuilder.randomAttributes,
+      randomAbilities: CharacterBuilder.randomAbilities,
+      addItem: CharacterBuilder.addItem,
+      randomName: CharacterBuilder.randomName,
+      randomItem: CharacterBuilder.randomItem, 
+      importItem: CharacterBuilder.importItem,
+      deleteItem: CharacterBuilder.deleteItem,
+      deleteSublistCharm: CharacterBuilder.deleteSublistCharm,
+      lowerCharmCount: CharacterBuilder.lowerCharmCount,
+      addCharmCount: CharacterBuilder.addCharmCount,
+    },
+    dragDrop: [{ dragSelector: null, dropSelector: '[data-drop]' }],
+  };
+
+  static PARTS = {
+    header: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-header.html' },
+    tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
+    overview: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-overview.html' },
+    attributes: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-attributes.html' },
+    abilities: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-abilities.html' },
+    merits: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-merits.html' },
+    charms: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-charms.html' },
+    other: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-other.html' },
+    equipment: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-equipment.html' },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
+  };
+
+  #createDragDropHandlers() {
+    return this.options.dragDrop.map((d) => {
+      d.callbacks = {
+        drop: this._onDropItem.bind(this),
+      };
+      return new DragDrop(d);
     });
   }
 
-  _getHeaderButtons() {
-    let buttons = [
-      {
-        label: "Close",
-        class: "close",
-        icon: "fas fa-times",
-        onclick: async () => {
-          const applyChanges = await foundry.applications.api.DialogV2.confirm({
-            window: { title: game.i18n.localize("Ex3.Close") },
-            content: "<p>Any unsaved changed will be lost</p>",
-            classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-            modal: true
-          });
-          if (applyChanges) {
-            this.close();
-          }
-        }
-      }
-    ];
-    const saveButton = {
-      label: game.i18n.localize('Ex3.Save'),
-      class: 'save',
-      icon: 'fas fa-dice-d6',
-      onclick: async () => {
-        ChatMessage.create({
-          user: game.user.id,
-          content: `<div>In progress character <b>${this.object.character.name || this.object.character.defaultName}</b> has been saved to this chat message</div><div><button class="resume-character">${game.i18n.localize('Ex3.Resume')}</button></div>`,
-          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-          flags: {
-            "exaltedthird": {
-              character: this.object,
-            }
-          },
-        });
-      },
-    };
-    const helpButton = {
-      label: game.i18n.localize('Ex3.Help'),
-      class: 'generator-help',
-      icon: 'fas fa-question',
-      onclick: async () => {
-        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dialog-help.html", { 'link': 'https://github.com/Aliharu/Foundry-Ex3/wiki/Character-Creator' });
-        new foundry.applications.api.DialogV2({
-          window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
-          content: html,
-          buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-          classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-        }).render(true);
-      },
-    };
-    buttons = [saveButton, helpButton, ...buttons];
-    return buttons;
+  #dragDrop;
+
+  // Optional: Add getter to access the private property
+
+  /**
+   * Returns an array of DragDrop instances
+   * @type {DragDrop[]}
+   */
+  get dragDrop() {
+    return this.#dragDrop;
   }
 
-  getData() {
+  async _prepareContext(_options) {
+    if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'overview';
+
     return {
       data: this.object,
       selects: CONFIG.exaltedthird.selects,
+      tab: this.tabGroups['primary'],
+      tabs: [
+        {
+          id: "overview",
+          group: "primary",
+          label: "Ex3.Overview",
+          cssClass: this.tabGroups['primary'] === 'overview' ? 'active' : '',
+        },
+        {
+          id: "attributes",
+          group: "primary",
+          label: "Ex3.Attributes",
+          cssClass: this.tabGroups['primary'] === 'attributes' ? 'active' : '',
+        },
+        {
+          id: "abilities",
+          group: "primary",
+          label: "Ex3.Abilities",
+          cssClass: this.tabGroups['primary'] === 'abilities' ? 'active' : '',
+        },
+        {
+          id: "merits",
+          group: "primary",
+          label: "Ex3.Merits",
+          cssClass: this.tabGroups['primary'] === 'merits' ? 'active' : '',
+        },
+        {
+          id: "charms",
+          group: "primary",
+          label: "Ex3.Charms",
+          cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
+        },
+        {
+          id: "other",
+          group: "primary",
+          label: "Ex3.Other",
+          cssClass: this.tabGroups['primary'] === 'other' ? 'active' : '',
+        },
+        {
+          id: "equipment",
+          group: "primary",
+          label: "Ex3.Equipment",
+          cssClass: this.tabGroups['primary'] === 'equipment' ? 'active' : '',
+        },
+      ],
+      buttons: [
+        { type: "submit", icon: "fa-solid fa-user-plus", label: "Ex3.Generate" }
+      ],
     };
   }
 
-  async _updateObject(event, formData) {
-    foundry.utils.mergeObject(this, formData);
+  async _preparePartContext(partId, context) {
+    context.tab = context.tabs.find(item => item.id === partId);
+    return context;
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
+  _onRender(context, options) {
+    this.#dragDrop.forEach((d) => d.bind(this.element));
 
-    html.find('.resource-value-step').click(this._onDotCounterChange.bind(this))
-
-    html.on("change", "input", async ev => {
-      await this.onChange(ev);
-    });
-
-    html.on("change", "select", async ev => {
-      await this.onChange(ev);
-    });
-
-    html.on("change", "#template", async ev => {
-      const templateNPCs = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/NPCTemplates.json', {}, { int: 30000 });
-      var oldName = this.object.character.name;
-      this.object.character = templateNPCs[this.object.template];
-      this.object.character.name = oldName;
-      this.render();
-    });
-
-
-    html.find("#randomAttributes").on("click", async (ev) => {
-      let attributeValues = {};
-      let attributeTypes = [
-        'primary',
-        'secondary',
-        'tertiary'
-      ];
-      let attributeList = {
-        primary: [
-          5, 4, 2
-        ],
-        secondary: [
-          4, 3, 2
-        ],
-        tertiary: [
-          3, 2, 2
-        ],
-      };
-      if (this.object.character.exalt === 'lunar') {
-        attributeList = {
-          primary: [
-            5, 4, 3
-          ],
-          secondary: [
-            4, 4, 2
-          ],
-          tertiary: [
-            3, 3, 2
-          ],
-        };
-      }
-      if (this.object.character.exalt === 'mortal') {
-        attributeList = {
-          primary: [
-            4, 3, 2
-          ],
-          secondary: [
-            3, 2, 2
-          ],
-          tertiary: [
-            3, 2, 1
-          ],
-        };
-      }
-
-      let physicalAttribute = attributeTypes.splice(Math.floor(Math.random() * attributeTypes.length), 1)[0];
-      let socialAttribute = attributeTypes.splice(Math.floor(Math.random() * attributeTypes.length), 1)[0];
-      let mentalAttribute = attributeTypes.splice(Math.floor(Math.random() * attributeTypes.length), 1)[0];
-
-      attributeValues['physical'] = attributeList[physicalAttribute];
-      attributeValues['social'] = attributeList[socialAttribute];
-      attributeValues['mental'] = attributeList[mentalAttribute];
-
-      for (const attribute of Object.values(this.object.character.attributes)) {
-        attribute.value = attributeValues[attribute.type].splice(Math.floor(Math.random() * attributeValues[attribute.type].length), 1)[0];
-      }
-
-      this.object.creationData.physical = physicalAttribute;
-      this.object.creationData.social = socialAttribute;
-      this.object.creationData.mental = mentalAttribute;
-
-      await this.onChange(ev);
-    });
-
-    html.find("#randomAbilities").on("click", async (ev) => {
-      const abilitiesRandom = CONFIG.exaltedthird.abilitiesList;
-
-      const favoredOrCasteAbilities = [];
-      const otherAbilities = [];
-      abilitiesRandom.forEach(ability => {
-        if (this.object.character.abilities[ability].favored || this.object.character.abilities[ability].caste) {
-          favoredOrCasteAbilities.push(ability);
-        } else {
-          otherAbilities.push(ability);
-        }
-      });
-
-      const shuffledFavoredOrCasteAbilities = this._shuffleArray(favoredOrCasteAbilities);
-      const shuffledOtherAbilities = this._shuffleArray(otherAbilities);
-      const shuffledAbilitiesList = shuffledFavoredOrCasteAbilities.concat(shuffledOtherAbilities);
-      let abilityValues = [
-        5, 5, 4, 4, 3, 3, 3, 3, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      ];
-
-      for (let i = 0; i < shuffledAbilitiesList.length; i++) {
-        this.object.character.abilities[shuffledAbilitiesList[i]].value = (abilityValues[i] || 0)
-      }
-
-      await this.onChange(ev);
-    });
-
-    html.find("#randomName").on("click", async (event) => {
-      this.randomName();
-    });
-
-    html.find("#generate").on("click", async (event) => {
-      this.createCharacter();
-    });
-
-    html.find(".add-item").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-      let listIndex = 0;
-      let indexAdd = "0";
-      let indexType = type;
-      if (type === 'weapons') {
-        indexType = 'randomWeapons';
-      }
-      for (const key of Object.keys(this.object.character[indexType])) {
-        if (key !== listIndex.toString()) {
-          break;
-        }
-        listIndex++;
-      }
-      indexAdd = listIndex.toString();
-
-      if (type === 'specialties') {
-        this.object.character.specialties[indexAdd] = {
-          name: 'Specialty',
-          system: {
-            ability: 'archery',
-          }
-        };
-      }
-      else if (type === 'weapons') {
-        this.object.character.randomWeapons[indexAdd] = {
-          type: "random",
-          weaponType: "any",
-          weight: "any",
-          artifact: false,
-        };
-      }
-      else if (type === 'intimacies') {
-        this.object.character[type][indexAdd] = {
-          name: 'Name',
-          system: {
-            strength: 'minor',
-            intimacytype: 'tie',
-          }
-        };
-      }
-      else {
-        this.object.character[type][indexAdd] = {
-          name: 'Name',
-          system: {
-            points: 0,
-          }
-        };
-      }
-      await this.onChange(event);
-    });
-
-    html.find(".import-item").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-      const itemType = event.currentTarget.dataset.item;
-      const ritualType = event.currentTarget.dataset.ritual;
-
-      let items = await this._getItemList(event);
-
-      const sectionList = {};
-
-      if (itemType === 'spell') {
-        if (items.some(item => item.system.circle === 'terrestrial')) {
-          sectionList['terrestrial'] = {
-            name: game.i18n.localize("Ex3.Terrestrial"),
-            list: items.filter(item => item.system.circle === 'terrestrial')
-          }
-        }
-        if (items.some(item => item.system.circle === 'celestial')) {
-          sectionList['celestial'] = {
-            name: game.i18n.localize("Ex3.Celestial"),
-            list: items.filter(item => item.system.circle === 'celestial')
-          }
-        }
-        if (items.some(item => item.system.circle === 'solar')) {
-          sectionList['solar'] = {
-            name: game.i18n.localize("Ex3.Solar"),
-            list: items.filter(item => item.system.circle === 'solar')
-          }
-        }
-        if (items.some(item => item.system.circle === 'ivory')) {
-          sectionList['ivory'] = {
-            name: game.i18n.localize("Ex3.Ivory"),
-            list: items.filter(item => item.system.circle === 'ivory')
-          }
-        }
-        if (items.some(item => item.system.circle === 'shadow')) {
-          sectionList['shadow'] = {
-            name: game.i18n.localize("Ex3.Shadow"),
-            list: items.filter(item => item.system.circle === 'shadow')
-          }
-        }
-        if (items.some(item => item.system.circle === 'void')) {
-          sectionList['void'] = {
-            name: game.i18n.localize("Ex3.Void"),
-            list: items.filter(item => item.system.circle === 'void')
-          }
-        }
-      }
-      else if (itemType === 'merit') {
-        if (items.some(item => item.system.merittype === 'innate')) {
-          sectionList['innate'] = {
-            name: game.i18n.localize("Ex3.Innate"),
-            list: items.filter(item => item.system.merittype === 'innate')
-          };
-        }
-        if (items.some(item => item.system.merittype === 'flaw')) {
-          sectionList['flaw'] = {
-            name: game.i18n.localize("Ex3.Flaw"),
-            list: items.filter(item => item.system.merittype === 'flaw')
-          };
-        }
-        if (items.some(item => item.system.merittype === 'purchased')) {
-          sectionList['purchased'] = {
-            name: game.i18n.localize("Ex3.Purchased"),
-            list: items.filter(item => item.system.merittype === 'purchased')
-          };
-        }
-        if (items.some(item => item.system.merittype === 'story')) {
-          sectionList['story'] = {
-            name: game.i18n.localize("Ex3.Story"),
-            list: items.filter(item => item.system.merittype === 'story')
-          };
-        }
-        if (items.some(item => item.system.merittype === 'thaumaturgy')) {
-          sectionList['thaumaturgy'] = {
-            name: game.i18n.localize("Ex3.Thaumaturgy"),
-            list: items.filter(item => item.system.merittype === 'thaumaturgy')
-          };
-        }
-        if (items.some(item => item.system.merittype === 'sorcery' && !item.system.archetypename)) {
-          sectionList['sorcery'] = {
-            name: game.i18n.localize("Ex3.Sorcery"),
-            list: items.filter(item => item.system.merittype === 'sorcery' && !item.system.archetypename)
-          };
-        }
-        for (const merit of items.filter(item => item.system.merittype === 'sorcery' && item.system.archetypename).sort(function (a, b) {
-          const sortValueA = a.system.archetypename.toLowerCase();
-          const sortValueB = b.system.archetypename.toLowerCase();
-          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-        })) {
-          if (merit.system.archetypename) {
-            if (!sectionList[merit.system.archetypename]) {
-              sectionList[merit.system.archetypename] = { name: merit.system.archetypename, list: [] };
-            }
-            sectionList[merit.system.archetypename].list.push(merit);
-          }
-        }
-      }
-      else if (itemType === 'customability') {
-
-        sectionList['martialarts'] = {
-          name: game.i18n.localize("Ex3.MartialArts"),
-          list: items.filter(item => !item.system.siderealmartialart)
-        }
-        if (items.some(item => item.system.siderealmartialart)) {
-          sectionList['sideralmartialarts'] = {
-            name: game.i18n.localize("Ex3.SiderealMartialArts"),
-            list: items.filter(item => item.system.siderealmartialart)
-          }
-        }
-        if (items.some(item => item.system.armorallowance === 'none')) {
-          sectionList['none'] = {
-            name: game.i18n.localize("Ex3.NoArmor"),
-            list: items.filter(item => item.system.armorallowance === 'none')
-          }
-        }
-        if (items.some(item => item.system.armorallowance === 'light')) {
-          sectionList['light'] = {
-            name: game.i18n.localize("Ex3.LightArmor"),
-            list: items.filter(item => item.system.armorallowance === 'light')
-          }
-        }
-        if (items.some(item => item.system.armorallowance === 'medium')) {
-          sectionList['medium'] = {
-            name: game.i18n.localize("Ex3.MediumArmor"),
-            list: items.filter(item => item.system.armorallowance === 'medium')
-          }
-        }
-        if (items.some(item => item.system.armorallowance === 'heavy')) {
-          sectionList['heavy'] = {
-            name: game.i18n.localize("Ex3.HeavyArmor"),
-            list: items.filter(item => item.system.armorallowance === 'heavy')
-          }
-        }
-      }
-      else if (itemType === 'item') {
-        if (items.some(item => item.system.itemtype === 'item')) {
-          sectionList['items'] = {
-            name: game.i18n.localize("Ex3.Items"),
-            list: items.filter(item => item.system.itemtype === 'item')
-          }
-        }
-        if (items.some(item => item.system.itemtype === 'artifact')) {
-          sectionList['artifacts'] = {
-            name: game.i18n.localize("Ex3.Artifacts"),
-            list: items.filter(item => item.system.itemtype === 'artifact')
-          }
-        }
-        if (items.some(item => item.system.itemtype === 'hearthstone')) {
-          sectionList['hearthstones'] = {
-            name: game.i18n.localize("Ex3.Hearthstones"),
-            list: items.filter(item => item.system.itemtype === 'hearthstone')
-          }
-        }
-      }
-      else if (itemType === 'weapon') {
-        const weights = ['light', 'medium', 'heavy', 'siege'];
-        const weightLabels = ['Ex3.MundaneLight', 'Ex3.MundaneMedium', 'Ex3.MundaneHeavy', 'Ex3.MundaneSiege'];
-        const artifactWeightLabels = ['Ex3.ArtifactLight', 'Ex3.ArtifactMedium', 'Ex3.ArtifactHeavy', 'Ex3.ArtifactSiege'];
-        for (let i = 0; i < weights.length; i++) {
-          if (items.some(item => item.system.weighttype === weights[i])) {
-            if (items.some(item => item.system.weighttype === weights[i] && item.system.traits.weapontags.value.includes('artifact'))) {
-              sectionList[`artifact${weights[i]}`] = {
-                name: game.i18n.localize(artifactWeightLabels[i]),
-                list: items.filter(item => item.system.weighttype === weights[i] && item.system.traits.weapontags.value.includes('artifact'))
-              }
-            }
-            if (items.some(item => item.system.weighttype === weights[i] && !item.system.traits.weapontags.value.includes('artifact'))) {
-              sectionList[weights[i]] = {
-                name: game.i18n.localize(weightLabels[i]),
-                list: items.filter(item => item.system.weighttype === weights[i] && !item.system.traits.weapontags.value.includes('artifact'))
-              }
-            }
-          }
-        }
-      }
-      else if (itemType === 'armor') {
-        const weights = ['light', 'medium', 'heavy'];
-        const weightLabels = ['Ex3.MundaneLight', 'Ex3.MundaneMedium', 'Ex3.MundaneHeavy'];
-        const artifactWeightLabels = ['Ex3.ArtifactLight', 'Ex3.ArtifactMedium', 'Ex3.ArtifactHeavy'];
-        for (let i = 0; i < weights.length; i++) {
-          if (items.some(item => item.system.weighttype === weights[i])) {
-            if (items.some(item => item.system.weighttype === weights[i] && item.system.traits.armortags.value.includes('artifact'))) {
-              sectionList[`artifact${weights[i]}`] = {
-                name: game.i18n.localize(artifactWeightLabels[i]),
-                list: items.filter(item => item.system.weighttype === weights[i] && item.system.traits.armortags.value.includes('artifact'))
-              }
-            }
-            if (items.some(item => item.system.weighttype === weights[i] && !item.system.traits.armortags.value.includes('artifact'))) {
-              sectionList[weights[i]] = {
-                name: game.i18n.localize(weightLabels[i]),
-                list: items.filter(item => item.system.weighttype === weights[i] && !item.system.traits.armortags.value.includes('artifact'))
-              }
-            }
-          }
-        }
-      }
-      else if (itemType === 'ritual') {
-        sectionList['rituals'] = {
-          name: game.i18n.localize("Ex3.Rituals"),
-          list: items.filter(item => !item.system.archetypename)
-        };
-        for (const ritual of items.filter(item => item.system.archetypename).sort(function (a, b) {
-          const sortValueA = a.system.archetypename.toLowerCase();
-          const sortValueB = b.system.archetypename.toLowerCase();
-          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-        })) {
-          if (ritual.system.archetypename) {
-            if (!sectionList[ritual.system.archetypename]) {
-              sectionList[ritual.system.archetypename] = { name: ritual.system.archetypename, list: [] };
-            }
-            sectionList[ritual.system.archetypename].list.push(ritual);
-          }
-        }
-      }
-      else {
-        for (const charm of items.sort(function (a, b) {
-          const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
-          const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-        })) {
-          if (charm.system.listingname) {
-            if (!sectionList[charm.system.listingname]) {
-              sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
-            }
-            sectionList[charm.system.listingname].list.push(charm);
-          }
-          else {
-            if (!sectionList[charm.system.ability]) {
-              sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
-            }
-            sectionList[charm.system.ability].list.push(charm);
-            // if(charm.system.archetype.ability) {
-            //   if (!sectionList[charm.system.archetype.ability]) {
-            //     sectionList[charm.system.archetype.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.archetype.ability] || 'Ex3.Other', visible: true, list: [] };
-            //   }
-            //   sectionList[charm.system.archetype.ability].list.push(charm);
-            // }
-          }
-        }
-      }
-      const template = "systems/exaltedthird/templates/dialogues/import-item.html";
-      const html = await renderTemplate(template, { 'sectionList': sectionList });
-
-      await foundry.applications.api.DialogV2.wait({
-        window: {
-          title: "Import Item",
-        },
-        position: {
-          height: 800,
-          width: 650,
-        },
-        content: html,
-        buttons: [{
-          class: "closeImportItem",
-          label: "Close",
-          action: "closeImportItem",
-        }],
-        render: (event, html) => {
-          html.querySelectorAll('.add-item').forEach(element => {
-            element.addEventListener('click', async (ev) => {
-              ev.stopPropagation();
-              let li = $(ev.currentTarget).parents(".item");
-              let item = items.find((item) => item._id === li.data("item-id"));
-              if (!item.flags?.core?.sourceId) {
-                item.updateSource({ "flags.core.sourceId": item.uuid });
-              }
-              if (!item._stats?.compendiumSource) {
-                item.updateSource({ "_stats.compendiumSource": item.uuid });
-              }
-              const newItem = foundry.utils.duplicate(item);
-              newItem.itemCount = 1;
-              await this.getEnritchedHTML(newItem);
-              if (item.type === 'ritual') {
-                if (ritualType === 'sorcery') {
-                  this.object.character.ritual = newItem;
-                } else {
-                  this.object.character.necromancyRitual = newItem;
-                }
-              }
-              else {
-                if (newItem) {
-                  let listIndex = 0;
-                  let indexAdd = "0";
-                  for (const key of Object.keys(this.object.character[type])) {
-                    if (key !== listIndex.toString()) {
-                      break;
-                    }
-                    listIndex++;
-                  }
-                  indexAdd = listIndex.toString();
-                  this.object.character[type][indexAdd] = newItem;
-                }
-              }
-
-              await this.onChange(ev);
-              const closeImportItem = html.querySelector('.closeImportItem');
-              if (closeImportItem) {
-                closeImportItem.click();
-              }
-            });
-          });
-
-          html.querySelectorAll('.collapsable').forEach(element => {
-            element.addEventListener('click', (ev) => {
-              const li = $(ev.currentTarget).next();
-              li.toggle("fast");
-            });
-          });
-        },
-        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    this.element.querySelectorAll('.resource-value-step').forEach(element => {
+      element.addEventListener('click', async (ev) => {
+        this._onDotCounterChange(ev);
       });
     });
 
-    html.find(".random-item").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-
-      if (type === 'merits' && game.items.filter(item => item.type === 'merit').length <= 0) {
-        const mutationsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/mutations.json', {}, { int: 30000 });
-        const meritList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/merits.json', {}, { int: 30000 });
-        const fullMeritList = mutationsList.concat(meritList);
-
-        var merit = fullMeritList[Math.floor(Math.random() * fullMeritList.length)];
-        var meritRating = merit.dotValues[Math.floor(Math.random() * merit.dotValues.length)];
-
-        this.object.character.merits[Object.entries(this.object.character.merits).length] = {
-          name: merit.name,
-          enritchedHTML: merit.pageref,
-          system: {
-            points: meritRating,
-            description: merit.pageref
-          }
-        };
-      }
-      else {
-        const items = await this._getItemList(event);
-        var item = items[Math.floor(Math.random() * items.length)];
-        if (item) {
-          if (!item.flags?.core?.sourceId) {
-            item.updateSource({ "flags.core.sourceId": item.uuid });
-          }
-          const newItem = foundry.utils.duplicate(item);
-          newItem.itemCount = 1;
-          await this.getEnritchedHTML(newItem);
-
-          if (item.type === 'ritual') {
-            if (item.system.ritualtype === 'necromancy') {
-              this.object.character.necromancyRitual = newItem;
-            } else {
-              this.object.character.ritual = newItem;
-            }
-          }
-          else {
-            if (newItem) {
-              let listIndex = 0;
-              let indexAdd = "0";
-              for (const key of Object.keys(this.object.character[type])) {
-                if (key !== listIndex.toString()) {
-                  break;
-                }
-                listIndex++;
-              }
-              indexAdd = listIndex.toString();
-              this.object.character[type][indexAdd] = newItem;
-            }
-          }
-        }
-      }
-      await this.onChange(event);
-    });
-
-    html.find(".delete-item").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-      const ritual = event.currentTarget.dataset.ritual;
-      if (type === 'ritual') {
-        if (ritual === 'sorcery') {
-          this.object.character.ritual = {
-            name: '',
-          }
-        } else {
-          this.object.character.necromancyRitual = {
-            name: '',
-          }
-        }
-      }
-      else {
-        delete this.object.character[type][event.currentTarget.dataset.index];
-      }
-      await this.onChange(event);
-    });
-
-    html.find(".delete-sublist-charm").on("click", async (event) => {
-      const sublistkey = event.currentTarget.dataset.sublistkey;
-      const type = event.currentTarget.dataset.type;
-      const charm = this.object.character[type][sublistkey].charms[event.currentTarget.dataset.index];
-
-      let index = null;
-      for (const [key, value] of Object.entries(this.object.character.charms)) {
-        if (value === charm) {
-          index = key;
-          break;
-        }
-      }
-      if (index) {
-        delete this.object.character.charms[index];
-        await this.onChange(event);
-      }
-    });
-
-    html.find(".delete-ability-item").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-      if (type === 'ritual') {
-        this.object.character.ritual = {
-          name: '',
-        }
-      }
-      else {
-        delete this.object.character[type][event.currentTarget.dataset.index];
-      }
-      await this.onChange(event);
-    });
-
-
-    html.find(".lower-charm-count").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-      const index = event.currentTarget.dataset.index;
-      if (this.object.character[type][index].itemCount > 0) {
-        this.object.character[type][index].itemCount--;
-      }
-      await this.onChange(event);
-    });
-
-    html.find(".add-charm-count").on("click", async (event) => {
-      const type = event.currentTarget.dataset.type;
-      const index = event.currentTarget.dataset.index;
-      this.object.character[type][index].itemCount++;
-      await this.onChange(event);
-    });
-
-    html.find('.item-row').click(ev => {
-      const li = $(ev.currentTarget).next();
-      li.toggle("fast");
-    });
-
-    const itemToItemAssociation = new DragDrop({
-      dragSelector: null,
-      dropSelector: null,
-      permissions: { dragstart: true, drop: true },
-      callbacks: { drop: this._onDropItem.bind(this) },
-    });
-    itemToItemAssociation.bind(html[0]);
-  }
-
-  async _getItemList(event) {
-    const type = event.currentTarget.dataset.type;
-    const itemType = event.currentTarget.dataset.item;
-    const itemRitual = event.currentTarget.dataset.ritual;
-    let items = game.items.filter(charm => charm.type === itemType);
-    if (itemRitual) {
-      items = items.filter(item => item.system.ritualtype === itemRitual);
-    }
-    let archetypeCharms = [];
-    if (itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
-      items = game.items.filter(charm => charm.type === 'charm');
-    }
-    if (type === 'martialArts') {
-      items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart' && (!item.system.siderealmartialart || this.object.character.essence >= 3));
-    }
-    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
-      items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
-      if (itemType === 'charm') {
-        if (this.object.character.exalt === 'exigent') {
-          items = items.filter(charm => charm.system.charmtype === this.object.character.exigent || charm.system.charmtype === 'universal');
-        } else {
-          items = items.filter(charm => charm.system.charmtype === this.object.character.exalt || charm.system.charmtype === 'universal');
-        }
-        archetypeCharms = items.filter(charm => charm.system.archetype.ability);
-        if (event.currentTarget.dataset.ability) {
-          items = items.filter(charm => charm.system.ability === event.currentTarget.dataset.ability);
-          archetypeCharms = archetypeCharms.filter(charm => {
-            if (charm.system.archetype.ability === "combat") {
-              return ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(event.currentTarget.dataset.ability);
-            }
-            return charm.system.archetype.ability === event.currentTarget.dataset.ability;
-          });
-        }
-        if (this.object.characterType === 'character') {
-          items = items.filter(charm => {
-            if (this.object.character.attributes[charm.system.ability]) {
-              return charm.system.requirement <= this.object.character.attributes[charm.system.ability].value;
-            }
-            if (this.object.character.abilities[charm.system.ability]) {
-              return charm.system.requirement <= this.object.character.abilities[charm.system.ability].value;
-            }
-            if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
-              return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.ability);
-            }
-            return true;
-          });
-          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
-            if (charm.system.archetype.ability === "combat") {
-              return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
-            }
-            if (this.object.character.attributes[charm.system.archetype.ability]) {
-              return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;
-            }
-            if (this.object.character.abilities[charm.system.archetype.ability]) {
-              return charm.system.requirement <= this.object.character.abilities[charm.system.archetype.ability].value;
-            }
-            if (CONFIG.exaltedthird.maidens.includes(charm.system.archetype.ability)) {
-              return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.archetype.ability);
-            }
-            return true;
-          });
-        }
-      }
-      else if (itemType === 'martialArtCharm') {
-        items = items.filter(charm => charm.system.charmtype === 'martialarts');
-        items = items.filter(charm => {
-          if (charm.system.charmtype === 'martialarts') {
-            if (charm.system.parentitemid) {
-              return Object.values(this.object.character.martialArts).some(martialArt => martialArt._id === charm.system.parentitemid && charm.system.requirement <= martialArt.system.points);
-            }
-            return false;
-          }
-          return true;
-        });
-      }
-      else if (itemType === 'otherCharm') {
-        items = items.filter(charm => charm.system.charmtype === 'other' || charm.system.charmtype === 'eclipse' || charm.system.charmtype === 'universal');
-      }
-      else {
-        items = items.filter(charm => charm.system.charmtype === 'evocation');
-        items = items.filter(charm => {
-          var returnVal = false;
-          if (charm.system.parentitemid) {
-            if (Object.values(this.object.character.weapons).some(weapon => weapon._id === charm.system.parentitemid)) {
-              returnVal = true;
-            }
-            if (Object.values(this.object.character.armor).some(armor => armor._id === charm.system.parentitemid)) {
-              returnVal = true;
-            }
-            if (Object.values(this.object.character.items).some(item => item._id === charm.system.parentitemid)) {
-              returnVal = true;
-            }
-          }
-          return returnVal;
-        });
-      }
-    }
-    if (itemType === 'spell') {
-      items = items.filter(spell => {
-        if (spell.system.circle === 'terrestrial' && this.object.character.sorcerer !== 'none') {
-          return true;
-        }
-        if (spell.system.circle === 'celestial' && this.object.character.sorcerer !== 'terrestrial' && this.object.character.sorcerer !== 'none') {
-          return true;
-        }
-        if (spell.system.circle === 'solar' && this.object.character.sorcerer === 'solar') {
-          return true;
-        }
-        if (spell.system.circle === 'ivory' && this.object.character.necromancer !== 'none') {
-          return true;
-        }
-        if (spell.system.circle === 'shadow' && this.object.character.necromancer !== 'ivory' && this.object.character.necromancer !== 'none') {
-          return true;
-        }
-        if (spell.system.circle === 'void' && this.object.character.necromancer === 'void') {
-          return true;
-        }
-        return false;
+    this.element.querySelectorAll('.item-row').forEach(element => {
+      element.addEventListener('click', (ev) => {
+        const li = $(ev.currentTarget).next();
+        li.toggle("fast");
       });
-    }
-    if (itemType === "merit") {
-      items = items.filter(merit => {
-        if (merit.system.merittype !== "sorcery") {
-          return true;
-        }
-        if (this.object.character.ritual?.system?.archetypename) {
-          if (!merit.system.archetypename || merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase()) {
-            return true;
-          }
-        }
-        return false;
-      });
-    }
-    const itemIds = [
-      ...Object.values(this.object.character.charms).map(charm => charm._id),
-      ...Object.values(this.object.character.martialArts).map(charm => charm._id),
-      ...Object.values(this.object.character.martialArtsCharms).map(charm => charm._id),
-      ...Object.values(this.object.character.evocations).map(charm => charm._id),
-      ...Object.values(this.object.character.otherCharms).map(charm => charm._id),
-      ...Object.values(this.object.character.spells).map(spell => spell._id),
-      ...Object.values(this.object.character.weapons).map(weapon => weapon._id),
-      ...Object.values(this.object.character.armors).map(armor => armor._id),
-      ...Object.values(this.object.character.items).map(item => item._id),
-      ...Object.values(this.object.character.specialAbilities).map(item => item._id),
-      ...Object.values(this.object.character.merits).map(merit => merit._id),
-    ];
-    if (itemType === 'charm') {
-      items = items.filter(charm => {
-        if (charm.system.numberprerequisites.number > 0) {
-          let existingCharms = 0;
-          if (charm.system.numberprerequisites.ability === "combat") {
-            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(numberCharm.system.ability)).length || 0);
-          }
-          else if (['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(charm.system.numberprerequisites.ability)) {
-            if (charm.system.numberprerequisites.ability === 'physicalAttribute') {
-              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['strength', 'dexterity', 'stamina'].includes(numberCharm.system.ability)).length || 0);
-            }
-            if (charm.system.numberprerequisites.ability === 'mentalAttribute') {
-              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['intelligence', 'wits', 'perception'].includes(numberCharm.system.ability)).length || 0);
-            }
-            if (charm.system.numberprerequisites.ability === 'socialAttribute') {
-              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['charisma', 'appearance', 'manipulation'].includes(numberCharm.system.ability)).length || 0);
-            }
-          }
-          else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
-            existingCharms = this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
-          }
-          else {
-            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0);
-          }
-          if (existingCharms < charm.system.numberprerequisites.number) {
-            return false;
-          }
-        }
-        return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
-      });
-      if (archetypeCharms) {
-        archetypeCharms = archetypeCharms.filter(charm => {
-          return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
-        });
-        items = items.concat(archetypeCharms);
-      }
-    }
-    items = items.filter(item => !itemIds.includes(item._id));
-    for (var item of items) {
-      await this.getEnritchedHTML(item);
-    }
-    return items;
+    });
   }
 
-  _getHighestMaidenAbility(maiden) {
-    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
-    let highestValue = 0;
-    for (const ability of abilityList) {
-      if ((this.object.character.abilities[ability]?.value || 0) > highestValue) {
-        highestValue = (this.object.character.abilities[ability]?.value || 0);
-      }
-    }
-    return highestValue;
-  }
+  static async myFormHandler(event, form, formData) {
+    const formObject = foundry.utils.expandObject(formData.object);
+    const resetFavored = this.object.character.caste !== formObject.object.character.caste || (formObject.object.character.exigent && this.object.character.exigent !== formObject.object.character.exigent);
+    foundry.utils.mergeObject(this, formData.object);
 
-  _getMaidenCharmsNumber(maiden) {
-    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
-    return (Object.values(this.object.character.charms)?.filter(numberCharm => abilityList.includes(numberCharm.system.ability)).length || 0)
-  }
-
-  async _onDropItem(event) {
-    let data;
-
-    try {
-      data = JSON.parse(event.dataTransfer.getData("text/plain"));
-      if (data.type !== "Item") return;
-    } catch (err) {
-      return false;
-    }
-
-    data.id = data.uuid.split('.')[1];
-    if (data.uuid.includes('Compendium')) {
-      return ui.notifications.error(`Error: You cannot drop compendium items into box.`);
-      // let tmp = data.uuid.split('.');
-      // data.pack = tmp[1] + '.' + tmp[2];
-      // data.id = tmp[4];
-    }
-
-    let itemObject;
-    if (data.pack) {
-      // Case 1 - Import from a Compendium pack
-      itemObject = await this.importItemFromCollection(data.pack, data.id);
-      if (!itemObject) {
-        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
-      };
-    }
-    else {
-      // Case 2 - Import from World entity
-      itemObject = await game.items.get(data.id);
-      if (!itemObject) {
-        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
-      };
-    }
-
-    if (!itemObject.flags?.core?.sourceId) {
-      itemObject.updateSource({ "flags.core.sourceId": itemObject.uuid });
-    }
-
-    const newItem = foundry.utils.duplicate(itemObject);
-
-    switch (newItem.type) {
-      case 'charm':
-        if (newItem.system.charmtype === 'evocation') {
-          this.object.character.evocations[Object.entries(this.object.character.evocations).length] = newItem;
-        }
-        else if (newItem.system.charmtype === 'otherCharm') {
-          this.object.character.otherCharms[Object.entries(this.object.character.otherCharms).length] = newItem;
-        }
-        else if (newItem.system.charmtype === 'martialarts') {
-          this.object.character.martialArtsCharms[Object.entries(this.object.character.martialArtsCharms).length] = newItem;
+    if (resetFavored) {
+      for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
+        if (CONFIG.exaltedthird.casteabilitiesmap[this.object.character.caste.toLowerCase()]?.includes(key)) {
+          attribute.favored = true;
+          attribute.caste = true;
         }
         else {
-          this.object.character.charms[Object.entries(this.object.character.charms).length] = newItem;
-          if (this.object.character.abilities[newItem.system.ability]) {
-            this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
-          }
-          if (this.object.character.attributes[newItem.system.ability]) {
-            this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
-          }
+          attribute.favored = false;
+          attribute.caste = false;
         }
-
-        break;
-      case 'spell':
-        this.object.character.spells[Object.entries(this.object.character.spells).length] = newItem;
-        break;
-      case 'specialty':
-        this.object.character.specialties[Object.entries(this.object.character.specialties).length] = {
-          name: newItem.name,
-          system: {
-            ability: newItem.system.ability,
+      }
+      for (let [key, ability] of Object.entries(this.object.character.abilities)) {
+        if (CONFIG.exaltedthird.casteabilitiesmap[this.object.character.caste.toLowerCase()]?.includes(key)) {
+          if (this.object.character.exalt !== 'solar' && this.object.character.exalt !== 'abyssal') {
+            ability.favored = true;
           }
-        };
-        break;
-      case 'merit':
-        this.object.character.merits[Object.entries(this.object.character.merits).length] = newItem;
-        break;
-      case 'weapon':
-        this.object.character.weapons[Object.entries(this.object.character.weapons).length] = newItem;
-        break;
-      case 'armor':
-        this.object.character.armors[Object.entries(this.object.character.armors).length] = newItem;
-        break;
-      case 'customability':
-        if (newItem.system.abilitytype === 'martialart') {
-          this.object.character.martialArts[Object.entries(this.object.character.martialArts).length] = newItem;
+          ability.caste = true;
         }
-        if (newItem.system.abilitytype === 'craft') {
-          this.object.character.crafts[Object.entries(this.object.character.crafts).length] = newItem;
+        else if (this.object.character.exalt === 'exigent' && CONFIG.exaltedthird.casteabilitiesmap[this.object.character.exigent.toLowerCase()]?.includes(key)) {
+          ability.favored = true;
+          ability.caste = true;
         }
-        break;
+        else {
+          ability.favored = false;
+          ability.caste = false;
+        }
+      }
     }
 
-    this.onChange(null);
+    if (event.type === 'submit') {
+      const itemData = [
+      ];
+      var actorData = this._getBaseStatblock();
+
+      await this.getBaseCharacterData(actorData, itemData);
+      this._getCharacterCharms(itemData);
+      await this._getCharacterSpells(itemData);
+      await this._getCharacterEquipment(actorData, itemData);
+
+      actorData.items = itemData;
+      if (Actor.canUserCreate(game.user)) {
+        let actor = await Actor.create(actorData);
+        await actor.calculateAllDerivedStats();
+      }
+      else {
+        game.socket.emit('system.exaltedthird', {
+          type: 'createGeneratedCharacter',
+          id: game.user.id,
+          data: actorData,
+        });
+      }
+      ChatMessage.create({
+        user: game.user.id,
+        content: `${actorData.name} created using the character creator`,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+      ui.notifications.notify(`Generation Complete`);
+    } else {
+      await this.onChange();
+    }
   }
 
-  importItemFromCollection(collection, entryId) {
-    const pack = game.packs.get(collection);
-    if (pack.documentName !== "Item") return;
-    return pack.getDocument(entryId).then((ent) => {
-      return ent;
-    });
-  }
-
-  async getEnritchedHTML(item) {
-    item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
-  }
-
-  async onChange(ev) {
+  onChange() {
     if (CONFIG.exaltedthird.castes[this.object.character.exalt]) {
       this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
     }
@@ -1472,6 +680,7 @@ export default class CharacterBuilder extends FormApplication {
     else if (this.object.character.exalt === 'exigent' || this.object.character.exalt === 'other') {
       this.object.character.showAttributeCharms = true;
       this.object.character.showAbilityCharms = true;
+      this.object.character.caste = "";
     }
     else if (this.object.character.exalt === 'mortal') {
       this.object.character.showAttributeCharms = false;
@@ -1504,18 +713,17 @@ export default class CharacterBuilder extends FormApplication {
       endings: this._getMaidenCharmsNumber('endings'),
     }
 
-    this._calculateSpentExperience(ev);
+    this._calculateSpentExperience();
 
     const categories = [...Object.entries(this.object.character.abilities), ...Object.entries(this.object.character.attributes)];
 
     for (const [key, category] of categories) {
       category.charms = Object.values(this.object.character.charms).filter(charm => charm.system.ability === key);
     }
-
-    await this.render();
+    this.render();
   }
 
-  _calculateSpentExperience(ev) {
+  _calculateSpentExperience() {
     const casteAbilitiesMap = CONFIG.exaltedthird.casteabilitiesmap;
 
     var pointsAvailableMap = {
@@ -1557,34 +765,6 @@ export default class CharacterBuilder extends FormApplication {
     }
     if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal') {
       this.object.creationData.available.casteAbilities = 5;
-    }
-    if (ev?.target?.name === 'object.character.caste' || ev?.target?.name === 'object.character.exigent') {
-      for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
-        if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
-          attribute.favored = true;
-          attribute.caste = true;
-        }
-        else {
-          attribute.favored = false;
-          attribute.caste = false;
-        }
-      }
-      for (let [key, ability] of Object.entries(this.object.character.abilities)) {
-        if (casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key)) {
-          if (this.object.character.exalt !== 'solar' && this.object.character.exalt !== 'abyssal') {
-            ability.favored = true;
-          }
-          ability.caste = true;
-        }
-        else if (this.object.character.exalt === 'exigent' && casteAbilitiesMap[this.object.character.exigent.toLowerCase()]?.includes(key)) {
-          ability.favored = true;
-          ability.caste = true;
-        }
-        else {
-          ability.favored = false;
-          ability.caste = false;
-        }
-      }
     }
     if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'lunar' || this.object.character.exalt === 'abyssal') {
       if (this.object.character.essence >= 2) {
@@ -1868,6 +1048,11 @@ export default class CharacterBuilder extends FormApplication {
     this.object.creationData.spent.experience.total = this.object.creationData.spent.experience.willpower + this.object.creationData.spent.experience.merits + this.object.creationData.spent.experience.specialties + this.object.creationData.spent.experience.abilities + this.object.creationData.spent.experience.attributes + this.object.creationData.spent.experience.charms;
   }
 
+  _getMaidenCharmsNumber(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    return (Object.values(this.object.character.charms)?.filter(numberCharm => abilityList.includes(numberCharm.system.ability)).length || 0)
+  }
+
   _shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -1890,10 +1075,111 @@ export default class CharacterBuilder extends FormApplication {
     else {
       this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = index + 1;
     }
-    this.onChange(event);
+    this.onChange();
   }
 
-  async randomName() {
+  async close(options = {}) {
+    const applyChanges = await foundry.applications.api.DialogV2.confirm({
+      window: { title: game.i18n.localize("Ex3.Close") },
+      content: "<p>Any unsaved changed will be lost</p>",
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      modal: true
+    });
+    if (applyChanges) {
+      super.close();
+    }
+  }
+
+  static async randomAttributes(event, target) {
+    let attributeValues = {};
+    let attributeTypes = [
+      'primary',
+      'secondary',
+      'tertiary'
+    ];
+    let attributeList = {
+      primary: [
+        5, 4, 2
+      ],
+      secondary: [
+        4, 3, 2
+      ],
+      tertiary: [
+        3, 2, 2
+      ],
+    };
+    if (this.object.character.exalt === 'lunar') {
+      attributeList = {
+        primary: [
+          5, 4, 3
+        ],
+        secondary: [
+          4, 4, 2
+        ],
+        tertiary: [
+          3, 3, 2
+        ],
+      };
+    }
+    if (this.object.character.exalt === 'mortal') {
+      attributeList = {
+        primary: [
+          4, 3, 2
+        ],
+        secondary: [
+          3, 2, 2
+        ],
+        tertiary: [
+          3, 2, 1
+        ],
+      };
+    }
+
+    let physicalAttribute = attributeTypes.splice(Math.floor(Math.random() * attributeTypes.length), 1)[0];
+    let socialAttribute = attributeTypes.splice(Math.floor(Math.random() * attributeTypes.length), 1)[0];
+    let mentalAttribute = attributeTypes.splice(Math.floor(Math.random() * attributeTypes.length), 1)[0];
+
+    attributeValues['physical'] = attributeList[physicalAttribute];
+    attributeValues['social'] = attributeList[socialAttribute];
+    attributeValues['mental'] = attributeList[mentalAttribute];
+
+    for (const attribute of Object.values(this.object.character.attributes)) {
+      attribute.value = attributeValues[attribute.type].splice(Math.floor(Math.random() * attributeValues[attribute.type].length), 1)[0];
+    }
+
+    this.object.creationData.physical = physicalAttribute;
+    this.object.creationData.social = socialAttribute;
+    this.object.creationData.mental = mentalAttribute;
+    this.onChange();
+  }
+
+  static async randomAbilities(event, target) {
+    const abilitiesRandom = CONFIG.exaltedthird.abilitiesList;
+
+    const favoredOrCasteAbilities = [];
+    const otherAbilities = [];
+    abilitiesRandom.forEach(ability => {
+      if (this.object.character.abilities[ability].favored || this.object.character.abilities[ability].caste) {
+        favoredOrCasteAbilities.push(ability);
+      } else {
+        otherAbilities.push(ability);
+      }
+    });
+
+    const shuffledFavoredOrCasteAbilities = this._shuffleArray(favoredOrCasteAbilities);
+    const shuffledOtherAbilities = this._shuffleArray(otherAbilities);
+    const shuffledAbilitiesList = shuffledFavoredOrCasteAbilities.concat(shuffledOtherAbilities);
+    let abilityValues = [
+      5, 5, 4, 4, 3, 3, 3, 3, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+
+    for (let i = 0; i < shuffledAbilitiesList.length; i++) {
+      this.object.character.abilities[shuffledAbilitiesList[i]].value = (abilityValues[i] || 0)
+    }
+    this.onChange();
+  }
+
+  static async randomName(event, target) {
     const nameFormats = [
       { option: "common", weight: 10 },
     ];
@@ -1939,9 +1225,819 @@ export default class CharacterBuilder extends FormApplication {
         this.object.character.name = await this.getAbyssalName();
         break;
     }
-    this.render();
+    this.onChange();
   }
 
+  static async addItem(event, target) {
+    const type = target.dataset.type;
+    let listIndex = 0;
+    let indexAdd = "0";
+    let indexType = type;
+    if (type === 'weapons') {
+      indexType = 'randomWeapons';
+    }
+    for (const key of Object.keys(this.object.character[indexType])) {
+      if (key !== listIndex.toString()) {
+        break;
+      }
+      listIndex++;
+    }
+    indexAdd = listIndex.toString();
+
+    if (type === 'specialties') {
+      this.object.character.specialties[indexAdd] = {
+        name: 'Specialty',
+        system: {
+          ability: 'archery',
+        }
+      };
+    }
+    else if (type === 'weapons') {
+      this.object.character.randomWeapons[indexAdd] = {
+        type: "random",
+        weaponType: "any",
+        weight: "any",
+        artifact: false,
+      };
+    }
+    else if (type === 'intimacies') {
+      this.object.character[type][indexAdd] = {
+        name: 'Name',
+        system: {
+          strength: 'minor',
+          intimacytype: 'tie',
+        }
+      };
+    }
+    else {
+      this.object.character[type][indexAdd] = {
+        name: 'Name',
+        system: {
+          points: 0,
+        }
+      };
+    }
+    this.onChange();
+  }
+
+  static async importItem(event, target) {
+    const type = target.dataset.type;
+    const itemType = target.dataset.item;
+    const ritualType = target.dataset.ritual;
+
+    let items = await this._getItemList(target);
+
+    const sectionList = {};
+
+    if (itemType === 'spell') {
+      if (items.some(item => item.system.circle === 'terrestrial')) {
+        sectionList['terrestrial'] = {
+          name: game.i18n.localize("Ex3.Terrestrial"),
+          list: items.filter(item => item.system.circle === 'terrestrial')
+        }
+      }
+      if (items.some(item => item.system.circle === 'celestial')) {
+        sectionList['celestial'] = {
+          name: game.i18n.localize("Ex3.Celestial"),
+          list: items.filter(item => item.system.circle === 'celestial')
+        }
+      }
+      if (items.some(item => item.system.circle === 'solar')) {
+        sectionList['solar'] = {
+          name: game.i18n.localize("Ex3.Solar"),
+          list: items.filter(item => item.system.circle === 'solar')
+        }
+      }
+      if (items.some(item => item.system.circle === 'ivory')) {
+        sectionList['ivory'] = {
+          name: game.i18n.localize("Ex3.Ivory"),
+          list: items.filter(item => item.system.circle === 'ivory')
+        }
+      }
+      if (items.some(item => item.system.circle === 'shadow')) {
+        sectionList['shadow'] = {
+          name: game.i18n.localize("Ex3.Shadow"),
+          list: items.filter(item => item.system.circle === 'shadow')
+        }
+      }
+      if (items.some(item => item.system.circle === 'void')) {
+        sectionList['void'] = {
+          name: game.i18n.localize("Ex3.Void"),
+          list: items.filter(item => item.system.circle === 'void')
+        }
+      }
+    }
+    else if (itemType === 'merit') {
+      if (items.some(item => item.system.merittype === 'innate')) {
+        sectionList['innate'] = {
+          name: game.i18n.localize("Ex3.Innate"),
+          list: items.filter(item => item.system.merittype === 'innate')
+        };
+      }
+      if (items.some(item => item.system.merittype === 'flaw')) {
+        sectionList['flaw'] = {
+          name: game.i18n.localize("Ex3.Flaw"),
+          list: items.filter(item => item.system.merittype === 'flaw')
+        };
+      }
+      if (items.some(item => item.system.merittype === 'purchased')) {
+        sectionList['purchased'] = {
+          name: game.i18n.localize("Ex3.Purchased"),
+          list: items.filter(item => item.system.merittype === 'purchased')
+        };
+      }
+      if (items.some(item => item.system.merittype === 'story')) {
+        sectionList['story'] = {
+          name: game.i18n.localize("Ex3.Story"),
+          list: items.filter(item => item.system.merittype === 'story')
+        };
+      }
+      if (items.some(item => item.system.merittype === 'thaumaturgy')) {
+        sectionList['thaumaturgy'] = {
+          name: game.i18n.localize("Ex3.Thaumaturgy"),
+          list: items.filter(item => item.system.merittype === 'thaumaturgy')
+        };
+      }
+      if (items.some(item => item.system.merittype === 'sorcery' && !item.system.archetypename)) {
+        sectionList['sorcery'] = {
+          name: game.i18n.localize("Ex3.Sorcery"),
+          list: items.filter(item => item.system.merittype === 'sorcery' && !item.system.archetypename)
+        };
+      }
+      for (const merit of items.filter(item => item.system.merittype === 'sorcery' && item.system.archetypename).sort(function (a, b) {
+        const sortValueA = a.system.archetypename.toLowerCase();
+        const sortValueB = b.system.archetypename.toLowerCase();
+        return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+      })) {
+        if (merit.system.archetypename) {
+          if (!sectionList[merit.system.archetypename]) {
+            sectionList[merit.system.archetypename] = { name: merit.system.archetypename, list: [] };
+          }
+          sectionList[merit.system.archetypename].list.push(merit);
+        }
+      }
+    }
+    else if (itemType === 'customability') {
+
+      sectionList['martialarts'] = {
+        name: game.i18n.localize("Ex3.MartialArts"),
+        list: items.filter(item => !item.system.siderealmartialart)
+      }
+      if (items.some(item => item.system.siderealmartialart)) {
+        sectionList['sideralmartialarts'] = {
+          name: game.i18n.localize("Ex3.SiderealMartialArts"),
+          list: items.filter(item => item.system.siderealmartialart)
+        }
+      }
+      if (items.some(item => item.system.armorallowance === 'none')) {
+        sectionList['none'] = {
+          name: game.i18n.localize("Ex3.NoArmor"),
+          list: items.filter(item => item.system.armorallowance === 'none')
+        }
+      }
+      if (items.some(item => item.system.armorallowance === 'light')) {
+        sectionList['light'] = {
+          name: game.i18n.localize("Ex3.LightArmor"),
+          list: items.filter(item => item.system.armorallowance === 'light')
+        }
+      }
+      if (items.some(item => item.system.armorallowance === 'medium')) {
+        sectionList['medium'] = {
+          name: game.i18n.localize("Ex3.MediumArmor"),
+          list: items.filter(item => item.system.armorallowance === 'medium')
+        }
+      }
+      if (items.some(item => item.system.armorallowance === 'heavy')) {
+        sectionList['heavy'] = {
+          name: game.i18n.localize("Ex3.HeavyArmor"),
+          list: items.filter(item => item.system.armorallowance === 'heavy')
+        }
+      }
+    }
+    else if (itemType === 'item') {
+      if (items.some(item => item.system.itemtype === 'item')) {
+        sectionList['items'] = {
+          name: game.i18n.localize("Ex3.Items"),
+          list: items.filter(item => item.system.itemtype === 'item')
+        }
+      }
+      if (items.some(item => item.system.itemtype === 'artifact')) {
+        sectionList['artifacts'] = {
+          name: game.i18n.localize("Ex3.Artifacts"),
+          list: items.filter(item => item.system.itemtype === 'artifact')
+        }
+      }
+      if (items.some(item => item.system.itemtype === 'hearthstone')) {
+        sectionList['hearthstones'] = {
+          name: game.i18n.localize("Ex3.Hearthstones"),
+          list: items.filter(item => item.system.itemtype === 'hearthstone')
+        }
+      }
+    }
+    else if (itemType === 'weapon') {
+      const weights = ['light', 'medium', 'heavy', 'siege'];
+      const weightLabels = ['Ex3.MundaneLight', 'Ex3.MundaneMedium', 'Ex3.MundaneHeavy', 'Ex3.MundaneSiege'];
+      const artifactWeightLabels = ['Ex3.ArtifactLight', 'Ex3.ArtifactMedium', 'Ex3.ArtifactHeavy', 'Ex3.ArtifactSiege'];
+      for (let i = 0; i < weights.length; i++) {
+        if (items.some(item => item.system.weighttype === weights[i])) {
+          if (items.some(item => item.system.weighttype === weights[i] && item.system.traits.weapontags.value.includes('artifact'))) {
+            sectionList[`artifact${weights[i]}`] = {
+              name: game.i18n.localize(artifactWeightLabels[i]),
+              list: items.filter(item => item.system.weighttype === weights[i] && item.system.traits.weapontags.value.includes('artifact'))
+            }
+          }
+          if (items.some(item => item.system.weighttype === weights[i] && !item.system.traits.weapontags.value.includes('artifact'))) {
+            sectionList[weights[i]] = {
+              name: game.i18n.localize(weightLabels[i]),
+              list: items.filter(item => item.system.weighttype === weights[i] && !item.system.traits.weapontags.value.includes('artifact'))
+            }
+          }
+        }
+      }
+    }
+    else if (itemType === 'armor') {
+      const weights = ['light', 'medium', 'heavy'];
+      const weightLabels = ['Ex3.MundaneLight', 'Ex3.MundaneMedium', 'Ex3.MundaneHeavy'];
+      const artifactWeightLabels = ['Ex3.ArtifactLight', 'Ex3.ArtifactMedium', 'Ex3.ArtifactHeavy'];
+      for (let i = 0; i < weights.length; i++) {
+        if (items.some(item => item.system.weighttype === weights[i])) {
+          if (items.some(item => item.system.weighttype === weights[i] && item.system.traits.armortags.value.includes('artifact'))) {
+            sectionList[`artifact${weights[i]}`] = {
+              name: game.i18n.localize(artifactWeightLabels[i]),
+              list: items.filter(item => item.system.weighttype === weights[i] && item.system.traits.armortags.value.includes('artifact'))
+            }
+          }
+          if (items.some(item => item.system.weighttype === weights[i] && !item.system.traits.armortags.value.includes('artifact'))) {
+            sectionList[weights[i]] = {
+              name: game.i18n.localize(weightLabels[i]),
+              list: items.filter(item => item.system.weighttype === weights[i] && !item.system.traits.armortags.value.includes('artifact'))
+            }
+          }
+        }
+      }
+    }
+    else if (itemType === 'ritual') {
+      sectionList['rituals'] = {
+        name: game.i18n.localize("Ex3.Rituals"),
+        list: items.filter(item => !item.system.archetypename)
+      };
+      for (const ritual of items.filter(item => item.system.archetypename).sort(function (a, b) {
+        const sortValueA = a.system.archetypename.toLowerCase();
+        const sortValueB = b.system.archetypename.toLowerCase();
+        return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+      })) {
+        if (ritual.system.archetypename) {
+          if (!sectionList[ritual.system.archetypename]) {
+            sectionList[ritual.system.archetypename] = { name: ritual.system.archetypename, list: [] };
+          }
+          sectionList[ritual.system.archetypename].list.push(ritual);
+        }
+      }
+    }
+    else {
+      for (const charm of items.sort(function (a, b) {
+        const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
+        const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+        return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+      })) {
+        if (charm.system.listingname) {
+          if (!sectionList[charm.system.listingname]) {
+            sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
+          }
+          sectionList[charm.system.listingname].list.push(charm);
+        }
+        else {
+          if (!sectionList[charm.system.ability]) {
+            sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
+          }
+          sectionList[charm.system.ability].list.push(charm);
+          // if(charm.system.archetype.ability) {
+          //   if (!sectionList[charm.system.archetype.ability]) {
+          //     sectionList[charm.system.archetype.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.archetype.ability] || 'Ex3.Other', visible: true, list: [] };
+          //   }
+          //   sectionList[charm.system.archetype.ability].list.push(charm);
+          // }
+        }
+      }
+    }
+    const template = "systems/exaltedthird/templates/dialogues/import-item.html";
+    const html = await renderTemplate(template, { 'sectionList': sectionList });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: {
+        title: "Import Item",
+      },
+      position: {
+        height: 800,
+        width: 650,
+      },
+      content: html,
+      buttons: [{
+        class: "closeImportItem",
+        label: "Close",
+        action: "closeImportItem",
+      }],
+      render: (event, html) => {
+        html.querySelectorAll('.add-item').forEach(element => {
+          element.addEventListener('click', async (ev) => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let item = items.find((item) => item._id === li.data("item-id"));
+            if (!item.flags?.core?.sourceId) {
+              item.updateSource({ "flags.core.sourceId": item.uuid });
+            }
+            if (!item._stats?.compendiumSource) {
+              item.updateSource({ "_stats.compendiumSource": item.uuid });
+            }
+            const newItem = foundry.utils.duplicate(item);
+            newItem.itemCount = 1;
+            await this.getEnritchedHTML(newItem);
+            if (item.type === 'ritual') {
+              if (ritualType === 'sorcery') {
+                this.object.character.ritual = newItem;
+              } else {
+                this.object.character.necromancyRitual = newItem;
+              }
+            }
+            else {
+              if (newItem) {
+                let listIndex = 0;
+                let indexAdd = "0";
+                for (const key of Object.keys(this.object.character[type])) {
+                  if (key !== listIndex.toString()) {
+                    break;
+                  }
+                  listIndex++;
+                }
+                indexAdd = listIndex.toString();
+                this.object.character[type][indexAdd] = newItem;
+              }
+            }
+
+            this.onChange();
+            const closeImportItem = html.querySelector('.closeImportItem');
+            if (closeImportItem) {
+              closeImportItem.click();
+            }
+          });
+        });
+
+        html.querySelectorAll('.collapsable').forEach(element => {
+          element.addEventListener('click', (ev) => {
+            const li = $(ev.currentTarget).next();
+            li.toggle("fast");
+          });
+        });
+      },
+      classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    });
+  }
+
+  static async deleteItem(event, target) {
+    const type = target.dataset.type;
+    const ritual = target.dataset.ritual;
+    if (type === 'ritual') {
+      if (ritual === 'sorcery') {
+        this.object.character.ritual = {
+          name: '',
+        }
+      } else {
+        this.object.character.necromancyRitual = {
+          name: '',
+        }
+      }
+    }
+    else {
+      delete this.object.character[type][target.dataset.index];
+    }
+    this.onChange();
+  }
+
+  async _onDropItem(event) {
+    let data;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    data.id = data.uuid.split('.')[1];
+    if (data.uuid.includes('Compendium')) {
+      return ui.notifications.error(`Error: You cannot drop compendium items into box.`);
+      // let tmp = data.uuid.split('.');
+      // data.pack = tmp[1] + '.' + tmp[2];
+      // data.id = tmp[4];
+    }
+
+    let itemObject;
+    if (data.pack) {
+      // Case 1 - Import from a Compendium pack
+      itemObject = await this.importItemFromCollection(data.pack, data.id);
+      if (!itemObject) {
+        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
+      };
+    }
+    else {
+      // Case 2 - Import from World entity
+      itemObject = await game.items.get(data.id);
+      if (!itemObject) {
+        return ui.notifications.error(`Error: Could not find item, you cannot drop embeded items into box.`);
+      };
+    }
+
+    if (!itemObject.flags?.core?.sourceId) {
+      itemObject.updateSource({ "flags.core.sourceId": itemObject.uuid });
+    }
+
+    const newItem = foundry.utils.duplicate(itemObject);
+    if(newItem.type === 'charm') {
+      newItem.itemCount = 0;
+    }
+
+    switch (newItem.type) {
+      case 'charm':
+        if (newItem.system.charmtype === 'evocation') {
+          this.object.character.evocations[Object.entries(this.object.character.evocations).length] = newItem;
+        }
+        else if (newItem.system.charmtype === 'otherCharm') {
+          this.object.character.otherCharms[Object.entries(this.object.character.otherCharms).length] = newItem;
+        }
+        else if (newItem.system.charmtype === 'martialarts') {
+          this.object.character.martialArtsCharms[Object.entries(this.object.character.martialArtsCharms).length] = newItem;
+        }
+        else {
+          this.object.character.charms[Object.entries(this.object.character.charms).length] = newItem;
+          if (this.object.character.abilities[newItem.system.ability]) {
+            this.object.character.abilities[newItem.system.ability].charms[Object.entries(this.object.character.abilities[newItem.system.ability].charms).length] = newItem;
+          }
+          if (this.object.character.attributes[newItem.system.ability]) {
+            this.object.character.attributes[newItem.system.ability].charms[Object.entries(this.object.character.attributes[newItem.system.ability].charms).length] = newItem;
+          }
+        }
+
+        break;
+      case 'spell':
+        this.object.character.spells[Object.entries(this.object.character.spells).length] = newItem;
+        break;
+      case 'specialty':
+        this.object.character.specialties[Object.entries(this.object.character.specialties).length] = {
+          name: newItem.name,
+          system: {
+            ability: newItem.system.ability,
+          }
+        };
+        break;
+      case 'merit':
+        this.object.character.merits[Object.entries(this.object.character.merits).length] = newItem;
+        break;
+      case 'weapon':
+        this.object.character.weapons[Object.entries(this.object.character.weapons).length] = newItem;
+        break;
+      case 'armor':
+        this.object.character.armors[Object.entries(this.object.character.armors).length] = newItem;
+        break;
+      case 'customability':
+        if (newItem.system.abilitytype === 'martialart') {
+          this.object.character.martialArts[Object.entries(this.object.character.martialArts).length] = newItem;
+        }
+        if (newItem.system.abilitytype === 'craft') {
+          this.object.character.crafts[Object.entries(this.object.character.crafts).length] = newItem;
+        }
+        break;
+    }
+
+    this.onChange();
+  }
+
+  importItemFromCollection(collection, entryId) {
+    const pack = game.packs.get(collection);
+    if (pack.documentName !== "Item") return;
+    return pack.getDocument(entryId).then((ent) => {
+      return ent;
+    });
+  }
+
+  static async deleteSublistCharm(event, target) {
+    const sublistkey = target.dataset.sublistkey;
+    const type = target.dataset.type;
+    const charm = this.object.character[type][sublistkey].charms[target.dataset.index];
+
+    let index = null;
+    for (const [key, value] of Object.entries(this.object.character.charms)) {
+      if (value === charm) {
+        index = key;
+        break;
+      }
+    }
+    if (index) {
+      delete this.object.character.charms[index];
+      this.onChange();
+    }
+  }
+
+  static async lowerCharmCount(event, target) {
+    const type = target.dataset.type;
+    const index = target.dataset.index;
+    if (this.object.character[type][index].itemCount > 0) {
+      this.object.character[type][index].itemCount--;
+    }
+    this.onChange();
+  }
+
+  static async addCharmCount(event, target) {
+    const type = target.dataset.type;
+    const index = target.dataset.index;
+    this.object.character[type][index].itemCount++;
+    this.onChange();
+  }
+
+  static async randomItem(event, target) {
+    const type = target.dataset.type;
+
+    if (type === 'merits' && game.items.filter(item => item.type === 'merit').length <= 0) {
+      const mutationsList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/mutations.json', {}, { int: 30000 });
+      const meritList = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/merits.json', {}, { int: 30000 });
+      const fullMeritList = mutationsList.concat(meritList);
+
+      var merit = fullMeritList[Math.floor(Math.random() * fullMeritList.length)];
+      var meritRating = merit.dotValues[Math.floor(Math.random() * merit.dotValues.length)];
+
+      this.object.character.merits[Object.entries(this.object.character.merits).length] = {
+        name: merit.name,
+        enritchedHTML: merit.pageref,
+        system: {
+          points: meritRating,
+          description: merit.pageref
+        }
+      };
+    }
+    else {
+      const items = await this._getItemList(target);
+      var item = items[Math.floor(Math.random() * items.length)];
+      if (item) {
+        if (!item.flags?.core?.sourceId) {
+          item.updateSource({ "flags.core.sourceId": item.uuid });
+        }
+        const newItem = foundry.utils.duplicate(item);
+        newItem.itemCount = 1;
+        await this.getEnritchedHTML(newItem);
+
+        if (item.type === 'ritual') {
+          if (item.system.ritualtype === 'necromancy') {
+            this.object.character.necromancyRitual = newItem;
+          } else {
+            this.object.character.ritual = newItem;
+          }
+        }
+        else {
+          if (newItem) {
+            let listIndex = 0;
+            let indexAdd = "0";
+            for (const key of Object.keys(this.object.character[type])) {
+              if (key !== listIndex.toString()) {
+                break;
+              }
+              listIndex++;
+            }
+            indexAdd = listIndex.toString();
+            this.object.character[type][indexAdd] = newItem;
+          }
+        }
+      }
+    }
+    this.onChange();
+  }
+
+  async _getItemList(target) {
+    const type = target.dataset.type;
+    const itemType = target.dataset.item;
+    const itemRitual = target.dataset.ritual;
+    let items = game.items.filter(charm => charm.type === itemType);
+    if (itemRitual) {
+      items = items.filter(item => item.system.ritualtype === itemRitual);
+    }
+    let archetypeCharms = [];
+    if (itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
+      items = game.items.filter(charm => charm.type === 'charm');
+    }
+    if (type === 'martialArts') {
+      items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart' && (!item.system.siderealmartialart || this.object.character.essence >= 3));
+    }
+    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
+      items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
+      if (itemType === 'charm') {
+        if (this.object.character.exalt === 'exigent') {
+          items = items.filter(charm => charm.system.charmtype === this.object.character.exigent || charm.system.charmtype === 'universal');
+        } else {
+          items = items.filter(charm => charm.system.charmtype === this.object.character.exalt || charm.system.charmtype === 'universal');
+        }
+        archetypeCharms = items.filter(charm => charm.system.archetype.ability);
+        if (target.dataset.ability) {
+          items = items.filter(charm => charm.system.ability === target.dataset.ability);
+          archetypeCharms = archetypeCharms.filter(charm => {
+            if (charm.system.archetype.ability === "combat") {
+              return ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(target.dataset.ability);
+            }
+            return charm.system.archetype.ability === target.dataset.ability;
+          });
+        }
+        if (this.object.characterType === 'character') {
+          items = items.filter(charm => {
+            if (this.object.character.attributes[charm.system.ability]) {
+              return charm.system.requirement <= this.object.character.attributes[charm.system.ability].value;
+            }
+            if (this.object.character.abilities[charm.system.ability]) {
+              return charm.system.requirement <= this.object.character.abilities[charm.system.ability].value;
+            }
+            if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+              return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.ability);
+            }
+            return true;
+          });
+          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
+            if (charm.system.archetype.ability === "combat") {
+              return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
+            }
+            if (this.object.character.attributes[charm.system.archetype.ability]) {
+              return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;
+            }
+            if (this.object.character.abilities[charm.system.archetype.ability]) {
+              return charm.system.requirement <= this.object.character.abilities[charm.system.archetype.ability].value;
+            }
+            if (CONFIG.exaltedthird.maidens.includes(charm.system.archetype.ability)) {
+              return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.archetype.ability);
+            }
+            return true;
+          });
+        }
+      }
+      else if (itemType === 'martialArtCharm') {
+        items = items.filter(charm => charm.system.charmtype === 'martialarts');
+        items = items.filter(charm => {
+          if (charm.system.charmtype === 'martialarts') {
+            if (charm.system.parentitemid) {
+              return Object.values(this.object.character.martialArts).some(martialArt => martialArt._id === charm.system.parentitemid && charm.system.requirement <= martialArt.system.points);
+            }
+            return false;
+          }
+          return true;
+        });
+      }
+      else if (itemType === 'otherCharm') {
+        items = items.filter(charm => charm.system.charmtype === 'other' || charm.system.charmtype === 'eclipse' || charm.system.charmtype === 'universal');
+      }
+      else {
+        items = items.filter(charm => charm.system.charmtype === 'evocation');
+        items = items.filter(charm => {
+          var returnVal = false;
+          if (charm.system.parentitemid) {
+            if (Object.values(this.object.character.weapons).some(weapon => weapon._id === charm.system.parentitemid)) {
+              returnVal = true;
+            }
+            if (Object.values(this.object.character.armor).some(armor => armor._id === charm.system.parentitemid)) {
+              returnVal = true;
+            }
+            if (Object.values(this.object.character.items).some(item => item._id === charm.system.parentitemid)) {
+              returnVal = true;
+            }
+          }
+          return returnVal;
+        });
+      }
+    }
+    if (itemType === 'spell') {
+      items = items.filter(spell => {
+        if (spell.system.circle === 'terrestrial' && this.object.character.sorcerer !== 'none') {
+          return true;
+        }
+        if (spell.system.circle === 'celestial' && this.object.character.sorcerer !== 'terrestrial' && this.object.character.sorcerer !== 'none') {
+          return true;
+        }
+        if (spell.system.circle === 'solar' && this.object.character.sorcerer === 'solar') {
+          return true;
+        }
+        if (spell.system.circle === 'ivory' && this.object.character.necromancer !== 'none') {
+          return true;
+        }
+        if (spell.system.circle === 'shadow' && this.object.character.necromancer !== 'ivory' && this.object.character.necromancer !== 'none') {
+          return true;
+        }
+        if (spell.system.circle === 'void' && this.object.character.necromancer === 'void') {
+          return true;
+        }
+        return false;
+      });
+    }
+    if (itemType === "merit") {
+      items = items.filter(merit => {
+        if (merit.system.merittype !== "sorcery") {
+          return true;
+        }
+        if (this.object.character.ritual?.system?.archetypename) {
+          if (!merit.system.archetypename || merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase()) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+    const itemIds = [
+      ...Object.values(this.object.character.charms).map(charm => charm._id),
+      ...Object.values(this.object.character.martialArts).map(charm => charm._id),
+      ...Object.values(this.object.character.martialArtsCharms).map(charm => charm._id),
+      ...Object.values(this.object.character.evocations).map(charm => charm._id),
+      ...Object.values(this.object.character.otherCharms).map(charm => charm._id),
+      ...Object.values(this.object.character.spells).map(spell => spell._id),
+      ...Object.values(this.object.character.weapons).map(weapon => weapon._id),
+      ...Object.values(this.object.character.armors).map(armor => armor._id),
+      ...Object.values(this.object.character.items).map(item => item._id),
+      ...Object.values(this.object.character.specialAbilities).map(item => item._id),
+      ...Object.values(this.object.character.merits).map(merit => merit._id),
+    ];
+    if (itemType === 'charm') {
+      items = items.filter(charm => {
+        if (charm.system.numberprerequisites.number > 0) {
+          let existingCharms = 0;
+          if (charm.system.numberprerequisites.ability === "combat") {
+            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(numberCharm.system.ability)).length || 0);
+          }
+          else if (['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(charm.system.numberprerequisites.ability)) {
+            if (charm.system.numberprerequisites.ability === 'physicalAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['strength', 'dexterity', 'stamina'].includes(numberCharm.system.ability)).length || 0);
+            }
+            if (charm.system.numberprerequisites.ability === 'mentalAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['intelligence', 'wits', 'perception'].includes(numberCharm.system.ability)).length || 0);
+            }
+            if (charm.system.numberprerequisites.ability === 'socialAttribute') {
+              existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => ['charisma', 'appearance', 'manipulation'].includes(numberCharm.system.ability)).length || 0);
+            }
+          }
+          else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
+            existingCharms = this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
+          }
+          else {
+            existingCharms = (Object.values(this.object.character.charms)?.filter(numberCharm => numberCharm.system.ability === charm.system.numberprerequisites.ability).length || 0);
+          }
+          if (existingCharms < charm.system.numberprerequisites.number) {
+            return false;
+          }
+        }
+        return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
+      });
+      if (archetypeCharms) {
+        archetypeCharms = archetypeCharms.filter(charm => {
+          return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
+        });
+        items = items.concat(archetypeCharms);
+      }
+    }
+    items = items.filter(item => !itemIds.includes(item._id));
+    for (var item of items) {
+      await this.getEnritchedHTML(item);
+    }
+    return items;
+  }
+
+  _getHighestMaidenAbility(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    let highestValue = 0;
+    for (const ability of abilityList) {
+      if ((this.object.character.abilities[ability]?.value || 0) > highestValue) {
+        highestValue = (this.object.character.abilities[ability]?.value || 0);
+      }
+    }
+    return highestValue;
+  }
+
+  async getEnritchedHTML(item) {
+    item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+  }
+
+
+  static async saveCharacter(event, target) {
+    ChatMessage.create({
+      user: game.user.id,
+      content: `<div>In progress character <b>${this.object.character.name || this.object.character.defaultName}</b> has been saved to this chat message</div><div><button class="resume-character">${game.i18n.localize('Ex3.Resume')}</button></div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      flags: {
+        "exaltedthird": {
+          character: this.object,
+        }
+      },
+    });
+  }
+
+  static async showHelpDialog(event, target) {
+    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dialog-help.html", { 'link': 'https://github.com/Aliharu/Foundry-Ex3/wiki/Character-Creator' });
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
+      content: html,
+      buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+      classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+    }).render(true);
+  }
 
   async getCommonName() {
     let newName = '';
@@ -2051,35 +2147,6 @@ export default class CharacterBuilder extends FormApplication {
   async getAbyssalName() {
     const randomName = await foundry.utils.fetchJsonWithTimeout('systems/exaltedthird/module/data/randomAbyssalTitles.json', {}, { int: 30000 });
     return `The ${randomName.name1[Math.floor(Math.random() * randomName.name1.length)]} ${randomName.name2[Math.floor(Math.random() * randomName.name2.length)]} ${randomName.name3[Math.floor(Math.random() * randomName.name3.length)]} ${randomName.name4[Math.floor(Math.random() * randomName.name4.length)]}`;
-  }
-
-  async createCharacter() {
-    const itemData = [
-    ];
-    var actorData = this._getBaseStatblock();
-
-    await this.getBaseCharacterData(actorData, itemData);
-    this._getCharacterCharms(itemData);
-    await this._getCharacterSpells(itemData);
-    await this._getCharacterEquipment(actorData, itemData);
-
-    actorData.items = itemData;
-    if (Actor.canUserCreate(game.user)) {
-      let actor = await Actor.create(actorData);
-      await actor.calculateAllDerivedStats();
-    }
-    else {
-      game.socket.emit('system.exaltedthird', {
-        type: 'createGeneratedCharacter',
-        id: game.user.id,
-        data: actorData,
-      });
-    }
-    ChatMessage.create({
-      user: game.user.id,
-      content: `${actorData.name} created using the character creator`,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-    });
   }
 
   async getBaseCharacterData(actorData, itemData) {
