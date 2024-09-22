@@ -1223,5 +1223,7 @@
     "Ex3.ItemTypes": "Item Types",
     "Ex3.MeritType": "Merit Type",
     "Ex3.RitualType": "Ritual Type",
-    "Ex3.Mundane": "Mundane"
+    "Ex3.Mundane": "Mundane",
+    "Ex3.AttackRoll": "Attack Roll"
+
 }

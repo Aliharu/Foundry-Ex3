@@ -39,27 +39,25 @@
 </div>
 {{/ifEquals}}
 
-<div class="resource grid grid-2col flex-center">
+<div class="resource grid grid-4col flex-center">
+    {{#ifNotEquals data.rollType 'base'}}
+    <div>
+        <label class="resource-label">{{localize "Ex3.Dice"}} </label>
+        <input name="object.diceModifier" value="{{data.diceModifier}}" type="number">
+    </div>
+    {{/ifNotEquals}}
+    <div>
+        <label class="resource-label">{{localize "Ex3.Successes"}} </label>
+        <input name="object.successModifier" value="{{data.successModifier}}" type="number">
+    </div>
     <div>
         <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
         <input name="object.targetNumber" value="{{data.targetNumber}}" type="number">
     </div>
     <div>
-        <label class="resource-label">{{localize "Ex3.SuccessModifier"}} </label>
-        <input name="object.successModifier" value="{{data.successModifier}}" type="number">
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
+        <label class="resource-label">{{localize "Ex3.DoubleSuccess"}}+ </label>
         <input name="object.doubleSuccess" value="{{data.doubleSuccess}}" type="number">
     </div>
-
-    {{#ifNotEquals data.rollType 'base'}}
-    <div>
-        <label class="resource-label">{{localize "Ex3.DiceModifier"}} </label>
-        <input name="object.diceModifier" value="{{data.diceModifier}}" type="number">
-    </div>
-    {{/ifNotEquals}}
-
 </div>
 <div class="resource flex-center">
     <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
@@ -89,49 +87,25 @@
 {{#ifEquals data.rollType 'base'}}
 {{else}}
 <div class="resource grid grid-4col flex-center">
-    <label class="resource-label">{{localize "Ex3.WoundPenalty"}}</label>
-    <input type="checkbox" name="object.woundPenalty" {{checked data.woundPenalty}}>
-
-    <label class="resource-label">{{localize "Ex3.Flurry"}}</label>
-    <input type="checkbox" name="object.isFlurry" {{checked data.isFlurry}}>
-
-    <label class="resource-label">{{localize "Ex3.ArmorPenalty"}}</label>
-    <input type="checkbox" name="object.armorPenalty" {{checked data.armorPenalty}}>
-
-    <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
-    <input type="checkbox" name="object.willpower" {{checked data.willpower}}>
+    <div class="d-flex flex-center">
+        <label class="resource-label">{{localize "Ex3.WoundPenalty"}}</label>
+        <input type="checkbox" name="object.woundPenalty" {{checked data.woundPenalty}}>
+    </div>
+    <div class="d-flex flex-center">
+        <label class="resource-label">{{localize "Ex3.Flurry"}}</label>
+        <input type="checkbox" name="object.isFlurry" {{checked data.isFlurry}}>
+    </div>
+    <div class="d-flex flex-center">
+        <label class="resource-label">{{localize "Ex3.ArmorPenalty"}}</label>
+        <input type="checkbox" name="object.armorPenalty" {{checked data.armorPenalty}}>
+    </div>
+    <div class="d-flex flex-center">
+        <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
+        <input type="checkbox" name="object.willpower" {{checked data.willpower}}>
+    </div>
 </div>
 {{/ifEquals}}
 
-{{#ifNotEquals data.rollType 'base'}}
-{{> systems/exaltedthird/templates/dialogues/added-charm-list.html}}
-{{#if data.addedCharms}}
-<div class="d-flex flex-between mb-1 collapsable cursor-pointer">
-    <div class="resource-label">
-        {{localize "Ex3.Triggers"}}
-    </div>
-    <div>
-        <i class="fas fa-caret-down"></i>
-    </div>
-</div>
-<div style="display:none;">
-    <ol class="items-list">
-        {{#each data.addedCharms as |charm id|}}
-            {{#each charm.system.triggers.dicerollertriggers as |trigger triggerId|}}
-            <li class="item flexrow item-row">
-                <div class="item-image"><img class="list-item-image" src="{{charm.img}}" title="{{charm.name}}" width="24" height="24" /></div>
-                {{#if trigger.name}}
-                <h4 class="item-name">{{trigger.name}}</h4>
-                {{else}}
-                <h4 class="item-name">{{localize "Ex3.NoName"}}</h4>
-                {{/if}}
-            </li>
-            {{/each}}
-        {{/each}}
-    </ol>
-</div>
-{{/if}}
-{{/ifNotEquals}}
 <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
     <div class="resource-label">
         {{localize "Ex3.OtherModifiers"}}

@@ -1,0 +1,310 @@
+<section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="damage">
+    <div>
+        {{#if data.splitAttack}}
+        <div class="flex-center resource-label">
+            {{localize "Ex3.AttackRoll"}}
+        </div>
+        <div class="dice-tooltip">
+            <div class="dice">
+                <ol class="dice-rolls">{{{data.displayDice}}}</ol>
+            </div>
+        </div>
+        {{/if}}
+        <div class="resource grid grid-2col flex-center">
+            {{#ifEquals data.rollType 'damage'}}
+            {{#if data.showTargets}}
+            {{else}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
+                <input type="number" name="object.attackSuccesses" value="{{data.attackSuccesses}}">
+            </div>
+            {{/if}}
+            {{/ifEquals}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.DamageDice"}} </label>
+                <input type="number" name="object.damage.damageDice" value="{{data.damage.damageDice}}">
+                <label>{{data.damageDiceCap}}</label>
+            </div>
+            <div {{#if data.damageDiceCap}}style="margin-bottom:17px" {{/if}}>
+                <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
+                <input type="number" name="object.damage.damageSuccessModifier"
+                    value="{{data.damage.damageSuccessModifier}}">
+            </div>
+        </div>
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.DoubleSuccess"}} + </label>
+                <input type="number" name="object.damage.doubleSuccess" value="{{data.damage.doubleSuccess}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+                <input type="number" name="object.damage.targetNumber" value="{{data.damage.targetNumber}}">
+            </div>
+            {{#if data.showWithering}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
+                <input type="number" name="object.overwhelming" value="{{data.overwhelming}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
+                <input type="number" name="object.damage.postSoakDamage" value="{{data.damage.postSoakDamage}}">
+            </div>
+            {{/if}}
+        </div>
+        <div class="resource flex-center">
+            <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
+        </div>
+        <div class="resource d-flex flex-center">
+            {{#each data.damage.reroll as |reroll key|}}
+            <div>
+                <div>{{reroll.number}}</div>
+                <input name="object.damage.reroll.{{key}}.status" type="checkbox" {{checked reroll.status}}>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.DamageModifiers"}}
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div id="showDamageModifiers" {{#if data.showDamageModifiers}} {{else}} style="display:none;" {{/if}}>
+            <div class="resource flex-center grid grid-2col">
+                <label class="resource-label">{{localize "Ex3.DamageType"}}</label>
+                <select name="object.damage.type" value="{{data.damage.type}}" data-type="String">
+                    {{selectOptions selects.damageTypes selected=data.damage.type localize=true}}
+                </select>
+                <label class="resource-label">{{localize "Ex3.DoubleRolledDamage"}} </label>
+                <div>
+                    <input type="checkbox" name="object.damage.doubleRolledDamage" {{checked
+                        data.damage.doubleRolledDamage}}>
+                </div>
+                {{#ifEquals data.attackType 'decisive'}}
+                <label class="resource-label">{{localize "Ex3.ThreshholdToDamage"}} </label>
+                <div>
+                    <input type="checkbox" name="object.damage.threshholdToDamage" {{checked
+                        data.damage.threshholdToDamage}}>
+                </div>
+                <label class="resource-label">{{localize "Ex3.ResetInitiative"}} </label>
+                <div>
+                    <input type="checkbox" name="object.damage.resetInit" {{checked data.damage.resetInit}}>
+                </div>
+                {{#ifEquals data.damage.decisiveDamageType 'initiative'}}
+                <label class="resource-label">{{localize "Ex3.MultiTargetDivide"}}</label>
+                <select name="object.damage.decisiveDamageCalculation" data-type="String">
+                    {{selectOptions selects.decisiveSplits selected=data.damage.decisiveDamageCalculation localize=true}}
+                </select>
+                {{/ifEquals}}
+                {{/ifEquals}}
+                {{#ifEquals data.attackType 'withering'}}
+                <label class="resource-label">{{localize "Ex3.MaxInitiativeGain"}}</label>
+                <input type="number" name="object.damage.maxInitiativeGain" value="{{data.damage.maxInitiativeGain}}">
+                <label class="resource-label">{{localize "Ex3.IgnoreSoak"}}</label>
+                <input type="number" name="object.damage.ignoreSoak" value="{{data.damage.ignoreSoak}}">
+                <label class="resource-label">{{localize "Ex3.GainInitiative"}} </label>
+                <div>
+                    <input type="checkbox" name="object.damage.gainInitiative" {{checked data.damage.gainInitiative}}>
+                </div>
+                {{/ifEquals}}
+                {{#ifEquals data.attackType 'decisive'}}
+                <label class="resource-label">{{localize "Ex3.IgnoreHardness"}}</label>
+                <input type="number" name="object.damage.ignoreHardness" value="{{data.damage.ignoreHardness}}">
+                {{/ifEquals}}
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.OtherModifiers"}}
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <div class="resource grid grid-2col flex-center">
+                <label class="resource-label">{{localize "Ex3.RerollFailedDice"}} </label>
+                <input name="object.damage.rerollNumber" value="{{data.damage.rerollNumber}}" type="number">
+                <label class="resource-label">{{localize "Ex3.RerollSuccesses"}} </label>
+                <input name="object.damage.rerollSuccesses" value="{{data.damage.rerollSuccesses}}" type="number">
+                <label class="resource-label">{{localize "Ex3.DicetoSuccesses"}} </label>
+                <input type="number" name="object.damage.diceToSuccesses" value="{{data.damage.diceToSuccesses}}">
+                <label class="resource-label">{{localize "Ex3.RerollAllFailedOnce"}} </label>
+                <input type="checkbox" name="object.damage.rerollFailed" {{checked data.damage.rerollFailed}}>
+                <label class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}} </label>
+                <input type="checkbox" name="object.damage.rollTwice" {{checked data.damage.rollTwice}}>
+                {{#ifEquals actor.system.details.exalt 'dragonblooded'}}
+                {{#ifEquals data.rollType 'damage'}}
+                <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
+                <select name="object.activateAura" data-type="String">
+                    {{selectOptions selects.elements selected=data.activateAura localize=true}}
+                </select>
+                {{/ifEquals}}
+                {{/ifEquals}}
+            </div>
+        </div>
+
+        {{#if data.showTargets}}
+        {{else}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+                <input type="number" name="object.defense" value="{{data.defense}}">
+            </div>
+            {{#ifEquals data.attackType 'withering'}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Soak"}}
+                </div>
+                <input type="number" name="object.soak" value="{{data.soak}}">
+            </div>
+            {{#if data.useShieldInitiative}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.ShieldInitiative"}}
+                </div>
+                <input type="number" name="object.shieldInitiative" value="{{data.shieldInitiative}}">
+            </div>
+            {{/if}}
+            {{/ifEquals}}
+            {{#ifEquals data.attackType 'decisive'}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Hardness"}}
+                </div>
+                <input type="number" name="object.hardness" value="{{data.hardness}}">
+            </div>
+            {{/ifEquals}}
+        </div>
+        {{/if}}
+
+        {{#ifEquals data.attackType 'gambit'}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.GambitDifficulty"}}
+                </div>
+                <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Gambit"}}</div>
+                <select id="gambit" name="object.gambit" data-type="String">
+                    {{#each selects.gambits as |gambitCategory gambitCategoryType|}}
+                    <optgroup label="{{gambitCategory.label}}">
+                      {{selectOptions gambitCategory.gambitTypes selected=../data.gambit localize=true}}
+                    </optgroup>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.Gambits"}} ({{localize "Ex3.Difficulty"}})
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <p>
+                <b>{{localize "Ex3.Disarm"}} (3)</b>: Knock away opponents weapon to short range. The weapon requires a draw/ready
+                action to retrieve.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Unhorse"}} (4)</b>: Knock opponent off his mount, Target suffers 1 point of bashing damage and is
+                knocked prone.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Distract"}} (3-5)</b>: Declare an ally (who is not crashed), Tranfer the difficulty of this gambit
+                to the ally, this initiative must be used to attack the gambits target on the next turn or it is
+                lost.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Grapple"}} (2)</b>: If this gambit succeeds makle a contested control roll (Stength + Brawl/Martial
+                Arts) with the opponent to gain rounds of control. See page 200 of Ex3 Core for the full grapple
+                effects.
+            </p>
+            {{#if data.useEssenceGambit}}
+            <p>
+                <b>Essence Gambits</b>
+            </p>
+            <p>
+                <b>{{localize "Ex3.Knockback"}} (3)</b>: Knock target back 1 range band, Lower targets defense by 1 per threshhold success until start of their next turn.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Knockdown"}} (3)</b>: Knock target prone
+            </p>
+            <p>
+                <b>{{localize "Ex3.Pilfer"}} (2)</b>: Can use stealth for this gambit, Steal 1 non-weapon/non-worn item.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Pull"}} (3)</b>: Pull target one range band closer, Lower targets defense by 1 per threshhold success until start of their next turn.
+            </p>
+            <p>
+                <b>{{localize "Ex3.RevealWeakness"}} (2)</b>: Halfs the targets soak (round down) until the next withering attack.
+            </p>
+            {{/if}}
+            <p>
+                <b>Adversaries of the Righteous Gambits</b>
+            </p>
+            <p>
+                <b>{{localize "Ex3.Detonate"}} (4) (pg.191)</b>: Explode a volatile target like a firedust barrel with a firewand or
+                similar implement. Creates a one-time environmental hazard
+                out to short range (damage 4L/instant, difficulty 5)
+            </p>
+            <p>
+                <b>{{localize "Ex3.Bind"}} (2-4) (pg.185)</b>: Roll a gambit at difficulty 2 at close range (3 for Short Range, 3 for
+                Medium Range). On success the target is treated as if they were in a grapple. See the full text for this
+                gambit effect.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Goad"}} (3) (pg.186)</b>: On success the target must pay 2 initiative to attack anyone but the gambit
+                user. Ends if the target is not in close range with the gambit user.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Leech"}} (3) (pg.186)</b>: Deal 1L. Target begins bleeding (Exalted, p. 174) and characters gain
+                (Targets Wound Penalty) bonus successes to track the target.
+            </p>
+            <p>
+                <b>{{localize "Ex3.PileOn"}} (2) (pg.186)</b>: Chopping or piercing attacks by a chosen ally no longer cost initiative or
+                defense vs the target until the targets next turn.
+            </p>
+            <p>
+                <b>{{localize "Ex3.Riposte"}} (1) (pg.186)</b>: If the target attacks the gambit user before her next turn the gambit user
+                may reflexivly decisive clash the attack, adding 4 dice to the damage pool.
+            </p>
+        </div>
+        <div class="d-flex flex-between mb-1 collapsable cursor-pointer">
+            <div class="resource-label">
+                {{localize "Ex3.Warstrider"}} {{localize "Ex3.Gambits"}} ({{localize "Ex3.Difficulty"}})
+            </div>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div style="display:none;">
+            <p>
+                <b>{{localize "Ex3.BlockVision"}} (3)</b>: Pilot suffers a -3 penalty on all actions that depend on vision. The pilot may
+                use a miscellaneous action to clear the obstruction.
+            </p>
+            <p>
+                <b>{{localize "Ex3.DisableArm"}} (5)</b>: Disables a warstrider's arm. Warstrider drops anything that arm was carrying and
+                cannot use the arm. Warstrider takes a -3 on actions that require 2 arms. Pilot can restore fuctionality
+                with 5 init and a misc action.
+            </p>
+            <p>
+                <b>{{localize "Ex3.DisableLeg"}} (6)</b>: Pilot must succees on Diff 5 (Dex + Athletics) roll or fall prone, Pilot takes a
+                -3 penalty of movement. Pilot can restore fucitonality by paying 2 init and their turn's movement. If
+                both legs are disabled the warstrider cannot move and the init cost is raised to 5.
+            </p>
+            <p>
+                <b>{{localize "Ex3.BreachFrame"}} (9)</b>: Makes an opening allowing attackers to pay 1 init to attack the pilot directly.
+            </p>
+        </div>
+        {{/ifEquals}}
+    </div>
+</section>

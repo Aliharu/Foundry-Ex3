@@ -1,4 +1,4 @@
-<footer class="form-footer d-flex">
-    <button type="submit">Roll</button>
+<footer class="form-footer d-flex {{hideElement}}">
+    <button type="submit">{{#ifEquals data.rollType 'useOpposingCharms'}}Add{{else}}Roll{{/ifEquals}}</button>
     <button type="button" data-action="close">Cancel</button>
 </footer>

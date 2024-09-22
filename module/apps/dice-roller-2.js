@@ -625,6 +625,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 },
             ]
         },
+        position: { width: 690 },
         tag: "form",
         form: {
             handler: RollForm2.myFormHandler,
@@ -647,11 +648,20 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
 
     static PARTS = {
         tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
-        base: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-2.html",
+        dice: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/ability-roll-2.html",
         },
-        modifiers: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-modifiers.html",
+        damage: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/damage-roll-2.html",
+        },
+        targets: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/roll-targets.html",
+        },
+        charms: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/roller-charms.html",
+        },
+        addCharms: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/add-roll-charms.html",
         },
         // abilityRoll: {
         //     template: "systems/exaltedthird/templates/dialogues/dice-roll/ability-roll-2.html",
@@ -667,31 +677,10 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         },
     };
 
-
     _configureRenderOptions(options) {
-        // This fills in `options.parts` with an array of ALL part keys by default
-        // So we need to call `super` first
         super._configureRenderOptions(options);
-        // Completely overriding the parts
-        options.parts = ['tabs', 'base'];
-
-        // if (this._isAttackRoll()) {
-        //     options.parts.push('attack');
-        // } else {
-        //     switch (this.object.rollType) {
-        //         case 'useOpposingCharms':
-        //             options.parts.push('useOpposingCharms');
-        //             break;
-        //         case 'base':
-        //             options.parts.push('base');
-        //             break;
-        //         default:
-        //             options.parts.push('abilityRoll');
-        //             break;
-        //     }
-        // }
-        if (!this.object.addingCharms) {
-            options.parts.push('footer');
+        if(!this._isAttackRoll()) {
+            options.parts = ['tabs', 'dice', 'charms', 'addCharms', 'footer'];
         }
     }
 
@@ -706,24 +695,49 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     }
 
     async _prepareContext(_options) {
-        if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'base';
+        if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'dice';
         this.selects = CONFIG.exaltedthird.selects;
+        const tabs = [
+            {
+                id: "dice",
+                group: "primary",
+                label: this._isAttackRoll() ? "Ex3.Accuracy" : "Ex3.Dice",
+                cssClass: this.tabGroups['primary'] === 'dice' ? 'active' : '',
+            },
+        ];
+        if (this._isAttackRoll()) {
+            tabs.push({
+                id: "damage",
+                group: "primary",
+                label: "Ex3.Damage",
+                cssClass: this.tabGroups['primary'] === 'damage' ? 'active' : '',
+            });
+        }
+        if(this.object.showTargets) {
+            tabs.push({
+                id: "targets",
+                group: "primary",
+                label: "Ex3.Targets",
+                cssClass: this.tabGroups['primary'] === 'targets' ? 'active' : '',
+            });
+        }
+        tabs.push({
+            id: "charms",
+            group: "primary",
+            label: "Ex3.Charms",
+            cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
+        });
         return {
             actor: this.actor,
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
             data: this.object,
-            tabs: [
-                {
-                    id: "base",
-                    group: "base",
-                    label: "Ex3.Base",
-                    cssClass: this.tabGroups['primary'] === 'base' ? 'active' : '',
-                },
-            ],
+            tab: this.tabGroups['primary'],
+            tabs: tabs,
+            isAttackRoll: this._isAttackRoll(),
             buttons: [
-                { type: "submit", icon: "fa-solid fa-dice-d10", label: "Ex3.Roll" },
+                { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
                 { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
             ],
         };
@@ -731,6 +745,11 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
 
     async _preparePartContext(partId, context) {
         context.tab = context.tabs.find(item => item.id === partId);
+        if (this.object.addingCharms) {
+            context.hideElement = (partId !== 'addCharms' ? 'hide-element' : '')
+        } else {
+            context.hideElement = (partId === 'addCharms' ? 'hide-element' : '')
+        }
         return context;
     }
 
@@ -836,6 +855,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 }
                 if (this.object.splitAttack && this.object.rollType === 'accuracy') {
                     this.object.rollType = 'damage';
+                    this.tabGroups['primary'] = 'damage';
                 }
             }
         }
