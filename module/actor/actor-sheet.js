@@ -76,6 +76,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
     context.steadyAction = game.settings.get("exaltedthird", "steadyAction");
+    context.abilitySelectList = CONFIG.exaltedthird.selects.abilities;
     context.activeSpell = context.items?.find(item => item.system?.shaping);
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];

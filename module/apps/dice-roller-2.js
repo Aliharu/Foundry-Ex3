@@ -6,7 +6,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         this.object = {};
         this.actor = actor;
         this.selects = CONFIG.exaltedthird.selects;
-        this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
+        this.rollableAbilities = { ...CONFIG.exaltedthird.selects.abilities };
         this.rollableAbilities['willpower'] = "Ex3.Willpower";
         this.rollablePools = CONFIG.exaltedthird.npcpools;
         this.rollablePools['willpower'] = "Ex3.Willpower";
@@ -2597,6 +2597,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         let total = rollResults.total;
         var possibleRerolls = 0;
         var possibleSuccessRerolls = 0;
+        diceRoll.forEach((item, index) => item.originalIndex = index);
         // Reroll Failed Number
         if (diceModifiers.rerollFailed) {
             for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
@@ -2816,6 +2817,8 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         rollResults.roll.dice[0].results = diceRoll;
 
         let diceDisplay = "";
+        diceRoll.sort((a, b) => a.originalIndex - b.originalIndex);
+
         for (let dice of this._sortDice(diceRoll)) {
             if (dice.successCanceled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
             else if (dice.doubled) {

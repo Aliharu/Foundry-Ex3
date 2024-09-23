@@ -117,7 +117,7 @@
                 <label class="resource-label">{{localize "Ex3.Ability"}} </label>
             </div>
             <select name="system.settings.rollsettings.{{key}}.ability" value="{{roll.ability}}" data-type="String" style="max-width: 52%;">
-                {{selectOptions ../selects.abilities selected=roll.ability localize=true}}
+                {{selectOptions ../abilitySelectList selected=roll.ability localize=true}}
             </select>
         </div>
         {{#if roll.appearanceattribute}}
@@ -190,7 +190,7 @@
                 </div>
                 <select name="system.settings.staticcapsettings.{{key}}.ability" value="{{setting.ability}}"
                     data-type="String" style="max-width: 52%;">
-                    {{selectOptions ../selects.abilities selected=setting.ability localize=true}}
+                    {{selectOptions ../abilitySelectList selected=setting.ability localize=true}}
                 </select>
             </div>
             {{#ifNotEquals key 'soak'}}

@@ -124,7 +124,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Apocalyptic"}}</div>
                     <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
-                        {{selectOptions selects.abilities selected=system.details.apocalyptic localize=true}}
+                        {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
                     </select>
                 </div>
                 {{/ifEquals}}
@@ -132,7 +132,7 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.Supernal"}}</div>
                     <select name="system.details.supernal" value="{{system.details.supernal}}" data-type="String">
-                        {{selectOptions selects.abilities selected=system.details.supernal localize=true}}
+                        {{selectOptions abilitySelectList selected=system.details.supernal localize=true}}
                     </select>
                 </div>
                 {{/ifEquals}}

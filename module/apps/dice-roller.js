@@ -3,7 +3,7 @@ export class RollForm extends FormApplication {
         super(object, options);
         this.actor = actor;
         this.selects = CONFIG.exaltedthird.selects;
-        this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
+        this.rollableAbilities = { ...CONFIG.exaltedthird.selects.abilities };
         this.rollableAbilities['willpower'] = "Ex3.Willpower";
         this.rollablePools = CONFIG.exaltedthird.npcpools;
         this.rollablePools['willpower'] = "Ex3.Willpower";
@@ -2527,6 +2527,7 @@ export class RollForm extends FormApplication {
         let total = rollResults.total;
         var possibleRerolls = 0;
         var possibleSuccessRerolls = 0;
+        diceRoll.forEach((item, index) => item.originalIndex = index);
         // Reroll Failed Number
         if (diceModifiers.rerollFailed) {
             for (const diceResult of diceRoll.sort((a, b) => a.result - b.result)) {
@@ -2745,6 +2746,7 @@ export class RollForm extends FormApplication {
         // this._testMacro(newResults, dice, diceModifiers, doublesRolled, numbersRerolled);
         rollResults.roll.dice[0].results = diceRoll;
 
+        diceRoll.sort((a, b) => a.originalIndex - b.originalIndex);
         let diceDisplay = "";
         for (let dice of this._sortDice(diceRoll)) {
             if (dice.successCanceled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
