@@ -730,7 +730,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         label: game.i18n.localize('Ex3.Roll'),
         class: 'roll-dice',
         icon: 'fas fa-dice-d10',
-        onclick: (ev) => new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'base' }).render(true),
+        onclick: (ev) => new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()]}, {}, { rollType: 'base' }).render(true),
       };
       buttons = [rollButton, ...buttons];
     }
@@ -1570,13 +1570,13 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.roll-ma').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'ability', ability: item.id }).render(true);
+      game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()]}, {}, { rollType: 'ability', ability: item.id }).render(true);
     });
 
     html.find('.roll-craft').mousedown(ev => {
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'ability', ability: item.id }).render(true);
+      game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()]}, {}, { rollType: 'ability', ability: item.id }).render(true);
     });
 
     html.find('.join-battle').mousedown(ev => {
@@ -1825,7 +1825,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.quick-roll').click(ev => {
       let li = $(event.currentTarget).parents(".item");
-      new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
+      new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()]}, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
     });
 
     html.find('.saved-roll').click(ev => {
@@ -2746,7 +2746,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async _completeCraft(ev) {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
-    game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog", this.actor.getSheetBackground()]}, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
+    game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()]}, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
   }
 
   async _displayDataChat(event) {

@@ -21,7 +21,8 @@
     "module/exaltedthird.js"
   ],
   "styles": [
-    "css/exaltedthird.css"
+    "css/exaltedthird.css",
+    "css/dice-roller.css"
   ],
   "languages": [
     {

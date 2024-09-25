@@ -724,7 +724,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         tabs.push({
             id: "charms",
             group: "primary",
-            label: "Ex3.Charms",
+            label: "Ex3.Cost",
             cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
         });
         return {

@@ -1,0 +1,43 @@
+.dice-roller {
+    .tabs {
+        height: 30px;
+        border-top: none !important;
+        border-bottom: 1px solid #AAA;
+
+        .item {
+            line-height: 30px;
+            padding: 0px 13px !important;
+            font-weight: bold;
+            border-radius: 5px 5px 0px 0px;
+            color: var(--color-text-dark-primary) !important;
+
+            // &:hover {
+            //     background: #aba7a2;
+            // }
+        }
+
+        .item.active {
+            text-shadow: none !important;
+            background: #302831;
+            color: #e7d1b1 !important;
+        }
+    }
+
+    .form-footer {
+        justify-content: end;
+        border-top: black 2px solid;
+        padding-top: 5px;
+
+        button {
+            width: 25%;
+        }
+
+        .submit-button {
+            background-color: #122807;
+        }
+
+        .cancel-button {
+            background-color: #290A09;
+        }
+    }
+}

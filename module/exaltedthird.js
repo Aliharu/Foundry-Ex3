@@ -2024,7 +2024,7 @@ function weaponAttack(itemUuid, attackType = 'withering') {
       const itemName = item?.name ?? itemUuid;
       return ui.notifications.warn(`Could not find item ${itemName}. You may need to delete and recreate this macro.`);
     }
-    game.rollForm = new RollForm2(item.parent, {classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: attackType, weapon: item.system }).render(true);
+    game.rollForm = new RollForm2(item.parent, {classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: attackType, weapon: item.system }).render(true);
   });
 }
 
