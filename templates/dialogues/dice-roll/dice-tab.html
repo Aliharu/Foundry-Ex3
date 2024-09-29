@@ -104,7 +104,7 @@
         </div>
         {{/ifEquals}}
         <div>
-            <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+            <label class="resource-label">{{localize "Ex3.TargetNumber"}} {{#ifNotEquals data.TNCap ''}} (Cap: -{{data.TNCap}}) {{/ifNotEquals}}</label>
             <input name="object.targetNumber" value="{{data.targetNumber}}" type="number">
         </div>
         <div>

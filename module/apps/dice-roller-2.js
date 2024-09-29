@@ -655,7 +655,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         },
         tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
         dice: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/ability-roll-2.html",
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-tab.html",
         },
         damage: {
             template: "systems/exaltedthird/templates/dialogues/dice-roll/damage-tab.html",
@@ -900,6 +900,8 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         foundry.utils.mergeObject(this, formData.object);
         if (this.object.rollType !== "base") {
             this.object.diceCap = this._getDiceCap();
+            this.object.TNCap = this._getTNCap();
+
             this._calculateAnimaGain();
             this._updateSpecialtyList();
             if (finesseChange) {
@@ -5174,20 +5176,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                         return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + this._getHighestAttributeNumber(this.actor.system.attributes, true)}`;
                     }
                     if (this.actor.system.details.exalt === "sidereal") {
-                        var baseSidCap = Math.min(5, Math.max(3, this.actor.system.essence.value));
-                        var tnChange = "";
-                        if (abilityValue === 5) {
-                            if (this.actor.system.essence.value >= 3) {
-                                tnChange = " - TN -3";
-                            }
-                            else {
-                                tnChange = " - TN -2";
-                            }
-                        }
-                        else if (abilityValue >= 3) {
-                            tnChange = " - TN -1";
-                        }
-                        return `${baseSidCap}${tnChange}`;
+                        return `${Math.min(5, Math.max(3, this.actor.system.essence.value))}`;
                     }
                     if (this.actor.system.details.exalt === "dreamsouled") {
                         return `${abilityValue} or ${Math.min(10, abilityValue + this.actor.system.essence.value)} when upholding ideal`;
@@ -5391,6 +5380,29 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             }
         }
         return "";
+    }
+
+    _getTNCap() {
+        let tnChange = '';
+        var abilityValue = 0;
+        if (this.actor) {
+            abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
+            if (this.actor.system.details.exalt === "sidereal") {
+                tnChange = "";
+                if (abilityValue === 5) {
+                    if (this.actor.system.essence.value >= 3) {
+                        tnChange = "3";
+                    }
+                    else {
+                        tnChange = "2";
+                    }
+                }
+                else if (abilityValue >= 3) {
+                    tnChange = "1";
+                }
+            }
+        }
+        return tnChange;
     }
 
     _getCharacterAbilityValue(actor, ability) {
@@ -5698,6 +5710,9 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         }
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();
+        }
+        if (this.object.TNCap === undefined) {
+            this.object.TNCap = this._getTNCap();
         }
         if (this.object.damageDiceCap === undefined) {
             this.object.damageDiceCap = this._getDamageCap();
