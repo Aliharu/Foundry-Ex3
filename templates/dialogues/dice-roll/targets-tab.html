@@ -1,0 +1,234 @@
+<section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="targets">
+    {{#if data.showTargets}}
+    {{#each data.targets as |target id|}}
+    <div class="target-list">
+        <div class="target">
+            <div class="target-name">
+                {{target.name}}
+            </div>
+            <div class="target-fields">
+                <div class="target-image">
+                    <img src="{{target.actor.img}}" title="{{target.actor.name}}" width="60" height="60" />
+                </div>
+                <div class="resource grid grid-3col flex-center target-grid">
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.DiceModifier"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.diceModifier"
+                            value="{{target.rollData.diceModifier}}">
+                    </div>
+                    {{#if ../isAttackRoll}}
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.Defense"}}
+                            ({{target.rollData.defenseType}})</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.defense"
+                            value="{{target.rollData.defense}}">
+                    </div>
+                    <div class="target-field">
+                        <label class="resource-label">
+                            {{localize "Ex3.DamageModifier"}}
+                        </label>
+                        <input type="number" name="object.targets.{{id}}.rollData.damageModifier"
+                            value="{{target.rollData.damageModifier}}">
+                    </div>
+                    {{/if}}
+                    <div class="target-field">
+                        <label class="flex-center resource-label">
+                            {{localize "Ex3.SuccessModifier"}}
+                        </label>
+                        <input type="number" name="object.targets.{{id}}.rollData.successModifier"
+                            value="{{target.rollData.successModifier}}">
+                    </div>
+                    {{#ifEquals ../data.rollType 'readIntentions'}}
+                    <div class="target-field">
+                        <label class="resource-label">
+                            {{localize "Ex3.Guile"}}
+                        </label>
+                        <input type="number" name="object.targets.{{id}}.rollData.guile"
+                            value="{{target.rollData.guile}}">
+                    </div>
+                    {{/ifEquals}}
+                    {{#ifEquals ../data.rollType 'social'}}
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.resolve" value="{{target.rollData.resolve}}">
+                    </div>
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
+                        <select name="object.targets.{{id}}.rollData.supportedIntimacy" value="{{target.rollData.supportedIntimacy}}" data-type="String">
+                            {{selectOptions ../selects.supportingIntimacyValues selected=target.rollData.supportedIntimacy localize=true}}
+                        </select>
+                    </div>
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
+                        <select name="object.targets.{{id}}.rollData.opposedIntimacy" value="{{target.rollData.opposedIntimacy}}" data-type="String">
+                            {{selectOptions ../selects.opposedIntimacyValues selected=target.rollData.opposedIntimacy localize=true}}
+                        </select>
+                    </div>
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.appearanceBonus" value="{{target.rollData.appearanceBonus}}">
+                    </div>
+                    {{/ifEquals}}
+                    {{#if ../isAttackRoll}}
+                    {{#ifEquals ../data.attackType 'withering'}}
+                    <div class="target-field">
+                        <label class="flex-center resource-label">
+                            {{localize "Ex3.Soak"}} (AS: {{target.rollData.armoredSoak}},
+                            NS:{{target.rollData.naturalSoak}})
+                        </label>
+                        <input type="number" name="object.targets.{{id}}.rollData.soak"
+                            value="{{target.rollData.soak}}">
+                    </div>
+                    {{#if ../data.useShieldInitiative}}
+                    <div class="target-field">
+                        <label class="resource-label">
+                            {{localize "Ex3.ShieldInitiative"}}
+                        </label>
+                        <input type="number" name="object.targets.{{id}}.rollData.shieldInitiative"
+                            value="{{target.rollData.shieldInitiative}}">
+                    </div>
+                    {{/if}}
+                    {{/ifEquals}}
+                    {{#ifEquals ../data.attackType 'decisive'}}
+                    <div class="target-field">
+                        <label class="resource-label">
+                            {{localize "Ex3.Hardness"}}
+                        </label>
+                        <input type="number" name="object.targets.{{id}}.rollData.hardness"
+                            value="{{target.rollData.hardness}}">
+                    </div>
+                    {{/ifEquals}}
+                    <div class="target-field">
+                        <label class="resource-label">{{localize "Ex3.AttackSuccesses"}}</label>
+                        <input type="number" name="object.targets.{{id}}.rollData.attackSuccesses"
+                            value="{{target.rollData.attackSuccesses}}">
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        <!-- <div style="margin-bottom: 10px;">
+            <div class="d-flex resource flex-center">
+                <div class="mr-1"><img src="{{target.actor.img}}" title="{{target.actor.name}}" width="24" height="24" />
+                </div>
+                <div class="resource-label">{{target.actor.name}}</div>
+            </div>
+            {{#ifEquals ../data.rollType 'social'}}
+            <div class="resource grid grid-2col flex-center">
+                <div>
+                    <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
+                    <select name="object.targets.{{id}}.rollData.supportedIntimacy" value="{{target.rollData.supportedIntimacy}}" data-type="String">
+                        {{selectOptions ../selects.supportingIntimacyValues selected=target.rollData.supportedIntimacy localize=true}}
+                    </select>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
+                    <select name="object.targets.{{id}}.rollData.opposedIntimacy" value="{{target.rollData.opposedIntimacy}}" data-type="String">
+                        {{selectOptions ../selects.opposedIntimacyValues selected=target.rollData.opposedIntimacy localize=true}}
+                    </select>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
+                    <input type="number" name="object.targets.{{id}}.rollData.appearanceBonus" value="{{target.rollData.appearanceBonus}}">
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Resolve"}}</label>
+                    <input type="number" name="object.targets.{{id}}.rollData.resolve" value="{{target.rollData.resolve}}">
+                </div>
+            </div>
+            {{/ifEquals}}
+        </div> -->
+        {{/each}}
+        {{else}}
+        {{#if data.hasDifficulty}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize data.difficultyString}}</label>
+                <input type="number" name="object.difficulty" value="{{data.difficulty}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.GoalNumber"}}</label>
+                <input type="number" name="object.goalNumber" value="{{data.goalNumber}}">
+            </div>
+            {{#ifEquals data.rollType 'simpleCraft'}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.ExperienceCap"}}</label>
+                <input type="number" name="object.maxCraftXP" value="{{data.maxCraftXP}}">
+            </div>
+            {{/ifEquals}}
+            <div>
+                {{#if data.hasIntervals}}
+                <label class="resource-label">{{localize "Ex3.Intervals"}}</label>
+                <input type="number" name="object.intervals" value="{{data.intervals}}">
+                {{/if}}
+            </div>
+            {{#ifEquals data.rollType 'craft'}}
+            {{#if simpleCrafting}}
+            {{else}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.ObjectivesCompleted"}} </label>
+                <input type="number" name="object.objectivesCompleted" value="{{data.objectivesCompleted}}">
+            </div>
+            {{/if}}
+            {{/ifEquals}}
+        </div>
+        {{/if}}
+        {{#if isAttackRoll}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+                <input type="number" name="object.defense" value="{{data.defense}}">
+            </div>
+            {{#ifEquals data.attackType 'withering'}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Soak"}}
+                </div>
+                <input type="number" name="object.soak" value="{{data.soak}}">
+            </div>
+            {{#if data.useShieldInitiative}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.ShieldInitiative"}}
+                </div>
+                <input type="number" name="object.shieldInitiative" value="{{data.shieldInitiative}}">
+            </div>
+            {{/if}}
+            {{/ifEquals}}
+            {{#ifEquals data.attackType 'decisive'}}
+            <div>
+                <div class="flex-center resource-label">
+                    {{localize "Ex3.Hardness"}}
+                </div>
+                <input type="number" name="object.hardness" value="{{data.hardness}}">
+            </div>
+            {{/ifEquals}}
+        </div>
+        {{/if}}
+        {{#ifEquals data.rollType 'social'}}
+        <div class="resource grid grid-2col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.SupportingIntimacy"}}</label>
+                <select name="object.supportedIntimacy" value="{{data.supportedIntimacy}}" data-type="String">
+                    {{selectOptions selects.supportingIntimacyValues selected=data.supportedIntimacy localize=true}}
+                </select>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.OpposedIntimacy"}} </label>
+                <select name="object.opposedIntimacy" value="{{data.opposedIntimacy}}" data-type="String">
+                    {{selectOptions selects.opposedIntimacyValues selected=data.opposedIntimacy localize=true}}
+                </select>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.ApplyAppearance"}}</div>
+                <input type="checkbox" name="object.applyAppearance" {{checked data.applyAppearance}}>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.AppearanceBonus"}}</label>
+                <input type="number" name="object.appearanceBonus" value="{{data.appearanceBonus}}">
+            </div>
+        </div>
+        {{/ifEquals}}
+
+        {{/if}}
+</section>

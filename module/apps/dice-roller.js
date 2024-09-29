@@ -1494,7 +1494,7 @@ export class RollForm extends FormApplication {
             return parseInt(formula);
         }
         if (formula?.toLowerCase() === 'thresholdsuccesses') {
-            return this.object.threshholdSuccesses || 0;
+            return this.object.thresholdSuccesses || 0;
         }
         if (formula?.toLowerCase() === 'damagedealt') {
             return this.object.damageLevelsDealt || 0;
@@ -3058,7 +3058,7 @@ export class RollForm extends FormApplication {
             }
         }
         else {
-            this.object.threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+            this.object.thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         }
         await this._addTriggerBonuses('afterRoll');
     }
@@ -3125,7 +3125,7 @@ export class RollForm extends FormApplication {
                 }
             }
         }
-        const threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+        const thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         if (this.object.hasDifficulty) {
             if (this.object.total < this.object.difficulty) {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
@@ -3134,10 +3134,10 @@ export class RollForm extends FormApplication {
                 }
             }
             else {
-                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>`;
-                goalNumberLeft = Math.max(goalNumberLeft - threshholdSuccesses - 1, 0);
+                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${thresholdSuccesses} Threshhold Successes</h4>`;
+                goalNumberLeft = Math.max(goalNumberLeft - thresholdSuccesses - 1, 0);
                 if (this.object.rollType === "simpleCraft") {
-                    var craftXPGained = Math.min(this.object.maxCraftXP, threshholdSuccesses + 1);
+                    var craftXPGained = Math.min(this.object.maxCraftXP, thresholdSuccesses + 1);
                     resultString += `<h4 class="dice-total dice-total-end">Craft XP Gained: ${craftXPGained}</h4>`;
                     if (this.object.craftProjectId) {
                         var projectItem = this.actor.items.get(this.object.craftProjectId);
@@ -3167,17 +3167,17 @@ export class RollForm extends FormApplication {
             this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
                 const actorData = foundry.utils.duplicate(this.actor);
-                actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
+                actorData.system.grapplecontrolrounds.value += thresholdSuccesses;
                 this.actor.update(actorData);
             }
             if (this.object.target && this.object.rollType === 'command') {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
-                    this.object.newTargetData.system.commandbonus.value = threshholdSuccesses;
+                    this.object.newTargetData.system.commandbonus.value = thresholdSuccesses;
                     this.object.updateTargetActorData = true;
                 }
             }
             if (this.object.rollType === 'steady') {
-                this.object.restore.initiative += Math.min(5, threshholdSuccesses);
+                this.object.restore.initiative += Math.min(5, thresholdSuccesses);
             }
         }
         let theContent = `
@@ -3236,7 +3236,7 @@ export class RollForm extends FormApplication {
             if (combat) {
                 let combatant = this._getActorCombatant();
                 if (combatant && combatant.initiative != null) {
-                    combat.setInitiative(combatant.id, combatant.initiative + threshholdSuccesses);
+                    combat.setInitiative(combatant.id, combatant.initiative + thresholdSuccesses);
                 }
             }
         }
@@ -3294,7 +3294,7 @@ export class RollForm extends FormApplication {
                         successModifier: this.object.successModifier,
                         total: this.object.total,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thresholdSuccesses,
+                        thresholdSuccesses: this.object.thresholdSuccesses,
                         targetActorId: this.object.target?.actor?._id,
                         targetTokenId: this.object.target?.id,
                     }
@@ -3389,7 +3389,7 @@ export class RollForm extends FormApplication {
                         successModifier: this.object.successModifier,
                         total: this.object.total || 0,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thresholdSuccesses
+                        thresholdSuccesses: this.object.thresholdSuccesses
                     }
                 }
             });
@@ -3825,7 +3825,7 @@ export class RollForm extends FormApplication {
                     successModifier: this.object.successModifier,
                     total: this.object.total,
                     defense: this.object.defense,
-                    threshholdSuccesses: this.object.thresholdSuccesses,
+                    thresholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
                     attackerCombatantId: this._getActorCombatant()?._id || null,
                     targetId: this.object.target?.id || null,
@@ -4368,7 +4368,7 @@ export class RollForm extends FormApplication {
                     }
                     break;
                 case 'martialArtsLevel':
-                    if (charm.actor.system.settings !== cleanedValue) {
+                    if (charm.actor.system.settings.martialartsmastery !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -4673,7 +4673,7 @@ export class RollForm extends FormApplication {
         let craftSuccess = false;
         let goalNumberLeft = this.object.goalNumber;
         let extendedTest = ``;
-        const threshholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
+        const thresholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
         if (this.object.goalNumber > 0) {
             extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
         }
@@ -4690,7 +4690,7 @@ export class RollForm extends FormApplication {
         }
         else {
             if (this.object.goalNumber > 0) {
-                goalNumberLeft = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
+                goalNumberLeft = Math.max(this.object.goalNumber - thresholdSuccesses - 1, 0);
                 extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
                 if (goalNumberLeft > 0 && this.object.intervals === 0) {
                     craftFailed = true;
@@ -4703,7 +4703,7 @@ export class RollForm extends FormApplication {
                 craftSuccess = true;
                 this.object.finished = true;
             }
-            resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total dice-total-middle">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
+            resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total dice-total-middle">${thresholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
         }
         if (this.object.rollType === 'craft') {
             if (craftFailed) {
@@ -4715,7 +4715,7 @@ export class RollForm extends FormApplication {
                 var goldXPGained = 0;
                 var whiteXPGained = 0;
                 if (this.object.craftType === 'basic') {
-                    if (threshholdSuccesses >= 3) {
+                    if (thresholdSuccesses >= 3) {
                         silverXPGained = 3 * this.object.objectivesCompleted;
                     }
                     else {
@@ -4724,7 +4724,7 @@ export class RollForm extends FormApplication {
                     projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
                 }
                 else if (this.object.craftType === "major") {
-                    if (threshholdSuccesses >= 3) {
+                    if (thresholdSuccesses >= 3) {
                         silverXPGained = this.object.objectivesCompleted;
                         goldXPGained = 3 * this.object.objectivesCompleted;
                     }

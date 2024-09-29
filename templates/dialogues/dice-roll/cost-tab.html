@@ -1,0 +1,118 @@
+<section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="cost">
+    <div class="resource grid grid-4col flex-center">
+        <div class="resource separator">
+            <label class="resource-label">{{localize "Ex3.Motes&Aura"}}</label>
+        </div>
+        <div class="resource separator">
+            <label class="resource-label">{{localize "Ex3.Resources"}}</label>
+        </div>
+        <div class="resource separator">
+            <label class="resource-label">{{localize "Ex3.Health"}}</label>
+        </div>
+        <div class="resource separator">
+            <label class="resource-label">{{localize "Ex3.Crafting"}}</label>
+        </div>
+        <div class="cost-field">
+            <label class="resource-label">{{localize "Ex3.Motes"}}</label>
+            <input class="update-motes" type="number" name="object.cost.motes" value="{{data.cost.motes}}">
+        </div>
+        <div class="cost-field">
+            <label class="resource-label">{{localize "Ex3.Initiative"}} </label>
+            <input type="number" name="object.cost.initiative" value="{{data.cost.initiative}}">
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Bashing"}}</div>
+            <input type="number" name="object.cost.healthbashing" value="{{data.cost.healthbashing}}"
+                data-dtype="Number" />
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Silver"}}</div>
+            <input type="number" name="object.cost.silverxp" value="{{data.cost.silverxp}}" data-dtype="Number" />
+        </div>
+        <div class="cost-field">
+            <label class="resource-label">{{localize "Ex3.MuteMotes"}} </label>
+            <input type="number" name="object.cost.muteMotes" value="{{data.cost.muteMotes}}">
+        </div>
+        <div class="cost-field">
+            <label class="resource-label">{{localize "Ex3.Willpower"}} </label>
+            <input type="number" name="object.cost.willpower" value="{{data.cost.willpower}}">
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Lethal"}}</div>
+            <input type="number" name="object.cost.healthlethal" value="{{data.cost.healthlethal}}"
+                data-dtype="Number" />
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Gold"}}</div>
+            <input type="number" name="object.cost.goldxp" value="{{data.cost.goldxp}}" data-dtype="Number" />
+        </div>
+        <div class="cost-field">
+            <label class="resource-label">{{localize "Ex3.MotePool"}}</label>
+            <select class="update-motes" name="object.motePool" data-type="String">
+                {{selectOptions selects.motePools selected=data.motePool localize=true}}
+            </select>
+        </div>
+        <div class="cost-field">
+            <label class="resource-label">{{localize "Ex3.Penumbra"}} </label>
+            <input type="number" name="object.cost.penumbra" value="{{data.cost.penumbra}}">
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Aggravated"}}</div>
+            <input type="number" name="object.cost.healthaggravated" value="{{data.cost.healthaggravated}}"
+                data-dtype="Number" />
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.White"}}</div>
+            <input type="number" name="object.cost.whitexp" value="{{data.cost.whitexp}}" data-dtype="Number" />
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Anima"}} </div>
+            <input class="update-motes" type="number" name="object.cost.anima" value="{{data.cost.anima}}">
+        </div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Grapple"}}</div>
+            <input type="number" name="object.cost.grappleControl" value="{{data.cost.grappleControl}}"
+                data-dtype="Number" />
+        </div>
+        <div></div>
+        <div></div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+            <select name="object.cost.aura" data-type="String">
+                {{selectOptions selects.costElements selected=data.cost.aura localize=true}}
+            </select>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div class="cost-field">
+            <div class="resource-label">{{localize "Ex3.AnimaAfter"}}</div>
+            <div>
+                <input class="{{data.newAnima}}-color" value="{{data.newAnima}}" type="text" disabled />
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="resource separator">
+            <label class="resource-label">{{localize "Ex3.Restore"}}</label>
+        </div>
+        <div class="resource grid grid-4col flex-center">
+            <div class="cost-field">
+                <label class="resource-label">{{localize "Ex3.Motes"}}</label>
+                <input type="number" name="object.restore.motes" value="{{data.restore.motes}}">
+            </div>
+            <div class="cost-field">
+                <label class="resource-label">{{localize "Ex3.Initiative"}} </label>
+                <input type="number" name="object.restore.initiative" value="{{data.restore.initiative}}">
+            </div>
+            <div class="cost-field">
+                <label class="resource-label">{{localize "Ex3.Willpower"}} </label>
+                <input type="number" name="object.restore.willpower" value="{{data.restore.willpower}}">
+            </div>
+            <div class="cost-field">
+                <div class="resource-label">{{localize "Ex3.Health"}}</div>
+                <input type="number" name="object.restore.health" value="{{data.restore.health}}" data-dtype="Number" />
+            </div>
+        </div>
+    </div>
+</section>

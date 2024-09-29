@@ -1,0 +1,156 @@
+<section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="damage">
+    <div>
+        {{#if data.splitAttack}}
+        <div class="flex-center resource-label">
+            {{localize "Ex3.AttackRoll"}}
+        </div>
+        <div class="dice-tooltip">
+            <div class="dice">
+                <ol class="dice-rolls">{{{data.displayDice}}}</ol>
+            </div>
+        </div>
+        {{/if}}
+        <div class="resource grid grid-4col flex-center">
+            <div>
+                <label class="resource-label">{{localize "Ex3.TargetNumber"}} </label>
+                <input type="number" name="object.damage.targetNumber" value="{{data.damage.targetNumber}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.DoubleSuccess"}}</label>
+                <input type="number" name="object.damage.doubleSuccess" value="{{data.damage.doubleSuccess}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Dice"}} {{data.damageDiceCap}}</label>
+                <input type="number" name="object.damage.damageDice" value="{{data.damage.damageDice}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.DamageSuccesses"}} </label>
+                <input type="number" name="object.damage.damageSuccessModifier"
+                    value="{{data.damage.damageSuccessModifier}}">
+            </div>
+            {{#if data.showWithering}}
+            <div>
+                <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
+                <input type="number" name="object.overwhelming" value="{{data.overwhelming}}">
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.PostSoakDamage"}} </label>
+                <input type="number" name="object.damage.postSoakDamage" value="{{data.damage.postSoakDamage}}">
+            </div>
+            {{/if}}
+        </div>
+        <div class="resource grid grid-2col">
+            <div>
+                <div class="resource separator">
+                    <label class="resource-label">{{localize "Ex3.Reroll"}}</label>
+                </div>
+                <div class="resource d-flex flex-center">
+                    {{#each data.damage.reroll as |reroll key|}}
+                    <div>
+                        <div>{{reroll.number}}</div>
+                        <input name="object.damage.reroll.{{key}}.status" type="checkbox" {{checked reroll.status}}>
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="resource grid grid-2col">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.RerollFailedDice"}}</label>
+                        <input name="object.damage.rerollNumber" value="{{data.damage.rerollNumber}}" type="number">
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.RerollSuccesses"}}</label>
+                        <input name="object.damage.rerollSuccesses" value="{{data.damage.rerollSuccesses}}"
+                            type="number">
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.RerollAllFailedOnce"}}</div>
+                        <input type="checkbox" name="object.damage.rerollFailed" {{checked data.damage.rerollFailed}}>
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}}</div>
+                        <input type="checkbox" name="object.damage.rollTwice" {{checked data.damage.rollTwice}}>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="resource separator">
+                    <label class="resource-label">{{localize "Ex3.OtherModifiers"}}</label>
+                </div>
+                <div class="resource grid grid-2col">
+                    {{#ifNotEquals data.attackType 'gambit'}}
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.DamageType"}}</label>
+                        <select name="object.damage.type" value="{{data.damage.type}}" data-type="String">
+                            {{selectOptions selects.damageTypes selected=data.damage.type localize=true}}
+                        </select>
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.DoubleRolledDamage"}}</div>
+                        <input type="checkbox" name="object.damage.doubleRolledDamage" {{checked
+                                data.damage.doubleRolledDamage}}>
+                    </div>
+                    {{/ifNotEquals}}
+                    {{#ifEquals data.attackType 'decisive'}}
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.ThreshholdToDamage"}}</div>
+                        <input type="checkbox" name="object.damage.threshholdToDamage" {{checked
+                                data.damage.threshholdToDamage}}>
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.ResetInitiative"}}</div>
+                        <input type="checkbox" name="object.damage.resetInit" {{checked data.damage.resetInit}}>
+                    </div>
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.IgnoreHardness"}}</label>
+                        <input type="number" name="object.damage.ignoreHardness" value="{{data.damage.ignoreHardness}}">
+                    </div>
+                    {{#ifEquals data.damage.decisiveDamageType 'initiative'}}
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.MultiTargetDivide"}}</label>
+                        <select name="object.damage.decisiveDamageCalculation" data-type="String">
+                            {{selectOptions selects.decisiveSplits selected=data.damage.decisiveDamageCalculation
+                            localize=true}}
+                        </select>
+                    </div>
+                    {{/ifEquals}}
+                    {{/ifEquals}}
+                    {{#ifEquals data.attackType 'withering'}}
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.IgnoreSoak"}}</label>
+                        <input type="number" name="object.damage.ignoreSoak" value="{{data.damage.ignoreSoak}}">
+                    </div>
+                    <div>
+                        <div class="resource-label">{{localize "Ex3.GainInitiative"}} </div>
+                        <input type="checkbox" name="object.damage.gainInitiative" {{checked data.damage.gainInitiative}}>
+                    </div>
+
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.MaxInitiativeGain"}}</label>
+                        <input type="number" name="object.damage.maxInitiativeGain" value="{{data.damage.maxInitiativeGain}}" placeholder="No Limit">
+                    </div>
+                    {{/ifEquals}}
+                    {{#ifEquals data.attackType 'gambit'}}
+                    <div class="resource grid grid-2col flex-center">
+                        <div>
+                            <div class="resource-label">{{localize "Ex3.Gambit"}} <a class="fas fa-info-circle cursor-pointer" data-action="showGambitDialog" style="margin-right:3px;"><i></i></a></div>
+                            <select id="gambit" name="object.gambit" data-type="String">
+                                {{#each selects.gambits as |gambitCategory gambitCategoryType|}}
+                                <optgroup label="{{gambitCategory.label}}">
+                                    {{selectOptions gambitCategory.gambitTypes selected=../data.gambit localize=true}}
+                                </optgroup>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div>
+                            <div class="flex-center resource-label">
+                                {{localize "Ex3.GambitDifficulty"}}
+                            </div>
+                            <input name="object.gambitDifficulty" value="{{data.gambitDifficulty}}" type="number">
+                        </div>
+                    </div>
+                    {{/ifEquals}}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

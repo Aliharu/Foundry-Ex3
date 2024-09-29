@@ -1,0 +1,233 @@
+<section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="charms">
+    <div class="button-header">
+        <!-- <input class="search-box" name="data.search" value="{{data.search}}" type="text" placeholder='{{localize "Ex3.Search"}}' autocomplete='off'> -->
+        <button data-tooltip="Add Charm" aria-label="Add Charm" type="button" data-action="enableAddCharms"><i
+                class="fas fa-square-plus"></i>{{#if data.addingCharms}}{{localize "Ex3.Done"}}{{else}}{{localize
+            "Ex3.AddCharm"}}{{/if}}</button>
+    </div>
+    {{#if data.addingCharms}}
+    <div class="roller-item-list">
+        {{#if data.showSpecialAttacks}}
+        <div class="item d-flex flex-between mb-1 collapsable cursor-pointer roller-item-header">
+            <li class="flexrow">
+                <div class="item-name resource-label">{{localize "Ex3.SpecialAttacks"}}</div>
+            </li>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div id="specialAttackList" {{#if data.specialAttackList}} {{else}} style="display:none;" {{/if}}>
+            {{#each data.specialAttacksList as |attack id|}}
+            {{#if attack.show}}
+            <div class="item roller-item collapsable" data-item-id="{{attack.id}}">
+                <div class="item-text gap">
+                    <div class="item-image"><img class="list-item-image" src="{{attack.img}}" title="{{attack.name}}"
+                            width="35" height="35" /></div>
+                    <span class="item-name">{{attack.name}}</span>
+                </div>
+                <div class="item-controls">
+                    {{#if attack.added}} <a class="item-control" data-action="removeSpecialAttack"
+                        title="Remove Attack"><i class="fas fa-trash"></i></a> {{else}} <a class="item-control"
+                        data-action="addSpecialAttack" title="Add Attack"><i class="fas fa-plus"></i></a> {{/if}}
+                </div>
+            </div>
+            <div class="item-description">
+                {{attack.description}}
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+        {{/if}}
+        {{#each data.charmList as |charm ability|}}
+        {{#if charm.visible}}
+        <div class="item d-flex flex-between mb-1 charm-list-collapsable cursor-pointer roller-item-header">
+            <li class="flexrow item-header">
+                <div class="item-name resource-label">{{localize charm.name}}</div>
+            </li>
+            <div>
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
+            {{#each charm.list as |item id|}}
+            <div class="item roller-item collapsable" data-item-id="{{item.id}}">
+                <div class="item-text gap">
+                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
+                            width="34" height="34" /></div>
+                    <span class="item-name">{{item.name}}</span>
+                    <span class="text-summary">{{item.system.summary}}</span>
+                </div>
+                <div class="item-controls">
+                    {{#if item.charmAdded}}
+                    <a class="item-control" title="Remove Charm" data-action="triggerRemoveCharm"><i
+                            class="fas fa-minus"></i></a>
+                    {{/if}}
+                    <div>
+                        {{#if item.timesAdded}}x{{item.timesAdded}}{{/if}}
+                    </div>
+                    <a class="item-control" title="Add Charm" data-action="triggerAddCharm"><i
+                            class="fas fa-plus"></i></a>
+                </div>
+            </div>
+            <div class="item-description">
+                {{#ifEquals item.type 'charm'}}
+                <div>
+                    {{{charmCostDisplay item.system.cost}}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                        style="text-transform: capitalize;">{{getAbilityDisplay ../../this.actor
+                        item.system.ability}}</span> {{item.system.requirement}}, {{/ifNotEquals}} Essence
+                    {{item.system.essence}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+                </div>
+                {{#if item.system.keywords}}
+                <div>
+                    <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                </div>
+                {{/if}}
+                <div>
+                    <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                </div>
+                {{/ifEquals}}
+                <div>
+                    {{{item.enritchedHTML}}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        {{/each}}
+        {{else}}
+        <div class="roller-item-list">
+            <div>
+                {{#each data.addedCharms as |item id|}}
+                <div class="item roller-item collapsable" data-item-id="{{item._id}}">
+                    <div class="item-text gap">
+                        <span class="item-name">{{item.name}}</span>
+                        <span class="text-summary">{{item.system.summary}}</span>
+                    </div>
+                    <div class="item-controls">
+                        <div>
+                            {{#if item.timesAdded}}x{{item.timesAdded}}{{/if}}
+                        </div>
+                        <a class="item-control" title="Remove Charm" data-action="triggerRemoveCharm"><i
+                                class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+                <div class="item-description">
+                    {{#ifEquals item.type 'charm'}}
+                    <div>
+                        {{{charmCostDisplay item.system.cost}}}
+                    </div>
+                    <div>
+                        <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                            style="text-transform: capitalize;">{{getAbilityDisplay ../this.actor
+                            item.system.ability}}</span> {{item.system.requirement}}, {{/ifNotEquals}} Essence
+                        {{item.system.essence}}
+                    </div>
+                    <div>
+                        <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+                    </div>
+                    {{#if item.system.keywords}}
+                    <div>
+                        <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                    </div>
+                    {{/if}}
+                    <div>
+                        <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                    </div>
+                    {{/ifEquals}}
+                    <div>
+                        {{{item.enritchedHTML}}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{#ifGreater data.opposingCharms.length 0}}
+            <div class="resource-label list-section-header">
+                <div class="resource-label">
+                    {{localize "Ex3.OpposingCharms"}}
+                </div>
+            </div>
+            <div>
+                {{#each data.opposingCharms as |item id|}}
+                <div class="item roller-item collapsable" data-item-id="{{item._id}}">
+                    <div class="item-text gap">
+                        <span class="item-name">{{item.name}}</span>
+                        <span class="text-summary">{{item.system.summary}}</span>
+                    </div>
+                    <div class="item-controls">
+                        <div>
+                            {{#if item.timesAdded}}x{{item.timesAdded}}{{/if}}
+                        </div>
+                        <a class="item-control" title="Remove Opposing Charm" data-action="removeOpposingCharm"><i
+                                class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+                <div class="item-description">
+                    {{#ifEquals item.type 'charm'}}
+                    <div>
+                        {{{charmCostDisplay item.system.cost}}}
+                    </div>
+                    <div>
+                        <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                            style="text-transform: capitalize;">{{getAbilityDisplay ../this.actor
+                            item.system.ability}}</span> {{item.system.requirement}}, {{/ifNotEquals}} Essence
+                        {{item.system.essence}}
+                    </div>
+                    <div>
+                        <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+                    </div>
+                    {{#if item.system.keywords}}
+                    <div>
+                        <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                    </div>
+                    {{/if}}
+                    <div>
+                        <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                    </div>
+                    {{/ifEquals}}
+                    <div>
+                        {{{item.enritchedHTML}}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{/ifGreater}}
+            <div class="resource grid grid-2col">
+                <div>
+                    <div class="resource separator">
+                        <label class="resource-label">{{localize "Ex3.Triggers"}}</label>
+                    </div>
+                    <div class="roller-item-list">
+                        {{#each triggers as |trigger id|}}
+                        <div class="item roller-item">
+                            <div class="item-text">
+                                <b>{{localize trigger.name}}</b>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                <div>
+                    <div class="resource separator">
+                        <label class="resource-label">{{localize "Ex3.ActiveEffects"}} & {{localize "Ex3.Tags"}}</label>
+                    </div>
+                    <div class="roller-item-list">
+                        {{#each effectsAndTags as |bonus id|}}
+                        <div class="item roller-item">
+                            <div class="item-text">
+                                <div class="bonus-name">{{localize bonus.name}}</div> {{bonus.summary}}
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</section>

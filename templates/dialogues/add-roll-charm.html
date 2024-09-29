@@ -49,6 +49,7 @@
                         class="fas fa-plus"></i></a> 
         </li>
         <li class="item-description">
+            {{#ifEquals item.type 'charm'}}
             <div>
                 {{{charmCostDisplay item.system.cost}}}
             </div>
@@ -66,6 +67,7 @@
             <div>
                 <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
             </div>
+            {{/if}}
             <div>
                 {{{item.enritchedHTML}}}
             </div>

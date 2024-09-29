@@ -1781,6 +1781,10 @@ exaltedthird.requirementTypes = {
 }
 
 exaltedthird.selects = {
+  booleanSelects: {
+    yes: "Ex3.Yes",
+    "": "Ex3.No",
+  },
   exaltTypes: {
     abyssal: "Ex3.Abyssal",
     alchemical: "Ex3.Alchemical",
@@ -2118,11 +2122,11 @@ exaltedthird.selects = {
     'hearthstone': "Ex3.Hearthstone",
   },
   weaponTypes: {
-    'melee': "Ex3.Melee",
+    'melee': "Ex3.MeleeWeapon",
     'bolt': "Ex3.Bolt",
-    'ranged': "Ex3.Ranged",
-    'siege': "Ex3.Siege",
-    'thrown': "Ex3.Thrown",
+    'ranged': "Ex3.RangedWeapon",
+    'siege': "Ex3.SiegeWeapon",
+    'thrown': "Ex3.ThrownWeapon",
   },
   decisiveDamageTypes: {
     'initiative': "Ex3.Initiative",
@@ -2283,11 +2287,11 @@ exaltedthird.selects = {
   },
   //Dice Roller
   ranges: {
-    "close": "Ex3.Close",
-    "short": "Ex3.Short",
-    "medium": "Ex3.Medium",
-    "long": "Ex3.Long",
-    "extreme": "Ex3.Extreme",
+    "close": "Ex3.CloseRange",
+    "short": "Ex3.ShortRange",
+    "medium": "Ex3.MediumRange",
+    "long": "Ex3.LongRange",
+    "extreme": "Ex3.ExtremeRange",
   },
   attackTypes: {
     "withering": "Ex3.Withering",

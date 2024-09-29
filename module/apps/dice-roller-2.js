@@ -11,6 +11,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         this.rollablePools = CONFIG.exaltedthird.npcpools;
         this.rollablePools['willpower'] = "Ex3.Willpower";
         this.messageId = data.preMessageId;
+        this.search = "";
 
         if (data.rollId) {
             this.object = foundry.utils.duplicate(this.actor.system.savedRolls[data.rollId]);
@@ -138,6 +139,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             this.object.isClash = false;
             this.object.armorPenalty = (this.object.rollType === 'rush' || this.object.rollType === 'disengage');
             this.object.willpower = false;
+            this.object.willpowerTest = "no";
 
             this.object.supportedIntimacy = 0;
             this.object.opposedIntimacy = 0;
@@ -625,7 +627,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 },
             ]
         },
-        position: { width: 690 },
+        position: { width: 730 },
         tag: "form",
         form: {
             handler: RollForm2.myFormHandler,
@@ -639,6 +641,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             editSettings: RollForm2.editSettings,
             enableAddCharms: RollForm2.enableAddCharms,
             triggerRemoveCharm: RollForm2.triggerRemoveCharm,
+            showGambitDialog: RollForm2.showGambitDialog,
             triggerAddCharm: RollForm2.triggerAddCharm,
             addSpecialAttack: RollForm2.addSpecialAttack,
             removeSpecialAttack: RollForm2.removeSpecialAttack,
@@ -647,31 +650,25 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     };
 
     static PARTS = {
+        header: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-header.html",
+        },
         tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
         dice: {
             template: "systems/exaltedthird/templates/dialogues/dice-roll/ability-roll-2.html",
         },
         damage: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/damage-roll-2.html",
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/damage-tab.html",
         },
         targets: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/roll-targets.html",
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/targets-tab.html",
+        },
+        cost: {
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/cost-tab.html",
         },
         charms: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/roller-charms.html",
+            template: "systems/exaltedthird/templates/dialogues/dice-roll/charms-tab.html",
         },
-        addCharms: {
-            template: "systems/exaltedthird/templates/dialogues/dice-roll/add-roll-charms.html",
-        },
-        // abilityRoll: {
-        //     template: "systems/exaltedthird/templates/dialogues/dice-roll/ability-roll-2.html",
-        // },
-        // useOpposingCharms: {
-        //     template: "systems/exaltedthird/templates/dialogues/dice-roll/use-opposing-charms-2.html",
-        // },
-        // attack: {
-        //     template: "systems/exaltedthird/templates/dialogues/dice-roll/attack-roll-2.html",
-        // },
         footer: {
             template: "systems/exaltedthird/templates/dialogues/dice-roll/dice-roll-footer.html",
         },
@@ -679,8 +676,11 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
 
     _configureRenderOptions(options) {
         super._configureRenderOptions(options);
-        if(!this._isAttackRoll()) {
-            options.parts = ['tabs', 'dice', 'charms', 'addCharms', 'footer'];
+        if (this.object.rollType === 'base') {
+            options.parts = ['dice', 'footer'];
+        }
+        if (this.object.rollType === 'useOpposingCharms') {
+            options.parts = ['tabs', 'dice', 'cost', 'charms', 'footer'];
         }
     }
 
@@ -709,24 +709,151 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             tabs.push({
                 id: "damage",
                 group: "primary",
-                label: "Ex3.Damage",
+                label: this.object.attackType === 'gambit' ? "Ex3.Initiative" : "Ex3.Damage",
                 cssClass: this.tabGroups['primary'] === 'damage' ? 'active' : '',
             });
         }
-        if(this.object.showTargets) {
+        if ((this._isAttackRoll() || this.object.hasDifficulty || this.object.showTargets) && this.object.rollType !== 'useOpposingCharms') {
             tabs.push({
                 id: "targets",
                 group: "primary",
-                label: "Ex3.Targets",
+                label: this.object.showTargets ? "Ex3.Targets" : "Ex3.Difficulty",
                 cssClass: this.tabGroups['primary'] === 'targets' ? 'active' : '',
             });
         }
         tabs.push({
-            id: "charms",
+            id: "cost",
             group: "primary",
             label: "Ex3.Cost",
+            cssClass: this.tabGroups['primary'] === 'cost' ? 'active' : '',
+        });
+        tabs.push({
+            id: "charms",
+            group: "primary",
+            label: "Ex3.Charms",
             cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
         });
+
+        const penalties = [];
+        const triggers = [];
+        const effectsAndTags = [];
+
+        if(this.actor) {
+            for (const condition of this.actor.allApplicableEffects()) {
+            if (condition.statuses.has('prone')) {
+                penalties.push(
+                    {
+                        img: "icons/svg/falling.svg",
+                        name: "Ex3.Prone",
+                        summary: "-3 dice on attacks"
+                    },
+                );
+            }
+            else if (condition.statuses.has('blind')) {
+                penalties.push(
+                    {
+                        name: "Ex3.Blind",
+                        summary: "-3 dice"
+                    },
+                );
+            }
+            else if (condition.statuses.has('grappled')) {
+                penalties.push(
+                    {
+                        img: "systems/exaltedthird/assets/icons/grab.svg",
+                        name: "Ex3.Grappled",
+                        summary: "-1 dice on attacks"
+                    },
+                );
+            } else {
+                effectsAndTags.push(
+                    {
+                        img: condition.img,
+                        name: condition.name,
+                    },
+                );
+            }
+            }
+        }
+
+        if (this._isAttackRoll()) {
+            if (this.object.weaponTags["flame"]) {
+                effectsAndTags.push({
+                    name: "Ex3.Flame",
+                    summary: "+2 Dice at Close Range"
+                });
+            }
+            if (this.object.weaponTags["crossbow"]) {
+                effectsAndTags.push({
+                    name: "Ex3.Crossbow",
+                    summary: "+2 Dice at Close Range"
+                });
+            }
+            if (this.object.weaponTags["unblockable"]) {
+                effectsAndTags.push({
+                    name: "Ex3.Unblockable",
+                    summary: "Target cannot use parry"
+                });
+            }
+            if (this.object.weaponTags["undodgeable"]) {
+                effectsAndTags.push({
+                    name: "Ex3.Undodgeable",
+                    summary: "Target cannot use evasion"
+                });
+            }
+            if (this.object.weaponTags["flexible"]) {
+                effectsAndTags.push({
+                    name: "Ex3.Flexible",
+                    summary: "Ignores Full Defense bonuses."
+                });
+            }
+            if (this.object.weaponTags["improvised"]) {
+                penalties.push(
+                    {
+                        name: "Ex3.ImprovisedWeapon",
+                        summary: "+1 Initiative Cost"
+                    },
+                )
+            }
+            if (this.object.weaponTags["bombard"]) {
+                penalties.push({
+                    name: "Ex3.Bombard",
+                    summary: "-4 Dice vs Non-Battlegroups"
+                });
+            }
+            if (this.object.range !== 'short' && this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.attackType === 'withering')) {
+                if(this._getRangedAccuracy() < 0) {
+                    penalties.push({
+                        name: "Ex3.Range",
+                        summary: `${this._getRangedAccuracy()} dice`
+                    });
+                }
+                if(this._getRangedAccuracy() > 0) {
+                    effectsAndTags.push({
+                        name: "Ex3.Range",
+                        summary: `${this._getRangedAccuracy()} dice`
+                    });
+                }
+            }
+        }
+        if (this.object.isFlurry) {
+            penalties.push(
+                {
+                    img: "systems/exaltedthird/assets/icons/spinning-blades.svg",
+                    name: "Ex3.Flurry",
+                    summary: "-3 Dice"
+                },
+            )
+        }
+
+        for (const charm of this.object.addedCharms) {
+            for (const trigger of Object.values(charm.system.triggers.dicerollertriggers)) {
+                triggers.push({
+                    name: trigger.name || "No Name Trigger"
+                });
+            }
+        }
+
         return {
             actor: this.actor,
             selects: this.selects,
@@ -736,6 +863,9 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             tab: this.tabGroups['primary'],
             tabs: tabs,
             isAttackRoll: this._isAttackRoll(),
+            penalties: penalties,
+            triggers: triggers,
+            effectsAndTags: effectsAndTags,
             buttons: [
                 { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
                 { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
@@ -745,12 +875,16 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
 
     async _preparePartContext(partId, context) {
         context.tab = context.tabs.find(item => item.id === partId);
-        if (this.object.addingCharms) {
-            context.hideElement = (partId !== 'addCharms' ? 'hide-element' : '')
-        } else {
-            context.hideElement = (partId === 'addCharms' ? 'hide-element' : '')
-        }
+        // if (this.object.addingCharms) {
+        //     context.hideElement = (partId !== 'addCharms' ? 'hide-element' : '')
+        // } else {
+        //     context.hideElement = (partId === 'addCharms' ? 'hide-element' : '')
+        // }
         return context;
+    }
+
+    _onSearchFilter(_event, _query, rgx, html) {
+        console.log("Search");
     }
 
     static async myFormHandler(event, form, formData) {
@@ -860,46 +994,6 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             }
         }
         this.render();
-    }
-
-
-    async _renderFrame(options) {
-        const frame = document.createElement(this.options.tag);
-        frame.id = this.id;
-        if (this.options.classes.length) frame.className = this.options.classes.join(" ");
-        if (!this.hasFrame) return frame;
-
-        // Window applications
-        const labels = {
-            controls: game.i18n.localize("APPLICATION.TOOLS.ControlsMenu"),
-            toggleControls: game.i18n.localize("APPLICATION.TOOLS.ToggleControls"),
-            close: game.i18n.localize("APPLICATION.TOOLS.Close")
-        }
-        const contentClasses = ["window-content", ...this.options.window.contentClasses].join(" ");
-        frame.innerHTML = `<header class="window-header">
-      <i class="window-icon hidden"></i>
-      <h1 class="window-title"></h1>
-        ${this.object.rollType !== 'base' ? `<button type="button" class="header-control fa-solid fa-bolt"
-              data-tooltip="Add Charm" aria-label="Add Charm" data-action="enableAddCharms"></button>` : ''}
-      <button type="button" class="header-control fa-solid fa-ellipsis-vertical"
-              data-tooltip="${labels.toggleControls}" aria-label="${labels.toggleControls}"
-              data-action="toggleControls"></button>
-      <button type="button" class="header-control fa-solid fa-times"
-              data-tooltip="${labels.close}" aria-label="${labels.close}" data-action="close"></button>
-    </header>
-    <menu class="controls-dropdown"></menu>
-    <${this.options.window.contentTag} class="${contentClasses}"></section>
-    ${this.options.window.resizable ? `<div class="window-resize-handle"></div>` : ""}`;
-
-        // Reference elements
-        this.window.header = frame.querySelector(".window-header");
-        this.window.title = frame.querySelector(".window-title");
-        this.window.icon = frame.querySelector(".window-icon");
-        this.window.resize = frame.querySelector(".window-resize-handle");
-        this.window.close = frame.querySelector("button[data-action=close]");
-        this.window.controls = frame.querySelector("button[data-action=toggleControls]");
-        this.window.controlsDropdown = frame.querySelector(".controls-dropdown");
-        return frame;
     }
 
     _setUpMultitargets() {
@@ -1239,6 +1333,21 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         }).render({ force: true });
     }
 
+    static async showGambitDialog(event, target) {
+        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/gambits.html", { 'useEssenceGambit': this.object.useEssenceGambit });
+
+        new foundry.applications.api.DialogV2({
+            window: { title: game.i18n.localize("Ex3.Gambits"), resizable: true },
+            content: html,
+            position: {
+                width: 650,
+                height: 600
+            },
+            buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+            classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
+        }).render(true);
+    }
+
     static triggerRemoveCharm(event, target) {
         event.stopPropagation();
         let li = $(target).parents(".item");
@@ -1451,7 +1560,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     }
 
     static addSpecialAttack(event, target) {
-        ev.stopPropagation();
+        event.stopPropagation();
         let li = $(target).parents(".item");
         let id = li.data("item-id");
         for (var specialAttack of this.object.specialAttacksList) {
@@ -1503,7 +1612,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     }
 
     static removeSpecialAttack(event, target) {
-        ev.stopPropagation();
+        event.stopPropagation();
         let li = $(target).parents(".item");
         let id = li.data("item-id");
         for (var specialAttack of this.object.specialAttacksList) {
@@ -1551,8 +1660,8 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         this.render();
     }
 
-    static removeOpposingCharm() {
-        ev.stopPropagation();
+    static removeOpposingCharm(event, target) {
+        event.stopPropagation();
         let li = $(target).parents(".item");
         let id = li.data("item-id");
         const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
@@ -2114,7 +2223,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             return parseInt(formula);
         }
         if (formula?.toLowerCase() === 'thresholdsuccesses') {
-            return this.object.threshholdSuccesses || 0;
+            return this.object.thresholdSuccesses || 0;
         }
         if (formula?.toLowerCase() === 'damagedealt') {
             return this.object.damageLevelsDealt || 0;
@@ -3129,7 +3238,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             }
         }
         else {
-            this.object.threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+            this.object.thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         }
         await this._addTriggerBonuses('afterRoll');
     }
@@ -3196,7 +3305,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 }
             }
         }
-        const threshholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+        const thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         if (this.object.hasDifficulty) {
             if (this.object.total < this.object.difficulty) {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
@@ -3205,10 +3314,10 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 }
             }
             else {
-                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${threshholdSuccesses} Threshhold Successes</h4>`;
-                goalNumberLeft = Math.max(goalNumberLeft - threshholdSuccesses - 1, 0);
+                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${thresholdSuccesses} Threshhold Successes</h4>`;
+                goalNumberLeft = Math.max(goalNumberLeft - thresholdSuccesses - 1, 0);
                 if (this.object.rollType === "simpleCraft") {
-                    var craftXPGained = Math.min(this.object.maxCraftXP, threshholdSuccesses + 1);
+                    var craftXPGained = Math.min(this.object.maxCraftXP, thresholdSuccesses + 1);
                     resultString += `<h4 class="dice-total dice-total-end">Craft XP Gained: ${craftXPGained}</h4>`;
                     if (this.object.craftProjectId) {
                         var projectItem = this.actor.items.get(this.object.craftProjectId);
@@ -3238,17 +3347,17 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
                 const actorData = foundry.utils.duplicate(this.actor);
-                actorData.system.grapplecontrolrounds.value += threshholdSuccesses;
+                actorData.system.grapplecontrolrounds.value += thresholdSuccesses;
                 this.actor.update(actorData);
             }
             if (this.object.target && this.object.rollType === 'command') {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
-                    this.object.newTargetData.system.commandbonus.value = threshholdSuccesses;
+                    this.object.newTargetData.system.commandbonus.value = thresholdSuccesses;
                     this.object.updateTargetActorData = true;
                 }
             }
             if (this.object.rollType === 'steady') {
-                this.object.restore.initiative += Math.min(5, threshholdSuccesses);
+                this.object.restore.initiative += Math.min(5, thresholdSuccesses);
             }
         }
         let theContent = `
@@ -3307,7 +3416,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             if (combat) {
                 let combatant = this._getActorCombatant();
                 if (combatant && combatant.initiative != null) {
-                    combat.setInitiative(combatant.id, combatant.initiative + threshholdSuccesses);
+                    combat.setInitiative(combatant.id, combatant.initiative + thresholdSuccesses);
                 }
             }
         }
@@ -3365,7 +3474,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                         successModifier: this.object.successModifier,
                         total: this.object.total,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thresholdSuccesses,
+                        thresholdSuccesses: this.object.thresholdSuccesses,
                         targetActorId: this.object.target?.actor?._id,
                         targetTokenId: this.object.target?.id,
                     }
@@ -3456,7 +3565,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                         successModifier: this.object.successModifier,
                         total: this.object.total || 0,
                         defense: this.object.defense,
-                        threshholdSuccesses: this.object.thresholdSuccesses
+                        thresholdSuccesses: this.object.thresholdSuccesses
                     }
                 }
             });
@@ -3892,7 +4001,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                     successModifier: this.object.successModifier,
                     total: this.object.total,
                     defense: this.object.defense,
-                    threshholdSuccesses: this.object.thresholdSuccesses,
+                    thresholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
                     attackerCombatantId: this._getActorCombatant()?._id || null,
                     targetId: this.object.target?.id || null,
@@ -4435,7 +4544,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                     }
                     break;
                 case 'martialArtsLevel':
-                    if (charm.actor.system.settings !== cleanedValue) {
+                    if (charm.actor.system.settings.martialartsmastery !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -4566,10 +4675,11 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             if (onslaught) {
                 onslaught.changes[0].value = onslaught.changes[0].value - number;
                 onslaught.changes[1].value = onslaught.changes[1].value - number;
+                onslaught.name = `${game.i18n.localize("Ex3.Onslaught")} (${onslaught.changes[0].value - number})`;
             }
             else {
                 this.object.newTargetData.effects.push({
-                    name: game.i18n.localize('Ex3.Onslaught'),
+                    name: `${game.i18n.localize('Ex3.Onslaught')} (-${number})`,
                     img: 'systems/exaltedthird/assets/icons/surrounded-shield.svg',
                     origin: this.object.target.actor.uuid,
                     disabled: false,
@@ -4605,10 +4715,12 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         if (existingPenalty) {
             existingPenalty.changes[0].value = existingPenalty.changes[0].value - number;
             existingPenalty.changes[1].value = existingPenalty.changes[1].value - number;
+            existingPenalty.name = `${game.i18n.localize("Ex3.DefensePenalty")} (${onslaught.changes[0].value - number})`;
+
         }
         else {
             this.object.newTargetData.effects.push({
-                name: game.i18n.localize('Ex3.DefensePenalty'),
+                name: `${game.i18n.localize("Ex3.DefensePenalty")} (-${number})`,
                 img: 'systems/exaltedthird/assets/icons/slashed-shield.svg',
                 origin: this.object.target.actor.uuid,
                 disabled: false,
@@ -4740,7 +4852,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         let craftSuccess = false;
         let goalNumberLeft = this.object.goalNumber;
         let extendedTest = ``;
-        const threshholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
+        const thresholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
         if (this.object.goalNumber > 0) {
             extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
         }
@@ -4757,7 +4869,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         }
         else {
             if (this.object.goalNumber > 0) {
-                goalNumberLeft = Math.max(this.object.goalNumber - threshholdSuccesses - 1, 0);
+                goalNumberLeft = Math.max(this.object.goalNumber - thresholdSuccesses - 1, 0);
                 extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
                 if (goalNumberLeft > 0 && this.object.intervals === 0) {
                     craftFailed = true;
@@ -4770,7 +4882,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 craftSuccess = true;
                 this.object.finished = true;
             }
-            resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total dice-total-middle">${threshholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
+            resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total dice-total-middle">${thresholdSuccesses} Threshhold Successes</h4>${extendedTest}`;
         }
         if (this.object.rollType === 'craft') {
             if (craftFailed) {
@@ -4782,7 +4894,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 var goldXPGained = 0;
                 var whiteXPGained = 0;
                 if (this.object.craftType === 'basic') {
-                    if (threshholdSuccesses >= 3) {
+                    if (thresholdSuccesses >= 3) {
                         silverXPGained = 3 * this.object.objectivesCompleted;
                     }
                     else {
@@ -4791,7 +4903,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                     projectStatus = `<h4 class="dice-total dice-total-middle">Craft Project Success</h4><h4 class="dice-total">${silverXPGained} Silver XP Gained</h4>`;
                 }
                 else if (this.object.craftType === "major") {
-                    if (threshholdSuccesses >= 3) {
+                    if (thresholdSuccesses >= 3) {
                         silverXPGained = this.object.objectivesCompleted;
                         goldXPGained = 3 * this.object.objectivesCompleted;
                     }
@@ -4934,7 +5046,8 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     }
 
     _getRangedAccuracy() {
-        var ranges = {
+        let accuracyModifier = 0;
+        let ranges = {
             "bolt-close": 1,
             "bolt-medium": -1,
             "bolt-long": -4,
@@ -4956,8 +5069,8 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             "siege-extreme": 3,
         };
 
-        var key = `${this.object.weaponType}-${this.object.range}`;
-        var accuracyModifier = ranges[key];
+        let key = `${this.object.weaponType}-${this.object.range}`;
+        accuracyModifier = ranges[key];
         if (this.object.weaponTags["flame"] && this.object.range === 'close') {
             accuracyModifier += 2;
         }

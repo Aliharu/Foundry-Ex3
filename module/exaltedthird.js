@@ -400,7 +400,7 @@ $(document).ready(() => {
 
   $(document).on('click', diceIconSelector, ev => {
     ev.preventDefault();
-    new RollForm(null, {classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'base' }).render(true);
+    new RollForm2(null, {classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'base' }).render(true);
   });
 });
 

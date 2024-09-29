@@ -13,7 +13,7 @@ export function registerSettings() {
         hint: "Ex3.SheetStyleDescription",
         scope: "world",
         config: true,
-        default: "solar",
+        default: "leaves",
         type: String,
         choices: {
             "db": "Ex3.Dragonblooded",
