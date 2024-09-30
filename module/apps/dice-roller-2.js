@@ -5385,7 +5385,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     _getTNCap() {
         let tnChange = '';
         var abilityValue = 0;
-        if (this.actor) {
+        if (this.actor && this.actor.type === 'character') {
             abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
             if (this.actor.system.details.exalt === "sidereal") {
                 tnChange = "";
