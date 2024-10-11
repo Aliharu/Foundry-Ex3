@@ -608,6 +608,13 @@
   display: none !important;
 }
 
+.overflow-scroll {
+  .dialog-form {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+}
+
 .application {
   .flexrow {
     .dots-checkbox {

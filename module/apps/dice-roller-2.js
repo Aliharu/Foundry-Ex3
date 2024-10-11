@@ -682,6 +682,9 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         if (this.object.rollType === 'useOpposingCharms') {
             options.parts = ['tabs', 'dice', 'cost', 'charms', 'footer'];
         }
+        // if(options.position?.height === 'auto') {
+        //     options.position.height = 550;
+        // }
     }
 
     resolve = function (value) { return value };

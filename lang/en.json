@@ -461,6 +461,7 @@
     "Ex3.Pool": "Pool",
     "Ex3.Pools": "Pools",
     "Ex3.Languages": "Languages",
+    "Ex3.CustomLanguages": "Custom Languages (Split with Semicolon)",
     "Ex3.LowRealm": "Low Realm",
     "Ex3.HighRealm": "High Realm",
     "Ex3.OldRealm": "Old Realm",
@@ -1260,6 +1261,8 @@
     "Ex3.MeleeWeapon": "Melee Weapon",
     "Ex3.RangedWeapon": "Ranged Weapon",
     "Ex3.SiegeWeapon": "Siege Weapon",
-    "Ex3.ThrownWeapon": "Thrown Weapon"
+    "Ex3.ThrownWeapon": "Thrown Weapon",
 
+    "Ex3.True": "True",
+    "Ex3.Free": "Free"
 }

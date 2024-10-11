@@ -1,4 +1,4 @@
-<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="other" data-drop="true">
+<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="social" data-drop="true">
   <div class="resource-content flex-center mt-2" style="font-size: 24px;">
     <label class="resource-label">{{localize "Ex3.Intimacies"}}</label>
     <a data-action="addItem" class="item-control add-item" title="Create intimacy" data-type="intimacies"><i
@@ -17,13 +17,30 @@
         {{selectOptions ../selects.intimacyTypes selected=intimacy.system.intimacytype localize=true}}
       </select>
     </div>
-    <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="intimacies" data-index="{{index}}"><i
-        class="fas fa-trash"></i></a>
+    <a class="item-control delete-item" data-action="deleteItem" title="Delete" data-type="intimacies"
+      data-index="{{index}}"><i class="fas fa-trash"></i></a>
     {{/each}}
   </div>
   <div>
     {{data.creationData.spent.intimacies}} (Must
     have 1 defining, 1
     major, 1 minor, 1 negative tie)
+  </div>
+  <div class="resource-content flex-center mt-2" style="font-size: 24px;">
+    <label class="resource-label">{{localize "Ex3.Languages"}}</label>
+  </div>
+  <div class="resource grid grid-5col">
+    {{#each data.character.languages as |choice key|}}
+    <div>
+      <label class="checkbox">
+        <input type="checkbox" name="object.character.languages.{{key}}.chosen" data-dtype="Boolean" {{checked choice.chosen}}>
+        {{choice.label}}
+      </label>
+    </div>
+    {{/each}}
+  </div>
+  <div class="form-group stacked">
+    <label class="resource-label">{{ localize "Ex3.CustomLanguages" }}</label>
+    <input type="text" name="object.character.customLanguages" value="{{data.character.customLanguages}}" data-dtype="String" />
   </div>
 </div>

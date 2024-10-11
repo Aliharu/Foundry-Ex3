@@ -1693,6 +1693,10 @@ exaltedthird.triggerBonusDropdowns = {
   otherEffects: {
     targetDoesntResetOnslaught: "Ex3.TargetDoesntResetOnslaughtNextTurn",
   },
+  fullExcellency: {
+    "true": "Ex3.True",
+    "free": "Ex3.Free",
+  },
   specificCharmTriggers: {
     none: {
       label: "Ex3.None",

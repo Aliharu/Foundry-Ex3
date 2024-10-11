@@ -752,18 +752,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       li.toggle("fast");
     });
 
-    // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
-
-    html.find('.trait-selector').click(this._onTraitSelector.bind(this));
-
-    // Add Inventory Item
-    html.find('.item-create').click(this._onItemCreate.bind(this));
-
-    html.find('.resource-value > .resource-value-step').click(this._onDotCounterChange.bind(this))
-    html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
-    html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
-
     html.find('.collapsable').click(ev => {
       let type = $(ev.currentTarget).data("type");
       const li = $(ev.currentTarget).next();
@@ -787,6 +775,18 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       li.toggle("fast");
     });
+
+    // Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) return;
+
+    html.find('.trait-selector').click(this._onTraitSelector.bind(this));
+
+    // Add Inventory Item
+    html.find('.item-create').click(this._onItemCreate.bind(this));
+
+    html.find('.resource-value > .resource-value-step').click(this._onDotCounterChange.bind(this))
+    html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
+    html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
 
     // Update Inventory Item
     html.find('.item-edit').click(ev => {
@@ -2339,6 +2339,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.PickColor") },
+      position: { height: 1000, width: 406 },
       content: html,
       classes: [this.actor.getSheetBackground()],
       buttons: [{
@@ -2720,7 +2721,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const label = a.parentElement.querySelector("label");
     const choices = CONFIG.exaltedthird[a.dataset.options];
     const options = { name: a.dataset.target, title: label.innerText, choices };
-    return new TraitSelector(this.actor, options).render(true)
+    return new TraitSelector(this.actor, options).render(true);
   }
 
   /**
