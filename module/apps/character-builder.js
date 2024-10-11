@@ -20,6 +20,14 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       if (!this.object.character.classificationType) {
         this.object.character.classificationType = 'exalt';
       }
+      if(!this.object.character.languages) {
+        this.object.character.languages = Object.entries(CONFIG.exaltedthird.languages).reduce((obj, e) => {
+          let [k, v] = e;
+          obj[k] = { label: v, chosen: false };
+          return obj;
+        }, {});
+        this.object.character.customLanguages = "";
+      }
     }
     else {
       this.object.template = 'custom';
@@ -428,8 +436,20 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             name: '',
           },
           randomSpells: 0,
+          languages: Object.entries(CONFIG.exaltedthird.languages).reduce((obj, e) => {
+            let [k, v] = e;
+            obj[k] = { label: v, chosen: false };
+            return obj;
+          }, {}),
+          customLanguages: "",
         }
     }
+    // Populate choices
+    // const choices = Object.entries(CONFIG.exaltedthird.languages).reduce((obj, e) => {
+    //   let [k, v] = e;
+    //   obj[k] = { label: v, chosen: false };
+    //   return obj;
+    // }, {});
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       for (const [maiden, list] of Object.entries(CONFIG.exaltedthird.maidenabilities)) {
         if (list.includes(key)) {
@@ -473,7 +493,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       randomAbilities: CharacterBuilder.randomAbilities,
       addItem: CharacterBuilder.addItem,
       randomName: CharacterBuilder.randomName,
-      randomItem: CharacterBuilder.randomItem, 
+      randomItem: CharacterBuilder.randomItem,
       importItem: CharacterBuilder.importItem,
       deleteItem: CharacterBuilder.deleteItem,
       deleteSublistCharm: CharacterBuilder.deleteSublistCharm,
@@ -491,7 +511,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     abilities: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-abilities.html' },
     merits: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-merits.html' },
     charms: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-charms.html' },
-    other: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-other.html' },
+    social: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-social.html' },
     equipment: { template: 'systems/exaltedthird/templates/dialogues/character-builder/character-builder-equipment.html' },
     footer: {
       template: "templates/generic/form-footer.hbs",
@@ -558,10 +578,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
         },
         {
-          id: "other",
+          id: "social",
           group: "primary",
-          label: "Ex3.Other",
-          cssClass: this.tabGroups['primary'] === 'other' ? 'active' : '',
+          label: "Ex3.Social",
+          cssClass: this.tabGroups['primary'] === 'social' ? 'active' : '',
         },
         {
           id: "equipment",
@@ -1652,7 +1672,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
 
     const newItem = foundry.utils.duplicate(itemObject);
-    if(newItem.type === 'charm') {
+    if (newItem.type === 'charm') {
       newItem.itemCount = 0;
     }
 
@@ -2240,6 +2260,17 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         }
       }
     }
+
+    // Obtain choices
+    const chosenLanguages = [];
+    for ( let [k, v] of Object.entries(this.object.character.languages)) {
+      if(v.chosen) {
+        chosenLanguages.push(k);
+      }
+    }
+
+    actorData.system.traits.languages.value = chosenLanguages;
+    actorData.system.traits.languages.custom = this.object.character.customLanguages; 
 
     for (let craft of Object.values(this.object.character.crafts)) {
       itemData.push({
