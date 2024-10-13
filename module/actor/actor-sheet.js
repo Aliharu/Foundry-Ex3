@@ -2229,34 +2229,37 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }],
       submit: result => {
         if (result) {
-          let zero = result.zero.value;
-          let one = result.one.value;
-          let two = result.two.value;
-          let four = result.four.value;
           let healthData = {
             levels: {
               zero: {
-                value: zero,
+                value: templateData.zero,
               },
               one: {
-                value: one,
+                value: templateData.one,
               },
               two: {
-                value: two,
+                value: templateData.two,
               },
               four: {
-                value: four,
+                value: templateData.four,
               },
             },
             bashing: 0,
             lethal: 0,
             aggravated: 0,
+          };
+          healthData.levels.zero.value = result.zero.value;
+          if(!this.actor.system.battlegroup || healthType !== 'person') {
+            healthData.levels.one.value = result.one.value;
+            healthData.levels.two.value = result.two.value;
+            healthData.levels.four.value = result.four.value;
+            if(healthType === 'person') {
+              healthData.levels.three = {
+                value: result.three.value || 0,
+              }
+            }
           }
           if (healthType === 'person') {
-            let three = result.three.value || 0;
-            healthData.levels.three = {
-              value: three,
-            }
             this.actor.update({ [`system.health`]: healthData });
           }
           else {
