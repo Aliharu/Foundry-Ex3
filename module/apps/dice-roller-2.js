@@ -1014,8 +1014,10 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 await this.useOpposingCharms();
             }
             else {
-                const rollData = this.getSavedRollData();
-                await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
+                if(this.actor) {
+                    const rollData = this.getSavedRollData();
+                    await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
+                }
                 await this._roll();
                 if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
                     this.resolve(true);
