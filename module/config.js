@@ -91,6 +91,15 @@ exaltedthird.activeEffectChanges = {
       'system.abilities.war.value': 'Ex3.War',
     }
   },
+  health: {
+    label: "Ex3.Health",
+    effectList: {
+      'system.health.levels.zero.value': 'Ex3.PenaltyZeroHealth',
+      'system.health.levels.one.value': 'Ex3.PenaltyOneHealth',
+      'system.health.levels.two.value': 'Ex3.PenaltyTwoHealth',
+      'system.health.levels.four.value': 'Ex3.PenaltyFourHealth',
+    },
+  },
   npcAbilities: {
     label: "Ex3.NPCAbilities",
     effectList: {

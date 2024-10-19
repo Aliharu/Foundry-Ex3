@@ -1181,6 +1181,11 @@
 
     "Ex3.NoName": "No Name",
 
+    "Ex3.PenaltyZeroHealth": "Penalty Zero Health",
+    "Ex3.PenaltyOneHealth": "Penalty One Health",
+    "Ex3.PenaltyTwoHealth": "Penalty Two Health",
+    "Ex3.PenaltyFourHealth": "Penalty Four Health",
+
     "Ex3.NonSameAbilityAttribute": "Non-Same Ability Attribute",
 
     "Ex3.Terrestrial1": "Terrestrial 1",
