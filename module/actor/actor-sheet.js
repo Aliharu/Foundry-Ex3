@@ -1838,6 +1838,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       );
     });
 
+    html.find('.last-roll').click(ev => {
+      this.actor.actionRoll(
+        {
+          rollType: this.actor.flags.exaltedthird.lastroll.rollType,
+          lastRoll: true
+        }
+      );
+    });
+
     html.find('.anima-flux').click(ev => {
       if (game.user.targets && game.user.targets.size > 0) {
         for (const target of game.user.targets) {

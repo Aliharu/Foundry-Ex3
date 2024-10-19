@@ -13,7 +13,11 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         this.messageId = data.preMessageId;
         this.search = "";
 
-        if (data.rollId) {
+        if(data.lastRoll) {
+            this.object = foundry.utils.duplicate(this.actor.flags.exaltedthird.lastroll);
+            this.object.skipDialog = false;
+        }
+        else if (data.rollId) {
             this.object = foundry.utils.duplicate(this.actor.system.savedRolls[data.rollId]);
             this.object.skipDialog = data.skipDialog || true;
             this.object.isSavedRoll = true;
@@ -741,42 +745,65 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         const triggers = [];
         const effectsAndTags = [];
 
-        if(this.actor) {
+        if (this.actor) {
             for (const condition of this.actor.allApplicableEffects()) {
-            if (condition.statuses.has('prone')) {
+                if (condition.statuses.has('prone')) {
+                    penalties.push(
+                        {
+                            img: "icons/svg/falling.svg",
+                            name: "Ex3.Prone",
+                            summary: "-3 dice on attacks"
+                        },
+                    );
+                }
+                else if (condition.statuses.has('blind')) {
+                    penalties.push(
+                        {
+                            name: "Ex3.Blind",
+                            summary: "-3 dice"
+                        },
+                    );
+                }
+                else if (condition.statuses.has('grappled')) {
+                    penalties.push(
+                        {
+                            img: "systems/exaltedthird/assets/icons/grab.svg",
+                            name: "Ex3.Grappled",
+                            summary: "-1 dice on attacks"
+                        },
+                    );
+                } else {
+                    effectsAndTags.push(
+                        {
+                            img: condition.img,
+                            name: condition.name,
+                        },
+                    );
+                }
+            }
+            if (this.object.woundPenalty) {
                 penalties.push(
                     {
-                        img: "icons/svg/falling.svg",
-                        name: "Ex3.Prone",
-                        summary: "-3 dice on attacks"
+                        name: "Ex3.WoundPenalty",
+                        summary: `${this.actor.system.health.penalty * -1} Dice`
                     },
                 );
             }
-            else if (condition.statuses.has('blind')) {
+            if (this.object.armorPenalty) {
+                let armorPenaltyDice = 0
+                for (let armor of this.actor.armor) {
+                    if (armor.system.equipped) {
+                        armorPenaltyDice -= Math.abs(armor.system.penalty);
+                    }
+                }
                 penalties.push(
                     {
-                        name: "Ex3.Blind",
-                        summary: "-3 dice"
+                        name: "Ex3.ArmorPenalty",
+                        summary: `${armorPenaltyDice} Dice`
                     },
                 );
             }
-            else if (condition.statuses.has('grappled')) {
-                penalties.push(
-                    {
-                        img: "systems/exaltedthird/assets/icons/grab.svg",
-                        name: "Ex3.Grappled",
-                        summary: "-1 dice on attacks"
-                    },
-                );
-            } else {
-                effectsAndTags.push(
-                    {
-                        img: condition.img,
-                        name: condition.name,
-                    },
-                );
-            }
-            }
+    
         }
 
         if (this._isAttackRoll()) {
@@ -825,13 +852,13 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 });
             }
             if (this.object.range !== 'short' && this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.attackType === 'withering')) {
-                if(this._getRangedAccuracy() < 0) {
+                if (this._getRangedAccuracy() < 0) {
                     penalties.push({
                         name: "Ex3.Range",
                         summary: `${this._getRangedAccuracy()} dice`
                     });
                 }
-                if(this._getRangedAccuracy() > 0) {
+                if (this._getRangedAccuracy() > 0) {
                     effectsAndTags.push({
                         name: "Ex3.Range",
                         summary: `${this._getRangedAccuracy()} dice`
@@ -987,6 +1014,8 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 await this.useOpposingCharms();
             }
             else {
+                const rollData = this.getSavedRollData();
+                await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
                 await this._roll();
                 if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
                     this.resolve(true);
@@ -1231,7 +1260,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         super.close();
     }
 
-    static async saveRoll(rollData) {
+    static async saveRoll() {
         let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
 
         new foundry.applications.api.DialogV2({
@@ -1251,22 +1280,12 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             submit: result => {
                 if (result && result.name?.value) {
                     let results = result.name.value;
-                    let uniqueId = this.object.id || foundry.utils.randomID(16);
+                    const rollData = this.getSavedRollData();
+                    
                     rollData.name = results;
-                    rollData.id = uniqueId;
-                    rollData.target = null;
-                    rollData.showTargets = false;
-                    rollData.targets = null;
-                    const addedCharmsConvertArray = [];
-                    for (let i = 0; i < this.object.addedCharms.length; i++) {
-                        addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
-                        addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
-                    }
-                    this.object.addedCharms = addedCharmsConvertArray;
-
                     let updates = {
                         "system.savedRolls": {
-                            [uniqueId]: rollData
+                            [rollData.id]: rollData
                         }
                     };
                     this.actor.update(updates);
@@ -1276,6 +1295,23 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                 }
             }
         }).render({ force: true });
+    }
+
+    getSavedRollData() {
+        const rollData = { ...this.object };
+        let uniqueId = this.object.id || foundry.utils.randomID(16);
+        rollData.id = uniqueId;
+        rollData.target = null;
+        rollData.showTargets = false;
+        rollData.targets = null;
+        const addedCharmsConvertArray = [];
+        for (let i = 0; i < this.object.addedCharms.length; i++) {
+            addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
+            addedCharmsConvertArray[i].timesAdded = this.object.addedCharms[i].timesAdded;
+        }
+        rollData.addedCharms = addedCharmsConvertArray;
+
+        return rollData;
     }
 
     static async editSettings() {
@@ -2553,10 +2589,10 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
             damage: this.object.addOppose.manualBonus.damage,
         }
 
-        // if (game.rollForm) {
-        //     data.actor = this.actor;
-        //     game.rollForm.addMultiOpposedBonuses(data);
-        // }
+        if (game.rollForm) {
+            data.actor = this.actor;
+            await game.rollForm.addMultiOpposedBonuses(data);
+        }
 
         game.socket.emit('system.exaltedthird', {
             type: 'addMultiOpposingCharms',

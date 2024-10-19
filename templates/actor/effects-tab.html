@@ -1,3 +1,19 @@
+{{#if flags.exaltedthird.lastroll}}
+<div class="resource-label list-section-header d-flex flex-between">
+    <div>
+        {{localize "Ex3.LastRoll"}}
+    </div>
+</div>
+<ol class="items-list">
+    <li class="item flexrow">
+        <h4 class="item-name resource-table-value">{{flags.exaltedthird.lastroll.rollType}}</h4>
+        <div class="item-controls">
+            <a class="item-control last-roll" title="Dialogue"><i class="fas fa-dice-d10"></i></a>
+        </div>
+    </li>
+</ol>
+{{/if}}
+
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
         {{localize "Ex3.SavedRolls"}}

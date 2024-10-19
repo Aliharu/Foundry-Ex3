@@ -1414,12 +1414,7 @@ export class ExaltedThirdActor extends Actor {
     if(message) {
       data.preMessageId = message.id;
     }
-    if (this.type === 'npc') {
-      game.rollForm = await new RollForm2(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, data).render(true);
-    }
-    else {
-      game.rollForm = await new RollForm2(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, data).render(true);
-    }
+    game.rollForm = await new RollForm2(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, data).render(true);
   }
 
   getSheetBackground() {
