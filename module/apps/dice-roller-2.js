@@ -877,10 +877,12 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         }
 
         for (const charm of this.object.addedCharms) {
-            for (const trigger of Object.values(charm.system.triggers.dicerollertriggers)) {
-                triggers.push({
-                    name: trigger.name || "No Name Trigger"
-                });
+            if(charm.system.triggers) {
+                for (const trigger of Object.values(charm.system.triggers.dicerollertriggers)) {
+                    triggers.push({
+                        name: trigger.name || "No Name Trigger"
+                    });
+                }
             }
         }
 
@@ -4251,6 +4253,9 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
     }
 
     async _addBonuses(charm, type, bonusType = "benefit") {
+        if(!charm.system.triggers) {
+            return;
+        }
         const doublesChart = {
             '7': 'sevens',
             '8': 'eights',
@@ -4549,6 +4554,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
 
     async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex) {
         let fufillsRequirements = true;
+        const charmActor = charm.actor || this.actor;
         for (const requirementObject of Object.values(trigger.requirements)) {
             let cleanedValue = requirementObject.value.toLowerCase().trim();
             if (cleanedValue === 'true' || cleanedValue === 'false') {
@@ -4566,7 +4572,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                     }
                     break;
                 case 'charmAddedAmount':
-                    if (triggerAmountIndex < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
+                    if (triggerAmountIndex < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charmActor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -4587,42 +4593,42 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                     }
                     break;
                 case 'martialArtsLevel':
-                    if (charm.actor.system.settings.martialartsmastery !== cleanedValue) {
+                    if (charmActor.system.settings.martialartsmastery !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'smaEnlightenment':
-                    if (!charm.actor.system.settings.smaenlightenment) {
+                    if (!charmActor.system.settings.smaenlightenment) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'materialResonance':
-                    if (!charm.actor.system.traits.resonance.value.includes(cleanedValue)) {
+                    if (!charmActor.system.traits.resonance.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'materialStandard':
-                    if (charm.actor.system.traits.resonance.value.includes(cleanedValue) || charm.actor.system.traits.dissonance.value.includes(cleanedValue)) {
+                    if (charmActor.system.traits.resonance.value.includes(cleanedValue) || charmActor.system.traits.dissonance.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'materialDissonance':
-                    if (!charm.actor.system.traits.dissonance.value.includes(cleanedValue)) {
+                    if (!charmActor.system.traits.dissonance.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'hasClassification':
-                    if (!charm.actor.system.traits.classifications.value.includes(cleanedValue)) {
+                    if (!charmActor.system.traits.classifications.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'formula':
-                    if (!this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm)) {
+                    if (!this._getBooleanFormulaValue(cleanedValue, bonusType === "opposed" ? charmActor : null, charm)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'thresholdSuccesses':
-                    if (this.object.thresholdSuccesses < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
+                    if (this.object.thresholdSuccesses < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charmActor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -4672,12 +4678,12 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
                     }
                     break;
                 case 'initiativeDamageDealt':
-                    if ((this.object.initiativeDamageDealt || 0) < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
+                    if ((this.object.initiativeDamageDealt || 0) < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charmActor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'damageLevelsDealt':
-                    if (this.object.damageLevelsDealt < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null)) {
+                    if (this.object.damageLevelsDealt < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charmActor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
