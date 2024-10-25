@@ -2034,6 +2034,11 @@ exaltedthird.selects = {
     "3": "3",
     "4": "4",
     "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9",
+    "10": "10",
   },
   triggerOnTensOptions: {
     'none': "Ex3.None",
@@ -2273,30 +2278,6 @@ exaltedthird.selects = {
   templateImporterMainTextOptions: {
     description: "Ex3.Description",
     summary: "Ex3.Summary",
-  },
-  //Item Search
-  searchAbilityRequirementLevels: {
-    "": "",
-    "0": "0",
-    "1": "1",
-    "2": "2",
-    "3": "3",
-    "4": "4",
-    "5": "5",
-  },
-  searchEssenceLevels: {
-    "": "",
-    "0": "0",
-    "1": "1",
-    "2": "2",
-    "3": "3",
-    "4": "4",
-    "5": "5",
-    "6": "6",
-    "7": "7",
-    "8": "8",
-    "9": "9",
-    "10": "10",
   },
   //Dice Roller
   ranges: {

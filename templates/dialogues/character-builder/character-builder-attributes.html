@@ -40,7 +40,6 @@
         attribute.caste}}*{{/if}}<input class="dots-checkbox" name="object.character.attributes.{{key}}.favored" type="checkbox"
           {{checked attribute.favored}}></div>
       {{#ifEquals ../data.characterType 'character'}}
-
       <div class="resource-value" data-value="{{attribute.value}}" data-name="object.attributes.{{key}}.value">
         {{#numLoop 5}}
         {{#ifGreater attribute.value this}}
@@ -50,6 +49,17 @@
         <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"></span>
         {{/ifGreater}}
         {{/numLoop}}
+        {{#ifEquals ../data.character.exalt 'alchemical'}}
+        <div></div>
+        {{#numLoopCertainStart 5 5}}
+        {{#ifGreater attribute.value this}}
+        <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"
+          style="background-color:black;"></span>
+        {{else}}
+        <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"></span>
+        {{/ifGreater}}
+        {{/numLoopCertainStart}}
+        {{/ifEquals}}
       </div>
       {{/ifEquals}}
       {{#if ../data.character.showAttributeCharms}}
