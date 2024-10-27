@@ -379,6 +379,16 @@ exaltedthird.rollTypeTargetImages = {
   'survival': 'systems/exaltedthird/assets/icons/forest-camp.svg',
   'thrown': 'systems/exaltedthird/assets/icons/thrown-daggers.svg',
   'war': "systems/exaltedthird/assets/icons/rally-the-troops.svg",
+
+  'strength': 'systems/exaltedthird/assets/icons/strong.svg',
+  'dexterity': 'systems/exaltedthird/assets/icons/acrobatic.svg',
+  'stamina': 'systems/exaltedthird/assets/icons/heart-beats.svg',
+  'charisma': 'systems/exaltedthird/assets/icons/shining-heart.svg',
+  'manipulation': 'systems/exaltedthird/assets/icons/psychic-waves.svg',
+  'appearance': 'systems/exaltedthird/assets/icons/beams-aura.svg',
+  'perception': 'systems/exaltedthird/assets/icons/dead-eye.svg',
+  'intelligence': 'systems/exaltedthird/assets/icons/brain.svg',
+  'wits': 'systems/exaltedthird/assets/icons/sundial.svg',
 }
 
 exaltedthird.exaltcharmtypes = {

@@ -1203,6 +1203,12 @@
     "Ex3.Close": "Close",
     "Ex3.Extreme": "Extreme",
 
+    "Ex3.MakeRoll": "Make Roll",
+
+    "Ex3.RequestRoll": "Request Roll",
+    "Ex3.Confirm": "Confirm",
+
+
     "Ex3.ShortRange": "Short Range",
     "Ex3.MediumRange": "Medium Range",
     "Ex3.LongRange": "Long Range",

@@ -1,0 +1,25 @@
+<div class="exaltedthird chat-card item-card">
+    <div class="grid grid-2col" style="text-align:center;">
+        <div>
+            <img class="borderless-image black-icon" src="{{attributeImgUrl}}" width="64" height="64" />
+            <div>
+                <b>{{localize attributeLabel}}</b>
+            </div>
+        </div>
+        <div>
+            <img class="borderless-image black-icon" src="{{abilityImgUrl}}" width="64" height="64" />
+            <div>
+                <b>{{localize abilityLabel}}</b>
+            </div>
+        </div>
+    </div>
+    <div class="dice-roll">
+        <div class="dice-result">
+            <h4 class="dice-total dice-total-middle">{{localize "Ex3.Difficulty"}}: {{difficulty}}</h4>
+        </div>
+    </div>
+    <button type='button' class='make-chat-roll' data-difficulty="0" data-attribute="{{attribute}}" data-ability="{{ability}}">
+        <i class='fa-solid fa-dice-d10'></i>
+        {{localize "Ex3.MakeRoll"}}
+    </button>
+</div>

@@ -39,7 +39,7 @@ import {
   ItemWeaponData
 } from "./template/item-template.js";
 import { ExaltedCombat } from "./combat/combat.js";
-import Prophecy  from "./apps/prophecy.js";
+import Prophecy from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
 import CharacterBuilder from "./apps/character-builder.js";
 import RollForm2 from "./apps/dice-roller-2.js";
@@ -400,7 +400,7 @@ $(document).ready(() => {
 
   $(document).on('click', diceIconSelector, ev => {
     ev.preventDefault();
-    new RollForm2(null, {classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'base' }).render(true);
+    new RollForm2(null, { classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}, { rollType: 'base' }).render(true);
   });
 });
 
@@ -433,7 +433,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   html.find(".directory-footer").append(buttonsText);
 
   html.on("click", ".character-generator-button", () => {
-    new CharacterBuilder({classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}).render(true);
+    new CharacterBuilder({ classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}).render(true);
   });
 
   html.on("click", ".template-import-button", () => {
@@ -487,7 +487,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        new CharacterBuilder({classes: ["exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, message.flags?.exaltedthird?.character).render(true);
+        new CharacterBuilder({ classes: ["exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, message.flags?.exaltedthird?.character).render(true);
       });
     });
   html[0]
@@ -521,6 +521,27 @@ Hooks.on("renderChatMessage", (message, html, data) => {
               rollType: 'useOpposingCharms'
             }
           );
+        }
+      });
+    });
+  html[0]
+    .querySelectorAll('.make-chat-roll')
+    .forEach((target) => {
+      target.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const attribute = message.flags?.exaltedthird?.attribute;
+        const ability = message.flags?.exaltedthird?.ability;
+        const difficulty = message.flags?.exaltedthird?.difficulty;
+        if (game.user.character) {
+          game.user.character.actionRoll({
+            rollType: 'ability',
+            ability: ability,
+            attribute: attribute,
+            difficulty: difficulty,
+          });
+        } else {
+          ui.notifications.error('This user has no character');
         }
       });
     });
@@ -2024,7 +2045,7 @@ function weaponAttack(itemUuid, attackType = 'withering') {
       const itemName = item?.name ?? itemUuid;
       return ui.notifications.warn(`Could not find item ${itemName}. You may need to delete and recreate this macro.`);
     }
-    game.rollForm = new RollForm2(item.parent, {classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: attackType, weapon: item.system }).render(true);
+    game.rollForm = new RollForm2(item.parent, { classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}, { rollType: attackType, weapon: item.system }).render(true);
   });
 }
 
