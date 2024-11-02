@@ -1308,6 +1308,7 @@ export default class RollForm2 extends HandlebarsApplicationMixin(ApplicationV2)
         rollData.target = null;
         rollData.showTargets = false;
         rollData.targets = null;
+        rollData.newTargetData = null;
         const addedCharmsConvertArray = [];
         for (let i = 0; i < this.object.addedCharms.length; i++) {
             addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
