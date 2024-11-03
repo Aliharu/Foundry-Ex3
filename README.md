@@ -18,7 +18,7 @@ Languages dialog code and effects code taken from the Foundry dnd5e system.
 
 # Suggested External Modules and Tools
 
-[All Locations Map (Fanmade)](https://github.com/Aliharu/Ex3-Golden-Calibration)
+[All Locations Map (Fanmade)](https://github.com/Aliharu/Ex3-All-Locations-Map)
 
 [Golden Calibration (Fanmade Solar Charmset Compendium)](https://github.com/Aliharu/Ex3-Golden-Calibration)
 
