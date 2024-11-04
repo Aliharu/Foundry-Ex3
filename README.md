@@ -18,11 +18,13 @@ Languages dialog code and effects code taken from the Foundry dnd5e system.
 
 # Suggested External Modules and Tools
 
-[All Locations Map (Fanmade)](https://github.com/Aliharu/Ex3-Golden-Calibration)
+[All Locations Map (Fanmade)](https://github.com/Aliharu/Ex3-All-Locations-Map)
 
 [Golden Calibration (Fanmade Solar Charmset Compendium)](https://github.com/Aliharu/Ex3-Golden-Calibration)
 
 [Macros and Helpful Files Directory](https://drive.google.com/drive/folders/1CEqlC3E_pEqtsCv-Jz-q6VZkb6lZukqc?usp=share_link)
+
+TokenHUD and ArgonHuD both have modules for Exalted Third Edition created and maintained by me
 
 ## Icons
 
