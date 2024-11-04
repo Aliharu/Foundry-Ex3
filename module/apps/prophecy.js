@@ -1,6 +1,4 @@
-import RollForm2 from "./dice-roller-2.js";
-import { RollForm } from "./dice-roller.js";
-
+import RollForm from "./dice-roller.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -205,7 +203,7 @@ export default class Prophecy extends HandlebarsApplicationMixin(ApplicationV2) 
                 content: cardContent,
                 style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             });
-            game.rollForm = new RollForm2(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
+            game.rollForm = new RollForm(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
             this.close();
         }
         this.render();

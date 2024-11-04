@@ -1,5 +1,5 @@
-import RollForm2  from "../apps/dice-roller-2.js";
-import { animaTokenMagic, RollForm } from "../apps/dice-roller.js";
+import RollForm  from "../apps/dice-roller.js";
+import { animaTokenMagic } from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
 
 /**
@@ -638,7 +638,7 @@ export class ExaltedThirdActor extends Actor {
     if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
-    game.rollForm = await new RollForm2(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, { rollId: roll.id, skipDialog: true }).roll();
+    game.rollForm = await new RollForm(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, { rollId: roll.id, skipDialog: true }).roll();
   }
 
   getSavedRoll(name) {
@@ -646,7 +646,7 @@ export class ExaltedThirdActor extends Actor {
     if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
-    return new RollForm2(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, { rollId: roll.id });
+    return new RollForm(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, { rollId: roll.id });
   }
   /**
    * Prepare Character type specific data
@@ -1414,7 +1414,7 @@ export class ExaltedThirdActor extends Actor {
     if(message) {
       data.preMessageId = message.id;
     }
-    game.rollForm = await new RollForm2(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, data).render(true);
+    game.rollForm = await new RollForm(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, data).render(true);
   }
 
   getSheetBackground() {
