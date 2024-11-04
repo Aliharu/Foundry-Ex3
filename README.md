@@ -24,6 +24,8 @@ Languages dialog code and effects code taken from the Foundry dnd5e system.
 
 [Macros and Helpful Files Directory](https://drive.google.com/drive/folders/1CEqlC3E_pEqtsCv-Jz-q6VZkb6lZukqc?usp=share_link)
 
+TokenHUD and ArgonHuD both have modules for Exalted Third Edition created and maintained by me
+
 ## Icons
 
 https://game-icons.net/
