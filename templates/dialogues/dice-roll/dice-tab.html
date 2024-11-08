@@ -1,67 +1,142 @@
 <section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="dice">
     {{#ifEquals data.rollType 'useOpposingCharms'}}
-    <div class="resource grid grid-4col" style="text-align:center">
-        <div class="resource separator">
-            <label class="resource-label">{{localize "Ex3.Roll"}}</label>
+    <div class="resource grid grid-2col" style="text-align:center">
+        <div style="text-align:center">
+            <div class="resource separator">
+                <label class="resource-label">{{localize "Ex3.Roll"}}</label>
+            </div>
+            <div class="resource grid grid-2col">
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-right-label-padding">{{localize "Ex3.DiceModifier"}}</div>
+                    <div class="cost-field opposed-bonus-field-small mb-1">
+                        <label class="resource-label">{{localize "Ex3.Base"}} | {{localize "Ex3.Charms"}}</label>
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.dice}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.dice" value="{{data.addOppose.addedBonus.dice}}" disabled>
+                    </div>
+                    <div class="opposed-bonus-field mb-1">
+                        <label class="resource-label">{{localize "Ex3.Manual"}}</label>
+                        <input type="number" name="object.addOppose.manualBonus.dice" value="{{data.addOppose.manualBonus.dice}}">
+                    </div>
+                    <div class="opposed-bonus-field">
+                        <label class="resource-label">{{localize "Ex3.Total"}}</label>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.dice}}" disabled>
+                    </div>
+                </div>
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-bonus-label">{{localize "Ex3.SuccessModifier"}}</div>
+                    <div class="opposed-bonus-field mb-1">
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.successes}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.successes" value="{{data.addOppose.addedBonus.successes}}" disabled>
+                    </div>
+                    <div class="mb-1">
+                        <input type="number" name="object.addOppose.manualBonus.successes" value="{{data.addOppose.manualBonus.successes}}">
+                    </div>
+                    <div>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.successes}}" disabled>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="resource separator">
-            <label class="resource-label">{{localize "Ex3.Defense"}}</label>
+        <div style="text-align:center">
+            <div class="resource separator">
+                <label class="resource-label">{{localize "Ex3.Social"}}</label>
+            </div>
+            <div class="resource grid grid-2col">
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-bonus-label">{{localize "Ex3.Resolve"}}</div>
+                    <div class="opposed-bonus-field mb-1">
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.resolve}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.resolve" value="{{data.addOppose.addedBonus.resolve}}" disabled>
+                    </div>
+                    <div class="mb-1">
+                        <input type="number" name="object.addOppose.manualBonus.resolve" value="{{data.addOppose.manualBonus.resolve}}">
+                    </div>
+                    <div>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.resolve}}" disabled>
+                    </div>
+                </div>
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-bonus-label">{{localize "Ex3.Guile"}}</div>
+                    <div class="opposed-bonus-field mb-1">
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.guile}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.guile" value="{{data.addOppose.addedBonus.guile}}" disabled>
+                    </div>
+                    <div class="mb-1">
+                        <input type="number" name="object.addOppose.manualBonus.guile" value="{{data.addOppose.manualBonus.guile}}">
+                    </div>
+                    <div>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.guile}}" disabled>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="resource separator">
-            <label class="resource-label">{{localize "Ex3.Damage"}}</label>
+    </div>
+    <div class="resource separator">
+        <label class="resource-label">{{localize "Ex3.Attacks"}}</label>
+    </div>
+    <div class="resource grid grid-2col" style="text-align:center;margin-top: 0px;">
+        <div style="text-align:center">
+            <div class="resource grid grid-2col">
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-right-label-padding">{{localize "Ex3.Damage"}}</div>
+                    <div class="cost-field opposed-bonus-field-small mb-1">
+                        <label class="resource-label">{{localize "Ex3.Base"}} | {{localize "Ex3.Charms"}}</label>
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.damage}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.damage" value="{{data.addOppose.addedBonus.damage}}" disabled>
+                    </div>
+                    <div class="opposed-bonus-field mb-1">
+                        <label class="resource-label">{{localize "Ex3.Manual"}}</label>
+                        <input type="number" name="object.addOppose.manualBonus.damage" value="{{data.addOppose.manualBonus.damage}}">
+                    </div>
+                    <div class="opposed-bonus-field">
+                        <label class="resource-label">{{localize "Ex3.Total"}}</label>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.damage}}" disabled>
+                    </div>
+                </div>
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-bonus-label">{{localize "Ex3.Defense"}}</div>
+                    <div class="opposed-bonus-field mb-1">
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.defense}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.defense" value="{{data.addOppose.addedBonus.defense}}" disabled>
+                    </div>
+                    <div class="mb-1">
+                        <input type="number" name="object.addOppose.manualBonus.defense" value="{{data.addOppose.manualBonus.defense}}">
+                    </div>
+                    <div>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.defense}}" disabled>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="resource separator">
-            <label class="resource-label">{{localize "Ex3.Social"}}</label>
-        </div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.DiceModifier"}} ({{data.addOppose.addedBonus.dice}})</label>
-            <input name="object.addOppose.manualBonus.dice" value="{{data.addOppose.manualBonus.dice}}" type="number">
-        </div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.Defense"}} ({{data.addOppose.addedBonus.defense}})</label>
-            <input name="object.addOppose.manualBonus.defense" value="{{data.addOppose.manualBonus.defense}}"
-                type="number">
-            {{#if data.opposeCaps.parry.cap}}
-            <div><b>{{localize "Ex3.Parry"}}:</b> {{data.opposeCaps.parry.cap}}</div>
-            {{/if}}
-            {{#if data.opposeCaps.evasion.cap}}
-            <div><b>{{localize "Ex3.Evasion"}}:</b> {{data.opposeCaps.evasion.cap}}</div>
-            {{/if}}
-        </div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.Damage"}} ({{data.addOppose.addedBonus.damage}})</label>
-            <input name="object.addOppose.manualBonus.damage" value="{{data.addOppose.manualBonus.damage}}"
-                type="number">
-        </div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.Resolve"}} ({{data.addOppose.addedBonus.resolve}})</label>
-            <input name="object.addOppose.manualBonus.resolve" value="{{data.addOppose.manualBonus.resolve}}"
-                type="number">
-            <div>{{data.opposeCaps.resolve.cap}}</div>
-        </div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.SuccessModifier"}}
-                ({{data.addOppose.addedBonus.successes}})</label>
-            <input name="object.addOppose.manualBonus.successes" value="{{data.addOppose.manualBonus.successes}}"
-                type="number">
-        </div>
-        <div></div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.Soak"}} ({{data.addOppose.addedBonus.soak}})</label>
-            <input name="object.addOppose.manualBonus.soak" value="{{data.addOppose.manualBonus.soak}}" type="number">
-            <div>{{data.opposeCaps.soak.cap}}</div>
-        </div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.Guile"}} ({{data.addOppose.addedBonus.guile}})</label>
-            <input name="object.addOppose.manualBonus.guile" value="{{data.addOppose.manualBonus.guile}}" type="number">
-            <div>{{data.opposeCaps.guile.cap}}</div>
-        </div>
-        <div></div>
-        <div></div>
-        <div>
-            <label class="resource-label">{{localize "Ex3.Hardness"}} ({{data.addOppose.addedBonus.hardness}})</label>
-            <input name="object.addOppose.manualBonus.hardness" value="{{data.addOppose.manualBonus.hardness}}"
-                type="number">
+        <div style="text-align:center">
+            <div class="resource grid grid-2col">
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-bonus-label">{{localize "Ex3.Soak"}}</div>
+                    <div class="opposed-bonus-field mb-1">
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.soak}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.soak" value="{{data.addOppose.addedBonus.soak}}" disabled>
+                    </div>
+                    <div class="mb-1">
+                        <input type="number" name="object.addOppose.manualBonus.soak" value="{{data.addOppose.manualBonus.soak}}">
+                    </div>
+                    <div>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.soak}}" disabled>
+                    </div>
+                </div>
+                <div class="opposed-info-inputs">
+                    <div class="resource-label opposed-bonus-label">{{localize "Ex3.Hardness"}}</div>
+                    <div class="opposed-bonus-field mb-1">
+                        <input class="locked-input" type="number" value="{{baseOpposedBonuses.hardness}}" disabled>
+                        <input class="locked-input" type="number" name="object.addOppose.addedBonus.hardness" value="{{data.addOppose.addedBonus.hardness}}" disabled>
+                    </div>
+                    <div class="mb-1">
+                        <input type="number" name="object.addOppose.manualBonus.hardness" value="{{data.addOppose.manualBonus.hardness}}">
+                    </div>
+                    <div>
+                        <input class="total-input" type="number" value="{{totalOpposedBonuses.hardness}}" disabled>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     {{else}}
@@ -104,7 +179,8 @@
         </div>
         {{/ifEquals}}
         <div>
-            <label class="resource-label">{{localize "Ex3.TargetNumber"}} {{#ifNotEquals data.TNCap ''}} (Cap: -{{data.TNCap}}) {{/ifNotEquals}}</label>
+            <label class="resource-label">{{localize "Ex3.TargetNumber"}} {{#ifNotEquals data.TNCap ''}} (Cap:
+                -{{data.TNCap}}) {{/ifNotEquals}}</label>
             <input name="object.targetNumber" value="{{data.targetNumber}}" type="number">
         </div>
         <div>

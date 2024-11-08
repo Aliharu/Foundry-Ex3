@@ -49,6 +49,50 @@
         }
     }
 
+    .opposed-info-inputs {
+        .locked-input {
+            background: #ded6c7;
+            color: var(--color-text-dark-primary);
+        }
+
+        .total-input {
+            background: #dcd19b;
+            color: var(--color-text-dark-primary);
+            border: 1px solid black;
+        }
+    }
+
+
+    .opposed-right-label-padding {
+        padding-left: 90px;
+        margin-bottom: 5px;
+    }
+
+    .opposed-bonus-label {
+        margin-bottom: 5px;
+    }
+
+    .opposed-bonus-field {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 5px;
+
+        input {
+            width: 106px;
+        }
+    }
+
+    .opposed-bonus-field-small {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 5px;
+
+        input {
+            width: 50px;
+        }
+    }
 
 
     .tabs {

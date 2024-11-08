@@ -1276,5 +1276,8 @@
     "Ex3.ThrownWeapon": "Thrown Weapon",
 
     "Ex3.True": "True",
-    "Ex3.Free": "Free"
+    "Ex3.Free": "Free",
+
+    "Ex3.Base": "Base",
+    "Ex3.Manual": "Manual"
 }

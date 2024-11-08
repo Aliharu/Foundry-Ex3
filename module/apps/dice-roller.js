@@ -886,6 +886,46 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
 
+        const baseOpposedBonuses = {
+            dice: 0,
+            successes: 0,
+            defense: 0,
+            soak: 0,
+            hardness: 0,
+            resolve: 0,
+            guile: 0,
+            damage: 0,
+        }
+
+        const totalOpposedBonuses = {
+            dice: 0,
+            successes: 0,
+            defense: 0,
+            soak: 0,
+            hardness: 0,
+            resolve: 0,
+            guile: 0,
+            damage: 0,
+        }
+
+        if(this.object.rollType === 'useOpposingCharms') {
+            if(this.actor) {
+                baseOpposedBonuses.defense = Math.max(this.actor.system.parry.value, this.actor.system.evasion.value);
+                baseOpposedBonuses.hardness = this.actor.system.hardness.value;
+                baseOpposedBonuses.soak = this.actor.system.soak.value;
+                baseOpposedBonuses.resolve = this.actor.system.resolve.value;
+                baseOpposedBonuses.guile = this.actor.system.guile.value;
+            }   
+            totalOpposedBonuses.dice = baseOpposedBonuses.dice + this.object.addOppose.manualBonus.dice + this.object.addOppose.addedBonus.dice;
+            totalOpposedBonuses.successes = baseOpposedBonuses.successes + this.object.addOppose.manualBonus.successes + this.object.addOppose.addedBonus.successes;
+            totalOpposedBonuses.defense = baseOpposedBonuses.defense + this.object.addOppose.manualBonus.defense + this.object.addOppose.addedBonus.defense;
+            totalOpposedBonuses.soak = baseOpposedBonuses.soak + this.object.addOppose.manualBonus.soak + this.object.addOppose.addedBonus.soak;
+            totalOpposedBonuses.hardness = baseOpposedBonuses.hardness + this.object.addOppose.manualBonus.hardness + this.object.addOppose.addedBonus.hardness;
+            totalOpposedBonuses.damage = baseOpposedBonuses.damage + this.object.addOppose.manualBonus.damage + this.object.addOppose.addedBonus.damage;
+            totalOpposedBonuses.resolve = baseOpposedBonuses.resolve + this.object.addOppose.manualBonus.resolve + this.object.addOppose.addedBonus.resolve;
+            totalOpposedBonuses.guile = baseOpposedBonuses.guile + this.object.addOppose.manualBonus.guile + this.object.addOppose.addedBonus.guile;
+        }
+
         return {
             actor: this.actor,
             selects: this.selects,
@@ -898,6 +938,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             penalties: penalties,
             triggers: triggers,
             effectsAndTags: effectsAndTags,
+            baseOpposedBonuses: baseOpposedBonuses,
+            totalOpposedBonuses: totalOpposedBonuses,
             buttons: [
                 { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
                 { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
