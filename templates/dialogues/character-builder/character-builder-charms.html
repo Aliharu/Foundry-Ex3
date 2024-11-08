@@ -12,7 +12,6 @@
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
       <h4 class="item-name">{{item.name}}
-
         <a class="item-control lower-charm-count" data-action="lowerCharmCount" title="Lower Charm Count" data-type="charms"
           data-index="{{index}}"><i class="fas fa-minus"></i></a>
         {{item.itemCount}}
@@ -75,7 +74,13 @@
     <li class="item flexrow item-row" data-item-id="{{item._id}}">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
-      <h4 class="item-name">{{item.name}}</h4>
+      <h4 class="item-name">{{item.name}}
+        <a class="item-control lower-charm-count" data-action="lowerCharmCount" title="Lower Charm Count" data-type="evocations"
+        data-index="{{index}}"><i class="fas fa-minus"></i></a>
+      {{item.itemCount}}
+      <a class="item-control add-charm-count" data-action="addCharmCount" title="Add Charm Count" data-type="evocations"
+        data-index="{{index}}"><i class="fas fa-plus"></i></a>
+      </h4>
       <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm" data-type="evocations"
           data-index="{{index}}"><i class="fas fa-trash"></i></a>
     </li>
@@ -122,7 +127,13 @@
     <li class="item flexrow item-row" data-item-id="{{item._id}}">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
-      <h4 class="item-name">{{item.name}}</h4>
+      <h4 class="item-name">{{item.name}}
+        <a class="item-control lower-charm-count" data-action="lowerCharmCount" title="Lower Charm Count" data-type="martialArtsCharms"
+        data-index="{{index}}"><i class="fas fa-minus"></i></a>
+      {{item.itemCount}}
+      <a class="item-control add-charm-count" data-action="addCharmCount" title="Add Charm Count" data-type="martialArtsCharms"
+        data-index="{{index}}"><i class="fas fa-plus"></i></a>
+      </h4>
       <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm"
           data-type="martialArtsCharms" data-index="{{index}}"><i class="fas fa-trash"></i></a>
     </li>
@@ -169,7 +180,13 @@
     <li class="item flexrow item-row" data-item-id="{{item._id}}">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
-      <h4 class="item-name">{{item.name}}</h4>
+      <h4 class="item-name">{{item.name}}
+        <a class="item-control lower-charm-count" data-action="lowerCharmCount" title="Lower Charm Count" data-type="otherCharms"
+        data-index="{{index}}"><i class="fas fa-minus"></i></a>
+      {{item.itemCount}}
+      <a class="item-control add-charm-count" data-action="addCharmCount" title="Add Charm Count" data-type="otherCharms"
+        data-index="{{index}}"><i class="fas fa-plus"></i></a>
+      </h4>
       <div class="item-controls"><a class="item-control delete-item" data-action="deleteItem" title="Remove Charm" data-type="otherCharms"
           data-index="{{index}}"><i class="fas fa-trash"></i></a>
     </li>

@@ -1017,14 +1017,24 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         nonFavoredCharms += charm.itemCount;
       }
     }
-    favoredCharms += Object.entries(this.object.character.evocations).length;
-    nonFavoredCharms += Object.entries(this.object.character.otherCharms).length;
-    if (this.object.character.abilities.martialarts.favored) {
-      favoredCharms += Object.entries(this.object.character.martialArtsCharms).length;
+
+    for (const [key, charm] of Object.entries(this.object.character.evocations)) {
+      favoredCharms += charm.itemCount;
     }
-    else {
-      nonFavoredCharms += Object.entries(this.object.character.martialArtsCharms).length;
+
+    for (const [key, charm] of Object.entries(this.object.character.otherCharms)) {
+      nonFavoredCharms += charm.itemCount;
     }
+
+    for (const [key, charm] of Object.entries(this.object.character.martialArtsCharms)) {
+      if (this.object.character.abilities.martialarts.favored) {
+        favoredCharms += charm.itemCount;
+      }
+      else {
+        nonFavoredCharms += charm.itemCount;
+      }
+    }
+
     if (this.object.character.abilities.occult.favored) {
       favoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1);
     }
@@ -1916,7 +1926,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             if (Object.values(this.object.character.weapons).some(weapon => weapon._id === charm.system.parentitemid)) {
               returnVal = true;
             }
-            if (Object.values(this.object.character.armor).some(armor => armor._id === charm.system.parentitemid)) {
+            if (Object.values(this.object.character.armors).some(armor => armor._id === charm.system.parentitemid)) {
               returnVal = true;
             }
             if (Object.values(this.object.character.items).some(item => item._id === charm.system.parentitemid)) {
