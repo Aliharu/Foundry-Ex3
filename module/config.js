@@ -162,10 +162,11 @@ exaltedthird.activeEffectChanges = {
     }
   },
   motes: {
-    label: "Ex3.Motes",
+    label: "Ex3.Cost",
     effectList: {
       'system.motes.cost.round': 'Ex3.MoteCostPerRound',
       'system.motes.cost.turn': 'Ex3.MoteCostPerTurn',
+      'system.initiative.cost.round': 'Ex3.InitiativeCostPerRound',
     }
   },
   damage: {

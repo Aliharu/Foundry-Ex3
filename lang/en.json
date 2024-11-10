@@ -948,6 +948,8 @@
 
     "Ex3.MoteCostPerRound": "Mote Cost Per Round",
     "Ex3.MoteCostPerTurn": "Mote Cost Per Character's Turn",
+    "Ex3.InitiativeCostPerRound": "Initiative Cost Per Round",
+
     "Ex3.InitiativeDamageRoundBashing": "Initiative Damage (Per Round, B)",
     "Ex3.InitiativeDamageRoundLethal": "Initiative Damage (Per Round, L)",
     "Ex3.BashingDamageRound": "Bashing Damage (Per Round)",

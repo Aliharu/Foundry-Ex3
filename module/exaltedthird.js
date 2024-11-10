@@ -608,6 +608,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
                 }
               }
             }
+            if (change.key === 'system.motes.cost.round') {
+              moteCost += parseInt(change.value);
+            }
             if (change.key === 'system.damage.round.bashing') {
               bashingDamage += parseInt(change.value);
             }
@@ -619,6 +622,12 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
             if (change.key === 'system.motes.cost.round') {
               moteCost += parseInt(change.value);
+            }
+          }
+          for (const change of activeEffect.changes) {
+            if (change.key === 'system.initiative.cost.round') {
+              initiativeDamage += parseInt(change.value);
+              currentCombatantInitiative -= parseInt(change.value);
             }
           }
         }
