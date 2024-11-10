@@ -36,7 +36,7 @@
                     </select></h1>
                 {{#ifEquals system.creaturetype 'demon'}}
                 <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
-                        {{selectOptions selects.demons selected=system.creaturesubtype localize=true}}
+                        {{selectOptions selects.demons selected=system.details.creaturesubtype localize=true}}
                     </select></h1>
                 {{/ifEquals}}
 
