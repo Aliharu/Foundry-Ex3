@@ -597,8 +597,10 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
               if (currentCombatantInitiative !== null && (currentCombatantInitiative - parseInt(change.value)) <= 0 && currentCombatantInitiative > 0) {
                 crasherId = activeEffect.flags?.exaltedthird?.poisonerCombatantId;
               }
-              currentCombatantInitiative -= parseInt(change.value);
-              initiativeDamage += parseInt(change.value);
+              if((currentCombatantInitiative || 0) > 0) {
+                currentCombatantInitiative -= parseInt(change.value);
+                initiativeDamage += parseInt(change.value);
+              }
               if (combatant.initiative !== null && combatant.initiative <= 0) {
                 if (change.key === 'system.damage.round.initiative.bashing') {
                   bashingDamage += parseInt(change.value);
@@ -625,7 +627,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
           for (const change of activeEffect.changes) {
-            if (change.key === 'system.initiative.cost.round') {
+            if (change.key === 'system.initiative.cost.round' && (currentCombatantInitiative || 0) > 0) {
               initiativeDamage += parseInt(change.value);
               currentCombatantInitiative -= parseInt(change.value);
             }
