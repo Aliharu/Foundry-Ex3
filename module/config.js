@@ -1742,11 +1742,6 @@ exaltedthird.triggerBonusDropdowns = {
   }
 };
 
-exaltedthird.triggerRequirementDropdowns = {
-};
-
-
-
 exaltedthird.requirementTypes = {
   none: {
     label: "Ex3.None",
@@ -1774,12 +1769,14 @@ exaltedthird.requirementTypes = {
       hasClassification: "Ex3.HasClassification",
       formula: "Ex3.Formula",
       hasStatus: "Ex3.HasStatus",
+      missingStatus: "Ex3.MissingStatus",
     },
   },
   target: {
     label: "Ex3.Target",
     requirements: {
       targetHasStatus: "Ex3.TargetHasStatus",
+      targetMissingStatus: "Ex3.TargetMissingStatus",
       targetIsBattlegroup: "Ex3.TargetIsBattlegroup",
       targetIsCrashed: "Ex3.TargetIsCrashed",
       targetHasClassification: "Ex3.TargetHasClassification",

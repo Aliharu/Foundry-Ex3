@@ -1192,14 +1192,14 @@ export class ExaltedThirdActor extends Actor {
       switch (actorData.system.details.exalt) {
         case 'dragonblooded':
           value = Math.floor(((abilityValue) + (actorData.system.settings.staticcapsettings[type]?.specialty || 0)) / 2);
-          return `(+${value} for ${value * 2}m)`
+          return `+${value} for ${value * 2}m`
         case 'sidereal':
           var baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
-          return `(+${baseSidCap} for ${baseSidCap * 2}m)`
+          return `+${baseSidCap} for ${baseSidCap * 2}m`
         case 'solar':
-          return `(+${value} for ${value * 2}m)`
+          return `+${value} for ${value * 2}m`
         case 'abyssal':
-          return `(+${value} for ${value * 2}m)`
+          return `+${value} for ${value * 2}m`
         case 'lunar':
           var highestAttributeNumber = 0;
           for (let [name, attribute] of Object.entries(actorData.system.attributes)) {
@@ -1210,21 +1210,21 @@ export class ExaltedThirdActor extends Actor {
           var newValueLow = Math.floor(attributeValue / 2);
           var newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
           if (type === 'soak') {
-            return `(+${newValueLow} for ${newValueLow * 2}m)`
+            return `+${newValueLow} for ${newValueLow * 2}m`
           }
-          return `(+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m)`
+          return `+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m`
         case 'liminal':
           value = Math.floor(((actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0) + (actorData.system.anima.value > 0 ? actorData.system.essence.value : 0)) / 2);
-          return `(+${value} for ${value * 2}m)`
+          return `+${value} for ${value * 2}m`
         case 'hearteater':
           value = Math.floor((abilityValue + 1) / 2);
-          return `(+${value} for ${value * 2}m)`;
+          return `+${value} for ${value * 2}m`;
         case 'dreamsouled':
           value = Math.floor(abilityValue / 2);
-          return `(+${value} for ${value * 2}m)`;
+          return `+${value} for ${value * 2}m`;
         case 'umbral':
           value = Math.floor(Math.min(10, abilityValue + actorData.system.penumbra.value) / 2);
-          return `(+${value} for ${value * 2}m)`
+          return `+${value} for ${value * 2}m`
         default:
           return ''
       }
@@ -1233,10 +1233,10 @@ export class ExaltedThirdActor extends Actor {
       let caps
       let bonus = 0
       if (actorData.system.details.exalt === 'lunar') {
-        if (value <= 1) return `(+0 for 0m; +1 for ${type === 'soak' ? 1 : 2}m)`
-        else if (value <= 3) return `(+1 for ${type === 'soak' ? 1 : 2}m; +2 for ${type === 'soak' ? 2 : 4}m)`
-        else if (value <= 5) return `(+2 for ${type === 'soak' ? 2 : 4}m; +4 for ${type === 'soak' ? 4 : 8}m)`
-        else return `(+2 for ${type === 'soak' ? 2 : 4}m; +5 for ${type === 'soak' ? 5 : 10}m)`
+        if (value <= 1) return `+0 for 0m; +1 for ${type === 'soak' ? 1 : 2}m`
+        else if (value <= 3) return `+1 for ${type === 'soak' ? 1 : 2}m; +2 for ${type === 'soak' ? 2 : 4}m`
+        else if (value <= 5) return `+2 for ${type === 'soak' ? 2 : 4}m; +4 for ${type === 'soak' ? 4 : 8}m`
+        else return `+2 for ${type === 'soak' ? 2 : 4}m; +5 for ${type === 'soak' ? 5 : 10}m`
       }
       else {
         switch (actorData.system.details.exalt) {
@@ -1268,10 +1268,10 @@ export class ExaltedThirdActor extends Actor {
             return ''
         }
 
-        if (value <= 1) return `(+${caps[0]} for ${caps[0] * 2}m)`
-        else if (value <= 3) return `(+${caps[1]} for ${caps[1] * 2}m)`
-        else if (value <= 5) return `(+${caps[2]} for ${caps[2] * 2}m)`
-        else return `(+${caps[3]} for ${caps[3] * 2}m)`
+        if (value <= 1) return `+${caps[0]} for ${caps[0] * 2}m`
+        else if (value <= 3) return `+${caps[1]} for ${caps[1] * 2}m`
+        else if (value <= 5) return `+${caps[2]} for ${caps[2] * 2}m`
+        else return `+${caps[3]} for ${caps[3] * 2}m`
       }
     }
 

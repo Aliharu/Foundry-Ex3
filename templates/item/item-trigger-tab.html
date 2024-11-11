@@ -181,7 +181,17 @@
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'missingStatus'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
+                </select>
                 {{else ifEquals requirement.requirement 'targetHasStatus'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
+                </select>
+                {{else ifEquals requirement.requirement 'targetMissingStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}

@@ -164,6 +164,36 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
     sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
     sheetData.system.currentDefensePenalty = currentDefensePenalty;
+
+    if (actorData.type === "character" || sheetData.system.creaturetype === 'exalt') {
+      sheetData.system.parry.cap = this.actor._getStaticCap(actorData, 'parry', sheetData.system.parry.value);
+      if (sheetData.system.parry.cap !== '') {
+        sheetData.system.evasion.padding = true;
+        sheetData.system.defenseCapPadding = true;
+      }
+      sheetData.system.evasion.cap = this.actor._getStaticCap(actorData, 'evasion', sheetData.system.evasion.value);
+      if (sheetData.system.evasion.cap !== '') {
+        sheetData.system.evasion.padding = false;
+        if (sheetData.system.parry.cap === '') {
+          sheetData.system.parry.padding = true;
+        }
+        sheetData.system.defenseCapPadding = true;
+      }
+      sheetData.system.guile.cap = this.actor._getStaticCap(actorData, 'guile', sheetData.system.guile.value);
+      if (sheetData.system.guile.cap !== '') {
+        sheetData.system.resolve.padding = true;
+        sheetData.system.socialCapPadding = true;
+      }
+      sheetData.system.resolve.cap = this.actor._getStaticCap(actorData, 'resolve', sheetData.system.resolve.value);
+      if (sheetData.system.resolve.cap !== '') {
+        if (sheetData.system.guile.cap === '') {
+          sheetData.system.guile.padding = true;
+        }
+        sheetData.system.resolve.padding = false;
+        sheetData.system.socialCapPadding = true;
+      }
+      sheetData.system.soak.cap = this.actor._getStaticCap(actorData, 'soak', actorData.type === "character" ? (sheetData.system.attributes?.stamina?.value || 0) : sheetData.system.soak.value);
+    }
   }
 
   _prepareCharacterData(sheetData) {

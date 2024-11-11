@@ -60,6 +60,14 @@
             color: var(--color-text-dark-primary);
             border: 1px solid black;
         }
+
+        .opposed-bonus-cap-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: var(--font-size-12);
+        }
     }
 
 

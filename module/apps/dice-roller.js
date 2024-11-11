@@ -13,7 +13,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.messageId = data.preMessageId;
         this.search = "";
 
-        if(data.lastRoll) {
+        if (data.lastRoll) {
             this.object = foundry.utils.duplicate(this.actor.flags.exaltedthird.lastroll);
             this.object.skipDialog = false;
         }
@@ -803,7 +803,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     },
                 );
             }
-    
+
         }
 
         if (this._isAttackRoll()) {
@@ -877,7 +877,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         for (const charm of this.object.addedCharms) {
-            if(charm.system.triggers) {
+            if (charm.system.triggers) {
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers)) {
                     triggers.push({
                         name: trigger.name || "No Name Trigger"
@@ -908,14 +908,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             damage: 0,
         }
 
-        if(this.object.rollType === 'useOpposingCharms') {
-            if(this.actor) {
+        if (this.object.rollType === 'useOpposingCharms') {
+            if (this.actor) {
                 baseOpposedBonuses.defense = Math.max(this.actor.system.parry.value, this.actor.system.evasion.value);
                 baseOpposedBonuses.hardness = this.actor.system.hardness.value;
                 baseOpposedBonuses.soak = this.actor.system.soak.value;
                 baseOpposedBonuses.resolve = this.actor.system.resolve.value;
                 baseOpposedBonuses.guile = this.actor.system.guile.value;
-            }   
+            }
             totalOpposedBonuses.dice = baseOpposedBonuses.dice + this.object.addOppose.manualBonus.dice + this.object.addOppose.addedBonus.dice;
             totalOpposedBonuses.successes = baseOpposedBonuses.successes + this.object.addOppose.manualBonus.successes + this.object.addOppose.addedBonus.successes;
             totalOpposedBonuses.defense = baseOpposedBonuses.defense + this.object.addOppose.manualBonus.defense + this.object.addOppose.addedBonus.defense;
@@ -1058,7 +1058,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 await this.useOpposingCharms();
             }
             else {
-                if(this.actor) {
+                if (this.actor) {
                     const rollData = this.getSavedRollData();
                     await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
                 }
@@ -1327,7 +1327,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (result && result.name?.value) {
                     let results = result.name.value;
                     const rollData = this.getSavedRollData();
-                    
+
                     rollData.name = results;
                     let updates = {
                         "system.savedRolls": {
@@ -4296,7 +4296,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _addBonuses(charm, type, bonusType = "benefit") {
-        if(!charm.system.triggers) {
+        if (!charm.system.triggers) {
             return;
         }
         const doublesChart = {
@@ -4680,11 +4680,24 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         fufillsRequirements = false;
                     }
                     break;
+                case 'missingStatus':
+                    if (this.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                        fufillsRequirements = false;
+                    }
+                    break;
                 case 'targetHasStatus':
                     if (!this.object.target) {
                         fufillsRequirements = false;
                     }
                     else if (!this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'targetMissingStatus':
+                    if (!this.object.target) {
+                        fufillsRequirements = false;
+                    }
+                    else if (this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
                         fufillsRequirements = false;
                     }
                     break;
