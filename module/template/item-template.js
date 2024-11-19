@@ -414,6 +414,7 @@ export class ItemCharmData extends CommonItemData {
                 ability: new fields.StringField({ initial: "" }),
                 number: new fields.NumberField({ initial: 0 }),
             }),
+            equipped: new fields.BooleanField({ initial: false }),
             cost: new fields.SchemaField({
                 motes: new fields.NumberField({ initial: 0 }),
                 commitmotes: new fields.NumberField({ initial: 0 }),

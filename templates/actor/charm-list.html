@@ -1,6 +1,8 @@
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
-        {{localize "Ex3.Charms"}} <a><i class="fas fa-info-circle charms-cheat-sheet cursor-pointer"></i></a>
+        {{localize "Ex3.Charms"}}       {{#ifEquals system.details.exalt 'alchemical'}}
+        ({{system.usedCharmSlots}} / {{system.charmslots.value}})
+        {{/ifEquals}} <a><i class="fas fa-info-circle charms-cheat-sheet cursor-pointer"></i></a>
     </div>
     <div>
         {{#ifEquals actor.type 'character'}}
@@ -42,6 +44,13 @@
             <a class="item-control item-disable" title="Charm Available"><i class="fas fa-sun"></i></a>
             {{/if}}
             {{/if}} -->
+            {{#ifEquals ../../system.details.exalt 'alchemical'}}
+            {{#if item.system.equipped}}
+            <a class="item-control toggle-item-value" data-key="equipped" title="Unequip" style="color:#F9B516;"><i class="fas fa-head-side-gear"></i></a>
+            {{else}}
+            <a class="item-control toggle-item-value" data-key="equipped" title="Equip"><i class="fas fa-head-side-gear"></i></a>
+            {{/if}}
+            {{/ifEquals}}
             {{#if item.system.cost.commitmotes}}
             {{#if item.system.active}}
             <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>

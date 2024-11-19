@@ -615,6 +615,14 @@
           </div>
         </div>
         {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'alchemical'}}
+        <div class="grid grid-2col flexrow">
+          <div>
+            <label class="resource-label">{{localize "Ex3.CharmSlots"}}</label>
+            <input type="number" name="system.charmslots.value" value="{{system.charmslots.value}}" />
+          </div>
+        </div>
+        {{/ifEquals}}
         {{#ifEquals system.details.exalt 'sidereal'}}
         <div class="grid grid-2col flexrow">
           <div>

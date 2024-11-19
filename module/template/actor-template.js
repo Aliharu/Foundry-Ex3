@@ -100,6 +100,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       virtueone: new fields.StringField({ initial: "" }),
       virtuetwo: new fields.StringField({ initial: "" }),
       essence: resourceField(1, 10),
+      charmslots: statField(0),
       willpower: resourceField(5, 5),
       penumbra: resourceField(0, 10),
       evasion: statField(0),

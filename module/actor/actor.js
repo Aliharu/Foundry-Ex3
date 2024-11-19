@@ -1,4 +1,4 @@
-import RollForm  from "../apps/dice-roller.js";
+import RollForm from "../apps/dice-roller.js";
 import { animaTokenMagic } from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
 
@@ -261,7 +261,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'dragonblooded') {
         maxMotes = 11 + essenceLevel;
       }
-      if (exaltType === 'lunar' || exaltType === 'alchemical' || exaltType === 'getimian') {
+      if (exaltType === 'lunar' || exaltType === 'getimian') {
         maxMotes = 15 + essenceLevel;
       }
       if (exaltType === 'sovereign') {
@@ -287,7 +287,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         maxMotes = 11 + essenceLevel;
       }
-      if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         maxMotes = 11 + (essenceLevel * 2);
       }
     }
@@ -312,7 +312,7 @@ export class ExaltedThirdActor extends Actor {
           maxMotes = 23 + (essenceLevel * 4);
         }
       }
-      if (exaltType === 'sidereal' || exaltType === 'alchemical' || exaltType === 'getimian') {
+      if (exaltType === 'sidereal' || exaltType === 'getimian') {
         maxMotes = 25 + (essenceLevel * 6);
       }
       if (exaltType === 'liminal') {
@@ -321,7 +321,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         maxMotes = 23 + (essenceLevel * 4);
       }
-      if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         maxMotes = 27 + (essenceLevel * 6);
       }
     }
@@ -473,6 +473,13 @@ export class ExaltedThirdActor extends Actor {
       if (this.system.details.caste?.toLowerCase() === 'puppeteer') {
         resonance.value = [];
         resonance.custom = 'Artifact Puppets';
+      }
+    }
+    else if (exaltType === 'alchemical') {
+      if (this.system.details.caste === 'jade') {
+        resonance.value = ['blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
+      } else if (this.system.details.caste) {
+        resonance.value = [this.system.details.caste];
       }
     }
     else {
@@ -638,7 +645,7 @@ export class ExaltedThirdActor extends Actor {
     if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
-    game.rollForm = await new RollForm(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, { rollId: roll.id, skipDialog: true }).roll();
+    game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id, skipDialog: true }).roll();
   }
 
   getSavedRoll(name) {
@@ -646,7 +653,7 @@ export class ExaltedThirdActor extends Actor {
     if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
-    return new RollForm(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()]}, {}, { rollId: roll.id });
+    return new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id });
   }
   /**
    * Prepare Character type specific data
@@ -1028,6 +1035,9 @@ export class ExaltedThirdActor extends Actor {
       case 'infernal':
         diceCap = abilityValue + attributeValue;
         break;
+      case 'alchemical':
+        diceCap = Math.min(10, attributeValue + this.system.essence.value);
+        break;
       case 'dragonblooded':
         diceCap = abilityValue + (hasSpecialty ? 1 : 0);
         break;
@@ -1188,6 +1198,9 @@ export class ExaltedThirdActor extends Actor {
       }
       const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
       const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
+      if(actorData.system.details.exalt === 'alchemical') {
+        value = Math.min(10, attributeValue + abilityValue);
+      }
       value = Math.floor(((attributeValue) + (abilityValue)) / 2);
       switch (actorData.system.details.exalt) {
         case 'dragonblooded':
@@ -1197,9 +1210,15 @@ export class ExaltedThirdActor extends Actor {
           var baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
           return `+${baseSidCap} for ${baseSidCap * 2}m`
         case 'solar':
-          return `+${value} for ${value * 2}m`
         case 'abyssal':
-          return `+${value} for ${value * 2}m`
+        case 'infernal':
+          return `+${value} for ${value * 2}m`;
+        case 'alchemical':
+          var baseAlchCap = Math.floor(Math.min(10, attributeValue + actorData.system.essence.value) / 2);
+          if (type === 'soak') {
+            return `+${baseAlchCap} for ${baseAlchCap}m`;
+          }
+          return `+${baseAlchCap} for ${baseAlchCap * 2}m`;
         case 'lunar':
           var highestAttributeNumber = 0;
           for (let [name, attribute] of Object.entries(actorData.system.attributes)) {
@@ -1210,7 +1229,7 @@ export class ExaltedThirdActor extends Actor {
           var newValueLow = Math.floor(attributeValue / 2);
           var newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
           if (type === 'soak') {
-            return `+${newValueLow} for ${newValueLow * 2}m`
+            return `+${newValueLow} for ${newValueLow}m`
           }
           return `+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m`
         case 'liminal':
@@ -1411,10 +1430,10 @@ export class ExaltedThirdActor extends Actor {
     if (data.rollType !== 'useOpposingCharms') {
       message = await this.sendTargetingChatMessage(data);
     }
-    if(message) {
+    if (message) {
       data.preMessageId = message.id;
     }
-    game.rollForm = await new RollForm(this, {classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 }}, {}, data).render(true);
+    game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 } }, {}, data).render(true);
   }
 
   getSheetBackground() {

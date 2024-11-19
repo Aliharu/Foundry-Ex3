@@ -194,6 +194,8 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
       sheetData.system.soak.cap = this.actor._getStaticCap(actorData, 'soak', actorData.type === "character" ? (sheetData.system.attributes?.stamina?.value || 0) : sheetData.system.soak.value);
     }
+
+    sheetData.system.usedCharmSlots = this.actor.items.filter(item => item.type === 'charm' && item.system.equipped).length
   }
 
   _prepareCharacterData(sheetData) {
@@ -316,6 +318,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       },
       abilities: 0,
       bonuspoints: 0,
+      charmSlots: 0,
       experience: 0,
       charms: 0,
       specialties: 0,

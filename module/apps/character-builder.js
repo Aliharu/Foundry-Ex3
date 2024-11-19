@@ -56,6 +56,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           intimacies: 4,
           bonusPoints: 0,
           willpower: 0,
+          charmSlots: 3,
         },
         spent: {
           attributes: {
@@ -72,7 +73,16 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           merits: 0,
           charms: 0,
           intimacies: 0,
+          charmSlots: 0,
           bonusPoints: {
+            cost: {
+              attributes: "4 per dot, 3 per teriary dot",
+              abilities: "1 per dot, 2 per non-favored",
+              specialties: "1",
+              merits: "1",
+              charms: "4, 5 per non-favored",
+              willpower: "2",
+            },
             abilities: 0,
             attributes: 0,
             specialties: 0,
@@ -98,6 +108,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           essence: 1,
           willpower: 5,
           oxBodies: 0,
+          charmSlots: 15,
           bonusMerits: {
             source: "",
             value: 0,
@@ -626,7 +637,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (resetFavored) {
       for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
         if (CONFIG.exaltedthird.casteabilitiesmap[this.object.character.caste.toLowerCase()]?.includes(key)) {
-          attribute.favored = true;
+          if(this.object.character.exalt === 'alchemcial') {
+            attribute.favored = true;
+          }
           attribute.caste = true;
         }
         else {
@@ -689,7 +702,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (CONFIG.exaltedthird.castes[this.object.character.exalt]) {
       this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
     }
-    if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect') {
+    if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect' || this.object.character.exalt === 'alchemical') {
       this.object.character.showAttributeCharms = true;
       this.object.character.showAbilityCharms = false;
     }
@@ -782,6 +795,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       intimacies: 4,
       willpower: 5,
       experience: 55,
+      charmSlots: 5,
     }
     if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal') {
       this.object.creationData.available.casteAbilities = 5;
@@ -801,6 +815,11 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         this.object.creationData.available.merits = 13;
         this.object.creationData.available.bonusPoints = 18;
       }
+    }
+    if(this.object.character.exalt === 'alchemical') {
+      this.object.creationData.available.favoredAttributes = 1;
+      this.object.creationData.available.favoredAbilities = 0;
+      this.object.creationData.available.charnSlots = (17 + (this.object.character.essence * 3)) - 15;
     }
     if (this.object.character.exalt === 'dragonblooded') {
       this.object.creationData.available = {
@@ -827,7 +846,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         this.object.creationData.available.bonusPoints = 15;
       }
     }
-    if (this.object.character.exalt === 'sidereal') {
+    if (this.object.character.exalt === 'sidereal' || this.object.character.exalt === 'alchemical') {
       if (this.object.character.essence >= 2) {
         this.object.creationData.available.charms = 20;
         this.object.creationData.available.merits = 13;
@@ -873,6 +892,14 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       excellencies: 0,
       abovethree: 0,
       bonusPoints: {
+        cost: {
+          attributes: "4 per dot, 3 per teriary dot",
+          abilities: "1 per dot, 2 per non-favored",
+          specialties: "1",
+          merits: "1",
+          charms: "4, 5 per non-favored",
+          willpower: "2",
+        },
         abilities: 0,
         attributes: 0,
         specialties: 0,
@@ -891,7 +918,6 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         total: 0,
       },
     }
-
     var attributesSpent = {
       physical: {
         favored: 0,
@@ -906,8 +932,24 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         unFavored: 0,
       }
     }
-    var favoredCharms = 0;
-    var nonFavoredCharms = 0;
+
+    let useFavoredAbilities = true;
+    let useFavoredAttributes = false;
+
+    if(this.object.character.exalt === 'lunar' || this.object.character.exalt === 'alchemical') {
+      useFavoredAbilities = false;
+      useFavoredAttributes = true;
+      this.object.creationData.spent.bonusPoints.cost.attributes = '4 per dot, 3 per caste/favored dot';
+      this.object.creationData.spent.bonusPoints.cost.Abilities = '2 per dot';
+      this.object.creationData.spent.bonusPoints.cost.charms = '4, 5 per non-favored (Always 4 if casteless)'
+    }
+    if(this.object.character.exalt === 'alchemical') {
+      this.object.creationData.spent.bonusPoints.cost.charms = '1 for caste/favored, 2 for non-favored, 5 for spells (4 if intelligence is caste/favored), 5 for Martial Arts, 4 for Evocations';
+    }
+
+    let favoredCharms = 0;
+    let nonFavoredCharms = 0;
+
     for (let [key, attr] of Object.entries(this.object.character.attributes)) {
       this.object.creationData.spent.attributes[attr.type] += (attr.value - 1);
 
@@ -921,16 +963,16 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         attributesSpent[attr.type].unFavored += (attr.value - 1);
       }
     }
-    var favoredAttributesSpent = 0;
-    var unFavoredAttributesSpent = 0;
-    var tertiaryAttributes = 0;
-    var nonTertiaryAttributes = 0;
-    var threeOrBelowFavored = 0;
-    var threeOrBelowNonFavored = 0;
-    var aboveThreeFavored = 0;
-    var aboveThreeUnFavored = 0;
+    let favoredAttributesSpent = 0;
+    let unFavoredAttributesSpent = 0;
+    let tertiaryAttributes = 0;
+    let nonTertiaryAttributes = 0;
+    let threeOrBelowFavored = 0;
+    let threeOrBelowNonFavored = 0;
+    let aboveThreeFavored = 0;
+    let aboveThreeUnFavored = 0;
     for (let [key, attribute] of Object.entries(this.object.creationData.spent.attributes)) {
-      if (this.object.creationData[key] === 'tertiary') {
+      if (this.object.creationData[key] === 'tertiary' && !useFavoredAttributes) {
         tertiaryAttributes += Math.max(0, this.object.creationData.spent.attributes[key] - this.object.creationData.available.attributes[key]);
       }
       else {
@@ -1004,6 +1046,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       this.object.creationData.spent.merits += merit.system.points;
     }
 
+    let alchemicalCharmBonusPointDiscount = 0;
+
     for (const [key, charm] of Object.entries(this.object.character.charms)) {
       if (this.object.character.attributes[charm.system.ability] && this.object.character.attributes[charm.system.ability].favored) {
         favoredCharms += charm.itemCount;
@@ -1013,9 +1057,13 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
         favoredCharms += charm.itemCount
       }
+      else if (this.object.character.caste === 'casteless') {
+        favoredCharms += charm.itemCount
+      }
       else {
         nonFavoredCharms += charm.itemCount;
       }
+      alchemicalCharmBonusPointDiscount += 3;
     }
 
     for (const [key, charm] of Object.entries(this.object.character.evocations)) {
@@ -1060,13 +1108,19 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     } else {
       this.object.creationData.spent.bonusPoints.attributes += (tertiaryAttributes * 3) + (nonTertiaryAttributes * 4);
     }
+    this.object.creationData.spent.bonusPoints.charmSlots = 0;
+    if (this.object.character.exalt === 'alchemical') {
+      this.object.creationData.spent.bonusPoints.charmSlots = (this.object.character.charmSlots - 15) * 3;
+    }
     this.object.creationData.spent.bonusPoints.willpower += (Math.max(0, (this.object.character.willpower - this.object.creationData.available.willpower))) * 2;
     this.object.creationData.spent.bonusPoints.merits += (Math.max(0, (this.object.creationData.spent.merits - this.object.creationData.available.merits)));
     this.object.creationData.spent.bonusPoints.specialties += (Math.max(0, (this.object.creationData.spent.specialties - this.object.creationData.available.specialties)));
     this.object.creationData.spent.bonusPoints.charms += totalNonFavoredCharms * 5;
     this.object.creationData.spent.bonusPoints.charms += totalFavoredCharms * 4;
-    this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms;
-
+    this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms + this.object.creationData.spent.bonusPoints.charmSlots;
+    if(this.object.character.exalt === 'alchemical') {
+      this.object.creationData.spent.bonusPoints.total -= alchemicalCharmBonusPointDiscount;
+    }
     this.object.creationData.spent.experience.attributes += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
     this.object.creationData.spent.experience.abilities += (favoredBPBelowThree * 4) + (nonfavoredBPBelowThree * 5);
     this.object.creationData.spent.experience.abilities += (aboveThreeFavored * 4) + (aboveThreeUnFavored * 5);
@@ -1890,6 +1944,15 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             if (charm.system.archetype.ability === "combat") {
               return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
             }
+            if(charm.system.archetype.ability === 'physicalAttribute') {
+              return charm.system.requirement <= Math.max(this.object.character.attributes['strength'].value, this.object.character.attributes['dexterity'].value, this.object.character.attributes['stamina'].value);
+            }
+            if(charm.system.archetype.ability === 'mentalAttribute') {
+              return charm.system.requirement <= Math.max(this.object.character.attributes['perception'].value, this.object.character.attributes['intelligence'].value, this.object.character.attributes['wits'].value);
+            }
+            if(charm.system.archetype.ability === 'socialAttribute') {
+              return charm.system.requirement <= Math.max(this.object.character.attributes['charisma'].value, this.object.character.attributes['manipulation'].value, this.object.character.attributes['appearance'].value);
+            }
             if (this.object.character.attributes[charm.system.archetype.ability]) {
               return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;
             }
@@ -2223,6 +2286,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
     if (actorData.system.details.exalt === 'solar' || actorData.system.details.exalt === 'abyssal' || actorData.system.details.exalt === 'infernal') {
       actorData.system.settings.martialartsmastery = 'mastery';
+    }
+
+    if(this.object.character.exalt === 'alchemical') {
+      actorData.system.charmslots.value = this.object.character.charmSlots;
     }
     actorData.system.settings.sorcerycircle = this.object.character.sorcerer;
     actorData.system.settings.necromancycircle = this.object.character.necromancer;

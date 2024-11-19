@@ -826,6 +826,7 @@ exaltedthird.classifications = {
   "demon": "Demon",
   "enemyoffate": "Enemy of Fate",
   "fae": "Fae",
+  "gremlin": "Gremlin",
   "ghost": "Ghost",
   "mortal": "Mortal",
   "spirit": "Spirit",
@@ -1040,6 +1041,24 @@ exaltedthird.casteabilitiesmap = {
   ],
   'moonshadow': [
     'bureaucracy', 'integrity', 'linguistics', 'occult', 'presence', 'ride', 'sail', 'socialize'
+  ],
+  'orichalcum': [
+    'charisma', 'intelligence', 'strength'
+  ],
+  'moonsilver': [
+    'appearance', 'dexterity', 'wits'
+  ],
+  'jade': [
+    'charisma', 'stamina', 'wits'
+  ],
+  'starmetal': [
+    'dexterity', 'intelligence', 'manipulation'
+  ],
+  'soulsteel': [
+    'manipulation', 'perception', 'stamina'
+  ],
+  'adamant': [
+    'appearance', 'perception', 'strength'
   ],
 };
 
@@ -2094,6 +2113,9 @@ exaltedthird.selects = {
   uniqueArchetypeAbilityOptions: {
     '': "Ex3.None",
     'combat': "Ex3.AnyCombatAbility",
+    'physicalAttribute': "Ex3.PhysicalAttribute",
+    'mentalAttribute': "Ex3.MentalAttribute",
+    'socialAttribute': "Ex3.SocialAttribute",
   },
   craftTypes: {
     'basic': "Ex3.Basic",

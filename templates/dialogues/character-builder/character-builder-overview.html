@@ -128,34 +128,54 @@
       </tr>
       <tr>
         <td>{{localize "Ex3.Attributes"}}</td>
-        <td>4 per dot, 3 per teriary dot, 3 per caste/favored dot</td>
+        <td>{{data.creationData.spent.bonusPoints.cost.attributes}}</td>
         <td>{{data.creationData.spent.bonusPoints.attributes}}</td>
       </tr>
       <tr>
         <td>{{localize "Ex3.Abilities"}}</td>
-        <td>1 per dot, 2 per non-favored</td>
+        <td>{{data.creationData.spent.bonusPoints.cost.abilities}}</td>
         <td>{{data.creationData.spent.bonusPoints.abilities}}</td>
       </tr>
       <tr>
         <td>{{localize "Ex3.Specialties"}}</td>
-        <td>1</td>
+        <td>{{data.creationData.spent.bonusPoints.cost.specialties}}</td>
         <td>{{data.creationData.spent.bonusPoints.specialties}}</td>
       </tr>
       <tr>
         <td>{{localize "Ex3.Merits"}}</td>
-        <td>1</td>
+        <td>{{data.creationData.spent.bonusPoints.cost.merits}}</td>
         <td>{{data.creationData.spent.bonusPoints.merits}}</td>
       </tr>
       <tr>
         <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
-        <td>4, 5 per non-favored</td>
+        <td>{{data.creationData.spent.bonusPoints.cost.charms}}</td>
         <td>{{data.creationData.spent.bonusPoints.charms}}</td>
       </tr>
       <tr>
         <td>{{localize "Ex3.Willpower"}}</td>
-        <td>2</td>
+        <td>{{data.creationData.spent.bonusPoints.cost.willpower}}</td>
         <td>{{data.creationData.spent.bonusPoints.willpower}}</td>
       </tr>
+
+      {{#ifEquals data.character.exalt 'lunar' }}
+      <tr>
+        <td>{{localize "Ex3.AnimalLatentAbility"}}</td>
+        <td>3</td>
+        <td>Not Tracked</td>
+      </tr>
+      {{/ifEquals}}
+      {{#ifEquals data.character.exalt 'alchemical' }}
+      <tr>
+        <td>{{localize "Ex3.Submodules"}}</td>
+        <td>3 or 6</td>
+        <td>Not Tracked</td>
+      </tr>
+      <tr>
+        <td>{{localize "Ex3.CharmSlots"}}</td>
+        <td>3 (Can only purchase {{data.creationData.available.charmSlots}})</td>
+        <td>{{data.creationData.spent.bonusPoints.charmSlots}}</td>
+      </tr>
+      {{/ifEquals}}
       <tr>
         <td>{{localize "Ex3.Total"}}</td>
         <td></td>

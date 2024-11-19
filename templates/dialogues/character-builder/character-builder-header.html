@@ -108,6 +108,12 @@
       </select>
     </div>
     {{/ifEquals}}
+    {{#ifEquals data.character.exalt 'alchemical'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.CharmSlots"}}</div>
+      <input name="object.character.charmSlots" type="number" value="{{data.character.charmSlots}}" />
+    </div>
+    {{/ifEquals}}
     {{#if data.oxBodyEnabled}}
     <div>
       <div class="resource-label">{{localize "Ex3.OxBodies"}}</div>

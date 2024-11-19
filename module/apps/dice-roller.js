@@ -5263,6 +5263,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         if (this.actor.system.details.exalt === "lunar") {
                             return `${this.actor.system.attributes['strength'].value} - ${this.actor.system.attributes['strength'].value + 5}`;
                         }
+                        else if(this.actor.system.details.exalt === "alchemical") {
+                            return `${Math.floor((Math.min(10, this.actor.system.attributes['strength'].value + this.actor.system.essence.value) / 2))}`;
+                         }
                         else {
                             return '';
                         }
@@ -5274,6 +5277,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     if (this.actor.system.details.exalt === "dragonblooded") {
                         return abilityValue + (this.object.specialty ? 1 : 0);
+                    }
+                    if (this.actor.system.details.exalt === "alchemical") {
+                        return Math.min(10, this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value);
                     }
                     if (this.actor.system.details.exalt === "lunar") {
                         return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + this._getHighestAttributeNumber(this.actor.system.attributes, true)}`;
@@ -5528,9 +5534,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 actorData = game.actors.get(this.actor.system.lunarform.actorid) || actorData;
             }
             if (actorData.type === 'character' && actorData.system.attributes.strength.excellency) {
-                var newValueLow = Math.floor(actorData.system.attributes.strength.value / 2);
-                var newValueHigh = Math.floor((actorData.system.attributes.strength.value + this._getHighestAttributeNumber(actorData.system.attributes)) / 2);
-                return `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
+                let newValueLow = Math.floor(actorData.system.attributes.strength.value / 2);
+                let newValueHigh = Math.floor((actorData.system.attributes.strength.value + this._getHighestAttributeNumber(actorData.system.attributes)) / 2);
+                if(actorData.system.details.exalt === 'lunar') {
+                    newValueLow = Math.floor(Math.min(10, actorData.system.attributes.strength.value + actorData.system.essence.value) / 2);
+                }
+                if(actorData.system.details.exalt === 'lunar') {
+
+                    return `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
+                }
+                return `(+${newValueLow} for ${newValueLow}m)`;
             }
         }
         return '';
