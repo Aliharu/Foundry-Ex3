@@ -368,7 +368,7 @@ export class ExaltedThirdActor extends Actor {
     const actorData = foundry.utils.duplicate(this);
     var armoredSoakValue = 0;
 
-    var staticAttributeValue = actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.value || 0;
+    var staticAttributeValue = (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.value || 0) + (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.upgrade || 0);
     var staticAbilityValue = 0;
     if (actorData.system.settings.staticcapsettings[type]?.ability && actorData.system.settings.staticcapsettings[type]?.ability !== 'none') {
       if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === actorData.system.settings.staticcapsettings[type].ability)) {
@@ -1417,6 +1417,7 @@ export class ExaltedThirdActor extends Actor {
     if (data.attributes) {
       for (let [k, v] of Object.entries(data.attributes)) {
         data[k] = foundry.utils.deepClone(v);
+        data[`${k}upgrade`] = {'value' : v.upgrade };
       }
     }
   }

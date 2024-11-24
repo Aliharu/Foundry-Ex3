@@ -161,18 +161,20 @@
       <tr>
         <td>{{localize "Ex3.AnimalLatentAbility"}}</td>
         <td>3</td>
-        <td>Not Tracked</td>
+        <td><input type="number" name="object.creationData.spent.bonusPoints.other"
+          value="{{data.creationData.spent.bonusPoints.other}}" data-dtype="Number" /></td>
       </tr>
       {{/ifEquals}}
       {{#ifEquals data.character.exalt 'alchemical' }}
       <tr>
         <td>{{localize "Ex3.Submodules"}}</td>
         <td>3 or 6</td>
-        <td>Not Tracked</td>
+        <td><input type="number" name="object.creationData.spent.bonusPoints.other"
+          value="{{data.creationData.spent.bonusPoints.other}}" data-dtype="Number" /></td>
       </tr>
       <tr>
         <td>{{localize "Ex3.CharmSlots"}}</td>
-        <td>3 (Can only purchase {{data.creationData.available.charmSlots}})</td>
+        <td>3 (May only purchase {{data.creationData.available.charmSlots}})</td>
         <td>{{data.creationData.spent.bonusPoints.charmSlots}}</td>
       </tr>
       {{/ifEquals}}

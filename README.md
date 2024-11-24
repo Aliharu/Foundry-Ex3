@@ -30,6 +30,8 @@ TokenHUD and ArgonHuD both have modules for Exalted Third Edition created and ma
 
 https://game-icons.net/
 
+Machine by Chintuza from [Noun Project](https://thenounproject.com/browse/icons/term/machine/) (CC BY 3.0)
+
 # Copyright
 Exalted character sheets and dice rollers are covered under the Paradox Dark Pack licence.
 "Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com."

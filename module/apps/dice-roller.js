@@ -975,6 +975,26 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.rollType !== "base") {
             this.object.diceCap = this._getDiceCap();
             this.object.TNCap = this._getTNCap();
+            this.object.charmDiceAdded = this._getDiceCap(true);
+
+            if(this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
+                this.object.charmDiceAdded = Math.max(0, this.actor.system.attributes[this.object.attribute].value + this.actor.system.attributes[this.object.attribute].upgrade - 5);
+            }
+
+            for (const charm of this.object.addedCharms) {
+                if(charm.system.diceroller) {
+                    if (!charm.system.diceroller.settings.noncharmdice) {
+                        this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice);
+                    }
+                    if (!charm.system.diceroller.settings.noncharmsuccesses) {
+                        if (this.actor.system.details.exalt === 'sidereal') {
+                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses);
+                        } else {
+                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2;
+                        }
+                    }
+                }
+            }
 
             this._calculateAnimaGain();
             this._updateSpecialtyList();
@@ -1078,7 +1098,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     _setUpMultitargets() {
         this.object.hasDifficulty = false;
-        var userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].value;
+        var userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].value + this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].upgrade;
         for (const target of Array.from(game.user.targets)) {
             target.rollData = {
                 resolve: 0,
@@ -1505,16 +1525,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
                 this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
 
-                if (!item.system.diceroller.settings.noncharmdice) {
-                    this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonusdice));
-                }
-                if (!item.system.diceroller.settings.noncharmsuccesses) {
-                    if (this.actor.system.details.exalt === 'sidereal') {
-                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - this._getFormulaValue(item.system.diceroller.bonussuccesses));
-                    } else {
-                        this.object.charmDiceAdded = Math.max(0, this.object.charmDiceAdded - (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2));
-                    }
-                }
                 this.object.targetNumber += item.system.diceroller.decreasetargetnumber;
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.reroll)) {
                     if (rerollValue) {
@@ -3062,7 +3072,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             const actorData = foundry.utils.duplicate(this.actor);
             if (this.actor.type === 'character') {
                 if (data.attributes[this.object.attribute]) {
-                    dice += data.attributes[this.object.attribute]?.value || 0;
+                    dice += (data.attributes[this.object.attribute]?.value || 0) + (data.attributes[this.object.attribute]?.upgrade || 0);
                 }
                 dice += this._getCharacterAbilityValue(this.actor, this.object.ability);
             }
@@ -4895,15 +4905,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     calculateSizeDamage(damage) {
-        if (this.object.target) {
+        let sizeDamaged = 0;
+        if (this.object.newTargetData) {
             let totalHealth = this.object.newTargetData.system.health.levels.zero.value + this.object.newTargetData.system.size.value;
-            var currentHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
-            const remainingHealth = Math.max(0, currentHealth - damage);
-            const totalDamageTaken = totalHealth - remainingHealth;
-            const filledHealthBars = Math.ceil(totalDamageTaken / totalHealth);
-            return filledHealthBars;
+            let targetSize = this.object.newTargetData.system.size.value;
+            let remainingHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
+            while (remainingHealth <= damage && targetSize > 0) {
+                sizeDamaged++;
+                damage -= remainingHealth;
+                remainingHealth = totalHealth;
+                targetSize -= 1;
+            }
         }
-        return 0;
+        return sizeDamaged;
     }
 
     async _updateTargetActor() {
@@ -5255,22 +5269,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return await renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
     }
 
-    _getDiceCap() {
+    _getDiceCap(getLunarFormCharmDice = false) {
         if (this.object.rollType !== "base") {
+            if (!this.actor?.system.lunarform?.enabled && getLunarFormCharmDice) {
+                return 0;
+            }
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
                 if (this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
-                    if (this.object.rollType === 'damage') {
-                        if (this.actor.system.details.exalt === "lunar") {
-                            return `${this.actor.system.attributes['strength'].value} - ${this.actor.system.attributes['strength'].value + 5}`;
-                        }
-                        else if(this.actor.system.details.exalt === "alchemical") {
-                            return `${Math.floor((Math.min(10, this.actor.system.attributes['strength'].value + this.actor.system.essence.value) / 2))}`;
-                         }
-                        else {
-                            return '';
-                        }
-                    }
-                    var abilityValue = 0;
+                    let abilityValue = 0;
+                    let attributeValue = this.actor.system.attributes[this.object.attribute].value;
                     abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
                     if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt)) {
                         return abilityValue + this.actor.system.attributes[this.object.attribute].value;
@@ -5391,7 +5398,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             currentCharmDice += (this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2);
                         }
                     }
-                    this.object.charmDiceAdded = Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
+                    if (getLunarFormCharmDice) {
+                        return Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
+                    }
                     if (lunarHasExcellency) {
                         diceCap = `${lunarAttributeValue} - ${lunarAttributeValue + this._getHighestAttributeNumber(lunar.system.attributes, true)}`;
                     }
@@ -5534,13 +5543,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 actorData = game.actors.get(this.actor.system.lunarform.actorid) || actorData;
             }
             if (actorData.type === 'character' && actorData.system.attributes.strength.excellency) {
-                let newValueLow = Math.floor(actorData.system.attributes.strength.value / 2);
+                let newValueLow = Math.floor((actorData.system.attributes.strength.value) / 2);
                 let newValueHigh = Math.floor((actorData.system.attributes.strength.value + this._getHighestAttributeNumber(actorData.system.attributes)) / 2);
-                if(actorData.system.details.exalt === 'lunar') {
+                if (actorData.system.details.exalt === 'alchemical') {
                     newValueLow = Math.floor(Math.min(10, actorData.system.attributes.strength.value + actorData.system.essence.value) / 2);
                 }
-                if(actorData.system.details.exalt === 'lunar') {
-
+                if (actorData.system.details.exalt === 'lunar') {
                     return `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
                 }
                 return `(+${newValueLow} for ${newValueLow}m)`;

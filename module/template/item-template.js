@@ -620,35 +620,37 @@ export class ItemCharmData extends CommonItemData {
 
             //Damage
             if (source.diceroller.damage) {
-                if (typeof source.diceroller.damage.reroll.one === 'string') {
-                    source.diceroller.damage.reroll.one = true;
-                }
-                if (typeof source.diceroller.damage.reroll.two === 'string') {
-                    source.diceroller.damage.reroll.two = true;
-                }
-                if (typeof source.diceroller.damage.reroll.three === 'string') {
-                    source.diceroller.damage.reroll.three = true;
-                }
-                if (typeof source.diceroller.damage.reroll.four === 'string') {
-                    source.diceroller.damage.reroll.four = true;
-                }
-                if (typeof source.diceroller.damage.reroll.five === 'string') {
-                    source.diceroller.damage.reroll.five = true;
-                }
-                if (typeof source.diceroller.damage.reroll.six === 'string') {
-                    source.diceroller.damage.reroll.six = true;
-                }
-                if (typeof source.diceroller.damage.reroll.seven === 'string') {
-                    source.diceroller.damage.reroll.seven = true;
-                }
-                if (typeof source.diceroller.damage.reroll.eight === 'string') {
-                    source.diceroller.damage.reroll.eight = true;
-                }
-                if (typeof source.diceroller.damage.reroll.nine === 'string') {
-                    source.diceroller.damage.reroll.nine = true;
-                }
-                if (typeof source.diceroller.damage.reroll.ten === 'string') {
-                    source.diceroller.damage.reroll.ten = true;
+                if(source.diceroller.damage.reroll) {
+                    if (typeof source.diceroller.damage.reroll.one === 'string') {
+                        source.diceroller.damage.reroll.one = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.two === 'string') {
+                        source.diceroller.damage.reroll.two = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.three === 'string') {
+                        source.diceroller.damage.reroll.three = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.four === 'string') {
+                        source.diceroller.damage.reroll.four = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.five === 'string') {
+                        source.diceroller.damage.reroll.five = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.six === 'string') {
+                        source.diceroller.damage.reroll.six = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.seven === 'string') {
+                        source.diceroller.damage.reroll.seven = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.eight === 'string') {
+                        source.diceroller.damage.reroll.eight = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.nine === 'string') {
+                        source.diceroller.damage.reroll.nine = true;
+                    }
+                    if (typeof source.diceroller.damage.reroll.ten === 'string') {
+                        source.diceroller.damage.reroll.ten = true;
+                    }
                 }
                 if (typeof source.diceroller.damage.rolltwice === 'string') {
                     source.diceroller.damage.rolltwice = true;

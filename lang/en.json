@@ -139,6 +139,15 @@
     "Ex3.Perception": "Perception",
     "Ex3.Intelligence": "Intelligence",
     "Ex3.Wits": "Wits",
+    "Ex3.StrengthUpgrade": "Strength Upgrade",
+    "Ex3.DexterityUpgrade": "Dexterity Upgrade",
+    "Ex3.StaminaUpgrade": "Stamina Upgrade",
+    "Ex3.CharismaUpgrade": "Charisma Upgrade",
+    "Ex3.ManipulationUpgrade": "Manipulation Upgrade",
+    "Ex3.AppearanceUpgrade": "Appearance Upgrade",
+    "Ex3.PerceptionUpgrade": "Perception Upgrade",
+    "Ex3.IntelligenceUpgrade": "Intelligence Upgrade",
+    "Ex3.WitsUpgrade": "Wits Upgrade",
     "Ex3.Ability": "Ability",
     "Ex3.Abilities": "Abilities",
     "Ex3.AdditionalAbilities": "Additional Abilities",
@@ -1288,5 +1297,7 @@
 
     "Ex3.CharmSlots": "Charm Slots",
     "Ex3.AnimalLatentAbility": "Animal Latent Ability",
-    "Ex3.Submodules": "Submodules"
+    "Ex3.Submodules": "Submodules",
+    "Ex3.Upgrade": "Upgrade",
+    "Ex3.AttributeUpgrades": "Attribute Upgrades"
 }

@@ -156,6 +156,15 @@
               <span class="resource-value-step" data-index="{{this}}"></span>
               {{/numLoopCertainStart}}
               {{/if}}
+              {{#ifEquals ../system.details.exalt 'alchemical'}}
+              {{#if ../system.settings.editmode}}
+              {{else}}
+              <div></div>
+              {{#numLoop attribute.upgrade}}
+              <img class="borderless-image" src="systems/exaltedthird/assets/icons/upgrade-gear.svg" height="20" width="20" />              
+              {{/numLoop}}
+              {{/if}}
+              {{/ifEquals}}
             </div>
             {{else}}
             <input class="list-input" type="number" name="system.attributes.{{key}}.value" value="{{attribute.value}}"
@@ -174,6 +183,13 @@
             <label class="resource-label">{{localize "Ex3.HasExcellency"}}</label>
             <input name="system.attributes.{{key}}.excellency" type="checkbox" {{checked attribute.excellency}}>
           </div>
+          {{#ifEquals ../system.details.exalt 'alchemical'}}
+          <div class="flexrow flex-center">
+            <label class="resource-label">{{localize "Ex3.Upgrade"}}</label>
+            <input class="list-input" type="number" name="system.attributes.{{key}}.upgrade" value="{{attribute.upgrade}}"
+            data-dtype="Number" />
+          </div>
+          {{/ifEquals}}
           {{/if}}
         </div>
         {{/each}}

@@ -45,6 +45,7 @@ export function attributeField(type) {
         excellency: new fields.BooleanField({ initial: false }),
         value: new fields.NumberField({ initial: 1 }),
         type: new fields.StringField({ initial: type }),
+        upgrade: new fields.NumberField({ initial: 0 }),
     });
 }
 

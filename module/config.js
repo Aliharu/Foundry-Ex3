@@ -60,6 +60,20 @@ exaltedthird.activeEffectChanges = {
       'system.attributes.wits.value': 'Ex3.Wits',
     }
   },
+  attributeUpgrades: {
+    label: "Ex3.AttributeUpgrades",
+    effectList: {
+      'system.attributes.strength.upgrade': 'Ex3.StrengthUpgrade',
+      'system.attributes.dexterity.upgrade': 'Ex3.DexterityUpgrade',
+      'system.attributes.stamina.upgrade': 'Ex3.StaminaUpgrade',
+      'system.attributes.charisma.upgrade': 'Ex3.CharismaUpgrade',
+      'system.attributes.manipulation.upgrade': 'Ex3.ManipulationUpgrade',
+      'system.attributes.appearance.upgrade': 'Ex3.AppearanceUpgrade',
+      'system.attributes.perception.upgrade': 'Ex3.PerceptionUpgrade',
+      'system.attributes.intelligence.upgrade': 'Ex3.IntelligenceUpgrade',
+      'system.attributes.wits.upgrade': 'Ex3.WitsUpgrade',
+    }
+  },
   abilities: {
     label: "Ex3.Abilities",
     effectList: {

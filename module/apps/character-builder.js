@@ -90,6 +90,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             charms: 0,
             willpower: 0,
             total: 0,
+            other: 0,
           },
         },
       },
@@ -129,6 +130,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Strength',
               type: 'physical',
+              upgrade: 0,
             },
             charisma: {
               excellency: false,
@@ -136,6 +138,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Charisma',
               type: 'social',
+              upgrade: 0,
             },
             perception: {
               excellency: false,
@@ -143,6 +146,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Perception',
               type: 'mental',
+              upgrade: 0,
             },
             dexterity: {
               excellency: false,
@@ -150,6 +154,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Dexterity',
               type: 'physical',
+              upgrade: 0,
             },
             manipulation: {
               excellency: false,
@@ -157,6 +162,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Manipulation',
               type: 'social',
+              upgrade: 0,
             },
             intelligence: {
               excellency: false,
@@ -164,6 +170,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Intelligence',
               type: 'mental',
+              upgrade: 0,
             },
             stamina: {
               excellency: false,
@@ -171,6 +178,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Stamina',
               type: 'physical',
+              upgrade: 0,
             },
             appearance: {
               excellency: false,
@@ -178,6 +186,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Appearance',
               type: 'social',
+              upgrade: 0,
             },
             wits: {
               excellency: false,
@@ -185,6 +194,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               charms: {},
               name: 'Ex3.Wits',
               type: 'mental',
+              upgrade: 0,
             }
           },
           abilities: {
@@ -819,7 +829,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if(this.object.character.exalt === 'alchemical') {
       this.object.creationData.available.favoredAttributes = 1;
       this.object.creationData.available.favoredAbilities = 0;
-      this.object.creationData.available.charnSlots = (17 + (this.object.character.essence * 3)) - 15;
+      this.object.creationData.available.charmSlots = (17 + (this.object.character.essence * 3)) - 15;
     }
     if (this.object.character.exalt === 'dragonblooded') {
       this.object.creationData.available = {
@@ -907,6 +917,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         charms: 0,
         willpower: 0,
         total: 0,
+        other: this.object.creationData.spent.bonusPoints.other,
       },
       experience: {
         abilities: 0,
@@ -1057,6 +1068,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
         favoredCharms += charm.itemCount
       }
+      else if (charm.system.ability === 'universal') {
+        favoredCharms += charm.itemCount
+      }
       else if (this.object.character.caste === 'casteless') {
         favoredCharms += charm.itemCount
       }
@@ -1117,7 +1131,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     this.object.creationData.spent.bonusPoints.specialties += (Math.max(0, (this.object.creationData.spent.specialties - this.object.creationData.available.specialties)));
     this.object.creationData.spent.bonusPoints.charms += totalNonFavoredCharms * 5;
     this.object.creationData.spent.bonusPoints.charms += totalFavoredCharms * 4;
-    this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms + this.object.creationData.spent.bonusPoints.charmSlots;
+    this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms + this.object.creationData.spent.bonusPoints.charmSlots + this.object.creationData.spent.bonusPoints.other;
     if(this.object.character.exalt === 'alchemical') {
       this.object.creationData.spent.bonusPoints.total -= alchemicalCharmBonusPointDiscount;
     }
@@ -1930,7 +1944,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         if (this.object.characterType === 'character') {
           items = items.filter(charm => {
             if (this.object.character.attributes[charm.system.ability]) {
-              return charm.system.requirement <= this.object.character.attributes[charm.system.ability].value;
+              return charm.system.requirement <= this.object.character.attributes[charm.system.ability].value + (this.object.character.attributes[charm.system.ability].upgrade || 0);
             }
             if (this.object.character.abilities[charm.system.ability]) {
               return charm.system.requirement <= this.object.character.abilities[charm.system.ability].value;
@@ -1945,16 +1959,16 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
             }
             if(charm.system.archetype.ability === 'physicalAttribute') {
-              return charm.system.requirement <= Math.max(this.object.character.attributes['strength'].value, this.object.character.attributes['dexterity'].value, this.object.character.attributes['stamina'].value);
+              return charm.system.requirement <= Math.max(this.object.character.attributes['strength'].value + (this.object.character.attributes['strength'].upgrade || 0), this.object.character.attributes['dexterity'].value + (this.object.character.attributes['dexterity'].upgrade || 0), this.object.character.attributes['stamina'].value + (this.object.character.attributes['stamina'].upgrade || 0));
             }
             if(charm.system.archetype.ability === 'mentalAttribute') {
-              return charm.system.requirement <= Math.max(this.object.character.attributes['perception'].value, this.object.character.attributes['intelligence'].value, this.object.character.attributes['wits'].value);
+              return charm.system.requirement <= Math.max(this.object.character.attributes['perception'].value + (this.object.character.attributes['perception'].upgrade || 0), this.object.character.attributes['intelligence'].value + (this.object.character.attributes['intelligence'].upgrade || 0), this.object.character.attributes['wits'].value + (this.object.character.attributes['wits'].upgrade || 0));
             }
             if(charm.system.archetype.ability === 'socialAttribute') {
-              return charm.system.requirement <= Math.max(this.object.character.attributes['charisma'].value, this.object.character.attributes['manipulation'].value, this.object.character.attributes['appearance'].value);
+              return charm.system.requirement <= Math.max(this.object.character.attributes['charisma'].value + (this.object.character.attributes['charisma'].upgrade || 0), this.object.character.attributes['manipulation'].value + (this.object.character.attributes['manipulation'].upgrade || 0), this.object.character.attributes['appearance'].value + (this.object.character.attributes['appearance'].upgrade || 0));
             }
             if (this.object.character.attributes[charm.system.archetype.ability]) {
-              return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value;
+              return charm.system.requirement <= this.object.character.attributes[charm.system.archetype.ability].value + (this.object.character.attributes[charm.system.archetype.ability].upgrade || 0);
             }
             if (this.object.character.abilities[charm.system.archetype.ability]) {
               return charm.system.requirement <= this.object.character.abilities[charm.system.archetype.ability].value;
@@ -2446,11 +2460,17 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
       actorData.system.attributes[key].value = attribute.value;
       actorData.system.attributes[key].favored = attribute.favored;
+      actorData.system.attributes[key].upgrade = attribute.upgrade;
       if (this.object.character.exalt === 'lunar') {
         if (attribute.favored && (attribute.value >= 3 || (Object.entries(attribute.charms).length > 0))) {
           actorData.system.attributes[key].excellency = true;
         }
         else if (attribute.value >= 5 || (Object.entries(attribute.charms).length >= 3)) {
+          actorData.system.attributes[key].excellency = true;
+        }
+      }
+      if (this.object.character.exalt === 'alchemical') {
+        if ((attribute.favored && attribute.value >= 3) || ((Object.entries(attribute.charms).length > 0) || attribute.upgrade > 0)) {
           actorData.system.attributes[key].excellency = true;
         }
       }
@@ -2784,7 +2804,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
 
 
-    if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect') {
+    if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect' || this.object.character.exalt === 'alchemical') {
       itemData.push({
         type: 'charm',
         img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
@@ -2823,6 +2843,27 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             damage: {
               bonusdice: "1",
             }
+          }
+        }
+      });
+    }
+
+    if(this.object.character.exalt === 'alchemical') {
+      itemData.push({
+        type: 'charm',
+        img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
+        name: 'Success Excellency',
+        system: {
+          description: 'Add 1 success to a roll for 2 motes.',
+          ability: 'universal',
+          listingname: 'Excellency',
+          essence: 1,
+          requirement: 1,
+          cost: {
+            motes: 2
+          },
+          diceroller: {
+            bonussuccesses: "1"
           }
         }
       });
