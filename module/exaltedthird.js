@@ -1075,7 +1075,12 @@ Hooks.on("renderTokenConfig", (dialog, html) => {
       i.remove()
     }
   });
-})
+});
+
+Hooks.on("renderPause", function () {
+  const iconSrc = game.settings.get("exaltedthird", "pauseIcon");
+  $(".paused img").attr("src", `systems/exaltedthird/assets/pause/${iconSrc}.png`);
+});
 
 Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to

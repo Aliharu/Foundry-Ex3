@@ -33,6 +33,30 @@ export function registerSettings() {
         },
     });
 
+    game.settings.register("exaltedthird", "pauseIcon", {
+        name: "Ex3.PauseIcon",
+        hint: "Ex3.PauseIconDescription",
+        scope: "world",
+        config: true,
+        default: "main",
+        type: String,
+        choices: {
+            "abyssal": "Ex3.Abyssal",
+            "alchemical": "Ex3.Alchemical",
+            "db": "Ex3.Dragonblooded",
+            "getimian": "Ex3.Getimian",
+            "infernal": "Ex3.Infernal",
+            "lunar": "Ex3.Lunar",
+            "main": "Ex3.Main",
+            "sidereal": "Ex3.Sidereal",
+            "solar": "Ex3.Solar",
+            "terrestiral": "Ex3.Terrestrial",
+        },
+        onChange: (choice) => {
+            window.location.reload();
+        },
+    });
+
     game.settings.register('exaltedthird', 'useActiveEffectsDropdown', {
         name: game.i18n.localize('Ex3.UseActiveEffectsDropdown'),
         hint: game.i18n.localize('Ex3.UseActiveEffectsDropdownDescription'),

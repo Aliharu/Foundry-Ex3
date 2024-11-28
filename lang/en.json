@@ -293,6 +293,9 @@
     "Ex3.RerollFailedDice": "Reroll Failed Dice",
     "Ex3.RollTwice": "Roll Twice",
     "Ex3.RollTwiceKeepHighest": "Roll Twice (Keep Highest)",
+    "Ex3.RollTwiceKeepLowest": "Roll Twice (Keep Lowest)",
+    "Ex3.DamageRollTwiceKeepHighest": "Damage Roll Twice Keep Highest",
+    "Ex3.DamageRollTwiceKeepLowest": "Damage Roll Twice Keep Lowest",
     "Ex3.DicetoSuccesses": "Dice to Successes",
     "Ex3.ReduceDifficulty": "Reduce Difficulty",
     "Ex3.Excellencies": "Excellencies",
@@ -969,6 +972,7 @@
     "Ex3.CharmCardJournals": "Charm Card Journals",
     "Ex3.Folders": "Folders",
     "Ex3.All": "All",
+    "Ex3.Main": "Main",
     "Ex3.MainText": "Main Text",
     "Ex3.UseLinks": "Use Links",
     "Ex3.ShowSpells": "Show Spells",
@@ -1174,7 +1178,6 @@
     "Ex3.DamageDecreaseTargetNumber": "Damage Decrease Target Number",
     "Ex3.DamageRerollDieFace": "Damage Reroll Die Face",
     "Ex3.DamageRerollNumberDice": "Damage Reroll Number Dice",
-    "Ex3.DamageRollTwiceKeepHighest": "Damage Roll Twice Keep Highest",
     "Ex3.DamageExcludeOnesFromRerolls": "Damage Exclude Ones From Rerolls",
     "Ex3.DamageRerollFailed": "Damage Reroll Failed",
     "Ex3.DamageTriggerTens": "Damage Trigger Tens",
@@ -1299,5 +1302,9 @@
     "Ex3.AnimalLatentAbility": "Animal Latent Ability",
     "Ex3.Submodules": "Submodules",
     "Ex3.Upgrade": "Upgrade",
-    "Ex3.AttributeUpgrades": "Attribute Upgrades"
+    "Ex3.AttributeUpgrades": "Attribute Upgrades",
+
+    "Ex3.PauseIcon": "Pause Icon",
+    "Ex3.PauseIconDescription": "What the pause icon will look like"
+    
 }
