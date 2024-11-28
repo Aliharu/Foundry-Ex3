@@ -153,6 +153,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.doubleSuccess = 10;
             this.object.rerollFailed = false;
             this.object.rollTwice = false;
+            this.object.rollTwiceLowest = false;
             this.object.targetNumber = 7;
             this.object.rerollNumber = 0;
             this.object.rerollNumberDescending = 0;
@@ -207,6 +208,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 multiTargetMinimumInitiative: 0,
                 rerollFailed: false,
                 rollTwice: false,
+                rollTwiceLowest: false,
                 rerollNumber: 0,
                 rerollNumberDescending: 0,
                 rerollSuccesses: 0,
@@ -977,12 +979,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.TNCap = this._getTNCap();
             this.object.charmDiceAdded = this._getDiceCap(true);
 
-            if(this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
+            if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
                 this.object.charmDiceAdded = Math.max(0, this.actor.system.attributes[this.object.attribute].value + this.actor.system.attributes[this.object.attribute].upgrade - 5);
             }
 
             for (const charm of this.object.addedCharms) {
-                if(charm.system.diceroller) {
+                if (charm.system.diceroller) {
                     if (!charm.system.diceroller.settings.noncharmdice) {
                         this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice);
                     }
@@ -3259,13 +3261,23 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.total = diceRollResults.total;
         var diceRoll = diceRollResults.diceRoll;
 
-        if (this.object.rollTwice) {
-            const secondRoll = await this._calculateRoll(dice, rollModifiers);
-            if (secondRoll.total > diceRollResults.total) {
-                this.object.roll = secondRoll.roll;
-                this.object.displayDice = secondRoll.diceDisplay;
-                this.object.total = secondRoll.total;
-                diceRoll = secondRoll.diceRoll;
+        if (this.object.rollTwice || this.object.rollTwiceLowest) {
+            if (this.object.rollTwice && !this.object.rollTwiceLowest) {
+                const secondRoll = await this._calculateRoll(dice, rollModifiers);
+                if (secondRoll.total > diceRollResults.total) {
+                    this.object.roll = secondRoll.roll;
+                    this.object.displayDice = secondRoll.diceDisplay;
+                    this.object.total = secondRoll.total;
+                    diceRoll = secondRoll.diceRoll;
+                }
+            } else if (this.object.rollTwiceLowest && !this.object.rollTwice) {
+                const secondRoll = await this._calculateRoll(dice, rollModifiers);
+                if (secondRoll.total < diceRollResults.total) {
+                    this.object.roll = secondRoll.roll;
+                    this.object.displayDice = secondRoll.diceDisplay;
+                    this.object.total = secondRoll.total;
+                    diceRoll = secondRoll.diceRoll;
+                }
             }
         }
         this.object.roll.dice[0].options.rollOrder = 1;
@@ -3831,10 +3843,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         var diceRollResults = await this._calculateRoll(dice, rollModifiers);
-        if (this.object.damage.rollTwice) {
-            const secondRoll = await this._calculateRoll(dice, rollModifiers);
-            if (secondRoll.total > diceRollResults.total) {
-                diceRollResults = secondRoll;
+        if (this.object.damage.rollTwice || this.object.damage.rollTwiceLowest) {
+            if (this.object.damage.rollTwice && !this.object.damage.rollTwiceLowest) {
+                const secondRoll = await this._calculateRoll(dice, rollModifiers);
+                if (secondRoll.total > diceRollResults.total) {
+                    diceRollResults = secondRoll;
+
+                }
+            } else if (this.object.damage.rollTwiceLowest && !this.object.damage.rollTwice) {
+                const secondRoll = await this._calculateRoll(dice, rollModifiers);
+                if (secondRoll.total < diceRollResults.total) {
+                    diceRollResults = secondRoll;
+                }
             }
         }
         this.object.finalDamageDice = dice;
@@ -4391,6 +4411,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'rerollFailed':
                                     case 'rollTwice':
+                                    case 'rollTwiceLowest':
                                         this.object[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'activateAura':
@@ -4477,6 +4498,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'rollTwice-damage':
                                         this.object.damage.rollTwice = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        break;
+                                    case 'rollTwiceLowest-damage':
+                                        this.object.damage.rollTwiceLowest = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'triggerOnTens-damage':
                                         if (triggerTensDamageMap[cleanedValue]) {
@@ -5849,6 +5873,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this.object.rollTwice === undefined) {
             this.object.rollTwice = false;
+        }
+        if (this.object.rollTwiceLowest === undefined) {
+            this.object.rollTwiceLowest = false;
+            this.object.damage.rollTwiceLowest = false;
         }
         if (this.object.attackEffect === undefined) {
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
