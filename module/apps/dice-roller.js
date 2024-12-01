@@ -4633,6 +4633,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let fufillsRequirements = true;
         const charmActor = charm.actor || this.actor;
         for (const requirementObject of Object.values(trigger.requirements)) {
+            if(!fufillsRequirements) {
+                break;
+            }
             let cleanedValue = requirementObject.value.toLowerCase().trim();
             if (cleanedValue === 'true' || cleanedValue === 'false') {
                 cleanedValue = cleanedValue === "true";
