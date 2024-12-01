@@ -46,6 +46,7 @@ export function registerSettings() {
             "db": "Ex3.Dragonblooded",
             "getimian": "Ex3.Getimian",
             "infernal": "Ex3.Infernal",
+            "liminal": "Ex3.Liminal",
             "lunar": "Ex3.Lunar",
             "main": "Ex3.Main",
             "sidereal": "Ex3.Sidereal",
