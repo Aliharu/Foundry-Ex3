@@ -1373,11 +1373,11 @@ export class ExaltedThirdActor extends Actor {
       armorPenalty += Math.abs(armor.system.penalty);
     }
 
-    data.woundpenalty = { 'value': currentPenalty };
     data.onslaught = { 'value': currentOnslaughtPenalty };
     data.evasionpenalty = { 'value': currentEvasionPenalty };
     data.parrypenalty = { 'value': currentParryPenalty };
     data.defensepenalty = { 'value': currentDefensePenalty };
+    data.woundpenalty = { 'value': currentPenalty };
     data.armorpenalty = { 'value': armorPenalty };
     data.cover = { 'value': coverBonus };
     data.initiative = { 'value': 0 };

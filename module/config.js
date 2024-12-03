@@ -1675,7 +1675,7 @@ exaltedthird.bonusTypes = {
       activateAura: "Ex3.ActivateAura",
       displayMessage: "Ex3.DisplayMessage",
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
-      inflictDicePenalty: "Ex3.InflictDicePenalty",
+      // inflictDicePenalty: "Ex3.InflictDicePenalty",
       inflictStatus: "Ex3.InflictStatus",
       magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
       onslaughtAddition: "Ex3.AddOnslaught",

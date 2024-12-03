@@ -3101,7 +3101,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.armorPenalty) {
                 for (let armor of this.actor.armor) {
                     if (armor.system.equipped) {
-                        dice -= Math.abs(armor.system.penalty);
+                        this.object.penaltyModifier += Math.abs(armor.system.penalty);
                     }
                 }
             }
@@ -3131,14 +3131,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             if (this.object.woundPenalty) {
                 if (data.warstrider.equipped) {
-                    dice -= data.warstrider.health.penalty;
+                    this.object.penaltyModifier += data.warstrider.health.penalty;
                 }
                 else {
-                    dice -= Math.max(0, (data.health.penalty === 'inc' ? 4 : data.health.penalty) - data.health.penaltymod);
+                    this.object.penaltyModifier += data.health.penalty === 'inc' ? 4 : data.health.penalty;
+                    this.object.ignorePenalties = Math.min(data.health.penaltymod, data.health.penalty === 'inc' ? 4 : data.health.penalty);
                 }
             }
             if (this.object.isFlurry) {
-                dice -= 3;
+                this.object.penaltyModifier += 3;
             }
             if (this.object.diceModifier) {
                 dice += this.object.diceModifier;
