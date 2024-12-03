@@ -302,6 +302,16 @@
             <div class="resource separator">
                 <label class="resource-label">{{localize "Ex3.Penalties"}}</label>
             </div>
+            <div class="resource grid grid-2col">
+                <div>
+                    <div class="resource-label">{{localize "Ex3.GeneralPenalties"}}</div>
+                    <input type="number" name="object.penaltyModifier" value="{{data.penaltyModifier}}">
+                </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.IgnorePenalties"}}</div>
+                    <input type="number" name="object.ignorePenalties" value="{{data.ignorePenalties}}">
+                </div>
+            </div>
             <div class="resource grid grid-3col">
                 <div class="d-flex flex-center gap">
                     <label class="resource-label">{{localize "Ex3.Wound"}}</label>

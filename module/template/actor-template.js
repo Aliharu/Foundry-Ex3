@@ -119,6 +119,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       negateparrypenalty: statField(0),
       turnorderinitiative: statField(0),
       dicemodifier: statField(0),
+      penaltymodifier: statField(0),
       baseinitiative: statField(3),
       dontresetonslaught: new fields.BooleanField({ initial: false }),
       savedRolls: new fields.ObjectField({ initial: {} }),

@@ -169,6 +169,7 @@ exaltedthird.activeEffectChanges = {
       "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
       'system.effectivestrength.value': 'Ex3.EffectiveStrength',
       'system.dicemodifier.value': 'Ex3.DiceModifier',
+      'system.penaltymodifier.value': 'Ex3.DicePenalty',
       'system.baseinitiative.value': 'Ex3.BaseInitiative',
       'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
       'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
@@ -1577,6 +1578,8 @@ exaltedthird.bonusTypes = {
     bonuses: {
       diceModifier: "Ex3.DiceModifier",
       successModifier: "Ex3.SuccessModifier",
+      penaltyModifier: "Ex3.PenaltyModifier",
+      ignorePenalties: "Ex3.IgnorePenalties",
       doubleSuccess: "Ex3.DoubleSuccess",
       decreaseTargetNumber: "Ex3.DecreaseTargetNumber",
       rerollNumber: "Ex3.RerollNumberDice",
@@ -1630,6 +1633,7 @@ exaltedthird.bonusTypes = {
       reduceGambitDifficulty: "Ex3.ReduceGambitDifficulty",
       setDamageType: "Ex3.SetDamageType",
       gainInitiative: "Ex3.GainInitiative",
+      modifyRolledDamage: "Ex3.ModifyRolledDamage"
     }
   },
   spend: {

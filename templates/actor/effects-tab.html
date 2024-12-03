@@ -50,6 +50,11 @@
             data-dtype="Number" />
     </div>
     <div>
+        <label class="resource-label">{{localize "Ex3.PenaltyModifier"}}</label>
+        <input type="number" name="system.penaltymodifier.value" value="{{system.penaltymodifier.value}}"
+            data-dtype="Number" />
+    </div>
+    <div>
         <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a><i
                     class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
         <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}"
@@ -71,11 +76,6 @@
             data-dtype="Number" />
     </div>
     <div>
-        <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
-        <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
-            system.dontresetonslaught}}>
-    </div>
-    <div>
         <label class="resource-label">{{localize "Ex3.BaseInitiative"}}</label>
         <input type="number" name="system.baseinitiative.value" value="{{system.baseinitiative.value}}"
             data-dtype="Number" />
@@ -93,6 +93,11 @@
     <div>
         <label class="resource-label">{{localize "Ex3.HealthPenaltyModifier"}}</label>
         <input name="system.health.penaltymod" type="number" value="{{system.health.penaltymod}}" data-dtype="Number" />
+    </div>
+    <div>
+        <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
+        <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
+            system.dontresetonslaught}}>
     </div>
 </div>
 <div>

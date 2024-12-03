@@ -441,6 +441,7 @@ export class ItemCharmData extends CommonItemData {
                 enabled: new fields.BooleanField({ initial: true }),
                 bonusdice: new fields.StringField({ initial: "0" }),
                 bonussuccesses: new fields.StringField({ initial: "0" }),
+                ignorepenalties: new fields.StringField({ initial: "0" }),
                 doublesuccess: new fields.NumberField({ initial: 11 }),
                 decreasetargetnumber: new fields.NumberField({ initial: 0 }),
                 rerolldice: new fields.StringField({ initial: "0" }),
@@ -543,6 +544,7 @@ export class ItemCharmData extends CommonItemData {
                 opposedbonuses: new fields.SchemaField({
                     enabled: new fields.BooleanField({ initial: false }),
                     dicemodifier: new fields.StringField({ initial: "0" }),
+                    penaltymodifier: new fields.StringField({ initial: "0" }),
                     successmodifier: new fields.StringField({ initial: "0" }),
                     rerollsuccesses: new fields.StringField({ initial: "0" }),
                     defense: new fields.StringField({ initial: "0" }),

@@ -1305,6 +1305,11 @@
     "Ex3.AttributeUpgrades": "Attribute Upgrades",
 
     "Ex3.PauseIcon": "Pause Icon",
-    "Ex3.PauseIconDescription": "What the pause icon will look like"
+    "Ex3.PauseIconDescription": "What the pause icon will look like",
     
+    "Ex3.GeneralPenalties": "General Penalties",
+    "Ex3.PenaltyModifier": "Penalty Modifier",
+    "Ex3.ModifyRolledDamage": "Modify Rolled Damage",
+    "Ex3.IgnorePenalties": "Ignore Penalties"
+
 }
