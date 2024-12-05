@@ -51,7 +51,7 @@ export function registerSettings() {
             "main": "Ex3.Main",
             "sidereal": "Ex3.Sidereal",
             "solar": "Ex3.Solar",
-            "terrestiral": "Ex3.Terrestrial",
+            "terrestrial": "Ex3.Terrestrial",
         },
         onChange: (choice) => {
             window.location.reload();

@@ -1,4 +1,4 @@
 <footer class="form-footer d-flex {{hideElement}}">
     <button class="cancel-button" type="button" data-action="close">Cancel</button>
-    <button class="submit-button" type="submit">{{#ifEquals data.rollType 'useOpposingCharms'}}Add{{else}}Roll{{/ifEquals}}</button>
+    <button class="submit-button" type="submit">{{#ifEquals data.rollType 'useOpposingCharms'}}Add{{else}}Roll {{#if data.totalDice}}{{data.totalDice}}{{/if}} {{#ifEquals data.rollType 'damage'}} Damage {{/ifEquals}} Dice {{/ifEquals}}</button>
 </footer>

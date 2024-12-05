@@ -12,6 +12,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.rollablePools['willpower'] = "Ex3.Willpower";
         this.messageId = data.preMessageId;
         this.search = "";
+        this.object.totalDice = 0;
 
         if (data.lastRoll) {
             this.object = foundry.utils.duplicate(this.actor.flags.exaltedthird.lastroll);
@@ -639,6 +640,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             ]
         },
         position: { width: 730 },
+        // position: { width: 730, height: 538 },
         tag: "form",
         form: {
             handler: RollForm.myFormHandler,
@@ -931,6 +933,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             totalOpposedBonuses.damage = baseOpposedBonuses.damage + this.object.addOppose.manualBonus.damage + this.object.addOppose.addedBonus.damage;
             totalOpposedBonuses.resolve = baseOpposedBonuses.resolve + this.object.addOppose.manualBonus.resolve + this.object.addOppose.addedBonus.resolve;
             totalOpposedBonuses.guile = baseOpposedBonuses.guile + this.object.addOppose.manualBonus.guile + this.object.addOppose.addedBonus.guile;
+        } else if (this.object.rollType !== 'base') {
+            if (this.object.rollType === 'damage') {
+                this.object.totalDice = await this._assembleDamagePool(true);
+            } else {
+                this.object.totalDice = await this._assembleDicePool(true);
+            }
         }
 
         return {
@@ -1001,6 +1009,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                     }
                 }
+
             }
 
             this._calculateAnimaGain();
@@ -1256,11 +1265,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 target.rollData.soak = 0;
             }
 
-            if (this.object.weaponTags["bombard"]) {
-                if (!target.actor.system.battlegroup && target.actor.system.sizecategory !== 'legendary' && !target.actor.system.warstrider.equipped) {
-                    target.rollData.diceModifier -= 4;
-                }
-            }
             if (this.object.attackType === 'withering' && this.object.conditions?.some(e => e.statuses.has('mounted'))) {
                 if (!target.actor.effects.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
                     const combinedTags = target.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
@@ -3081,36 +3085,23 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         else {
             const data = this.actor.system;
             const actorData = foundry.utils.duplicate(this.actor);
-            if (this.actor.type === 'character') {
-                if (data.attributes[this.object.attribute]) {
-                    dice += (data.attributes[this.object.attribute]?.value || 0) + (data.attributes[this.object.attribute]?.upgrade || 0);
-                }
-                dice += this._getCharacterAbilityValue(this.actor, this.object.ability);
-            }
-            else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
-                if (this.object.actions.some(action => action._id === this.object.pool)) {
-                    dice += this.actor.actions.find(x => x._id === this.object.pool).system.value;
-                }
-                else if (this.object.pool === 'willpower') {
-                    dice += this.actor.system.willpower.max;
-                } else {
-                    dice += data.pools[this.object.pool].value;
-                }
-            }
 
-            if (this.object.armorPenalty) {
-                for (let armor of this.actor.armor) {
-                    if (armor.system.equipped) {
-                        this.object.penaltyModifier += Math.abs(armor.system.penalty);
-                    }
+            dice = await this._assembleDicePool(false);
+
+            if (this.object.rollType === 'social') {
+                if (this.object.applyAppearance) {
+                    dice += this.object.appearanceBonus;
                 }
+            }
+            if (this.object.diceToSuccesses > 0) {
+                successes += Math.min(dice, this.object.diceToSuccesses);
+            }
+            if (this.object.targetSpecificSuccessMod) {
+                successes += this.object.targetSpecificSuccessMod;
             }
             if (this.object.willpower) {
                 successes++;
                 this.object.cost.willpower++;
-            }
-            if (this.object.stunt !== 'none' && this.object.stunt !== 'bank') {
-                dice += 2;
             }
             if (this.object.stunt === 'two') {
                 if (this.object.willpower) {
@@ -3124,45 +3115,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.stunt === 'three') {
                 actorData.system.willpower.value += 2;
                 successes += 2;
-            }
-            if (this.object.diceToSuccesses > 0) {
-                successes += Math.min(dice, this.object.diceToSuccesses);
-                dice = Math.max(0, dice - this.object.diceToSuccesses);
-            }
-            if (this.object.woundPenalty) {
-                if (data.warstrider.equipped) {
-                    this.object.penaltyModifier += data.warstrider.health.penalty;
-                }
-                else {
-                    this.object.penaltyModifier += data.health.penalty === 'inc' ? 4 : data.health.penalty;
-                    this.object.ignorePenalties = Math.min(data.health.penaltymod, data.health.penalty === 'inc' ? 4 : data.health.penalty);
-                }
-            }
-            if (this.object.isFlurry) {
-                this.object.penaltyModifier += 3;
-            }
-            if (this.object.diceModifier) {
-                dice += this.object.diceModifier;
-            }
-            if (this.object.penaltyModifier) {
-                dice -= Math.max(0, this.object.penaltyModifier - this.object.ignorePenalties);
-            }
-            if (this.object.successModifier) {
-                successes += this.object.successModifier;
-            }
-            if (this.object.targetSpecificDiceMod) {
-                dice += this.object.targetSpecificDiceMod;
-            }
-            if (this.object.targetSpecificSuccessMod) {
-                successes += this.object.targetSpecificSuccessMod;
-            }
-            if (this.object.specialty) {
-                dice++;
-            }
-            if (this.object.rollType === 'social') {
-                if (this.object.applyAppearance) {
-                    dice += this.object.appearanceBonus;
-                }
             }
             await this.actor.update(actorData);
         }
@@ -3743,34 +3695,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _damageRoll() {
-        let dice = this.object.damage.damageDice;
-        if (this._damageRollType('decisive') && this.object.damage.decisiveDamageType === 'initiative') {
-            dice -= this.object.cost.initiative;
-            if (this.object.showTargets) {
-                if (this.object.damage.decisiveDamageCalculation === 'evenSplit') {
-                    dice = Math.ceil(dice / this.object.showTargets);
-                }
-                else if (this.object.damage.decisiveDamageCalculation === 'half') {
-                    dice = Math.ceil(dice / 2);
-                }
-                else {
-                    dice = Math.ceil(dice / 3);
-                }
-            }
-        }
-        if (this.object.rollType === 'damage' && (this.object.attackType === 'withering' || this.object.damage.threshholdToDamage)) {
-            dice += Math.max(0, this.object.attackSuccesses - this.object.defense);
-        }
-        else if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
-            dice += this.object.thresholdSuccesses;
-        }
-        if (this.object.damage.cappedThreshholdToDamage && this.object.defense < this.object.attackSuccesses) {
-            dice += Math.min(this.object.damage.cappedThreshholdToDamage, this.object.attackSuccesses - this.object.defense);
-        }
-        if (this.object.targetSpecificDamageMod) {
-            dice += this.object.targetSpecificDamageMod;
-        }
+        // let dice = this.object.damage.damageDice;
         var damageResults = ``;
+        await this._addTriggerBonuses('beforeDamageRoll');
+        var dice = await this._assembleDamagePool(false);
+        let baseDamage = dice;
         if (this._damageRollType('decisive')) {
             if (this.object.target) {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
@@ -3781,29 +3710,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
-        let baseDamage = dice;
-        if (this._damageRollType('withering')) {
-            dice -= Math.max(0, this.object.soak - this.object.damage.ignoreSoak);
-            if (dice < this.object.overwhelming) {
-                dice = Math.max(dice, this.object.overwhelming);
-            }
-            if (dice < 0) {
-                dice = 0;
-            }
-            dice += this.object.damage.postSoakDamage;
-        }
-        if (this.object.damage.doublePreRolledDamage) {
-            dice *= 2;
-        }
-        if (dice < 0) {
-            dice = 0;
-        }
         if (this.object.damage.diceToSuccesses > 0) {
             this.object.damage.damageSuccessModifier += Math.min(dice, this.object.damage.diceToSuccesses);
-            dice = Math.max(0, dice - this.object.damage.diceToSuccesses);
         }
 
-        await this._addTriggerBonuses('beforeDamageRoll');
         if (this.object.attackType === 'decisive' && dice <= (this.object.hardness - this.object.damage.ignoreHardness)) {
             return await this._failedDecisive(dice);
         }
@@ -4373,7 +4283,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             try {
                 for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
-                    if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex)) {
+                    if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex, false)) {
                         for (const bonus of Object.values(trigger.bonuses)) {
                             if ((type === 'itemAdded' || !this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
                                 let cleanedValue = bonus.value.toLowerCase().trim();
@@ -4652,7 +4562,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
     }
 
-    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex) {
+    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex, display) {
         let fufillsRequirements = true;
         const charmActor = charm.actor || this.actor;
         for (const requirementObject of Object.values(trigger.requirements)) {
@@ -4736,29 +4646,58 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'hasStatus':
-                    if (!this.actor.effects.some(e => e.statuses.has(cleanedValue))) {
-                        fufillsRequirements = false;
+                    if (cleanedValue === 'anycover') {
+                        if (!this.actor.effects.some(e => e.statuses.has('lightcover')) && !this.actor.effects.some(e => e.statuses.has('heavycover')) && !this.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                            fufillsRequirements = false;
+                        }
+                    } else {
+                        if (!this.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                            fufillsRequirements = false;
+                        }
                     }
                     break;
                 case 'missingStatus':
-                    if (this.actor.effects.some(e => e.statuses.has(cleanedValue))) {
-                        fufillsRequirements = false;
+                    if (cleanedValue === 'anycover') {
+                        if (this.actor.effects.some(e => e.statuses.has('lightcover')) || this.actor.effects.some(e => e.statuses.has('heavycover')) || this.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                            fufillsRequirements = false;
+                        }
+                    } else {
+                        if (this.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                            fufillsRequirements = false;
+                        }
                     }
+
                     break;
                 case 'targetHasStatus':
                     if (!this.object.target) {
                         fufillsRequirements = false;
+                    } else {
+                        if (cleanedValue === 'anycover') {
+                            if (!this.object.target.actor.effects.some(e => e.statuses.has('ightcover')) && !this.object.target.actor.effects.some(e => e.statuses.has('heavycover')) && !this.object.target.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                                fufillsRequirements = false;
+                            }
+                        } else {
+                            if (!this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                                fufillsRequirements = false;
+                            }
+                        }
                     }
-                    else if (!this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
-                        fufillsRequirements = false;
-                    }
+
                     break;
                 case 'targetMissingStatus':
                     if (!this.object.target) {
                         fufillsRequirements = false;
                     }
-                    else if (this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
-                        fufillsRequirements = false;
+                    else {
+                        if (cleanedValue === 'anycover') {
+                            if (this.object.target.actor.effects.some(e => e.statuses.has('ightcover')) || this.object.target.actor.effects.some(e => e.statuses.has('heavycover')) || this.object.target.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                                fufillsRequirements = false;
+                            }
+                        } else {
+                            if (this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                                fufillsRequirements = false;
+                            }
+                        }
                     }
                     break;
                 case 'targetIsBattlegroup':
@@ -4818,15 +4757,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                     }
                 case 'booleanPrompt':
-                    const result = requirementObject.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] || `\${${key}}`);
-                    const value = await foundry.applications.api.DialogV2.confirm({
-                        window: { title: game.i18n.localize('Ex3.Requirement') },
-                        content: `<p>${result}</p>`,
-                        classes: ["dialog", this.actor ? this.actor.getSheetBackground() : `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
-                        modal: true
-                    });
-                    if (!value) {
-                        fufillsRequirements = false;
+                    if (!display) {
+                        const result = requirementObject.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] || `\${${key}}`);
+                        const value = await foundry.applications.api.DialogV2.confirm({
+                            window: { title: game.i18n.localize('Ex3.Requirement') },
+                            content: `<p>${result}</p>`,
+                            classes: ["dialog", this.actor ? this.actor.getSheetBackground() : `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+                            modal: true
+                        });
+                        if (!value) {
+                            fufillsRequirements = false;
+                        }
                     }
                     break;
             }
@@ -5318,6 +5259,207 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             combatStats: combatStats,
         }
         return await renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
+    }
+
+    async _assembleDicePool(display) {
+        var dicePool = 0;
+        var totalPenalties = this.object.penaltyModifier;
+        var totalIgnorePenalties = this.object.ignorePenalties;
+
+        if (this.actor.type === 'character') {
+            if (this.actor.system.attributes[this.object.attribute]) {
+                dicePool += (this.actor.system.attributes[this.object.attribute]?.value || 0) + (this.actor.system.attributes[this.object.attribute]?.upgrade || 0);
+            }
+            dicePool += this._getCharacterAbilityValue(this.actor, this.object.ability);
+        }
+        else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
+            if (this.object.actions.some(action => action._id === this.object.pool)) {
+                dicePool += this.actor.actions.find(x => x._id === this.object.pool).system.value;
+            }
+            else if (this.object.pool === 'willpower') {
+                dicePool += this.actor.system.willpower.max;
+            } else {
+                dicePool += this.actor.system.pools[this.object.pool].value;
+            }
+        }
+
+        if (this.object.target && this.object.weaponTags) {
+            if (this.object.weaponTags["bombard"]) {
+                if (!this.object.target.actor.system.battlegroup && this.object.target.actor.system.sizecategory !== 'legendary' && !this.object.target.actor.system.warstrider.equipped) {
+                    totalPenalties += 4;
+                }
+            }
+        }
+        if (this.object.armorPenalty) {
+            for (let armor of this.actor.armor) {
+                if (armor.system.equipped) {
+                    totalPenalties += Math.abs(armor.system.penalty);
+                }
+            }
+        }
+        if (this.object.woundPenalty) {
+            if (this.actor.system.warstrider.equipped) {
+                totalPenalties += this.actor.system.warstrider.health.penalty;
+            }
+            else {
+                totalPenalties += this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty;
+                totalIgnorePenalties += Math.min(this.actor.system.health.penaltymod, this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty);
+            }
+        }
+        if (this.object.stunt !== 'none' && this.object.stunt !== 'bank') {
+            dicePool += 2;
+        }
+        if (this.object.isFlurry) {
+            totalPenalties += 3;
+        }
+        if (this.object.diceModifier) {
+            dicePool += this.object.diceModifier;
+        }
+        if (totalPenalties) {
+            dicePool -= Math.max(0, totalPenalties - totalIgnorePenalties);
+        }
+        if (this.object.successModifier) {
+            successes += this.object.successModifier;
+        }
+        if (this.object.targetSpecificDiceMod) {
+            dicePool += this.object.targetSpecificDiceMod;
+        }
+        if (this.object.specialty) {
+            dicePool++;
+        }
+
+        if (this.object.diceToSuccesses > 0) {
+            dicePool = Math.max(0, dicePool - this.object.diceToSuccesses);
+        }
+
+        // if (display) {
+        //     for (const charm of this.object.addedCharms) {
+        //         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
+        //             try {
+        //                 for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+        //                     if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
+
+        //                         for (const bonus of Object.values(trigger.bonuses)) {
+        //                             let cleanedValue = bonus.value.toLowerCase().trim();
+        //                             switch (bonus.effect) {
+        //                                 case 'diceModifier':
+        //                                 case 'diceToSuccesses':
+        //                                     dicePool += this._getFormulaValue(cleanedValue, null);
+        //                                     break;
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             } catch (e) {
+        //                 ui.notifications.error(`<p>Error in Trigger:</p><pre>${trigger?.name || 'No Name Trigger'}</pre><p>See the console (F12) for details</p>`);
+        //                 console.error(e);
+        //             }
+        //         }
+        //     }
+        // }
+
+        return dicePool;
+    }
+
+    async _assembleDamagePool(display) {
+        if(display && this.object.showTargets > 1) {
+            return "";
+        }
+        var damageDicePool = this.object.damage.damageDice;
+        var defense = this.object.defense;
+        var soak = this.object.soak;
+        var attackSuccesses = this.object.attackSuccesses;
+        var targetSpecificDamageMod = this.object.targetSpecificDamageMod;
+
+        if (display && this.object.showTargets && !this.object.target) {
+            defense = Object.values(this.object.targets)[0].rollData.defense;
+            soak = Object.values(this.object.targets)[0].rollData.soak;
+            attackSuccesses = Object.values(this.object.targets)[0].rollData.attackSuccesses;
+            targetSpecificDamageMod = Object.values(this.object.targets)[0].rollData.damageModifier;
+        }
+
+        // if (display) {
+        //     for (const charm of this.object.addedCharms) {
+        //         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'afterRoll' || trigger.triggerTime === 'beforeDamageRoll')) {
+        //             try {
+        //                 for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+        //                     if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
+        //                         for (const bonus of Object.values(trigger.bonuses)) {
+        //                             let cleanedValue = bonus.value.toLowerCase().trim();
+        //                             switch (bonus.effect) {
+        //                                 case 'damageDice':
+        //                                 case 'diceToSuccesses-damage':
+        //                                     damageDicePool += this._getFormulaValue(cleanedValue, null);
+        //                                     break;
+        //                                 case 'postSoakDamage':
+        //                                     postSoakDamage += this._getFormulaValue(cleanedValue, null);
+        //                                     break;
+        //                                 case 'soak':
+        //                                     soak += this._getFormulaValue(cleanedValue, charm.actor);
+        //                                     break;
+        //                                 case 'defense':
+        //                                     defense += this._getFormulaValue(cleanedValue, charm.actor);
+        //                                     break;
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             } catch (e) {
+        //                 ui.notifications.error(`<p>Error in Trigger:</p><pre>${trigger?.name || 'No Name Trigger'}</pre><p>See the console (F12) for details</p>`);
+        //                 console.error(e);
+        //             }
+        //         }
+        //     }
+        // }
+
+        if (this._damageRollType('decisive') && this.object.damage.decisiveDamageType === 'initiative') {
+            damageDicePool -= this.object.cost.initiative;
+            if (this.object.showTargets) {
+                if (this.object.damage.decisiveDamageCalculation === 'evenSplit') {
+                    damageDicePool = Math.ceil(damageDicePool / this.object.showTargets);
+                }
+                else if (this.object.damage.decisiveDamageCalculation === 'half') {
+                    damageDicePool = Math.ceil(damageDicePool / 2);
+                }
+                else {
+                    damageDicePool = Math.ceil(damageDicePool / 3);
+                }
+            }
+        }
+
+        if (this.object.rollType === 'damage' && (this.object.attackType === 'withering' || this.object.damage.threshholdToDamage)) {
+            damageDicePool += Math.max(0, attackSuccesses - defense);
+        }
+        else if (this._damageRollType('withering') || this.object.damage.threshholdToDamage) {
+            damageDicePool += this.object.thresholdSuccesses;
+        }
+        if (this.object.damage.cappedThreshholdToDamage && defense < attackSuccesses) {
+            damageDicePool += Math.min(this.object.damage.cappedThreshholdToDamage, attackSuccesses - defense);
+        }
+        if (targetSpecificDamageMod) {
+            damageDicePool += targetSpecificDamageMod;
+        }
+        let baseDamage = damageDicePool;
+        if (this._damageRollType('withering')) {
+            damageDicePool -= Math.max(0, soak - this.object.damage.ignoreSoak);
+            if (damageDicePool < this.object.overwhelming) {
+                damageDicePool = Math.max(damageDicePool, this.object.overwhelming);
+            }
+            if (damageDicePool < 0) {
+                damageDicePool = 0;
+            }
+            damageDicePool += this.object.damage.postSoakDamage;
+        }
+        if (this.object.damage.doublePreRolledDamage) {
+            damageDicePool *= 2;
+        }
+        if (damageDicePool < 0) {
+            damageDicePool = 0;
+        }
+        if (this.object.damage.diceToSuccesses > 0) {
+            damageDicePool = Math.max(0, damageDicePool - this.object.damage.diceToSuccesses);
+        }
+        return damageDicePool;
     }
 
     _getDiceCap(getLunarFormCharmDice = false) {

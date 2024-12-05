@@ -1729,6 +1729,7 @@ exaltedthird.triggerBonusDropdowns = {
   statuses: {
     aiming: "Ex3.Aiming",
     prone: "Ex3.Prone",
+    anycover: "Ex3.AnyCover",
     lightcover: "Ex3.LightCover",
     heavycover: "Ex3.HeavyCover",
     fullcover: "Ex3.FullCover",
