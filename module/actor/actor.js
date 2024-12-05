@@ -77,6 +77,20 @@ export class ExaltedThirdActor extends Actor {
       }
       if (exalt) {
         let hasAura = false;
+        const martialArtsMastery = {
+          'dragonblooded': 'terrestrial',
+          'abyssal': 'mastery',
+          'solar': 'mastery',
+          'infernal': 'mastery',
+          'lunar': 'standard',
+          'sidereal': 'standard',
+          'alchemical': 'standard',
+          'liminal': "terrestrial",
+          'getimian': 'standard',
+          'umbral': "standard",
+          'dreamsouled': 'terrestrial',
+          'hearteater': 'standard',
+        }
         if (exalt === 'dragonblooded') {
           hasAura = true;
         }
@@ -87,6 +101,14 @@ export class ExaltedThirdActor extends Actor {
           updateData.system.settings = {
             hasaura: hasAura
           }
+        }
+        if(martialArtsMastery[exalt]) {
+          updateData.system.settings.martialartsmastery = martialArtsMastery[exalt];
+        }
+        if(exalt === 'sidereal') {
+          updateData.system.settings.smaenlightenment = true;
+        } else {
+          updateData.system.settings.smaenlightenment = false;
         }
         updateData.system.traits = {
           resonance: this.calculateResonance(exalt),
