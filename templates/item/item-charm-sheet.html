@@ -28,7 +28,7 @@
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
         <a class="item" data-tab="bonuses">{{localize "Ex3.Dice"}}</a>
         <a class="item" data-tab="triggers">{{localize "Ex3.Triggers"}}</a>
-        <a class="item" data-tab="macros">{{localize "Ex3.Macros"}}</a>
+        <!-- <a class="item" data-tab="upgrades">{{localize "Ex3.Upgrades"}}</a> -->
         <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
     </nav>
 
@@ -789,34 +789,7 @@
             {{> systems/exaltedthird/templates/item/item-trigger-tab.html}}
         </div>
 
-        <div class="tab" data-group="primary" data-tab="macros">
-            <div class="resource-label list-section-header d-flex flex-between">
-                <div>
-                    {{localize "Ex3.PreRollMacro"}}
-                </div>
-            </div>
-            <div class="flex-group-center d-flex flex-col">
-                <textarea type="text" name="system.prerollmacro" rows="16"
-                    placeholder='{{localize "Ex3.PreRollMacroHint"}}'>{{system.prerollmacro}}</textarea>
-            </div>
-            <div class="resource-label list-section-header d-flex flex-between">
-                <div>
-                    {{localize "Ex3.Macro"}}
-                </div>
-            </div>
-            <div class="flex-group-center d-flex flex-col">
-                <textarea type="text" name="system.macro" rows="16"
-                    placeholder='{{localize "Ex3.MacroHint"}}'>{{system.macro}}</textarea>
-            </div>
-            <div class="resource-label list-section-header d-flex flex-between">
-                <div>
-                    {{localize "Ex3.DamageMacro"}}
-                </div>
-            </div>
-            <div class="flex-group-center d-flex flex-col flex-fill">
-                <textarea class="flex-fill" type="text" name="system.damagemacro" rows="16"
-                    placeholder='{{localize "Ex3.DamageMacroHint"}}'>{{system.damagemacro}}</textarea>
-            </div>
+        <div class="tab" data-group="primary" data-tab="upgrades">
         </div>
 
         <div id="other-tab" class="tab" data-group="primary" data-tab="other">

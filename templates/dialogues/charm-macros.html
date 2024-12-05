@@ -1,0 +1,31 @@
+<form>
+    <div class="sheet-body exaltedthird" style="margin-bottom:10px;">
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.PreRollMacro"}}
+            </div>
+        </div>
+        <div class="flex-group-center d-flex flex-col">
+            <textarea type="text" id="prerollmacro" rows="16"
+                placeholder='{{localize "Ex3.PreRollMacroHint"}}'>{{prerollmacro}}</textarea>
+        </div>
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.Macro"}}
+            </div>
+        </div>
+        <div class="flex-group-center d-flex flex-col">
+            <textarea type="text" id="macro" rows="16"
+                placeholder='{{localize "Ex3.MacroHint"}}'>{{macro}}</textarea>
+        </div>
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.DamageMacro"}}
+            </div>
+        </div>
+        <div class="flex-group-center d-flex flex-col flex-fill">
+            <textarea class="flex-fill" type="text" id="damagemacro" rows="16"
+                placeholder='{{localize "Ex3.DamageMacroHint"}}'>{{damagemacro}}</textarea>
+        </div>
+    </div>
+</form>

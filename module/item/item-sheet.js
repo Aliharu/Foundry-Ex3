@@ -32,6 +32,53 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     return `${path}/item-${this.item.type}-sheet.html`;
   }
 
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    // Token Configuration
+    const canConfigure = game.user.isGM || this.actor.isOwner;
+    if (this.options.editable && canConfigure && this.item.type === 'charm') {
+      const macroButton = {
+        label: game.i18n.localize('Ex3.Macros'),
+        class: 'sheet-settings',
+        icon: 'fas fa-gear-code',
+        onclick: () => this.openMacroDialog(),
+      };
+      buttons = [macroButton, ...buttons];
+    }
+    return buttons;
+  }
+
+  async openMacroDialog() {
+    const template = "systems/exaltedthird/templates/dialogues/charm-macros.html";
+    const html = await renderTemplate(template, { 'prerollmacro': this.item.system.prerollmacro, 'macro': this.item.system.macro, 'damagemacro': this.item.system.damagemacro, });
+
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.Macros"), },
+      content: html,
+      classes: [this.actor.getSheetBackground()],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.Save"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
+          this.item.update({
+            [`system.prerollmacro`]: result.prerollmacro.value,
+            [`system.macro`]: result.macro.value,
+            [`system.damagemacro`]: result.damagemacro.value,
+          });
+        }
+      }
+    }).render({ force: true });
+  }
+
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -246,14 +293,14 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       let listIndex = 0;
       let indexAdd = "0";
       //Add Bonuses and requirements
-      for(const key of Object.keys(newList)) {
-        if(key !== listIndex.toString()) {
+      for (const key of Object.keys(newList)) {
+        if (key !== listIndex.toString()) {
           break;
         }
         listIndex++;
       }
       indexAdd = listIndex.toString();
-      if(subType === 'bonuses') {
+      if (subType === 'bonuses') {
         newList[indexAdd] = {
           effect: "",
           value: "",
