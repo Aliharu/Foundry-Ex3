@@ -12,6 +12,14 @@
         }
     }
 
+    .dice-roller-header {
+        min-height: 88px;
+    }
+
+    .dice-roller-tab {
+        min-height: 360px;
+    }
+
     .gap {
         gap: 10px;
     }
@@ -198,7 +206,7 @@
     }
 
     .roller-item-list {
-        max-height: 500px;
+        // max-height: 500px;
         overflow-x: hidden;
         margin-top: 5px;
         margin-bottom: 5px;

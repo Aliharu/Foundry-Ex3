@@ -639,8 +639,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 },
             ]
         },
-        position: { width: 730 },
-        // position: { width: 730, height: 538 },
+        // position: { width: 730 },
+        position: { width: 730, height: 584 },
         tag: "form",
         form: {
             handler: RollForm.myFormHandler,
