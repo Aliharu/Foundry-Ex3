@@ -150,6 +150,13 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       async: true
     });
 
+    if (itemData.system.upgrades) {
+      context.upgradeSelects = Object.values(itemData.system.upgrades).reduce((acc, upgrade) => {
+        acc[upgrade.id] = upgrade.name; // Key is `id`, value is `name`
+        return acc;
+      }, {});
+    }
+
     if (itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'customability') {
       this._prepareTraits(itemData.type, context.system.traits);
     }
@@ -274,6 +281,23 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       var index = ev.currentTarget.dataset.index;
       this.item.update({
         [`system.triggers.${triggerType}.-=${index}`]: null,
+      });
+    });
+
+    html.find('.add-upgrade').click(ev => {
+      const newList = this.item.system.upgrades;
+      newList[Object.entries(newList).length] = {
+        id: foundry.utils.randomID(16),
+        name: "",
+        active: false,
+      };
+      this.item.update({ [`system.upgrades`]: newList });
+    });
+
+    html.find('.delete-upgrade').click(ev => {
+      var index = ev.currentTarget.dataset.index;
+      this.item.update({
+        [`system.upgrades.-=${index}`]: null,
       });
     });
 

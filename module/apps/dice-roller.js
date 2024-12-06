@@ -4770,6 +4770,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                     }
                     break;
+                case 'upgradeActive':
+                    if(!Object.values(charm.system.upgrades).some(upgrade => upgrade.id === requirementObject.value && upgrade.active)) {
+                        fufillsRequirements = false;
+                    }
+                    break;
             }
         }
         return fufillsRequirements;

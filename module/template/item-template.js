@@ -400,6 +400,7 @@ export class ItemCharmData extends CommonItemData {
             requirement: new fields.NumberField({ initial: 0 }),
             essence: new fields.NumberField({ initial: 0 }),
             parentitemid: new fields.StringField({ initial: "" }),
+            upgrades: new fields.ObjectField({ initial: {} }),
             archetype: new fields.SchemaField({
                 ability: new fields.StringField({ initial: "" }),
                 prerequisites: new fields.StringField({ initial: "" }),

@@ -53,7 +53,8 @@
                 {{#ifEquals bonus.effect 'specificCharm'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{#each ../../triggerBonusDropdowns.specificCharmTriggers as |specificCharmCategory specificCharmCategoryType|}}
+                    {{#each ../../triggerBonusDropdowns.specificCharmTriggers as |specificCharmCategory
+                    specificCharmCategoryType|}}
                     <optgroup label="{{localize specificCharmCategory.label}}">
                         {{selectOptions specificCharmCategory.charms selected=bonus.value localize=true}}
                     </optgroup>
@@ -62,7 +63,8 @@
                 {{else ifEquals bonus.effect 'otherEffect'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.otherEffects selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.otherEffects selected=bonus.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'inflictStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
@@ -72,42 +74,50 @@
                 {{else ifEquals bonus.effect 'triggerOnTens'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensOptions selected=bonus.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerNinesAndTens'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensOptions selected=bonus.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerOnOnes'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesOptions selected=bonus.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerOnesAndTwos'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesOptions selected=bonus.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerOnTens-damage'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensDamageOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensDamageOptions selected=bonus.value
+                    localize=true blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerNinesAndTens-damage'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensDamageOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnTensDamageOptions selected=bonus.value
+                    localize=true blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerOnOnes-damage'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesDamageOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesDamageOptions selected=bonus.value
+                    localize=true blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'triggerOnesAndTwos-damage'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesDamageOptions selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.triggerOnOnesDamageOptions selected=bonus.value
+                    localize=true blank=''}}
                 </select>
                 {{else ifEquals bonus.effect 'activateAura'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
@@ -117,7 +127,8 @@
                 {{else ifEquals bonus.effect 'fullExcellency'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.fullExcellency selected=bonus.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.fullExcellency selected=bonus.value localize=true
+                    blank=''}}
                 </select>
                 {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
@@ -169,7 +180,8 @@
                 {{else ifEquals requirement.requirement 'hasAura'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.elements selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.elements selected=requirement.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'martialArtsLevel'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
@@ -179,22 +191,31 @@
                 {{else ifEquals requirement.requirement 'hasStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'missingStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'targetHasStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'targetMissingStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true
+                    blank=''}}
+                </select>
+                {{else ifEquals requirement.requirement 'upgradeActive'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../upgradeSelects selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"

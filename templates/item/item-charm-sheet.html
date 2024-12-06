@@ -28,7 +28,7 @@
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
         <a class="item" data-tab="bonuses">{{localize "Ex3.Dice"}}</a>
         <a class="item" data-tab="triggers">{{localize "Ex3.Triggers"}}</a>
-        <!-- <a class="item" data-tab="upgrades">{{localize "Ex3.Upgrades"}}</a> -->
+        <a class="item" data-tab="upgrades">{{localize "Ex3.Upgrades"}}</a>
         <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
     </nav>
 
@@ -219,7 +219,8 @@
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.IgnorePenalties"}}*</label>
-                        <input name="system.diceroller.ignorepenalties" value="{{system.diceroller.ignorepenalties}}" type="text">
+                        <input name="system.diceroller.ignorepenalties" value="{{system.diceroller.ignorepenalties}}"
+                            type="text">
                     </div>
                     <div>
                         <label class="resource-label">{{localize "Ex3.DecreaseTargetNumber"}}</label>
@@ -249,7 +250,8 @@
                     <div>
                         <label class="resource-label">{{localize "Ex3.RerollAllFailedOnce"}}</label>
                         <div>
-                            <input type="checkbox" name="system.diceroller.rerollfailed" {{checked system.diceroller.rerollfailed}}>
+                            <input type="checkbox" name="system.diceroller.rerollfailed" {{checked
+                                system.diceroller.rerollfailed}}>
                         </div>
                     </div>
                     <div>
@@ -401,7 +403,8 @@
                 <div>
                     <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
                     <select name="system.diceroller.triggerontens" data-type="String">
-                        {{selectOptions selects.triggerOnTensOptions selected=system.diceroller.triggerontens localize=true}}
+                        {{selectOptions selects.triggerOnTensOptions selected=system.diceroller.triggerontens
+                        localize=true}}
                     </select>
                 </div>
                 <div>
@@ -566,43 +569,53 @@
                     <div class="resource d-flex flex-center">
                         <div>
                             <div>1</div>
-                            <input name="system.diceroller.damage.rerollcap.one" value="{{system.diceroller.damage.rerollcap.one}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.one"
+                                value="{{system.diceroller.damage.rerollcap.one}}" type="text">
                         </div>
                         <div>
                             <div>2</div>
-                            <input name="system.diceroller.damage.rerollcap.two" value="{{system.diceroller.damage.rerollcap.two}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.two"
+                                value="{{system.diceroller.damage.rerollcap.two}}" type="text">
                         </div>
                         <div>
                             <div>3</div>
-                            <input name="system.diceroller.damage.rerollcap.three" value="{{system.diceroller.damage.rerollcap.three}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.three"
+                                value="{{system.diceroller.damage.rerollcap.three}}" type="text">
                         </div>
                         <div>
                             <div>4</div>
-                            <input name="system.diceroller.damage.rerollcap.four" value="{{system.diceroller.damage.rerollcap.four}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.four"
+                                value="{{system.diceroller.damage.rerollcap.four}}" type="text">
                         </div>
                         <div>
                             <div>5</div>
-                            <input name="system.diceroller.damage.rerollcap.five" value="{{system.diceroller.damage.rerollcap.five}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.five"
+                                value="{{system.diceroller.damage.rerollcap.five}}" type="text">
                         </div>
                         <div>
                             <div>6</div>
-                            <input name="system.diceroller.damage.rerollcap.six" value="{{system.diceroller.damage.rerollcap.six}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.six"
+                                value="{{system.diceroller.damage.rerollcap.six}}" type="text">
                         </div>
                         <div>
                             <div>7</div>
-                            <input name="system.diceroller.damage.rerollcap.seven" value="{{system.diceroller.damage.rerollcap.seven}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.seven"
+                                value="{{system.diceroller.damage.rerollcap.seven}}" type="text">
                         </div>
                         <div>
                             <div>8</div>
-                            <input name="system.diceroller.damage.rerollcap.eight" value="{{system.diceroller.damage.rerollcap.eight}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.eight"
+                                value="{{system.diceroller.damage.rerollcap.eight}}" type="text">
                         </div>
                         <div>
                             <div>9</div>
-                            <input name="system.diceroller.damage.rerollcap.nine" value="{{system.diceroller.damage.rerollcap.nine}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.nine"
+                                value="{{system.diceroller.damage.rerollcap.nine}}" type="text">
                         </div>
                         <div>
                             <div>10</div>
-                            <input name="system.diceroller.damage.rerollcap.ten" value="{{system.diceroller.damage.rerollcap.ten}}" type="text">
+                            <input name="system.diceroller.damage.rerollcap.ten"
+                                value="{{system.diceroller.damage.rerollcap.ten}}" type="text">
                         </div>
                     </div>
                 </div>
@@ -635,7 +648,8 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.TriggerOnTens"}}</div>
                         <select name="system.diceroller.damage.triggerontens" data-type="String">
-                            {{selectOptions selects.triggerOnTensDamageOptions selected=system.diceroller.damage.triggerontens localize=true}}
+                            {{selectOptions selects.triggerOnTensDamageOptions
+                            selected=system.diceroller.damage.triggerontens localize=true}}
                         </select>
                     </div>
                     <div>
@@ -768,7 +782,8 @@
                     <div>
                         <div class="resource-label">{{localize "Ex3.TriggerOnOnes"}}</div>
                         <select name="system.diceroller.opposedbonuses.triggeronones" data-type="String">
-                        {{selectOptions selects.triggerOnOnesOptions selected=system.diceroller.opposedbonuses.triggeronones localize=true}}
+                            {{selectOptions selects.triggerOnOnesOptions
+                            selected=system.diceroller.opposedbonuses.triggeronones localize=true}}
                         </select>
                     </div>
                     <div>
@@ -790,6 +805,36 @@
         </div>
 
         <div class="tab" data-group="primary" data-tab="upgrades">
+            <div class="resource flex-center mb-1" style="font-size: 17px;"><label class="resource-label">{{localize
+                    "Ex3.Upgrades"}} <a class="item-control add-upgrade" title="Create upgrade"><i
+                            class="fas fa-plus"></i></a></label>
+            </div>
+            {{#each system.upgrades as |upgrade index|}}
+            <div class="flex-group-center mb-1">
+                <div class="grid grid-2col flex-center">
+                    <div>
+                        <div>
+                            <label class="resource-label">{{localize "Ex3.Name"}}</label>
+                        </div>
+                        <div class="d-flex" style="align-items:center; margin-bottom: 10px;">
+                            <input name="system.upgrades.{{index}}.name" class="upgrade-name" value="{{upgrade.name}}"
+                                type="text" data-index="{{index}}">
+                        </div>
+                    </div>
+                    <div>
+                        <div style="margin-right: 42px;">
+                            <label class="resource-label">{{localize "Ex3.Active"}}</label>
+                        </div>
+                        <div class="d-flex" style="align-items:center; margin-bottom: 10px;justify-content:center;">
+                            <input name="system.upgrades.{{index}}.active" type="checkbox" {{checked upgrade.active}}>
+                            <a class="item-control delete-upgrade" title="Delete upgrade"
+                                data-index="{{index}}"><i class="fas fa-trash"
+                                    style="margin-right: 15px; margin-left:15px;"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
         </div>
 
         <div id="other-tab" class="tab" data-group="primary" data-tab="other">
@@ -839,10 +884,12 @@
                 <select name="system.numberprerequisites.ability" data-type="String">
                     {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                     <optgroup label="{{localize charmCategory.label}}">
-                        {{selectOptions charmCategory.entries selected=../system.numberprerequisites.ability localize=true}}
+                        {{selectOptions charmCategory.entries selected=../system.numberprerequisites.ability
+                        localize=true}}
                     </optgroup>
                     {{/each}}
-                    {{selectOptions selects.previousCharmsPrerequisitesOptions selected=system.numberprerequisites.ability localize=true}}
+                    {{selectOptions selects.previousCharmsPrerequisitesOptions
+                    selected=system.numberprerequisites.ability localize=true}}
                 </select>
             </div>
             <div class="d-flex flex-center resource-label">
@@ -856,7 +903,8 @@
                         {{selectOptions charmCategory.entries selected=../system.archetype.ability localize=true}}
                     </optgroup>
                     {{/each}}
-                    {{selectOptions selects.uniqueArchetypeAbilityOptions selected=system.archetype.ability localize=true}}
+                    {{selectOptions selects.uniqueArchetypeAbilityOptions selected=system.archetype.ability
+                    localize=true}}
                 </select>
             </div>
             <div class="flex-center mt-1">

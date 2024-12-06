@@ -1837,6 +1837,7 @@ exaltedthird.requirementTypes = {
     label: "Ex3.Other",
     requirements: {
       booleanPrompt: "Ex3.YesOrNoPrompt",
+      upgradeActive: "Ex3.UpgradeActive",
     },
   }
 }
