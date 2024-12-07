@@ -329,6 +329,7 @@
     "Ex3.ActiveItems": "Active Items",
     "Ex3.OpposingCharms": "Opposing Charms",
     "Ex3.CharmType": "Charm Type",
+    "Ex3.CostDisplay": "Cost Display",
     "Ex3.Folder": "Folder",
     "Ex3.Advantages": "Advantages",
     "Ex3.Character": "Character",
@@ -1305,6 +1306,12 @@
     "Ex3.Upgrade": "Upgrade",
     "Ex3.UpgradeActive": "Upgrade Active",
     "Ex3.Upgrades": "Upgrades",
+    "Ex3.Automations": "Automations",
+
+    "Ex3.HasItemName": "Has Item (Name)",
+    "Ex3.HasActiveItemName": "Has Active Item (Name)",
+    "Ex3.HasActiveEffectName": "Has Active Effect (Name)",
+
     "Ex3.AttributeUpgrades": "Attribute Upgrades",
 
     "Ex3.PauseIcon": "Pause Icon",

@@ -27,7 +27,7 @@
         <a class="item" data-tab="description">{{localize "Ex3.Description"}}</a>
         <a class="item" data-tab="costs">{{localize "Ex3.Costs"}}</a>
         <a class="item" data-tab="bonuses">{{localize "Ex3.Dice"}}</a>
-        <a class="item" data-tab="triggers">{{localize "Ex3.Triggers"}}</a>
+        <a class="item" data-tab="automations">{{localize "Ex3.Automations"}}</a>
         <a class="item" data-tab="upgrades">{{localize "Ex3.Upgrades"}}</a>
         <a class="item" data-tab="other">{{localize "Ex3.Other"}}</a>
     </nav>
@@ -800,8 +800,9 @@
             </div>
         </div>
 
-        <div class="tab" data-group="primary" data-tab="triggers">
+        <div class="tab" data-group="primary" data-tab="automations">
             {{> systems/exaltedthird/templates/item/item-trigger-tab.html}}
+            {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 
         <div class="tab" data-group="primary" data-tab="upgrades">
@@ -848,6 +849,12 @@
                     <select name="system.charmtype" data-type="String">
                         {{selectOptions charmExaltType selected=system.charmtype localize=true}}
                     </select>
+                </div>
+                <div>
+                    <div class="flex-center">
+                        <div class="resource-label">{{localize "Ex3.CostDisplay"}}</div>
+                    </div>
+                    <input type="text" name="system.costdisplay" value="{{system.costdisplay}}" />
                 </div>
                 <div>
                     <div class="flex-center">
@@ -956,7 +963,6 @@
                 </select>
             </div>
             {{/if}}
-            {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>
 
     </section>

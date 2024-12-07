@@ -283,6 +283,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     }
     costAndRequirement = costAndRequirement.replace('Cost: ', '').replace('Mins: ', '').split(';');
     var costArray = costAndRequirement[0].split(',');
+    charmData.system.costdisplay = costAndRequirement[0];
     this.charmCost(costArray, charmData);
     var requirementArray = costAndRequirement[1].toLowerCase().split(',');
     this.charmRequirements(requirementArray, charmData);
@@ -314,6 +315,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       var costDuration = textArray[index].replace('Cost: ', '').split('Duration:');
       charmData.system.duration = costDuration[1];
       var costArray = costDuration[0].split(',');
+      charmData.system.costdisplay = costDuration[0];
       this.charmCost(costArray, charmData);
       index++;
     }

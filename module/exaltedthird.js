@@ -262,43 +262,46 @@ Hooks.once('init', async function () {
     return false;
   });
 
-  Handlebars.registerHelper("charmCostDisplay", function (cost) {
-    if (!cost) {
+  Handlebars.registerHelper("charmCostDisplay", function (system) {
+    if(system.costdisplay) {
+      return `<b>${game.i18n.localize("Ex3.Cost")}</b>` + ": " + system.costdisplay;
+    }
+    if (!system.cost) {
       return '';
     }
     let costString = '';
-    if (cost.motes > 0 || cost.commitmotes > 0) {
-      costString += `${cost.motes || cost.commitmotes}m, `
+    if (system.cost.motes > 0 || system.cost.commitmotes > 0) {
+      costString += `${system.cost.motes || system.cost.commitmotes}m, `
     }
-    if (cost.willpower > 0) {
-      costString += `${cost.willpower}wp, `
+    if (system.cost.willpower > 0) {
+      costString += `${system.cost.willpower}wp, `
     }
-    if (cost.anima > 0) {
-      costString += `${cost.anima}a, `
+    if (system.cost.anima > 0) {
+      costString += `${system.cost.anima}a, `
     }
-    if (cost.initiative > 0) {
-      costString += `${cost.initiative}i, `
+    if (system.cost.initiative > 0) {
+      costString += `${system.cost.initiative}i, `
     }
-    if (cost.health > 0) {
-      costString += `${cost.health}`
-      if (cost.healthtype === 'bashing') {
+    if (system.cost.health > 0) {
+      costString += `${system.cost.health}`
+      if (system.cost.healthtype === 'bashing') {
         costString += `hl, `
       }
-      if (cost.healthtype === 'lethal') {
+      if (system.cost.healthtype === 'lethal') {
         costString += `lhl, `
       }
-      if (cost.healthtype === 'aggravated') {
+      if (system.cost.healthtype === 'aggravated') {
         costString += `ahl, `
       }
     }
-    if (cost.xp > 0) {
-      costString += `${cost.xp}xp, `
+    if (system.cost.xp > 0) {
+      costString += `${system.cost.xp}xp, `
     }
-    if (cost.goldxp > 0) {
-      costString += `${cost.goldxp}gxp, `
+    if (system.cost.goldxp > 0) {
+      costString += `${system.cost.goldxp}gxp, `
     }
-    if (cost.whitexp > 0) {
-      costString += `${cost.whitexp}wxp, `
+    if (system.cost.whitexp > 0) {
+      costString += `${system.cost.whitexp}wxp, `
     }
     if (costString !== '') {
       costString = `<b>${game.i18n.localize("Ex3.Cost")}</b>` + ": " + costString;

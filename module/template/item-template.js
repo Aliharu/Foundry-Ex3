@@ -397,6 +397,7 @@ export class ItemCharmData extends CommonItemData {
             keywords: new fields.StringField({ initial: "" }),
             ability: new fields.StringField({ initial: "other" }),
             listingname: new fields.StringField({ initial: "" }),
+            costdisplay: new fields.StringField({ initial: "" }),
             requirement: new fields.NumberField({ initial: 0 }),
             essence: new fields.NumberField({ initial: 0 }),
             parentitemid: new fields.StringField({ initial: "" }),
