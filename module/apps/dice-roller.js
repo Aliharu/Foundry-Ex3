@@ -495,9 +495,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.accuracy = 0;
             }
             this.object.opposingCharms = [];
-            if (this.actor.system.battlegroup) {
-                this._setBattlegroupBonuses();
-            }
             if (this.object.charmList === undefined) {
                 this.object.charmList = this.object.rollType === 'useOpposingCharms' ? this.actor.defensecharms : this.actor.rollcharms;
                 if (this.object.rollType !== 'useOpposingCharms') {
@@ -640,7 +637,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             ]
         },
         // position: { width: 730 },
-        position: { width: 730, height: 584 },
+        position: { width: 730, height: 600 },
         tag: "form",
         form: {
             handler: RollForm.myFormHandler,
@@ -812,7 +809,22 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     },
                 );
             }
-
+            if (this.actor.system.battlegroup) {
+                effectsAndTags.push({
+                    name: "Ex3.CommandBonus",
+                    summary: this.actor.system.commandbonus.value
+                });
+                if (this._isAttackRoll()) {
+                    effectsAndTags.push({
+                        name: "Ex3.Size",
+                        summary: this.actor.system.size.value
+                    });
+                    effectsAndTags.push({
+                        name: "Ex3.Might",
+                        summary: this.actor.system.might.value
+                    });         
+                }
+            }
         }
 
         if (this._isAttackRoll()) {
@@ -4771,7 +4783,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'upgradeActive':
-                    if(!Object.values(charm.system.upgrades).some(upgrade => upgrade.id === requirementObject.value && upgrade.active)) {
+                    if (!Object.values(charm.system.upgrades).some(upgrade => upgrade.id === requirementObject.value && upgrade.active)) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'hasItemName':
+                case 'hasActiveItemName':
+                    if(!charmActor.items.some(item => item.name === requirementObject.value && (requirementObject.requirement === 'hasItemName' || item.system.active))){
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'hasActiveEffectName':
+                    if(![...charmActor.allApplicableEffects()].some(effect => !effect.disabled && effect.name === requirementObject.value)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5311,6 +5334,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 totalIgnorePenalties += Math.min(this.actor.system.health.penaltymod, this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty);
             }
         }
+        if (this.actor.system.battlegroup) {
+            dicePool += this.actor.system.commandbonus.value;
+            if (this._isAttackRoll()) {
+                dicePool += (this.actor.system.size.value + this.actor.system.might.value);
+            }
+        }
         if (this.object.stunt !== 'none' && this.object.stunt !== 'bank') {
             dicePool += 2;
         }
@@ -5367,7 +5396,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _assembleDamagePool(display) {
-        if(display && this.object.showTargets > 1) {
+        if (display && this.object.showTargets > 1) {
             return "";
         }
         var damageDicePool = this.object.damage.damageDice;
@@ -5416,6 +5445,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         //         }
         //     }
         // }
+
+        if (this.actor.system.battlegroup && this._damageRollType('withering')) {
+            damageDicePool += (this.actor.system.size.value + this.actor.system.might.value);
+        }
 
         if (this._damageRollType('decisive') && this.object.damage.decisiveDamageType === 'initiative') {
             damageDicePool -= this.object.cost.initiative;

@@ -1810,6 +1810,9 @@ exaltedthird.requirementTypes = {
       formula: "Ex3.Formula",
       hasStatus: "Ex3.HasStatus",
       missingStatus: "Ex3.MissingStatus",
+      hasItemName: "Ex3.HasItemName",
+      hasActiveItemName: "Ex3.HasActiveItemName",
+      hasActiveEffectName: "Ex3.HasActiveEffectName"
     },
   },
   target: {
