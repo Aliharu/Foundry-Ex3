@@ -1591,6 +1591,11 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           sectionList[ritual.system.archetypename].list.push(ritual);
         }
       }
+    } else if(itemType === 'specialability') {
+      sectionList['specialAbilities'] = {
+        name: game.i18n.localize("Ex3.SpecialAbilities"),
+        list: items
+      }
     }
     else {
       for (const charm of items.sort(function (a, b) {
