@@ -116,7 +116,11 @@
     {{/ifEquals}}
     {{#if data.oxBodyEnabled}}
     <div>
+      {{#ifEquals data.character.exalt 'alchemical'}}
+      <div class="resource-label">{{localize "Ex3.StrainResistantChassis"}}</div>
+      {{else}}
       <div class="resource-label">{{localize "Ex3.OxBodies"}}</div>
+      {{/ifEquals}}
       <input name="object.character.oxBodies" type="number" value="{{data.character.oxBodies}}" />
     </div>
     {{/if}}

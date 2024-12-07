@@ -1294,6 +1294,38 @@ exaltedthird.siderealSigns = {
 }
 
 exaltedthird.oxBody = {
+  'alchemical': {
+    zero: {
+      zero: 0,
+      one: 0,
+      two: 2,
+      four: 0,
+    },
+    three: {
+      zero: 0,
+      one: 1,
+      two: 1,
+      four: 0,
+    },
+    five: {
+      zero: 0,
+      one: 1,
+      two: 2,
+      four: 0,
+    },
+    six: {
+      zero: 0,
+      one: 1,
+      two: 3,
+      four: 0,
+    },
+    nine: {
+      zero: 0,
+      one: 2,
+      two: 2,
+      four: 0,
+    },
+  },
   'solar': {
     zero: {
       zero: 0,

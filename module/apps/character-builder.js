@@ -735,6 +735,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
 
     const oxBodyAvailable = [
+      'alchemical',
       'solar',
       'lunar',
       'abyssal',
@@ -2315,34 +2316,41 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     if (this.object.character.oxBodies > 0) {
       const oxBodyChart = CONFIG.exaltedthird.oxBody;
+      var oxBodyValue = this.object.character.attributes.stamina.value + this.object.character.attributes.stamina.upgrade;
       if (oxBodyChart[this.object.character.exalt]) {
-        if (this.object.character.attributes.stamina.value < 3) {
+        if (oxBodyValue < 3) {
           actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].zero.zero * this.object.character.oxBodies);
           actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].zero.one * this.object.character.oxBodies);
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].zero.two * this.object.character.oxBodies);
           actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].zero.four * this.object.character.oxBodies);
         }
-        else if (this.object.character.attributes.stamina.value < 5) {
+        else if (oxBodyValue < 5) {
           actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].three.zero * this.object.character.oxBodies);
           actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].three.one * this.object.character.oxBodies);
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].three.two * this.object.character.oxBodies);
           actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].three.four * this.object.character.oxBodies);
         }
-        else {
+        else if(oxBodyValue < 6 || !oxBodyChart[this.object.character.exalt].six) {
           actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].five.zero * this.object.character.oxBodies);
           actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].five.one * this.object.character.oxBodies);
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].five.two * this.object.character.oxBodies);
           actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].five.four * this.object.character.oxBodies);
         }
+        else {
+          actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].six.zero * this.object.character.oxBodies);
+          actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].six.one * this.object.character.oxBodies);
+          actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].six.two * this.object.character.oxBodies);
+          actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].six.four * this.object.character.oxBodies);
+        }
       }
       if (oxBodyChart[this.object.character.exigent]) {
-        if (this.object.character.attributes.stamina.value < 3) {
+        if (oxBodyValue < 3) {
           actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exigent].zero.zero * this.object.character.oxBodies);
           actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exigent].zero.one * this.object.character.oxBodies);
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exigent].zero.two * this.object.character.oxBodies);
           actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exigent].zero.four * this.object.character.oxBodies);
         }
-        else if (this.object.character.attributes.stamina.value < 5) {
+        else if (oxBodyValue < 5) {
           actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exigent].three.zero * this.object.character.oxBodies);
           actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exigent].three.one * this.object.character.oxBodies);
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exigent].three.two * this.object.character.oxBodies);

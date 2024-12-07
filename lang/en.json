@@ -1308,6 +1308,8 @@
     "Ex3.Upgrades": "Upgrades",
     "Ex3.Automations": "Automations",
 
+    "Ex3.StrainResistantChassis": "Strain-Resistant Chassis",
+
     "Ex3.HasItemName": "Has Item (Name)",
     "Ex3.HasActiveItemName": "Has Active Item (Name)",
     "Ex3.HasActiveEffectName": "Has Active Effect (Name)",
