@@ -282,7 +282,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       costAndRequirement += textArray[index];
     }
     costAndRequirement = costAndRequirement.replace('Cost: ', '').replace('Mins: ', '').split(';');
-    var costArray = costAndRequirement[0].split(',');
+    var costArray = costAndRequirement[0].split(/,|or/);
     charmData.system.costdisplay = costAndRequirement[0];
     this.charmCost(costArray, charmData);
     var requirementArray = costAndRequirement[1].toLowerCase().split(',');

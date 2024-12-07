@@ -92,7 +92,7 @@
       <select name="object.character.birthSign" data-type="String">
         {{#each data.signList as |signCategory signCategoryType|}}
         <optgroup label="{{signCategory.label}}">
-          {{selectOptions signCategory.signs selected=../data.character.birthsign localize=true}}
+          {{selectOptions signCategory.signs selected=../data.character.birthSign localize=true}}
         </optgroup>
         {{/each}}
       </select>
