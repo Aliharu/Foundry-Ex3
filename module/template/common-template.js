@@ -187,6 +187,38 @@ export function activatableData() {
     };
 }
 
+export function charmAlternateData() {
+    return {
+        endtrigger: new fields.StringField({ initial: "none" }),
+        type: new fields.StringField({ initial: "supplemental" }),
+        duration: new fields.StringField({ initial: "instant" }),
+        activatable: new fields.BooleanField({ initial: false }),
+        summary: new fields.StringField({ initial: "" }),
+        cost: new fields.SchemaField({
+            motes: new fields.NumberField({ initial: 0 }),
+            commitmotes: new fields.NumberField({ initial: 0 }),
+            initiative: new fields.NumberField({ initial: 0 }),
+            anima: new fields.NumberField({ initial: 0 }),
+            penumbra: new fields.NumberField({ initial: 0 }),
+            willpower: new fields.NumberField({ initial: 0 }),
+            grapplecontrol: new fields.NumberField({ initial: 0 }),
+            aura: new fields.StringField({ initial: "" }),
+            health: new fields.NumberField({ initial: 0 }),
+            healthtype: new fields.StringField({ initial: "bashing" }),
+            xp: new fields.NumberField({ initial: 0 }),
+            silverxp: new fields.NumberField({ initial: 0 }),
+            goldxp: new fields.NumberField({ initial: 0 }),
+            whitexp: new fields.NumberField({ initial: 0 }),
+        }),
+        restore: new fields.SchemaField({
+            motes: new fields.NumberField({ initial: 0 }),
+            willpower: new fields.NumberField({ initial: 0 }),
+            health: new fields.NumberField({ initial: 0 }),
+            initiative: new fields.NumberField({ initial: 0 }),
+        }),
+    };
+}
+
 export function triggerData() {
     return {
         triggers: new fields.SchemaField({

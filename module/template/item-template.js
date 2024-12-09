@@ -1,4 +1,4 @@
-import { activatableData, artifactData, equipmentData, traitField, triggerData } from "./common-template.js";
+import { activatableData, artifactData, charmAlternateData, equipmentData, traitField, triggerData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -378,9 +378,8 @@ export class ItemCharmData extends CommonItemData {
 
         return {
             ...commonData,
-            ...activatableData(),
             ...triggerData(),
-            summary: new fields.StringField({ initial: "" }),
+            ...charmAlternateData(),
             prerollmacro: new fields.StringField({ initial: "" }),
             macro: new fields.StringField({ initial: "" }),
             damagemacro: new fields.StringField({ initial: "" }),
@@ -392,14 +391,20 @@ export class ItemCharmData extends CommonItemData {
                 }),
             ),
             charmtype: new fields.StringField({ initial: "other" }),
-            type: new fields.StringField({ initial: "supplemental" }),
-            duration: new fields.StringField({ initial: "instant" }),
             keywords: new fields.StringField({ initial: "" }),
             ability: new fields.StringField({ initial: "other" }),
             listingname: new fields.StringField({ initial: "" }),
             costdisplay: new fields.StringField({ initial: "" }),
             requirement: new fields.NumberField({ initial: 0 }),
             essence: new fields.NumberField({ initial: 0 }),
+            active: new fields.BooleanField({ initial: false }),
+            activealternate: new fields.StringField({ initial: "default" }),
+            alternates: new fields.ArrayField(
+                new fields.SchemaField({
+                    name: new fields.StringField({ initial: "" }),
+                    ...charmAlternateData(),
+                }),
+            ),
             parentitemid: new fields.StringField({ initial: "" }),
             upgrades: new fields.ObjectField({ initial: {} }),
             archetype: new fields.SchemaField({
@@ -417,28 +422,6 @@ export class ItemCharmData extends CommonItemData {
                 number: new fields.NumberField({ initial: 0 }),
             }),
             equipped: new fields.BooleanField({ initial: false }),
-            cost: new fields.SchemaField({
-                motes: new fields.NumberField({ initial: 0 }),
-                commitmotes: new fields.NumberField({ initial: 0 }),
-                initiative: new fields.NumberField({ initial: 0 }),
-                anima: new fields.NumberField({ initial: 0 }),
-                penumbra: new fields.NumberField({ initial: 0 }),
-                willpower: new fields.NumberField({ initial: 0 }),
-                grapplecontrol: new fields.NumberField({ initial: 0 }),
-                aura: new fields.StringField({ initial: "" }),
-                health: new fields.NumberField({ initial: 0 }),
-                healthtype: new fields.StringField({ initial: "bashing" }),
-                xp: new fields.NumberField({ initial: 0 }),
-                silverxp: new fields.NumberField({ initial: 0 }),
-                goldxp: new fields.NumberField({ initial: 0 }),
-                whitexp: new fields.NumberField({ initial: 0 }),
-            }),
-            restore: new fields.SchemaField({
-                motes: new fields.NumberField({ initial: 0 }),
-                willpower: new fields.NumberField({ initial: 0 }),
-                health: new fields.NumberField({ initial: 0 }),
-                initiative: new fields.NumberField({ initial: 0 }),
-            }),
             diceroller: new fields.SchemaField({
                 enabled: new fields.BooleanField({ initial: true }),
                 bonusdice: new fields.StringField({ initial: "0" }),

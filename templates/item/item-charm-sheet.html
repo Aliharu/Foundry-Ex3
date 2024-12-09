@@ -2,7 +2,7 @@
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" required /></h1>
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
                 <select name="system.ability" data-type="String">
@@ -828,11 +828,29 @@
                         </div>
                         <div class="d-flex" style="align-items:center; margin-bottom: 10px;justify-content:center;">
                             <input name="system.upgrades.{{index}}.active" type="checkbox" {{checked upgrade.active}}>
-                            <a class="item-control delete-upgrade" title="Delete upgrade"
-                                data-index="{{index}}"><i class="fas fa-trash"
-                                    style="margin-right: 15px; margin-left:15px;"></i></a>
+                            <a class="item-control delete-upgrade" title="Delete upgrade" data-index="{{index}}"><i
+                                    class="fas fa-trash" style="margin-right: 15px; margin-left:15px;"></i></a>
                         </div>
                     </div>
+                </div>
+            </div>
+            {{/each}}
+            <div class="resource flex-center mb-1" style="font-size: 17px;"><label class="resource-label">{{localize
+                    "Ex3.AlternateModes"}} <a class="item-control edit-alternate" title="Create alternate" data-function="add"><i
+                            class="fas fa-plus"></i></a></label>
+            </div>
+            {{#each system.alternates as |alternate index|}}            
+            <div class="item large-item">
+                <div class="item-text gap">
+                    <div class="item-image"><img class="list-item-image" src="{{../item.img}}" title="{{alternate.name}}"
+                            width="35" height="35" /></div>
+                    <span class="item-name">{{alternate.name}}</span>
+                </div>
+                <div class="item-controls" data-item-index="{{index}}">
+                    <a class="item-alternate edit-alternate"
+                        title="Edit Alternate" data-item-index="{{index}}" data-function="edit"><i class="fas fa-edit"></i></a>
+                    <a class="item-alternate delete-alternate"
+                        title="Remove Alternate" data-item-index="{{index}}"><i class="fas fa-trash"></i></a>
                 </div>
             </div>
             {{/each}}

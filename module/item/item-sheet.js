@@ -166,6 +166,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
   }
 
   getTypeSpecificCSSClasses() {
+    if (this.item.parent) {
+      return this.item.parent.getSheetBackground()
+    }
     return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
   }
 
@@ -299,6 +302,103 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       this.item.update({
         [`system.upgrades.-=${index}`]: null,
       });
+    });
+
+    html.find('.edit-alternate').click(async ev => {
+      const functionType = ev.currentTarget.dataset.function;
+      const index = ev.currentTarget.dataset.itemIndex;
+      var alternateData = null;
+
+      if(functionType === 'edit') {
+        alternateData = this.object.system.alternates[index];
+      }
+
+      const template = "systems/exaltedthird/templates/dialogues/create-alternate.html";
+      const html = await renderTemplate(template, { name: alternateData ? alternateData.name : "New Alternate", system: alternateData ? alternateData : this.item.system, selects: CONFIG.exaltedthird.selects });
+
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.CreateAlternate"), resizable: true },
+        content: html,
+        classes: [this.actor.getSheetBackground()],
+        buttons: [{
+          action: "choice",
+          label: game.i18n.localize("Ex3.Save"),
+          default: true,
+          callback: (event, button, dialog) => button.form.elements
+        }, {
+          action: "cancel",
+          label: game.i18n.localize("Ex3.Cancel"),
+          callback: (event, button, dialog) => false
+        }],
+        submit: result => {
+          if (result) {
+            const alternateData = {
+              name: result.name.value,
+              symmary: result.summary.value,
+              duration: result.duration.value,
+              activatable: result.duration.value,
+              endtrigger: result.endtrigger.value,
+              cost: {
+                motes: result['cost.motes'].value,
+                commitmotes: result['cost.commitmotes'].value,
+                initiative: result['cost.initiative'].value,
+                anima: result['cost.anima'].value,
+                willpower: result['cost.willpower'].value,
+                grapplecontrol: result['cost.grapplecontrol'].value,
+                healthtype: result['cost.healthtype'].value,
+                aura: result['cost.aura'].value,
+                xp: result['cost.xp'].value,
+                silverxp: result['cost.silverxp'].value,
+                goldxp: result['cost.goldxp'].value,
+                whitexp: result['cost.whitexp'].value,
+              },
+              restore: {
+                motes: result['cost.motes'].value,
+                willpower: result['cost.willpower'].value,
+                health: result['cost.health'].value,
+                initiative: result['cost.initiative'].value,
+              }
+            };
+            if(!alternateData.name) {
+              ui.notifications.error(`New alternate requires name.`)
+              return;
+            }
+
+            let items = this.object?.system.alternates;
+            if (!items) {
+              items = [];
+            }
+            if (items.map(item => item.alternateName).includes(alternateData.name)) {
+              ui.notifications.error(`An alternate mode with this name already exists.`)
+              return;
+            }
+
+            if(index) {
+              items[index] = alternateData;
+            } else {
+              items.push(alternateData);
+            }
+
+            let formData = {};
+            foundry.utils.setProperty(formData, `system.alternates`, items);
+
+            this.object.update(formData);
+
+          }
+        }
+      }).render({ force: true });
+    });
+
+    html.find('.delete-alternate').click(async ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let formData = {};
+
+      const index = ev.currentTarget.dataset.function;
+      const items = this.object.system.alternates;
+      items.splice(index, 1);
+      foundry.utils.setProperty(formData, `system.alternates`, items);
+      this.object.update(formData);
     });
 
     // html.on("change", ".trigger-name", ev => {

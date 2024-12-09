@@ -44,6 +44,7 @@ export function registerSettings() {
             "abyssal": "Ex3.Abyssal",
             "alchemical": "Ex3.Alchemical",
             "db": "Ex3.Dragonblooded",
+            "exigent": "Ex3.Exigent",
             "getimian": "Ex3.Getimian",
             "infernal": "Ex3.Infernal",
             "liminal": "Ex3.Liminal",

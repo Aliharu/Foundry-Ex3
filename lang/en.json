@@ -1306,7 +1306,15 @@
     "Ex3.Upgrade": "Upgrade",
     "Ex3.UpgradeActive": "Upgrade Active",
     "Ex3.Upgrades": "Upgrades",
+    "Ex3.CreateAlternate": "Create Alternate",
+
     "Ex3.Automations": "Automations",
+
+    "Ex3.Alternate": "Alternate",
+    "Ex3.Alternates": "Alternates",
+
+    "Ex3.AlternateModes": "Alternate Modes",
+
 
     "Ex3.StrainResistantChassis": "Strain-Resistant Chassis",
 

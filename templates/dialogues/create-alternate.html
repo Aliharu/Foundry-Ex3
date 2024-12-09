@@ -1,0 +1,131 @@
+<form>
+    <div class="sheet-body exaltedthird">
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Name"}}</div>
+            <input type="text" name="name" value="{{name}}"/>
+        </div>
+        <div class="flex-group-center">
+            <label class="resource-label">{{localize "Ex3.Summary"}}</label>
+            <textarea type="text" name="summary" rows="4">{{system.summary}}</textarea>
+        </div>
+        <div class="grid grid-2col flex-group-center">
+            <div>
+                <div class="resource-label">{{localize "Ex3.Type"}}</div>
+                <input type="text" name="type" value="{{system.type}}" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Duration"}}</div>
+                <input type="text" name="duration" value="{{system.duration}}" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.Activatable"}}</label>
+                <div>
+                    <input name="activatable" type="checkbox" {{checked system.activatable}}>
+                </div>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
+                <select name="endtrigger" data-type="String">
+                    {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
+                </select>
+            </div>
+        </div>
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Cost"}}</div>
+        </div>
+        <div class="grid grid-4col flex-group-center">
+            <div>
+                <div class="resource-label">{{localize "Ex3.Motes"}}</div>
+                <input type="number" name="cost.motes" value="{{system.cost.motes}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.CommitM"}}</div>
+                <input type="number" name="cost.commitmotes" value="{{system.cost.commitmotes}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Initiative"}}</div>
+                <input type="number" name="cost.initiative" value="{{system.cost.initiative}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Anima"}}</div>
+                <input type="number" name="cost.anima" value="{{system.cost.anima}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
+                <input type="number" name="cost.willpower" value="{{system.cost.willpower}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.GrappleControl"}}</div>
+                <input type="number" name="cost.grapplecontrol" value="{{system.cost.grapplecontrol}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Health"}}</div>
+                <input type="number" name="cost.health" value="{{system.cost.health}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.HealthType"}}</div>
+                <select name="cost.healthtype" data-type="String">
+                    {{selectOptions selects.damageTypes selected=system.cost.healthtype localize=true}}
+                </select>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+                <select name="cost.aura" data-type="String">
+                    {{selectOptions selects.costElements selected=system.cost.aura localize=true}}
+                </select>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.XP"}}</div>
+                <input type="number" name="cost.xp" value="{{system.cost.xp}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Penumbra"}}</div>
+                <input type="number" name="cost.penumbra" value="{{system.cost.penumbra}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Silver"}}</div>
+                <input type="number" name="cost.silverxp" value="{{system.cost.silverxp}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Gold"}}</div>
+                <input type="number" name="cost.goldxp" value="{{system.cost.goldxp}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.White"}}</div>
+                <input type="number" name="cost.whitexp" value="{{system.cost.whitexp}}"
+                    data-dtype="Number" />
+            </div>
+        </div>
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Restore"}}</div>
+        </div>
+        <div class="grid grid-3col flex-group-center">
+            <div>
+                <div class="resource-label">{{localize "Ex3.Motes"}}</div>
+                <input type="number" name="restore.motes" value="{{system.restore.motes}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
+                <input type="number" name="restore.willpower" value="{{system.restore.willpower}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Health"}}</div>
+                <input type="number" name="restore.health" value="{{system.restore.health}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Initiative"}}</div>
+                <input type="number" name="restore.initiative" value="{{system.restore.initiative}}"
+                    data-dtype="Number" />
+            </div>
+        </div>
+    </div>
+</form>
