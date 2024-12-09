@@ -3100,6 +3100,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
             dice = await this._assembleDicePool(false);
 
+            if (this.object.successModifier) {
+                successes += this.object.successModifier;
+            }
+
             if (this.object.rollType === 'social') {
                 if (this.object.applyAppearance) {
                     dice += this.object.appearanceBonus;
@@ -5352,9 +5356,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (totalPenalties) {
             dicePool -= Math.max(0, totalPenalties - totalIgnorePenalties);
         }
-        if (this.object.successModifier) {
-            successes += this.object.successModifier;
-        }
+
         if (this.object.targetSpecificDiceMod) {
             dicePool += this.object.targetSpecificDiceMod;
         }
