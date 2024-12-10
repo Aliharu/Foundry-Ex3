@@ -3104,11 +3104,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 successes += this.object.successModifier;
             }
 
-            if (this.object.rollType === 'social') {
-                if (this.object.applyAppearance) {
-                    dice += this.object.appearanceBonus;
-                }
-            }
             if (this.object.diceToSuccesses > 0) {
                 successes += Math.min(dice, this.object.diceToSuccesses);
             }
@@ -5366,6 +5361,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.object.diceToSuccesses > 0) {
             dicePool = Math.max(0, dicePool - this.object.diceToSuccesses);
+        }
+
+        if (this.object.rollType === 'social') {
+            if (this.object.applyAppearance) {
+                dice += this.object.appearanceBonus;
+            }
         }
 
         // if (display) {

@@ -31,8 +31,16 @@
     <li class="item flexrow item-row" data-item-id="{{item._id}}">
         <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
-        <h4 class="item-name"><b>{{item.name}}</b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}</h4>
+        <h4 class="item-name"><b>{{item.name}}
+            {{#if item.currentmodeid}}
+                ({{item.currentmodename}})
+            {{/if}}
+        </b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}</h4>
         <div class="item-controls">
+            {{#if item.system.modes.alternates}}
+            <a class="item-control switch-mode" title="Switch Modes"><i
+                class="fas fa-right-left"></i></a>
+            {{/if}}
             {{#if item.system.diceroller.opposedbonuses.enabled}}
             <a class="item-control add-opposing-charm" title="Add charm's opposed bonuses to other characters rolls"><i
                     class="fas fa-shield-plus"></i></a>

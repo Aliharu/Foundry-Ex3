@@ -171,6 +171,13 @@ export class ExaltedThirdItem extends Item {
     return "icons/svg/item-bag.svg";
   }
 
+  getSheetBackground() {
+    if (this.parent) {
+      return this.parent.getSheetBackground()
+    }
+    return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
+  }
+
   /**
  * Prepare a data object which is passed to any Roll formulas which are created related to this Item
  * @private

@@ -1309,13 +1309,17 @@
     "Ex3.CreateAlternate": "Create Alternate",
 
     "Ex3.Automations": "Automations",
+    "Ex3.Modes": "Modes",
+    "Ex3.MainMode": "Main Mode",
 
     "Ex3.Alternate": "Alternate",
     "Ex3.Alternates": "Alternates",
 
     "Ex3.AlternateModes": "Alternate Modes",
+    "Ex3.SwitchAlternate": "Switch Alternate",
+    "Ex3.SwitchMode": "Switch Mode",
 
-
+    
     "Ex3.StrainResistantChassis": "Strain-Resistant Chassis",
 
     "Ex3.HasItemName": "Has Item (Name)",

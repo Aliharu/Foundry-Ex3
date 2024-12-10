@@ -13,7 +13,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       this.options.width = this.position.width = 615;
       this.options.height = this.position.height = 850;
     }
-    this.options.classes = [...this.options.classes, this.getTypeSpecificCSSClasses()];
+    this.options.classes = [...this.options.classes, this.item.getSheetBackground()];
   }
 
   /** @override */
@@ -165,13 +165,6 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     return context;
   }
 
-  getTypeSpecificCSSClasses() {
-    if (this.item.parent) {
-      return this.item.parent.getSheetBackground()
-    }
-    return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
-  }
-
   /**
 * Prepare the data structure for traits data like tags
 * @param {object} traits   The raw traits data object from the item data
@@ -304,22 +297,22 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       });
     });
 
-    html.find('.edit-alternate').click(async ev => {
+    html.find('.edit-alternate-mode').click(async ev => {
       const functionType = ev.currentTarget.dataset.function;
       const index = ev.currentTarget.dataset.itemIndex;
-      var alternateData = null;
+      var currentAlternateData = null;
 
-      if(functionType === 'edit') {
-        alternateData = this.object.system.alternates[index];
+      if (functionType === 'edit') {
+        currentAlternateData = this.object.system.modes.alternates[index];
       }
 
-      const template = "systems/exaltedthird/templates/dialogues/create-alternate.html";
-      const html = await renderTemplate(template, { name: alternateData ? alternateData.name : "New Alternate", system: alternateData ? alternateData : this.item.system, selects: CONFIG.exaltedthird.selects });
+      const template = "systems/exaltedthird/templates/dialogues/edit-alternate-mode.html";
+      const html = await renderTemplate(template, { name: currentAlternateData ? currentAlternateData.name : "New Alt Mode", system: currentAlternateData ? currentAlternateData : this.item.system, selects: CONFIG.exaltedthird.selects });
 
       new foundry.applications.api.DialogV2({
-        window: { title: game.i18n.localize("Ex3.CreateAlternate"), resizable: true },
+        window: { title: game.i18n.localize("Ex3.Alternate"), resizable: true },
         content: html,
-        classes: [this.actor.getSheetBackground()],
+        classes: [this.item.getSheetBackground()],
         buttons: [{
           action: "choice",
           label: game.i18n.localize("Ex3.Save"),
@@ -333,8 +326,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         submit: result => {
           if (result) {
             const alternateData = {
+              id: currentAlternateData?.id || foundry.utils.randomID(16),
               name: result.name.value,
-              symmary: result.summary.value,
+              summary: result.summary.value,
               duration: result.duration.value,
               activatable: result.duration.value,
               endtrigger: result.endtrigger.value,
@@ -359,28 +353,63 @@ export class ExaltedThirdItemSheet extends ItemSheet {
                 initiative: result['cost.initiative'].value,
               }
             };
-            if(!alternateData.name) {
+            if (!alternateData.name) {
               ui.notifications.error(`New alternate requires name.`)
               return;
             }
 
-            let items = this.object?.system.alternates;
+            let formData = {};
+
+            let items = this.object?.system.modes.alternates;
             if (!items) {
               items = [];
+            }
+            if(items.length === 0) {
+              formData = {
+                system: {
+                  modes: {
+                    mainmode: {
+                      summary: this.object.system.summary,
+                      duration: this.object.system.duration,
+                      activatable: this.object.system.duration,
+                      endtrigger: this.object.system.endtrigger,
+                      cost: {
+                        motes: this.object.system['cost.motes'],
+                        commitmotes: this.object.system['cost.commitmotes'],
+                        initiative: this.object.system['cost.initiative'],
+                        anima: this.object.system['cost.anima'],
+                        willpower: this.object.system['cost.willpower'],
+                        grapplecontrol: this.object.system['cost.grapplecontrol'],
+                        healthtype: this.object.system['cost.healthtype'],
+                        aura: this.object.system['cost.aura'],
+                        xp: this.object.system['cost.xp'],
+                        silverxp: this.object.system['cost.silverxp'],
+                        goldxp: this.object.system['cost.goldxp'],
+                        whitexp: this.object.system['cost.whitexp'],
+                      },
+                      restore: {
+                        motes: this.object.system['cost.motes'],
+                        willpower: this.object.system['cost.willpower'],
+                        health: this.object.system['cost.health'],
+                        initiative: this.object.system['cost.initiative'],
+                      }
+                    }
+                  }
+                }
+              };
             }
             if (items.map(item => item.alternateName).includes(alternateData.name)) {
               ui.notifications.error(`An alternate mode with this name already exists.`)
               return;
             }
 
-            if(index) {
+            if (index) {
               items[index] = alternateData;
             } else {
               items.push(alternateData);
             }
 
-            let formData = {};
-            foundry.utils.setProperty(formData, `system.alternates`, items);
+            foundry.utils.setProperty(formData, `system.modes.alternates`, items);
 
             this.object.update(formData);
 
@@ -394,10 +423,10 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       ev.stopPropagation();
       let formData = {};
 
-      const index = ev.currentTarget.dataset.function;
-      const items = this.object.system.alternates;
+      const index = ev.currentTarget.dataset.itemIndex;
+      const items = this.object.system.modes.alternates;
       items.splice(index, 1);
-      foundry.utils.setProperty(formData, `system.alternates`, items);
+      foundry.utils.setProperty(formData, `system.modes.alternates`, items);
       this.object.update(formData);
     });
 

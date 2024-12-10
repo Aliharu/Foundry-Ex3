@@ -54,7 +54,11 @@
                 <div class="item-text gap">
                     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
                             width="34" height="34" /></div>
-                    <span class="item-name">{{item.name}}</span>
+                    <span class="item-name">{{item.name}}
+                        {{#if item.system.currentmodeid}}
+                            ({{item.system.currentmodename}})
+                        {{/if}}
+                    </span>
                     <span class="text-summary">{{item.system.summary}}</span>
                 </div>
                 <div class="item-controls">

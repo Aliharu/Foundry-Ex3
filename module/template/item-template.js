@@ -398,13 +398,22 @@ export class ItemCharmData extends CommonItemData {
             requirement: new fields.NumberField({ initial: 0 }),
             essence: new fields.NumberField({ initial: 0 }),
             active: new fields.BooleanField({ initial: false }),
-            activealternate: new fields.StringField({ initial: "default" }),
-            alternates: new fields.ArrayField(
-                new fields.SchemaField({
+            modes: new fields.SchemaField({
+                currentmodeid: new fields.StringField({ initial: "" }),
+                currentmodename: new fields.StringField({ initial: "" }),
+                mainmode: new fields.SchemaField({
+                    id: new fields.StringField({ initial: "" }),
                     name: new fields.StringField({ initial: "" }),
                     ...charmAlternateData(),
                 }),
-            ),
+                alternates: new fields.ArrayField(
+                    new fields.SchemaField({
+                        id: new fields.StringField({ initial: "" }),
+                        name: new fields.StringField({ initial: "" }),
+                        ...charmAlternateData(),
+                    }),
+                ),
+            }),
             parentitemid: new fields.StringField({ initial: "" }),
             upgrades: new fields.ObjectField({ initial: {} }),
             archetype: new fields.SchemaField({
@@ -607,7 +616,7 @@ export class ItemCharmData extends CommonItemData {
 
             //Damage
             if (source.diceroller.damage) {
-                if(source.diceroller.damage.reroll) {
+                if (source.diceroller.damage.reroll) {
                     if (typeof source.diceroller.damage.reroll.one === 'string') {
                         source.diceroller.damage.reroll.one = true;
                     }
