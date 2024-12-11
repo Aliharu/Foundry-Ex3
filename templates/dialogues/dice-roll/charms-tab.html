@@ -65,6 +65,11 @@
                     {{#if item.charmAdded}}
                     <a class="item-control" title="Remove Charm" data-action="triggerRemoveCharm"><i
                             class="fas fa-minus"></i></a>
+                    {{else}}
+                            <!-- {{#if item.system.modes.alternates}}
+                            <a class="item-control" data-action="switchCharmMode" title="Switch Mode"><i
+                                class="fas fa-right-left"></i></a>
+                            {{/if}} -->
                     {{/if}}
                     <div>
                         {{#if item.timesAdded}}x{{item.timesAdded}}{{/if}}

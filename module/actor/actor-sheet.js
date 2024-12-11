@@ -1848,43 +1848,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
-
-      const newMode = await foundry.applications.api.DialogV2.wait({
-        window: { title: game.i18n.localize("Ex3.SwitchMode"), resizable: true },
-        content: '',
-        classes: [this.actor.getSheetBackground(), 'button-select-dialog'],
-        modal: true,
-        buttons: [
-          {
-            action: 'mainmode', // Use a unique identifier for the main mode
-            label: item.system.modes.mainmode.name || item.name, // Assuming mainmode has a 'name' property
-            callback: (event, button, dialog) => item.system.modes.mainmode
-          },
-          ...item.system.modes.alternates.map((alternate, index) => ({
-            action: `${index}`,
-            label: alternate.name,
-            callback: (event, button, dialog) => alternate
-          })),
-        ]
-      });
-
-      const formData = {
-        system: {
-          modes: {
-            'currentmodeid': newMode.id,
-            'currentmodename': newMode.name,
-          },
-          'activatable': newMode.activatable,
-          'cost': newMode.cost, 
-          'restore': newMode.restore, 
-          'duration': newMode.duration, 
-          'endtrigger': newMode.endtrigger, 
-          'summary': newMode.summary,
-          'type': newMode.type,
-        }
-      };
-
-      await item.update(formData);
+      await item.switchMode();
     });
 
     html.find('.add-opposing-charm').click(ev => {

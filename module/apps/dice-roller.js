@@ -656,6 +656,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             addSpecialAttack: RollForm.addSpecialAttack,
             removeSpecialAttack: RollForm.removeSpecialAttack,
             removeOpposingCharm: RollForm.removeOpposingCharm,
+            // switchCharmMode: RollForm.switchCharmMode,
         },
     };
 
@@ -1861,6 +1862,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         this.render();
     }
+
+    // static async switchCharmMode(event, target) {
+    //     event.stopPropagation();
+    //     let li = $(target).parents(".item");
+    //     let item = this.actor.items.get(li.data("item-id"));
+    //     await item.switchMode();
+    // }
 
     static enableAddCharms() {
         // this.object.charmList = this.actor.rollcharms;

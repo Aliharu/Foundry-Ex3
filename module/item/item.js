@@ -178,6 +178,45 @@ export class ExaltedThirdItem extends Item {
     return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
   }
 
+  async switchMode() {
+    const newMode = await foundry.applications.api.DialogV2.wait({
+      window: { title: game.i18n.localize("Ex3.SwitchMode"), resizable: true },
+      content: '',
+      classes: [this.actor.getSheetBackground(), 'button-select-dialog'],
+      modal: true,
+      buttons: [
+        {
+          action: 'mainmode', // Use a unique identifier for the main mode
+          label: this.system.modes.mainmode.name || this.name, // Assuming mainmode has a 'name' property
+          callback: (event, button, dialog) => this.system.modes.mainmode
+        },
+        ...this.system.modes.alternates.map((alternate, index) => ({
+          action: `${index}`,
+          label: alternate.name,
+          callback: (event, button, dialog) => alternate
+        })),
+      ]
+    });
+  
+    const formData = {
+      system: {
+        modes: {
+          'currentmodeid': newMode.id,
+          'currentmodename': newMode.name,
+        },
+        'activatable': newMode.activatable,
+        'cost': newMode.cost, 
+        'restore': newMode.restore, 
+        'duration': newMode.duration, 
+        'endtrigger': newMode.endtrigger, 
+        'summary': newMode.summary,
+        'type': newMode.type,
+      }
+    };
+  
+    await this.update(formData);
+  }
+
   /**
  * Prepare a data object which is passed to any Roll formulas which are created related to this Item
  * @private
