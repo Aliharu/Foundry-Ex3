@@ -783,6 +783,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         this._getHealthLevels(textArray, index, actorData);
         index++;
       }
+
       var intimacyString = '';
       var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
@@ -840,6 +841,14 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         actorData.system.speed.value = parseInt(textArray[index].replace(/[^0-9]/g, ''));
         index++;
       }
+      // if(textArray[index].includes('Primary Actions')) {
+      //   let primaryActionsArray = textArray[index].replace("Primary Actions: ", "").split(',');
+      //   if(!textArray[index].includes("Secondary Actions")) {
+      //     index++;
+      //     primaryActionsArray = [...primaryActionsArray, ...textArray[index].split(',')]
+      //   }
+      //   index++;
+      // }
       var actionsString = '';
       while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:') {
         actionsString += textArray[index];
@@ -1644,7 +1653,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
               newItem = true;
               actorData.system.settings.showescort = true;
             }
-            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits' || textArray[index].trim().toLowerCase() === 'excellency') {
+            else if (textArray[index].trim().toLowerCase() === 'special abilities' || textArray[index].trim().toLowerCase() === 'special attacks' || textArray[index].trim().toLowerCase() === 'traits' || textArray[index].trim().toLowerCase() === 'excellencies') {
               itemType = 'specialability';
               index++;
               newItem = true;
