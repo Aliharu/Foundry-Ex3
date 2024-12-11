@@ -32,8 +32,8 @@
         <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" /></div>
         <h4 class="item-name"><b>{{item.name}}
-            {{#if item.currentmodeid}}
-                ({{item.currentmodename}})
+            {{#if item.system.modes.currentmodename}}
+                ({{item.system.modes.currentmodename}})
             {{/if}}
         </b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}</h4>
         <div class="item-controls">

@@ -1870,8 +1870,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
       const formData = {
         system: {
-          'currentmodeid': newMode.id,
-          'currentmodename': newMode.name,
+          modes: {
+            'currentmodeid': newMode.id,
+            'currentmodename': newMode.name,
+          },
           'activatable': newMode.activatable,
           'cost': newMode.cost, 
           'restore': newMode.restore, 

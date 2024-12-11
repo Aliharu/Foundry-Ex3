@@ -99,6 +99,8 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     }
     context.showParentItemList = false;
     context.selects = CONFIG.exaltedthird.selects;
+    context.itemModes = {};
+    context.upgradeSelects = {};
 
     context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
     context.triggerBonusDropdowns = CONFIG.exaltedthird.triggerBonusDropdowns;
@@ -155,6 +157,14 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         acc[upgrade.id] = upgrade.name; // Key is `id`, value is `name`
         return acc;
       }, {});
+    }
+
+    if (itemData.system.modes) {
+      context.itemModes = Object.values(itemData.system.modes.alternates).reduce((acc, upgrade) => {
+        acc[upgrade.id] = upgrade.name; // Key is `id`, value is `name`
+        return acc;
+      }, {});
+      context.itemModes[''] = itemData.system.modes.mainmode.name || "Main Mode";
     }
 
     if (itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'customability') {
