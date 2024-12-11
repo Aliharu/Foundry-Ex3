@@ -5292,6 +5292,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         var dicePool = 0;
         var totalPenalties = this.object.penaltyModifier;
         var totalIgnorePenalties = this.object.ignorePenalties;
+        var targetAppearanceBonus = this.object.appearanceBonus;
+
+        if (display && this.object.showTargets && !this.object.target) {
+            targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
+        }
 
         if (this.actor.type === 'character') {
             if (this.actor.system.attributes[this.object.attribute]) {
@@ -5365,7 +5370,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.object.rollType === 'social') {
             if (this.object.applyAppearance) {
-                dice += this.object.appearanceBonus;
+                dicePool += this.object.appearanceBonus;
             }
         }
 
@@ -5679,13 +5684,22 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (this.actor.system.details.exalt === "sidereal") {
                     return this.actor.system.essence.value;
                 }
-                if (['abyssal', 'solar', 'infernal', 'alchemical'].includes(this.actor.system.details.exalt)) {
+                if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt)) {
                     diceMap = {
                         'zero': 0,
                         'two': 2,
                         'three': 5,
                         'seven': 7,
                         'eleven': 10,
+                    };
+                }
+                if (this.actor.system.details.exalt === 'alchemical') {
+                    diceMap = {
+                        'zero': 0,
+                        'two': this.actor.system.essence.value + 1,
+                        'three': this.actor.system.essence.value + 2,
+                        'seven': this.actor.system.essence.value + 4,
+                        'eleven': this.actor.system.essence.value + 5,
                     };
                 }
                 if (this.actor.system.details.exalt === 'getimian') {

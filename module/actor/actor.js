@@ -1299,7 +1299,8 @@ export class ExaltedThirdActor extends Actor {
             caps = [0, 1, 3, 5]
             break
           case 'alchemical':
-            caps = [0, 1, 3, 5]
+            const baseAlchBonus = Math.ceil(actorData.system.essence.value / 2);
+            caps = [0, baseAlchBonus, baseAlchBonus + 1, baseAlchBonus + 2]
             break
           case 'liminal':
             if (actorData.system.anima.value > 1) bonus = Math.floor(actorData.system.essence.value / 2)
