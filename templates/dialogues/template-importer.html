@@ -42,6 +42,14 @@
             {{selectOptions folders selected=folder localize=true}}
         </select>
       </div>
+      <!-- {{#ifEquals type 'qc'}}
+      <div>
+        <div class="resource-label">{{localize "Ex3.TemplateType"}} (Only for Primary/Secondary/Tertiary statblocks)</div>
+        <select id="templateType" name="templateType" value="{{templateType}}" data-type="String">
+            {{selectOptions selects.statblockTemplateTypes selected=templateType localize=true blank=''}}
+        </select>
+      </div>
+      {{/ifEquals}} -->
       {{#ifEquals type 'charm'}}
       <div>
         <div class="resource-label">{{localize "Ex3.CharmType"}}</div>

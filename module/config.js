@@ -2482,5 +2482,28 @@ exaltedthird.selects = {
   artifactTypes: {
     mundane: "Ex3.Mundane",
     artifact: "Ex3.Artifact",
+  },
+  statblockTemplateTypes: {
+    firstCircleMachineSpirit: "Ex3.FirstCircleMachineSpirit",
+    secondCircleMachineSpirit: "Ex3.SecondCircleMachineSpirit",
+    drone: "Ex3.Drone",
   }
 };
+
+exaltedthird.tripleActionStatblocks = {
+  firstCircleMachineSpirit: {
+    primary: 9,
+    secondary: 6,
+    tertiary: 3,
+  },
+  secondCircleMachineSpirit: {
+    primary: 12,
+    secondary: 8,
+    tertiary: 6,
+  },
+  drone: {
+    primary: 10,
+    secondary: 7,
+    tertiary: 4,
+  },
+}

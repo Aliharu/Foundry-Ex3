@@ -1320,7 +1320,12 @@
     "Ex3.SwitchMode": "Switch Mode",
 
     "Ex3.ModeActive": "Mode Active",
-    
+
+    "Ex3.TemplateType": "Template Type",
+    "Ex3.Drone": "Drone",
+    "Ex3.FirstCircleMachineSpirit": "First Circle Machine Spirit",
+    "Ex3.SecondCircleMachineSpirit": "Second Circle Machine Spirit",
+
     "Ex3.StrainResistantChassis": "Strain-Resistant Chassis",
 
     "Ex3.HasItemName": "Has Item (Name)",

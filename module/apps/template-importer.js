@@ -8,6 +8,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       test: '',
       type: type,
       charmType: 'other',
+      templateType: '',
       listingName: '',
       spellCircle: 'terrestrial',
       itemType: 'armor',
@@ -843,11 +844,23 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       }
       // if(textArray[index].includes('Primary Actions')) {
       //   let primaryActionsArray = textArray[index].replace("Primary Actions: ", "").split(',');
-      //   if(!textArray[index].includes("Secondary Actions")) {
+      //   if(!textArray[index+1].includes("Secondary Actions")) {
       //     index++;
       //     primaryActionsArray = [...primaryActionsArray, ...textArray[index].split(',')]
       //   }
       //   index++;
+      //   for(const primaryAction of primaryActionsArray) {
+      //     itemData.push(
+      //       {
+      //         type: 'action',
+      //         img: CONFIG.exaltedthird.itemIcons['action'],
+      //         name: primaryAction,
+      //         system: {
+      //           value: CONFIG.exaltedthird.tripleActionStatblocks[this.data.templateType]?.primary || 0
+      //         }
+      //       }
+      //     );
+      //   }
       // }
       var actionsString = '';
       while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:') {
@@ -885,7 +898,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
                   value: parseInt(actionSplit[1].trim())
                 }
               }
-            )
+            );
           }
         }
       }
