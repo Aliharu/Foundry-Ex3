@@ -211,6 +211,7 @@ export class ExaltedThirdItem extends Item {
         'endtrigger': newMode.endtrigger, 
         'summary': newMode.summary,
         'type': newMode.type,
+        'multiactivate': newMode.multiactivate,
       }
     };
   

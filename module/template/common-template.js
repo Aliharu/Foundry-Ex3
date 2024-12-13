@@ -194,6 +194,7 @@ export function charmAlternateData() {
         duration: new fields.StringField({ initial: "instant" }),
         activatable: new fields.BooleanField({ initial: false }),
         summary: new fields.StringField({ initial: "" }),
+        multiactivate: new fields.BooleanField({ initial: false }),
         cost: new fields.SchemaField({
             motes: new fields.NumberField({ initial: 0 }),
             commitmotes: new fields.NumberField({ initial: 0 }),

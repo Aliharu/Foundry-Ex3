@@ -102,10 +102,10 @@ export class ExaltedThirdActor extends Actor {
             hasaura: hasAura
           }
         }
-        if(martialArtsMastery[exalt]) {
+        if (martialArtsMastery[exalt]) {
           updateData.system.settings.martialartsmastery = martialArtsMastery[exalt];
         }
-        if(exalt === 'sidereal') {
+        if (exalt === 'sidereal') {
           updateData.system.settings.smaenlightenment = true;
         } else {
           updateData.system.settings.smaenlightenment = false;
@@ -1220,7 +1220,7 @@ export class ExaltedThirdActor extends Actor {
       }
       const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
       const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
-      if(actorData.system.details.exalt === 'alchemical') {
+      if (actorData.system.details.exalt === 'alchemical') {
         value = Math.min(10, attributeValue + abilityValue);
       }
       value = Math.floor(((attributeValue) + (abilityValue)) / 2);
@@ -1440,7 +1440,7 @@ export class ExaltedThirdActor extends Actor {
     if (data.attributes) {
       for (let [k, v] of Object.entries(data.attributes)) {
         data[k] = foundry.utils.deepClone(v);
-        data[`${k}upgrade`] = {'value' : v.upgrade };
+        data[`${k}upgrade`] = { 'value': v.upgrade };
       }
     }
   }
@@ -1636,19 +1636,34 @@ export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
 export async function spendEmbeddedItem(actor, item) {
   const actorData = await foundry.utils.duplicate(actor);
   let updateActive = null;
+  let activateAmount = 1;
 
   if (item.type === 'charm') {
     if (item.system.active) {
       updateActive = false;
       if (item.system.cost.commitmotes > 0) {
-        actorData.system.motes[item.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= item.system.cost.commitmotes;
+        actorData.system.motes[item.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= (item.system.cost.commitmotes * item.flags?.exaltedthird?.currentIterationsActive || 1);
       }
     }
     else {
+      if (item.system.multiactivate) {
+        try {
+          activateAmount = await foundry.applications.api.DialogV2.prompt({
+            window: { title: game.i18n.localize("Ex3.InputActivationAmount") }, 
+            content: '<input name="activateAmount" type="number" min="1" step="1" value="1" autofocus>',
+            ok: {
+              label: "Submit",
+              callback: (event, button, dialog) => button.form.elements.activateAmount.valueAsNumber
+            }
+          });
+        } catch {
+          console.log("User didn't input a value.");
+        }
+      }
       var newLevel = actorData.system.anima.level;
       var newValue = actorData.system.anima.value;
       if (item.system.cost.anima > 0) {
-        for (var i = 0; i < item.system.cost.anima; i++) {
+        for (var i = 0; i < (item.system.cost.anima * activateAmount); i++) {
           if (newLevel === "Transcendent") {
             newLevel = "Bonfire";
             newValue = 3;
@@ -1668,7 +1683,7 @@ export async function spendEmbeddedItem(actor, item) {
         }
       }
       if (item.system.cost.motes > 0 || item.system.cost.commitmotes > 0) {
-        var spendingMotes = item.system.cost.motes + item.system.cost.commitmotes;
+        var spendingMotes = (item.system.cost.motes + item.system.cost.commitmotes) * activateAmount;
         var spentPersonal = 0;
         var spentPeripheral = 0;
         if (actorData.system.settings.charmmotepool === 'personal') {
@@ -1681,7 +1696,7 @@ export async function spendEmbeddedItem(actor, item) {
             spentPersonal = spendingMotes;
           }
           if (item.system.cost.commitmotes > 0) {
-            actorData.system.motes.personal.committed += item.system.cost.commitmotes;
+            actorData.system.motes.personal.committed += (item.system.cost.commitmotes * activateAmount);
           }
         }
         else {
@@ -1694,7 +1709,7 @@ export async function spendEmbeddedItem(actor, item) {
             spentPeripheral = spendingMotes;
           }
           if (item.system.cost.commitmotes > 0) {
-            actorData.system.motes.peripheral.committed += item.system.cost.commitmotes;
+            actorData.system.motes.peripheral.committed += (item.system.cost.commitmotes * activateAmount);
           }
         }
         actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
@@ -1728,9 +1743,9 @@ export async function spendEmbeddedItem(actor, item) {
       actorData.system.anima.value = newValue;
       actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - item.system.cost.willpower);
       if (actor.type === 'character') {
-        actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - item.system.cost.silverxp);
-        actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - item.system.cost.goldxp);
-        actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - item.system.cost.whitexp);
+        actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - (item.system.cost.silverxp * activateAmount));
+        actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - (item.system.cost.goldxp * activateAmount));
+        actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - (item.system.cost.whitexp * activateAmount));
       }
       if (actorData.system.details.aura === item.system.cost.aura || item.system.cost.aura === 'any') {
         actorData.system.details.aura = "none";
@@ -1741,25 +1756,25 @@ export async function spendEmbeddedItem(actor, item) {
           totalHealth += health_level.value;
         }
         if (item.system.cost.healthtype === 'bashing') {
-          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + item.system.cost.health);
+          actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + (item.system.cost.health * activateAmount));
         }
         else if (item.system.cost.healthtype === 'lethal') {
-          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + item.system.cost.health);
+          actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + (item.system.cost.health * activateAmount));
         }
         else {
-          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + item.system.cost.health);
+          actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + (item.system.cost.health * activateAmount));
         }
       }
       if (actorData.system.settings.charmmotepool === 'personal') {
-        actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + item.system.restore.motes);
+        actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + (item.system.restore.motes * activateAmount));
       }
       else {
-        actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + item.system.restore.motes);
+        actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + (item.system.restore.motes * activateAmount));
       }
-      actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + item.system.restore.willpower);
+      actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + (item.system.restore.willpower * activateAmount));
       if (item.system.restore.health > 0) {
-        const bashingHealed = item.system.restore.health - actorData.system.health.lethal;
-        actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - item.system.restore.health);
+        const bashingHealed = (item.system.restore.health * activateAmount) - actorData.system.health.lethal;
+        actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (item.system.restore.health * activateAmount));
         if (bashingHealed > 0) {
           actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
         }
@@ -1770,12 +1785,12 @@ export async function spendEmbeddedItem(actor, item) {
         if (combatant) {
           var newInitiative = combatant.initiative;
           if (item.system.cost.initiative > 0) {
-            newInitiative -= item.system.cost.initiative;
+            newInitiative -= (item.system.cost.initiative * activateAmount);
           }
           if (combatant.initiative > 0 && newInitiative <= 0) {
             newInitiative -= 5;
           }
-          newInitiative += item.system.restore.initiative;
+          newInitiative += (item.system.restore.initiative * activateAmount);
           game.combat.setInitiative(combatant.id, newInitiative);
         }
       }
@@ -1803,6 +1818,8 @@ export async function spendEmbeddedItem(actor, item) {
     await item.update({
       [`system.active`]: updateActive,
       [`flags.exaltedthird.poolCommitted`]: updateActive ? actorData.system.settings.charmmotepool : null,
+      [`flags.exaltedthird.currentIterationsActive`]: activateAmount,
+
     });
     for (const effect of actor.allApplicableEffects()) {
       if (effect._sourceName === item.name) {

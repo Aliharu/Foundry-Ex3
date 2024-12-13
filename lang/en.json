@@ -1318,6 +1318,8 @@
     "Ex3.AlternateModes": "Alternate Modes",
     "Ex3.SwitchAlternate": "Switch Alternate",
     "Ex3.SwitchMode": "Switch Mode",
+    "Ex3.MultiActivate": "Multi Activate",
+    "Ex3.InputActivationAmount": "Input Activation Amount",
 
     "Ex3.ModeActive": "Mode Active",
 
