@@ -823,7 +823,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     effectsAndTags.push({
                         name: "Ex3.Might",
                         summary: this.actor.system.might.value
-                    });         
+                    });
                 }
             }
         }
@@ -4309,6 +4309,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 if (cleanedValue === 'true' || cleanedValue === 'false') {
                                     cleanedValue = cleanedValue === "true";
                                 }
+                                if (cleanedValue === 'prompt') {
+                                    cleanedValue = await foundry.applications.api.DialogV2.prompt({
+                                        window: { title: game.i18n.localize("Ex3.TriggerBonusPrompt") },
+                                        content: `<label class="resource-label">Input value for: ${game.i18n.localize(CONFIG.exaltedthird.numberBonusTypeLabels[bonus.effect])}</label><input name="promptValue" type="text" placeholder="Insert number or formula" autofocus>`,
+                                        ok: {
+                                            label: "Submit",
+                                            callback: (event, button, dialog) => button.form.elements.promptValue.valueAsNumber
+                                        }
+                                    });
+                                    cleanedValue = cleanedValue.toString().toLowerCase().trim();
+                                }
                                 switch (bonus.effect) {
                                     case 'diceModifier':
                                     case 'successModifier':
@@ -4796,17 +4807,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'hasItemName':
                 case 'hasActiveItemName':
-                    if(!charmActor.items.some(item => item.name === requirementObject.value && (requirementObject.requirement === 'hasItemName' || item.system.active))){
+                    if (!charmActor.items.some(item => item.name === requirementObject.value && (requirementObject.requirement === 'hasItemName' || item.system.active))) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'hasActiveEffectName':
-                    if(![...charmActor.allApplicableEffects()].some(effect => !effect.disabled && effect.name === requirementObject.value)) {
+                    if (![...charmActor.allApplicableEffects()].some(effect => !effect.disabled && effect.name === requirementObject.value)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'currentModeActive':
-                    if(charm.system.modes?.currentmodeid !== requirementObject.value) {
+                    if (charm.system.modes?.currentmodeid !== requirementObject.value) {
                         fufillsRequirements = false;
                     }
                     break;
