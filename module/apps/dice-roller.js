@@ -2357,6 +2357,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'thresholdsuccesses') {
             return this.object.thresholdSuccesses || 0;
         }
+        if(formula.toLowerCase() === 'activationcount' && item) {
+            return item.flags?.exaltedthird?.currentIterationsActive ?? 1;
+        }
         if (formula?.toLowerCase() === 'damagedealt') {
             return this.object.damageLevelsDealt || 0;
         }
@@ -2473,59 +2476,59 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.opposingCharms.push(charm);
         }
         this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
-        this.object.rerollSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses);
-        this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
+        this.object.rerollSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses, charm.actor, charm);
+        this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor, charm);
         if (this.object.showTargets) {
             const targetValues = Object.values(this.object.targets);
             if (targetValues.length === 1) {
-                targetValues[0].rollData.guile += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-                targetValues[0].rollData.resolve += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
-                targetValues[0].rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
-                targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
-                targetValues[0].rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
-                targetValues[0].rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
-                targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
-                targetValues[0].rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                targetValues[0].rollData.guile += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor, charm);
+                targetValues[0].rollData.resolve += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor, charm);
+                targetValues[0].rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+                targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor, charm);
+                targetValues[0].rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor, charm);
+                targetValues[0].rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor, charm);
+                targetValues[0].rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor, charm);
+                targetValues[0].rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor, charm);
+                targetValues[0].rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor, charm);
                 if (this.object.rollType === 'damage') {
-                    targetValues[0].rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                    targetValues[0].rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor, charm);
                 }
             }
             else {
                 for (const target of targetValues) {
                     if (target.actor.id === charm.parent.id || targetValues.length === 1) {
-                        target.rollData.guile += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
-                        target.rollData.resolve += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
-                        target.rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
-                        target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
-                        target.rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
-                        target.rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
-                        target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
-                        target.rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-                        target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+                        target.rollData.guile += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor, charm);
+                        target.rollData.resolve += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor, charm);
+                        target.rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+                        target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor, charm);
+                        target.rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor, charm);
+                        target.rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor, charm);
+                        target.rollData.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor, charm);
+                        target.rollData.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor, charm);
+                        target.rollData.damageModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor, charm);
                         if (this.object.rollType === 'damage') {
-                            target.rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                            target.rollData.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor, charm);
                         }
                     }
                 }
             }
         }
         else {
-            this.object.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
-            this.object.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
-            this.object.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
-            this.object.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
-            this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor);
-            this.object.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
-            this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor);
+            this.object.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+            this.object.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor, charm);
+            this.object.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor, charm);
+            this.object.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor, charm);
+            this.object.diceModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.dicemodifier, charm.actor, charm);
+            this.object.successModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor, charm);
+            this.object.damage.damageDice += this._getFormulaValue(charm.system.diceroller.opposedbonuses.damagemodifier, charm.actor, charm);
             if (this.object.rollType === 'readIntentions') {
-                this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
+                this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor, charm);
             }
             if (this.object.rollType === 'social') {
-                this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
+                this.object.difficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor, charm);
             }
             if (this.object.rollType === 'damage') {
-                this.object.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor);
+                this.object.attackSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.successmodifier, charm.actor, charm);
             }
         }
         this.object.damage.targetNumber += charm.system.diceroller.opposedbonuses.increasedamagetargetnumber;
@@ -2533,8 +2536,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.settings.triggerOnOnes = charm.system.diceroller.opposedbonuses.triggeronones;
             this.object.settings.alsoTriggerTwos = charm.system.diceroller.opposedbonuses.alsotriggertwos;
         }
-        this.object.penaltyModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.penaltymodifier);
-        this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap);
+        this.object.penaltyModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.penaltymodifier, charm.actor, charm);
+        this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap, charm.actor, charm);
     }
 
     async _roll() {
@@ -4332,10 +4335,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'triggerTargetDefensePenalty':
                                     case 'onslaughtAddition':
                                     case 'magicOnslaughtAddition':
-                                        this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'doubleSuccess':
-                                        const { value, cap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        const { value, cap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         if (value) {
                                             if (value < this.object.doubleSuccess) {
                                                 this.object.doubleSuccess = value;
@@ -4346,10 +4349,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         }
                                         break;
                                     case 'decreaseTargetNumber':
-                                        this.object.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'rerollDieFace':
-                                        this._getRerollFormulaCap(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this._getRerollFormulaCap(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'fullExcellency':
                                         let excellencyResults = this.actor.type === 'character' ? this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : this.actor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
@@ -4388,7 +4391,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         }
                                         break;
                                     case 'triggerTensCap':
-                                        this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.settings.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'triggerOnOnes':
                                         if (triggerOnesMap[cleanedValue]) {
@@ -4402,38 +4405,38 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         }
                                         break;
                                     case 'triggerOnesCap':
-                                        this.object.settings.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.settings.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'reduceDifficulty':
                                         if (this.object.showTargets) {
                                             const targetValues = Object.values(this.object.targets);
                                             for (const target of targetValues) {
-                                                target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                                target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                                target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                                target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm));
+                                                target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm));
+                                                target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm));
                                             }
                                         }
                                         else {
-                                            this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
-                                            this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null));
+                                            this.object.difficulty = Math.max(0, this.object.difficulty - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm));
+                                            this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm));
                                         }
                                         break;
                                     case 'damageDice':
                                     case 'damageSuccessModifier':
                                     case 'cappedThreshholdToDamage':
-                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'rerollNumber-damage':
-                                        this.object.damage.rerollNumber += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage.rerollNumber += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'rerollNumberDescending-damage':
-                                        this.object.damage.rerollNumberDescending += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage.rerollNumberDescending += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'diceToSuccesses-damage':
-                                        this.object.damage.diceToSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage.diceToSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'doubleSuccess-damage':
-                                        const { dbValue, dbCap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        const { dbValue, dbCap } = this._getCappedFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         if (dbValue) {
                                             if (dbValue < this.object.damage.doubleSuccess) {
                                                 this.object.damage.doubleSuccess = dbValue;
@@ -4444,10 +4447,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         }
                                         break;
                                     case 'decreaseTargetNumber-damage':
-                                        this.object.damage.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage.targetNumber -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'rerollDieFace-damage':
-                                        this._getRerollFormulaCap(cleanedValue, true, bonusType === "opposed" ? charm.actor : null);
+                                        this._getRerollFormulaCap(cleanedValue, true, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'excludeOnes-damage':
                                         this.object.settings.damage.excludeOnesFromRerolls = (typeof cleanedValue === "boolean" ? cleanedValue : true);
@@ -4473,7 +4476,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         }
                                         break;
                                     case 'triggerTensCap-damage':
-                                        this.object.settings.damage.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.settings.damage.triggerTensCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'triggerOnOnes-damage':
                                         this.object.settings.damage.triggerOnOnes = bonus.value;
@@ -4483,15 +4486,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.settings.damage.alsoTriggerTwos = true;
                                         break;
                                     case 'triggerOnesCap-damage':
-                                        this.object.settings.damage.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.settings.damage.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'ignoreSoak':
                                     case 'ignoreHardness':
                                     case 'postSoakDamage':
-                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'modifyRolledDamage':
-                                        this.object.damageSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damageSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'threshholdToDamage':
                                     case 'doubleRolledDamage':
@@ -4508,13 +4511,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'goldxp-spend':
                                     case 'whitexp-spend':
                                         const spendKey = bonus.effect.replace('-spend', '');
-                                        this.object.cost[spendKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.cost[spendKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'muteMotes-spend':
-                                        this.object.cost.muteMotes += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.cost.muteMotes += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'grappleControl-spend':
-                                        this.object.cost.grappleControl += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.cost.grappleControl += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'health-spend':
                                         this._getHealthFormula(cleanedValue);
@@ -4527,15 +4530,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'health-restore':
                                     case 'willpower-restore':
                                         const restoreKey = bonus.effect.replace('-restore', '');
-                                        this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'motes-steal':
                                     case 'initiative-steal':
                                         const stealKey = bonus.effect.replace('-steal', '');
-                                        this.object.steal[stealKey].max += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.steal[stealKey].max += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'reduceGambitDifficulty':
-                                        this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'defense':
                                     case 'soak':
@@ -4543,10 +4546,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'resolve':
                                     case 'guile':
                                         if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
-                                            this.object.difficulty += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                            this.object.difficulty += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
 
                                         } else {
-                                            this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                            this.object[bonus.effect] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         }
                                         break;
                                     case 'setDamageType':
@@ -4556,10 +4559,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage.gainInitiative = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'doubleThresholdSuccesses':
-                                        this.object.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'doubleThresholdSuccesses-damage':
-                                        this.object.damage.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null);
+                                        this.object.damage.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
                                     case 'displayMessage':
                                         const result = bonus.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] || `\${${key}}`);

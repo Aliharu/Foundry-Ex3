@@ -8,9 +8,9 @@ export default class ExaltedActiveEffect extends ActiveEffect {
                     negativeValue = true;
                 }
                 var split = change.value.split(' ');
-                var leftVar = formulaData(actor, split[0]);
+                var leftVar = formulaData(actor, change, split[0]);
                 var operand = split[1];
-                var rightVar = formulaData(actor, split[2]);
+                var rightVar = formulaData(actor, change, split[2]);
                 switch (operand) {
                     case '+':
                         change.value = leftVar + rightVar;
@@ -43,14 +43,14 @@ export default class ExaltedActiveEffect extends ActiveEffect {
                 }
             }
             else {
-                change.value = formulaData(actor, change.value);
+                change.value = formulaData(actor, change, change.value);
             }
         }
         return super.apply(actor, change);
     }
 }
 
-function formulaData(actor, changeValue) {
+function formulaData(actor, change, changeValue) {
     if (parseInt(changeValue)) {
         return parseInt(changeValue);
     }
@@ -58,6 +58,9 @@ function formulaData(actor, changeValue) {
     if (changeValue.includes('-')) {
         changeValue = changeValue.replace('-', '');
         negativeValue = true;
+    }
+    if(changeValue.toLowerCase() === 'activationcount') {
+        changeValue = change.effect?.parent?.flags?.exaltedthird?.currentIterationsActive ?? 1;
     }
     if (actor.getRollData()[changeValue]?.value) {
         changeValue = actor.getRollData()[changeValue]?.value;
