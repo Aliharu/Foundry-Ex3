@@ -55,7 +55,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.Macros"), },
       content: html,
-      classes: [this.actor.getSheetBackground()],
+      classes: [this.item.getSheetBackground()],
       buttons: [{
         action: "choice",
         label: game.i18n.localize("Ex3.Save"),
