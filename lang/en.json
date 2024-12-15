@@ -819,6 +819,7 @@
     "Ex3.SubtractTargetInitiative": "Subtract Target Initiative",
     "Ex3.SubtractEnemyInitiative": "Subtract Enemy Initiative",
     "Ex3.SubtractEnemySuccesses": "Subtract Enemy Successes",
+    "Ex3.ReduceDamage": "Reduce Damage",
     "Ex3.SubtractEnemyDamageSuccesses": "Subtract Enemy Damage Successes",
     "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes",
     "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn",
@@ -1166,10 +1167,14 @@
     "Ex3.Formula": "Formula",
     "Ex3.ThresholdSuccesses": "Threshold Successes",
 
+    "Ex3.DoubleThresholdSuccesses": "Double Threshold Successes",
+    "Ex3.DoubleThresholdSuccessesDamage": "Double Threshold Successes Damage",
+
     "Ex3.RestoreMotes": "Restore Motes",
     "Ex3.RestoreWillpower": "Restore Willpower",
     "Ex3.RestoreHealth": "Restore Health",
     "Ex3.RestoreInitiative": "Restore Initiative",
+    "Ex3.RestoreGrappleControl": "Restore Grapple Control",
 
     "Ex3.DisplayMessage": "Display Message",
     "Ex3.SetDamageType": "Set Damage Type",

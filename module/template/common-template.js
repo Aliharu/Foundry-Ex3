@@ -216,6 +216,7 @@ export function charmAlternateData() {
             willpower: new fields.NumberField({ initial: 0 }),
             health: new fields.NumberField({ initial: 0 }),
             initiative: new fields.NumberField({ initial: 0 }),
+            grapplecontrol: new fields.NumberField({ initial: 0 }),
         }),
     };
 }

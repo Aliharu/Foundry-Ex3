@@ -1739,6 +1739,7 @@ export async function spendEmbeddedItem(actor, item) {
           }
         }
       }
+      actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (item.system.cost.grapplecontrol * activateAmount) + (item.system.restore.grapplecontrol * activateAmount));
       if (item.system.cost.commitmotes > 0 || item.system.activatable) {
         updateActive = true;
       }

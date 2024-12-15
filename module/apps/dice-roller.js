@@ -79,7 +79,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 motes: 0,
                 willpower: 0,
                 health: 0,
-                initiative: 0
+                initiative: 0,
+                grappleControl: 0,
             };
             this.object.steal = {
                 motes: {
@@ -163,7 +164,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.rerollNumberDescending = 0;
             this.object.rerollSuccesses = 0;
             this.object.attackSuccesses = 0;
-            this.object.doubleThresholdSuccesses = 0;
+            this.object.doubleThresholdSuccesses = false;
             this.object.triggerMessages = [];
 
             this.object.reroll = {
@@ -219,7 +220,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 decisiveDamageType: 'initiative',
                 decisiveDamageCalculation: 'evenSplit',
                 diceToSuccesses: 0,
-                doubleThresholdSuccesses: 0,
+                doubleThresholdSuccesses: false,
             };
             this.object.poison = null;
             this.object.settings = {
@@ -1542,6 +1543,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.restore.willpower -= item.system.restore.willpower;
                 this.object.restore.health -= item.system.restore.health;
                 this.object.restore.initiative -= item.system.restore.initiative;
+                this.object.restore.grappleControl -= item.system.restore.grapplecontrol;
             }
 
             if (item.system.diceroller) {
@@ -2014,7 +2016,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.cost.initiative += item.system.cost.initiative;
                 this.object.cost.grappleControl += item.system.cost.grapplecontrol;
 
-
                 if (item.system.cost.aura) {
                     this.object.cost.aura = item.system.cost.aura;
                 }
@@ -2035,6 +2036,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.restore.willpower += item.system.restore.willpower;
             this.object.restore.health += item.system.restore.health;
             this.object.restore.initiative += item.system.restore.initiative;
+            this.object.restore.grappleControl += item.system.restore.grapplecontrol;
         }
         if (item.system.diceroller) {
             this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
@@ -2386,8 +2388,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (formula.includes('attacker-')) {
             formula = formula.replace('attacker-', '');
-            if(this.object.rollType === 'useOpposingCharms') {
-                if(this.object.attacker) {
+            if (this.object.rollType === 'useOpposingCharms') {
+                if (this.object.attacker) {
                     forumlaActor = this.object.attacker;
                 } else {
                     return 0;
@@ -3312,6 +3314,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 case 'subtractSuccesses':
                     this.object.total -= onesRolled;
                     break;
+                case 'reduceDamage':
+                    this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - onesRolled);
+                    break;
             }
         }
 
@@ -3343,6 +3348,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this._isAttackRoll()) {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
+            if(this.object.doubleThresholdSuccesses) {
+                this.object.thresholdSuccesses *= 2;
+            }
             this.object.attackSuccesses = this.object.total;
             if (this.object.target) {
                 this.object.target.rollData.attackSuccesses = this.object.total;
@@ -3350,6 +3358,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         else {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+            if(this.object.doubleThresholdSuccesses) {
+                this.object.thresholdSuccesses *= 2;
+            }
         }
         await this._addTriggerBonuses('afterRoll');
     }
@@ -3416,7 +3427,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
-        const thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
         if (this.object.hasDifficulty) {
             if (this.object.total < this.object.difficulty) {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
@@ -3425,10 +3435,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
             else {
-                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${thresholdSuccesses} Threshhold Successes</h4>`;
-                goalNumberLeft = Math.max(goalNumberLeft - thresholdSuccesses - 1, 0);
+                resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">${this.object.thresholdSuccesses} Threshold Successes</h4>`;
+                goalNumberLeft = Math.max(goalNumberLeft - this.object.thresholdSuccesses - 1, 0);
                 if (this.object.rollType === "simpleCraft") {
-                    var craftXPGained = Math.min(this.object.maxCraftXP, thresholdSuccesses + 1);
+                    var craftXPGained = Math.min(this.object.maxCraftXP, this.object.thresholdSuccesses + 1);
                     resultString += `<h4 class="dice-total dice-total-end">Craft XP Gained: ${craftXPGained}</h4>`;
                     if (this.object.craftProjectId) {
                         var projectItem = this.actor.items.get(this.object.craftProjectId);
@@ -3458,17 +3468,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
                 const actorData = foundry.utils.duplicate(this.actor);
-                actorData.system.grapplecontrolrounds.value += thresholdSuccesses;
+                actorData.system.grapplecontrolrounds.value += this.object.thresholdSuccesses;
                 this.actor.update(actorData);
             }
             if (this.object.target && this.object.rollType === 'command') {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
-                    this.object.newTargetData.system.commandbonus.value = thresholdSuccesses;
+                    this.object.newTargetData.system.commandbonus.value = this.object.thresholdSuccesses;
                     this.object.updateTargetActorData = true;
                 }
             }
             if (this.object.rollType === 'steady') {
-                this.object.restore.initiative += Math.min(5, thresholdSuccesses);
+                this.object.restore.initiative += Math.min(5, this.object.thresholdSuccesses);
             }
         }
         let theContent = `
@@ -3527,7 +3537,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (combat) {
                 let combatant = this._getActorCombatant();
                 if (combatant && combatant.initiative != null) {
-                    combat.setInitiative(combatant.id, combatant.initiative + thresholdSuccesses);
+                    combat.setInitiative(combatant.id, combatant.initiative + this.object.thresholdSuccesses);
                 }
             }
         }
@@ -4313,6 +4323,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             'rerollsuccesses': 'rerollSuccesses',
             'subtractinitiative': 'subtractInitiative',
             'subtractsuccesses': 'subtractSuccesses',
+            'reducedamage': 'reduceDamage'
         }
         const triggerTensDamageMap = {
             subtracttargettnitiative: 'subtractTargetInitiative',
@@ -4419,6 +4430,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'rerollFailed':
                                     case 'rollTwice':
                                     case 'rollTwiceLowest':
+                                    case 'doubleThresholdSuccesses':
                                         this.object[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'activateAura':
@@ -4574,6 +4586,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'initiative-restore':
                                     case 'health-restore':
                                     case 'willpower-restore':
+                                    case 'grappleControl-restore':
                                         const restoreKey = bonus.effect.replace('-restore', '');
                                         this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
                                         break;
@@ -4603,11 +4616,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'gainInitiative':
                                         this.object.damage.gainInitiative = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
-                                    case 'doubleThresholdSuccesses':
-                                        this.object.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
-                                        break;
                                     case 'doubleThresholdSuccesses-damage':
-                                        this.object.damage.doubleThresholdSuccesses += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
+                                        this.object.damage.doubleThresholdSuccesses = (typeof cleanedValue === "boolean" ? cleanedValue : true);                                        
                                         break;
                                     case 'displayMessage':
                                         const result = bonus.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] || `\${${key}}`);
@@ -4875,7 +4885,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     _addOnslaught(number = 1, magicInflicted = false) {
-        if(!this.object.target?.actor) {
+        if (!this.object.target?.actor) {
             return;
         }
         if (!this.object.target.actor.system.immunities.onslaught && ((this.object.target.actor.system.sizecategory || 'standard') !== 'legendary' && !magicInflicted)) {
@@ -5985,6 +5995,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 initiative: 0
             };
         }
+        if(this.object.restore.grappleControl) {
+            this.object.restore.grappleControl = 0;
+        }
         if (this.object.rerollNumberDescending === undefined) {
             this.object.rerollNumberDescending = 0;
             this.object.damage.rerollNumberDescending = 0;
@@ -6207,7 +6220,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         if (this.object.doubleThresholdSuccesses === undefined) {
-            this.object.doubleThresholdSuccesses = 0;
+            this.object.doubleThresholdSuccesses = false;
         }
     }
 
@@ -6311,8 +6324,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         actorData.system.anima.value = newValue;
 
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
-        actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl);
-
+        actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
+        
         if (this.actor.type === 'character') {
             actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - this.object.cost.silverxp);
             actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - this.object.cost.goldxp);

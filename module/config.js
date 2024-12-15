@@ -1635,7 +1635,8 @@ exaltedthird.bonusTypes = {
       triggerOnOnes: "Ex3.TriggerOnOnes",
       triggerOnesAndTwos: "Ex3.TriggerOnes&Twos",
       triggerOnesCap: "Ex3.TriggerOnesCap",
-      fullExcellency: "Ex3.FullExcellency"
+      fullExcellency: "Ex3.FullExcellency",
+      doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses"
     },
   },
   damage: {
@@ -1663,6 +1664,7 @@ exaltedthird.bonusTypes = {
       threshholdToDamage: "Ex3.ThreshholdToDamage",
       doubleRolledDamage: "Ex3.DoubleRolledDamage",
       doublePreRolledDamage: "Ex3.DoublePreRolledDamage",
+      'doubleThresholdSuccesses-damage': "Ex3.DoubleThresholdSuccessesDamage",
       resetInit: "Ex3.ResetInitiative",
       ignoreSoak: "Ex3.IgnoreSoak",
       ignoreHardness: "Ex3.IgnoreHardness",
@@ -1781,6 +1783,7 @@ exaltedthird.numberBonusTypeLabels = {
   'whitexp-spend': "Ex3.SpendWhiteXP",
   'motes-restore': "Ex3.RestoreMotes",
   'willpower-restore': "Ex3.RestoreWillpower",
+  'grappleControl-restore': "Ex3.GrappleControlRestore",
   'health-restore': "Ex3.RestoreHealth",
   'initiative-restore': "Ex3.RestoreInitiative",
   'motes-steal': "Ex3.StealMotes",
@@ -2212,6 +2215,7 @@ exaltedthird.selects = {
     'rerollSuccesses': "Ex3.RerollSuccesses",
     'subtractInitiative': "Ex3.SubtractEnemyInitiative",
     'subtractSuccesses': "Ex3.SubtractEnemySuccesses",
+    'reduceDamage': "Ex3.ReduceDamage"
   },
   autoAddToRollOptions: {
     '': "Ex3.None",
