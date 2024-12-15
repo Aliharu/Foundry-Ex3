@@ -13,6 +13,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.messageId = data.preMessageId;
         this.search = "";
         this.object.totalDice = 0;
+        this.object.attacker = data.attacker;
 
         if (data.lastRoll) {
             this.object = foundry.utils.duplicate(this.actor.flags.exaltedthird.lastroll);
@@ -1395,6 +1396,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         rollData.showTargets = false;
         rollData.targets = null;
         rollData.newTargetData = null;
+        rollData.attacker = null;
         const addedCharmsConvertArray = [];
         for (let i = 0; i < this.object.addedCharms.length; i++) {
             addedCharmsConvertArray.push(foundry.utils.duplicate(this.object.addedCharms[i]));
@@ -2357,7 +2359,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'thresholdsuccesses') {
             return this.object.thresholdSuccesses || 0;
         }
-        if(formula.toLowerCase() === 'activationcount' && item) {
+        if (formula.toLowerCase() === 'activationcount' && item) {
             return item.flags?.exaltedthird?.currentIterationsActive ?? 1;
         }
         if (formula?.toLowerCase() === 'damagedealt') {
@@ -2380,6 +2382,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             else {
                 return 0;
+            }
+        }
+        if (formula.includes('attacker-')) {
+            formula = formula.replace('attacker-', '');
+            if(this.object.rollType === 'useOpposingCharms') {
+                if(this.object.attacker) {
+                    forumlaActor = this.object.attacker;
+                } else {
+                    return 0;
+                }
+            } else {
+                forumlaActor = this.actor;
             }
         }
         var negativeValue = false;
@@ -3565,6 +3579,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 rolls: [this.object.roll],
                 flags: {
                     "exaltedthird": {
+                        roller: this.actor._id,
                         dice: this.object.dice,
                         successes: this.object.successes,
                         successModifier: this.object.successModifier,
@@ -4323,6 +4338,36 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     });
                                     cleanedValue = cleanedValue.toString().toLowerCase().trim();
                                 }
+                                if (cleanedValue === 'intimacy') {
+                                    cleanedValue = await foundry.applications.api.DialogV2.wait({
+                                        window: { title: game.i18n.localize("Ex3.Intimacy"), resizable: true },
+                                        content: `Select intimacy bonus for ${charm.name}`,
+                                        classes: [this.actor.getSheetBackground(), 'button-select-dialog'],
+                                        modal: true,
+                                        buttons: [
+                                            {
+                                                action: 'none',
+                                                label: `${game.i18n.localize("Ex3.None")} (0)`,
+                                                callback: (event, button, dialog) => "0"
+                                            },
+                                            {
+                                                action: 'minor',
+                                                label: `${game.i18n.localize("Ex3.Minor")} (2)`,
+                                                callback: (event, button, dialog) => "2"
+                                            },
+                                            {
+                                                action: 'major',
+                                                label: `${game.i18n.localize("Ex3.Major")} (3)`,
+                                                callback: (event, button, dialog) => "3"
+                                            },
+                                            {
+                                                action: 'defining',
+                                                label: `${game.i18n.localize("Ex3.Defining")} (4)`,
+                                                callback: (event, button, dialog) => "4"
+                                            },
+                                        ]
+                                    });
+                                }
                                 switch (bonus.effect) {
                                     case 'diceModifier':
                                     case 'successModifier':
@@ -4830,7 +4875,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     _addOnslaught(number = 1, magicInflicted = false) {
-        if ((this.object.target?.actor?.system?.sizecategory || 'standard') !== 'legendary' && !magicInflicted) {
+        if(!this.object.target?.actor) {
+            return;
+        }
+        if (!this.object.target.actor.system.immunities.onslaught && ((this.object.target.actor.system.sizecategory || 'standard') !== 'legendary' && !magicInflicted)) {
             this.object.updateTargetActorData = true;
             const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId === "onslaught");
             if (onslaught) {

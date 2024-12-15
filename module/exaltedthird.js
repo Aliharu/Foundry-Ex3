@@ -515,11 +515,17 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         if (!actor) {
           ui.notifications.error(`Error: Could not find proper tokens actor and the logged in user has no set character to default to.`);
         }
+        let attacker = null;
+
+        if(message.flags?.exaltedthird?.rollerUuid){
+          attacker = await fromUuid(message.flags.exaltedthird.rollerUuid);
+        }
 
         if (actor) {
           actor.actionRoll(
             {
-              rollType: 'useOpposingCharms'
+              rollType: 'useOpposingCharms',
+              attacker: attacker,
             }
           );
         }

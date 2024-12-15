@@ -1482,6 +1482,7 @@ export class ExaltedThirdActor extends Actor {
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flags: {
             "exaltedthird": {
+              rollerUuid: this.uuid,
               targetActorId: target.actor.id,
               targetTokenId: target.id,
             }
@@ -1501,6 +1502,7 @@ export class ExaltedThirdActor extends Actor {
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flags: {
           "exaltedthird": {
+            rollerUuid: this.uuid,
             targetActorId: null,
             targetTokenId: null,
           }
@@ -1518,6 +1520,7 @@ export class ExaltedThirdActor extends Actor {
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flags: {
           "exaltedthird": {
+            rollerUuid: this.uuid,
             targetActorId: null,
             targetTokenId: null,
           }

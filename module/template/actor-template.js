@@ -122,6 +122,9 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       penaltymodifier: statField(0),
       baseinitiative: statField(3),
       dontresetonslaught: new fields.BooleanField({ initial: false }),
+      immunities: new fields.SchemaField({
+        onslaught: new fields.BooleanField({ initial: false }),
+      }),
       savedRolls: new fields.ObjectField({ initial: {} }),
       sizecategory: new fields.StringField({ initial: "standard" }),
       traits: new fields.SchemaField({

@@ -184,6 +184,12 @@ exaltedthird.activeEffectChanges = {
       'system.initiative.cost.round': 'Ex3.InitiativeCostPerRound',
     }
   },
+  immunities: {
+    label: "Ex3.Immunities",
+    effectList: {
+      'system.immunities.onslaught': 'Ex3.ImmuneOnslaught',
+    }
+  },
   damage: {
     label: "Ex3.Damage",
     effectList: {

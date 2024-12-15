@@ -822,6 +822,9 @@
     "Ex3.SubtractEnemyDamageSuccesses": "Subtract Enemy Damage Successes",
     "Ex3.IncreaseEnemySuccesses": "Increase Enemy Successes",
     "Ex3.DontResetOnslaughtNextTurn": "Don't Reset Onslaught Next Turn",
+    "Ex3.ImmuneOnslaught": "Immune Onslaught",
+    "Ex3.Immunities": "Immunities",
+
     "Ex3.BaseInitiative": "Base Initiative",
     "Ex3.ShieldInitiative": "Shield Initiative",
 
