@@ -2,7 +2,7 @@
     tokenId}}data-token-id="{{tokenId}}" {{/if}}>
     <header class="card-header flexrow item-row">
         <img src="{{item.img}}" title="{{item.name}}" width="36" height="36" />
-        <h3 class="item-name">{{item.name}}{{#if cardType}}: {{cardType}}{{/if}}</h3>
+        <h3 class="item-name">{{item.name}}{{#if cardType}}: {{cardType}}{{/if}}  <span style="text-transform: capitalize;">{{#if item.system.strength}}({{item.system.strength}}){{/if}}</span></h3>
     </header>
 
     <div class="card-content item-description">
