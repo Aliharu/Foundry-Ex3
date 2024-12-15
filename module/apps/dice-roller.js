@@ -292,6 +292,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 firstMovementoftheDemiurge: false,
             }
             this.object.triggers = [];
+            // this.object.effectsOnSpecificDice = {
+            //     roll: [],
+            //     damage: [],
+            //     // effectName
+            //     // effectDiceTriggers
+            //     // effectCap
+            // };
             this.object.spell = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
@@ -4331,7 +4338,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             try {
                 for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
-                    if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex, false)) {
+                    let triggerHasBeenActivatedOnItem = false;
+                    if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex, false, triggerHasBeenActivatedOnItem)) {
+                        triggerHasBeenActivatedOnItem = true;
                         for (const bonus of Object.values(trigger.bonuses)) {
                             if ((type === 'itemAdded' || !this.object.bonusesTriggered[type] || ['defense', 'soak', 'hardness', 'guile', 'resolve'].includes(bonus.effect))) {
                                 let cleanedValue = bonus.value.toLowerCase().trim();
@@ -4650,7 +4659,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
     }
 
-    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex, display) {
+    async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex, display, triggerHasBeenActivatedOnItem) {
         let fufillsRequirements = true;
         const charmActor = charm.actor || this.actor;
         for (const requirementObject of Object.values(trigger.requirements)) {
@@ -4876,6 +4885,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'currentModeActive':
                     if (charm.system.modes?.currentmodeid !== requirementObject.value) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'noTriggersActivated':
+                    if(!cleanedValue && !triggerHasBeenActivatedOnItem) {
+                        fufillsRequirements = false;
+                    }
+                    if(cleanedValue && triggerHasBeenActivatedOnItem) {
                         fufillsRequirements = false;
                     }
                     break;

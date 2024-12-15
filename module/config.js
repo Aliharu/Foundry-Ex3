@@ -1944,6 +1944,7 @@ exaltedthird.requirementTypes = {
       booleanPrompt: "Ex3.YesOrNoPrompt",
       upgradeActive: "Ex3.UpgradeActive",
       currentModeActive: "Ex3.ModeActive",
+      noTriggersActivated: "Ex3.NoTriggersActivated"
     },
   }
 }
