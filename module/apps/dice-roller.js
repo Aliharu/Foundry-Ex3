@@ -292,13 +292,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 firstMovementoftheDemiurge: false,
             }
             this.object.triggers = [];
-            // this.object.effectsOnSpecificDice = {
-            //     roll: [],
-            //     damage: [],
-            //     // effectName
-            //     // effectDiceTriggers
-            //     // effectCap
-            // };
+            this.object.effectsOnSpecificDice = [];
             this.object.spell = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
@@ -2343,6 +2337,23 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
     }
 
+    _getSpecificDiceTriggerFormula(formula, opposedCharmActor = null, diceRollType) {
+        if (!formula) {
+            return;
+        }
+        const effectSplit = formula.split(':');
+        if (!effectSplit[0] || !effectSplit[1]) {
+            return;
+        }
+        const newEffect = {
+            face: parseInt(effectSplit[0]),
+            effect: effectSplit[1],
+            cap: effectSplit[2] ? this._getFormulaActorValue(effectSplit[2], opposedCharmActor) : 0,
+            diceRollType: diceRollType,
+        }
+        this.object.effectsOnSpecificDice.push(newEffect);
+    }
+
     _getHealthFormula(formula) {
         let numberValue = formula.replace(/[^0-9]/g, '');
         if (numberValue) {
@@ -3349,13 +3360,53 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break
             }
         }
+        for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'diceRoll')) {
+            let dieFaceAmount = diceRoll.filter(die => !die.rerolled && !die.successCanceled && die.result === dieFaceTrigger.face).length;
+            if (dieFaceTrigger.cap) {
+                dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
+            }
+            switch (dieFaceTrigger.effect) {
+                case 'damage':
+                    this.object.damage.damageDice += dieFaceAmount;
+                    break;
+                case 'postsoakdamage':
+                    this.object.damage.postSoakDamage += dieFaceAmount;
+                    break;
+                case 'extrasuccess':
+                    this.object.total += dieFaceAmount;
+                    break;
+                case 'ignorehardness':
+                    this.object.damage.ignoreHardness += dieFaceAmount;
+                    break;
+                case 'restoremote':
+                    this.object.restore.motes += dieFaceAmount;
+                    break;
+                case 'soak':
+                    this.object.soak += dieFaceAmount;
+                    break;
+                case 'defense':
+                    this.object.defense += dieFaceAmount;
+                    break;
+                case 'subtractinitiative':
+                    if (this.object.characterInitiative) {
+                        this.object.characterInitiative -= dieFaceAmount;
+                    }
+                    break;
+                case 'subtractsuccesses':
+                    this.object.total -= dieFaceAmount;
+                    break;
+                case 'reducedamage':
+                    this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - dieFaceAmount);
+                    break;
+            }
+        }
 
         if (!this._isAttackRoll() && this.object.rollType !== 'base') {
             await this._updateCharacterResources();
         }
         if (this._isAttackRoll()) {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
-            if(this.object.doubleThresholdSuccesses) {
+            if (this.object.doubleThresholdSuccesses) {
                 this.object.thresholdSuccesses *= 2;
             }
             this.object.attackSuccesses = this.object.total;
@@ -3365,7 +3416,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         else {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
-            if(this.object.doubleThresholdSuccesses) {
+            if (this.object.doubleThresholdSuccesses) {
                 this.object.thresholdSuccesses *= 2;
             }
         }
@@ -3873,11 +3924,38 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 case 'subtractTargetInitiative':
                     if (this.object.newTargetInitiative) {
                         this.object.updateTargetInitiative = true;
-                        this.object.newTargetInitiative--;
+                        this.object.newTargetInitiative -= tensRolled;
                         if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
                             this.object.crashed = true;
                         }
                     }
+                    break;
+            }
+        }
+
+        // const newEffect = {
+        //     face: effectSplit[0],
+        //     effect: effectSplit[1],
+        //     cap: effectSplit[2] ? this._getFormulaActorValue(effectSplit[2], opposedCharmActor) : 0,
+        //     diceRollType: diceRollType,
+        // }
+        for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'damageRoll')) {
+            let dieFaceAmount = diceRollResults.diceRoll.filter(die => !die.rerolled && !die.successCanceled && die.result === dieFaceTrigger.face).length;
+            if (dieFaceTrigger.cap) {
+                dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
+            }
+            switch (dieFaceTrigger.effect) {
+                case 'subtracttargetinitiative':
+                    if (this.object.newTargetInitiative) {
+                        this.object.updateTargetInitiative = true;
+                        this.object.newTargetInitiative -= dieFaceAmount;
+                        if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
+                            this.object.crashed = true;
+                        }
+                    }
+                    break;
+                case 'subtractdamagesuccesses':
+                    total = Math.max(0, total - dieFaceAmount);
                     break;
             }
         }
@@ -4487,6 +4565,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                             this.object.defense = Math.max(0, this.object.defense - this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm));
                                         }
                                         break;
+                                    case 'specificDieFaceEffect':
+                                        this._getSpecificDiceTriggerFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null, 'diceRoll');
+                                        break;
                                     case 'damageDice':
                                     case 'damageSuccessModifier':
                                     case 'cappedThreshholdToDamage':
@@ -4553,6 +4634,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'triggerOnesCap-damage':
                                         this.object.settings.damage.triggerOnesCap += this._getFormulaValue(cleanedValue, bonusType === "opposed" ? charm.actor : null, charm);
+                                        break;
+                                    case 'specificDieFaceEffect-damage':
+                                        this._getSpecificDiceTriggerFormula(cleanedValue, bonusType === "opposed" ? charm.actor : null, 'damageRoll');
                                         break;
                                     case 'ignoreSoak':
                                     case 'ignoreHardness':
@@ -4626,7 +4710,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage.gainInitiative = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'doubleThresholdSuccesses-damage':
-                                        this.object.damage.doubleThresholdSuccesses = (typeof cleanedValue === "boolean" ? cleanedValue : true);                                        
+                                        this.object.damage.doubleThresholdSuccesses = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'displayMessage':
                                         const result = bonus.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] || `\${${key}}`);
@@ -4889,10 +4973,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'noTriggersActivated':
-                    if(!cleanedValue && !triggerHasBeenActivatedOnItem) {
+                    if (!cleanedValue && !triggerHasBeenActivatedOnItem) {
                         fufillsRequirements = false;
                     }
-                    if(cleanedValue && triggerHasBeenActivatedOnItem) {
+                    if (cleanedValue && triggerHasBeenActivatedOnItem) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -6012,7 +6096,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 initiative: 0
             };
         }
-        if(this.object.restore.grappleControl) {
+        if (this.object.restore.grappleControl) {
             this.object.restore.grappleControl = 0;
         }
         if (this.object.rerollNumberDescending === undefined) {
@@ -6239,6 +6323,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.doubleThresholdSuccesses === undefined) {
             this.object.doubleThresholdSuccesses = false;
         }
+        if (this.object.effectsOnSpecificDice === undefined) {
+            this.object.effectsOnSpecificDice = []
+        }
     }
 
     async _updateCharacterResources() {
@@ -6342,7 +6429,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
         actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
-        
+
         if (this.actor.type === 'character') {
             actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - this.object.cost.silverxp);
             actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - this.object.cost.goldxp);

@@ -1170,6 +1170,9 @@
     "Ex3.DoubleThresholdSuccesses": "Double Threshold Successes",
     "Ex3.DoubleThresholdSuccessesDamage": "Double Threshold Successes Damage",
 
+    "Ex3.SpecificDieFaceEffect": "Specific Die Face Effect",
+    "Ex3.SpecificDieFaceEffectDamage": "Specific Die Face Effect (Damage)",
+
     "Ex3.RestoreMotes": "Restore Motes",
     "Ex3.RestoreWillpower": "Restore Willpower",
     "Ex3.RestoreHealth": "Restore Health",

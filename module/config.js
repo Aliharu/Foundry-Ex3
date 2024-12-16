@@ -1636,7 +1636,8 @@ exaltedthird.bonusTypes = {
       triggerOnesAndTwos: "Ex3.TriggerOnes&Twos",
       triggerOnesCap: "Ex3.TriggerOnesCap",
       fullExcellency: "Ex3.FullExcellency",
-      doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses"
+      doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses",
+      specificDieFaceEffect: "Ex3.SpecificDieFaceEffect"
     },
   },
   damage: {
@@ -1664,6 +1665,7 @@ exaltedthird.bonusTypes = {
       threshholdToDamage: "Ex3.ThreshholdToDamage",
       doubleRolledDamage: "Ex3.DoubleRolledDamage",
       doublePreRolledDamage: "Ex3.DoublePreRolledDamage",
+      'specificDieFaceEffect-damage': "Ex3.SpecificDieFaceEffectDamage",
       'doubleThresholdSuccesses-damage': "Ex3.DoubleThresholdSuccessesDamage",
       resetInit: "Ex3.ResetInitiative",
       ignoreSoak: "Ex3.IgnoreSoak",
