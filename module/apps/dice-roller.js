@@ -100,6 +100,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     gained: 0,
                 },
             };
+            // this.object.drain = {
+            //     motes: {
+            //         max: 0,
+            //         gained: 0,
+            //     },
+            //     willpower: {
+            //         max: 0,
+            //         gained: 0,
+            //     },
+            //     initiative: {
+            //         max: 0,
+            //         gained: 0,
+            //     },
+            // };
             this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
@@ -2349,6 +2363,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             face: parseInt(effectSplit[0]),
             effect: effectSplit[1],
             cap: effectSplit[2] ? this._getFormulaActorValue(effectSplit[2], opposedCharmActor) : 0,
+            triggerOnRerolledDice: effectSplit[3] ? true : false,
             diceRollType: diceRollType,
         }
         this.object.effectsOnSpecificDice.push(newEffect);
@@ -2401,6 +2416,21 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 forumlaActor = targetValues[0].actor;
             }
             else {
+                return 0;
+            }
+        }
+        if (formula.includes('rollfaces-')) {
+            formula = formula.replace('rollfaces-', '');
+            let countRerolledDice = true;
+            if (formula.includes('-precedence')) {
+                formula = formula.replace('-precedence', '');
+            }
+            if (!parseInt(formula)) {
+                return 0;
+            }
+            if (this.object.diceRoll) {
+                return this.object.diceRoll.filter(die => (countRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === parseInt(formula)).length;
+            } else {
                 return 0;
             }
         }
@@ -3280,7 +3310,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.roll = diceRollResults.roll;
         this.object.displayDice = diceRollResults.diceDisplay;
         this.object.total = diceRollResults.total;
-        var diceRoll = diceRollResults.diceRoll;
+        let diceRoll = diceRollResults.diceRoll;
 
         if (this.object.rollTwice || this.object.rollTwiceLowest) {
             if (this.object.rollTwice && !this.object.rollTwiceLowest) {
@@ -3361,7 +3391,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'diceRoll')) {
-            let dieFaceAmount = diceRoll.filter(die => !die.rerolled && !die.successCanceled && die.result === dieFaceTrigger.face).length;
+            let dieFaceAmount = diceRoll.filter(die => (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === dieFaceTrigger.face).length;
             if (dieFaceTrigger.cap) {
                 dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
             }
@@ -3420,6 +3450,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.thresholdSuccesses *= 2;
             }
         }
+        this.object.diceRoll = diceRoll;
         await this._addTriggerBonuses('afterRoll');
     }
 
