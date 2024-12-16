@@ -357,10 +357,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
                 whitexp: result['cost.whitexp'].value,
               },
               restore: {
-                motes: result['cost.motes'].value,
-                willpower: result['cost.willpower'].value,
-                health: result['cost.health'].value,
-                initiative: result['cost.initiative'].value,
+                motes: result['restore.motes'].value,
+                willpower: result['restore.willpower'].value,
+                health: result['restore.health'].value,
+                initiative: result['restore.initiative'].value,
+                grapplecontrol: result['restore.grapplecontrol'].value
               }
             };
             if (!alternateData.name) {
