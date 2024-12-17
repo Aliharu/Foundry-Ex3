@@ -4467,7 +4467,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     });
                                     cleanedValue = cleanedValue.toString().toLowerCase().trim();
                                 }
-                                if (cleanedValue === 'intimacy') {
+                                if (cleanedValue === 'intimacy' || cleanedValue === '-intimacy') {
                                     cleanedValue = await foundry.applications.api.DialogV2.wait({
                                         window: { title: game.i18n.localize("Ex3.Intimacy"), resizable: true },
                                         content: `Select intimacy bonus for ${charm.name}`,
@@ -4477,22 +4477,22 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                             {
                                                 action: 'none',
                                                 label: `${game.i18n.localize("Ex3.None")} (0)`,
-                                                callback: (event, button, dialog) => "0"
+                                                callback: (event, button, dialog) => `0`
                                             },
                                             {
                                                 action: 'minor',
-                                                label: `${game.i18n.localize("Ex3.Minor")} (2)`,
-                                                callback: (event, button, dialog) => "2"
+                                                label: `${game.i18n.localize("Ex3.Minor")} (${cleanedValue === '-intimacy' ? '-1' : '2'})`,
+                                                callback: (event, button, dialog) => `${cleanedValue === '-intimacy' ? '-1' : '2'}`
                                             },
                                             {
                                                 action: 'major',
-                                                label: `${game.i18n.localize("Ex3.Major")} (3)`,
-                                                callback: (event, button, dialog) => "3"
+                                                label: `${game.i18n.localize("Ex3.Major")} (${cleanedValue === '-intimacy' ? '-2' : '3'})`,
+                                                callback: (event, button, dialog) => `${cleanedValue === '-intimacy' ? '-3' : '4'}`
                                             },
                                             {
                                                 action: 'defining',
-                                                label: `${game.i18n.localize("Ex3.Defining")} (4)`,
-                                                callback: (event, button, dialog) => "4"
+                                                label: `${game.i18n.localize("Ex3.Defining")} (${cleanedValue === '-intimacy' ? '-3' : '4'})`,
+                                                callback: (event, button, dialog) => `${cleanedValue === '-intimacy' ? '-3' : '4'}`
                                             },
                                         ]
                                     });
