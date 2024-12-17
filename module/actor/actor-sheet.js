@@ -1296,9 +1296,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           if (charm.system.charmtype === 'martialarts') {
             if (charm.system.parentitemid) {
               return Object.values(this.actor.items.filter(item => item.type === 'customability' || item.system.abilitytype === 'martialart')).some(martialArt => {
-                const sourceId = martialArt.flags?.core?.sourceId || '';
+                const sourceId = martialArt._source?._stats?.compendiumSource || '';
                 const sections = sourceId.split('.');
-                return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points
+                return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points;
               });
             }
             return false;

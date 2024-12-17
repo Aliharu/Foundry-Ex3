@@ -4446,7 +4446,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             try {
-                for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+                for (let triggerAmountIndex = 1; triggerAmountIndex < (type === 'itemAdded' ? 1 :(charm.timesAdded || 1)) + 1; triggerAmountIndex++) {
                     let triggerHasBeenActivatedOnItem = false;
                     if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex, false, triggerHasBeenActivatedOnItem)) {
                         triggerHasBeenActivatedOnItem = true;
