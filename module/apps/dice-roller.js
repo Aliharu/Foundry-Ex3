@@ -5519,7 +5519,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.actor.system.attributes[this.object.attribute]) {
                 dicePool += (this.actor.system.attributes[this.object.attribute]?.value || 0) + (this.actor.system.attributes[this.object.attribute]?.upgrade || 0);
             }
-            dicePool += this._getCharacterAbilityValue(this.actor, this.object.ability);
+            dicePool += this.actor.getCharacterAbilityValue(this.object.ability);
         }
         else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
             if (this.object.actions.some(action => action._id === this.object.pool)) {
@@ -5734,7 +5734,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
                     let abilityValue = 0;
                     let attributeValue = this.actor.system.attributes[this.object.attribute].value;
-                    abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
+                    abilityValue = this.actor.getCharacterAbilityValue(this.object.ability);
                     if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt)) {
                         return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                     }
@@ -5803,32 +5803,32 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     else {
                         if (action) {
-                            lunarPool = (lunar.system.attributes[action.system.lunarstats.attribute]?.value || 0) + this._getCharacterAbilityValue(lunar, action.system.lunarstats.ability);
+                            lunarPool = (lunar.system.attributes[action.system.lunarstats.attribute]?.value || 0) + this.actor.getCharacterAbilityValue(action.system.lunarstats.ability);
                             lunarAttributeValue = lunar.system.attributes[action.system.lunarstats.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[action.system.lunarstats.attribute]?.excellency;
                         }
                         else if (this._isAttackRoll()) {
-                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value + this._getCharacterAbilityValue(lunar, 'brawl');
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value + this.actor.getCharacterAbilityValue('brawl');
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.excellency;
                         }
                         else if (this.object.pool === 'grapple') {
-                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.grapplecontrol.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.excellency;
                         }
                         else if (this.object.rollType === 'disengage') {
-                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.disengage.ability);
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.disengage.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.excellency;
                         }
                         else if (this.object.pool === 'movement') {
-                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.rush.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.excellency;
                         }
                         else {
-                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value + this._getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[this.object.pool].ability);
+                            lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings[this.object.pool].ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value;
                             lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.excellency;
                         }
@@ -5971,7 +5971,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let tnChange = '';
         var abilityValue = 0;
         if (this.actor && this.actor.type === 'character') {
-            abilityValue = this._getCharacterAbilityValue(this.actor, this.object.ability);
+            abilityValue = this.actor.getCharacterAbilityValue(this.object.ability);
             if (this.actor.system.details.exalt === "sidereal") {
                 tnChange = "";
                 if (abilityValue === 5) {

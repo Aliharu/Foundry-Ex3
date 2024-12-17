@@ -388,18 +388,11 @@ export class ExaltedThirdActor extends Actor {
 
   async calculateDerivedStats(type) {
     const actorData = foundry.utils.duplicate(this);
-    var armoredSoakValue = 0;
+    let armoredSoakValue = 0;
 
-    var staticAttributeValue = (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.value || 0) + (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.upgrade || 0);
-    var staticAbilityValue = 0;
-    if (actorData.system.settings.staticcapsettings[type]?.ability && actorData.system.settings.staticcapsettings[type]?.ability !== 'none') {
-      if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === actorData.system.settings.staticcapsettings[type].ability)) {
-        staticAbilityValue = this.items.filter(item => item.type === 'customability').find(x => x._id === actorData.system.settings.staticcapsettings[type].ability).system.points;
-      }
-      else {
-        staticAbilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability].value;
-      }
-    }
+    let staticAttributeValue = (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.value || 0) + (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.upgrade || 0);
+    let staticAbilityValue = this.getCharacterAbilityValue(actorData.system.settings.staticcapsettings[type]?.ability);
+
     if (type === 'natural-soak') {
       actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute]?.value;
     }
@@ -1527,6 +1520,19 @@ export class ExaltedThirdActor extends Actor {
         },
       });
     }
+  }
+
+  getCharacterAbilityValue(ability) {
+    if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
+      return this.items.filter(item => item.type === 'customability').find(x => x._id === ability).system.points;
+    }
+    if (this.system.abilities[ability]) {
+      return this.system.abilities[ability]?.value || 0;
+    }
+    if (ability === 'willpower') {
+      return this.system.willpower.max;
+    }
+    return 0;
   }
 
   spendItem(item) {

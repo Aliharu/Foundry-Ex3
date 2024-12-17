@@ -77,6 +77,12 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
     context.steadyAction = game.settings.get("exaltedthird", "steadyAction");
     context.abilitySelectList = CONFIG.exaltedthird.selects.abilities;
+    context.abilityWithCustomsSelectList = { ...CONFIG.exaltedthird.selects.abilities };
+
+    for (const customAbility of this.actor.items.filter(item => item.type === 'customability')) {
+      context.abilityWithCustomsSelectList[customAbility.id] = customAbility.name;
+    }
+
     context.activeSpell = context.items?.find(item => item.system?.shaping);
     context.availableCastes = []
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
@@ -2958,15 +2964,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           }
           else {
             if (key === 'grapple') {
-              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.grapplecontrol.ability);
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute].value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.grapplecontrol.ability);
             }
             else if (key === 'movement') {
-              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.rush.ability);
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute].value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.rush.ability);
             } else if (key === 'resistance') {
-              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.steady.attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings.steady.ability);
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.steady.attribute].value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.steady.ability);
             }
             else {
-              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + getCharacterAbilityValue(lunar, lunar.system.settings.rollsettings[key].ability);
+              lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[key].attribute].value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings[key].ability);
             }
           }
 
@@ -3017,19 +3023,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       ui.notifications.error(`<p>Linked Lunar not found</p>`);
     }
   }
-}
-
-function getCharacterAbilityValue(actor, ability) {
-  if (actor.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
-    return actor.customabilities.find(x => x._id === ability).system.points;
-  }
-  if (actor.system.abilities[ability]) {
-    return actor.system.abilities[ability]?.value || 0;
-  }
-  if (ability === 'willpower') {
-    return actor.system.willpower.max;
-  }
-  return 0;
 }
 
 
