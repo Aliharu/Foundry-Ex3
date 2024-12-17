@@ -5847,11 +5847,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     let currentCharmDice = 0;
                     for (const charm of this.object.addedCharms) {
-                        if (charm.system.diceroller.settings.noncharmdice) {
-                            currentCharmDice += this._getFormulaValue(charm.system.diceroller.bonusdice);
-                        }
-                        if (charm.system.diceroller.settings.noncharmsuccesses) {
-                            currentCharmDice += (this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2);
+                        if(charm.system.diceroller) {
+                            if (charm.system.diceroller.settings.noncharmdice) {
+                                currentCharmDice += this._getFormulaValue(charm.system.diceroller.bonusdice);
+                            }
+                            if (charm.system.diceroller.settings.noncharmsuccesses) {
+                                currentCharmDice += (this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2);
+                            }
                         }
                     }
                     if (getLunarFormCharmDice) {
