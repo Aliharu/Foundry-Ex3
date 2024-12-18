@@ -2893,7 +2893,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
 
-    if (game.rollForm) {
+    if(game.opposedRollForm) {
+      game.opposingCharmForm.addOpposingCharm(item);
+    }
+    else if (game.rollForm) {
       game.rollForm.addOpposingCharm(item);
     }
 

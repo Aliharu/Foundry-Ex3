@@ -660,7 +660,12 @@ export class ExaltedThirdActor extends Actor {
     if (!roll) {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
-    game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id, skipDialog: true }).roll();
+
+    if(data.rollType === 'useOpposingCharms') {
+      game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id, skipDialog: true }).roll();
+    } else {
+      game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id, skipDialog: true }).roll();
+    }
   }
 
   getSavedRoll(name) {
@@ -1450,7 +1455,11 @@ export class ExaltedThirdActor extends Actor {
     if (message) {
       data.preMessageId = message.id;
     }
-    game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 } }, {}, data).render(true);
+    if(data.rollType === 'useOpposingCharms') {
+      game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 } }, {}, data).render(true);
+    } else {
+      game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 } }, {}, data).render(true);
+    }
   }
 
   getSheetBackground() {
