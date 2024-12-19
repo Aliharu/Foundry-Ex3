@@ -275,6 +275,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         newList[Object.entries(newList).length] = {
           name: "",
           triggerTime: "beforeRoll",
+          actorType: 'itemOwner',
           bonuses: {},
           requirements: {}
         };

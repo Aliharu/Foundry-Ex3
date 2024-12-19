@@ -827,6 +827,8 @@
     "Ex3.Immunities": "Immunities",
 
     "Ex3.BaseInitiative": "Base Initiative",
+    "Ex3.CrashBonus": "Crash Bonus",
+
     "Ex3.ShieldInitiative": "Shield Initiative",
 
     "Ex3.NegateParryPenalty": "Negate Parry Penalty",
@@ -1347,14 +1349,25 @@
     "Ex3.HasActiveItemName": "Has Active Item (Name)",
     "Ex3.HasActiveEffectName": "Has Active Effect (Name)",
 
+    "Ex3.TargetHasItemName": "Has Item (Target)",
+    "Ex3.TargetHasActiveItemName": "Has Active Item (Target)",
+    "Ex3.TargetHasActiveEffectName": "Has Active Effect (Target)",
+
     "Ex3.AttributeUpgrades": "Attribute Upgrades",
 
     "Ex3.PauseIcon": "Pause Icon",
+
+    "Ex3.Actor": "Actor",
+    "Ex3.ItemOwner": "Item Owner",
+    "Ex3.TargetAttacker": "Target/Attacker",
+
     "Ex3.PauseIconDescription": "What the pause icon will look like",
     
     "Ex3.GeneralPenalties": "General Penalties",
     "Ex3.PenaltyModifier": "Penalty Modifier",
     "Ex3.ModifyRolledDamage": "Modify Rolled Damage",
+    "Ex3.AttackDealsDamage": "Attack Deals Damage",
+
     "Ex3.IgnorePenalties": "Ignore Penalties"
 
 }

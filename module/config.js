@@ -171,6 +171,7 @@ exaltedthird.activeEffectChanges = {
       'system.dicemodifier.value': 'Ex3.DiceModifier',
       'system.penaltymodifier.value': 'Ex3.DicePenalty',
       'system.baseinitiative.value': 'Ex3.BaseInitiative',
+      'system.crashbonus.value': 'Ex3.CrashBonus',
       'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
       'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
       'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
@@ -1667,6 +1668,7 @@ exaltedthird.bonusTypes = {
       doublePreRolledDamage: "Ex3.DoublePreRolledDamage",
       'specificDieFaceEffect-damage': "Ex3.SpecificDieFaceEffectDamage",
       'doubleThresholdSuccesses-damage': "Ex3.DoubleThresholdSuccessesDamage",
+      crashBonus: "Ex3.CrashBonus",
       resetInit: "Ex3.ResetInitiative",
       ignoreSoak: "Ex3.IgnoreSoak",
       ignoreHardness: "Ex3.IgnoreHardness",
@@ -1675,7 +1677,8 @@ exaltedthird.bonusTypes = {
       reduceGambitDifficulty: "Ex3.ReduceGambitDifficulty",
       setDamageType: "Ex3.SetDamageType",
       gainInitiative: "Ex3.GainInitiative",
-      modifyRolledDamage: "Ex3.ModifyRolledDamage"
+      modifyRolledDamage: "Ex3.ModifyRolledDamage",
+      attackDealsDamage: "Ex3.AttackDealsDamage",
     }
   },
   spend: {
@@ -2561,7 +2564,11 @@ exaltedthird.selects = {
     firstCircleMachineSpirit: "Ex3.FirstCircleMachineSpirit",
     secondCircleMachineSpirit: "Ex3.SecondCircleMachineSpirit",
     drone: "Ex3.Drone",
-  }
+  },
+  triggerActorTypes: {
+    itemOwner: "Ex3.ItemOwner",
+    target: "Ex3.TargetAttacker",
+  },
 };
 
 exaltedthird.tripleActionStatblocks = {
