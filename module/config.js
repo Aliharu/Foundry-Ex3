@@ -396,7 +396,7 @@ exaltedthird.rollTypeTargetImages = {
   'presence': 'systems/exaltedthird/assets/icons/deadly-strike.svg',
   'resistance': 'systems/exaltedthird/assets/icons/fire-silhouette.svg',
   'ride': 'systems/exaltedthird/assets/icons/horse-head.svg',
-  'sail':  'systems/exaltedthird/assets/icons/trireme.svg',
+  'sail': 'systems/exaltedthird/assets/icons/trireme.svg',
   'socialize': "systems/exaltedthird/assets/icons/heartburn.svg",
   'stealth': 'systems/exaltedthird/assets/icons/hidden.svg',
   'survival': 'systems/exaltedthird/assets/icons/forest-camp.svg',
@@ -1714,18 +1714,23 @@ exaltedthird.bonusTypes = {
       'initiative-steal': "Ex3.StealInitiative",
     }
   },
+  target: {
+    label: "Ex3.Target",
+    bonuses: {
+      inflictStatus: "Ex3.InflictStatus",
+      magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
+      onslaughtAddition: "Ex3.AddOnslaught",
+      triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
+      // inflictDicePenalty: "Ex3.InflictDicePenalty",
+    }
+  },
   other: {
     label: "Ex3.Other",
     bonuses: {
       activateAura: "Ex3.ActivateAura",
       displayMessage: "Ex3.DisplayMessage",
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
-      // inflictDicePenalty: "Ex3.InflictDicePenalty",
-      inflictStatus: "Ex3.InflictStatus",
-      magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
-      onslaughtAddition: "Ex3.AddOnslaught",
       triggerSelfDefensePenalty: "Ex3.SelfDefensePenalty",
-      triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
       specificCharm: "Ex3.SpecificCharm",
       otherEffect: "Ex3.OtherEffect",
     }
@@ -1877,7 +1882,7 @@ exaltedthird.triggerBonusDropdowns = {
         divineInspirationTechnique: "Ex3.DivineInspirationTechnique",
         holisticMiracleUnderstanding: "Ex3.HolisticMiracleUnderstanding",
         risingSunSlash: "Ex3.RisingSunSlash",
-        firstMovementoftheDemiurge : "Ex3.FirstMovementoftheDemiurge",
+        firstMovementoftheDemiurge: "Ex3.FirstMovementoftheDemiurge",
       }
     },
     goldenCalibration: {

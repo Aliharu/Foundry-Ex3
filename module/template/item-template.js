@@ -54,6 +54,7 @@ export class ItemCustomAbilityData extends CommonItemData {
             excellency: new fields.BooleanField({ initial: false }),
             armorallowance: new fields.StringField({ initial: "" }),
             nature: new fields.StringField({ initial: "" }),
+            formulakey: new fields.StringField({ initial: "" }),
             traits: new fields.SchemaField({
                 weapons: traitField(),
             }),

@@ -84,6 +84,10 @@
                         {{selectOptions selects.maidens selected=system.maiden localize=true}}
                     </select>
                 </div>
+                <div>
+                    <div class="resource-label">{{localize "Ex3.FormulaKey"}}</div>
+                    <input type="text" name="system.formulakey" value="{{system.formulakey}}" placeholder="{{formulaKeyPlaceholder}}"/>
+                </div>
             </div>
             {{> systems/exaltedthird/templates/actor/active-effects.html}}
         </div>

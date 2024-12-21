@@ -1420,6 +1420,13 @@ export class ExaltedThirdActor extends Actor {
     this._getCharacterRollData(data);
     this._getNpcRollData(data);
 
+    for(const customAbility of this.items.filter(item => item.type === 'customability')) {
+      if(!data[customAbility.system.formulaKey]) {
+        const customAbilityformulaKey = customAbility.system.formulaKey || customAbility.name.replace(/\s/g,'').toLowerCase();
+        data[customAbilityformulaKey] = { 'value': customAbility.system.points };
+      }
+    }
+
     return data;
   }
 
