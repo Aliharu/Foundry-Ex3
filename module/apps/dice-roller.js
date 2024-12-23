@@ -87,6 +87,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     max: 0,
                     gained: 0,
                 },
+                personalMotes: {
+                    max: 0,
+                    gained: 0,
+                },
+                peripheralMotes: {
+                    max: 0,
+                    gained: 0,
+                },
                 willpower: {
                     max: 0,
                     gained: 0,
@@ -100,20 +108,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     gained: 0,
                 },
             };
-            // this.object.drain = {
-            //     motes: {
-            //         max: 0,
-            //         gained: 0,
-            //     },
-            //     willpower: {
-            //         max: 0,
-            //         gained: 0,
-            //     },
-            //     initiative: {
-            //         max: 0,
-            //         gained: 0,
-            //     },
-            // };
+            this.object.subtract = {
+                personalMotes: 0,
+                peripheralMotes: 0,
+                willpower: 0,
+                initiative: 0,
+            };
             this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
@@ -2716,7 +2716,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             if (this.object.steal.initiative.max) {
                 this.object.restore.initiative += this.object.steal.initiative.max;
-
                 if (this.object.newTargetInitiative) {
                     this.object.updateTargetInitiative = true;
                     this.object.newTargetInitiative -= this.object.steal.initiative.max;
@@ -2724,6 +2723,27 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.crashed = true;
                     }
                 }
+            }
+            if (this.object.subtract.personalMotes) {
+                this.object.updateTargetActorData = true;
+                this.object.newTargetData.system.motes.personal.value = Math.max(0, this.object.newTargetData.system.motes.personal.value - this.object.subtract.personalMotes);
+            }
+            if (this.object.subtract.peripheralMotes) {
+                this.object.updateTargetActorData = true;
+                this.object.newTargetData.system.motes.personal.value = Math.max(0, this.object.newTargetData.system.motes.peripheral.value - this.object.subtract.peripheralMotes);
+            }
+            if (this.object.subtract.initiative) {
+                if (this.object.newTargetInitiative) {
+                    this.object.updateTargetInitiative = true;
+                    this.object.newTargetInitiative -= this.object.subtract.initiative;
+                    if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
+                        this.object.crashed = true;
+                    }
+                }
+            }
+            if (this.object.subtract.willpower) {
+                this.object.updateTargetActorData = true;
+                this.object.newTargetData.system.willpower.value = Math.max(0, this.object.newTargetData.system.willpower.value - this.object.subtract.willpower);
             }
             if (this.object.targetDoesntResetOnslaught) {
                 this.object.newTargetData.system.dontresetonslaught = true;
@@ -6153,6 +6173,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     max: 0,
                     gained: 0,
                 },
+                personalMotes: {
+                    max: 0,
+                    gained: 0,
+                },
+                peripheralMotes: {
+                    max: 0,
+                    gained: 0,
+                },
                 willpower: {
                     max: 0,
                     gained: 0,
@@ -6165,6 +6193,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     max: 0,
                     gained: 0,
                 },
+            };
+        }
+        if (this.object.subtract === undefined) {
+            this.object.subtract = {
+                motes: 0,
+                peripheralMotes: 0,
+                personalMotes: 0,
+                willpower: 0,
+                initiative: 0,
             };
         }
         if (this.object.damage.type === undefined) {
@@ -6543,10 +6580,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.actor.update(actorData);
     }
 
-    _lowerMotes(actor, value) {
+    _lowerMotes(actor, value, motePool=null) {
         var spentPersonal = 0;
         var spentPeripheral = 0;
-        if (this.object.motePool === 'personal') {
+        if(!motePool) {
+            motePool = this.object.motePool;
+        }
+        if (motePool === 'personal') {
             var remainingPersonal = actor.system.motes.personal.value - value;
             if (remainingPersonal < 0) {
                 spentPersonal = value + remainingPersonal;
