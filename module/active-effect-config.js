@@ -10,6 +10,8 @@ export default class ExaltedActiveEffectConfig extends ActiveEffectConfig {
 
         context.useDropdown = game.settings.get("exaltedthird", "useActiveEffectsDropdown");
 
+        context.selects = CONFIG.exaltedthird.selects;
+
         context.activeEffectChanges = exaltedthird.activeEffectChanges;
 
         return context;

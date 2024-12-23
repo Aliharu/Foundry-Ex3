@@ -1845,14 +1845,13 @@ export async function spendEmbeddedItem(actor, item) {
       [`system.active`]: updateActive,
       [`flags.exaltedthird.poolCommitted`]: updateActive ? actorData.system.settings.charmmotepool : null,
       [`flags.exaltedthird.currentIterationsActive`]: activateAmount,
-
     });
     for (const effect of actor.allApplicableEffects()) {
-      if (effect._sourceName === item.name) {
+      if (effect._sourceName === item.name && effect.system.activatewithparentitem) {
         effect.update({ disabled: !updateActive });
       }
     }
-    for (const effect of item.effects) {
+    for (const effect of item.effects.filter(effect => effect.system.activatewithparentitem)) {
       effect.update({ disabled: !updateActive });
     }
   }

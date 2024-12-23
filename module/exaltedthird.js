@@ -42,6 +42,7 @@ import Prophecy from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
 import CharacterBuilder from "./apps/character-builder.js";
 import RollForm from "./apps/dice-roller.js";
+import { BaseActiveEffectData } from "./template/active-effect-template.js";
 
 Hooks.once('init', async function () {
 
@@ -92,7 +93,10 @@ Hooks.once('init', async function () {
     spell: ItemSpellData,
     weapon: ItemWeaponData,
   }
-
+  
+  CONFIG.ActiveEffect.dataModels = {
+    base: BaseActiveEffectData,
+  }
 
   /**
    * Set an initiative formula for the system
@@ -717,13 +721,13 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
           for (const effect of currentCombatant.actor.allApplicableEffects()) {
-            if (effect._sourceName === item.name) {
+            if (effect._sourceName === item.name && effect.system.activatewithparentitem) {
               effect.update({ disabled: true });
             }
           }
         }
         for (const effectItem of currentCombatant.actor.items.filter((item) => item.system.endtrigger === 'startturn')) {
-          for (const effect of effectItem.effects) {
+          for (const effect of effectItem.effects.filter(effect => effect.system.activatewithparentitem)) {
             effect.update({ disabled: true });
           }
         }
@@ -736,6 +740,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
               }
             }
           }
+          if (activeEffect.system.endtrigger === 'startturn') {
+            activeEffect.update({ disabled: true });
+          }
         }
         if (moteCost) {
           var moteResults = currentCombatant.actor.spendMotes(moteCost, actorData);
@@ -747,6 +754,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         await currentCombatant.actor.update(actorData);
       }
     }
+    // End of Persons Turn
     if (combat.previous.combatantId) {
       var previousCombatant = combat.combatants.get(combat.previous.combatantId);
       if (previousCombatant?.actor) {
@@ -770,14 +778,19 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             }
           }
           for (const effect of previousCombatant.actor.allApplicableEffects()) {
-            if (effect._sourceName === item.name) {
+            if (effect._sourceName === item.name && effect.system.activatewithparentitem) {
               effect.update({ disabled: true });
             }
           }
         }
         for (const effectItem of previousCombatant.actor.items.filter((item) => item.system.endtrigger === 'endturn')) {
-          for (const effect of effectItem.effects) {
+          for (const effect of effectItem.effects.filter(effect => effect.system.activatewithparentitem)) {
             effect.update({ disabled: true });
+          }
+        }
+        for (const activeEffect of previousCombatant.actor.allApplicableEffects()) {
+          if (activeEffect.system.endtrigger === 'endturn') {
+            activeEffect.update({ disabled: true });
           }
         }
         await previousCombatant.actor.update(previousActorData);
@@ -807,7 +820,7 @@ Hooks.on("deleteCombat", (entity, deleted) => {
             }
           }
           for (const effect of combatant.actor.allApplicableEffects()) {
-            if (effect._sourceName === item.name) {
+            if (effect._sourceName === item.name && effect.system.activatewithparentitem) {
               effect.update({ disabled: true });
             }
           }
@@ -815,8 +828,13 @@ Hooks.on("deleteCombat", (entity, deleted) => {
         combatant.actor.update(previousActorData);
       }
       for (const effectItem of combatant.actor.items.filter((item) => item.system.endtrigger === 'endscene')) {
-        for (const effect of effectItem.effects) {
+        for (const effect of effectItem.effects.filter(effect => effect.system.activatewithparentitem)) {
           effect.update({ disabled: true });
+        }
+      }
+      for (const activeEffect of combatant.actor.allApplicableEffects()) {
+        if (activeEffect.system.endtrigger === 'endscene') {
+          activeEffect.update({ disabled: true });
         }
       }
     }
@@ -911,7 +929,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
           }
         }
         for (const effectItem of token.actor.items.filter((item) => item.system.endtrigger === 'endscene')) {
-          for (const effect of effectItem.effects) {
+          for (const effect of effectItem.effects.filter(effect => effect.system.activatewithparentitem)) {
             effect.update({ disabled: true });
           }
         }

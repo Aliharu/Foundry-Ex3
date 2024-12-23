@@ -18,7 +18,7 @@
     <!-- Details Tab -->
     <section class="tab" data-tab="details">
         <div class="form-group">
-            <label>{{ localize "EFFECT.IconTint" }}</label>
+            <label>{{ localize "Ex3.IconTint" }}</label>
             <div class="form-fields">
                 <color-picker name="tint" value="{{data.tint}}" placeholder="#ffffff"></color-picker>
             </div>
@@ -52,6 +52,13 @@
             </div>
             <p class="hint">{{ labels.transfer.hint }}</p>
         </div>
+        <div class="form-group">
+            <label>{{ localize "Ex3.ActivateWithItem" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="system.activatewithparentitem" {{checked data.system.activatewithparentitem}} />
+            </div>
+            <p class="hint">{{ localize "Ex3.ActivateWithItemHint" }}</p>
+        </div>
         {{/if}}
     </section>
 
@@ -67,6 +74,14 @@
             <label>{{ localize "EFFECT.StartTime" }}</label>
             <div class="form-fields">
                 <input type="number" name="duration.startTime" value="{{ data.duration.startTime }}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>{{ localize "Ex3.EndTrigger" }}</label>
+            <div class="form-fields">
+                <select name="system.endtrigger" data-type="String">
+                    {{selectOptions selects.endTriggers selected=data.system.endtrigger localize=true}}
+                </select>
             </div>
         </div>
         <hr />
