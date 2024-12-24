@@ -199,6 +199,8 @@
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
     "Ex3.TargetDefensePenalty": "Target Defense Penalty",
+    "Ex3.InflictActiveEffect": "Inflict Active Effect",
+
     "Ex3.AddOnslaught": "Add Onslaught",
     "Ex3.AddMagicOnslaught": "Add Magic Onslaught",
     "Ex3.AccuracyModifiers": "Accuracy Modifiers",
@@ -351,7 +353,9 @@
     "Ex3.Merits": "Merits",
     "Ex3.BonusMerits": "Bonus Merits",
     "Ex3.BonusMeritSource": "Bonus Merit Source",
+    "Ex3.BaseInitiativeModifier": "Base Initiative Modifier",
 
+    
     "Ex3.Destiny": "Destiny",
     "Ex3.Shape": "Shape",
     "Ex3.LunarShapes": "Lunar Shapes",
@@ -894,6 +898,7 @@
     "Ex3.WitheringAttacks": "Withering Attacks",
     "Ex3.DecisiveAttacks": "Decisive Attacks",
     "Ex3.GambitAttacks": "Gambit Attacks",
+    "Ex3.WitheringDecisive": "Withering/Decisive",
     "Ex3.WitheringAttackDamage": "Withering Attack Damage",
     "Ex3.DecisiveAttackDamage": "Decisive Attack Damage",
     "Ex3.GambitInitiative": "Gambit Initiative",

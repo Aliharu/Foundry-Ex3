@@ -140,6 +140,12 @@
                     {{selectOptions ../../triggerBonusDropdowns.fullExcellency selected=bonus.value localize=true
                     blank=''}}
                 </select>
+                {{else ifEquals bonus.effect 'inflictActiveEffectOnTarget'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../activeEffectIds selected=bonus.value localize=true
+                    blank=''}}
+                </select>
                 {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     value="{{bonus.value}}" type="text">

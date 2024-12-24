@@ -101,6 +101,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.selects = CONFIG.exaltedthird.selects;
     context.itemModes = {};
     context.upgradeSelects = {};
+    context.activeEffectIds = {};
 
     context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
     context.triggerBonusDropdowns = CONFIG.exaltedthird.triggerBonusDropdowns;
@@ -166,6 +167,13 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         return acc;
       }, {});
       context.itemModes[''] = itemData.system.modes.mainmode.name || "Main Mode";
+    }
+
+    if(itemData.effects) {
+      context.activeEffectIds = itemData.effects.reduce((acc, effect) => {
+        acc[effect._id] = effect.name; // Key is `id`, value is `name`
+        return acc;
+      }, {});
     }
 
     if (itemData.type === 'weapon' || itemData.type === 'armor' || itemData.type === 'customability') {
@@ -276,7 +284,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         newList[Object.entries(newList).length] = {
           name: "",
           triggerTime: "beforeRoll",
-          actorType: 'itemOwner',
+          actorType: '',
           bonuses: {},
           requirements: {}
         };
@@ -341,9 +349,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
               id: currentAlternateData?.id || foundry.utils.randomID(16),
               name: result.name.value,
               summary: result.summary.value,
+              type: result.type.value,
               duration: result.duration.value,
-              activatable: result.duration.value,
+              activatable: result.activatable.checked,
               endtrigger: result.endtrigger.value,
+              multiactivate: result.multiactivate.checked,
               cost: {
                 motes: result['cost.motes'].value,
                 commitmotes: result['cost.commitmotes'].value,
@@ -351,7 +361,9 @@ export class ExaltedThirdItemSheet extends ItemSheet {
                 anima: result['cost.anima'].value,
                 willpower: result['cost.willpower'].value,
                 grapplecontrol: result['cost.grapplecontrol'].value,
+                health: result['cost.health'].value,
                 healthtype: result['cost.healthtype'].value,
+                penumbra: result['cost.penumbra'].value,
                 aura: result['cost.aura'].value,
                 xp: result['cost.xp'].value,
                 silverxp: result['cost.silverxp'].value,

@@ -26,7 +26,8 @@ exaltedthird.itemIcons = {
   customability: "systems/exaltedthird/assets/icons/d10.svg",
   charm: "icons/svg/explosion.svg",
   specialability: "icons/svg/aura.svg",
-  craftproject: "systems/exaltedthird/assets/icons/anvil-impact.svg"
+  craftproject: "systems/exaltedthird/assets/icons/anvil-impact.svg",
+  shape: "icons/svg/mystery-man.svg"
 };
 
 exaltedthird.excellencyIcons = {
@@ -1721,6 +1722,7 @@ exaltedthird.bonusTypes = {
       magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
       onslaughtAddition: "Ex3.AddOnslaught",
       triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
+      inflictActiveEffectOnTarget: "Ex3.InflictActiveEffect",
       // inflictDicePenalty: "Ex3.InflictDicePenalty",
     }
   },
@@ -1733,6 +1735,7 @@ exaltedthird.bonusTypes = {
       triggerSelfDefensePenalty: "Ex3.SelfDefensePenalty",
       specificCharm: "Ex3.SpecificCharm",
       otherEffect: "Ex3.OtherEffect",
+      baseInitiativeModifier: "Ex3.BaseInitiativeModifier",
     }
   },
   defense: {
@@ -2234,6 +2237,10 @@ exaltedthird.selects = {
     'opposedRolls': "Ex3.OpposedRolls",
     'sameAbility': "Ex3.SameAbilityAttribute",
     'attacks': "Ex3.Attacks",
+    'witheringAttacks': "Ex3.WitheringAttacks",
+    'decisiveAttacks': "Ex3.DecisiveAttacks",
+    'witheringDecisive': "Ex3.WitheringDecisive",
+    'gambits': "Ex3.Gambits",
     'command': "Ex3.Command",
     'grapple': "Ex3.Grapple",
     'joinBattle': "Ex3.JoinBattle",

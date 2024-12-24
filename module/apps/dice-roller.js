@@ -238,6 +238,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 attackDealsDamage: true,
                 crashBonus: this.actor ? this.actor.system.crashbonus.value : 5
             };
+            this.object.baseInitiativeModifier = 0;
             this.object.poison = null;
             this.object.settings = {
                 doubleSucccessCaps: {
@@ -1985,6 +1986,25 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             case 'action':
                 return (this.object.rollType !== 'useOpposingCharms');
             case 'attacks':
+            case 'witheringAttacks':
+            case 'decisiveAttacks':
+            case 'witheringDecisive':
+            case 'gambits':
+                if (!this._isAttackRoll()) {
+                    return false;
+                }
+                if (charm.system.autoaddtorolls === 'witheringAttacks') {
+                    return this.object.attackType === 'withering';
+                }
+                if (charm.system.autoaddtorolls === 'decisiveAttacks') {
+                    return this.object.attackType === 'decisive';
+                }
+                if (charm.system.autoaddtorolls === 'witheringDecisive') {
+                    return this.object.attackType === 'decisive' || this.object.attackType === 'withering';
+                }
+                if (charm.system.autoaddtorolls === 'gambits') {
+                    return this.object.attackType === 'gambit';
+                }
                 return this._isAttackRoll();
             case 'opposedRolls':
                 return (this.object.rollType === 'useOpposingCharms');
@@ -3741,7 +3761,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
             if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
-                this.object.characterInitiative = this.actor.system.baseinitiative.value;
+                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
             }
             if (this.object.attackType === 'gambit') {
                 if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
@@ -3750,7 +3770,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
             }
             if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
-                this.object.characterInitiative = this.actor.system.baseinitiative.value;
+                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
             }
             if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
                 let combat = game.combat;
@@ -3840,7 +3860,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <h4 class="dice-total">Hardness Stopped Decisive!</h4>
             </div>
         </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
+        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -3851,10 +3871,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _damageRoll() {
         // let dice = this.object.damage.damageDice;
-        var damageResults = ``;
         await this._addTriggerBonuses('beforeDamageRoll');
         var dice = await this._assembleDamagePool(false);
-        let baseDamage = dice;
+        this.object.baseDamage = dice;
         if (this._damageRollType('decisive')) {
             if (this.object.target) {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
@@ -3919,34 +3938,35 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             });
         }
 
-        var diceRollResults = await this._calculateRoll(dice, rollModifiers);
+        this.object.damageDiceRollResults = await this._calculateRoll(dice, rollModifiers);
         if (this.object.damage.rollTwice || this.object.damage.rollTwiceLowest) {
             if (this.object.damage.rollTwice && !this.object.damage.rollTwiceLowest) {
                 const secondRoll = await this._calculateRoll(dice, rollModifiers);
-                if (secondRoll.total > diceRollResults.total) {
-                    diceRollResults = secondRoll;
+                if (secondRoll.total > this.object.damageDiceRollResults.total) {
+                    this.object.damageDiceRollResults = secondRoll;
 
                 }
             } else if (this.object.damage.rollTwiceLowest && !this.object.damage.rollTwice) {
                 const secondRoll = await this._calculateRoll(dice, rollModifiers);
-                if (secondRoll.total < diceRollResults.total) {
-                    diceRollResults = secondRoll;
+                if (secondRoll.total < this.object.damageDiceRollResults.total) {
+                    this.object.damageDiceRollResults = secondRoll;
                 }
             }
         }
+
         this.object.finalDamageDice = dice;
-        diceRollResults.roll.dice[0].options.rollOrder = 1;
+        this.object.damageDiceRollResults.roll.dice[0].options.rollOrder = 1;
         if (this.object.roll) {
-            diceRollResults.roll.dice[0].options.rollOrder = 2;
+            this.object.damageDiceRollResults.roll.dice[0].options.rollOrder = 2;
         }
-        let total = diceRollResults.total;
+        let total = this.object.damageDiceRollResults.total;
         if (this.object.damage.doubleRolledDamage) {
             total *= 2;
         }
 
         let tensRolled = 0;
         let onesRolled = 0;
-        for (let dice of diceRollResults.diceRoll) {
+        for (let dice of this.object.damageDiceRollResults.diceRoll) {
             if (!dice.rerolled && (dice.result === 1 || (dice.result === 2 && this.object.settings.damage.alsoTriggerTwos))) {
                 onesRolled++
             }
@@ -3983,7 +4003,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'damageRoll')) {
-            let dieFaceAmount = diceRollResults.diceRoll.filter(die => !die.rerolled && !die.successCanceled && die.result === dieFaceTrigger.face).length;
+            let dieFaceAmount = this.object.damageDiceRollResults.diceRoll.filter(die => !die.rerolled && !die.successCanceled && die.result === dieFaceTrigger.face).length;
             if (dieFaceTrigger.cap) {
                 dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
             }
@@ -4011,19 +4031,24 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.triggerTargetDefensePenalty += 2;
         }
         this.object.damageSuccesses = total;
+        this.object.damageDice = dice;
 
         await this._addTriggerBonuses('afterDamageRoll');
+        await this.damageResults();
+    }
 
+    async damageResults() {
+        let damageResults = ``;
         let soakResult = ``;
         let hardnessResult = ``;
         let typeSpecificResults = ``;
-        var sizeDamaged = 0;
+        let sizeDamaged = 0;
         this.object.attackSuccess = true;
         this.object.damageThresholdSuccesses = 0;
 
         if (this.object.damage.attackDealsDamage) {
             if (this._damageRollType('decisive')) {
-                typeSpecificResults = `<h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4><h4 class="dice-total">${total} ${this.object.damage.type.capitalize()} Damage!</h4>`;
+                typeSpecificResults = `<h4 class="dice-formula">${this.object.damageDice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4><h4 class="dice-total">${this.object.damageSuccesses} ${this.object.damage.type.capitalize()} Damage!</h4>`;
                 if (this._useLegendarySize('decisive')) {
                     typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
                     this.object.damageSuccesses = Math.min(this.object.damageSuccesses, 3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier);
@@ -4163,11 +4188,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         damageResults = `
                                 <h4 class="dice-total dice-total-middle">${this._damageRollType('gambit') ? 'Gambit' : 'Damage'}</h4>
                                 ${defenseResult}
-                                <h4 class="dice-formula">${baseDamage} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
+                                <h4 class="dice-formula">${this.object.baseDamage || 0} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
                                 ${soakResult}
                                 <div class="dice-tooltip">
                                                     <div class="dice">
-                                                        <ol class="dice-rolls">${diceRollResults.diceDisplay}</ol>
+                                                        <ol class="dice-rolls">${this.object.damageDiceRollResults.diceDisplay}</ol>
                                                     </div>
                                                 </div>${typeSpecificResults}`;
 
@@ -4216,7 +4241,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            rolls: this.object.roll ? [this.object.roll, diceRollResults.roll] : [diceRollResults.roll],
+            rolls: this.object.roll ? [this.object.roll, this.object.damageDiceRollResults.roll] : [this.object.damageDiceRollResults.roll],
             flags: {
                 "exaltedthird": {
                     dice: this.object.dice,
@@ -4229,7 +4254,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     attackerCombatantId: this._getActorCombatant()?._id || null,
                     targetId: this.object.target?.id || null,
                     damage: {
-                        dice: baseDamage,
+                        dice: this.object.baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
                         soak: this.object.soak,
                         total: this.object.damageSuccesses,
@@ -4461,14 +4486,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             let triggerActor = charm.actor || this.actor;
-            if(trigger.actorType === 'target') {
-                if(this.object.rollType === 'useOpposingCharms') {
-                    if(!this.object.attacker) {
+            if (trigger.actorType === 'target') {
+                if (this.object.rollType === 'useOpposingCharms') {
+                    if (!this.object.attacker) {
                         continue;
                     }
                     triggerActor = this.object.attacker;
-                } else if(bonusType === 'benefit') {
-                    if(!this.object.target?.actor) {
+                } else if (bonusType === 'benefit') {
+                    if (!this.object.target?.actor) {
                         continue;
                     }
                     triggerActor = this.object.target.actor;
@@ -4540,6 +4565,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'triggerTargetDefensePenalty':
                                     case 'onslaughtAddition':
                                     case 'magicOnslaughtAddition':
+                                    case 'baseInitiativeModifier':
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'doubleSuccess':
@@ -4557,7 +4583,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.targetNumber -= this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'rerollDieFace':
-                                        this._getRerollFormulaCap(cleanedValue, triggerActor, charm);
+                                        this._getRerollFormulaCap(cleanedValue, false, triggerActor);
                                         break;
                                     case 'fullExcellency':
                                         let excellencyResults = triggerActor.type === 'character' ? triggerActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : triggerActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
@@ -4659,7 +4685,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage.targetNumber -= this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'rerollDieFace-damage':
-                                        this._getRerollFormulaCap(cleanedValue, true, triggerActor, charm);
+                                        this._getRerollFormulaCap(cleanedValue, true, triggerActor);
                                         break;
                                     case 'excludeOnes-damage':
                                         this.object.settings.damage.excludeOnesFromRerolls = (typeof cleanedValue === "boolean" ? cleanedValue : true);
@@ -4791,6 +4817,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'inflictStatus':
                                         if (CONFIG.exaltedthird.statusEffects.some(status => status.id === cleanedValue)) {
                                             this._addStatusEffect(cleanedValue);
+                                        }
+                                        break;
+                                    case 'inflictActiveEffectOnTarget':
+                                        if (!this.object.target) {
+                                            break;
+                                        }
+                                        const effectToCopy = charm.effects.find(charm => charm._id === bonus.value);
+                                        if (effectToCopy) {
+                                            this.object.updateTargetActorData = true;
+                                            const copiedEffect = foundry.utils.duplicate(effectToCopy);
+                                            copiedEffect.disabled = false;
+                                            this.object.newTargetData.effects.push(copiedEffect);
                                         }
                                         break;
                                 }
@@ -5733,7 +5771,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (targetSpecificDamageMod) {
             damageDicePool += targetSpecificDamageMod;
         }
-        let baseDamage = damageDicePool;
+        this.object.baseDamage = damageDicePool;
         if (this._damageRollType('withering')) {
             damageDicePool -= Math.max(0, soak - this.object.damage.ignoreSoak);
             if (damageDicePool < this.object.overwhelming) {
@@ -6274,6 +6312,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.addSelfStatuses === undefined) {
             this.object.addSelfStatuses = [];
         }
+        if (this.object.baseInitiativeModifier === undefined) {
+            this.object.baseInitiativeModifier = 0;
+        }
         else {
             for (const addedCharm of this.object.addedCharms) {
                 if (!addedCharm.timesAdded) {
@@ -6580,10 +6621,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.actor.update(actorData);
     }
 
-    _lowerMotes(actor, value, motePool=null) {
+    _lowerMotes(actor, value, motePool = null) {
         var spentPersonal = 0;
         var spentPeripheral = 0;
-        if(!motePool) {
+        if (!motePool) {
             motePool = this.object.motePool;
         }
         if (motePool === 'personal') {
