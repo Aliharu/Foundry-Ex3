@@ -204,6 +204,7 @@ export class ExaltedThirdItem extends Item {
           'currentmodeid': newMode.id,
           'currentmodename': newMode.name,
         },
+        'autoaddtorolls': newMode.autoaddtorolls,
         'activatable': newMode.activatable,
         'cost': newMode.cost, 
         'restore': newMode.restore, 

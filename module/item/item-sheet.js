@@ -354,6 +354,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
               activatable: result.activatable.checked,
               endtrigger: result.endtrigger.value,
               multiactivate: result.multiactivate.checked,
+              autoaddtorolls: result.autoaddtorolls.value,
               cost: {
                 motes: result['cost.motes'].value,
                 commitmotes: result['cost.commitmotes'].value,

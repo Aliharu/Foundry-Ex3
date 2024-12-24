@@ -195,6 +195,7 @@ export function charmAlternateData() {
         activatable: new fields.BooleanField({ initial: false }),
         summary: new fields.StringField({ initial: "" }),
         multiactivate: new fields.BooleanField({ initial: false }),
+        autoaddtorolls: new fields.StringField({ initial: "" }),
         cost: new fields.SchemaField({
             motes: new fields.NumberField({ initial: 0 }),
             commitmotes: new fields.NumberField({ initial: 0 }),

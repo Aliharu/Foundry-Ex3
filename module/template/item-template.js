@@ -557,7 +557,6 @@ export class ItemCharmData extends CommonItemData {
                     triggeronescap: new fields.StringField({ initial: "0" }),
                 }),
             }),
-            autoaddtorolls: new fields.StringField({ initial: "" }),
         }
     }
 
