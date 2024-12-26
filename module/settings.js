@@ -112,15 +112,6 @@ export function registerSettings() {
         default: false
     });
 
-    game.settings.register("exaltedthird", "showFullAttacks", {
-        name: game.i18n.localize('Ex3.ShowFullAttackButtons'),
-        hint: game.i18n.localize('Ex3.ShowFullAttackButtonsDescriptions'),
-        scope: "world",
-        config: true,
-        type: Boolean,
-        default: false
-    });
-
     game.settings.register("exaltedthird", "compactSheetsNPC", {
         name: game.i18n.localize('Ex3.CompactSheetsNPC'),
         hint: game.i18n.localize('Ex3.CompactSheetsDescriptionNPC'),

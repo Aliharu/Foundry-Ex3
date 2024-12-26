@@ -68,7 +68,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.signList = CONFIG.exaltedthird.siderealSigns;
     context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
     context.rollData = context.actor.getRollData();
-    context.showFullAttackButtons = game.settings.get("exaltedthird", "showFullAttacks");
     context.showVirtues = game.settings.get("exaltedthird", "virtues");
     context.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     context.unifiedCharacterAdvancement = game.settings.get("exaltedthird", "unifiedCharacterAdvancement");
@@ -1627,21 +1626,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       );
     });
 
-    html.find('.accuracy').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'accuracy',
-        }
-      );
-    });
-
-    html.find('.damage').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'damage',
-        }
-      );
-    });
 
     html.find('.rush').mousedown(ev => {
       this.actor.actionRoll(
@@ -1773,14 +1757,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new Importer().render(true);
     });
 
-    html.find('.weapon-roll').click(ev => {
-      let item = this.actor.items.get($(ev.target).attr("data-item-id"));
-      let rollType = $(ev.target).attr("data-roll-type");
+    html.find('.attack-roll').click(ev => {
+      let itemId = $(ev.target).attr("data-item-id");
+      let weapon = null;
+      if(itemId) {
+        weapon = this.actor.items.get($(ev.target).attr("data-item-id"));
+      }
+      let attackType = $(ev.target).attr("data-attack-type");
 
       this.actor.actionRoll(
         {
-          rollType: rollType,
-          weapon: item.system
+          rollType: 'accuracy',
+          attackType: attackType,
+          weapon: weapon?.system
         }
       );
     });

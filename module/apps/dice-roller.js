@@ -36,29 +36,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.successModifier = data.successModifier || 0;
             this.object.craftType = data.craftType || 'basic';
             this.object.craftRating = data.craftRating || 0;
-            this.object.splitAttack = false;
             this.object.rollType = data.rollType;
             this.object.targetStat = 'defense';
             this.object.specialty = '';
-            this.object.attackType = data.attackType || data.rollType || 'withering';
-            if (this.object.rollType === 'damage' || this.object.rollType === 'accuracy') {
-                this.object.attackType = 'withering';
-            }
-            if (data.rollType === 'withering-split') {
-                this.object.rollType = 'accuracy';
-                this.object.splitAttack = true;
-                this.object.attackType = 'withering';
-            }
-            else if (data.rollType === 'decisive-split') {
-                this.object.rollType = 'accuracy';
-                this.object.splitAttack = true;
-                this.object.attackType = 'decisive';
-            }
-            else if (data.rollType === 'gambit-split') {
-                this.object.rollType = 'accuracy';
-                this.object.splitAttack = true;
-                this.object.attackType = 'gambit';
-            }
+            this.object.attackType = data.attackType || 'withering';
             this.object.cost = {
                 motes: 0,
                 penumbra: 0,
@@ -1132,11 +1113,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
                 }
                 await this._roll();
-                if (this.object.intervals <= 0 && (!this.object.splitAttack || this.object.rollType === 'damage')) {
+                if (this.object.intervals <= 0 && this.object.rollType !== 'accuracy') {
                     this.resolve(true);
                     this.close(false);
                 }
-                if (this.object.splitAttack && this.object.rollType === 'accuracy') {
+                if (this.object.rollType === 'accuracy') {
                     this.object.rollType = 'damage';
                     this.tabGroups['primary'] = 'damage';
                 }
@@ -2656,7 +2637,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
 
                     await this._attackRoll();
-                    await this._inflictOnTarget();
                     if (this.object.updateTargetActorData) {
                         await this._updateTargetActor();
                     }
@@ -3676,197 +3656,75 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _attackRoll() {
         // Accuracy
-        if (this.object.rollType !== 'damage') {
-            await this._baseAbilityDieRoll();
+        if (this.object.rollType === 'accuracy') {
+            await this._accuracyRoll();
         }
-        if (this.object.rollType === 'damage' || (this.object.attackSuccesses >= this.object.defense && this.object.rollType !== 'accuracy')) {
-            if (this.object.rollType === 'damage' && this.object.attackSuccesses < this.object.defense) {
-                this.object.thresholdSuccesses = Math.max(0, this.object.attackSuccesses - this.object.defense);
-                await this.missAttack(false);
-            }
-            else {
+        if (this.object.rollType === 'damage') {
+            if (this.object.attackSuccesses < this.object.defense) {
+                this.object.thresholdSuccesses = 0;
+                await this.missAttack();
+            } else {
                 await this._damageRoll();
             }
         }
-        else {
-            if (this.object.attackSuccesses < this.object.defense && this.object.rollType !== 'accuracy') {
-                this.object.thresholdSuccesses = 0;
-                await this.missAttack();
-            }
-        }
-        if (this.object.rollType === 'accuracy') {
-            var messageContent = `
-                            <div class="dice-roll">
-                                <div class="dice-result">
-                                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
-                                    <div class="dice-tooltip">
-                                        <div class="dice">
-                                            <ol class="dice-rolls">${this.object.displayDice}</ol>
-                                        </div>
-                                    </div>
-                                    <h4 class="dice-total">${this.object.total} Successes</h4>
-                                    ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}
-                                </div>
-                            </div>`;
-            messageContent = await this._createChatMessageContent(messageContent, `Accuracy Roll ${this.object.target ? ` vs ${this.object.target.name}` : ''}`);
-
-            ChatMessage.create({
-                user: game.user.id,
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                content: messageContent,
-                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-                rolls: [this.object.roll],
-                flags: {
-                    "exaltedthird": {
-                        roller: this.actor._id,
-                        dice: this.object.dice,
-                        successes: this.object.successes,
-                        successModifier: this.object.successModifier,
-                        total: this.object.total,
-                        defense: this.object.defense,
-                        thresholdSuccesses: this.object.thresholdSuccesses,
-                        targetActorId: this.object.target?.actor?._id,
-                        targetTokenId: this.object.target?.id,
-                    }
-                }
-            });
-        }
-        else {
-            this._addAttackEffects();
-            this.attackSequence();
-        }
     }
 
-    async _postAttackResults() {
-        if (this.object.rollType !== 'accuracy' || !this.object.splitAttack) {
-            await this._updateCharacterResources();
-            if (this.object.targetHit) {
-                this.object.gainedInitiative += 1;
-            }
-            if (this.object.crashed) {
-                if (!this.object.targetCombatant?.flags.crashRecovery) {
-                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
-                }
-            }
-            if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
-                this.object.characterInitiative += this.object.gainedInitiative;
-            }
-            const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets)
-            if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit && !game.settings.get("exaltedthird", "forgivingDecisives")) {
-                if (this.object.characterInitiative < 11) {
-                    this.object.characterInitiative -= 2;
-                }
-                else {
-                    this.object.characterInitiative -= 3;
-                }
-            }
-            if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
-                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
-            }
-            if (this.object.attackType === 'gambit') {
-                if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
-                    this.object.characterInitiative -= 5;
-                }
-                this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
-            }
-            if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
-                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
-            }
-            if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
-                let combat = game.combat;
-                if (this.object.target && combat) {
-                    let combatant = this._getActorCombatant();
-                    if (combatant && combatant.initiative != null) {
-                        combat.setInitiative(combatant.id, this.object.characterInitiative);
-                    }
-                }
-            }
-        }
-    }
-
-    async missAttack(accuracyRoll = true) {
-        this.object.missedAttacks++;
-        if (accuracyRoll) {
-            var messageContent = `
-            <div class="dice-roll">
-                <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
-                    <div class="dice-tooltip">
-                        <div class="dice">
-                            <ol class="dice-rolls">${this.object.displayDice || ''}</ol>
-                        </div>
-                    </div>
-                    <h4 class="dice-formula">${this.object.total || 0} Successes vs ${this.object.defense} Defense</h4>
-                    <h4 class="dice-total">Attack Missed!</h4>
-                </div>
-            </div>`;
-            messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
-            ChatMessage.create({
-                user: game.user.id,
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                content: messageContent,
-                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-                rolls: this.object.roll ? [this.object.roll] : [],
-                flags: {
-                    "exaltedthird": {
-                        dice: this.object.dice,
-                        successes: this.object.successes,
-                        successModifier: this.object.successModifier,
-                        total: this.object.total || 0,
-                        defense: this.object.defense,
-                        thresholdSuccesses: this.object.thresholdSuccesses
-                    }
-                }
-            });
-        }
-        else {
-            var messageContent = `
-            <div class="dice-roll">
-                <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
-                    <h4 class="dice-total">Attack Missed!</h4>
-                </div>
-            </div>`;
-            messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
-            ChatMessage.create({
-                user: game.user.id,
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                content: messageContent,
-                style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            });
-        }
-    }
-
-    async _failedDecisive(dice) {
-        this.object.damageLevelsDealt = 0;
-        let accuracyContent = '';
-        if (this.object.rollType !== 'damage') {
-            accuracyContent = `
+    async _accuracyRoll() {
+        await this._baseAbilityDieRoll();
+        var messageContent = `
+        <div class="dice-roll">
+            <div class="dice-result">
                 <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                 <div class="dice-tooltip">
                     <div class="dice">
                         <ol class="dice-rolls">${this.object.displayDice}</ol>
                     </div>
                 </div>
-                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
-                <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
-            `
-        }
+                <h4 class="dice-total">${this.object.total} Successes</h4>
+                ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}
+            </div>
+        </div>`;
+        messageContent = await this._createChatMessageContent(messageContent, `Accuracy Roll ${this.object.target ? ` vs ${this.object.target.name}` : ''}`);
+
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+            rolls: [this.object.roll],
+            flags: {
+                "exaltedthird": {
+                    roller: this.actor._id,
+                    dice: this.object.dice,
+                    successes: this.object.successes,
+                    successModifier: this.object.successModifier,
+                    total: this.object.total,
+                    defense: this.object.defense,
+                    thresholdSuccesses: this.object.thresholdSuccesses,
+                    targetActorId: this.object.target?.actor?._id,
+                    targetTokenId: this.object.target?.id,
+                }
+            }
+        });
+    }
+
+    async missAttack() {
+        this.object.missedAttacks++;
         var messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
-                ${accuracyContent}
-                <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4>
-                <h4 class="dice-total">Hardness Stopped Decisive!</h4>
+                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-total">Attack Missed!</h4>
             </div>
         </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
+        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
         ChatMessage.create({
             user: game.user.id,
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             content: messageContent,
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
+        await this._addAttackEffects();
     }
 
     async _damageRoll() {
@@ -4032,13 +3890,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         this.object.damageSuccesses = total;
         this.object.damageDice = dice;
-
         await this._addTriggerBonuses('afterDamageRoll');
         await this.damageResults();
     }
 
     async damageResults() {
-        let damageResults = ``;
+        let damageDisplayResults = ``;
         let soakResult = ``;
         let hardnessResult = ``;
         let typeSpecificResults = ``;
@@ -4185,7 +4042,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.rollType === 'damage') {
             defenseResult = `<h4 class="dice-formula">${this.object.attackSuccesses} Accuracy Successes vs ${this.object.defense} Defense</h4>`
         }
-        damageResults = `
+        damageDisplayResults = `
                                 <h4 class="dice-total dice-total-middle">${this._damageRollType('gambit') ? 'Gambit' : 'Damage'}</h4>
                                 ${defenseResult}
                                 <h4 class="dice-formula">${this.object.baseDamage || 0} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
@@ -4225,7 +4082,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <div class="dice-roll">
                     <div class="dice-result">
                         ${accuracyContent}
-                        ${damageResults}
+                        ${damageDisplayResults}
                     </div>
                 </div>
           `;
@@ -4274,6 +4131,89 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
+
+        await this._inflictOnTarget();
+        await this._addAttackEffects();
+        this.attackSequence();
+    }
+
+    async _postAttackResults() {
+        if (this.object.rollType !== 'accuracy') {
+            await this._updateCharacterResources();
+            if (this.object.targetHit) {
+                this.object.gainedInitiative += 1;
+            }
+            if (this.object.crashed) {
+                if (!this.object.targetCombatant?.flags.crashRecovery) {
+                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
+                }
+            }
+            if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
+                this.object.characterInitiative += this.object.gainedInitiative;
+            }
+            const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets)
+            if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit && !game.settings.get("exaltedthird", "forgivingDecisives")) {
+                if (this.object.characterInitiative < 11) {
+                    this.object.characterInitiative -= 2;
+                }
+                else {
+                    this.object.characterInitiative -= 3;
+                }
+            }
+            if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
+                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
+            }
+            if (this.object.attackType === 'gambit') {
+                if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
+                    this.object.characterInitiative -= 5;
+                }
+                this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
+            }
+            if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
+                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
+            }
+            if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
+                let combat = game.combat;
+                if (this.object.target && combat) {
+                    let combatant = this._getActorCombatant();
+                    if (combatant && combatant.initiative != null) {
+                        combat.setInitiative(combatant.id, this.object.characterInitiative);
+                    }
+                }
+            }
+        }
+    }
+
+    async _failedDecisive(dice) {
+        this.object.damageLevelsDealt = 0;
+        let accuracyContent = '';
+        if (this.object.rollType !== 'damage') {
+            accuracyContent = `
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
+                <div class="dice-tooltip">
+                    <div class="dice">
+                        <ol class="dice-rolls">${this.object.displayDice}</ol>
+                    </div>
+                </div>
+                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
+            `
+        }
+        var messageContent = `
+        <div class="dice-roll">
+            <div class="dice-result">
+                ${accuracyContent}
+                <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness (Ignoring ${this.object.damage.ignoreHardness})</h4>
+                <h4 class="dice-total">Hardness Stopped Decisive!</h4>
+            </div>
+        </div>`;
+        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        });
     }
 
     async _addAttackEffects() {

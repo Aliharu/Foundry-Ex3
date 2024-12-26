@@ -1477,13 +1477,15 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async sendTargetingChatMessage(data) {
+    const imageUrl = CONFIG.exaltedthird.rollTypeTargetImages[data.attackType] ||CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg";
+    const rollTypeLabel = CONFIG.exaltedthird.rollTypeTargetLabels[data.attackType] ||CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll";
     if (game.user.targets && game.user.targets.size > 0) {
       for (const target of Array.from(game.user.targets)) {
         const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
           actor: this,
           targetActor: target.actor,
-          imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
-          rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
+          imgUrl: imageUrl,
+          rollType: rollTypeLabel,
         });
         return await ChatMessage.create({
           user: game.user.id,
@@ -1502,8 +1504,8 @@ export class ExaltedThirdActor extends Actor {
       const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
         actor: this,
         targetActor: null,
-        imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
-        rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
+        imgUrl: imageUrl,
+        rollType: rollTypeLabel,
       });
       return await ChatMessage.create({
         user: game.user.id,
@@ -1520,8 +1522,8 @@ export class ExaltedThirdActor extends Actor {
     } else if (game.settings.get("exaltedthird", "nonTargetRollCards")) {
       const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/pre-roll-card.html", {
         actor: this,
-        imgUrl: CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg",
-        rollType: CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll",
+        imgUrl: imageUrl,
+        rollType: rollTypeLabel,
       });
       return await ChatMessage.create({
         user: game.user.id,

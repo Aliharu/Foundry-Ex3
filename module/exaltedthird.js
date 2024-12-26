@@ -1846,7 +1846,7 @@ async function createItemMacro(data, slot) {
     const item = await Item.fromDropData(data);
     let command = `Hotbar.toggleDocumentSheet("${data.uuid}");`;
     if (item.type === 'weapon') {
-      command = `//Switch withering with (decisive, gambit, withering-split, decisive-split, gambit-split) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
+      command = `//Switch withering with (decisive, gambit) to roll different attack types\ngame.exaltedthird.weaponAttack("${data.uuid}", 'withering');`;
     }
     if (item.type === 'charm') {
       command = `//Will add this charm to any roll you have open and if opposed any roll another player has open\n//If the charm user has no dice roller open it will instead Spend or activate the charm\ngame.exaltedthird.triggerItem("${data.uuid}");`;

@@ -300,9 +300,6 @@ exaltedthird.targetableRollTypes = [
   'withering',
   'decisive',
   'gambit',
-  'withering-split',
-  'decisive-split',
-  'gambit-split',
 ]
 
 exaltedthird.rollTypeTargetLabels = {
@@ -315,9 +312,6 @@ exaltedthird.rollTypeTargetLabels = {
   withering: "Ex3.Withering",
   decisive: "Ex3.Decisive",
   gambit: "Ex3.Gambit",
-  'withering-split': "Ex3.Withering",
-  'decisive-split': "Ex3.Decisive",
-  'gambit-split': "Ex3.Gambit",
   'sorcery': "Ex3.Sorcery",
   'working': "Ex3.SorcerousWorking",
   'rush': 'Ex3.Movement',
@@ -363,9 +357,6 @@ exaltedthird.rollTypeTargetImages = {
   withering: "systems/exaltedthird/assets/icons/sword-clash.svg",
   decisive: "systems/exaltedthird/assets/icons/bloody-sword.svg",
   gambit: "systems/exaltedthird/assets/icons/punch-blast.svg",
-  'withering-split': "systems/exaltedthird/assets/icons/sword-clash.svg",
-  'decisive-split': "systems/exaltedthird/assets/icons/bloody-sword.svg",
-  'gambit-split': "systems/exaltedthird/assets/icons/punch-blast.svg",
   'sorcery': 'systems/exaltedthird/assets/icons/magic-swirl.svg',
   'working': 'systems/exaltedthird/assets/icons/magic-portal.svg',
   'rush': 'systems/exaltedthird/assets/icons/sprint.svg',
