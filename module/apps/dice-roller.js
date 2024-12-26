@@ -4514,8 +4514,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 }
                                 if (cleanedValue === 'prompt') {
                                     cleanedValue = await foundry.applications.api.DialogV2.prompt({
-                                        window: { title: game.i18n.localize("Ex3.TriggerBonusPrompt") },
-                                        content: `<label class="resource-label">Input value for: ${game.i18n.localize(CONFIG.exaltedthird.numberBonusTypeLabels[bonus.effect])}</label><input name="promptValue" type="text" placeholder="Insert number or formula" autofocus>`,
+                                        window: { title: game.i18n.localize(charm.name) },
+                                        content: `<div class="resource-label">Trigger: ${trigger.name}</div><label class="resource-label">Input value for: ${game.i18n.localize(CONFIG.exaltedthird.numberBonusTypeLabels[bonus.effect])}</label><input name="promptValue" type="text" placeholder="Insert number or formula" autofocus>`,
                                         ok: {
                                             label: "Submit",
                                             callback: (event, button, dialog) => button.form.elements.promptValue.valueAsNumber
