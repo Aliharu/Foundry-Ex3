@@ -1,4 +1,4 @@
-import { activatableData, artifactData, charmAlternateData, equipmentData, traitField, triggerData } from "./common-template.js";
+import { activatableData, artifactData, charmAlternateData, charmPrerequisite, equipmentData, traitField, triggerData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -387,8 +387,7 @@ export class ItemCharmData extends CommonItemData {
             prerequisites: new fields.StringField({ initial: "" }),
             charmprerequisites: new fields.ArrayField(
                 new fields.SchemaField({
-                    id: new fields.StringField({ initial: "" }),
-                    name: new fields.StringField({ initial: "" }),
+                    ...charmPrerequisite()
                 }),
             ),
             charmtype: new fields.StringField({ initial: "other" }),
@@ -422,8 +421,7 @@ export class ItemCharmData extends CommonItemData {
                 prerequisites: new fields.StringField({ initial: "" }),
                 charmprerequisites: new fields.ArrayField(
                     new fields.SchemaField({
-                        id: new fields.StringField({ initial: "" }),
-                        name: new fields.StringField({ initial: "" }),
+                        ...charmPrerequisite()
                     }),
                 ),
             }),

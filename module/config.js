@@ -1222,6 +1222,11 @@ exaltedthird.statusEffects = [
     label: 'Ex3.Hidden',
   },
   {
+    img: 'icons/svg/angel.svg',
+    id: 'flyingPenalty',
+    label: 'Ex3.FlyingPenalty',
+  },
+  {
     img: 'systems/exaltedthird/assets/icons/screaming.svg',
     id: 'routing',
     label: 'Ex3.Routing',
@@ -1898,6 +1903,7 @@ exaltedthird.requirementTypes = {
   roll: {
     label: "Ex3.Roll",
     requirements: {
+      rollType: "Ex3.RollType",
       attackType: "Ex3.AttackType",
       charmAddedAmount: "Ex3.ItemAddedAmount",
       range: "Ex3.Range",
@@ -2551,12 +2557,14 @@ exaltedthird.selects = {
         none: "Ex3.None",
       },
     },
-  },
+  }, 
   triggerTimes: {
     "beforeRoll": "Ex3.BeforeRoll",
     "afterRoll": "Ex3.AfterRoll",
     "beforeDamageRoll": "Ex3.BeforeDamageRoll",
     "afterDamageRoll": "Ex3.AfterDamageRoll",
+    "beforeDamageApplied": "Ex3.BeforeDamageApplies",
+    "afterDamageApplied": "Ex3.AfterDamageApplied",
     "itemAdded": "Ex3.WhenItemAdded"
   },
   artifactTypes: {
@@ -2572,6 +2580,22 @@ exaltedthird.selects = {
     itemOwner: "Ex3.ItemOwner",
     target: "Ex3.TargetAttacker",
   },
+  rollTypes: {
+    attack: "Ex3.Attack",
+    command: "Ex3.Command",
+    craft: "Ex3.Craft",
+    disengage: "Ex3.Disengage",
+    grapplecontrol: "Ex3.GrappleControl",
+    joinbattle: "Ex3.JoinBattle",
+    prophecy: "Ex3.Prophecy",
+    readintentions: "Ex3.ReadIntentions",
+    rout: "Ex3.Rout",
+    rush: "Ex3.Rush",
+    social: "Ex3.Social",
+    sorcery: "Ex3.Sorcery",
+    steady: "Ex3.Steady",
+    working: "Ex3.SorcerousWorking",
+  }
 };
 
 exaltedthird.tripleActionStatblocks = {

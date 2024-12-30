@@ -64,7 +64,7 @@
                         <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}"
                             data-item-name="{{item.name}}" data-item-index="{{id}}">
                             <li data-item-index="{{id}}">
-                                {{item.name}}
+                                {{item.name}}{{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}
                                 <i class="fas fa-trash embeded-item-delete"></i>
                             </li>
                         </a>
@@ -72,7 +72,7 @@
                         {{else}}
                         {{#each system.charmprerequisites as |item id|}}
                         <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">
-                            {{item.name}}
+                            {{item.name}}{{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}
                         </li>
                         {{/each}}
                         {{/if}}
@@ -958,7 +958,7 @@
                         <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}"
                             data-item-name="{{item.name}}" data-item-index="{{id}}" data-type="archetype">
                             <li data-item-index="{{id}}">
-                                {{item.name}}
+                                {{item.name}} {{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}
                                 <i data-type="archetype" class="fas fa-trash embeded-item-delete"></i>
                             </li>
                         </a>

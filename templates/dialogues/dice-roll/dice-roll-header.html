@@ -21,14 +21,10 @@
     </div>
     {{#if isAttackRoll}}
     <div class="dice-header-row">
-        <label class="resource-label">{{localize "Ex3.RollingA"}}</label>
-        <select id="update-damage-type" name="object.attackType" value="{{data.attackType}}" data-type="String">
-            {{selectOptions selects.attackTypes selected=data.attackType localize=true}}
-        </select>
         {{#ifNotEquals data.attackType 'gambit'}}
-        <label class="resource-label">{{localize "Ex3.AttackAt"}}</label>
+        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}} {{data.attackType}} {{localize "Ex3.AttackAt"}}</label>
         {{else}}
-        <label class="resource-label">{{localize "Ex3.at"}}</label>
+        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}} {{data.attackType}} {{localize "Ex3.at"}}</label>
         {{/ifNotEquals}}
         <select name="object.range" value="{{data.range}}" data-type="String">
             {{selectOptions selects.ranges selected=data.range localize=true}}

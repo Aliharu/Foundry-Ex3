@@ -663,6 +663,10 @@
   display: none !important;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 .overflow-scroll {
   .dialog-form {
     overflow-y: scroll;

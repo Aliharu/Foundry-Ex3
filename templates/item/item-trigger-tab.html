@@ -183,6 +183,11 @@
                     data-type="String">
                     {{selectOptions ../../selects.attackTypes selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'rollType'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.rollTypes selected=requirement.value localize=true blank=''}}
+                </select>
                 {{else ifEquals requirement.requirement 'range'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">

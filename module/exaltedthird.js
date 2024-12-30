@@ -405,7 +405,7 @@ $(document).ready(() => {
 
   $(document).on('click', diceIconSelector, ev => {
     ev.preventDefault();
-    new RollForm(null, { classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}, { rollType: 'base' }).render(true);
+    new RollForm(null, { classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}, { rollType: 'base' }).render(true);
   });
 });
 
@@ -2130,5 +2130,5 @@ function triggerItem(itemUuid) {
  * @returns {Promise}
  */
 function roll(actor, object, data) {
-  return new RollForm(actor, {}, {}, data).roll();
+  return new RollForm(actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller"] }, {}, data).roll();
 }

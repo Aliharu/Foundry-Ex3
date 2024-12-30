@@ -1455,17 +1455,14 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async actionRoll(data) {
-    let message = null;
-    if (data.rollType !== 'useOpposingCharms') {
-      message = await this.sendTargetingChatMessage(data);
-    }
+    let message = data.rollType !== 'useOpposingCharms' ? await this.sendTargetingChatMessage(data) : null;
     if (message) {
       data.preMessageId = message.id;
     }
     if(data.rollType === 'useOpposingCharms') {
-      game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 } }, {}, data).render(true);
+      game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 846 } }, {}, data).render(true);
     } else {
-      game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: data.rollType === 'useOpposingCharms' ? 846 : 730 } }, {}, data).render(true);
+      game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 730 } }, {}, data).render(true);
     }
   }
 

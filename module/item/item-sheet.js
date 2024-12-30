@@ -106,7 +106,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
     context.triggerBonusDropdowns = CONFIG.exaltedthird.triggerBonusDropdowns;
     context.requirementTypes = CONFIG.exaltedthird.requirementTypes;
-    context.formulaKeyPlaceholder = this.item.name.replace(/\s/g,'').toLowerCase();
+    context.formulaKeyPlaceholder = this.item.name.replace(/\s/g, '').toLowerCase();
     if (itemData.type === 'charm') {
       if (itemData.system.ability === 'evocation') {
         for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations)) {
@@ -169,7 +169,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       context.itemModes[''] = itemData.system.modes.mainmode.name || "Main Mode";
     }
 
-    if(itemData.effects) {
+    if (itemData.effects) {
       context.activeEffectIds = itemData.effects.reduce((acc, effect) => {
         acc[effect._id] = effect.name; // Key is `id`, value is `name`
         return acc;
@@ -390,7 +390,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
             if (!items) {
               items = [];
             }
-            if(items.length === 0) {
+            if (items.length === 0) {
               formData = {
                 system: {
                   modes: {
@@ -706,11 +706,12 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       };
     }
 
-    var newItem = {
+    let newItem = {
       id: itemObject.id,
       name: itemObject.name,
       pack: data.pack,
-    }
+      count: 1,
+    };
 
     if (itemObject.type === "charm") {
       const otherTab = li.querySelector(`#other-tab`);
@@ -723,18 +724,27 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         items = [];
       }
       if (items.map(item => item.id).includes(newItem.id)) {
-        return;
+        items.forEach(item => {
+          if (item.id === newItem.id) {
+            if (!item.count) {
+              item.count = 1;
+            }
+            item.count += 1;
+          }
+        });
+      } else {
+        switch (itemObject.type) {
+          case "charm": {
+            items.push(newItem);
+            break;
+          }
+          default: {
+            return;
+          }
+        }
       }
 
-      switch (itemObject.type) {
-        case "charm": {
-          items.push(newItem);
-          break;
-        }
-        default: {
-          return;
-        }
-      }
+
 
       let formData = {};
       foundry.utils.setProperty(formData, `system${otherTabactive ? '.archetype' : ''}.charmprerequisites`, items);

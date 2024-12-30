@@ -84,8 +84,7 @@
             {{{charmCostDisplay item.system}}}
         </div>
         <div>
-            <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
-                style="text-transform: capitalize;">{{getAbilityDisplay ../../this item.system.ability}}</span>
+            <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span class="capitalize">{{getAbilityDisplay ../../this item.system.ability}}</span>
             {{item.system.requirement}},{{/ifNotEquals}} {{localize "Ex3.Essence"}} {{item.system.essence}}
         </div>
         <div>

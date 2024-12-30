@@ -222,6 +222,15 @@ export function charmAlternateData() {
     };
 }
 
+export function charmPrerequisite() {
+    return {
+        id: new fields.StringField({ initial: "" }),
+        name: new fields.StringField({ initial: "" }),
+        count: new fields.NumberField({ initial: 1 }),
+    };
+}
+
+
 export function triggerData() {
     return {
         triggers: new fields.SchemaField({
