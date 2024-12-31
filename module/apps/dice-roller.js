@@ -2240,55 +2240,66 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.render();
     }
 
-    _getFormulaValue(charmValue, overrideActor = null, item = null) {
-        var rollerValue = 0;
-        if (charmValue) {
-            if (charmValue.split(' ').length === 3) {
-                var negativeValue = false;
-                if (charmValue.includes('-(')) {
-                    charmValue = charmValue.replace(/(-\(|\))/g, '');
-                    negativeValue = true;
-                }
-                var split = charmValue.split(' ');
-                var leftVar = this._getFormulaActorValue(split[0], overrideActor, item);
-                var operand = split[1];
-                var rightVar = this._getFormulaActorValue(split[2], overrideActor, item);
-                switch (operand) {
-                    case '+':
-                        rollerValue = leftVar + rightVar;
-                        break;
-                    case '-':
-                        rollerValue = Math.max(0, leftVar - rightVar);
-                        break;
-                    case '/>':
-                        if (rightVar) {
-                            rollerValue = Math.ceil(leftVar / rightVar);
-                        }
-                        break;
-                    case '/<':
-                        if (rightVar) {
-                            rollerValue = Math.floor(leftVar / rightVar);
-                        }
-                        break;
-                    case '*':
-                        rollerValue = leftVar * rightVar;
-                        break;
-                    case '|':
-                        rollerValue = Math.max(leftVar, rightVar);
-                        break;
-                    case 'cap':
-                        rollerValue = Math.min(leftVar, rightVar);
-                        break;
-                }
-                if (negativeValue) {
-                    rollerValue *= -1;
-                }
-            }
-            else {
-                rollerValue = this._getFormulaActorValue(charmValue, overrideActor, item);
-            }
+    _getFormulaValue(charmValue, overrideActor, item) {
+        if (!charmValue || charmValue === "0") return 0;
+    
+        // Check for negative value notation and clean up
+        let negativeValue = false;
+        if (charmValue.startsWith('-(') && charmValue.endsWith(')')) {
+            charmValue = charmValue.slice(2, -1); // Remove `-(...)`
+            negativeValue = true;
         }
-        return rollerValue;
+    
+        // Helper function to evaluate a single operation
+        const evaluate = (leftVar, operand, rightVar) => {
+            switch (operand) {
+                case '+': return leftVar + rightVar;
+                case '-': return leftVar - rightVar;
+                case '*': return leftVar * rightVar;
+                case '/>': return Math.ceil(leftVar / rightVar);
+                case '/<': return Math.floor(leftVar / rightVar);
+                case '|': return Math.max(leftVar, rightVar);
+                case 'cap': return Math.min(leftVar, rightVar);
+                default: throw new Error(`Unknown operator: ${operand}`);
+            }
+        };
+    
+        // Helper function to parse values (operands)
+        const parseValue = (token) => this._getFormulaActorValue(token.trim(), overrideActor, item);
+    
+        // Recursive function to evaluate expressions with parentheses and operations
+        const evaluateExpression = (expression) => {
+            // Match parentheses and solve inner expressions first
+            while (expression.includes('(')) {
+                expression = expression.replace(/\(([^()]+)\)/g, (_, inner) => evaluateExpression(inner));
+            }
+    
+            // Split expression into tokens by operators, respecting order of operations
+            const operators = [['*', '/>', '/<'], ['+', '-'], ['|', 'cap']]; // Order of precedence
+            let tokens = expression.split(/(\s+)/).filter(token => token.trim() !== ''); // Split and filter whitespace
+    
+            for (const operatorGroup of operators) {
+                let i = 0;
+                while (i < tokens.length) {
+                    const token = tokens[i];
+                    if (operatorGroup.includes(token)) {
+                        const leftVar = parseValue(tokens[i - 1]);
+                        const rightVar = parseValue(tokens[i + 1]);
+                        const result = evaluate(leftVar, token, rightVar);
+                        tokens.splice(i - 1, 3, result.toString()); // Replace operation with result
+                        i = i - 1; // Adjust index after splice
+                    } else {
+                        i++;
+                    }
+                }
+            }
+    
+            return parseValue(tokens[0]);
+        };
+    
+        // Evaluate the expression and apply the negative sign if necessary
+        const rollerValue = evaluateExpression(charmValue);
+        return negativeValue ? -rollerValue : rollerValue;
     }
 
     _getBooleanFormulaValue(charmValue, opposedCharmActor = null, item = null) {
@@ -2394,9 +2405,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return;
         }
         const newEffect = {
-            face: parseInt(effectSplit[0]),
+            face: effectSplit[0],
             effect: effectSplit[1],
-            cap: effectSplit[2] ? this._getFormulaActorValue(effectSplit[2], overrideActor) : 0,
+            cap: effectSplit[2] ? Math.max(0, this._getFormulaValue(effectSplit[2], overrideActor)) : 0,
             triggerOnRerolledDice: effectSplit[3] ? true : false,
             diceRollType: diceRollType,
         }
@@ -3446,7 +3457,30 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'diceRoll')) {
-            let dieFaceAmount = diceRoll.filter(die => (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === dieFaceTrigger.face).length;
+            // let dieFaceAmount = diceRoll.filter(die => (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === dieFaceTrigger.face).length;
+            let dieFaceAmount = diceRoll.filter(die => {
+                // Parse the face string to check for a "+" or "-" and determine the range
+                const face = dieFaceTrigger.face;
+                let match = false;
+            
+                if (face.endsWith("+")) {
+                    // Check for all numbers from the given number up to 10
+                    const minValue = parseInt(face.slice(0, -1), 10);
+                    match = die.result >= minValue && die.result <= 10;
+                } else if (face.endsWith("-")) {
+                    // Check for all numbers from the given number down to 1
+                    const maxValue = parseInt(face.slice(0, -1), 10);
+                    match = die.result >= 1 && die.result <= maxValue;
+                } else {
+                    // Default behavior: match the specific number
+                    const targetValue = parseInt(face, 10);
+                    match = die.result === targetValue;
+                }
+            
+                // Apply additional filters
+                return match && (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled));
+            }).length;
+
             if (dieFaceTrigger.cap) {
                 dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
             }
