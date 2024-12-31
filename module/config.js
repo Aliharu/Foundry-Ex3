@@ -1272,7 +1272,7 @@ exaltedthird.siderealSigns = {
   secrets: {
     label: "Secrets",
     signs: {
-      gaurdians: "Ex3.Gaurdians",
+      guardians: "Ex3.Guardians",
       key: "Ex3.Key",
       mask: "Ex3.Mask",
       sorcerer: "Ex3.Sorcerer",
