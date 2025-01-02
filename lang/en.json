@@ -1027,6 +1027,9 @@
     "Ex3.TreasureTrove": "Treasure Trove",
     "Ex3.RisingSmoke": "Rising Smoke",
 
+    "Ex3.ConfirmDamageRoll": "Confirm Damage Roll",
+    "Ex3.ConfirmDamageRollDescription": "Have an extra step in attacks to confirm damage rolls",
+
     "Ex3.Means": "Means",
     "Ex3.Frequency": "Frequency",
     "Ex3.Power": "Power",

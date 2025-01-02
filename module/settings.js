@@ -95,6 +95,16 @@ export function registerSettings() {
         config: true,
     });
 
+    game.settings.register('exaltedthird', 'confirmDamageRolls', {
+        name: game.i18n.localize('Ex3.ConfirmDamageRoll'),
+        hint: game.i18n.localize('Ex3.ConfirmDamageRollDescription'),
+        default: true,
+        scope: 'world',
+        type: Boolean,
+        config: true,
+    });
+
+
     game.settings.register("exaltedthird", "systemMigrationVersion", {
         name: "System Migration Version",
         scope: "world",

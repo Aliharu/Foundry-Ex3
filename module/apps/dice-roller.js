@@ -4018,7 +4018,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         });
-        // await this.damageResults();
+        if(!game.settings.get("exaltedthird", "confirmDamageRolls")) {
+            this.object.rollType = 'damageResults';
+        }
     }
 
     async damageResults() {
