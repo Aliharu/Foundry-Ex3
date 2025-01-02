@@ -2242,14 +2242,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     _getFormulaValue(charmValue, overrideActor, item) {
         if (!charmValue || charmValue === "0") return 0;
-    
+
         // Check for negative value notation and clean up
         let negativeValue = false;
         if (charmValue.startsWith('-(') && charmValue.endsWith(')')) {
             charmValue = charmValue.slice(2, -1); // Remove `-(...)`
             negativeValue = true;
         }
-    
+
         // Helper function to evaluate a single operation
         const evaluate = (leftVar, operand, rightVar) => {
             switch (operand) {
@@ -2263,21 +2263,21 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 default: throw new Error(`Unknown operator: ${operand}`);
             }
         };
-    
+
         // Helper function to parse values (operands)
         const parseValue = (token) => this._getFormulaActorValue(token.trim(), overrideActor, item);
-    
+
         // Recursive function to evaluate expressions with parentheses and operations
         const evaluateExpression = (expression) => {
             // Match parentheses and solve inner expressions first
             while (expression.includes('(')) {
                 expression = expression.replace(/\(([^()]+)\)/g, (_, inner) => evaluateExpression(inner));
             }
-    
+
             // Split expression into tokens by operators, respecting order of operations
             const operators = [['*', '/>', '/<'], ['+', '-'], ['|', 'cap']]; // Order of precedence
             let tokens = expression.split(/(\s+)/).filter(token => token.trim() !== ''); // Split and filter whitespace
-    
+
             for (const operatorGroup of operators) {
                 let i = 0;
                 while (i < tokens.length) {
@@ -2293,10 +2293,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
             }
-    
+
             return parseValue(tokens[0]);
         };
-    
+
         // Evaluate the expression and apply the negative sign if necessary
         const rollerValue = evaluateExpression(charmValue);
         return negativeValue ? -rollerValue : rollerValue;
@@ -2697,11 +2697,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
             if (this.object.rollType === 'damageResults') {
-                await this._postAttackResults();
+                await this._updateRollerResources();
             }
         }
         else if (this.object.rollType === 'base') {
-            await this._diceRoll();
+            await this._baseRoll();
         }
         else if (this.object.hasIntervals) {
             this.object.intervals -= 1;
@@ -2839,7 +2839,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             },
         });
-        await this._updateCharacterResources();
+        await this._updateRollerResources();
         this.close();
     }
 
@@ -3225,7 +3225,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     //     return { results, roll, total };
     // }
 
-    async _baseAbilityDieRoll() {
+    async _baseOrAbilityDieRoll() {
         await this._addTriggerBonuses('beforeRoll');
 
         let dice = 0;
@@ -3462,7 +3462,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 // Parse the face string to check for a "+" or "-" and determine the range
                 const face = dieFaceTrigger.face;
                 let match = false;
-            
+
                 if (face.endsWith("+")) {
                     // Check for all numbers from the given number up to 10
                     const minValue = parseInt(face.slice(0, -1), 10);
@@ -3476,7 +3476,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     const targetValue = parseInt(face, 10);
                     match = die.result === targetValue;
                 }
-            
+
                 // Apply additional filters
                 return match && (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled));
             }).length;
@@ -3521,7 +3521,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         if (!this._isAttackRoll() && this.object.rollType !== 'base') {
-            await this._updateCharacterResources();
+            await this._updateRollerResources();
         }
         if (this._isAttackRoll()) {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
@@ -3543,8 +3543,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         await this._addTriggerBonuses('afterRoll');
     }
 
-    async _diceRoll() {
-        await this._baseAbilityDieRoll();
+    async _baseRoll() {
+        await this._baseOrAbilityDieRoll();
         let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
@@ -3572,7 +3572,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(this.object.opposedIntimacy || 0) - parseInt(this.object.supportedIntimacy || 0));
         }
         let goalNumberLeft = this.object.goalNumber;
-        await this._baseAbilityDieRoll();
+        await this._baseOrAbilityDieRoll();
         let resultString = ``;
         let extendedTest = ``;
 
@@ -3740,7 +3740,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _accuracyRoll() {
-        await this._baseAbilityDieRoll();
+        await this._baseOrAbilityDieRoll();
         var messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
@@ -3968,8 +3968,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         let damageDisplayResults = `
                                 <h4 class="dice-total dice-total-middle">${this.object.attackType === 'gambit' ? 'Initiative' : 'Damage'} Roll</h4>
-                                <h4 class="dice-formula">${this.object.attackSuccesses} Accuracy Successes vs ${this.object.defense} Defense</h4>
                                 <h4 class="dice-formula">${this.object.baseDamage || 0} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
+                                ${this.object.attackType === 'decisive' ? `<h4 class="dice-formula">${this.object.damageDice} Damage dice vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>` : ''}
                                 ${this.object.attackType === 'withering' ? `<h4 class="dice-formula">${this.object.soak} Soak! ${this.object.damage.ignoreSoak ? `(Ignoring ${this.object.damage.ignoreSoak})` : ''}</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>` : ''}
                                 <div class="dice-tooltip">
                                                     <div class="dice">
@@ -4031,7 +4031,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.object.damage.attackDealsDamage) {
             if (this.object.attackType === 'decisive') {
-                typeSpecificResults = `<h4 class="dice-formula">${this.object.damageDice} Damage vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4><h4 class="dice-total">${this.object.damageSuccesses} ${this.object.damage.type.capitalize()} Damage!</h4>`;
+                typeSpecificResults = `<h4 class="dice-total">${this.object.damageSuccesses} ${this.object.damage.type.capitalize()} Damage!</h4>`;
                 if (this._useLegendarySize('decisive')) {
                     typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
                     this.object.damageSuccesses = Math.min(this.object.damageSuccesses, 3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier);
@@ -4214,53 +4214,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         await this._inflictOnTarget();
         await this._addAttackEffects();
         this.attackSequence();
-    }
-
-    async _postAttackResults() {
-        if (this.object.rollType !== 'accuracy') {
-            await this._updateCharacterResources();
-            if (this.object.targetHit) {
-                this.object.gainedInitiative += 1;
-            }
-            if (this.object.crashed) {
-                if (!this.object.targetCombatant?.flags.crashRecovery) {
-                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
-                }
-            }
-            if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
-                this.object.characterInitiative += this.object.gainedInitiative;
-            }
-            const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets)
-            if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit && !game.settings.get("exaltedthird", "forgivingDecisives")) {
-                if (this.object.characterInitiative < 11) {
-                    this.object.characterInitiative -= 2;
-                }
-                else {
-                    this.object.characterInitiative -= 3;
-                }
-            }
-            if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
-                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
-            }
-            if (this.object.attackType === 'gambit') {
-                if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
-                    this.object.characterInitiative -= 5;
-                }
-                this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
-            }
-            if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
-                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
-            }
-            if (this.actor.type !== 'npc' || this.actor.system.battlegroup === false) {
-                let combat = game.combat;
-                if (this.object.target && combat) {
-                    let combatant = this._getActorCombatant();
-                    if (combatant && combatant.initiative != null) {
-                        combat.setInitiative(combatant.id, this.object.characterInitiative);
-                    }
-                }
-            }
-        }
     }
 
     async _failedDecisive(dice) {
@@ -4884,13 +4837,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'rollType':
-                    if(requirementObject.value === 'attack'){
-                        if(!this._isAttackRoll()) {
+                    if (requirementObject.value === 'attack') {
+                        if (!this._isAttackRoll()) {
                             fufillsRequirements = false;
                         }
                     }
                     else {
-                        if(this.object.rollType !== requirementObject.value) {
+                        if (this.object.rollType !== requirementObject.value) {
                             fufillsRequirements = false;
                         }
                     }
@@ -5049,12 +5002,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'initiativeDamageDealt':
-                    if ((this.object.initiativeDamageDealt || 0) < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? triggerActor : null)) {
-                        fufillsRequirements = false;
-                    }
-                    break;
                 case 'damageLevelsDealt':
-                    if (this.object.damageLevelsDealt < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? triggerActor : null)) {
+                    if ((this.object.damageSuccesses || 0) < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? triggerActor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5305,7 +5254,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _completeCraftProject() {
-        await this._baseAbilityDieRoll();
+        await this._baseOrAbilityDieRoll();
         let resultString = ``;
         let projectStatus = ``;
         let craftFailed = false;
@@ -6451,7 +6400,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
     }
 
-    async _updateCharacterResources() {
+    async _updateRollerResources() {
         if (this.object.rollType === 'sorcery') {
             this.object.previousSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMotes = this.actor.system.sorcery.motes.value;
@@ -6598,6 +6547,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.stunt === 'bank') {
             actorData.system.stuntdice.value += 2;
         }
+        // Update initiative through various effects
         if (game.combat) {
             let combatant = this._getActorCombatant();
             if (combatant.initiative !== null) {
@@ -6608,6 +6558,44 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.characterInitiative -= this.object.cost.initiative;
                     if (combatant.initiative > 0 && this.object.characterInitiative <= 0) {
                         this.object.characterInitiative -= 5;
+                    }
+                }
+                if (this._isAttackRoll()) {
+                    if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
+                        if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
+                            if (this.object.targetHit) {
+                                this.object.gainedInitiative += 1;
+                            }
+                            if (this.object.crashed) {
+                                if (!this.object.targetCombatant?.flags.crashRecovery) {
+                                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
+                                }
+                            }
+                            this.object.characterInitiative += this.object.gainedInitiative;
+                            if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
+                                this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
+                            }
+                        }
+                    }
+                    const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
+                    if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit && !game.settings.get("exaltedthird", "forgivingDecisives")) {
+                        if (this.object.characterInitiative < 11) {
+                            this.object.characterInitiative -= 2;
+                        }
+                        else {
+                            this.object.characterInitiative -= 3;
+                        }
+                    }
+                    if (this.object.attackType === 'decisive') {
+                        if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
+                            this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
+                        }
+                    }
+                    if (this.object.attackType === 'gambit') {
+                        if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
+                            this.object.characterInitiative -= 5;
+                        }
+                        this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
                     }
                 }
                 if (this.object.restore.initiative > 0) {

@@ -113,7 +113,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       stuntdice: statField(0),
       resolve: statField(0),
       guile: statField(0),
-      grapplecontrolrounds: statField(0),
+      grapplecontrolrounds: resourceField(0, 0),
       effectivestrength: statField(0),
       negateevasionpenalty: statField(0),
       negateparrypenalty: statField(0),
