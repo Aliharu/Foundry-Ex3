@@ -4546,13 +4546,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'doubleSuccess':
-                                        const { value, cap } = this._getCappedFormula(cleanedValue, triggerActor, charm);
-                                        if (value) {
-                                            if (value < this.object.doubleSuccess) {
-                                                this.object.doubleSuccess = value;
+                                        const doubleSuccessResult = this._getCappedFormula(cleanedValue, triggerActor, charm);
+                                        if (doubleSuccessResult?.value) {
+                                            if (doubleSuccessResult.value < this.object.doubleSuccess) {
+                                                this.object.doubleSuccess = doubleSuccessResult.value;
                                             }
-                                            if (doublesChart[value.toString()]) {
-                                                this.object.settings.doubleSucccessCaps[doublesChart[value.toString()]] += cap;
+                                            if (doublesChart[doubleSuccessResult.value.toString()]) {
+                                                this.object.settings.doubleSucccessCaps[doublesChart[doubleSuccessResult.value.toString()]] += doubleSuccessResult.cap;
                                             }
                                         }
                                         break;
@@ -4648,13 +4648,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage.diceToSuccesses += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'doubleSuccess-damage':
-                                        const { dbValue, dbCap } = this._getCappedFormula(cleanedValue, triggerActor, charm);
-                                        if (dbValue) {
-                                            if (dbValue < this.object.damage.doubleSuccess) {
-                                                this.object.damage.doubleSuccess = dbValue;
+                                        const doubleSuccessDamageResult = this._getCappedFormula(cleanedValue, triggerActor, charm);
+                                        if (doubleSuccessDamageResult?.value) {
+                                            if (doubleSuccessDamageResult.value < this.object.damage.doubleSuccess) {
+                                                this.object.damage.doubleSuccess = doubleSuccessDamageResult.value;
                                             }
-                                            if (doublesChart[dbValue.toString()]) {
-                                                this.object.settings.damage.doubleSucccessCaps[doublesChart[dbValue.toString()]] += dbCap;
+                                            if (doublesChart[doubleSuccessDamageResult.value.toString()]) {
+                                                this.object.settings.damage.doubleSucccessCaps[doublesChart[doubleSuccessDamageResult.value.toString()]] += doubleSuccessDamageResult.cap;
                                             }
                                         }
                                         break;
