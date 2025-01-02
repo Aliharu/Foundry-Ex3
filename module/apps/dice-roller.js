@@ -6552,7 +6552,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         // Update initiative through various effects
         if (game.combat) {
             let combatant = this._getActorCombatant();
-            if (combatant.initiative !== null) {
+            if (combatant && combatant.initiative !== null) {
                 if (this.object.characterInitiative === undefined) {
                     this.object.characterInitiative = combatant.initiative;
                 }
