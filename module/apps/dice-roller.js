@@ -448,6 +448,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.addingCharms = false;
         this.object.showSpecialAttacks = false;
         this.object.missedAttacks = 0;
+        this.object.failedDecisives = 0;
         this.object.deleteEffects = [];
         this.object.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
         this.object.bankableStunts = game.settings.get("exaltedthird", "bankableStunts");
@@ -3744,6 +3745,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
         await this._addAttackEffects();
+        if(!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
+            await this._updateRollerResources();
+            this.close();
+        }
     }
 
     async _damageRoll() {
@@ -4160,6 +4165,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _failedDecisive(dice) {
+        this.object.failedDecisives++;
         this.object.damageLevelsDealt = 0;
         let accuracyContent = '';
         if (this.object.rollType !== 'damage') {
@@ -4190,10 +4196,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
         await this._addAttackEffects();
-        await this._inflictOnTarget();
-
-        this.resolve(true);
-        this.close(false);
+        // await this._inflictOnTarget();
+        if(!this.object.showTargets || this.object.failedDecisives >= this.object.showTargets) {
+            await this._updateRollerResources();
+            this.close();
+        }
     }
 
     async _addAttackEffects() {
