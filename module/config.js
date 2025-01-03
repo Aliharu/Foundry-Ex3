@@ -2561,6 +2561,7 @@ exaltedthird.selects = {
   triggerTimes: {
     "beforeRoll": "Ex3.BeforeRoll",
     "afterRoll": "Ex3.AfterRoll",
+    "beforeDefense": "Ex3.BeforeDefenseApplied",
     "beforeDamageRoll": "Ex3.BeforeDamageRoll",
     "afterDamageRoll": "Ex3.AfterDamageRoll",
     "beforeDamageApplied": "Ex3.BeforeDamageApplies",

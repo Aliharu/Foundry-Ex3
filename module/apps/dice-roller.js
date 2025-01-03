@@ -2411,7 +2411,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             triggerOnRerolledDice: effectSplit[3] ? true : false,
             diceRollType: diceRollType,
         }
-        this.object.effectsOnSpecificDice.push(newEffect);
+        if (diceRollType === 'diceRoll') {
+            if (this.object.diceRoll) {
+                this._specificDieFaceEffect(this.object.diceRoll, newEffect);
+            } else {
+                this.object.effectsOnSpecificDice.push(newEffect);
+            }
+        }
+        if (diceRollType === 'damageRoll') {
+            if (this.object.damageDiceRollResults) {
+                this._specificDieFaceEffect(this.object.damageDiceRollResults.diceRoll, newEffect);
+            } else {
+                this.object.effectsOnSpecificDice.push(newEffect);
+            }
+        }
     }
 
     _getHealthFormula(formula) {
@@ -3457,67 +3470,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'diceRoll')) {
-            // let dieFaceAmount = diceRoll.filter(die => (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === dieFaceTrigger.face).length;
-            let dieFaceAmount = diceRoll.filter(die => {
-                // Parse the face string to check for a "+" or "-" and determine the range
-                const face = dieFaceTrigger.face;
-                let match = false;
-
-                if (face.endsWith("+")) {
-                    // Check for all numbers from the given number up to 10
-                    const minValue = parseInt(face.slice(0, -1), 10);
-                    match = die.result >= minValue && die.result <= 10;
-                } else if (face.endsWith("-")) {
-                    // Check for all numbers from the given number down to 1
-                    const maxValue = parseInt(face.slice(0, -1), 10);
-                    match = die.result >= 1 && die.result <= maxValue;
-                } else {
-                    // Default behavior: match the specific number
-                    const targetValue = parseInt(face, 10);
-                    match = die.result === targetValue;
-                }
-
-                // Apply additional filters
-                return match && (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled));
-            }).length;
-
-            if (dieFaceTrigger.cap) {
-                dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
-            }
-            switch (dieFaceTrigger.effect) {
-                case 'damage':
-                    this.object.damage.damageDice += dieFaceAmount;
-                    break;
-                case 'postsoakdamage':
-                    this.object.damage.postSoakDamage += dieFaceAmount;
-                    break;
-                case 'extrasuccess':
-                    this.object.total += dieFaceAmount;
-                    break;
-                case 'ignorehardness':
-                    this.object.damage.ignoreHardness += dieFaceAmount;
-                    break;
-                case 'restoremote':
-                    this.object.restore.motes += dieFaceAmount;
-                    break;
-                case 'soak':
-                    this.object.soak += dieFaceAmount;
-                    break;
-                case 'defense':
-                    this.object.defense += dieFaceAmount;
-                    break;
-                case 'subtractinitiative':
-                    if (this.object.characterInitiative) {
-                        this.object.characterInitiative -= dieFaceAmount;
-                    }
-                    break;
-                case 'subtractsuccesses':
-                    this.object.total -= dieFaceAmount;
-                    break;
-                case 'reducedamage':
-                    this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - dieFaceAmount);
-                    break;
-            }
+            this._specificDieFaceEffect(diceRoll, dieFaceTrigger);
         }
 
         if (!this._isAttackRoll() && this.object.rollType !== 'base') {
@@ -3727,12 +3680,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             await this._accuracyRoll();
         }
         if (this.object.rollType === 'damage') {
-            if (this.object.attackSuccesses < this.object.defense) {
-                this.object.thresholdSuccesses = 0;
-                await this.missAttack();
-            } else {
-                await this._damageRoll();
-            }
+            await this._damageRoll();
         }
         if (this.object.rollType === 'damageResults') {
             await this.damageResults();
@@ -3799,7 +3747,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _damageRoll() {
-        // let dice = this.object.damage.damageDice;
+        await this._addTriggerBonuses('beforeDefense');
+        if (this.object.attackSuccesses < this.object.defense) {
+            this.object.thresholdSuccesses = 0;
+            return await this.missAttack();
+        } else {
+            this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
+            if (this.object.doubleThresholdSuccesses) {
+                this.object.thresholdSuccesses *= 2;
+            }
+        }
         await this._addTriggerBonuses('beforeDamageRoll');
         var dice = await this._assembleDamagePool(false);
         this.object.baseDamage = dice;
@@ -3931,35 +3888,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
             }
         }
+        this.object.damageSuccesses = total;
         for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'damageRoll')) {
-            let dieFaceAmount = this.object.damageDiceRollResults.diceRoll.filter(die => !die.rerolled && !die.successCanceled && die.result === dieFaceTrigger.face).length;
-            if (dieFaceTrigger.cap) {
-                dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
-            }
-            switch (dieFaceTrigger.effect) {
-                case 'subtracttargetinitiative':
-                    if (this.object.newTargetInitiative) {
-                        this.object.updateTargetInitiative = true;
-                        this.object.newTargetInitiative -= dieFaceAmount;
-                        if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
-                            this.object.crashed = true;
-                        }
-                    }
-                    break;
-                case 'subtractdamagesuccesses':
-                    total = Math.max(0, total - dieFaceAmount);
-                    break;
-            }
+            this._specificDieFaceEffect(this.object.damageDiceRollResults.diceRoll, dieFaceTrigger);
         }
         if (this.object.isClash) {
             if (this.object.attackType === 'decisive') {
-                total += 1;
+                this.object.damageSuccesses += 1;
             } else {
-                total += 3;
+                this.object.damageSuccesses += 3;
             }
             this.object.triggerTargetDefensePenalty += 2;
         }
-        this.object.damageSuccesses = total;
         if (this.object.target) {
             this.object.target.rollData.damageSuccesses = total;
         }
@@ -3968,6 +3908,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         let damageDisplayResults = `
                                 <h4 class="dice-total dice-total-middle">${this.object.attackType === 'gambit' ? 'Initiative' : 'Damage'} Roll</h4>
+                                <h4 class="dice-formula">${this.object.attackSuccesses} accuracy successes vs ${this.object.defense} defense</h4>
                                 <h4 class="dice-formula">${this.object.baseDamage || 0} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
                                 ${this.object.attackType === 'decisive' ? `<h4 class="dice-formula">${this.object.damageDice} Damage dice vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>` : ''}
                                 ${this.object.attackType === 'withering' ? `<h4 class="dice-formula">${this.object.soak} Soak! ${this.object.damage.ignoreSoak ? `(Ignoring ${this.object.damage.ignoreSoak})` : ''}</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>` : ''}
@@ -4018,7 +3959,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         });
-        if(!game.settings.get("exaltedthird", "confirmDamageRolls")) {
+        if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
             this.object.rollType = 'damageResults';
         }
     }
@@ -5070,6 +5011,82 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         return fufillsRequirements;
+    }
+
+    _specificDieFaceEffect(diceRoll, dieFaceTrigger) {
+        // let dieFaceAmount = diceRoll.filter(die => (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === dieFaceTrigger.face).length;
+        let dieFaceAmount = diceRoll.filter(die => {
+            // Parse the face string to check for a "+" or "-" and determine the range
+            const face = dieFaceTrigger.face;
+            let match = false;
+
+            if (face.endsWith("+")) {
+                // Check for all numbers from the given number up to 10
+                const minValue = parseInt(face.slice(0, -1), 10);
+                match = die.result >= minValue && die.result <= 10;
+            } else if (face.endsWith("-")) {
+                // Check for all numbers from the given number down to 1
+                const maxValue = parseInt(face.slice(0, -1), 10);
+                match = die.result >= 1 && die.result <= maxValue;
+            } else {
+                // Default behavior: match the specific number
+                const targetValue = parseInt(face, 10);
+                match = die.result === targetValue;
+            }
+
+            // Apply additional filters
+            return match && (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled));
+        }).length;
+
+        if (dieFaceTrigger.cap) {
+            dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
+        }
+        switch (dieFaceTrigger.effect.toLowerCase()) {
+            case 'damage':
+                this.object.damage.damageDice += dieFaceAmount;
+                break;
+            case 'postsoakdamage':
+                this.object.damage.postSoakDamage += dieFaceAmount;
+                break;
+            case 'extrasuccess':
+                this.object.total += dieFaceAmount;
+                break;
+            case 'ignorehardness':
+                this.object.damage.ignoreHardness += dieFaceAmount;
+                break;
+            case 'restoremote':
+                this.object.restore.motes += dieFaceAmount;
+                break;
+            case 'soak':
+                this.object.soak += dieFaceAmount;
+                break;
+            case 'defense':
+                this.object.defense += dieFaceAmount;
+                break;
+            case 'subtractinitiative':
+                if (this.object.characterInitiative) {
+                    this.object.characterInitiative -= dieFaceAmount;
+                }
+                break;
+            case 'subtractsuccesses':
+                this.object.total -= dieFaceAmount;
+                break;
+            case 'reducedamage':
+                this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - dieFaceAmount);
+                break;
+            case 'subtracttargetinitiative':
+                if (this.object.newTargetInitiative) {
+                    this.object.updateTargetInitiative = true;
+                    this.object.newTargetInitiative -= dieFaceAmount;
+                    if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
+                        this.object.crashed = true;
+                    }
+                }
+                break;
+            case 'subtractdamagesuccesses':
+                this.object.damageSuccesses = Math.max(0, this.object.damageSuccesses - dieFaceAmount);
+                break;
+        }
     }
 
     _addOnslaught(number = 1, magicInflicted = false) {

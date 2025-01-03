@@ -1137,6 +1137,8 @@
     "Ex3.BeforeRoll": "Before Roll",
     "Ex3.AfterRoll": "After Roll",
     "Ex3.BeforeDamageRoll": "Before Damage Roll",
+    "Ex3.BeforeDefenseApplied": "Before Defense Applied",
+    
     "Ex3.AfterDamageRoll": "After Damage Roll",
     "Ex3.WhenItemAdded": "When Item Added",
     "Ex3.AddDice": "Add Dice",
