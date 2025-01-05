@@ -1,3 +1,5 @@
+import { animaTokenMagic } from "../apps/dice-roller.js";
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
@@ -13,7 +15,7 @@ export class ExaltedThirdItem extends Item {
   async _preCreate(data, options, user) {
     await super._preCreate(data, options, user);
     if (!data.img || data.img == "icons/svg/item-bag.svg") {
-      this.updateSource({ img: CONFIG.exaltedthird.itemIcons[data.type] }); 
+      this.updateSource({ img: CONFIG.exaltedthird.itemIcons[data.type] });
     }
   }
 
@@ -21,7 +23,7 @@ export class ExaltedThirdItem extends Item {
     await super._preUpdate(updateData, options, user);
     const equipmentChart = CONFIG.exaltedthird.equipmentStats;
     const artifactEquipmentChart = CONFIG.exaltedthird.artifactEquipmentStats;
-    if(this.type === 'weapon' || this.type === 'armor') {
+    if (this.type === 'weapon' || this.type === 'armor') {
       const equipped = updateData.system?.equipped ?? this.system.equipped;
       const weighttype = updateData.system?.weighttype ?? this.system.weighttype;
       if (weighttype && weighttype !== this.system.weighttype && weighttype !== 'other' && (!this.actor || this.actor.type === 'character')) {
@@ -36,7 +38,7 @@ export class ExaltedThirdItem extends Item {
             }
           }
           else {
-            if(weighttype === 'siege') {
+            if (weighttype === 'siege') {
               updateData.system.weapontype = 'siege';
             }
             if (this.system.traits.weapontags?.value?.includes('artifact')) {
@@ -197,7 +199,7 @@ export class ExaltedThirdItem extends Item {
         })),
       ]
     });
-  
+
     const formData = {
       system: {
         modes: {
@@ -206,17 +208,253 @@ export class ExaltedThirdItem extends Item {
         },
         'autoaddtorolls': newMode.autoaddtorolls,
         'activatable': newMode.activatable,
-        'cost': newMode.cost, 
-        'restore': newMode.restore, 
-        'duration': newMode.duration, 
-        'endtrigger': newMode.endtrigger, 
+        'cost': newMode.cost,
+        'restore': newMode.restore,
+        'duration': newMode.duration,
+        'endtrigger': newMode.endtrigger,
         'summary': newMode.summary,
         'type': newMode.type,
         'multiactivate': newMode.multiactivate,
       }
     };
-  
+
     await this.update(formData);
+  }
+
+  async activate() {
+    if (!this.actor) {
+      return;
+    }
+    const actorData = await foundry.utils.duplicate(this.actor);
+    let updateActive = null;
+    let activateAmount = 1;
+
+    if (this.type === 'charm') {
+      if (this.system.active) {
+        updateActive = false;
+        if (this.system.cost.commitmotes > 0) {
+          actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= (this.system.cost.commitmotes * this.flags?.exaltedthird?.currentIterationsActive || 1);
+        }
+      }
+      else {
+        if (this.system.multiactivate) {
+          try {
+            activateAmount = await foundry.applications.api.DialogV2.prompt({
+              window: { title: game.i18n.localize("Ex3.InputActivationAmount") },
+              classes: [this.actor.getSheetBackground()],
+              content: '<input name="activateAmount" type="number" min="1" step="1" value="1" autofocus>',
+              ok: {
+                label: "Submit",
+                callback: (event, button, dialog) => button.form.elements.activateAmount.valueAsNumber
+              }
+            });
+          } catch {
+            console.log("User didn't input a value.");
+          }
+        }
+        if (this.system.cost.commitmotes > 0 || this.system.activatable) {
+          updateActive = true;
+        }
+        await this.spendItemResources(actorData, activateAmount);
+      }
+    }
+    else if (this.type === 'spell') {
+      if (this.system.willpower) {
+        actorData.system.willpower.value = Math.min(actorData.system.willpower.max, (actorData.system.willpower.value - this.system.willpower) + 1);
+      }
+      if (this.system.active) {
+        updateActive = false;
+      }
+      else {
+        if (this.system.activatable) {
+          updateActive = true;
+        }
+      }
+    }
+    else {
+      updateActive = !this.system.active;
+    }
+    await this.actor.update(actorData);
+    if (updateActive !== null) {
+      await this.update({
+        [`system.active`]: updateActive,
+        [`flags.exaltedthird.poolCommitted`]: updateActive ? actorData.system.settings.charmmotepool : null,
+        [`flags.exaltedthird.currentIterationsActive`]: activateAmount,
+      });
+      for (const effect of this.actor.allApplicableEffects()) {
+        if (effect._sourceName === this.name && effect.system.activatewithparentitem) {
+          effect.update({ disabled: !updateActive });
+        }
+      }
+      for (const effect of this.effects.filter(effect => effect.system.activatewithparentitem)) {
+        effect.update({ disabled: !updateActive });
+      }
+    }
+  }
+
+  async increaseActivations() {
+    if (!this.actor) {
+      return;
+    }
+    const actorData = await foundry.utils.duplicate(this.actor);
+    await this.spendItemResources(actorData, 1);
+    await this.actor.update(actorData);
+    await this.update({
+      [`flags.exaltedthird.currentIterationsActive`]: (this.flags?.exaltedthird?.currentIterationsActive || 0) + 1,
+    });
+  }
+
+  async decreaseActiations() {
+    const actorData = await foundry.utils.duplicate(this.actor);
+    if(this.flags?.exaltedthird?.currentIterationsActive === 1) {
+      this.activate();
+    } else {
+      if (this.system.cost.commitmotes > 0) {
+        actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= this.system.cost.commitmotes;
+      }
+      await this.actor.update(actorData);
+      await this.update({
+        [`flags.exaltedthird.currentIterationsActive`]: (this.flags?.exaltedthird?.currentIterationsActive || 0) - 1,
+      });
+    }
+  }
+
+  async spendItemResources(actorData, activateAmount) {
+    let newLevel = actorData.system.anima.level;
+    let newValue = actorData.system.anima.value;
+
+    if (this.system.cost.motes > 0 || this.system.cost.commitmotes > 0) {
+      let spendingMotes = (this.system.cost.motes + this.system.cost.commitmotes) * activateAmount;
+      let spentPersonal = 0;
+      let spentPeripheral = 0;
+
+      if (actorData.system.settings.charmmotepool === 'personal') {
+        let remainingPersonal = actorData.system.motes.personal.value - spendingMotes;
+        if (remainingPersonal < 0) {
+          spentPersonal = spendingMotes + remainingPersonal;
+          spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
+        }
+        else {
+          spentPersonal = spendingMotes;
+        }
+        if (this.system.cost.commitmotes > 0) {
+          actorData.system.motes.personal.committed += (this.system.cost.commitmotes * activateAmount);
+        }
+      }
+      else {
+        let remainingPeripheral = actorData.system.motes.peripheral.value - spendingMotes;
+        if (remainingPeripheral < 0) {
+          spentPeripheral = spendingMotes + remainingPeripheral;
+          spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+        }
+        else {
+          spentPeripheral = spendingMotes;
+        }
+        if (this.system.cost.commitmotes > 0) {
+          actorData.system.motes.peripheral.committed += (this.system.cost.commitmotes * activateAmount);
+        }
+      }
+      actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+      actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
+
+      if (spentPeripheral > 4 && !this.system.keywords.toLowerCase().includes('mute')) {
+        for (let i = 0; i < Math.floor(spentPeripheral / 5); i++) {
+          if (newLevel === "Dim") {
+            newLevel = "Glowing";
+            newValue = 1;
+          }
+          else if (newLevel === "Glowing") {
+            newLevel = "Burning";
+            newValue = 2;
+          }
+          else if (newLevel === "Burning") {
+            newLevel = "Bonfire";
+            newValue = 3;
+          }
+          else if (actorData.system.anima.max === 4) {
+            newLevel = "Transcendent";
+            newValue = 4;
+          }
+        }
+      }
+    }
+    if (this.system.cost.anima > 0) {
+      for (let i = 0; i < (this.system.cost.anima * activateAmount); i++) {
+        if (newLevel === "Transcendent") {
+          newLevel = "Bonfire";
+          newValue = 3;
+        }
+        else if (newLevel === "Bonfire") {
+          newLevel = "Burning";
+          newValue = 2;
+        }
+        else if (newLevel === "Burning") {
+          newLevel = "Glowing";
+          newValue = 1;
+        }
+        if (newLevel === "Glowing") {
+          newLevel = "Dim";
+          newValue = 0;
+        }
+      }
+    }
+    actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (this.system.cost.grapplecontrol * activateAmount) + (this.system.restore.grapplecontrol * activateAmount));
+    actorData.system.anima.level = newLevel;
+    actorData.system.anima.value = newValue;
+    actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.system.cost.willpower);
+    if (this.actor.type === 'character') {
+      actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - (this.system.cost.silverxp * activateAmount));
+      actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - (this.system.cost.goldxp * activateAmount));
+      actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - (this.system.cost.whitexp * activateAmount));
+    }
+    if (actorData.system.details.aura === this.system.cost.aura || this.system.cost.aura === 'any') {
+      actorData.system.details.aura = "none";
+    }
+    if (this.system.cost.health > 0) {
+      let totalHealth = 0;
+      for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
+        totalHealth += health_level.value;
+      }
+      if (this.system.cost.healthtype === 'bashing') {
+        actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + (this.system.cost.health * activateAmount));
+      }
+      else if (this.system.cost.healthtype === 'lethal') {
+        actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + (this.system.cost.health * activateAmount));
+      }
+      else {
+        actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + (this.system.cost.health * activateAmount));
+      }
+    }
+    if (actorData.system.settings.charmmotepool === 'personal') {
+      actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + (this.system.restore.motes * activateAmount));
+    }
+    else {
+      actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + (this.system.restore.motes * activateAmount));
+    }
+    actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + (this.system.restore.willpower * activateAmount));
+    if (this.system.restore.health > 0) {
+      const bashingHealed = (this.system.restore.health * activateAmount) - actorData.system.health.lethal;
+      actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (this.system.restore.health * activateAmount));
+      if (bashingHealed > 0) {
+        actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
+      }
+    }
+    const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
+    if (game.combat && tokenId) {
+      let combatant = game.combat.combatants.find(c => c?.tokenId === tokenId);
+      if (combatant && combatant.initiative !== null) {
+        let newInitiative = combatant.initiative;
+        if (this.system.cost.initiative > 0) {
+          newInitiative -= (this.system.cost.initiative * activateAmount);
+        }
+        if (combatant.initiative > 0 && newInitiative <= 0) {
+          newInitiative -= 5;
+        } 
+        newInitiative += (this.system.restore.initiative * activateAmount);
+        game.combat.setInitiative(combatant.id, newInitiative);
+      }
+    }
+    await animaTokenMagic(this.actor, newValue);
   }
 
   /**

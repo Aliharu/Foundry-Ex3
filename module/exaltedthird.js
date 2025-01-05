@@ -1,7 +1,7 @@
 // Import Modules
 import { exaltedthird } from "./config.js";
 
-import { addDefensePenalty, ExaltedThirdActor, spendEmbeddedItem } from "./actor/actor.js";
+import { ExaltedThirdActor } from "./actor/actor.js";
 import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
 import { ExaltedThirdItem } from "./item/item.js";
 import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
@@ -1822,11 +1822,11 @@ function triggerItem(itemUuid) {
         actorId: item.actor._id,
       });
       if (item.system.cost.commitmotes > 0 && !item.system.active) {
-        spendEmbeddedItem(item.parent, item);
+        item.activate();
       }
     }
     else {
-      spendEmbeddedItem(item.parent, item);
+      item.activate();
     }
   });
 }

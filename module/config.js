@@ -1728,7 +1728,7 @@ exaltedthird.bonusTypes = {
       activateAura: "Ex3.ActivateAura",
       displayMessage: "Ex3.DisplayMessage",
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
-      triggerSelfDefensePenalty: "Ex3.SelfDefensePenalty",
+      triggerSelfDefensePenalty: "Ex3.ApplySelfDefensePenalty",
       specificCharm: "Ex3.SpecificCharm",
       otherEffect: "Ex3.OtherEffect",
       baseInitiativeModifier: "Ex3.BaseInitiativeModifier",

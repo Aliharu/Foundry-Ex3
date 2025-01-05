@@ -5,7 +5,7 @@ import Prophecy from "../apps/prophecy.js";
 import TraitSelector from "../apps/trait-selector.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
-import { addDefensePenalty, spendEmbeddedItem, subtractDefensePenalty } from "./actor.js";
+import { addDefensePenalty, subtractDefensePenalty } from "./actor.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -1854,6 +1854,22 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this._spendItem(ev);
     });
 
+    html.find('.item-decrease-activations').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      item.decreaseActiations();
+    });
+
+    html.find('.item-increase-activations').click(ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let li = $(ev.currentTarget).parents(".item");
+      let item = this.actor.items.get(li.data("item-id"));
+      item.increaseActivations();
+    });
+
     html.find('.lunar-sync').click(ev => {
       this._lunarSync();
     });
@@ -2901,7 +2917,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     event.stopPropagation();
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
-    spendEmbeddedItem(this.actor, item);
+    item.activate();
     if (game.settings.get("exaltedthird", "spendChatCards")) {
       this._displayCard(item, "Spent");
     }

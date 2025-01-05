@@ -198,6 +198,7 @@
     "Ex3.SocialAttribute": "Social Attribute",
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
+    "Ex3.ApplySelfDefensePenalty": "Apply Self Defense Penalty",
     "Ex3.TargetDefensePenalty": "Target Defense Penalty",
     "Ex3.InflictActiveEffect": "Inflict Active Effect",
 
