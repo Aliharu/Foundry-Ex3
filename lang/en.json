@@ -213,6 +213,9 @@
     "Ex3.Bonus": "Bonus",
     "Ex3.Parry": "Parry",
     "Ex3.Evasion": "Evasion",
+    "Ex3.EvasionPenalties": "Evasion Penalties",
+    "Ex3.ParryPenalties": "Parry Penalties",
+
     "Ex3.Rush": "Rush",
     "Ex3.Disengage": "Disengage",
     "Ex3.Soak": "Soak",

@@ -944,6 +944,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             damage: 0,
         }
 
+        const staticValuePenalties = {
+            parry: Math.max(0, this.actor.getRollData().currentParryPenalty - this.actor.system.negateparrypenalty.value),
+            evasion: Math.max(0, this.actor.getRollData().currentEvasionPenalty - this.actor.system.negateevasionpenalty.value),
+        }
+
         const totalOpposedBonuses = {
             dice: 0,
             successes: 0,
@@ -995,6 +1000,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             triggers: triggers,
             effectsAndTags: effectsAndTags,
             baseOpposedBonuses: baseOpposedBonuses,
+            staticValuePenalties: staticValuePenalties,
             totalOpposedBonuses: totalOpposedBonuses,
             buttons: [
                 { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
@@ -4058,7 +4064,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         if (game.settings.get("exaltedthird", "automaticWitheringDamage")) {
                             sizeDamaged = this.dealHealthDamage(this.object.damageSuccesses, true);
                             if (sizeDamaged) {
-                                this.object.gainedInitiative += (5 * sizeDamaged);
+                                this.object.gainedInitiative += ((this.object.damage.crashBonus ?? 5) * sizeDamaged);
                             }
                         }
                         else {
@@ -5146,8 +5152,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (existingPenalty) {
             existingPenalty.changes[0].value = existingPenalty.changes[0].value - number;
             existingPenalty.changes[1].value = existingPenalty.changes[1].value - number;
-            existingPenalty.name = `${game.i18n.localize("Ex3.DefensePenalty")} (${onslaught.changes[0].value - number})`;
-
+            existingPenalty.name = `${game.i18n.localize("Ex3.DefensePenalty")} (${existingPenalty.changes[0].value - number})`;
         }
         else {
             this.object.newTargetData.effects.push({

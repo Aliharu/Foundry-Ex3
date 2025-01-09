@@ -137,6 +137,26 @@
                     <div>
                         <input class="total-input" type="number" value="{{totalOpposedBonuses.defense}}" disabled>
                     </div>
+                    {{#if staticValuePenalties.parry}}
+                    <div class="opposed-bonus-cap-label">
+                        <div>
+                            {{localize "Ex3.ParryPenalties"}}
+                        </div>
+                        <div>
+                            {{staticValuePenalties.parry}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if staticValuePenalties.evasion}}
+                    <div class="opposed-bonus-cap-label">
+                        <div>
+                            {{localize "Ex3.EvasionPenalties"}}
+                        </div>
+                        <div>
+                            {{staticValuePenalties.evasion}}
+                        </div>
+                    </div>
+                    {{/if}}
                     {{#if actor.system.parry.cap}}
                     <div class="opposed-bonus-cap-label">
                         <div>
