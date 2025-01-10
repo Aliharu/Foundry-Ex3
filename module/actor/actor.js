@@ -661,7 +661,7 @@ export class ExaltedThirdActor extends Actor {
       return ui.notifications.error(`${this.name} does not have a saved roll named ${name}!`);
     }
 
-    if(data.rollType === 'useOpposingCharms') {
+    if (data.rollType === 'useOpposingCharms') {
       game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id, skipDialog: true }).roll();
     } else {
       game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()] }, {}, { rollId: roll.id, skipDialog: true }).roll();
@@ -1420,9 +1420,9 @@ export class ExaltedThirdActor extends Actor {
     this._getCharacterRollData(data);
     this._getNpcRollData(data);
 
-    for(const customAbility of this.items.filter(item => item.type === 'customability')) {
-      if(!data[customAbility.system.formulaKey]) {
-        const customAbilityformulaKey = customAbility.system.formulaKey || customAbility.name.replace(/\s/g,'').toLowerCase();
+    for (const customAbility of this.items.filter(item => item.type === 'customability')) {
+      if (!data[customAbility.system.formulaKey]) {
+        const customAbilityformulaKey = customAbility.system.formulaKey || customAbility.name.replace(/\s/g, '').toLowerCase();
         data[customAbilityformulaKey] = { 'value': customAbility.system.points };
       }
     }
@@ -1459,7 +1459,7 @@ export class ExaltedThirdActor extends Actor {
     if (message) {
       data.preMessageId = message.id;
     }
-    if(data.rollType === 'useOpposingCharms') {
+    if (data.rollType === 'useOpposingCharms') {
       game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 846, height: 642 } }, {}, data).render(true);
     } else {
       game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 730 } }, {}, data).render(true);
@@ -1474,8 +1474,8 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async sendTargetingChatMessage(data) {
-    const imageUrl = CONFIG.exaltedthird.rollTypeTargetImages[data.attackType] ||CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg";
-    const rollTypeLabel = CONFIG.exaltedthird.rollTypeTargetLabels[data.attackType] ||CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll";
+    const imageUrl = CONFIG.exaltedthird.rollTypeTargetImages[data.attackType] || CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg";
+    const rollTypeLabel = CONFIG.exaltedthird.rollTypeTargetLabels[data.attackType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll";
     if (game.user.targets && game.user.targets.size > 0) {
       for (const target of Array.from(game.user.targets)) {
         const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
@@ -1550,8 +1550,62 @@ export class ExaltedThirdActor extends Actor {
     return 0;
   }
 
-  addActorDefensePenalty() {
-    addDefensePenalty(this);
+  alterDefensePenalty(direction = "increase", statusId = "defensePenalty") {
+    let icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
+    let label = "Defense Penalty";
+    if (label === 'onslaught') {
+      icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
+    }
+    const existingPenalty = this.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
+
+    if (direction === "increase") {
+      if (existingPenalty) {
+        let changes = foundry.utils.duplicate(existingPenalty.changes);
+        changes[0].value = changes[0].value - 1;
+        changes[1].value = changes[1].value - 1;
+        existingPenalty.update({ changes });
+      }
+      else {
+        this.createEmbeddedDocuments('ActiveEffect', [{
+          name: label,
+          icon: icon,
+          origin: this.uuid,
+          disabled: false,
+          duration: {
+            rounds: 10,
+          },
+          flags: {
+            "exaltedthird": {
+              statusId: statusId,
+            }
+          },
+          changes: [
+            {
+              "key": "system.evasion.value",
+              "value": -1,
+              "mode": 2
+            },
+            {
+              "key": "system.parry.value",
+              "value": -1,
+              "mode": 2
+            }
+          ]
+        }]);
+      }
+    } else {
+      if (existingPenalty) {
+        let changes = foundry.utils.duplicate(existingPenalty.changes);
+        if (changes[0].value < -1) {
+          changes[0].value = parseInt(changes[0].value) + 1;
+          changes[1].value = parseInt(changes[1].value) + 1;
+          existingPenalty.update({ changes });
+        }
+        else {
+          existingPenalty.delete();
+        }
+      }
+    }
   }
 
   async _displayCard(item, cardType = "") {
@@ -1581,71 +1635,5 @@ export class ExaltedThirdActor extends Actor {
     };
     // Create the Chat Message or return its data
     return ChatMessage.create(chatData);
-  }
-}
-
-
-export async function addDefensePenalty(actor, label = "Defense Penalty") {
-  var icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
-  var statusId = 'defensePenalty';
-  if (label === 'Onslaught') {
-    icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
-    statusId = 'onslaught';
-  }
-  const existingPenalty = actor.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
-  if (existingPenalty) {
-    let changes = foundry.utils.duplicate(existingPenalty.changes);
-    changes[0].value = changes[0].value - 1;
-    changes[1].value = changes[1].value - 1;
-    existingPenalty.update({ changes });
-  }
-  else {
-    actor.createEmbeddedDocuments('ActiveEffect', [{
-      name: label,
-      icon: icon,
-      origin: actor.uuid,
-      disabled: false,
-      duration: {
-        rounds: 10,
-      },
-      flags: {
-        "exaltedthird": {
-          statusId: statusId,
-        }
-      },
-      changes: [
-        {
-          "key": "system.evasion.value",
-          "value": -1,
-          "mode": 2
-        },
-        {
-          "key": "system.parry.value",
-          "value": -1,
-          "mode": 2
-        }
-      ]
-    }]);
-  }
-}
-
-export async function subtractDefensePenalty(actor, label = "Defense Penalty") {
-  var icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
-  var statusId = 'defensePenalty';
-  if (label === 'Onslaught') {
-    icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
-    statusId = 'onslaught';
-  }
-  const existingPenalty = actor.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
-  if (existingPenalty) {
-    let changes = foundry.utils.duplicate(existingPenalty.changes);
-    if (changes[0].value < -1) {
-      changes[0].value = parseInt(changes[0].value) + 1;
-      changes[1].value = parseInt(changes[1].value) + 1;
-      existingPenalty.update({ changes });
-    }
-    else {
-      existingPenalty.delete();
-    }
   }
 }

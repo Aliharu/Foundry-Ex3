@@ -5,7 +5,6 @@ import Prophecy from "../apps/prophecy.js";
 import TraitSelector from "../apps/trait-selector.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
-import { addDefensePenalty, subtractDefensePenalty } from "./actor.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -1024,19 +1023,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.add-defense-penalty').mousedown(ev => {
-      addDefensePenalty(this.actor);
+      this.actor.alterDefensePenalty("increase", "defensePenalty");
     });
 
     html.find('.add-onslaught-penalty').mousedown(ev => {
-      addDefensePenalty(this.actor, 'Onslaught');
+      this.actor.alterDefensePenalty("increase", "onslaught");
     });
 
     html.find('.subtract-defense-penalty').mousedown(ev => {
-      subtractDefensePenalty(this.actor);
+      this.actor.alterDefensePenalty("decrease", "defensePenalty");
     });
 
     html.find('.subtract-onslaught-penalty').mousedown(ev => {
-      subtractDefensePenalty(this.actor, 'Onslaught');
+      this.actor.alterDefensePenalty("decrease", "onslaught");
     });
 
     html.find('.test-button').mousedown(ev => {
