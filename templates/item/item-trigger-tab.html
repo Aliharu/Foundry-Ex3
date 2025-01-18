@@ -243,6 +243,11 @@
                     data-type="String">
                     {{selectOptions ../../itemModes selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'craftProjectType'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.craftTypes selected=requirement.value localize=true blank=''}}
+                </select>
                 {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     value="{{requirement.value}}" type="text">

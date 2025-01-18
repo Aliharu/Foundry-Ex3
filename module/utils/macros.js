@@ -147,8 +147,52 @@ export async function setGoldenCalibrationIcons() {
   }
 }
 
-export function setCharmIcons() {
+export async function setCharmIcons() {
+  for (let item of game.items) {
+    try {
+      let updateData = foundry.utils.deepClone(item.toObject());
+      if (updateData.type === 'charm') {
+        let image = 'icons/svg/explosion.svg';
+        let imageMap = {};
+        switch (updateData.system.ability) {
+          case 'brawl':
+            image = 'modules/ex3-golden-calibration/icons/brawl.webp'
+            imageMap = {
+              'Grappling': 'icons/skills/melee/strike-chain-whip-blue.webp',
+            };
+            break;
+        }
+        if (imageMap[item.folder.name]) {
+          image = imageMap[item.folder.name];
+        }
+        let listingName = updateData.system.ability.charAt(0).toUpperCase() + updateData.system.ability.slice(1);
+        if (item.folder.name !== listingName) {
+          listingName += ` (${item.folder.name})`;
+        }
+        updateData.img = image;
+        // updateData.system.listingname = listingName;
+        if (!foundry.utils.isEmpty(updateData)) {
+          await item.update(updateData, { enforceTypes: false });
+        }
+      }
+    } catch (error) {
+      error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+      console.error(error);
+    }
+  }
+}
 
+export async function createTestCharacterForCharms(abilityOrAttribute='athletics', charmType='solar') {
+  let actorData = new Actor.implementation({
+    name: `Test Bureaucracy solar`,
+    type: 'character'
+  }).toObject();
+  let charmList = [];
+  for(const charm of game.items.filter(item => item.type === 'charm' && item.system.ability === 'bureaucracy' && item.system.charmtype === 'solar')) {
+    charmList.push(await foundry.utils.duplicate(charm));
+  }
+  actorData.items = charmList;
+  await Actor.create(actorData);
 }
 
 export async function setEndTriggers() {

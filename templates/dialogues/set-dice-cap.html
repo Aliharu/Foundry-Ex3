@@ -1,0 +1,33 @@
+<form>
+    <div class="sheet-body exaltedthird" style="margin-bottom:10px;">
+        <div class="flex-center">
+            <label class="resource-label">{{localize "Ex3.DiceCap"}}</label>
+            <div class="grid grid-2col flex-group-center">
+                <div>
+                    <div>{{localize "Ex3.IsCustom"}}</div>
+                    <input name="dicecap.iscustom" type="checkbox" {{checked dicecap.iscustom}}>
+                </div>
+                <div>
+                    <div>{{localize "Ex3.UseAttribute"}}</div>
+                    <input name="dicecap.useattribute" type="checkbox" {{checked dicecap.useattribute}}>
+                </div>
+                <div>
+                    <div>{{localize "Ex3.UseAbility"}}</div>
+                    <input name="dicecap.useability" type="checkbox" {{checked dicecap.useability}}>
+                </div>
+                <div>
+                    <div>{{localize "Ex3.UseSpecialty"}}</div>
+                    <input name="dicecap.usespecialty" type="checkbox" {{checked dicecap.usespecialty}}>
+                </div>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Other"}}*</div>
+                <input name="dicecap.other" type="text" value="{{dicecap.other}}" placeholder="Can use formulas Example: (Essence or 3)">
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.ExtraText"}}</div>
+                <input name="dicecap.extratext" type="text" value="{{dicecap.extratext}}" placeholder="Add extra text to the roller display">
+            </div>
+        </div>
+    </div>
+</form>

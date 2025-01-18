@@ -1,6 +1,7 @@
 import RollForm from "../apps/dice-roller.js";
 import { animaTokenMagic } from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
+import { getNumberFormula } from "../utils/utils.js";
 
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
@@ -1213,11 +1214,28 @@ export class ExaltedThirdActor extends Actor {
 
   _getStaticCap(actorData, type, value) {
     if (actorData.type === "character") {
+      const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
+      const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
+      if (actorData.system.settings.dicecap.iscustom) {
+        let returnValue = 0;
+        if (actorData.system.settings.dicecap.useattribute && actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
+          returnValue += attributeValue;
+        }
+        if (actorData.system.settings.dicecap.useability && actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency) {
+          returnValue += abilityValue;
+        }
+        if (actorData.system.settings.dicecap.usespecialty) {
+          returnValue += (actorData.system.settings.staticcapsettings[type]?.specialty || 0);
+        }
+        if(actorData.system.settings.dicecap.other) {
+            returnValue += getNumberFormula(actorData.system.settings.dicecap.other, this);
+        }
+        returnValue = Math.floor(returnValue / 2);
+        return `+${returnValue} for ${returnValue * 2}m`;
+      }
       if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
         return '';
       }
-      const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
-      const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
       if (actorData.system.details.exalt === 'alchemical') {
         value = Math.min(10, attributeValue + abilityValue);
       }
@@ -1227,27 +1245,27 @@ export class ExaltedThirdActor extends Actor {
           value = Math.floor(((abilityValue) + (actorData.system.settings.staticcapsettings[type]?.specialty || 0)) / 2);
           return `+${value} for ${value * 2}m`
         case 'sidereal':
-          var baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
+          let baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
           return `+${baseSidCap} for ${baseSidCap * 2}m`
         case 'solar':
         case 'abyssal':
         case 'infernal':
           return `+${value} for ${value * 2}m`;
         case 'alchemical':
-          var baseAlchCap = Math.floor(Math.min(10, attributeValue + actorData.system.essence.value) / 2);
+          let baseAlchCap = Math.floor(Math.min(10, attributeValue + actorData.system.essence.value) / 2);
           if (type === 'soak') {
             return `+${baseAlchCap} for ${baseAlchCap}m`;
           }
           return `+${baseAlchCap} for ${baseAlchCap * 2}m`;
         case 'lunar':
-          var highestAttributeNumber = 0;
+          let highestAttributeNumber = 0;
           for (let [name, attribute] of Object.entries(actorData.system.attributes)) {
             if (attribute.value > highestAttributeNumber) {
               highestAttributeNumber = attribute.value;
             }
           }
-          var newValueLow = Math.floor(attributeValue / 2);
-          var newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
+          let newValueLow = Math.floor(attributeValue / 2);
+          let newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
           if (type === 'soak') {
             return `+${newValueLow} for ${newValueLow}m`
           }

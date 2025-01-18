@@ -1622,6 +1622,7 @@ exaltedthird.bonusTypes = {
       rerollNumberDescending: "Ex3.RerollNumberDiceDescending",
       diceToSuccesses: "Ex3.DicetoSuccesses",
       reduceDifficulty: "Ex3.ReduceDifficulty",
+      goalNumber: "Ex3.GoalNumber",
       rerollDieFace: "Ex3.RerollDieFace",
       rollTwice: "Ex3.RollTwiceKeepHighest",
       rollTwiceLowest: "Ex3.RollTwiceKeepLowest",
@@ -1635,7 +1636,8 @@ exaltedthird.bonusTypes = {
       triggerOnesCap: "Ex3.TriggerOnesCap",
       fullExcellency: "Ex3.FullExcellency",
       doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses",
-      specificDieFaceEffect: "Ex3.SpecificDieFaceEffect"
+      specificDieFaceEffect: "Ex3.SpecificDieFaceEffect",
+      intervals: "Ex3.Intervals"
     },
   },
   damage: {
@@ -1701,7 +1703,10 @@ exaltedthird.bonusTypes = {
       'motes-restore': "Ex3.RestoreMotes",
       'willpower-restore': "Ex3.RestoreWillpower",
       'health-restore': "Ex3.RestoreHealth",
-      'initiative-restore': "Ex3.RestoreInitiative",
+      'initiative-restore': "Ex3.GainInitiative",
+      'silverxp-restore': "Ex3.GainSilverXP",
+      'goldxp-restore': "Ex3.GainGoldXP",
+      'whitexp-restore': "Ex3.GainWhiteXP",
     }
   },
   steal: {
@@ -1794,7 +1799,7 @@ exaltedthird.numberBonusTypeLabels = {
   'willpower-restore': "Ex3.RestoreWillpower",
   'grappleControl-restore': "Ex3.GrappleControlRestore",
   'health-restore': "Ex3.RestoreHealth",
-  'initiative-restore': "Ex3.RestoreInitiative",
+  'initiative-restore': "Ex3.GainInitiative",
   'motes-steal': "Ex3.StealMotes",
   'initiative-steal': "Ex3.StealInitiative",
   magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
@@ -1907,6 +1912,7 @@ exaltedthird.requirementTypes = {
       attackType: "Ex3.AttackType",
       charmAddedAmount: "Ex3.ItemAddedAmount",
       range: "Ex3.Range",
+      craftProjectType: "Ex3.CraftProjectType"
     },
   },
   character: {

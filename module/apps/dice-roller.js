@@ -62,6 +62,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 health: 0,
                 initiative: 0,
                 grappleControl: 0,
+                silverxp: 0,
+                goldxp: 0,
+                whitexp: 0,
+                xp: 0,
             };
             this.object.steal = {
                 motes: {
@@ -2468,6 +2472,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'initiativedamagedealt') {
             return this.object.initiativeDamageDealt || 0;
         }
+        if (formula?.toLowerCase() === 'craftrating') {
+            return parseInt(this.object.craftRating || 0);
+        }
+        if (formula?.toLowerCase() === 'rollsuccesses') {
+            return this.object.total || 0;
+        }
+        if (formula?.toLowerCase() === 'craftobjectives') {
+            return this.object.objectivesCompleted || 0;
+        }
         if (formula?.toLowerCase() === 'itemadded' && item) {
             return item.timesAdded || 0;
         }
@@ -3751,7 +3764,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
         await this._addAttackEffects();
-        if(!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
+        if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
             await this._updateRollerResources();
             this.close();
         }
@@ -4203,7 +4216,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         });
         await this._addAttackEffects();
         // await this._inflictOnTarget();
-        if(!this.object.showTargets || this.object.failedDecisives >= this.object.showTargets) {
+        if (!this.object.showTargets || this.object.failedDecisives >= this.object.showTargets) {
             await this._updateRollerResources();
             this.close();
         }
@@ -4499,6 +4512,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'onslaughtAddition':
                                     case 'magicOnslaughtAddition':
                                     case 'baseInitiativeModifier':
+                                    case 'intervals':
+                                    case 'goalNumber':
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'doubleSuccess':
@@ -4707,6 +4722,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'health-restore':
                                     case 'willpower-restore':
                                     case 'grappleControl-restore':
+                                    case 'silverxp-restore':
+                                    case 'goldxp-restore':
+                                    case 'whitexp-restore':
                                         const restoreKey = bonus.effect.replace('-restore', '');
                                         this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
@@ -5021,6 +5039,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         fufillsRequirements = false;
                     }
                     break;
+                case 'craftProjectType':
+                    if (this.object.craftType === requirementObject.value) {
+                        fufillsRequirements = false;
+                    }
+                    break;
             }
         }
         return fufillsRequirements;
@@ -5098,6 +5121,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 break;
             case 'subtractdamagesuccesses':
                 this.object.damageSuccesses = Math.max(0, this.object.damageSuccesses - dieFaceAmount);
+                break;
+            case 'gainsilverxp':
+                this.object.restore.silverxp += dieFaceAmount;
+                break;
+            case 'restoregoldxp':
+                this.object.restore.goldxp += dieFaceAmount;
                 break;
         }
     }
@@ -5778,6 +5807,22 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
+                if (this.actor.system.settings.dicecap.iscustom) {
+                    let returnValue = 0;
+                    if (this.actor.system.settings.dicecap.useattribute && this.actor.system.attributes[this.object.attribute]?.excellency) {
+                        returnValue += this.actor.system.attributes[this.object.attribute].value;
+                    }
+                    if (this.actor.system.settings.dicecap.useability && (this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency))) {
+                        returnValue += this.actor.getCharacterAbilityValue(this.object.ability);
+                    }
+                    if (this.actor.system.settings.dicecap.usespecialty && this.object.specialty) {
+                        returnValue += 1;
+                    }
+                    if (this.actor.system.settings.dicecap.other) {
+                        returnValue += this._getFormulaValue(this.actor.system.settings.dicecap.other);
+                    }
+                    return `${returnValue} ${this.actor.system.settings.dicecap.extratext}`;
+                }
                 if (this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
                     let abilityValue = 0;
                     let attributeValue = this.actor.system.attributes[this.object.attribute].value;
@@ -6173,7 +6218,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 motes: 0,
                 willpower: 0,
                 health: 0,
-                initiative: 0
+                initiative: 0,
+                silverxp: 0,
+                goldxp: 0,
+                whitexp: 0,
+                xp: 0,
             };
         }
         if (this.object.restore.grappleControl) {
@@ -6575,6 +6624,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
         }
+        actorData.system.craft.experience.silver.value += this.object.gain.silverxp;
+        actorData.system.craft.experience.gold.value += this.object.gain.goldxp;
+        actorData.system.craft.experience.white.value += this.object.gain.whitexp;
         if (this.object.stunt === 'bank') {
             actorData.system.stuntdice.value += 2;
         }

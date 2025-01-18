@@ -104,6 +104,15 @@
         <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
             system.dontresetonslaught}}>
     </div>
+    {{#ifEquals data.type 'character'}}
+        {{#if system.settings.editmode}}
+            <div>
+                <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
+                <button class="roll-button set-dice-cap"><i class="fas fa-cog"></i>{{localize
+                    "Ex3.SetCustomDiceCap"}}</button>
+            </div>
+        {{/if}}
+    {{/ifEquals}}
 </div>
 <div>
     <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i

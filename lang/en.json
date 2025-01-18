@@ -407,6 +407,7 @@
     "Ex3.Sorcery": "Sorcery",
     "Ex3.Thaumaturgy": "Thaumaturgy",
     "Ex3.Restore": "Restore",
+    "Ex3.Gain": "Gain",
     "Ex3.Steal": "Steal",
     "Ex3.Cost": "Cost",
     "Ex3.Costs": "Costs",
@@ -442,6 +443,7 @@
     "Ex3.ProjectType": "Project Type",
     "Ex3.Crafts": "Crafts",
     "Ex3.CraftProjects": "Craft Projects",
+    "Ex3.CraftProjectType": "Craft Project Type",
     "Ex3.CraftCharmEffects": "Craft Charm Effects",
     "Ex3.CraftType": "Craft Type",
     "Ex3.CraftRating": "Craft Rating",
@@ -806,6 +808,10 @@
     
     "Ex3.RestoreMote": "Restore Mote",
     "Ex3.RollExtraDie": "Roll Extra Die",
+
+    "Ex3.GainSilverXP": "Gain Silver XP",
+    "Ex3.GainGoldXP": "Gain Gold XP",
+    "Ex3.GainWhiteXP": "Gain White XP",
 
     "Ex3.ExtraSuccess": "Extra Success",
     "Ex3.AddExtraDie": "Add Extra Die",
@@ -1265,6 +1271,12 @@
     "Ex3.RequestRoll": "Request Roll",
     "Ex3.Confirm": "Confirm",
 
+    "Ex3.IsCustom": "Is Custom",
+    "Ex3.UseAttribute": "Use Attribute",
+    "Ex3.UseAbility": "Use Ability",
+    "Ex3.UseSpecialty": "Use Specialty",
+    "Ex3.SetCustomDiceCap": "Set Custom Dice Cap",
+    "Ex3.ExtraText": "Extra Text",
 
     "Ex3.ShortRange": "Short Range",
     "Ex3.MediumRange": "Medium Range",

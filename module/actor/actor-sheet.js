@@ -1038,6 +1038,39 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       this.actor.alterDefensePenalty("decrease", "onslaught");
     });
 
+    html.find('.set-dice-cap').mousedown(async ev => {
+      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/set-dice-cap.html", { 'dicecap': this.actor.system.settings.dicecap });
+  
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.SetCustomDiceCap") },
+        content: html,
+        classes: [this.actor.getSheetBackground()],
+        buttons: [{
+          action: "choice",
+          label: game.i18n.localize("Ex3.Save"),
+          default: true,
+          callback: (event, button, dialog) => button.form.elements
+        }, {
+          action: "cancel",
+          label: game.i18n.localize("Ex3.Cancel"),
+          callback: (event, button, dialog) => false
+        }],
+        submit: result => {
+          if (result) {
+            let diceCapData = {
+              iscustom: result['dicecap.iscustom']?.checked ?? false,
+              useattribute: result['dicecap.useattribute']?.checked ?? false,
+              useability: result['dicecap.useability']?.checked ?? false,
+              usespecialty: result['dicecap.usespecialty']?.checked ?? false,
+              other: result['dicecap.other'].value,
+              extratext: result['dicecap.extratext'].value,
+            };
+            this.actor.update({ [`system.settings.dicecap`]: diceCapData });
+          }
+        }
+      }).render({ force: true });
+    });
+
     html.find('.test-button').mousedown(ev => {
       let effectsData = [
         'diceModifier',
