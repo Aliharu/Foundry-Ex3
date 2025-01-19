@@ -2533,7 +2533,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);
     actorData.system.naturalsoak.value = this._getCharacterPool(this.object.character.skills.body.value);
 
-    if (this.object.character.sorcerer) {
+    if (this.object.character.sorcerer !== "none") {
       actorData.system.pools.sorcery.value = this._getCharacterPool(this.object.character.skills.mind.value);
     }
     actorData.system.pools.social.value = this._getCharacterPool(this.object.character.skills.social.value);

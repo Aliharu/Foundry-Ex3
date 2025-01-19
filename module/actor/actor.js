@@ -1556,6 +1556,9 @@ export class ExaltedThirdActor extends Actor {
   }
 
   getCharacterAbilityValue(ability) {
+    if(this.type === 'npc') {
+      return 0;
+    }
     if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
       return this.items.filter(item => item.type === 'customability').find(x => x._id === ability).system.points;
     }
