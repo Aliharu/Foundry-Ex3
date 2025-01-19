@@ -5128,6 +5128,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             case 'restoregoldxp':
                 this.object.restore.goldxp += dieFaceAmount;
                 break;
+            case 'restorewhitexp':
+                this.object.restore.whitexp += dieFaceAmount;
+                break;
         }
     }
 
