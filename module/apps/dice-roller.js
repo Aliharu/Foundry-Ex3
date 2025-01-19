@@ -948,9 +948,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             damage: 0,
         }
 
-        const staticValuePenalties = {
-            parry: Math.max(0, this.actor.getRollData().currentParryPenalty - this.actor.system.negateparrypenalty.value),
-            evasion: Math.max(0, this.actor.getRollData().currentEvasionPenalty - this.actor.system.negateevasionpenalty.value),
+        let staticValuePenalties = {
+            parry: 0,
+            evasion: 0,
+        }
+
+        if(this.object.rollType !== 'base') {
+            staticValuePenalties = {
+                parry: Math.max(0, this.actor.getRollData().currentParryPenalty - this.actor?.system.negateparrypenalty.value),
+                evasion: Math.max(0, this.actor.getRollData().currentEvasionPenalty - (this.actor?.system.negateevasionpenalty.value)),
+            }
         }
 
         const totalOpposedBonuses = {
