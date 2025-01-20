@@ -6667,9 +6667,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
         }
-        actorData.system.craft.experience.silver.value += this.object.restore.silverxp;
-        actorData.system.craft.experience.gold.value += this.object.restore.goldxp;
-        actorData.system.craft.experience.white.value += this.object.restore.whitexp;
+        if(actorData.type === 'character') {
+            actorData.system.craft.experience.silver.value += this.object.restore.silverxp;
+            actorData.system.craft.experience.gold.value += this.object.restore.goldxp;
+            actorData.system.craft.experience.white.value += this.object.restore.whitexp;
+        }
         if (this.object.stunt === 'bank') {
             actorData.system.stuntdice.value += 2;
         }
