@@ -4781,11 +4781,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'hardness':
                                     case 'resolve':
                                     case 'guile':
-                                        if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
-                                            this.object.difficulty += this._getFormulaValue(cleanedValue, triggerActor, charm);
-
+                                        if (this.object.rollType === 'useOpposingCharms') {
+                                            this.object.addOppose.addedBonus[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         } else {
-                                            this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                            if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
+                                                this.object.difficulty += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                            } else {
+                                                this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                            }
                                         }
                                         break;
                                     case 'setDamageType':
@@ -6667,7 +6670,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
         }
-        if(actorData.type === 'character') {
+        if (actorData.type === 'character') {
             actorData.system.craft.experience.silver.value += this.object.restore.silverxp;
             actorData.system.craft.experience.gold.value += this.object.restore.goldxp;
             actorData.system.craft.experience.white.value += this.object.restore.whitexp;
