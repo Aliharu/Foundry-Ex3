@@ -278,10 +278,19 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     });
 
     html.find('.add-trigger').click(ev => {
-      var triggerType = ev.currentTarget.dataset.type;
+      let triggerType = ev.currentTarget.dataset.type;
       if (triggerType) {
         const newList = this.item.system.triggers[triggerType];
-        newList[Object.entries(newList).length] = {
+        let listIndex = 0;
+        let indexAdd = "0";
+        for (const key of Object.keys(newList)) {
+          if (key !== listIndex.toString()) {
+            break;
+          }
+          listIndex++;
+        }
+        indexAdd = listIndex.toString();
+        newList[indexAdd] = {
           name: "",
           triggerTime: "beforeRoll",
           actorType: '',
