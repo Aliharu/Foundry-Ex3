@@ -1040,7 +1040,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.set-dice-cap').mousedown(async ev => {
       const html = await renderTemplate("systems/exaltedthird/templates/dialogues/set-dice-cap.html", { 'dicecap': this.actor.system.settings.dicecap });
-  
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.SetCustomDiceCap") },
         content: html,
@@ -1792,7 +1791,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.attack-roll').click(ev => {
       let itemId = $(ev.target).attr("data-item-id");
       let weapon = null;
-      if(itemId) {
+      if (itemId) {
         weapon = this.actor.items.get($(ev.target).attr("data-item-id"));
       }
       let attackType = $(ev.target).attr("data-attack-type");
@@ -1872,7 +1871,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       ev.stopPropagation();
       event.preventDefault();
       event.stopPropagation();
-  
+
       let li = $(event.currentTarget).parents(".item");
       let item = this.actor.items.get(li.data("item-id"));
       await item.switchMode();
@@ -2846,7 +2845,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async _completeCraft(ev) {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
-    game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'craft', ability: "craft", craftType: item.system.type, craftRating: item.system.rating }).render(true);
+    game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'craft', ability: "craft", standardCraftProjectId: item.id, craftType: item.system.type, craftRating: item.system.rating, goalNumber: item.system.goalnumber, intervals: item.system.intervals }).render(true);
   }
 
   async _displayDataChat(event) {
@@ -2930,7 +2929,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let li = $(event.currentTarget).parents(".item");
     let item = this.actor.items.get(li.data("item-id"));
 
-    if(game.opposedRollForm) {
+    if (game.opposedRollForm) {
       game.opposingCharmForm.addOpposingCharm(item);
     }
     else if (game.rollForm) {

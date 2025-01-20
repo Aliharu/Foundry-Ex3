@@ -286,6 +286,8 @@ export class ItemCraftProjectData extends CommonItemData {
             type: new fields.StringField({ initial: "" }),
             rating: new fields.NumberField({ initial: 0 }),
             difficulty: new fields.NumberField({ initial: 0 }),
+            goalnumber: new fields.NumberField({ initial: 0 }),
+            intervals: new fields.NumberField({ initial: 0 }),
             experience: new fields.SchemaField({
                 required: new fields.NumberField({ initial: 0 }),
                 completed: new fields.NumberField({ initial: 0 }),

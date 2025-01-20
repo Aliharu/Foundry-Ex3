@@ -105,9 +105,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft'].indexOf(data.rollType) !== -1);
             this.object.hasIntervals = (['craft', 'prophecy', 'working',].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
-            this.object.goalNumber = 0;
+            this.object.goalNumber = data.goalNumber || 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
-            this.object.intervals = 0;
+            this.object.intervals = data.intervals || 0;
             this.object.difficulty = data.difficulty || 0;
             this.object.resolve = 0;
             this.object.guile = 0;
@@ -135,6 +135,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.gambitDifficulty = 0;
             this.object.maxCraftXP = 5;
             this.object.craftProjectId = data.craftProjectId || '';
+            this.object.standardCraftProjectId = data.standardCraftProjectId || "";
             this.object.addedCharmsDropdown = this.object.rollType === 'useOpposingCharms';
 
             this.object.gambit = 'none';
@@ -410,7 +411,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.cost.initiative += data.initiativeCost;
                 }
                 if (this.object.rollType === 'craft') {
-                    this.object.intervals = 1;
+                    if (!this.object.intervals) {
+                        this.object.intervals = 1;
+                    }
                     this.object.finished = false;
                     this.object.objectivesCompleted = 0;
                     this._getCraftDifficulty();
@@ -666,6 +669,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             addSpecialAttack: RollForm.addSpecialAttack,
             removeSpecialAttack: RollForm.removeSpecialAttack,
             removeOpposingCharm: RollForm.removeOpposingCharm,
+            saveProject: RollForm.saveProject,
             // switchCharmMode: RollForm.switchCharmMode,
         },
     };
@@ -953,7 +957,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             evasion: 0,
         }
 
-        if(this.object.rollType !== 'base') {
+        if (this.object.rollType !== 'base') {
             staticValuePenalties = {
                 parry: Math.max(0, this.actor.getRollData().currentParryPenalty - this.actor?.system.negateparrypenalty.value),
                 evasion: Math.max(0, this.actor.getRollData().currentEvasionPenalty - (this.actor?.system.negateevasionpenalty.value)),
@@ -1390,6 +1394,35 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.render(true);
             return this.promise;
         }
+    }
+
+    static async saveProject() {
+        this.resolve(false);
+        let craftProject = null;
+        if (this.object.standardCraftProjectId) {
+            craftProject = this.actor.items.find(item => item.id === this.object.standardCraftProjectId);
+        }
+        if (!craftProject) {
+            craftProject = {
+                name: "New Craft Project",
+                type: 'craftproject',
+                system: {
+                    type: this.object.craftType,
+                    rating: this.object.craftRating,
+                    intervals: this.object.intervals,
+                    goalnumber: this.object.goalNumber,
+                }
+            };
+            this.actor.createEmbeddedDocuments("Item", [craftProject]);
+        }
+        else {
+            await craftProject.update({
+                [`system.intervals`]: parseInt(this.object.intervals),
+                [`system.goalnumber`]: parseInt(this.object.goalNumber),
+            });
+        }
+
+        this.close();
     }
 
     async close(deleteMessage = true, options = {}) {
@@ -6634,9 +6667,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
             }
         }
-        actorData.system.craft.experience.silver.value += this.object.gain.silverxp;
-        actorData.system.craft.experience.gold.value += this.object.gain.goldxp;
-        actorData.system.craft.experience.white.value += this.object.gain.whitexp;
+        actorData.system.craft.experience.silver.value += this.object.restore.silverxp;
+        actorData.system.craft.experience.gold.value += this.object.restore.goldxp;
+        actorData.system.craft.experience.white.value += this.object.restore.whitexp;
         if (this.object.stunt === 'bank') {
             actorData.system.stuntdice.value += 2;
         }
