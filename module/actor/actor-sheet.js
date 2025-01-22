@@ -2162,15 +2162,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const system = this.actor.system;
 
     if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
-      system.motes.personal.max = 10 * system.essence.value;
-      if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
-        system.motes.personal.max += 50;
+      if(system.settings.editmode) {
+        system.motes.personal.max = 10 * system.essence.value;
+        if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
+          system.motes.personal.max += 50;
+        }
       }
       system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
     }
     else {
-      system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
-      system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+      if(system.settings.editmode) {
+        system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
+        system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+      }
       system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
       system.motes.peripheral.value = (system.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
     }
