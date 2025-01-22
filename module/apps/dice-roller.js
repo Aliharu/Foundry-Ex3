@@ -2651,9 +2651,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     async addOpposedBonus(charm) {
         const addedCharm = this.object.opposingCharms.find(opposedCharm => charm._id === opposedCharm._id);
         if (addedCharm) {
+            addedCharm.charmAdded = true;
             addedCharm.timesAdded++;
         }
         else {
+            charm.charmAdded = true;
             charm.timesAdded = 1;
             this.object.opposingCharms.push(charm);
         }
@@ -4011,6 +4013,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
                     attackerCombatantId: this._getActorCombatant()?._id || null,
                     targetId: this.object.target?.id || null,
+                    targetActorId: this.object.target?.actor?._id,
+                    targetTokenId: this.object.target?.id,
                     damage: {
                         dice: this.object.baseDamage,
                         successModifier: this.object.damage.damageSuccessModifier,
