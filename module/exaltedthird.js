@@ -663,7 +663,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           }
         }
       }
-      if (moteCost) {
+      if (moteCost && !game.settings.get("exaltedthird", "gloryOverwhelming")) {
         var moteResults = combatant.actor.spendMotes(moteCost, actorData);
         actorData.system.motes.personal.value = moteResults.newPersonalMotes;
         actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
@@ -743,8 +743,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             activeEffect.update({ disabled: true });
           }
         }
-        if (moteCost) {
-          var moteResults = currentCombatant.actor.spendMotes(moteCost, actorData);
+        if (moteCost && !game.settings.get("exaltedthird", "gloryOverwhelming")) {
+          let moteResults = currentCombatant.actor.spendMotes(moteCost, actorData);
           actorData.system.motes.personal.value = moteResults.newPersonalMotes;
           actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
           actorData.system.anima.level = moteResults.newAnimaLevel;

@@ -217,6 +217,20 @@ export function registerSettings() {
         default: false
     });
 
+    game.settings.register("exaltedthird", "gloryOverwhelming", {
+        name: game.i18n.localize('Ex3.GloryOverwhelming'),
+        hint: game.i18n.localize('Ex3.GloryOverwhelmingSettingDescription'),
+        scope: "world",
+        config: false,
+        type: Boolean,
+        ruleChange: true,
+        homebrew: true,
+        default: false,
+        onChange: (choice) => {
+            window.location.reload();
+        },
+    });
+
     game.settings.register("exaltedthird", "useEssenceGambits", {
         name: game.i18n.localize('Ex3.UseEssenceGambits'),
         hint: game.i18n.localize('Ex3.UseEssenceGambitsDescription'),

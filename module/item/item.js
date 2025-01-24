@@ -306,7 +306,7 @@ export class ExaltedThirdItem extends Item {
 
   async decreaseActiations() {
     const actorData = await foundry.utils.duplicate(this.actor);
-    if(this.flags?.exaltedthird?.currentIterationsActive === 1) {
+    if (this.flags?.exaltedthird?.currentIterationsActive === 1) {
       this.activate();
     } else {
       if (this.system.cost.commitmotes > 0) {
@@ -325,77 +325,40 @@ export class ExaltedThirdItem extends Item {
 
     if (this.system.cost.motes > 0 || this.system.cost.commitmotes > 0) {
       let spendingMotes = (this.system.cost.motes + this.system.cost.commitmotes) * activateAmount;
-      let spentPersonal = 0;
-      let spentPeripheral = 0;
+      let muteMotes = this.system.keywords.toLowerCase().includes('mute') ? spendingMotes : 0;
 
-      if (actorData.system.settings.charmmotepool === 'personal') {
-        let remainingPersonal = actorData.system.motes.personal.value - spendingMotes;
-        if (remainingPersonal < 0) {
-          spentPersonal = spendingMotes + remainingPersonal;
-          spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
-        }
-        else {
-          spentPersonal = spendingMotes;
-        }
-        if (this.system.cost.commitmotes > 0) {
-          actorData.system.motes.personal.committed += (this.system.cost.commitmotes * activateAmount);
-        }
-      }
-      else {
-        let remainingPeripheral = actorData.system.motes.peripheral.value - spendingMotes;
-        if (remainingPeripheral < 0) {
-          spentPeripheral = spendingMotes + remainingPeripheral;
-          spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
-        }
-        else {
-          spentPeripheral = spendingMotes;
-        }
-        if (this.system.cost.commitmotes > 0) {
-          actorData.system.motes.peripheral.committed += (this.system.cost.commitmotes * activateAmount);
-        }
-      }
-      actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
-      actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
-
-      if (spentPeripheral > 4 && !this.system.keywords.toLowerCase().includes('mute')) {
-        for (let i = 0; i < Math.floor(spentPeripheral / 5); i++) {
-          if (newLevel === "Dim") {
-            newLevel = "Glowing";
-            newValue = 1;
+      if (this.system.cost.anima > 0) {
+        for (let i = 0; i < (this.system.cost.anima * activateAmount); i++) {
+          if (newLevel === "Transcendent") {
+            newLevel = "Bonfire";
+            newValue = 3;
           }
-          else if (newLevel === "Glowing") {
+          else if (newLevel === "Bonfire") {
             newLevel = "Burning";
             newValue = 2;
           }
           else if (newLevel === "Burning") {
-            newLevel = "Bonfire";
-            newValue = 3;
+            newLevel = "Glowing";
+            newValue = 1;
           }
-          else if (actorData.system.anima.max === 4) {
-            newLevel = "Transcendent";
-            newValue = 4;
+          if (newLevel === "Glowing") {
+            newLevel = "Dim";
+            newValue = 0;
           }
         }
       }
-    }
-    if (this.system.cost.anima > 0) {
-      for (let i = 0; i < (this.system.cost.anima * activateAmount); i++) {
-        if (newLevel === "Transcendent") {
-          newLevel = "Bonfire";
-          newValue = 3;
-        }
-        else if (newLevel === "Bonfire") {
-          newLevel = "Burning";
-          newValue = 2;
-        }
-        else if (newLevel === "Burning") {
-          newLevel = "Glowing";
-          newValue = 1;
-        }
-        if (newLevel === "Glowing") {
-          newLevel = "Dim";
-          newValue = 0;
-        }
+
+      const spendMotesResult = this.actor.spendMotes(spendingMotes, actorData, actorData.system.settings.charmmotepool, muteMotes)
+      actorData.system.motes.personal.value = spendMotesResult.newPersonalMotes;
+      actorData.system.motes.peripheral.value = spendMotesResult.newPeripheralMotes;
+      actorData.system.motes.glorymotecap.value = spendMotesResult.newGloryMotes;
+      newLevel = spendMotesResult.newAnimaLevel;
+      newValue = spendMotesResult.newAnimaValue;
+      if (spendMotesResult.feverGain) {
+        actorData.system.fever.value += spendMotesResult.feverGain;
+      }
+      if (this.system.cost.commitmotes > 0) {
+        actorData.system.motes[actorData.system.settings.charmmotepool].committed += (this.system.cost.commitmotes * activateAmount);
       }
     }
     actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (this.system.cost.grapplecontrol * activateAmount) + (this.system.restore.grapplecontrol * activateAmount));
@@ -449,7 +412,7 @@ export class ExaltedThirdItem extends Item {
         }
         if (combatant.initiative > 0 && newInitiative <= 0) {
           newInitiative -= 5;
-        } 
+        }
         newInitiative += (this.system.restore.initiative * activateAmount);
         game.combat.setInitiative(combatant.id, newInitiative);
       }

@@ -163,52 +163,98 @@ export class ExaltedThirdActor extends Actor {
     }
   }
 
-  spendMotes(moteCost, actorData) {
-    var newLevel = actorData.system.anima.level;
-    var newValue = actorData.system.anima.value;
+  spendMotes(moteCost, actorData, motePool = '', muteMotes = 0) {
+    let newLevel = actorData.system.anima.level;
+    let newValue = actorData.system.anima.value;
+    let newPeripheralMotes = actorData.system.motes.peripheral.value;
+    let newPersonalMotes = actorData.system.motes.personal.value;
+    let newGloryMotes = actorData.system.motes.glorymotecap.value;
+    let feverGain = 0;
 
-    var spentPersonal = 0;
-    var spentPeripheral = 0;
-    if (actorData.system.settings.charmmotepool === 'personal') {
-      var remainingPersonal = actorData.system.motes.personal.value - moteCost;
-      if (remainingPersonal < 0) {
-        spentPersonal = moteCost + remainingPersonal;
-        spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
+    if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
+      let animaLevels = ["Dim", "Glowing", "Burning", "Bonfire"];
+
+      if(actorData.system.anima.max === 4)  {
+        animaLevels = ["Dim", "Glowing", "Burning", "Bonfire", "Transcendent"];
+      }
+      newGloryMotes = Math.max(0, actorData.system.motes.glorymotecap.value - moteCost);
+      if (moteCost >= 5) {
+        feverGain = Math.max(1, Math.floor(moteCost / 5) - actorData.system.anima.value);
+      }
+      moteCost = moteCost - muteMotes;
+      // Define the mote cost to advance between levels
+      const levelCosts = {
+        Dim: 5,
+        Glowing: 10,
+        Burning: 15,
+        Bonfire: 15,
+      };
+
+      // Get the current level index
+      let currentIndex = animaLevels.indexOf(newLevel);
+
+      // Spend motes to move up levels
+      while (moteCost > 0 && currentIndex < animaLevels.length - 1) {
+        const costToNextLevel = levelCosts[animaLevels[currentIndex]] || Infinity;
+
+        if (moteCost >= costToNextLevel) {
+          moteCost -= costToNextLevel;
+          currentIndex++;
+        } else {
+          break;
+        }
+      }
+
+      // Update the new level and new value
+      newLevel = animaLevels[currentIndex];
+      newValue = currentIndex;
+    } else {
+      if (!motePool) {
+        motePool = actorData.system.settings.charmmotepool;
+      }
+      let spentPersonal = 0;
+      let spentPeripheral = 0;
+      if (motePool === 'personal') {
+        let remainingPersonal = actorData.system.motes.personal.value - moteCost;
+        if (remainingPersonal < 0) {
+          spentPersonal = moteCost + remainingPersonal;
+          spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
+        }
+        else {
+          spentPersonal = moteCost;
+        }
       }
       else {
-        spentPersonal = moteCost;
+        let remainingPeripheral = actorData.system.motes.peripheral.value - moteCost;
+        if (remainingPeripheral < 0) {
+          spentPeripheral = moteCost + remainingPeripheral;
+          spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+        }
+        else {
+          spentPeripheral = moteCost;
+        }
       }
-    }
-    else {
-      var remainingPeripheral = actorData.system.motes.peripheral.value - moteCost;
-      if (remainingPeripheral < 0) {
-        spentPeripheral = moteCost + remainingPeripheral;
-        spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
-      }
-      else {
-        spentPeripheral = moteCost;
-      }
-    }
-    var newPeripheralMotes = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
-    var newPersonalMotes = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
+      newPeripheralMotes = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
+      newPersonalMotes = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
 
-    if (spentPeripheral > 4) {
-      for (var i = 0; i < Math.floor(spentPeripheral / 5); i++) {
-        if (newLevel === "Dim") {
-          newLevel = "Glowing";
-          newValue = 1;
-        }
-        else if (newLevel === "Glowing") {
-          newLevel = "Burning";
-          newValue = 2;
-        }
-        else if (newLevel === "Burning") {
-          newLevel = "Bonfire";
-          newValue = 3;
-        }
-        else if (actorData.system.anima.max === 4) {
-          newLevel = "Transcendent";
-          newValue = 4;
+      if ((spentPeripheral - muteMotes) > 4) {
+        for (let i = 0; i < Math.floor(spentPeripheral - muteMotes / 5); i++) {
+          if (newLevel === "Dim") {
+            newLevel = "Glowing";
+            newValue = 1;
+          }
+          else if (newLevel === "Glowing") {
+            newLevel = "Burning";
+            newValue = 2;
+          }
+          else if (newLevel === "Burning") {
+            newLevel = "Bonfire";
+            newValue = 3;
+          }
+          else if (actorData.system.anima.max === 4) {
+            newLevel = "Transcendent";
+            newValue = 4;
+          }
         }
       }
     }
@@ -216,16 +262,18 @@ export class ExaltedThirdActor extends Actor {
     return {
       newPersonalMotes: newPersonalMotes,
       newPeripheralMotes: newPeripheralMotes,
+      newGloryMotes: newGloryMotes,
+      feverGain: feverGain,
       newAnimaLevel: newLevel,
       newAnimaValue: newValue,
     }
   }
 
   restoreMotes(amount) {
-    var missingPersonal = (this.system.motes.personal.max - this.system.motes.personal.committed) - this.system.motes.personal.value;
-    var missingPeripheral = (this.system.motes.peripheral.max - this.system.motes.peripheral.committed) - this.system.motes.peripheral.value;
-    var restorePersonal = 0;
-    var restorePeripheral = 0;
+    let missingPersonal = (this.system.motes.personal.max - this.system.motes.personal.committed) - this.system.motes.personal.value;
+    let missingPeripheral = (this.system.motes.peripheral.max - this.system.motes.peripheral.committed) - this.system.motes.peripheral.value;
+    let restorePersonal = 0;
+    let restorePeripheral = 0;
     if (missingPeripheral >= amount) {
       restorePeripheral = amount;
     }
@@ -233,7 +281,7 @@ export class ExaltedThirdActor extends Actor {
       if (missingPeripheral > 0) {
         restorePeripheral = missingPeripheral;
       }
-      var maxPersonalRestore = amount - restorePeripheral;
+      let maxPersonalRestore = amount - restorePeripheral;
       if (missingPersonal > maxPersonalRestore) {
         restorePersonal = maxPersonalRestore;
       }
@@ -312,6 +360,17 @@ export class ExaltedThirdActor extends Actor {
       }
       if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         maxMotes = 11 + (essenceLevel * 2);
+      }
+    }
+    else if (moteType === 'glorymotecap') {
+      if (['lunar'].includes(exaltType)) {
+        maxMotes = 34 + (essenceLevel * 2);
+      }
+      else if (['dragonblooded', 'sovereign', 'liminal', 'dreamsouled'].includes(exaltType)) {
+        maxMotes = 26 + (essenceLevel * 2);
+      }
+      else {
+        maxMotes = 25 + (essenceLevel * 5);
       }
     }
     else {
@@ -1227,8 +1286,8 @@ export class ExaltedThirdActor extends Actor {
         if (actorData.system.settings.dicecap.usespecialty) {
           returnValue += (actorData.system.settings.staticcapsettings[type]?.specialty || 0);
         }
-        if(actorData.system.settings.dicecap.other) {
-            returnValue += getNumberFormula(actorData.system.settings.dicecap.other, this);
+        if (actorData.system.settings.dicecap.other) {
+          returnValue += getNumberFormula(actorData.system.settings.dicecap.other, this);
         }
         returnValue = Math.floor(returnValue / 2);
         return `+${returnValue} for ${returnValue * 2}m`;
@@ -1556,7 +1615,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   getCharacterAbilityValue(ability) {
-    if(this.type === 'npc') {
+    if (this.type === 'npc') {
       return 0;
     }
     if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {

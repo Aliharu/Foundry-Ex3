@@ -6202,7 +6202,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     _calculateAnimaGain() {
-        var newLevel = this.actor.system.anima.level;
+        let newLevel = this.actor.system.anima.level;
         if (this.object.cost.anima > 0) {
             for (var i = 0; i < this.object.cost.anima; i++) {
                 if (newLevel === "Transcendent") {
@@ -6219,26 +6219,54 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
+        if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
+            let animaLevels = ["Dim", "Glowing", "Burning", "Bonfire"];
 
-        if (this.object.motePool === 'peripheral') {
-            if (this.object.cost.motes > 4) {
-                for (var i = 0; i < Math.floor((this.object.cost.motes) / 5); i++) {
-                    if (newLevel === "Dim") {
-                        newLevel = "Glowing";
-                    }
-                    else if (newLevel === "Glowing") {
-                        newLevel = "Burning";
-                    }
-                    else if (newLevel === "Burning") {
-                        newLevel = "Bonfire";
-                    }
-                    else if (this.actor.system.anima.max === 4) {
-                        newLevel = "Transcendent";
+            if (this.actor.system.anima.max === 4) {
+                animaLevels = ["Dim", "Glowing", "Burning", "Bonfire", "Transcendent"];
+            }
+            let moteCost = this.object.cost.motes;
+            const levelCosts = {
+                Dim: 5,
+                Glowing: 10,
+                Burning: 15,
+                Bonfire: 15,
+            };
+
+            let currentIndex = animaLevels.indexOf(newLevel);
+            while (moteCost > 0 && currentIndex < animaLevels.length - 1) {
+                const costToNextLevel = levelCosts[animaLevels[currentIndex]] || Infinity;
+
+                if (moteCost >= costToNextLevel) {
+                    moteCost -= costToNextLevel;
+                    currentIndex++;
+                } else {
+                    break;
+                }
+            }
+
+            // Update the new level and new value
+            newLevel = animaLevels[currentIndex];
+        } else {
+            if (this.object.motePool === 'peripheral') {
+                if (this.object.cost.motes > 4) {
+                    for (var i = 0; i < Math.floor((this.object.cost.motes) / 5); i++) {
+                        if (newLevel === "Dim") {
+                            newLevel = "Glowing";
+                        }
+                        else if (newLevel === "Glowing") {
+                            newLevel = "Burning";
+                        }
+                        else if (newLevel === "Burning") {
+                            newLevel = "Bonfire";
+                        }
+                        else if (this.actor.system.anima.max === 4) {
+                            newLevel = "Transcendent";
+                        }
                     }
                 }
             }
         }
-
         this.object.newAnima = newLevel;
     }
 
@@ -6577,10 +6605,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             });
         }
         const actorData = foundry.utils.duplicate(this.actor);
-        var newLevel = actorData.system.anima.level;
-        var newValue = actorData.system.anima.value;
+        let newLevel = actorData.system.anima.level;
+        let newValue = actorData.system.anima.value;
         if (this.object.cost.anima > 0) {
-            for (var i = 0; i < this.object.cost.anima; i++) {
+            for (let i = 0; i < this.object.cost.anima; i++) {
                 if (newLevel === "Transcendent") {
                     newLevel = "Bonfire";
                     newValue = 3;
@@ -6599,36 +6627,22 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
-        var totalMotes = this.object.cost.motes + this.object.cost.muteMotes;
-        const { spentPeripheral, spentPersonal } = this._lowerMotes(actorData, totalMotes);
-        actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
-        actorData.system.motes.peripheral.value = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
-        actorData.system.motes.personal.value = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
-
-        if ((spentPeripheral - this.object.cost.muteMotes) > 4) {
-            for (var i = 0; i < Math.floor((spentPeripheral - this.object.cost.muteMotes) / 5); i++) {
-                if (newLevel === "Dim") {
-                    newLevel = "Glowing";
-                    newValue = 1;
-                }
-                else if (newLevel === "Glowing") {
-                    newLevel = "Burning";
-                    newValue = 2;
-                }
-                else if (newLevel === "Burning") {
-                    newLevel = "Bonfire";
-                    newValue = 3;
-                }
-                else if (actorData.system.anima.max === 4) {
-                    newLevel = "Transcendent";
-                    newValue = 4;
-                }
-            }
-        }
-
         actorData.system.anima.level = newLevel;
         actorData.system.anima.value = newValue;
 
+        let totalMoteCost = this.object.cost.motes + this.object.cost.muteMotes;
+        let moteResults = this.actor.spendMotes(totalMoteCost, actorData, this.object.motePool, this.object.cost.muteMotes);
+        actorData.system.motes.personal.value = moteResults.newPersonalMotes;
+        actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
+        actorData.system.motes.glorymotecap.value = moteResults.newGloryMotes;
+        actorData.system.anima.level = moteResults.newAnimaLevel;
+        actorData.system.anima.value = moteResults.newAnimaValue;
+        if (moteResults.feverGain) {
+            actorData.system.fever.value += moteResults.feverGain;
+        }
+        
+        actorData.system.anima.value = newValue;
+        actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
         actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
 
@@ -6743,13 +6757,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     _lowerMotes(actor, value, motePool = null) {
-        var spentPersonal = 0;
-        var spentPeripheral = 0;
+        let spentPersonal = 0;
+        let spentPeripheral = 0;
         if (!motePool) {
             motePool = this.object.motePool;
         }
         if (motePool === 'personal') {
-            var remainingPersonal = actor.system.motes.personal.value - value;
+            let remainingPersonal = actor.system.motes.personal.value - value;
             if (remainingPersonal < 0) {
                 spentPersonal = value + remainingPersonal;
                 spentPeripheral = Math.min(actor.system.motes.peripheral.value, Math.abs(remainingPersonal));
@@ -6759,7 +6773,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         else {
-            var remainingPeripheral = actor.system.motes.peripheral.value - value;
+            let remainingPeripheral = actor.system.motes.peripheral.value - value;
             if (remainingPeripheral < 0) {
                 spentPeripheral = value + remainingPeripheral;
                 spentPersonal = Math.min(actor.system.motes.personal.value, Math.abs(remainingPeripheral));

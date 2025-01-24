@@ -74,8 +74,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
     context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
     context.steadyAction = game.settings.get("exaltedthird", "steadyAction");
+    context.gloryOverwhelming = game.settings.get("exaltedthird", "gloryOverwhelming");
     context.abilitySelectList = CONFIG.exaltedthird.selects.abilities;
     context.abilityWithCustomsSelectList = { ...CONFIG.exaltedthird.selects.abilities };
+    context.isExalt = this.actor.type === 'character' || this.actor.system.creaturetype === 'exalt';
 
     for (const customAbility of this.actor.items.filter(item => item.type === 'customability')) {
       context.abilityWithCustomsSelectList[customAbility.id] = customAbility.name;
@@ -956,6 +958,10 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
     html.find('.calculate-peripheral-commit').mousedown(ev => {
       this.calculateCommitMotes('peripheral');
+    });
+
+    html.find('.calculate-glorymotecap-commit').mousedown(ev => {
+      this.calculateCommitMotes('glorymotecap');
     });
 
     html.find('.calculate-motes').mousedown(ev => {
@@ -2161,23 +2167,38 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateMotes() {
     const system = this.actor.system;
 
-    if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
-      if(system.settings.editmode) {
-        system.motes.personal.max = 10 * system.essence.value;
+    if(game.settings.get("exaltedthird", "gloryOverwhelming")) {
+      if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
+        system.motes.glorymotecap.max = 10;
         if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
-          system.motes.personal.max += 50;
+          system.motes.glorymotecap.max = 20 + (this.actor.system.essence.value * 10);
         }
+        system.motes.glorymotecap.value = (system.motes.glorymotecap.max - this.actor.system.motes.glorymotecap.committed);
+      } else {
+        system.motes.glorymotecap.max = this.actor.calculateMaxExaltedMotes('glorymotecap', this.actor.system.details.exalt, this.actor.system.essence.value);
+        system.motes.glorymotecap.value = (system.motes.glorymotecap.max - this.actor.system.motes.glorymotecap.committed);
       }
-      system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
-    }
-    else {
-      if(system.settings.editmode) {
-        system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
-        system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+    } else {
+      if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
+        if(system.settings.editmode) {
+          system.motes.personal.max = 10 * system.essence.value;
+          if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
+            system.motes.personal.max += 50;
+          }
+        }
+        system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
       }
-      system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
-      system.motes.peripheral.value = (system.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
+      else {
+        if(system.settings.editmode) {
+          system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
+          system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+        }
+        system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
+        system.motes.peripheral.value = (system.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
+      }
     }
+
+
     this.actor.update({ [`system.motes`]: system.motes });
   }
 

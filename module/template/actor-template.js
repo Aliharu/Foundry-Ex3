@@ -73,6 +73,12 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
           max: new fields.NumberField({ initial: 0 }),
           committed: new fields.NumberField({ initial: 0 }),
         }),
+        glorymotecap: new fields.SchemaField({
+          value: new fields.NumberField({ initial: 0 }),
+          min: new fields.NumberField({ initial: 0 }),
+          max: new fields.NumberField({ initial: 0 }),
+          committed: new fields.NumberField({ initial: 0 }),
+        }),
       }),
       anima: new fields.SchemaField({
         value: new fields.NumberField({ initial: 0 }),
@@ -83,6 +89,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         active: new fields.StringField({ initial: "" }),
         iconic: new fields.StringField({ initial: "" }),
       }),
+      fever: statField(0),
       collapse: new fields.SchemaField({
         passive: new fields.BooleanField({ initial: false }),
         active: new fields.BooleanField({ initial: false }),
