@@ -2521,6 +2521,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'craftobjectives') {
             return this.object.objectivesCompleted || 0;
         }
+        if (formula?.toLowerCase() === 'weaponaccuracy') {
+            if(this.actor.type === 'npc') {
+                return 0;
+            }
+            return this.object.weaponAccuracy || 0;
+        }
         if (formula?.toLowerCase() === 'itemadded' && item) {
             return item.timesAdded || 0;
         }
@@ -6640,7 +6646,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (moteResults.feverGain) {
             actorData.system.fever.value += moteResults.feverGain;
         }
-        
+
         actorData.system.anima.value = newValue;
         actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
