@@ -1937,10 +1937,13 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         } else {
           items = items.filter(charm => charm.system.charmtype === this.object.character.exalt || charm.system.charmtype === 'universal');
         }
-        archetypeCharms = items.filter(charm => charm.system.archetype.ability);
+        archetypeCharms = items.filter(charm => charm.system.archetype.ability || charm.system.archetype.charmprerequisites.length > 0);
         if (target.dataset.ability) {
           items = items.filter(charm => charm.system.ability === target.dataset.ability);
           archetypeCharms = archetypeCharms.filter(charm => {
+            if(!charm.system.archetype.ability) {
+              return true;
+            }
             if (charm.system.archetype.ability === "combat") {
               return ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(target.dataset.ability);
             }
@@ -1960,7 +1963,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             }
             return true;
           });
-          archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
+          archetypeCharms = archetypeCharms.filter(charm => {
+            if(!charm.system.archetype.ability) {
+              return true;
+            }
             if (charm.system.archetype.ability === "combat") {
               return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
             }
