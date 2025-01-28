@@ -196,6 +196,8 @@ export function charmAlternateData() {
         summary: new fields.StringField({ initial: "" }),
         multiactivate: new fields.BooleanField({ initial: false }),
         autoaddtorolls: new fields.StringField({ initial: "" }),
+        costdisplay: new fields.StringField({ initial: "" }),
+        keywords: new fields.StringField({ initial: "" }),
         cost: new fields.SchemaField({
             motes: new fields.NumberField({ initial: 0 }),
             commitmotes: new fields.NumberField({ initial: 0 }),
@@ -215,6 +217,7 @@ export function charmAlternateData() {
         restore: new fields.SchemaField({
             motes: new fields.NumberField({ initial: 0 }),
             willpower: new fields.NumberField({ initial: 0 }),
+            anima: new fields.NumberField({ initial: 0 }),
             health: new fields.NumberField({ initial: 0 }),
             initiative: new fields.NumberField({ initial: 0 }),
             grapplecontrol: new fields.NumberField({ initial: 0 }),

@@ -39,6 +39,14 @@
                     {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
                 </select>
             </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.CostDisplay"}}</div>
+                <input type="text" name="costdisplay" value="{{system.costdisplay}}"/>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Keywords"}}</div>
+                <input type="text" name="keywords" value="{{system.keywords}}"/>
+            </div>
         </div>
         <div class="flex-center">
             <div class="resource-label">{{localize "Ex3.Cost"}}</div>
@@ -124,6 +132,11 @@
             <div>
                 <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
                 <input type="number" name="restore.willpower" value="{{system.restore.willpower}}"
+                    data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.Anima"}}</div>
+                <input type="number" name="restore.anima" value="{{system.restore.anima}}"
                     data-dtype="Number" />
             </div>
             <div>

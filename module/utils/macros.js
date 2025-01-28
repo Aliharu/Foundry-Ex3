@@ -182,17 +182,36 @@ export async function setCharmIcons() {
   }
 }
 
-export async function createTestCharacterForCharms(abilityOrAttribute='athletics', charmType='solar') {
+export async function createTestCharacterForCharms(abilityOrAttribute = 'athletics', charmType = 'solar') {
   let actorData = new Actor.implementation({
     name: `Test Bureaucracy solar`,
     type: 'character'
   }).toObject();
   let charmList = [];
-  for(const charm of game.items.filter(item => item.type === 'charm' && item.system.ability === 'bureaucracy' && item.system.charmtype === 'solar')) {
+  for (const charm of game.items.filter(item => item.type === 'charm' && item.system.ability === 'bureaucracy' && item.system.charmtype === 'solar')) {
     charmList.push(await foundry.utils.duplicate(charm));
   }
   actorData.items = charmList;
   await Actor.create(actorData);
+}
+
+export async function setCostDisplayAndKeyWords() {
+  for (let item of game.items.filter((item) => item.type === 'charm' && item.system.modes.alternates.length > 0)) {
+    // let updateData = foundry.utils.deepClone(item.toObject());
+    // for (const mode of updateData.system.modes.alternates) {
+    //   if (!mode.costdisplay) {
+    //     mode.costdisplay = item.system.costdisplay;
+    //   }
+    //   if (!mode.keywords) {
+    //     mode.keywords = item.system.keywords;
+    //   }
+    //   console.log(`Updating Mode ${mode.name} in item ${item.name}`);
+    // }
+    // if (!foundry.utils.isEmpty(updateData)) {
+    //   await item.update(updateData, { enforceTypes: false });
+    // }
+    console.log(`${item.name}`);
+  }
 }
 
 export async function setEndTriggers() {

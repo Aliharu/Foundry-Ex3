@@ -362,6 +362,8 @@ export class ExaltedThirdItemSheet extends ItemSheet {
               duration: result.duration.value,
               activatable: result.activatable.checked,
               endtrigger: result.endtrigger.value,
+              costdisplay: result.costdisplay.value,
+              keywords: result.keywords.value,
               multiactivate: result.multiactivate.checked,
               autoaddtorolls: result.autoaddtorolls.value,
               cost: {
@@ -383,6 +385,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
               restore: {
                 motes: result['restore.motes'].value,
                 willpower: result['restore.willpower'].value,
+                anima: result['restore.anima'].value,
                 health: result['restore.health'].value,
                 initiative: result['restore.initiative'].value,
                 grapplecontrol: result['restore.grapplecontrol'].value

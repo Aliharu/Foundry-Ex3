@@ -212,6 +212,8 @@ export class ExaltedThirdItem extends Item {
         'restore': newMode.restore,
         'duration': newMode.duration,
         'endtrigger': newMode.endtrigger,
+        'costdisplay': newMode.costdisplay,
+        'keywords': newMode.keywords,
         'summary': newMode.summary,
         'type': newMode.type,
         'multiactivate': newMode.multiactivate,
@@ -393,6 +395,28 @@ export class ExaltedThirdItem extends Item {
     }
     else {
       actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + (this.system.restore.motes * activateAmount));
+    }
+    if (this.system.restore.anima > 0) {
+      for (let i = 0; i < this.system.restore.anima; i++) {
+        if (newLevel === "Dim") {
+          newLevel = "Glowing";
+          newValue = 1;
+        }
+        else if (newLevel === "Glowing") {
+          newLevel = "Burning";
+          newValue = 2;
+        }
+        else if (newLevel === "Burning") {
+          newLevel = "Bonfire";
+          newValue = 3;
+        }
+        else if (actorData.system.anima.max === 4) {
+          newLevel = "Transcendent";
+          newValue = 4;
+        }
+      }
+      actorData.system.anima.level = newLevel;
+      actorData.system.anima.value = newValue;
     }
     actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + (this.system.restore.willpower * activateAmount));
     if (this.system.restore.health > 0) {

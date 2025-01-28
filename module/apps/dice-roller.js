@@ -205,7 +205,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 threshholdToDamage: false,
                 cappedThreshholdToDamage: 0,
                 resetInit: true,
-                maxInitiativeGain: null,
+                maxAttackInitiativeGain: null,
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
                 ignoreSoak: 0,
@@ -4117,8 +4117,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 this.object.newTargetInitiative = newInitative;
                                 this.object.updateTargetInitiative = true;
                                 this.object.gainedInitiative = Math.max(this.object.damageSuccesses, this.object.gainedInitiative);
-                                if (this.object.damage.maxInitiativeGain) {
-                                    this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
+                                if (this.object.damage.maxAttackInitiativeGain) {
+                                    this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
                                 }
                             }
                         }
@@ -4140,8 +4140,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this._removeEffect();
                 }
                 var fullInitiative = this.object.damageSuccesses + 1;
-                if (this.object.damage.maxInitiativeGain) {
-                    fullInitiative = Math.min(this.object.damage.maxInitiativeGain, fullInitiative);
+                if (this.object.damage.maxAttackInitiativeGain) {
+                    fullInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, fullInitiative);
                 }
                 if (crashed) {
                     fullInitiative += (this.object.damage.crashBonus ?? 5);
@@ -4658,6 +4658,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'damageSuccessModifier':
                                     case 'cappedThreshholdToDamage':
                                         this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        break;
+                                    case 'maxAttackInitiativeGain':
+                                        if(this.object.damage.maxAttackInitiativeGain === null) {
+                                            this.object.damage.maxAttackInitiativeGain = 0;
+                                        }
+                                        this.object.damage.maxAttackInitiativeGain += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'rerollNumber-damage':
                                         this.object.damage.rerollNumber += this._getFormulaValue(cleanedValue, triggerActor, charm);

@@ -457,6 +457,7 @@
     "Ex3.CloseRange": "Close Range",
     "Ex3.VsNonBattlegroups": "Vs Non Battlegroups",
     "Ex3.MaxInitiativeGain": "Max Initiative Gain",
+    "Ex3.MaxAttackInitiativeGain": "Max Attack Initiative Gain",
     "Ex3.DivineInspirationTechnique": "Divine Inspiration Technique",
     "Ex3.HolisticMiracleUnderstanding": "Holistic Miracle Understanding",
     "Ex3.FirstMovementoftheDemiurge": "First Movement of the Demiurge",
@@ -1415,7 +1416,6 @@
     "Ex3.PenaltyModifier": "Penalty Modifier",
     "Ex3.ModifyRolledDamage": "Modify Rolled Damage",
     "Ex3.AttackDealsDamage": "Attack Deals Damage",
-
     "Ex3.IgnorePenalties": "Ignore Penalties"
 
 }
