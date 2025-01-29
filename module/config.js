@@ -30,6 +30,14 @@ exaltedthird.itemIcons = {
   shape: "icons/svg/mystery-man.svg"
 };
 
+exaltedthird.diceRollActiveEffects = [
+  'system.damage.round.initiative.lethal',
+  'system.damage.round.initiative.bashing',
+  'system.damage.round.bashing',
+  'system.damage.round.lethal',
+  'system.damage.round.aggravated',
+]
+
 exaltedthird.excellencyIcons = {
   solar: "icons/magic/light/explosion-star-large-orange.webp",
   sidereal: "icons/magic/light/explosion-star-glow-blue-purple.webp",
@@ -193,7 +201,7 @@ exaltedthird.activeEffectChanges = {
     }
   },
   damage: {
-    label: "Ex3.Damage",
+    label: "Ex3.DamageDice",
     effectList: {
       'system.damage.round.initiative.bashing': 'Ex3.InitiativeDamageRoundBashing',
       'system.damage.round.initiative.lethal': 'Ex3.InitiativeDamageRoundLethal',
@@ -202,7 +210,6 @@ exaltedthird.activeEffectChanges = {
       'system.damage.round.aggravated': 'Ex3.AggravatedDamageRound',
     }
   },
-
 }
 
 exaltedthird.equipmentStats = {

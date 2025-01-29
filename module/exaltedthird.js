@@ -172,7 +172,7 @@ Hooks.once('init', async function () {
     comparison = comparison || "=";
     target = parseInt(target) ?? this.faces;
     for (let r of this.results) {
-      let success = DiceTerm.compareResult(r.result, comparison, target);
+      let success = foundry.dice.terms.DiceTerm.compareResult(r.result, comparison, target);
       if (!r.success) {
         r.success = success;
       }
@@ -605,34 +605,37 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       for (const activeEffect of combatant.actor.allApplicableEffects()) {
         if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
           for (const change of activeEffect.changes) {
+            let rolledChangeValue = 0;
+            if(CONFIG.exaltedthird.diceRollActiveEffects.includes(change.key)) {
+              const double10s = (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') && ((currentCombatantInitiative || 0) > 0)
+              let roll = await new Roll(`${parseInt(change.value)}d10cs>=7${double10s ? `ds>=10` : ''}`).toMessage({flavor: `${activeEffect.name} Damage Roll`});
+              rolledChangeValue = roll?.rolls[0]?.total || 0;
+            }
             if (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') {
-              if (currentCombatantInitiative !== null && (currentCombatantInitiative - parseInt(change.value)) <= 0 && currentCombatantInitiative > 0) {
+              if (currentCombatantInitiative !== null && (currentCombatantInitiative - rolledChangeValue) <= 0 && currentCombatantInitiative > 0) {
                 crasherId = activeEffect.flags?.exaltedthird?.poisonerCombatantId;
               }
               if((currentCombatantInitiative || 0) > 0) {
-                currentCombatantInitiative -= parseInt(change.value);
-                initiativeDamage += parseInt(change.value);
+                currentCombatantInitiative -= rolledChangeValue;
+                initiativeDamage += rolledChangeValue;
               }
               if (combatant.initiative !== null && combatant.initiative <= 0) {
                 if (change.key === 'system.damage.round.initiative.bashing') {
-                  bashingDamage += parseInt(change.value);
+                  bashingDamage += rolledChangeValue;
                 }
                 else {
-                  lethalDamage += parseInt(change.value);
+                  lethalDamage += rolledChangeValue;
                 }
               }
             }
-            if (change.key === 'system.motes.cost.round') {
-              moteCost += parseInt(change.value);
-            }
             if (change.key === 'system.damage.round.bashing') {
-              bashingDamage += parseInt(change.value);
+              bashingDamage += rolledChangeValue;
             }
             if (change.key === 'system.damage.round.lethal') {
-              lethalDamage += parseInt(change.value);
+              lethalDamage += rolledChangeValue;
             }
             if (change.key === 'system.damage.round.aggravated') {
-              aggravatedDamage += parseInt(change.value);
+              aggravatedDamage += rolledChangeValue;
             }
             if (change.key === 'system.motes.cost.round') {
               moteCost += parseInt(change.value);
