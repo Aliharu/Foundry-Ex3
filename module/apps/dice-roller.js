@@ -166,6 +166,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.attackSuccesses = 0;
             this.object.damageSuccesses = 0;
             this.object.doubleThresholdSuccesses = false;
+            this.object.doubleSuccesses = false;
             this.object.triggerMessages = [];
 
             this.object.reroll = {
@@ -2522,7 +2523,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return this.object.objectivesCompleted || 0;
         }
         if (formula?.toLowerCase() === 'weaponaccuracy') {
-            if(this.actor.type === 'npc') {
+            if (this.actor.type === 'npc') {
                 return 0;
             }
             return this.object.weaponAccuracy || 0;
@@ -3540,9 +3541,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'diceRoll')) {
             this._specificDieFaceEffect(diceRoll, dieFaceTrigger);
         }
-
-        if (!this._isAttackRoll() && this.object.rollType !== 'base') {
-            await this._updateRollerResources();
+        if (this.object.doubleSuccesses) {
+            this.object.total *= 2;
         }
         if (this._isAttackRoll()) {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
@@ -3562,6 +3562,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         this.object.diceRoll = diceRoll;
         await this._addTriggerBonuses('afterRoll');
+        if (!this._isAttackRoll() && this.object.rollType !== 'base') {
+            await this._updateRollerResources();
+        }
     }
 
     async _baseRoll() {
@@ -4604,6 +4607,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'rollTwice':
                                     case 'rollTwiceLowest':
                                     case 'doubleThresholdSuccesses':
+                                    case 'doubleSuccesses':
                                         this.object[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'activateAura':
@@ -4660,7 +4664,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'maxAttackInitiativeGain':
-                                        if(this.object.damage.maxAttackInitiativeGain === null) {
+                                        if (this.object.damage.maxAttackInitiativeGain === null) {
                                             this.object.damage.maxAttackInitiativeGain = 0;
                                         }
                                         this.object.damage.maxAttackInitiativeGain += this._getFormulaValue(cleanedValue, triggerActor, charm);
@@ -5151,6 +5155,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 break;
             case 'restoremote':
                 this.object.restore.motes += dieFaceAmount;
+                break;
+            case 'gaininitiative':
+                this.object.restore.initiative += dieFaceAmount;
                 break;
             case 'soak':
                 this.object.soak += dieFaceAmount;

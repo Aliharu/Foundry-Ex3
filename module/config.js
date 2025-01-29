@@ -1635,6 +1635,7 @@ exaltedthird.bonusTypes = {
       triggerOnesAndTwos: "Ex3.TriggerOnes&Twos",
       triggerOnesCap: "Ex3.TriggerOnesCap",
       fullExcellency: "Ex3.FullExcellency",
+      doubleSuccesses: "Ex3.DoubleSuccesses",
       doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses",
       specificDieFaceEffect: "Ex3.SpecificDieFaceEffect",
       intervals: "Ex3.Intervals"

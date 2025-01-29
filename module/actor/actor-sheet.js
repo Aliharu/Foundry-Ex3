@@ -2079,7 +2079,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     html.find('.rollable').click(this._onRoll.bind(this));
 
     // Drag events for macros.
-    if (this.actor.isOwner) {
+    if (game.user.isGM || this.actor.isOwner) {
       let handler = ev => this._onDragStart(ev);
       let savedRollhandler = ev => this._onDragSavedRoll(ev);
       html.find('li.item').each((i, li) => {

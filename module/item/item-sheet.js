@@ -630,7 +630,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
         dragSelector: ".item",
         dropSelector: null,
         permissions: { dragstart: true, drop: true },
-        callbacks: { drop: this._onDropItem.bind(this) },
+        callbacks: { drop: this._onDrop.bind(this), dragstart: this._onDrag.bind(this) },
       });
       itemToItemAssociation.bind(html[0]);
     }
@@ -682,17 +682,39 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
-  async _onDropItem(event) {
+  async _onDrop(event) {
     let data;
-    const obj = this.object;
-    const li = event.currentTarget;
-
     try {
       data = JSON.parse(event.dataTransfer.getData("text/plain"));
-      if (data.type !== "Item") return;
+      if (data.type === "Item") return this._onDropItem(event, data);
+      if (data.type === "ActiveEffect") return this._onDropActiveEffect(event, data);
     } catch (err) {
       return false;
     }
+  }
+
+  async _onDrag(event) {
+    const li = event.currentTarget;
+    if ( "link" in event.target.dataset ) return;
+
+    // Create drag data
+    let dragData;
+
+    // Active Effect
+    if ( li.dataset.effectId ) {
+      const effect = this.item.effects.get(li.dataset.effectId);
+      dragData = effect.toDragData();
+    }
+
+    if ( !dragData ) return;
+
+    // Set data transfer
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+  }
+
+  async _onDropItem(event, data) {
+    const obj = this.object;
+    const li = event.currentTarget;
 
     data.id = data.uuid.split('.')[1];
     if (data.uuid.includes('Compendium')) {
@@ -763,5 +785,15 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
       obj.update(formData);
     }
+  }
+  async _onDropActiveEffect(event, data) {
+    const effect = await ActiveEffect.implementation.fromDropData(data);
+    if ( !this.item.isOwner || !effect
+      || (this.item.uuid === effect.parent?.uuid)
+      || (this.item.uuid === effect.origin) ) return false;
+    const effectData = effect.toObject();
+    const options = { parent: this.item, keepOrigin: false };
+
+    return ActiveEffect.create(effectData, options);
   }
 }
