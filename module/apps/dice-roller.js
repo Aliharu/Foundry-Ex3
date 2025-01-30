@@ -207,6 +207,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 cappedThreshholdToDamage: 0,
                 resetInit: true,
                 maxAttackInitiativeGain: null,
+                maxInitiativeGain: null,
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
                 ignoreSoak: 0,
@@ -4053,6 +4054,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     async damageResults() {
         let typeSpecificResults = ``;
         let sizeDamaged = 0;
+        let fullInitiative = 0;
         this.object.attackSuccess = true;
         this.object.damageThresholdSuccesses = 0;
 
@@ -4151,7 +4153,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     this._removeEffect();
                 }
-                var fullInitiative = this.object.damageSuccesses + 1;
+                fullInitiative = this.object.damageSuccesses + 1;
                 if (this.object.damage.maxAttackInitiativeGain) {
                     fullInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, fullInitiative);
                 }
@@ -4163,6 +4165,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
                 if (!game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative) {
                     fullInitiative += this.object.gainedInitiative;
+                }
+                if (this.object.damage.maxInitiativeGain) {
+                    fullInitiative = Math.min(this.object.damage.maxInitiativeGain, fullInitiative);
                 }
                 typeSpecificResults = `
                                         <h4 class="dice-total dice-total-middle">${this.object.damageSuccesses} Total Damage!</h4>
@@ -4673,10 +4678,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'maxAttackInitiativeGain':
-                                        if (this.object.damage.maxAttackInitiativeGain === null) {
-                                            this.object.damage.maxAttackInitiativeGain = 0;
+                                    case 'maxInitiativeGain':
+                                        if (this.object.damage[bonus.effect] === null) {
+                                            this.object.damage[bonus.effect] = 0;
                                         }
-                                        this.object.damage.maxAttackInitiativeGain += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        this.object.damage[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'rerollNumber-damage':
                                         this.object.damage.rerollNumber += this._getFormulaValue(cleanedValue, triggerActor, charm);
@@ -6747,6 +6753,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (this._isAttackRoll()) {
                     if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
                         if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
+                            if(this.object.damage.maxAttackInitiativeGain) {
+                                this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
+                            }
                             if (this.object.targetHit) {
                                 this.object.gainedInitiative += 1;
                             }
@@ -6754,6 +6763,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 if (!this.object.targetCombatant?.flags.crashRecovery) {
                                     this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
                                 }
+                            }
+                            if(this.object.damage.maxInitiativeGain) {
+                                this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
                             }
                             this.object.characterInitiative += this.object.gainedInitiative;
                             if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
