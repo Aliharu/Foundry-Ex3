@@ -224,7 +224,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 diceToSuccesses: 0,
                 doubleThresholdSuccesses: false,
                 attackDealsDamage: true,
-                crashBonus: this.actor ? this.actor.system.crashbonus.value : 5
+                crashBonus: this.actor ? this.actor.system.crashbonus.value : 5,
+                stuntToDamage: false,
             };
             this.object.baseInitiativeModifier = 0;
             this.object.poison = null;
@@ -3833,7 +3834,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         await this._addTriggerBonuses('beforeDamageRoll');
-        var dice = await this._assembleDamagePool(false);
+        let dice = await this._assembleDamagePool(false);
         this.object.baseDamage = dice;
         if (this.object.attackType === 'decisive') {
             if (this.object.target) {
@@ -3845,6 +3846,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
+        if(this.object.damage.stuntToDamage) {
+            if (this.object.stunt === 'two') {
+                this.object.damage.damageSuccessModifier++;
+            }
+            if (this.object.stunt === 'three') {
+                this.object.damage.damageSuccessModifier += 2;
+            }
+        }
         if (this.object.damage.diceToSuccesses > 0) {
             this.object.damage.damageSuccessModifier += Math.min(dice, this.object.damage.diceToSuccesses);
         }
@@ -3852,7 +3861,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.attackType === 'decisive' && dice <= (this.object.hardness - this.object.damage.ignoreHardness)) {
             return await this._failedDecisive(dice);
         }
-        var rollModifiers = {
+        let rollModifiers = {
             successModifier: this.object.damage.damageSuccessModifier,
             doubleSuccess: this.object.damage.doubleSuccess,
             targetNumber: this.object.damage.targetNumber,
@@ -4749,6 +4758,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'resetInit':
                                     case 'gainInitiative':
                                     case 'attackDealsDamage':
+                                    case 'stuntToDamage':
                                         this.object.damage[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'doubleThresholdSuccesses-damage':
@@ -5814,6 +5824,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             soak = Object.values(this.object.targets)[0].rollData.soak;
             attackSuccesses = Object.values(this.object.targets)[0].rollData.attackSuccesses;
             targetSpecificDamageMod = Object.values(this.object.targets)[0].rollData.damageModifier;
+        }
+
+        if(this.object.damage.stuntToDamage) {
+            if(this.object.stunt !== 'none') {
+                damageDicePool += 2;
+            }
         }
 
         if (this.actor.system.battlegroup && this.object.attackType === 'withering') {

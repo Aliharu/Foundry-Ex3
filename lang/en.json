@@ -458,6 +458,7 @@
     "Ex3.VsNonBattlegroups": "Vs Non Battlegroups",
     "Ex3.MaxInitiativeGain": "Max Initiative Gain",
     "Ex3.MaxAttackInitiativeGain": "Max Attack Initiative Gain",
+    "Ex3.StuntToDamage": "Stunt to Damage",
     "Ex3.DivineInspirationTechnique": "Divine Inspiration Technique",
     "Ex3.HolisticMiracleUnderstanding": "Holistic Miracle Understanding",
     "Ex3.FirstMovementoftheDemiurge": "First Movement of the Demiurge",
@@ -1212,6 +1213,8 @@
 
     "Ex3.SpecificDieFaceEffect": "Specific Die Face Effect",
     "Ex3.SpecificDieFaceEffectDamage": "Specific Die Face Effect (Damage)",
+
+    "Ex3.UseOpposingCharms": "Use Opposing Charms",
 
     "Ex3.RestoreMotes": "Restore Motes",
     "Ex3.RestoreWillpower": "Restore Willpower",

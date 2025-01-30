@@ -1686,7 +1686,8 @@ exaltedthird.bonusTypes = {
       gainInitiative: "Ex3.GainInitiative",
       modifyRolledDamage: "Ex3.ModifyRolledDamage",
       attackDealsDamage: "Ex3.AttackDealsDamage",
-      maxAttackInitiativeGain: "Ex3.MaxAttackInitiativeGain"
+      maxAttackInitiativeGain: "Ex3.MaxAttackInitiativeGain",
+      stuntToDamage: "Ex3.StuntToDamage"
     }
   },
   spend: {
@@ -2611,6 +2612,7 @@ exaltedthird.selects = {
     sorcery: "Ex3.Sorcery",
     steady: "Ex3.Steady",
     working: "Ex3.SorcerousWorking",
+    useOpposingCharms: "Ex3.UseOpposingCharms"
   }
 };
 
