@@ -1228,6 +1228,9 @@
     "Ex3.StealMotes": "Steal Motes",
     "Ex3.StealInitiative": "Steal Initiative",
 
+    "Ex3.SubtractTarget": "Subtract (Target)",
+    "Ex3.SubtractMotes": "Subtract Motes",
+
     "Ex3.DamageDiceModifier": "Damage Dice Modifier",
     "Ex3.DamageSuccessModifier": "Damage Success Modifier",
     "Ex3.DamageDoubleSuccess": "Damage Double Success",

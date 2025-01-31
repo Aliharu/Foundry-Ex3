@@ -1727,6 +1727,12 @@ exaltedthird.bonusTypes = {
       'initiative-steal': "Ex3.StealInitiative",
     }
   },
+  subtract: {
+    label: "Ex3.SubtractTarget",
+    bonuses: {
+      'motes-subtract': "Ex3.SubtractMotes",
+    }
+  },
   target: {
     label: "Ex3.Target",
     bonuses: {

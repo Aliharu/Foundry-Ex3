@@ -94,6 +94,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 },
             };
             this.object.subtract = {
+                motes: 0,
                 personalMotes: 0,
                 peripheralMotes: 0,
                 willpower: 0,
@@ -2852,6 +2853,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
             }
+            if (this.object.subtract.motes) {
+                this.object.updateTargetActorData = true;
+                const { spentPeripheral, spentPersonal } = this._lowerMotes(this.object.target.actor, this.object.subtract.motes);
+                this.object.newTargetData.system.motes.peripheral.value = Math.max(0, this.object.newTargetData.system.motes.peripheral.value - spentPeripheral);
+                this.object.newTargetData.system.motes.personal.value = Math.max(0, this.object.newTargetData.system.motes.personal.value - spentPersonal);
+            }
             if (this.object.subtract.personalMotes) {
                 this.object.updateTargetActorData = true;
                 this.object.newTargetData.system.motes.personal.value = Math.max(0, this.object.newTargetData.system.motes.personal.value - this.object.subtract.personalMotes);
@@ -3847,7 +3854,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
-        if(this.object.damage.stuntToDamage) {
+        if (this.object.damage.stuntToDamage) {
             if (this.object.stunt === 'two') {
                 this.object.damage.damageSuccessModifier++;
             }
@@ -4808,6 +4815,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'initiative-steal':
                                         const stealKey = bonus.effect.replace('-steal', '');
                                         this.object.steal[stealKey].max += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        break;
+                                    case 'motes-subtract':
+                                    case 'initiative-subtract':
+                                        const subtractKey = bonus.effect.replace('-subtract', '');
+                                        this.object.subtract[subtractKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'reduceGambitDifficulty':
                                         this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, triggerActor, charm);
@@ -5832,8 +5844,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             targetSpecificDamageMod = Object.values(this.object.targets)[0].rollData.damageModifier;
         }
 
-        if(this.object.damage.stuntToDamage) {
-            if(this.object.stunt !== 'none') {
+        if (this.object.damage.stuntToDamage) {
+            if (this.object.stunt !== 'none') {
                 damageDicePool += 2;
             }
         }
@@ -6753,7 +6765,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (this._isAttackRoll()) {
                     if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
                         if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
-                            if(this.object.damage.maxAttackInitiativeGain) {
+                            if (this.object.damage.maxAttackInitiativeGain) {
                                 this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
                             }
                             if (this.object.targetHit) {
@@ -6764,7 +6776,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
                                 }
                             }
-                            if(this.object.damage.maxInitiativeGain) {
+                            if (this.object.damage.maxInitiativeGain) {
                                 this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
                             }
                             this.object.characterInitiative += this.object.gainedInitiative;
