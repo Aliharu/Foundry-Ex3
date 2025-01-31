@@ -93,7 +93,7 @@ Hooks.once('init', async function () {
     spell: ItemSpellData,
     weapon: ItemWeaponData,
   }
-  
+
   CONFIG.ActiveEffect.dataModels = {
     base: BaseActiveEffectData,
   }
@@ -266,7 +266,7 @@ Hooks.once('init', async function () {
   });
 
   Handlebars.registerHelper("charmCostDisplay", function (system) {
-    if(system.costdisplay) {
+    if (system.costdisplay) {
       return `<b>${game.i18n.localize("Ex3.Cost")}</b>` + ": " + system.costdisplay;
     }
     if (!system.cost) {
@@ -520,7 +520,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         }
         let attacker = null;
 
-        if(message.flags?.exaltedthird?.rollerUuid){
+        if (message.flags?.exaltedthird?.rollerUuid) {
           attacker = await fromUuid(message.flags.exaltedthird.rollerUuid);
         }
 
@@ -569,27 +569,6 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
   if (update && update.round && update.round !== 1) {
     for (var combatant of combat.combatants) {
       const actorData = foundry.utils.duplicate(combatant.actor)
-      var missingPersonal = (combatant.actor.system.motes.personal.max - combatant.actor.system.motes.personal.committed) - combatant.actor.system.motes.personal.value;
-      var missingPeripheral = (combatant.actor.system.motes.peripheral.max - combatant.actor.system.motes.peripheral.committed) - combatant.actor.system.motes.peripheral.value;
-      var restorePersonal = 0;
-      var restorePeripheral = 0;
-      if (missingPeripheral >= 5) {
-        restorePeripheral = 5;
-      }
-      else {
-        if (missingPeripheral > 0) {
-          restorePeripheral = missingPeripheral;
-        }
-        var maxPersonalRestore = 5 - restorePeripheral;
-        if (missingPersonal > maxPersonalRestore) {
-          restorePersonal = maxPersonalRestore;
-        }
-        else {
-          restorePersonal = missingPersonal;
-        }
-      }
-      actorData.system.motes.personal.value += restorePersonal;
-      actorData.system.motes.peripheral.value += restorePeripheral;
       actorData.system.shieldinitiative.value = actorData.system.shieldinitiative.max;
       let totalHealth = 0;
       let bashingDamage = 0;
@@ -597,6 +576,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       let aggravatedDamage = 0;
       let initiativeDamage = 0;
       let moteCost = 0;
+      let moteGain = 5;
       let crasherId = null;
       let currentCombatantInitiative = combatant.initiative;
       for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
@@ -606,16 +586,16 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
           for (const change of activeEffect.changes) {
             let rolledChangeValue = 0;
-            if(CONFIG.exaltedthird.diceRollActiveEffects.includes(change.key)) {
+            if (CONFIG.exaltedthird.diceRollActiveEffects.includes(change.key)) {
               const double10s = (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') && ((currentCombatantInitiative || 0) > 0)
-              let roll = await new Roll(`${parseInt(change.value)}d10cs>=7${double10s ? `ds>=10` : ''}`).toMessage({flavor: `${activeEffect.name} Damage Roll`});
+              let roll = await new Roll(`${parseInt(change.value)}d10cs>=7${double10s ? `ds>=10` : ''}`).toMessage({ flavor: `${activeEffect.name} Damage Roll` });
               rolledChangeValue = roll?.rolls[0]?.total || 0;
             }
             if (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') {
               if (currentCombatantInitiative !== null && (currentCombatantInitiative - rolledChangeValue) <= 0 && currentCombatantInitiative > 0) {
                 crasherId = activeEffect.flags?.exaltedthird?.poisonerCombatantId;
               }
-              if((currentCombatantInitiative || 0) > 0) {
+              if ((currentCombatantInitiative || 0) > 0) {
                 currentCombatantInitiative -= rolledChangeValue;
                 initiativeDamage += rolledChangeValue;
               }
@@ -640,11 +620,20 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             if (change.key === 'system.motes.cost.round') {
               moteCost += parseInt(change.value);
             }
+            if (change.key === 'system.motes.gain.round') {
+              moteGain += parseInt(change.value);
+            }
           }
           for (const change of activeEffect.changes) {
             if (change.key === 'system.initiative.cost.round' && (currentCombatantInitiative || 0) > 0) {
               initiativeDamage += parseInt(change.value);
               currentCombatantInitiative -= parseInt(change.value);
+            }
+          }
+          for (const change of activeEffect.changes) {
+            if (change.key === 'system.initiative.gain.round') {
+              initiativeDamage -= parseInt(change.value);
+              currentCombatantInitiative += parseInt(change.value);
             }
           }
         }
@@ -667,12 +656,34 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         }
       }
       if (moteCost && !game.settings.get("exaltedthird", "gloryOverwhelming")) {
-        var moteResults = combatant.actor.spendMotes(moteCost, actorData);
+        let moteResults = combatant.actor.spendMotes(moteCost, actorData);
         actorData.system.motes.personal.value = moteResults.newPersonalMotes;
         actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
         actorData.system.anima.level = moteResults.newAnimaLevel;
         actorData.system.anima.value = moteResults.newAnimaValue;
       }
+
+      let missingPersonal = (combatant.actor.system.motes.personal.max - combatant.actor.system.motes.personal.committed) - actorData.system.motes.personal.value;
+      let missingPeripheral = (combatant.actor.system.motes.peripheral.max - combatant.actor.system.motes.peripheral.committed) - actorData.system.motes.peripheral.value;
+      let restorePersonal = 0;
+      let restorePeripheral = 0;
+      if (missingPeripheral >= moteGain) {
+        restorePeripheral = moteGain;
+      }
+      else {
+        if (missingPeripheral > 0) {
+          restorePeripheral = missingPeripheral;
+        }
+        let maxPersonalRestore = moteGain - restorePeripheral;
+        if (missingPersonal > maxPersonalRestore) {
+          restorePersonal = maxPersonalRestore;
+        }
+        else {
+          restorePersonal = missingPersonal;
+        }
+      }
+      actorData.system.motes.personal.value += restorePersonal;
+      actorData.system.motes.peripheral.value += restorePeripheral;
 
       if (combatant.flags?.crashRecovery) {
         await combatant.update({
@@ -733,12 +744,17 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
             effect.update({ disabled: true });
           }
         }
-        var moteCost = 0;
+        let moteCost = 0;
+        let moteGain = 0;
+
         for (const activeEffect of currentCombatant.actor.allApplicableEffects()) {
           if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
             for (const change of activeEffect.changes) {
               if (change.key === 'system.motes.cost.turn') {
                 moteCost += parseInt(change.value);
+              }
+              if (change.key === 'system.motes.gain.turn') {
+                moteGain += parseInt(change.value);
               }
             }
           }
@@ -753,6 +769,30 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           actorData.system.anima.level = moteResults.newAnimaLevel;
           actorData.system.anima.value = moteResults.newAnimaValue;
         }
+        if(moteGain) {
+          let missingPersonal = (currentCombatant.actor.system.motes.personal.max - currentCombatant.actor.system.motes.personal.committed) - actorData.system.motes.personal.value;
+          let missingPeripheral = (currentCombatant.actor.system.motes.peripheral.max - currentCombatant.actor.system.motes.peripheral.committed) - actorData.system.motes.peripheral.value;
+          let restorePersonal = 0;
+          let restorePeripheral = 0;
+          if (missingPeripheral >= moteGain) {
+            restorePeripheral = moteGain;
+          }
+          else {
+            if (missingPeripheral > 0) {
+              restorePeripheral = missingPeripheral;
+            }
+            let maxPersonalRestore = moteGain - restorePeripheral;
+            if (missingPersonal > maxPersonalRestore) {
+              restorePersonal = maxPersonalRestore;
+            }
+            else {
+              restorePersonal = missingPersonal;
+            }
+          }
+          actorData.system.motes.personal.value += restorePersonal;
+          actorData.system.motes.peripheral.value += restorePeripheral;
+        }
+
         await currentCombatant.actor.update(actorData);
       }
     }

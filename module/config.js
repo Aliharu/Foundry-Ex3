@@ -186,12 +186,20 @@ exaltedthird.activeEffectChanges = {
       'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
     }
   },
-  motes: {
+  cost: {
     label: "Ex3.Cost",
     effectList: {
       'system.motes.cost.round': 'Ex3.MoteCostPerRound',
       'system.motes.cost.turn': 'Ex3.MoteCostPerTurn',
       'system.initiative.cost.round': 'Ex3.InitiativeCostPerRound',
+    }
+  },
+  gain: {
+    label: "Ex3.Gain",
+    effectList: {
+      'system.motes.gain.round': 'Ex3.MoteGainPerRound',
+      'system.motes.gain.turn': 'Ex3.MoteGainPerTurn',
+      'system.initiative.gain.round': 'Ex3.InitiativeGainPerRound',
     }
   },
   immunities: {
@@ -2256,6 +2264,7 @@ exaltedthird.selects = {
     'action': "Ex3.CharacterRolls",
     'opposedRolls': "Ex3.OpposedRolls",
     'sameAbility': "Ex3.SameAbilityAttribute",
+    'targetingActor': "Ex3.TargetingActor",
     'attacks': "Ex3.Attacks",
     'witheringAttacks': "Ex3.WitheringAttacks",
     'decisiveAttacks': "Ex3.DecisiveAttacks",

@@ -1004,6 +1004,10 @@
     "Ex3.MoteCostPerTurn": "Mote Cost Per Character's Turn",
     "Ex3.InitiativeCostPerRound": "Initiative Cost Per Round",
 
+    "Ex3.MoteGainPerRound": "Mote Gain Per Round",
+    "Ex3.MoteGainPerTurn": "Mote Gain Per Character's Turn",
+    "Ex3.InitiativeGainPerRound": "Initiative Gain Per Round",
+
     "Ex3.InitiativeDamageRoundBashing": "Initiative Damage (Per Round, B)",
     "Ex3.InitiativeDamageRoundLethal": "Initiative Damage (Per Round, L)",
     "Ex3.BashingDamageRound": "Bashing Damage (Per Round)",
@@ -1264,6 +1268,8 @@
     "Ex3.PenaltyFourHealth": "Penalty Four Health",
 
     "Ex3.NonSameAbilityAttribute": "Non-Same Ability Attribute",
+
+    "Ex3.TargetingActor": "Targeting Actor",
 
     "Ex3.Terrestrial1": "Terrestrial 1",
     "Ex3.Celestial1": "Celestial 1",
