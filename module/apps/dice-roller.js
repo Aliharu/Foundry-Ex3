@@ -635,7 +635,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
             if(game.user.targets) {
                 for (const target of Array.from(game.user.targets)) {
-                    for(const charm of target.actor.items.filter(item => item.system.active && item.system.autoaddtorolls === 'targetingActor')) {
+                    for(const charm of target.actor.items.filter(item => item.system.active && item.system.autoaddtorolls === 'whenTargeted')) {
                         this.addOpposedBonus(charm);
                     }
                 }
@@ -2058,7 +2058,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return false;
         }
         switch (charm.system.autoaddtorolls) {
-            case 'targetingActor':
+            case 'whenTargeted':
                 return false;
             case 'action':
                 return (this.object.rollType !== 'useOpposingCharms');

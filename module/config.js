@@ -2264,7 +2264,7 @@ exaltedthird.selects = {
     'action': "Ex3.CharacterRolls",
     'opposedRolls': "Ex3.OpposedRolls",
     'sameAbility': "Ex3.SameAbilityAttribute",
-    'targetingActor': "Ex3.TargetingActor",
+    'whenTargeted': "Ex3.WhenTargetedByRoll",
     'attacks': "Ex3.Attacks",
     'witheringAttacks': "Ex3.WitheringAttacks",
     'decisiveAttacks': "Ex3.DecisiveAttacks",
@@ -2589,7 +2589,7 @@ exaltedthird.selects = {
         none: "Ex3.None",
       },
     },
-  }, 
+  },
   triggerTimes: {
     "beforeRoll": "Ex3.BeforeRoll",
     "afterRoll": "Ex3.AfterRoll",
