@@ -70,6 +70,12 @@
                     </optgroup>
                     {{/each}}
                 </select>
+                {{else ifEquals bonus.effect 'setDamageType'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.damageTypes selected=bonus.value localize=true
+                    blank=''}}
+                </select>
                 {{else ifEquals bonus.effect 'otherEffect'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">

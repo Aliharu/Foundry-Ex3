@@ -2614,6 +2614,7 @@ exaltedthird.selects = {
     target: "Ex3.TargetAttacker",
   },
   rollTypes: {
+    abilityRoll: "Ex3.AbilityRoll",
     attack: "Ex3.Attack",
     command: "Ex3.Command",
     craft: "Ex3.Craft",

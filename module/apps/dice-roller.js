@@ -2330,7 +2330,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         };
 
         // Helper function to parse values (operands)
-        const parseValue = (token) => this._getFormulaActorValue(token.trim(), overrideActor, item);
+        const parseValue = (token) => this._getActorFormulaValue(token.trim(), overrideActor, item);
 
         // Recursive function to evaluate expressions with parentheses and operations
         const evaluateExpression = (expression) => {
@@ -2426,10 +2426,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (rerollFaceMap[split[0]]) {
                 if (damage) {
                     this.object.damage.reroll[rerollFaceMap[split[0]]].status = true;
-                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getFormulaActorValue(split[2], opposedCharmActor);
+                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getActorFormulaValue(split[2], opposedCharmActor);
                 } else {
                     this.object.damage.reroll[rerollFaceMap[split[0]]].status = true;
-                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getFormulaActorValue(split[2], opposedCharmActor);
+                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getActorFormulaValue(split[2], opposedCharmActor);
                 }
             }
         }
@@ -2450,7 +2450,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula.includes('cap')) {
             var split = formula.split(' ');
             value = parseInt(split[0]);
-            cap = this._getFormulaActorValue(split[2], overrideActor);
+            cap = this._getActorFormulaValue(split[2], overrideActor);
         }
         else {
             value = parseInt(formula);
@@ -2505,7 +2505,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
     }
 
-    _getFormulaActorValue(formula, overrideActor = null, item = null) {
+    _getActorFormulaValue(formula, overrideActor = null, item = null) {
         var formulaVal = 0;
         var forumlaActor = this.actor;
         if (overrideActor) {
@@ -4914,7 +4914,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'rollType':
-                    if (requirementObject.value === 'attack') {
+                    if(requirementObject.value === 'abilityRoll') {
+                        if (this.object.rollType === 'useOpposingCharms') {
+                            fufillsRequirements = false;
+                        }
+                    }
+                    else if (requirementObject.value === 'attack') {
                         if (!this._isAttackRoll()) {
                             fufillsRequirements = false;
                         }
@@ -5336,7 +5341,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
             if (targetBattlegroup) {
-                var remainingHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
+                let remainingHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
                 while (remainingHealth <= characterDamage && this.object.newTargetData.system.size.value > 0) {
                     sizeDamaged++;
                     this.object.newTargetData.system.health.bashing = 0;
@@ -5898,9 +5903,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             damageDicePool -= Math.max(0, soak - this.object.damage.ignoreSoak);
             if (damageDicePool < this.object.overwhelming) {
                 damageDicePool = Math.max(damageDicePool, this.object.overwhelming);
-            }
-            if (damageDicePool < 0) {
-                damageDicePool = 0;
             }
             damageDicePool += this.object.damage.postSoakDamage;
         }

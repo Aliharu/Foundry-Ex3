@@ -1,4 +1,4 @@
-import { abilityField, attributeField, resourceField, rollSettingField, shipData, statField, staticSettingField, traitField, warstriderData } from "./common-template.js";
+import { abilityField, attributeField, healthLevels, resourceField, rollSettingField, shipData, statField, staticSettingField, traitField, warstriderData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -24,42 +24,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         supernal: new fields.StringField({ initial: "" }),
         apocalyptic: new fields.StringField({ initial: "" }),
       }),
-      health: new fields.SchemaField({
-        levels: new fields.SchemaField({
-          zero: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 1 }),
-            penalty: new fields.NumberField({ initial: 0 }),
-          }),
-          one: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 2 }),
-            penalty: new fields.NumberField({ initial: 1 }),
-          }),
-          two: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 2 }),
-            penalty: new fields.NumberField({ initial: 2 }),
-          }),
-          three: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
-            penalty: new fields.NumberField({ initial: 3 }),
-          }),
-          four: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 1 }),
-            penalty: new fields.NumberField({ initial: 4 }),
-          }),
-          inc: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 1 }),
-            penalty: new fields.StringField({ initial: "inc" }),
-          }),
-        }),
-        value: new fields.NumberField({ initial: 0 }),
-        min: new fields.NumberField({ initial: 0 }),
-        max: new fields.NumberField({ initial: 0 }),
-        bashing: new fields.NumberField({ initial: 0 }),
-        lethal: new fields.NumberField({ initial: 0 }),
-        aggravated: new fields.NumberField({ initial: 0 }),
-        penalty: new fields.NumberField({ initial: 0 }),
-        penaltymod: new fields.NumberField({ initial: 0 }),
-      }),
+      ...healthLevels(),
       motes: new fields.SchemaField({
         personal: new fields.SchemaField({
           value: new fields.NumberField({ initial: 0 }),

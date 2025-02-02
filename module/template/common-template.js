@@ -33,7 +33,7 @@ export function staticSettingField(attribute, ability) {
 
 export function traitField() {
     return new fields.SchemaField({
-        value: new fields.ArrayField(new fields.StringField({ initial: ""})),
+        value: new fields.ArrayField(new fields.StringField({ initial: "" })),
         custom: new fields.StringField({ initial: "" }),
     });
 }
@@ -62,42 +62,7 @@ export function abilityField(prefAttribute, ability) {
 
 export function shipData() {
     return new fields.SchemaField({
-        health: new fields.SchemaField({
-            levels: new fields.SchemaField({
-                zero: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 0 }),
-                    penalty: new fields.NumberField({ initial: 0 }),
-                }),
-                one: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 1 }),
-                    penalty: new fields.NumberField({ initial: 1 }),
-                }),
-                two: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 1 }),
-                    penalty: new fields.NumberField({ initial: 2 }),
-                }),
-                three: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 0 }),
-                    penalty: new fields.NumberField({ initial: 3 }),
-                }),
-                four: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 1 }),
-                    penalty: new fields.NumberField({ initial: 4 }),
-                }),
-                inc: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 1 }),
-                    penalty: new fields.StringField({ initial: "inc" }),
-                }),
-            }),
-
-            value: new fields.NumberField({ initial: 0 }),
-            min: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 0 }),
-            bashing: new fields.NumberField({ initial: 0 }),
-            lethal: new fields.NumberField({ initial: 0 }),
-            aggravated: new fields.NumberField({ initial: 0 }),
-            penalty: new fields.NumberField({ initial: 0 }),
-        }),
+        ...healthLevels('ship'),
         momentum: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
         }),
@@ -113,41 +78,7 @@ export function shipData() {
 
 export function warstriderData() {
     return new fields.SchemaField({
-        health: new fields.SchemaField({
-            levels: new fields.SchemaField({
-                zero: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 5 }),
-                    penalty: new fields.NumberField({ initial: 0 }),
-                }),
-                one: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 5 }),
-                    penalty: new fields.NumberField({ initial: 1 }),
-                }),
-                two: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 10 }),
-                    penalty: new fields.NumberField({ initial: 2 }),
-                }),
-                three: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 0 }),
-                    penalty: new fields.NumberField({ initial: 3 }),
-                }),
-                four: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 10 }),
-                    penalty: new fields.NumberField({ initial: 4 }),
-                }),
-                inc: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 1 }),
-                    penalty: new fields.StringField({ initial: "inc" }),
-                }),
-            }),
-            value: new fields.NumberField({ initial: 0 }),
-            min: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 0 }),
-            bashing: new fields.NumberField({ initial: 0 }),
-            lethal: new fields.NumberField({ initial: 0 }),
-            aggravated: new fields.NumberField({ initial: 0 }),
-            penalty: new fields.NumberField({ initial: 0 }),
-        }),
+        ...healthLevels('warstrider'),
         soak: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
         }),
@@ -162,6 +93,71 @@ export function warstriderData() {
             value: new fields.NumberField({ initial: 0 }),
         }),
     });
+}
+
+export function healthLevels(entityType = 'person') {
+    const defaultValues = {
+        person: {
+            "zero": 1,
+            "one": 2,
+            "two": 2,
+            "four": 1,
+        },
+        warstrider: {
+            "zero": 5,
+            "one": 5,
+            "two": 10,
+            "four": 10,
+        },
+        ship: {
+            "zero": 0,
+            "one": 1,
+            "two": 1,
+            "four": 1,
+        }
+    }
+    return {
+        health: new fields.SchemaField({
+            levels: new fields.SchemaField({
+                temp: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: 0 }),
+                    penalty: new fields.NumberField({ initial: 0 }),
+                }),
+                zero: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: defaultValues[entityType]['zero'] }),
+                    penalty: new fields.NumberField({ initial: 0 }),
+                }),
+                one: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: defaultValues[entityType]['one'] }),
+                    penalty: new fields.NumberField({ initial: 1 }),
+                }),
+                two: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: defaultValues[entityType]['two'] }),
+                    penalty: new fields.NumberField({ initial: 2 }),
+                }),
+                three: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: 0 }),
+                    penalty: new fields.NumberField({ initial: 3 }),
+                }),
+                four: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: defaultValues[entityType]['four'] }),
+                    penalty: new fields.NumberField({ initial: 4 }),
+                }),
+                inc: new fields.SchemaField({
+                    value: new fields.NumberField({ initial: 1 }),
+                    penalty: new fields.StringField({ initial: "inc" }),
+                }),
+            }),
+            value: new fields.NumberField({ initial: 0 }),
+            min: new fields.NumberField({ initial: 0 }),
+            max: new fields.NumberField({ initial: 0 }),
+            bashing: new fields.NumberField({ initial: 0 }),
+            lethal: new fields.NumberField({ initial: 0 }),
+            aggravated: new fields.NumberField({ initial: 0 }),
+            penalty: new fields.NumberField({ initial: 0 }),
+            penaltymod: new fields.NumberField({ initial: 0 }),
+        }),
+    };
 }
 
 export function equipmentData() {
