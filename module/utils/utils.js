@@ -20,24 +20,25 @@ export function getNumberFormula(formulaString, actor, item = null) {
     };
 
     const formulaData = (changeValue, actor, item = null) => {
+        let returnValue = 0;
+        let negativeValue = false;
         if (parseInt(changeValue)) {
             return parseInt(changeValue);
         }
-        var negativeValue = false;
         if (changeValue.includes('-')) {
-            changeValue = changeValue.replace('-', '');
+            returnValue = changeValue.replace('-', '');
             negativeValue = true;
         }
         if (changeValue.toLowerCase() === 'activationcount') {
-            changeValue = item.effect?.parent?.flags?.exaltedthird?.currentIterationsActive ?? 1;
+            returnValue = item.effect?.parent?.flags?.exaltedthird?.currentIterationsActive ?? 1;
         }
         if (actor.getRollData()[changeValue]?.value) {
-            changeValue = actor.getRollData()[changeValue]?.value;
+            returnValue = actor.getRollData()[changeValue]?.value;
         }
         if (negativeValue) {
-            changeValue *= -1;
+            returnValue *= -1;
         }
-        return changeValue;
+        return returnValue;
     };
 
     // Helper function to parse values (operands)
