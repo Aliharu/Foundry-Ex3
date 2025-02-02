@@ -195,25 +195,26 @@ Hooks.once('init', async function () {
 
   Handlebars.registerHelper('healthCheck', function (health, type, options) {
     let healthLevels = options.data.root.system.health.levels;
+    let zeroPenalty = healthLevels.zero.value + healthLevels.temp.value;
     if (type === 'warstrider') {
       healthLevels = options.data.root.system.warstrider.health.levels;
     }
     else if (type === 'ship') {
       healthLevels = options.data.root.system.ship.health.levels;
     }
-    if (health < healthLevels.zero.value) {
+    if (health < zeroPenalty) {
       return '0'
     }
-    else if (health < healthLevels.zero.value + healthLevels.one.value) {
+    else if (health < zeroPenalty + healthLevels.one.value) {
       return '1'
     }
-    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value) {
+    else if (health < zeroPenalty + healthLevels.one.value + healthLevels.two.value) {
       return '2'
     }
-    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.three.value) {
+    else if (health < zeroPenalty + healthLevels.one.value + healthLevels.two.value + healthLevels.three.value) {
       return '3'
     }
-    else if (health < healthLevels.zero.value + healthLevels.one.value + healthLevels.two.value + healthLevels.three.value + healthLevels.four.value) {
+    else if (health < zeroPenalty + healthLevels.one.value + healthLevels.two.value + healthLevels.three.value + healthLevels.four.value) {
       return '4'
     }
     return 'i'

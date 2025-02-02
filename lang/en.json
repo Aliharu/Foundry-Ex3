@@ -459,6 +459,8 @@
     "Ex3.MaxInitiativeGain": "Max Initiative Gain",
     "Ex3.MaxAttackInitiativeGain": "Max Attack Initiative Gain",
     "Ex3.StuntToDamage": "Stunt to Damage",
+    "Ex3.HalfPostSoakDamage": "Half Post Soak Damage",
+
     "Ex3.DivineInspirationTechnique": "Divine Inspiration Technique",
     "Ex3.HolisticMiracleUnderstanding": "Holistic Miracle Understanding",
     "Ex3.FirstMovementoftheDemiurge": "First Movement of the Demiurge",
@@ -1235,6 +1237,9 @@
     "Ex3.SubtractTarget": "Subtract (Target)",
     "Ex3.SubtractMotes": "Subtract Motes",
 
+    "Ex3.RestoreTarget": "Restore (Target)",
+    "Ex3.RestoreTargetInitiative": "Restore Target Initiative",
+
     "Ex3.DamageDiceModifier": "Damage Dice Modifier",
     "Ex3.DamageSuccessModifier": "Damage Success Modifier",
     "Ex3.DamageDoubleSuccess": "Damage Double Success",
@@ -1262,6 +1267,7 @@
 
     "Ex3.NoName": "No Name",
 
+    "Ex3.TemporaryHealth": "Temporary Health (-0)",
     "Ex3.PenaltyZeroHealth": "Penalty Zero Health",
     "Ex3.PenaltyOneHealth": "Penalty One Health",
     "Ex3.PenaltyTwoHealth": "Penalty Two Health",

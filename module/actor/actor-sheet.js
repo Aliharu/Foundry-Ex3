@@ -2305,18 +2305,23 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       'hasOxBody': false,
     }
     if (healthType === 'warstrider') {
+      templateData.temp = this.actor.system.ship.warstrider.levels.temp.value;
       templateData.zero = this.actor.system.warstrider.health.levels.zero.value;
       templateData.one = this.actor.system.warstrider.health.levels.one.value;
       templateData.two = this.actor.system.warstrider.health.levels.two.value;
+      templateData.three = this.actor.system.warstrider.health.levels.three.value;
       templateData.four = this.actor.system.warstrider.health.levels.four.value;
     }
     else if (healthType === 'ship') {
+      templateData.temp = this.actor.system.ship.health.levels.temp.value;
       templateData.zero = this.actor.system.ship.health.levels.zero.value;
       templateData.one = this.actor.system.ship.health.levels.one.value;
       templateData.two = this.actor.system.ship.health.levels.two.value;
+      templateData.three = this.actor.system.ship.health.levels.three.value;
       templateData.four = this.actor.system.ship.health.levels.four.value;
     }
     else {
+      templateData.temp = this.actor.system.health.levels.temp.value;
       templateData.zero = this.actor.system.health.levels.zero.value;
       templateData.one = this.actor.system.health.levels.one.value;
       templateData.two = this.actor.system.health.levels.two.value;
@@ -2351,6 +2356,9 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         if (result) {
           let healthData = {
             levels: {
+              temp: {
+                value: templateData.temp,
+              },
               zero: {
                 value: templateData.zero,
               },
@@ -2360,24 +2368,21 @@ export class ExaltedThirdActorSheet extends ActorSheet {
               two: {
                 value: templateData.two,
               },
+              three: {
+                value: templateData.three,
+              },
               four: {
                 value: templateData.four,
               },
             },
-            bashing: 0,
-            lethal: 0,
-            aggravated: 0,
           };
           healthData.levels.zero.value = result.zero.value;
           if (!this.actor.system.battlegroup || healthType !== 'person') {
+            healthData.levels.temp.value = result.temp.value;
             healthData.levels.one.value = result.one.value;
             healthData.levels.two.value = result.two.value;
+            healthData.levels.three.value = result.three.value;
             healthData.levels.four.value = result.four.value;
-            if (healthType === 'person') {
-              healthData.levels.three = {
-                value: result.three.value || 0,
-              }
-            }
           }
           if (healthType === 'person') {
             this.actor.update({ [`system.health`]: healthData });

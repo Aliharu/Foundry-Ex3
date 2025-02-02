@@ -117,6 +117,7 @@ exaltedthird.activeEffectChanges = {
   health: {
     label: "Ex3.Health",
     effectList: {
+      'system.health.levels.temp.value': 'Ex3.PenaltyZeroHealth',
       'system.health.levels.zero.value': 'Ex3.PenaltyZeroHealth',
       'system.health.levels.one.value': 'Ex3.PenaltyOneHealth',
       'system.health.levels.two.value': 'Ex3.PenaltyTwoHealth',
@@ -1696,7 +1697,8 @@ exaltedthird.bonusTypes = {
       attackDealsDamage: "Ex3.AttackDealsDamage",
       maxAttackInitiativeGain: "Ex3.MaxAttackInitiativeGain",
       maxInitiativeGain: "Ex3.MaxInitiativeGain",
-      stuntToDamage: "Ex3.StuntToDamage"
+      stuntToDamage: "Ex3.StuntToDamage",
+      halfPostSoakDamage: "Ex3.HalfPostSoakDamage"
     }
   },
   spend: {
@@ -1733,6 +1735,12 @@ exaltedthird.bonusTypes = {
     bonuses: {
       'motes-steal': "Ex3.StealMotes",
       'initiative-steal': "Ex3.StealInitiative",
+    }
+  },
+  restoreTarget: {
+    label: "Ex3.RestoreTarget",
+    bonuses: {
+      'initiative-restore-target': "Ex3.RestoreTargetInitiative",
     }
   },
   subtract: {

@@ -100,6 +100,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 willpower: 0,
                 initiative: 0,
             };
+            this.object.restoreOnTarget = {
+                motes: 0,
+                willpower: 0,
+                initiative: 0,
+            };
             this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
@@ -211,6 +216,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 maxInitiativeGain: null,
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
+                halfPostSoakDamage: false,
                 ignoreSoak: 0,
                 ignoreHardness: 0,
                 gainInitiative: !this.actor?.system?.battlegroup,
@@ -633,9 +639,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
 
-            if(game.user.targets) {
+            if (game.user.targets) {
                 for (const target of Array.from(game.user.targets)) {
-                    for(const charm of target.actor.items.filter(item => item.system.active && item.system.autoaddtorolls === 'whenTargeted')) {
+                    for (const charm of target.actor.items.filter(item => item.system.active && item.system.autoaddtorolls === 'whenTargeted')) {
                         this.addOpposedBonus(charm);
                     }
                 }
@@ -2679,7 +2685,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             charm.timesAdded = 1;
             this.object.opposingCharms.push(charm);
         }
-        if(charm.system.diceroller?.opposedbonuses) {
+        if (charm.system.diceroller?.opposedbonuses) {
             this.object.targetNumber += charm.system.diceroller.opposedbonuses.increasetargetnumber;
             this.object.rerollSuccesses += this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses, charm.actor, charm);
             this.object.gambitDifficulty += this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor, charm);
@@ -2891,6 +2897,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.subtract.willpower) {
                 this.object.updateTargetActorData = true;
                 this.object.newTargetData.system.willpower.value = Math.max(0, this.object.newTargetData.system.willpower.value - this.object.subtract.willpower);
+            }
+            if (this.object.restoreOnTarget.initiative) {
+                this.object.updateTargetInitiative = true;
+                this.object.newTargetInitiative += this.object.restoreOnTarget.initiative;
             }
             if (this.object.targetDoesntResetOnslaught) {
                 this.object.newTargetData.system.dontresetonslaught = true;
@@ -4784,6 +4794,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'gainInitiative':
                                     case 'attackDealsDamage':
                                     case 'stuntToDamage':
+                                    case 'halfPostSoakDamage':
                                         this.object.damage[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'doubleThresholdSuccesses-damage':
@@ -4832,6 +4843,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'initiative-subtract':
                                         const subtractKey = bonus.effect.replace('-subtract', '');
                                         this.object.subtract[subtractKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        break;
+                                    case 'initiative-restore-target':
+                                        const restoreTargetKey = bonus.effect.replace('-restore-target', '');
+                                        this.object.restoreOnTarget[restoreTargetKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'reduceGambitDifficulty':
                                         this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, triggerActor, charm);
@@ -4914,7 +4929,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'rollType':
-                    if(requirementObject.value === 'abilityRoll') {
+                    if (requirementObject.value === 'abilityRoll') {
                         if (this.object.rollType === 'useOpposingCharms') {
                             fufillsRequirements = false;
                         }
@@ -5242,6 +5257,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             case 'restorewhitexp':
                 this.object.restore.whitexp += dieFaceAmount;
                 break;
+            case 'restoretargetinitiative':
+                this.object.restoreOnTarget.initiative += dieFaceAmount;
+                break;
         }
     }
 
@@ -5336,8 +5354,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 totalHealth = this.object.newTargetData.system.health.levels.zero.value + this.object.newTargetData.system.size.value;
             }
             else {
-                for (let [key, health_level] of Object.entries(this.object.newTargetData.system.health.levels)) {
-                    totalHealth += health_level.value;
+                for (let [key, healthLevel] of Object.entries(this.object.newTargetData.system.health.levels)) {
+                    totalHealth += healthLevel.value;
                 }
             }
             if (targetBattlegroup) {
@@ -5909,6 +5927,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.damage.doublePreRolledDamage) {
             damageDicePool *= 2;
         }
+        if(this.object.damage.halfPostSoakDamage) {
+            damageDicePool = Math.ceil(damageDicePool / 2);
+        }
         if (damageDicePool < 0) {
             damageDicePool = 0;
         }
@@ -6410,6 +6431,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 motes: 0,
                 peripheralMotes: 0,
                 personalMotes: 0,
+                willpower: 0,
+                initiative: 0,
+            };
+        }
+        if (this.object.restoreOnTarget === undefined) {
+            this.object.restoreOnTarget = {
+                motes: 0,
                 willpower: 0,
                 initiative: 0,
             };
