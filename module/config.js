@@ -182,6 +182,7 @@ exaltedthird.activeEffectChanges = {
       'system.penaltymodifier.value': 'Ex3.DicePenalty',
       'system.baseinitiative.value': 'Ex3.BaseInitiative',
       'system.crashbonus.value': 'Ex3.CrashBonus',
+      'system.mount.speedbonus': 'Ex3.MountSpeedBonus',
       'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
       'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
       'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
@@ -201,6 +202,7 @@ exaltedthird.activeEffectChanges = {
       'system.motes.gain.round': 'Ex3.MoteGainPerRound',
       'system.motes.gain.turn': 'Ex3.MoteGainPerTurn',
       'system.initiative.gain.round': 'Ex3.InitiativeGainPerRound',
+      'system.initiative.gain.turn': 'Ex3.InitiativeGainPerTurn',
     }
   },
   immunities: {
@@ -1225,12 +1227,6 @@ exaltedthird.statusEffects = [
     label: 'Ex3.Entangled',
     name: 'entangled',
     description: "<p>Character is entangled, +1 Mobility Penalty.</p>"
-  },
-  {
-    img: 'systems/exaltedthird/assets/icons/horse-head.svg',
-    id: 'mounted',
-    label: 'Ex3.Mounted',
-    description: "<p>Character is mounted, +1 Defense and +1 die to attack rolls unless attacker has the reaching tag.</p>"
   },
   {
     img: 'systems/exaltedthird/assets/icons/hidden.svg',

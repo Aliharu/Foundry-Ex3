@@ -1412,11 +1412,11 @@ export class ExaltedThirdActor extends Actor {
       currentPenalty = 0;
     }
     else {
-      for (let [key, health_level] of Object.entries(this.system.health.levels)) {
+      for (let [key, healthLevel] of Object.entries(this.system.health.levels)) {
         if ((this.system.health.bashing + this.system.health.lethal + this.system.health.aggravated) > totalHealth) {
-          currentPenalty = health_level.penalty;
+          currentPenalty = healthLevel.penalty;
         }
-        totalHealth += health_level.value;
+        totalHealth += healthLevel.value;
       }
     }
 
@@ -1477,6 +1477,7 @@ export class ExaltedThirdActor extends Actor {
     data.defensepenalty = { 'value': currentDefensePenalty };
     data.woundpenalty = { 'value': currentPenalty };
     data.armorpenalty = { 'value': armorPenalty };
+    data.mountspeedbonus = { 'value': this.system.mount.speedbonus };
     data.cover = { 'value': coverBonus };
     data.initiative = { 'value': 0 };
 

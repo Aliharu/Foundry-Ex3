@@ -745,6 +745,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         }
         let moteCost = 0;
         let moteGain = 0;
+        let initiativeGain = 0;
 
         for (const activeEffect of currentCombatant.actor.allApplicableEffects()) {
           if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
@@ -754,6 +755,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
               }
               if (change.key === 'system.motes.gain.turn') {
                 moteGain += parseInt(change.value);
+              }
+              if (change.key === 'system.initiative.gain.turn') {
+                initiativeGain += parseInt(change.value);
               }
             }
           }
@@ -767,6 +771,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
           actorData.system.anima.level = moteResults.newAnimaLevel;
           actorData.system.anima.value = moteResults.newAnimaValue;
+        }
+        if (combatant.initiative !== null && initiativeGain) {
+          game.combat.setInitiative(combatant.id, combatant.initiative + initiativeGain, null);
         }
         if(moteGain) {
           let missingPersonal = (currentCombatant.actor.system.motes.personal.max - currentCombatant.actor.system.motes.personal.committed) - actorData.system.motes.personal.value;

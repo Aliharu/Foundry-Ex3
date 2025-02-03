@@ -765,6 +765,7 @@
     "Ex3.SorcererCircle": "Sorcerer Level",
     "Ex3.IsCrafter": "Show craft fields",
     "Ex3.UseDotValues": "Use dot values",
+    "Ex3.HasMount": "Has Mount",
     "Ex3.ShowAnima": "Show Anima",
     "Ex3.ApplyDecisiveDamage": "Apply Decisive Damage",
     "Ex3.ApplyWitheringDamage": "Apply Withering Damage",
@@ -780,6 +781,8 @@
     "Ex3.FeatsofStrength": "Feats of Strength",
     "Ex3.EffectiveStrength": "Effective Strength",
     "Ex3.CharacterNotes": "Character Notes",
+
+    "Ex3.MountSpeedBonus": "Mount Speed Bonus",
 
     "Ex3.Preset": "Preset",
     "Ex3.CustomInput": "Custom Input (Preset must be none)",
@@ -1009,6 +1012,7 @@
     "Ex3.MoteGainPerRound": "Mote Gain Per Round",
     "Ex3.MoteGainPerTurn": "Mote Gain Per Character's Turn",
     "Ex3.InitiativeGainPerRound": "Initiative Gain Per Round",
+    "Ex3.InitiativeGainPerTurn": "Initiative Gain Per Turn",
 
     "Ex3.InitiativeDamageRoundBashing": "Initiative Damage (Per Round, B)",
     "Ex3.InitiativeDamageRoundLethal": "Initiative Damage (Per Round, L)",

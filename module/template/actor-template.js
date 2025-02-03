@@ -125,6 +125,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         editmode: new fields.BooleanField({ initial: true }),
         issorcerer: new fields.BooleanField({ initial: true }),
         iscrafter: new fields.BooleanField({ initial: true }),
+        hasmount: new fields.BooleanField({ initial: false }),
         usedotsvalues: new fields.BooleanField({ initial: true }),
         showanima: new fields.BooleanField({ initial: true }),
         hasaura: new fields.BooleanField({ initial: false }),
@@ -180,6 +181,10 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       }),
       ship: shipData(),
       warstrider: warstriderData(),
+      mount: new fields.SchemaField({
+        mounted: new fields.BooleanField({ initial: false }),
+        speedbonus: new fields.NumberField({ initial: 0 }),
+      }),
     }
   }
 

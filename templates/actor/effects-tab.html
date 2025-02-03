@@ -82,8 +82,7 @@
     </div>
     <div>
         <label class="resource-label">{{localize "Ex3.CrashBonus"}}</label>
-        <input type="number" name="system.crashbonus.value" value="{{system.crashbonus.value}}"
-            data-dtype="Number" />
+        <input type="number" name="system.crashbonus.value" value="{{system.crashbonus.value}}" data-dtype="Number" />
     </div>
     {{#if useShieldInitiative}}
     <div>
@@ -105,13 +104,13 @@
             system.dontresetonslaught}}>
     </div>
     {{#ifEquals data.type 'character'}}
-        {{#if system.settings.editmode}}
-            <div>
-                <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
-                <button class="roll-button set-dice-cap"><i class="fas fa-cog"></i>{{localize
-                    "Ex3.SetCustomDiceCap"}}</button>
-            </div>
-        {{/if}}
+    {{#if system.settings.editmode}}
+    <div>
+        <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
+        <button class="roll-button set-dice-cap"><i class="fas fa-cog"></i>{{localize
+            "Ex3.SetCustomDiceCap"}}</button>
+    </div>
+    {{/if}}
     {{/ifEquals}}
 </div>
 <div>
@@ -151,7 +150,8 @@
             <div>
                 <label class="resource-label">{{localize "Ex3.Ability"}} </label>
             </div>
-            <select name="system.settings.rollsettings.{{key}}.ability" value="{{roll.ability}}" data-type="String" style="max-width: 52%;">
+            <select name="system.settings.rollsettings.{{key}}.ability" value="{{roll.ability}}" data-type="String"
+                style="max-width: 52%;">
                 {{selectOptions ../abilityWithCustomsSelectList selected=roll.ability localize=true}}
             </select>
         </div>
@@ -190,8 +190,8 @@
         {{#ifEquals key 'withering'}}
         <div class="flexrow flex-center">
             <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
-            <input type="number" name="system.settings.attackrollsettings.{{key}}.overwhelming" value="{{roll.overwhelming}}"
-                data-dtype="Number" />
+            <input type="number" name="system.settings.attackrollsettings.{{key}}.overwhelming"
+                value="{{roll.overwhelming}}" data-dtype="Number" />
         </div>
         {{/ifEquals}}
     </div>
@@ -257,17 +257,14 @@
         <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                 height="24" />
         </div>
-        <h4 class="item-name"><b>{{item.name}}
-            <div class="item-controls">
-                {{#if item.system.active}}
-                <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
-                {{else}}
-                <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
-                {{/if}}
-            </div>
-        </b>
-        </h4>
-        
+        <h4 class="item-name"><b>{{item.name}}</b></h4>
+        <div class="item-controls">
+            {{#if item.system.active}}
+            <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
+            {{else}}
+            <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
+            {{/if}}
+        </div>
     </li>
     <li class="item-description">
         <div>

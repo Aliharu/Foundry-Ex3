@@ -2540,6 +2540,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             hasaura: result.hasAura.checked,
             issorcerer: result.isSorcerer.checked,
             iscrafter: result.isCrafter.checked,
+            hasmount: result.hasMount.checked,
             showmaidens: result.showMaidens.checked,
           }
           if (result.exigentType) {

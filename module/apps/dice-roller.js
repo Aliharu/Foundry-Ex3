@@ -861,6 +861,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     },
                 );
             }
+            if (this.actor.system.mount.mounted && (this.object.rollType === 'rush' || this.object.rollType === 'disengage')) {
+                effectsAndTags.push(
+                    {
+                        name: "Ex3.MountSpeedBonus",
+                        summary: `${this.actor.system.mount.speedbonus} Dice`
+                    },
+                );
+            }
             if (this.actor.system.battlegroup) {
                 effectsAndTags.push({
                     name: "Ex3.CommandBonus",
@@ -1292,8 +1300,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (target.actor.effects.some(e => e.statuses.has('prone'))) {
                     effectiveEvasion -= 2;
                 }
-                if (target.actor.effects.some(e => e.statuses.has('mounted'))) {
-                    if (!this.object.conditions.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
+                if (target.actor.system.mount.mounted) {
+                    if (!this.actor.system.mount.mounted && this.object.range === 'close') {
                         const combinedTags = this.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
                             const tags = weapon.system.traits.weapontags.value || [];
                             return acc.concat(tags);
@@ -1350,8 +1358,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 target.rollData.soak = 0;
             }
 
-            if (this.object.attackType === 'withering' && this.object.conditions?.some(e => e.statuses.has('mounted'))) {
-                if (!target.actor.effects.some(e => e.statuses.has('mounted')) && this.object.range === 'close') {
+            if (this.object.attackType === 'withering' && this.actor.system.mount.mounted) {
+                if (!target.actor.system.mount.mounted && this.object.range === 'close') {
                     const combinedTags = target.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
                         const tags = weapon.system.traits.weapontags.value || [];
                         return acc.concat(tags);
@@ -5246,7 +5254,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
                 break;
             case 'subtractdamagesuccesses':
-                this.object.damageSuccesses = Math.max(0, this.object.damageSuccesses - dieFaceAmount);
+                if(this.object.rollType === 'damageResults') {
+                    this.object.damageSuccesses = Math.max(0, this.object.damageSuccesses - dieFaceAmount);
+                } else {
+                    this.object.damage.damageSuccessModifier -= dieFaceAmount;
+                }
                 break;
             case 'gainsilverxp':
                 this.object.restore.silverxp += dieFaceAmount;
@@ -5788,6 +5800,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
+        if (this.actor.system.mount.mounted && (this.object.rollType === 'rush' || this.object.rollType === 'disengage')) {
+            dicePool += this.actor.system.mount.speedbonus;
+        }
         if (this.object.woundPenalty) {
             if (this.actor.system.warstrider.equipped) {
                 totalPenalties += this.actor.system.warstrider.health.penalty;
@@ -5927,7 +5942,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.damage.doublePreRolledDamage) {
             damageDicePool *= 2;
         }
-        if(this.object.damage.halfPostSoakDamage) {
+        if (this.object.damage.halfPostSoakDamage) {
             damageDicePool = Math.ceil(damageDicePool / 2);
         }
         if (damageDicePool < 0) {

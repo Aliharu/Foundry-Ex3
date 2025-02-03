@@ -48,9 +48,12 @@
         {{localize "Ex3.Combat"}} <a><i class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
 </div>
 <div class="grid {{#if steadyAction}} grid-4col {{else}} grid-3col {{/if}} flex-group-center">
-    <button class="roll-button attack-roll" data-attack-type="withering"><i class="fas fa-swords"></i>{{localize "Ex3.Withering"}}</button>
-    <button class="roll-button attack-roll" data-attack-type="decisive"><i class="fas fa-axe-battle"></i>{{localize "Ex3.Decisive"}}</button>
-    <button class="roll-button attack-roll" data-attack-type="gambit"><i class="fas fa-fist-raised"></i>{{localize "Ex3.Gambit"}}</button>
+    <button class="roll-button attack-roll" data-attack-type="withering"><i class="fas fa-swords"></i>{{localize
+        "Ex3.Withering"}}</button>
+    <button class="roll-button attack-roll" data-attack-type="decisive"><i class="fas fa-axe-battle"></i>{{localize
+        "Ex3.Decisive"}}</button>
+    <button class="roll-button attack-roll" data-attack-type="gambit"><i class="fas fa-fist-raised"></i>{{localize
+        "Ex3.Gambit"}}</button>
     {{#if steadyAction}}
     <button class="roll-button steady"><i class="fas fa-wave-pulse"></i>{{localize "Ex3.Steady"}}</button>
     {{/if}}
@@ -165,14 +168,28 @@
             </div>
             {{/if}}
         </div>
+        {{#if system.settings.hasmount}}
+        <div class="grid grid-2col flex-group-center">
+            <div>
+                <div class="resource-label">{{localize "Ex3.Mounted"}}</div>
+                <input type="checkbox" name="system.mount.mounted" {{checked system.mount.mounted}}>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.SpeedBonus"}}</label>
+                <input type="number" name="system.mount.speedbonus" value="{{system.mount.speedbonus}}">
+            </div>
+        </div>
+        {{/if}}
         {{#if system.settings.issorcerer}}
         <div class="grid grid-3col flex-group-center">
             <div>
                 <label class="resource-label">{{localize "Ex3.SorcerousMotes"}} </label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="number" name="system.sorcery.motes.value" value="{{system.sorcery.motes.value}}" data-dtype="Number" />
+                    <input type="number" name="system.sorcery.motes.value" value="{{system.sorcery.motes.value}}"
+                        data-dtype="Number" />
                     /
-                    <input type="number" name="system.sorcery.motes.max" value="{{system.sorcery.motes.max}}" data-dtype="Number" />
+                    <input type="number" name="system.sorcery.motes.max" value="{{system.sorcery.motes.max}}"
+                        data-dtype="Number" />
                 </div>
             </div>
             <div>
@@ -181,7 +198,8 @@
                     "Ex3.Roll"}}</button>
             </div>
             <div>
-                <label class="resource-label">{{localize "Ex3.SorcerousWorking"}} <a><i class="fas fa-info-circle show-workings cursor-pointer"></i></a></label>
+                <label class="resource-label">{{localize "Ex3.SorcerousWorking"}} <a><i
+                            class="fas fa-info-circle show-workings cursor-pointer"></i></a></label>
                 <button class="roll-button sorcerous-working"><i class="fas fa-cauldron"></i>{{localize
                     "Ex3.Roll"}}</button>
             </div>
