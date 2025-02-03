@@ -865,7 +865,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 effectsAndTags.push(
                     {
                         name: "Ex3.MountSpeedBonus",
-                        summary: `${this.actor.system.mount.speedbonus} Dice`
+                        summary: `${this.actor.system.mount.speedbonus.value} Dice`
                     },
                 );
             }
@@ -1646,11 +1646,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.cost.healthaggravated -= item.system.cost.health;
                     }
                 }
-                this.object.restore.motes -= item.system.restore.motes;
-                this.object.restore.willpower -= item.system.restore.willpower;
-                this.object.restore.health -= item.system.restore.health;
-                this.object.restore.initiative -= item.system.restore.initiative;
-                this.object.restore.grappleControl -= item.system.restore.grapplecontrol;
+                
+                this.object.restore.motes -= this._getFormulaValue(item.system.restore.motes);
+                this.object.restore.willpower -= this._getFormulaValue(item.system.restore.willpower);
+                this.object.restore.health -= this._getFormulaValue(item.system.restore.health);
+                this.object.restore.initiative -= this._getFormulaValue(item.system.restore.initiative);
+                this.object.restore.grappleControl -= this._getFormulaValue(item.system.restore.grapplecontrol);
             }
 
             if (item.system.diceroller) {
@@ -2160,11 +2161,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
 
-            this.object.restore.motes += item.system.restore.motes;
-            this.object.restore.willpower += item.system.restore.willpower;
-            this.object.restore.health += item.system.restore.health;
-            this.object.restore.initiative += item.system.restore.initiative;
-            this.object.restore.grappleControl += item.system.restore.grapplecontrol;
+            this.object.restore.motes += this._getFormulaValue(item.system.restore.motes);
+            this.object.restore.willpower += this._getFormulaValue(item.system.restore.willpower);
+            this.object.restore.health += this._getFormulaValue(item.system.restore.health);
+            this.object.restore.initiative += this._getFormulaValue(item.system.restore.initiative);
+            this.object.restore.grappleControl += this._getFormulaValue(item.system.restore.grapplecontrol);
         }
         if (item.system.diceroller) {
             this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
@@ -5801,7 +5802,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         if (this.actor.system.mount.mounted && (this.object.rollType === 'rush' || this.object.rollType === 'disengage')) {
-            dicePool += this.actor.system.mount.speedbonus;
+            dicePool += this.actor.system.mount.speedbonus.value;
         }
         if (this.object.woundPenalty) {
             if (this.actor.system.warstrider.equipped) {

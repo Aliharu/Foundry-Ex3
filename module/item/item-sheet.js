@@ -407,29 +407,36 @@ export class ExaltedThirdItemSheet extends ItemSheet {
                 system: {
                   modes: {
                     mainmode: {
+                      type: this.object.system.type,
                       summary: this.object.system.summary,
                       duration: this.object.system.duration,
-                      activatable: this.object.system.duration,
+                      activatable: this.object.system.activatable,
+                      multiactivate: this.object.system.multiactivate,
                       endtrigger: this.object.system.endtrigger,
+                      costdisplay: this.object.system.costdisplay,
+                      keywords: this.object.system.keywords,
                       cost: {
                         motes: this.object.system['cost.motes'],
                         commitmotes: this.object.system['cost.commitmotes'],
                         initiative: this.object.system['cost.initiative'],
                         anima: this.object.system['cost.anima'],
+                        penumbra: this.object.system['cost.penumbra'],
                         willpower: this.object.system['cost.willpower'],
+                        aura: this.object.system['cost.aura'],
                         grapplecontrol: this.object.system['cost.grapplecontrol'],
                         healthtype: this.object.system['cost.healthtype'],
-                        aura: this.object.system['cost.aura'],
                         xp: this.object.system['cost.xp'],
                         silverxp: this.object.system['cost.silverxp'],
                         goldxp: this.object.system['cost.goldxp'],
                         whitexp: this.object.system['cost.whitexp'],
                       },
                       restore: {
-                        motes: this.object.system['cost.motes'],
-                        willpower: this.object.system['cost.willpower'],
-                        health: this.object.system['cost.health'],
-                        initiative: this.object.system['cost.initiative'],
+                        motes: this.object.system['restore.motes'],
+                        willpower: this.object.system['restore.willpower'],
+                        anima: this.object.system['restore.anima'],
+                        health: this.object.system['restore.health'],
+                        initiative: this.object.system['restore.initiative'],
+                        grapplecontrol: this.object.system['restore.grapplecontrol'],
                       }
                     }
                   }

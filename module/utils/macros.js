@@ -273,3 +273,48 @@ export async function setCharmPrereqs() {
     }
   }
 }
+
+export async function fixMainModes() {
+  for (let item of game.items.filter((item) => item.type === 'charm' && item.system.modes.alternates.length > 0)) {
+    let formData = {
+      system: {
+        modes: {
+          mainmode: {
+            type: item.system.type,
+            summary: item.system.summary,
+            duration: item.system.duration,
+            activatable: item.system.activatable,
+            multiactivate: item.system.multiactivate,
+            endtrigger: item.system.endtrigger,
+            costdisplay: item.system.costdisplay,
+            keywords: item.system.keywords,
+            cost: {
+              motes: item.system['cost.motes'],
+              commitmotes: item.system['cost.commitmotes'],
+              initiative: item.system['cost.initiative'],
+              anima: item.system['cost.anima'],
+              penumbra: item.system['cost.penumbra'],
+              willpower: item.system['cost.willpower'],
+              aura: item.system['cost.aura'],
+              grapplecontrol: item.system['cost.grapplecontrol'],
+              healthtype: item.system['cost.healthtype'],
+              xp: item.system['cost.xp'],
+              silverxp: item.system['cost.silverxp'],
+              goldxp: item.system['cost.goldxp'],
+              whitexp: item.system['cost.whitexp'],
+            },
+            restore: {
+              motes: item.system['restore.motes'],
+              willpower: item.system['restore.willpower'],
+              anima: item.system['restore.anima'],
+              health: item.system['restore.health'],
+              initiative: item.system['restore.initiative'],
+              grapplecontrol: item.system['restore.grapplecontrol'],
+            }
+          }
+        }
+      }
+    };
+    await item.update(formData);
+  }
+}

@@ -1,4 +1,5 @@
 import { animaTokenMagic } from "../apps/dice-roller.js";
+import { getNumberFormula } from "../utils/utils.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -363,7 +364,7 @@ export class ExaltedThirdItem extends Item {
         actorData.system.motes[actorData.system.settings.charmmotepool].committed += (this.system.cost.commitmotes * activateAmount);
       }
     }
-    actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (this.system.cost.grapplecontrol * activateAmount) + (this.system.restore.grapplecontrol * activateAmount));
+    actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (this.system.cost.grapplecontrol * activateAmount) + (getNumberFormula(this.system.restore.grapplecontrol, this.actor) * activateAmount));
     actorData.system.anima.level = newLevel;
     actorData.system.anima.value = newValue;
     actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.system.cost.willpower);
@@ -373,7 +374,7 @@ export class ExaltedThirdItem extends Item {
       actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - (this.system.cost.whitexp * activateAmount));
     }
     if (actorData.system.details.aura === this.system.cost.aura || this.system.cost.aura === 'any') {
-      actorData.system.details.aura = "none";
+      actorData.system.details.aura = "none"; 
     }
     if (this.system.cost.health > 0) {
       let totalHealth = 0;
@@ -390,14 +391,15 @@ export class ExaltedThirdItem extends Item {
         actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + (this.system.cost.health * activateAmount));
       }
     }
+    
     if (actorData.system.settings.charmmotepool === 'personal') {
-      actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + (this.system.restore.motes * activateAmount));
+      actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + (getNumberFormula(this.system.restore.motes, this.actor) * activateAmount));
     }
     else {
-      actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + (this.system.restore.motes * activateAmount));
+      actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + (getNumberFormula(this.system.restore.motes, this.actor) * activateAmount));
     }
-    if (this.system.restore.anima > 0) {
-      for (let i = 0; i < this.system.restore.anima; i++) {
+    if (getNumberFormula(this.system.restore.anima, this.actor) > 0) {
+      for (let i = 0; i < getNumberFormula(this.system.restore.anima, this.actor); i++) {
         if (newLevel === "Dim") {
           newLevel = "Glowing";
           newValue = 1;
@@ -418,10 +420,11 @@ export class ExaltedThirdItem extends Item {
       actorData.system.anima.level = newLevel;
       actorData.system.anima.value = newValue;
     }
-    actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + (this.system.restore.willpower * activateAmount));
-    if (this.system.restore.health > 0) {
-      const bashingHealed = (this.system.restore.health * activateAmount) - actorData.system.health.lethal;
-      actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (this.system.restore.health * activateAmount));
+    actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount));
+    if (getNumberFormula(this.system.restore.health, this.actor) > 0) {
+      const bashingHealed = (getNumberFormula(this.system.restore.health, this.actor) * activateAmount) - actorData.system.health.lethal;
+      actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (getNumberFormula(this.system.restore.health, this.actor) * activateAmount));
+      
       if (bashingHealed > 0) {
         actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
       }
@@ -437,7 +440,7 @@ export class ExaltedThirdItem extends Item {
         if (combatant.initiative > 0 && newInitiative <= 0) {
           newInitiative -= 5;
         }
-        newInitiative += (this.system.restore.initiative * activateAmount);
+        newInitiative += (getNumberFormula(this.system.restore.initiative, this.actor) * activateAmount);
         game.combat.setInitiative(combatant.id, newInitiative);
       }
     }

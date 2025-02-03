@@ -182,7 +182,7 @@ exaltedthird.activeEffectChanges = {
       'system.penaltymodifier.value': 'Ex3.DicePenalty',
       'system.baseinitiative.value': 'Ex3.BaseInitiative',
       'system.crashbonus.value': 'Ex3.CrashBonus',
-      'system.mount.speedbonus': 'Ex3.MountSpeedBonus',
+      'system.mount.speedbonus.value': 'Ex3.MountSpeedBonus',
       'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
       'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
       'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"

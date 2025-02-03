@@ -183,13 +183,15 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       warstrider: warstriderData(),
       mount: new fields.SchemaField({
         mounted: new fields.BooleanField({ initial: false }),
-        speedbonus: new fields.NumberField({ initial: 0 }),
+        speedbonus: new fields.SchemaField({
+          value: new fields.NumberField({ initial: 0 }),
+        })
       }),
     }
   }
 
   static migrateData(source) {
-    if(source.details?.aura === 'none') {
+    if (source.details?.aura === 'none') {
       source.details.aura = '';
     }
     return super.migrateData(source);

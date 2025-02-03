@@ -1477,7 +1477,12 @@ export class ExaltedThirdActor extends Actor {
     data.defensepenalty = { 'value': currentDefensePenalty };
     data.woundpenalty = { 'value': currentPenalty };
     data.armorpenalty = { 'value': armorPenalty };
-    data.mountspeedbonus = { 'value': this.system.mount.speedbonus };
+    data.mountspeedbonus = { 'value': this.system.mount.speedbonus.value };
+    data.shipmomentum = { 'value': this.system.ship.momentum.value };
+    data.shipspeed = { 'value': this.system.ship.speed.value };
+    data.shipmaneuverability = { 'value': this.system.ship.maneuverability.value };
+    data.shiphull = { 'value': this.system.ship.health.max };
+
     data.cover = { 'value': coverBonus };
     data.initiative = { 'value': 0 };
 
