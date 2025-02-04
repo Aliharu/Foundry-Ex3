@@ -1701,6 +1701,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       );
     });
 
+    html.find('.sail-stratagem').mousedown(ev => {
+      this.actor.actionRoll(
+        {
+          rollType: 'sailStratagem',
+          pool: 'command',
+        }
+      );
+    });
+
     html.find('.steady').mousedown(ev => {
       this.actor.actionRoll(
         {

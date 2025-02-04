@@ -55,6 +55,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 goldxp: this.object.craftType === 'superior' ? 10 : 0,
                 whitexp: this.object.craftType === 'legendary' ? 10 : 0,
                 aura: "",
+                momentum: 0,
             };
             this.object.restore = {
                 motes: 0,
@@ -108,7 +109,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
-            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft'].indexOf(data.rollType) !== -1);
+            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft', 'sailStratagem'].indexOf(data.rollType) !== -1);
             this.object.hasIntervals = (['craft', 'prophecy', 'working',].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
             this.object.goalNumber = data.goalNumber || 0;
@@ -308,6 +309,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.triggers = [];
             this.object.effectsOnSpecificDice = [];
             this.object.spell = "";
+            this.object.shipTrait = "maneuverability";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -4949,7 +4951,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                     }
                     else {
-                        if (this.object.rollType !== requirementObject.value) {
+                        if (this.object.rollType.toLowerCase() !== requirementObject.value) {
                             fufillsRequirements = false;
                         }
                     }
@@ -5849,6 +5851,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
 
+        if(this.object.rollType === 'sailStratagem' && this.object.shipTrait) {
+            if(this.object.shipTrait === 'speedAndManeuverability') {
+                dicePool += (this.actor.system.ship.speed.value + this.actor.system.ship.maneuverability.value);
+            }
+            else {
+                dicePool += this.actor.system.ship[this.object.shipTrait].value;
+            }
+        }
+
         // if (display) {
         //     for (const charm of this.object.addedCharms) {
         //         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
@@ -6390,6 +6401,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 goldxp: 0,
                 whitexp: 0,
                 aura: "",
+                momentum: 0,
             }
         }
         if (this.object.cost.grapplecontrol === undefined) {
@@ -6756,6 +6768,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
         actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
+
+        actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
+        actorData.system.ship.momentum.value = Math.max(0, actorData.system.ship.momentum.value - this.object.cost.momentum);
 
         if (this.actor.type === 'character') {
             actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - this.object.cost.silverxp);

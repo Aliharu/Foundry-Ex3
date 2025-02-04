@@ -173,6 +173,13 @@ exaltedthird.activeEffectChanges = {
       "system.hardness.value": 'Ex3.Hardness',
     }
   },
+  ship: {
+    label: "Ex3.Ship",
+    effectList: {
+      "system.ship.speed.value": 'Ex3.ShipSpeed',
+      "system.ship.speed.maneuverability": 'Ex3.ShipManeuverability',
+    }
+  },
   otherModifiers: {
     label: "Ex3.OtherModifiers",
     effectList: {
@@ -380,6 +387,7 @@ exaltedthird.rollTypeTargetImages = {
   'rush': 'systems/exaltedthird/assets/icons/sprint.svg',
   'disengage': 'systems/exaltedthird/assets/icons/dodging.svg',
   'prophecy': 'systems/exaltedthird/assets/icons/magic-portal.svg',
+  'sailStratagem': 'systems/exaltedthird/assets/icons/trireme.svg',
   'steady': 'icons/svg/upgrade.svg',
   'simpleCraft': 'systems/exaltedthird/assets/icons/anvil-impact.svg',
   'craft': 'systems/exaltedthird/assets/icons/anvil-impact.svg',
@@ -458,6 +466,7 @@ exaltedthird.rolltypes = {
   joinbattle: "Ex3.JoinBattle",
   readintentions: "Ex3.ReadIntentions",
   rush: "Ex3.Rush",
+  sailstratagem: "Ex3.SailStratagem",
   social: "Ex3.Social",
   sorcery: "Ex3.Sorcery",
   steady: "Ex3.Steady",
@@ -2629,11 +2638,17 @@ exaltedthird.selects = {
     readintentions: "Ex3.ReadIntentions",
     rout: "Ex3.Rout",
     rush: "Ex3.Rush",
+    sailstratagem: "Ex3.SailStratagem",
     social: "Ex3.Social",
     sorcery: "Ex3.Sorcery",
     steady: "Ex3.Steady",
     working: "Ex3.SorcerousWorking",
     useOpposingCharms: "Ex3.UseOpposingCharms"
+  },
+  shipTraits: {
+    "speed": "Ex3.Speed",
+    "maneuverability": "Ex3.Maneuverability",
+    "speedAndManeuverability": "Ex3.SpeedAndManeuverability",
   }
 };
 

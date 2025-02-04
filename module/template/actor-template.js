@@ -139,6 +139,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
           joinbattle: rollSettingField("wits", "awareness"),
           readintentions: rollSettingField("perception", "socialize"),
           rush: rollSettingField("dexterity", "athletics"),
+          sailstratagem: rollSettingField("wits", "sail"),
           social: new fields.SchemaField({
             attribute: new fields.StringField({ initial: "charisma" }),
             ability: new fields.StringField({ initial: "socialize" }),

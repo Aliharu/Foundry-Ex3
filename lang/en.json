@@ -569,9 +569,13 @@
 
     "Ex3.Warstrider": "Warstrider",
     "Ex3.Ship": "Ship",
+    "Ex3.ShipSpeed": "Ship Speed",
+    "Ex3.ShipManeuverability": "Ship Maneuverability",
+
     "Ex3.Hull": "Hull",
     "Ex3.Cargo": "Cargo",
     "Ex3.Maneuverability": "Maneuverability",
+    "Ex3.SpeedAndManeuverability": "Speed + Maneuverability",
     "Ex3.Momentum": "Momentum",
     "Ex3.Speed": "Speed",
     "Ex3.SpeedBonus": "Speed Bonus",
@@ -1441,6 +1445,10 @@
     "Ex3.PenaltyModifier": "Penalty Modifier",
     "Ex3.ModifyRolledDamage": "Modify Rolled Damage",
     "Ex3.AttackDealsDamage": "Attack Deals Damage",
-    "Ex3.IgnorePenalties": "Ignore Penalties"
+    "Ex3.IgnorePenalties": "Ignore Penalties",
 
+    "Ex3.SailStratagem": "Sail Stratagem",
+    "Ex3.Costing": "Costing",
+    "Ex3.Using": "Using",
+    "Ex3.Stratagem": "Stratagem"
 }

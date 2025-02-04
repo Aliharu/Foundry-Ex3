@@ -70,4 +70,15 @@
         </select>
     </div>
     {{/ifEquals}}
+    {{#ifEquals data.rollType 'sailStratagem'}}
+    <div class="dice-header-row">
+        <label class="resource-label">{{localize "Ex3.SailStratagem"}} {{localize "Ex3.Using"}}</label>
+        <select name="object.shipTrait" value="{{data.shipTrait}}" data-type="String">
+            {{selectOptions selects.shipTraits selected=data.shipTrait localize=true blank='Ex3.None'}}
+        </select>
+        <label class="resource-label">{{localize "Ex3.Costing"}}</label>
+        <input type="number" name="object.cost.momentum" value="{{data.cost.momentum}}">
+        <label class="resource-label">{{localize "Ex3.Momentum"}}</label>
+    </div>
+    {{/ifEquals}}
 </section>
