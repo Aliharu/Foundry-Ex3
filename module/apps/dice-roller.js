@@ -109,6 +109,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
+            this.object.validTargetRollType = this._isAttackRoll() || (['social', 'readIntentions'].includes(data.rollType));
             this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft', 'sailStratagem'].indexOf(data.rollType) !== -1);
             this.object.hasIntervals = (['craft', 'prophecy', 'working',].indexOf(data.rollType) !== -1);
             this.object.stunt = "none";
@@ -599,6 +600,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this._setupSingleTarget(Array.from(game.user.targets)[0]);
                 }
             }
+            this.object.showTargetData = this.object.validTargetRollType && this.object.showTargets;
             if (this.object.conditions.some(e => e.name === 'blind')) {
                 this.object.diceModifier -= 3;
             }
@@ -1661,6 +1663,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 this.object.ignorePenalties -= this._getFormulaValue(item.system.diceroller.ignorepenalties);
 
+                if (!item.system.diceroller.settings.noncharmdice) {
+                    this.object.charmDiceAdded -= this._getFormulaValue(item.system.diceroller.bonusdice);
+                }
+                if (!item.system.diceroller.settings.noncharmsuccesses) {
+                    if (this.actor.system.details.exalt === 'sidereal') {
+                        this.object.charmDiceAdded -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                    } else {
+                        this.object.charmDiceAdded -= (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+                    }
+                }
+
                 this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
                 this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
 
@@ -2036,8 +2049,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     getData() {
         this.selects = CONFIG.exaltedthird.selects;
-        // this.rollableAbilities = CONFIG.exaltedthird.selects.abilities;
-        // this.rollableAbilities['willpower'] = "Ex3.Willpower";
         return {
             actor: this.actor,
             selects: this.selects,
@@ -2316,7 +2327,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this._calculateAnimaGain();
         }
 
-        this._addBonuses(item, 'itemAdded', "benefit");
+        await this._addBonuses(item, 'itemAdded', "benefit");
         //Test
         // this._addBonuses(item, 'beforeRoll', "benefit");
         this.render();
@@ -4571,7 +4582,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         content: `<div class="resource-label">Trigger: ${trigger.name}</div><label class="resource-label">Input value for: ${game.i18n.localize(CONFIG.exaltedthird.numberBonusTypeLabels[bonus.effect])}</label><input name="promptValue" type="text" placeholder="Insert number or formula" autofocus>`,
                                         ok: {
                                             label: "Submit",
-                                            callback: (event, button, dialog) => button.form.elements.promptValue.valueAsNumber
+                                            callback: (event, button, dialog) => button.form.elements.promptValue.value
                                         }
                                     });
                                     cleanedValue = cleanedValue.toString().toLowerCase().trim();
@@ -5746,9 +5757,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 showSpecialAttacks = true
             }
         }
+        const attackTypeValue = this._isAttackRoll() ? this.object.attackType : '';
         const messageData = {
             name: cardName,
-            rollTypeImgUrl: CONFIG.exaltedthird.rollTypeTargetImages[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.attackType] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.ability] || "systems/exaltedthird/assets/icons/d10.svg",
+            rollTypeImgUrl: CONFIG.exaltedthird.rollTypeTargetImages[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[attackTypeValue] || CONFIG.exaltedthird.rollTypeTargetImages[this.object.ability] || "systems/exaltedthird/assets/icons/d10.svg",
             rollTypeLabel: CONFIG.exaltedthird.rollTypeTargetLabels[this.object.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[this.object.ability] || "Ex3.Roll",
             messageContent: content,
             rollData: this.object,
