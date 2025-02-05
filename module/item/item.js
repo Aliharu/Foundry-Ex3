@@ -231,12 +231,13 @@ export class ExaltedThirdItem extends Item {
     const actorData = await foundry.utils.duplicate(this.actor);
     let updateActive = null;
     let activateAmount = 1;
+    let charmMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : actorData.system.settings.charmmotepool;
 
     if (this.type === 'charm') {
       if (this.system.active) {
         updateActive = false;
         if (this.system.cost.commitmotes > 0) {
-          actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= (this.system.cost.commitmotes * this.flags?.exaltedthird?.currentIterationsActive || 1);
+          actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? charmMotePool].committed -= (this.system.cost.commitmotes * this.flags?.exaltedthird?.currentIterationsActive || 1);
         }
       }
       else {
@@ -281,7 +282,7 @@ export class ExaltedThirdItem extends Item {
     if (updateActive !== null) {
       await this.update({
         [`system.active`]: updateActive,
-        [`flags.exaltedthird.poolCommitted`]: updateActive ? actorData.system.settings.charmmotepool : null,
+        [`flags.exaltedthird.poolCommitted`]: updateActive ? charmMotePool : null,
         [`flags.exaltedthird.currentIterationsActive`]: activateAmount,
       });
       for (const effect of this.actor.allApplicableEffects()) {
@@ -309,11 +310,12 @@ export class ExaltedThirdItem extends Item {
 
   async decreaseActiations() {
     const actorData = await foundry.utils.duplicate(this.actor);
+    let charmMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : actorData.system.settings.charmmotepool;
     if (this.flags?.exaltedthird?.currentIterationsActive === 1) {
       this.activate();
     } else {
       if (this.system.cost.commitmotes > 0) {
-        actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? actorData.system.settings.charmmotepool].committed -= this.system.cost.commitmotes;
+        actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? charmMotePool].committed -= this.system.cost.commitmotes;
       }
       await this.actor.update(actorData);
       await this.update({
@@ -361,7 +363,8 @@ export class ExaltedThirdItem extends Item {
         actorData.system.fever.value += spendMotesResult.feverGain;
       }
       if (this.system.cost.commitmotes > 0) {
-        actorData.system.motes[actorData.system.settings.charmmotepool].committed += (this.system.cost.commitmotes * activateAmount);
+        let charmMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : actorData.system.settings.charmmotepool;
+        actorData.system.motes[charmMotePool].committed += (this.system.cost.commitmotes * activateAmount);
       }
     }
     actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (this.system.cost.grapplecontrol * activateAmount) + (getNumberFormula(this.system.restore.grapplecontrol, this.actor) * activateAmount));

@@ -34,7 +34,8 @@
             </div>
             <div class="d-flex" style="align-items:center; margin-bottom: 10px;justify-content:center;">
                 <select name="system.triggers.dicerollertriggers.{{index}}.actorType" data-type="String">
-                    {{selectOptions ../selects.triggerActorTypes selected=trigger.actorType localize=true blank='Ex3.Default'}}
+                    {{selectOptions ../selects.triggerActorTypes selected=trigger.actorType localize=true
+                    blank='Ex3.Default'}}
                 </select>
             </div>
         </div>
@@ -153,8 +154,16 @@
                     blank=''}}
                 </select>
                 {{else}}
+                {{#isBooleanTrigger bonus.effect}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.booleanTriggerSelects selected=bonus.value localize=true
+                    blank='Ex3.DefaultsTrue'}}
+                </select>
+                {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     value="{{bonus.value}}" type="text">
+                {{/isBooleanTrigger}}
                 {{/ifEquals}}
                 <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
                     data-index="{{index}}" data-subindex="{{bonusIndex}}" data-subtype="bonuses"><i class="fas fa-trash"
@@ -254,9 +263,22 @@
                     data-type="String">
                     {{selectOptions ../../selects.craftTypes selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'charmFunctionType'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.charmFunctionTypes selected=requirement.value localize=true blank=''}}
+                </select>
+                {{else}}
+                {{#isBooleanTrigger requirement.requirement}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.booleanTriggerSelects selected=requirement.value localize=true
+                    blank='Ex3.DefaultsTrue'}}
+                </select>
                 {{else}}
                 <input name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     value="{{requirement.value}}" type="text">
+                {{/isBooleanTrigger}}
                 {{/ifEquals}}
                 <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
                     data-index="{{index}}" data-subindex="{{requirementIndex}}" data-subtype="requirements"><i

@@ -34,6 +34,8 @@
     "Ex3.Aggravated": "Aggravated",
     "Ex3.HealthType": "Health Type",
     "Ex3.Magnitude": "Magnitude",
+
+    "Ex3.DefaultsTrue": "Defaults True",
     
     "Ex3.HealthLevels": "Health Levels",
     "Ex3.Colors": "Colors",
@@ -564,6 +566,7 @@
     "Ex3.AutoAddToRolls": "Auto Add To Rolls (If Active)",
     "Ex3.SameAbilityAttribute": "Same Ability/Attribute",
     "Ex3.CharacterRolls": "Character Rolls",
+    "Ex3.AllRolls": "All Rolls",
     "Ex3.OpposedRolls": "Opposed Rolls",
     "Ex3.TurnTaken": "Turn Taken",
 
@@ -603,6 +606,7 @@
     "Ex3.Range": "Range",
     "Ex3.AttackType": "Attack Type",
     "Ex3.RollType": "Roll Type",
+    "Ex3.CharmFunctionType": "Charm Function Type",
     "Ex3.WeaponType": "Weapon Type",
     "Ex3.WeaponTags": "Weapon Tags",
     "Ex3.Bolt": "Bolt",
@@ -623,6 +627,7 @@
     "Ex3.TakeCover": "Take Cover",
     "Ex3.RiseFromProne": "Rise From Prone",
     "Ex3.Opposed": "Opposed",
+    "Ex3.Benefit": "Benefit",
     "Ex3.Influence": "Influence",
     "Ex3.DefendOther": "Defend Other",
     "Ex3.Miscellaneous": "Miscellaneous",
@@ -1381,6 +1386,7 @@
     "Ex3.ThrownWeapon": "Thrown Weapon",
 
     "Ex3.True": "True",
+    "Ex3.False": "False",
     "Ex3.Free": "Free",
 
     "Ex3.ActivateWithItem": "Activate With Item",

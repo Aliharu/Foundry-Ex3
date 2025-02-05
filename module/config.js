@@ -1623,6 +1623,36 @@ exaltedthird.maidens = [
   "endings"
 ];
 
+exaltedthird.booleanTriggers = [
+  'rollTwice',
+  'rollTwiceLowest',
+  'excludeOnes',
+  'triggerNinesAndTens',
+  'triggerOnesAndTwos',
+  'doubleThresholdSuccesses',
+  'rollTwice-damage',
+  'rollTwice',
+  'rollTwiceLowest-damag',
+  'triggerNinesAndTens-damage',
+  'triggerOnesAndTwos-damage',
+  'threshholdToDamage',
+  'doubleRolledDamage',
+  'doublePreRolledDamage',
+  'doubleThresholdSuccesses-damage',
+  'resetInit',
+  'attackDealsDamage',
+  'stuntToDamage',
+  'halfPostSoakDamage',
+  'ignoreLegendarySize',
+  'smaEnlightenment',
+  'targetIsCrashed',
+  'targetTakenTurn',
+  'rollSucceeded',
+  'crashedTheTarget',
+  'noTriggersActivated',
+  'doubleSuccesses',
+];
+
 exaltedthird.bonusTypes = {
   none: {
     label: "Ex3.None",
@@ -1752,6 +1782,7 @@ exaltedthird.bonusTypes = {
     label: "Ex3.SubtractTarget",
     bonuses: {
       'motes-subtract': "Ex3.SubtractMotes",
+      'initiative-subtract': "Ex3.SubtractInitiative",
     }
   },
   target: {
@@ -1947,6 +1978,7 @@ exaltedthird.requirementTypes = {
     label: "Ex3.Roll",
     requirements: {
       rollType: "Ex3.RollType",
+      charmFunctionType: "Ex3.CharmFunctionType",
       attackType: "Ex3.AttackType",
       charmAddedAmount: "Ex3.ItemAddedAmount",
       range: "Ex3.Range",
@@ -2007,6 +2039,10 @@ exaltedthird.selects = {
   booleanSelects: {
     yes: "Ex3.Yes",
     "": "Ex3.No",
+  },
+  booleanTriggerSelects: {
+    true: "Ex3.True",
+    false: "Ex3.False",
   },
   exaltTypes: {
     abyssal: "Ex3.Abyssal",
@@ -2274,6 +2310,7 @@ exaltedthird.selects = {
   },
   autoAddToRollOptions: {
     '': "Ex3.None",
+    'all': "Ex3.AllRolls",
     'action': "Ex3.CharacterRolls",
     'opposedRolls': "Ex3.OpposedRolls",
     'sameAbility': "Ex3.SameAbilityAttribute",
@@ -2643,7 +2680,11 @@ exaltedthird.selects = {
     sorcery: "Ex3.Sorcery",
     steady: "Ex3.Steady",
     working: "Ex3.SorcerousWorking",
-    useOpposingCharms: "Ex3.UseOpposingCharms"
+    useOpposingCharms: "Ex3.UseOpposingCharms",
+  },
+  charmFunctionTypes: {
+    "benefit": "Ex3.Benefit",
+    "opposed": "Ex3.Opposed",
   },
   shipTraits: {
     "speed": "Ex3.Speed",

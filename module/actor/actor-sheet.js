@@ -2340,7 +2340,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         templateData.hasOxBody = true;
       }
     }
-
     if (this.actor.system.battlegroup && healthType === 'person') {
       template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
       templateData.hasOxBody = false;
@@ -2384,9 +2383,33 @@ export class ExaltedThirdActorSheet extends ActorSheet {
                 value: templateData.four,
               },
             },
+            bashing: this.actor.system.health.bashing,
+            lethal: this.actor.system.health.lethal,
+            aggravated: this.actor.system.health.aggravated,
           };
           healthData.levels.zero.value = result.zero.value;
-          if (!this.actor.system.battlegroup || healthType !== 'person') {
+
+          let tempHealthRemoval = Math.max(0, healthData.levels.temp.value - parseInt(result.temp.value));
+
+          if(tempHealthRemoval) {
+            if(healthData.aggravated) {
+              healthData.aggravated = Math.max(0, healthData.aggravated - tempHealthRemoval);
+            }
+            tempHealthRemoval -= this.actor.system.health.aggravated;
+            if(tempHealthRemoval > 0) {
+              if(healthData.lethal) {
+                healthData.lethal = Math.max(0, healthData.lethal - tempHealthRemoval);
+              }
+            }
+            tempHealthRemoval -= this.actor.system.health.lethal;
+            if(tempHealthRemoval > 0) {
+              if(healthData.bashing) {
+                healthData.bashing = Math.max(0, healthData.bashing - tempHealthRemoval);
+              }
+            }
+          }
+
+          if (!this.actor.system.battlegroup) {
             healthData.levels.temp.value = result.temp.value;
             healthData.levels.one.value = result.one.value;
             healthData.levels.two.value = result.two.value;

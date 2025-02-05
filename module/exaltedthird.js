@@ -195,13 +195,13 @@ Hooks.once('init', async function () {
 
   Handlebars.registerHelper('healthCheck', function (health, type, options) {
     let healthLevels = options.data.root.system.health.levels;
-    let zeroPenalty = healthLevels.zero.value + healthLevels.temp.value;
     if (type === 'warstrider') {
       healthLevels = options.data.root.system.warstrider.health.levels;
     }
     else if (type === 'ship') {
       healthLevels = options.data.root.system.ship.health.levels;
     }
+    let zeroPenalty = healthLevels.zero.value + healthLevels.temp.value;
     if (health < zeroPenalty) {
       return '0'
     }
@@ -396,6 +396,10 @@ Handlebars.registerHelper('le', function (a, b) {
 // Check Triggers to see if show number value
 Handlebars.registerHelper('ifNumberValue', function (arg1, arg2, options) {
   return (arg1 >= arg2) ? options.fn(this) : options.inverse(this);
+});
+
+Handlebars.registerHelper('isBooleanTrigger', function (bonusEffect, options) {
+  return CONFIG.exaltedthird.booleanTriggers.includes(bonusEffect) ? options.fn(this) : options.inverse(this);
 });
 
 $(document).ready(() => {
@@ -775,7 +779,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (combatant.initiative !== null && initiativeGain) {
           game.combat.setInitiative(combatant.id, combatant.initiative + initiativeGain, null);
         }
-        if(moteGain) {
+        if (moteGain) {
           let missingPersonal = (currentCombatant.actor.system.motes.personal.max - currentCombatant.actor.system.motes.personal.committed) - actorData.system.motes.personal.value;
           let missingPeripheral = (currentCombatant.actor.system.motes.peripheral.max - currentCombatant.actor.system.motes.peripheral.committed) - actorData.system.motes.peripheral.value;
           let restorePersonal = 0;
@@ -1167,6 +1171,10 @@ Hooks.once("ready", async function () {
       return false;
     }
   });
+
+  // Hooks.on('updateActiveEffect', (effect) => {
+  //   console.log(effect);
+  // });
 
   const gameMigrationVersion = game.settings.get("exaltedthird", "systemMigrationVersion");
 

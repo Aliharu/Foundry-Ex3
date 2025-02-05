@@ -818,11 +818,11 @@ export class ExaltedThirdActor extends Actor {
       data.health.penalty = 0;
     }
     else {
-      for (let [key, health_level] of Object.entries(data.health.levels)) {
+      for (let [key, healthLevel] of Object.entries(data.health.levels)) {
         if ((data.health.bashing + data.health.lethal + data.health.aggravated) > totalHealth) {
-          currentPenalty = health_level.penalty;
+          currentPenalty = healthLevel.penalty;
         }
-        totalHealth += health_level.value;
+        totalHealth += healthLevel.value;
       }
       data.health.max = totalHealth;
       if ((data.health.bashing + data.health.lethal + data.health.aggravated) > data.health.max) {
@@ -837,11 +837,11 @@ export class ExaltedThirdActor extends Actor {
     }
 
 
-    for (let [key, health_level] of Object.entries(data.warstrider.health.levels)) {
+    for (let [key, healthLevel] of Object.entries(data.warstrider.health.levels)) {
       if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > totalWarstriderHealth) {
-        currentWarstriderPenalty = health_level.penalty;
+        currentWarstriderPenalty = healthLevel.penalty;
       }
-      totalWarstriderHealth += health_level.value;
+      totalWarstriderHealth += healthLevel.value;
     }
     data.warstrider.health.max = totalWarstriderHealth;
     if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > data.warstrider.health.max) {
@@ -855,11 +855,11 @@ export class ExaltedThirdActor extends Actor {
     data.warstrider.health.penalty = currentWarstriderPenalty;
 
 
-    for (let [key, health_level] of Object.entries(data.ship.health.levels)) {
+    for (let [key, healthLevel] of Object.entries(data.ship.health.levels)) {
       if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > totalShipHealth) {
-        currentShipPenalty = health_level.penalty;
+        currentShipPenalty = healthLevel.penalty;
       }
-      totalShipHealth += health_level.value;
+      totalShipHealth += healthLevel.value;
     }
     data.ship.health.max = totalShipHealth;
     if ((data.ship.health.bashing + data.ship.health.lethal + data.ship.health.aggravated) > data.ship.health.max) {
@@ -877,10 +877,10 @@ export class ExaltedThirdActor extends Actor {
       data.experience.exalt.remaining = data.experience.exalt.total - data.experience.exalt.value;
     }
 
-    var currentParryPenalty = 0;
-    var currentEvasionPenalty = 0;
-    var currentOnslaughtPenalty = 0;
-    var currentDefensePenalty = 0;
+    let currentParryPenalty = 0;
+    let currentEvasionPenalty = 0;
+    let currentOnslaughtPenalty = 0;
+    let currentDefensePenalty = 0;
 
     for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
       for (const change of effect.changes) {
