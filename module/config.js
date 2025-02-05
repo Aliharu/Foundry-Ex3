@@ -1632,7 +1632,7 @@ exaltedthird.booleanTriggers = [
   'doubleThresholdSuccesses',
   'rollTwice-damage',
   'rollTwice',
-  'rollTwiceLowest-damag',
+  'rollTwiceLowest-damage',
   'triggerNinesAndTens-damage',
   'triggerOnesAndTwos-damage',
   'threshholdToDamage',
