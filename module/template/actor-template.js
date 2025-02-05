@@ -55,6 +55,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         iconic: new fields.StringField({ initial: "" }),
       }),
       fever: statField(0),
+      complicationpoints: statField(0),
       collapse: new fields.SchemaField({
         passive: new fields.BooleanField({ initial: true }),
         active: new fields.BooleanField({ initial: true }),

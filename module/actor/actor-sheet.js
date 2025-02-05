@@ -1584,8 +1584,27 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.roll-ability').mousedown(ev => {
-      var ability = $(ev.target).attr("data-ability");
-      if (ability === 'willpower') {
+      let ability = $(ev.target).attr("data-ability");
+      if (ability === 'fever') {
+        if (this.actor.type === "npc") {
+          this.actor.actionRoll(
+            {
+              rollType: 'ability',
+              pool: 'fever',
+            }
+          );
+        }
+        else {
+          this.actor.actionRoll(
+            {
+              rollType: 'ability',
+              ability: 'fever',
+              attribute: 'none'
+            }
+          );
+        }
+      }
+      else if (ability === 'willpower') {
         if (this.actor.type === "npc") {
           this.actor.actionRoll(
             {
@@ -2176,7 +2195,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   async calculateMotes() {
     const system = this.actor.system;
 
-    if(game.settings.get("exaltedthird", "gloryOverwhelming")) {
+    if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
       if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
         system.motes.glorymotecap.max = 10;
         if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
@@ -2189,7 +2208,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
     } else {
       if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
-        if(system.settings.editmode) {
+        if (system.settings.editmode) {
           system.motes.personal.max = 10 * system.essence.value;
           if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
             system.motes.personal.max += 50;
@@ -2198,7 +2217,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
       }
       else {
-        if(system.settings.editmode) {
+        if (system.settings.editmode) {
           system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
           system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
         }
@@ -2391,19 +2410,19 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
           let tempHealthRemoval = Math.max(0, healthData.levels.temp.value - parseInt(result.temp.value));
 
-          if(tempHealthRemoval) {
-            if(healthData.aggravated) {
+          if (tempHealthRemoval) {
+            if (healthData.aggravated) {
               healthData.aggravated = Math.max(0, healthData.aggravated - tempHealthRemoval);
             }
             tempHealthRemoval -= this.actor.system.health.aggravated;
-            if(tempHealthRemoval > 0) {
-              if(healthData.lethal) {
+            if (tempHealthRemoval > 0) {
+              if (healthData.lethal) {
                 healthData.lethal = Math.max(0, healthData.lethal - tempHealthRemoval);
               }
             }
             tempHealthRemoval -= this.actor.system.health.lethal;
-            if(tempHealthRemoval > 0) {
-              if(healthData.bashing) {
+            if (tempHealthRemoval > 0) {
+              if (healthData.bashing) {
                 healthData.bashing = Math.max(0, healthData.bashing - tempHealthRemoval);
               }
             }

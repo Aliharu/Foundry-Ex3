@@ -174,7 +174,7 @@ export class ExaltedThirdActor extends Actor {
     if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
       let animaLevels = ["Dim", "Glowing", "Burning", "Bonfire"];
 
-      if(actorData.system.anima.max === 4)  {
+      if (actorData.system.anima.max === 4) {
         animaLevels = ["Dim", "Glowing", "Burning", "Bonfire", "Transcendent"];
       }
       newGloryMotes = Math.max(0, actorData.system.motes.glorymotecap.value - moteCost);
@@ -1099,7 +1099,27 @@ export class ExaltedThirdActor extends Actor {
     let abilityValue = 0;
     let targetNumber = 0;
     let attributeValue = this.system.attributes[attribute]?.value || 0;
-    if (ability === 'willpower') {
+    if (this.system.settings.dicecap.iscustom) {
+      let returnValue = 0;
+      if (this.system.settings.dicecap.useattribute && this.system.attributes[attribute]?.excellency) {
+        returnValue += this.system.attributes[attribute].value;
+      }
+      if (this.system.settings.dicecap.useability && (this.system.abilities[ability]?.excellency || this.object.customabilities.some(ma => ma._id === ability && ma.system.excellency))) {
+        returnValue += this.getCharacterAbilityValue(ability);
+      }
+      if (this.system.settings.dicecap.usespecialty && this.object.specialty) {
+        returnValue += 1;
+      }
+      if (this.system.settings.dicecap.other) {
+        returnValue += getNumberFormula(this.system.settings.dicecap.other, this);
+      }
+      return {
+        dice: returnValue,
+        targetNumber: targetNumber,
+        cost: returnValue,
+      };
+    }
+    if (ability === 'willpower' || ability === 'fever') {
       return null;
     }
     if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
@@ -1633,6 +1653,9 @@ export class ExaltedThirdActor extends Actor {
     }
     if (ability === 'willpower') {
       return this.system.willpower.max;
+    }
+    if (ability === 'fever') {
+      return this.system.fever.value;
     }
     return 0;
   }

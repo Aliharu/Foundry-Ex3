@@ -372,6 +372,8 @@ exaltedthird.rollTypeTargetLabels = {
   'survival': 'Ex3.Survival',
   'thrown': 'Ex3.Thrown',
   'war': 'Ex3.War',
+  'fever': "Ex3.Fever",
+  'willpower': "Ex3.Willpower",
 }
 
 exaltedthird.rollTypeTargetImages = {
@@ -420,6 +422,7 @@ exaltedthird.rollTypeTargetImages = {
   'survival': 'systems/exaltedthird/assets/icons/forest-camp.svg',
   'thrown': 'systems/exaltedthird/assets/icons/thrown-daggers.svg',
   'war': "systems/exaltedthird/assets/icons/rally-the-troops.svg",
+  'fever': "systems/exaltedthird/assets/icons/burning-passion.svg",
 
   'strength': 'systems/exaltedthird/assets/icons/strong.svg',
   'dexterity': 'systems/exaltedthird/assets/icons/acrobatic.svg',

@@ -2,7 +2,7 @@
     <div class="resources grid grid-3col">
         {{#if gloryOverwhelming}}
         <div class="flex-center">
-            <div style="margin-bottom:3px;">
+            <div>
                 <label class="resource-label"> {{localize "Ex3.MoteCap"}} <a><i
                             class="fas fa-plus-square calculate-motes cursor-pointer"
                             title="Reset Cap"></i></a>
@@ -24,13 +24,20 @@
             </div>
         </div>
         <div class="flex-center">
-            <label class="resource-label">{{localize "Ex3.Fever"}}</label>
-            <input type="number" name="system.fever.value"
-                value="{{system.fever.value}}" data-dtype="Number" />
+            <div>
+                <label class="resource-label roll-ability" data-ability="fever">{{localize "Ex3.Fever"}}</label>
+                <input type="number" name="system.fever.value"
+                    value="{{system.fever.value}}" data-dtype="Number" />
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.ComplicationPoints"}}</label>
+                <input type="number" name="system.complicationpoints.value"
+                    value="{{system.complicationpoints.value}}" data-dtype="Number" />
+            </div>
         </div>
         {{else}}
         <div class="flex-center">
-            <div style="margin-bottom:3px;">
+            <div>
                 <a><i class="fas fa-bolt set-pool-personal cursor-pointer" title="Spend motes from this pool"></i></a>
                 <label class="resource-label"> {{localize "Ex3.Personal"}} <a><i
                             class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} calculate-motes cursor-pointer"
@@ -54,7 +61,7 @@
         </div>
         {{#if isExalt}}
         <div class="flex-center">
-            <div style="margin-bottom:3px;">
+            <div>
                 <a><i class="fas fa-bolt set-pool-peripheral cursor-pointer"
                         title="Spend motes from this pool"></i></a><label class="resource-label"> {{localize
                     "Ex3.Peripheral"}}

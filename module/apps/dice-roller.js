@@ -7,9 +7,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.actor = actor;
         this.selects = CONFIG.exaltedthird.selects;
         this.rollableAbilities = { ...CONFIG.exaltedthird.selects.abilities };
-        this.rollableAbilities['willpower'] = "Ex3.Willpower";
         this.rollablePools = CONFIG.exaltedthird.npcpools;
+        this.rollableAbilities['willpower'] = "Ex3.Willpower";
         this.rollablePools['willpower'] = "Ex3.Willpower";
+        if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
+            this.rollableAbilities['fever'] = "Ex3.Fever";
+            this.rollablePools['fever'] = "Ex3.Fever";
+        }
         this.messageId = data.preMessageId;
         this.search = "";
         this.object.totalDice = 0;
@@ -1922,7 +1926,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             else {
                 charm.timesAdded--;
             }
-            if(charm.system.diceroller?.opposedbonuses) {
+            if (charm.system.diceroller?.opposedbonuses) {
                 this.object.targetNumber -= charm.system.diceroller.opposedbonuses.increasetargetnumber;
                 this.object.rerollSuccesses -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.rerollsuccesses);
                 this.object.gambitDifficulty -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.increasegambitdifficulty, charm.actor);
@@ -2566,7 +2570,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'craftobjectives') {
             return this.object.objectivesCompleted || 0;
         }
-        if(formula?.toLowerCase() === 'dicecap') {
+        if (formula?.toLowerCase() === 'dicecap') {
             let diceCapReturnValue = forumlaActor.type === 'character' ? forumlaActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : forumlaActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
             return diceCapReturnValue?.dice || 0;
         }
@@ -3729,9 +3733,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
-                const actorData = foundry.utils.duplicate(this.actor);
-                actorData.system.grapplecontrolrounds.value += this.object.thresholdSuccesses;
-                this.actor.update(actorData);
+                await this.actor.update({ [`system.grapplecontrolrounds.value`]: (this.actor.system.grapplecontrolrounds.value + this.object.thresholdSuccesses) });
+            }
+            if (this.object.ability === "fever") {
+                let feverReduction = 0;
+                for (const diceResult of this.object.diceRoll.sort((a, b) => a.result - b.result)) {
+                    if(diceResult.success) {
+                        feverReduction++;
+                    }
+                }
+                await this.actor.update({
+                    [`system.fever.value`]: Math.max(0, this.actor.system.fever.value - feverReduction),
+                    [`system.complicationpoints.value`]: this.actor.system.complicationpoints.value + Math.min(this.actor.system.fever.value, this.object.thresholdSuccesses),
+                });
             }
             if (this.object.target && this.object.rollType === 'command') {
                 if (this.object.target.actor.type === 'npc' && this.object.target.actor.system.battlegroup) {
@@ -5806,6 +5820,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.actions.some(action => action._id === this.object.pool)) {
                 dicePool += this.actor.actions.find(x => x._id === this.object.pool).system.value;
             }
+            else if (this.object.pool === 'fever') {
+                dicePool += this.actor.system.fever.value;
+            }
             else if (this.object.pool === 'willpower') {
                 dicePool += this.actor.system.willpower.max;
             } else {
@@ -6269,19 +6286,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         return tnChange;
-    }
-
-    _getCharacterAbilityValue(actor, ability) {
-        if (actor.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
-            return actor.customabilities.find(x => x._id === ability).system.points;
-        }
-        if (actor.system.abilities[ability]) {
-            return actor.system.abilities[ability]?.value || 0;
-        }
-        if (ability === 'willpower') {
-            return actor.system.willpower.max;
-        }
-        return 0;
     }
 
     _getDamageCap() {
