@@ -43,6 +43,7 @@ import TemplateImporter from "./apps/template-importer.js";
 import CharacterBuilder from "./apps/character-builder.js";
 import RollForm from "./apps/dice-roller.js";
 import { BaseActiveEffectData } from "./template/active-effect-template.js";
+import { getNumberFormula } from "./utils/utils.js";
 
 Hooks.once('init', async function () {
 
@@ -1172,9 +1173,33 @@ Hooks.once("ready", async function () {
     }
   });
 
-  // Hooks.on('updateActiveEffect', (effect) => {
-  //   console.log(effect);
-  // });
+  Hooks.on('updateActiveEffect', (effect, update) => {
+    let tempHPRemoved = 0;
+    if(update.disabled && effect.target) {
+      for(const change of effect.changes) {
+        if(change.key === "system.health.levels.temp.value") {
+          tempHPRemoved += getNumberFormula(change.value, effect.target, change);
+        }
+      }
+      if(tempHPRemoved > 0) {
+        effect.target.restoreHealth(tempHPRemoved, true);
+      }
+    }
+  });
+
+  Hooks.on('deleteActiveEffect', (effect) => {
+    let tempHPRemoved = 0;
+    if(!effect.disabled && effect.target) {
+      for(const change of effect.changes) {
+        if(change.key === "system.health.levels.temp.value") {
+          tempHPRemoved += getNumberFormula(change.value, effect.target, change);
+        }
+      }
+      if(tempHPRemoved > 0) {
+        effect.target.restoreHealth(tempHPRemoved, true);
+      }
+    }
+  });
 
   const gameMigrationVersion = game.settings.get("exaltedthird", "systemMigrationVersion");
 

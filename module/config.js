@@ -117,7 +117,7 @@ exaltedthird.activeEffectChanges = {
   health: {
     label: "Ex3.Health",
     effectList: {
-      'system.health.levels.temp.value': 'Ex3.PenaltyZeroHealth',
+      'system.health.levels.temp.value': 'Ex3.TemporaryHealth',
       'system.health.levels.zero.value': 'Ex3.PenaltyZeroHealth',
       'system.health.levels.one.value': 'Ex3.PenaltyOneHealth',
       'system.health.levels.two.value': 'Ex3.PenaltyTwoHealth',

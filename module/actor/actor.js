@@ -1183,6 +1183,37 @@ export class ExaltedThirdActor extends Actor {
     };
   }
 
+  async restoreHealth(amount, healAggravated=false) {
+    let bashingLevels = this.system.health.bashing;
+    let lethalLevels = this.system.health.lethal;
+    let aggravatedLevels = this.system.health.aggravated;
+
+    if (amount) {
+      if(healAggravated) {
+        if (aggravatedLevels) {
+          aggravatedLevels = Math.max(0, aggravatedLevels - amount);
+        }
+        amount -= aggravatedLevels;
+      }
+      if (amount > 0) {
+        if (lethalLevels) {
+          lethalLevels = Math.max(0, lethalLevels - amount);
+        }
+      }
+      amount -= lethalLevels;
+      if (amount > 0) {
+        if (bashingLevels) {
+          bashingLevels = Math.max(0, bashingLevels - amount);
+        }
+      }
+    }
+    await this.update({
+      [`system.health.bashing`]: bashingLevels,
+      [`system.health.lethal`]: lethalLevels,
+      [`system.health.aggravated`]: aggravatedLevels,
+  });
+  }
+
   getNpcDiceCapValue(pool) {
     if (this.system.creaturetype !== 'exalt') {
       return null;
