@@ -2333,7 +2333,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       'hasOxBody': false,
     }
     if (healthType === 'warstrider') {
-      templateData.temp = this.actor.system.ship.warstrider.levels.temp.value;
+      templateData.temp = this.actor.system.warstrider.health.levels.temp.value;
       templateData.zero = this.actor.system.warstrider.health.levels.zero.value;
       templateData.one = this.actor.system.warstrider.health.levels.one.value;
       templateData.two = this.actor.system.warstrider.health.levels.two.value;
