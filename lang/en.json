@@ -202,6 +202,7 @@
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
     "Ex3.ApplySelfDefensePenalty": "Apply Self Defense Penalty",
     "Ex3.TargetDefensePenalty": "Target Defense Penalty",
+    "Ex3.ApplyTargetDefensePenalty": "Apply Target Defense Penalty",
     "Ex3.InflictActiveEffect": "Inflict Active Effect",
 
     "Ex3.AddOnslaught": "Add Onslaught",
@@ -308,6 +309,7 @@
     "Ex3.RollTwice": "Roll Twice",
     "Ex3.RollTwiceKeepHighest": "Roll Twice (Keep Highest)",
     "Ex3.RollTwiceKeepLowest": "Roll Twice (Keep Lowest)",
+    "Ex3.RollAccuracyOnce": "Roll Accuracy Once",
     "Ex3.DamageRollTwiceKeepHighest": "Damage Roll Twice Keep Highest",
     "Ex3.DamageRollTwiceKeepLowest": "Damage Roll Twice Keep Lowest",
     "Ex3.DicetoSuccesses": "Dice to Successes",
@@ -1175,6 +1177,7 @@
     "Ex3.TriggerTime": "Trigger Time",
     "Ex3.BeforeRoll": "Before Roll",
     "Ex3.AfterRoll": "After Roll",
+    "Ex3.OnAttackMiss": "On Attack Miss",
     "Ex3.BeforeDamageRoll": "Before Damage Roll",
     "Ex3.BeforeDefenseApplied": "Before Defense Applied",
     
@@ -1205,9 +1208,9 @@
     "Ex3.Dialog": "Dialog",
     "Ex3.RollResults": "Roll Results",
 
-    "Ex3.InflictDicePenalty": "Inflict Dice Penalty",
     "Ex3.CharmAddedAmount": "Charm Added Amount",
     "Ex3.ItemAddedAmount": "Item Added Amount",
+    "Ex3.CapTriggerActivations": "Cap Trigger Activations",
 
     "Ex3.MartialArtsTier": "Martial Arts Tier",
     "Ex3.SiderealMATier": "Sidereal MA Tier",
@@ -1216,12 +1219,15 @@
     "Ex3.TargetHasStatus": "Target Has Status",
     "Ex3.TargetMissingStatus": "Target Missing Status",
     "Ex3.TargetHasClassification": "Target Has Classification",
+    "Ex3.TargetHasCustomClassification": "Target Has Custom Classification",
     "Ex3.TargetTakenTurn": "Target Taken Turn",
     "Ex3.TargetIsBattlegroup": "Target Is Battlegroup",
     "Ex3.TargetIsCrashed": "Target Is Crashed",
     "Ex3.CrashedTheTarget": "Crashed The Target",
+    "Ex3.IncapacitatedTarget": "Incapacitated Target",
     "Ex3.DamageLevelsDealt": "Damage Levels Dealt",
     "Ex3.RollSucceeded": "Roll Succeeded",
+    "Ex3.GambitSucceeded": "Gambit Succeeded",
     "Ex3.TriggerBonusPrompt": "Trigger Bonus Prompt",
     "Ex3.YesOrNoPrompt": "Yes Or No Prompt",
     "Ex3.NoInitiativeReset": "No Initiative Reset",
@@ -1254,6 +1260,9 @@
 
     "Ex3.RestoreTarget": "Restore (Target)",
     "Ex3.RestoreTargetInitiative": "Restore Target Initiative",
+    "Ex3.RestoreTargetMotes": "Restore Target Motes",
+    "Ex3.RestoreTargetWillpower": "Restore Target Willpower",
+
 
     "Ex3.DamageDiceModifier": "Damage Dice Modifier",
     "Ex3.DamageSuccessModifier": "Damage Success Modifier",
@@ -1321,6 +1330,7 @@
 
     "Ex3.AbilityRoll": "Ability Roll",
 
+    "Ex3.SetRange": "Set Range",
     "Ex3.ShortRange": "Short Range",
     "Ex3.MediumRange": "Medium Range",
     "Ex3.LongRange": "Long Range",
@@ -1406,6 +1416,7 @@
     "Ex3.Upgrade": "Upgrade",
     "Ex3.UpgradeActive": "Upgrade Active",
     "Ex3.Upgrades": "Upgrades",
+    "Ex3.Repurchases": "Repurchases",
     "Ex3.CreateAlternate": "Create Alternate",
 
     "Ex3.Automations": "Automations",

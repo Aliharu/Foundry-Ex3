@@ -1136,7 +1136,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
         'triggerTargetDefensePenalty',
         'activateAura',
         'ignoreLegendarySize',
-        'inflictDicePenalty',
         //Defense
         'defense',
         'soak',

@@ -315,6 +315,14 @@
                     <div class="resource-label">{{localize "Ex3.RollTwiceKeepHighest"}}</div>
                     <input type="checkbox" name="object.rollTwice" {{checked data.rollTwice}}>
                 </div>
+                {{#if isAttackRoll}}
+                {{#ifGreater data.showTargets 1}}
+                <div>
+                    <div class="resource-label">{{localize "Ex3.RollAccuracyOnce"}}</div>
+                    <input type="checkbox" name="object.rollAccuracyOnce" {{checked data.rollAccuracyOnce}}>
+                </div>
+                {{/ifGreater}}
+                {{/if}}
             </div>
         </div>
         {{#ifNotEquals data.rollType 'base'}}

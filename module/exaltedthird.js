@@ -133,7 +133,6 @@ Hooks.once('init', async function () {
 
   // Pre-load templates
   loadTemplates([
-    "systems/exaltedthird/templates/dialogues/ability-base.html",
     "systems/exaltedthird/templates/dialogues/added-charm-list.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
     "systems/exaltedthird/templates/item/item-trigger-tab.html",

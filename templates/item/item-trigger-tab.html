@@ -141,6 +141,11 @@
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.elements selected=bonus.value localize=true blank=''}}
                 </select>
+                {{else ifEquals bonus.effect 'setRange'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.ranges selected=bonus.value localize=true blank=''}}
+                </select>
                 {{else ifEquals bonus.effect 'fullExcellency'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
                     data-type="String">
@@ -246,6 +251,12 @@
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
                     {{selectOptions ../../triggerBonusDropdowns.statuses selected=requirement.value localize=true
+                    blank=''}}
+                </select>
+                {{else ifEquals requirement.requirement 'targetHasClassification'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../classifications selected=requirement.value localize=true
                     blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'upgradeActive'}}

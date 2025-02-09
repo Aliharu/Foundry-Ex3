@@ -183,16 +183,17 @@ exaltedthird.activeEffectChanges = {
   otherModifiers: {
     label: "Ex3.OtherModifiers",
     effectList: {
-      "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
-      'system.effectivestrength.value': 'Ex3.EffectiveStrength',
-      'system.dicemodifier.value': 'Ex3.DiceModifier',
-      'system.penaltymodifier.value': 'Ex3.DicePenalty',
       'system.baseinitiative.value': 'Ex3.BaseInitiative',
       'system.crashbonus.value': 'Ex3.CrashBonus',
+      'system.effectivestrength.value': 'Ex3.EffectiveStrength',
+      "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
+      'system.penaltymodifier.value': 'Ex3.DicePenalty',
+      'system.dicemodifier.value': 'Ex3.DiceModifier',
+      'system.settings.martialartsmastery': "Ex3.MartialArtsMastery",
       'system.mount.speedbonus.value': 'Ex3.MountSpeedBonus',
       'system.negateevasionpenalty.value': 'Ex3.NegateEvasionPenalty',
       'system.negateparrypenalty.value': 'Ex3.NegateParryPenalty',
-      'system.settings.martialartsmastery': "Ex3.MartialArtsMastery"
+      'system.turnorderinitiative.value': 'Ex3.TurnOrderInitiative',
     }
   },
   cost: {
@@ -1644,6 +1645,7 @@ exaltedthird.booleanTriggers = [
   'doubleThresholdSuccesses-damage',
   'resetInit',
   'attackDealsDamage',
+  'gainInitiative',
   'stuntToDamage',
   'halfPostSoakDamage',
   'ignoreLegendarySize',
@@ -1651,9 +1653,12 @@ exaltedthird.booleanTriggers = [
   'targetIsCrashed',
   'targetTakenTurn',
   'rollSucceeded',
+  'gambitSucceeded',
   'crashedTheTarget',
+  'incapacitatedTarget',
   'noTriggersActivated',
   'doubleSuccesses',
+  'rerollFailed'
 ];
 
 exaltedthird.bonusTypes = {
@@ -1692,7 +1697,7 @@ exaltedthird.bonusTypes = {
       doubleSuccesses: "Ex3.DoubleSuccesses",
       doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses",
       specificDieFaceEffect: "Ex3.SpecificDieFaceEffect",
-      intervals: "Ex3.Intervals"
+      intervals: "Ex3.Intervals",
     },
   },
   damage: {
@@ -1779,6 +1784,8 @@ exaltedthird.bonusTypes = {
     label: "Ex3.RestoreTarget",
     bonuses: {
       'initiative-restore-target': "Ex3.RestoreTargetInitiative",
+      'motes-restore-target': "Ex3.RestoreTargetMotes",
+      'willpower-restore-target': "Ex3.RestoreTargetWillpower",
     }
   },
   subtract: {
@@ -1794,14 +1801,14 @@ exaltedthird.bonusTypes = {
       inflictStatus: "Ex3.InflictStatus",
       magicOnslaughtAddition: "Ex3.AddMagicOnslaught",
       onslaughtAddition: "Ex3.AddOnslaught",
-      triggerTargetDefensePenalty: "Ex3.TargetDefensePenalty",
+      triggerTargetDefensePenalty: "Ex3.ApplyTargetDefensePenalty",
       inflictActiveEffectOnTarget: "Ex3.InflictActiveEffect",
-      // inflictDicePenalty: "Ex3.InflictDicePenalty",
     }
   },
   other: {
     label: "Ex3.Other",
     bonuses: {
+      setRange: "Ex3.SetRange",
       activateAura: "Ex3.ActivateAura",
       displayMessage: "Ex3.DisplayMessage",
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
@@ -1984,6 +1991,7 @@ exaltedthird.requirementTypes = {
       charmFunctionType: "Ex3.CharmFunctionType",
       attackType: "Ex3.AttackType",
       charmAddedAmount: "Ex3.ItemAddedAmount",
+      capTriggerActivations: "Ex3.CapTriggerActivations",
       range: "Ex3.Range",
       craftProjectType: "Ex3.CraftProjectType"
     },
@@ -2014,6 +2022,7 @@ exaltedthird.requirementTypes = {
       targetIsBattlegroup: "Ex3.TargetIsBattlegroup",
       targetIsCrashed: "Ex3.TargetIsCrashed",
       targetHasClassification: "Ex3.TargetHasClassification",
+      targetHasCustomClassification: "Ex3.TargetHasCustomClassification",
       targetTakenTurn: "Ex3.TargetTakenTurn",
     },
   },
@@ -2021,10 +2030,12 @@ exaltedthird.requirementTypes = {
     label: "Ex3.RollResults",
     requirements: {
       rollSucceeded: "Ex3.RollSucceeded",
+      gambitSucceeded: "Ex3.GambitSucceeded",
       thresholdSuccesses: "Ex3.ThresholdSuccesses",
       initiativeDamageDealt: "Ex3.InitiativeDamageDealt",
       damageLevelsDealt: "Ex3.DamageLevelsDealt",
       crashedTheTarget: "Ex3.CrashedTheTarget",
+      incapacitatedTarget: "Ex3.IncapacitatedTarget",
     },
   },
   other: {
@@ -2647,6 +2658,7 @@ exaltedthird.selects = {
     "beforeRoll": "Ex3.BeforeRoll",
     "afterRoll": "Ex3.AfterRoll",
     "beforeDefense": "Ex3.BeforeDefenseApplied",
+    "attackMissed": "Ex3.OnAttackMiss",
     "beforeDamageRoll": "Ex3.BeforeDamageRoll",
     "afterDamageRoll": "Ex3.AfterDamageRoll",
     "beforeDamageApplied": "Ex3.BeforeDamageApplies",

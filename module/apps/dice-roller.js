@@ -43,6 +43,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.rollType = data.rollType;
             this.object.targetStat = 'defense';
             this.object.specialty = '';
+            this.object.rollAccuracyOnce = false;
             this.object.attackType = data.attackType || 'withering';
             this.object.cost = {
                 motes: 0,
@@ -374,6 +375,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (data.weapon) {
                     this.object.weaponTags = data.weapon.traits?.weapontags?.selected || {};
                     this.object.damage.resetInit = data.weapon.resetinitiative;
+                    this.object.rollAccuracyOnce = data.weapon.rollaccuracyonce;
                     this.object.poison = data.weapon.poison;
                     this.object.targetStat = data.weapon.targetstat;
                     if (this.actor.type === 'character') {
@@ -2556,6 +2558,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return item.flags?.exaltedthird?.currentIterationsActive ?? 1;
         }
         if (formula?.toLowerCase() === 'damagedealt') {
+            if (this.object.initiativeDamageDealt) {
+                return this.object.initiativeDamageDealt || 0;
+            }
             return this.object.damageLevelsDealt || 0;
         }
         if (formula?.toLowerCase() === 'initiativedamagedealt') {
@@ -2565,6 +2570,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return parseInt(this.object.craftRating || 0);
         }
         if (formula?.toLowerCase() === 'rollsuccesses') {
+            return this.object.total || 0;
+        }
+        if (formula?.toLowerCase() === 'gambitdifficulty') {
             return this.object.total || 0;
         }
         if (formula?.toLowerCase() === 'craftobjectives') {
@@ -2716,6 +2724,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         else {
             charm.charmAdded = true;
             charm.timesAdded = 1;
+            this.getEnritchedHTML(charm);
             this.object.opposingCharms.push(charm);
         }
         if (charm.system.diceroller?.opposedbonuses) {
@@ -2791,6 +2800,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.crashed = false;
             this.object.targetHit = false;
             if (this.object.showTargets) {
+                let index = 0;
                 for (const target of Object.values(this.object.targets)) {
                     this.object.target = target;
                     this.object.newTargetData = foundry.utils.duplicate(target.actor);
@@ -2813,24 +2823,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
                     this.object.targetSpecificSuccessMod = target.rollData.successModifier;
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
-
                     await this._attackRoll();
-                    if (this.object.updateTargetActorData) {
-                        await this._updateTargetActor();
-                    }
-                    if (this.object.updateTargetInitiative) {
-                        await this._updateTargetInitiative();
+                    if (this.object.rollAccuracyOnce && this.object.rollType === 'accuracy') {
+                        break;
                     }
                 }
             }
             else {
                 await this._attackRoll();
-                if (this.object.updateTargetActorData) {
-                    await this._updateTargetActor();
-                }
-                if (this.object.updateTargetInitiative) {
-                    await this._updateTargetInitiative();
-                }
             }
             if (this.object.rollType === 'damageResults') {
                 await this._updateRollerResources();
@@ -2873,9 +2873,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         else {
             await this._abilityRoll();
-            if (this.object.target) {
-                await this._inflictOnTarget();
-            }
+            await this._inflictOnTarget();
             if (this.object.updateTargetActorData) {
                 await this._updateTargetActor();
             }
@@ -2934,6 +2932,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.restoreOnTarget.initiative) {
                 this.object.updateTargetInitiative = true;
                 this.object.newTargetInitiative += this.object.restoreOnTarget.initiative;
+            }
+            if (this.object.restoreOnTarget.willpower) {
+                this.object.updateTargetInitiative = true;
+                this.object.newTargetData.system.willpower.value = Math.min(this.object.newTargetData.system.willpower.max, this.object.newTargetData.system.willpower.value + this.object.restoreOnTarget.willpower);
+            }
+            if (this.object.restoreOnTarget.motes) {
+                this.object.updateTargetActorData = true;
+                if ((this.object.target.actor.system?.settings?.charmmotepool || 'peripheral') === 'personal') {
+                    this.object.newTargetData.system.motes.personal.value = Math.min(this.object.newTargetData.system.motes.personal.max, this.object.newTargetData.system.motes.personal.value + this.object.restoreOnTarget.motes);
+                }
+                else {
+                    this.object.newTargetData.system.motes.peripheral.value = Math.min(this.object.newTargetData.system.motes.peripheral.max, this.object.newTargetData.system.motes.peripheral.value + this.object.restoreOnTarget.motes);
+                }
             }
             if (this.object.targetDoesntResetOnslaught) {
                 this.object.newTargetData.system.dontresetonslaught = true;
@@ -3616,6 +3627,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.attackSuccesses = this.object.total;
             if (this.object.target) {
                 this.object.target.rollData.attackSuccesses = this.object.total;
+                if (this.object.rollAccuracyOnce) {
+                    for (const target of Object.values(this.object.targets)) {
+                        target.rollData.attackSuccesses = this.object.total;
+                    }
+                }
             }
         }
         else {
@@ -3738,7 +3754,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.ability === "fever") {
                 let feverReduction = 0;
                 for (const diceResult of this.object.diceRoll.sort((a, b) => a.result - b.result)) {
-                    if(diceResult.success) {
+                    if (diceResult.success) {
                         feverReduction++;
                     }
                 }
@@ -3829,6 +3845,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this.object.rollType === 'damageResults') {
             await this.damageResults();
+            if (this.object.updateTargetActorData) {
+                await this._updateTargetActor();
+            }
+            if (this.object.updateTargetInitiative) {
+                await this._updateTargetInitiative();
+            }
         }
     }
 
@@ -3893,12 +3915,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             await this._updateRollerResources();
             this.close();
         }
+        await this._inflictOnTarget();
+        if (this.object.updateTargetActorData) {
+            await this._updateTargetActor();
+        }
+        if (this.object.updateTargetInitiative) {
+            await this._updateTargetInitiative();
+        }
     }
 
     async _damageRoll() {
         await this._addTriggerBonuses('beforeDefense');
         if (this.object.attackSuccesses < this.object.defense) {
             this.object.thresholdSuccesses = 0;
+            await this._addTriggerBonuses('attackMissed');
             return await this.missAttack();
         } else {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
@@ -4359,6 +4389,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             await this._updateRollerResources();
             this.close();
         }
+        if (this.object.updateTargetActorData) {
+            await this._updateTargetActor();
+        }
+        if (this.object.updateTargetInitiative) {
+            await this._updateTargetInitiative();
+        }
     }
 
     async _addAttackEffects() {
@@ -4442,7 +4478,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 });
             }
             if (this.object.triggerKnockdown && this.object.thresholdSuccesses >= 0) {
-                this.object.updateTargetActorData = true;
                 this._addStatusEffect('prone');
             }
             if (this.object.attackSuccess) {
@@ -4526,7 +4561,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.bonusesTriggered = {
                 beforeRoll: false,
                 afterRoll: false,
+                beforeDefense: false,
                 beforeDamageRoll: false,
+                attackMissed: false,
                 afterDamageRoll: false
             }
         }
@@ -4698,6 +4735,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'activateAura':
                                         this.object[bonus.effect] = cleanedValue;
+                                        break;
+                                    case 'setRange':
+                                        this.object.range = bonus.effect;
                                         break;
                                     case 'triggerOnTens':
                                         if (triggerTensMap[cleanedValue]) {
@@ -4887,7 +4927,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         const subtractKey = bonus.effect.replace('-subtract', '');
                                         this.object.subtract[subtractKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
+                                    case 'motes-restore-target':
                                     case 'initiative-restore-target':
+                                    case 'willpower-restore-target':
                                         const restoreTargetKey = bonus.effect.replace('-restore-target', '');
                                         this.object.restoreOnTarget[restoreTargetKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
@@ -4902,10 +4944,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         if (this.object.rollType === 'useOpposingCharms') {
                                             this.object.addOppose.addedBonus[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         } else {
-                                            if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
-                                                this.object.difficulty += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                            if (type === 'itemAdded' && this.object.showTargets) {
+                                                for (const target of Object.values(this.object.targets)) {
+                                                    target.rollData[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                }
                                             } else {
-                                                this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
+                                                    this.object.difficulty += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                } else {
+                                                    this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                }
                                             }
                                         }
                                         break;
@@ -4957,6 +5005,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex, display, triggerHasBeenActivatedOnItem, triggerActor) {
         let fufillsRequirements = true;
+        let opposingActor = this.object.target;
+        if(bonusType === 'benefit' && this.object.rollType === 'useOpposingCharms') {
+            opposingActor = this.object.attacker;
+        }
         for (const requirementObject of Object.values(trigger.requirements)) {
             if (!fufillsRequirements) {
                 break;
@@ -4989,7 +5041,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'charmFunctionType':
-                    if (bonusType !== requirementObject.value) {
+                    if(this.object.rollType === 'useOpposingCharms' && bonusType === requirementObject.value) {
+                        fufillsRequirements = false;
+                    }
+                    else if (this.object.rollType !== 'useOpposingCharms' && bonusType !== requirementObject.value) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5000,6 +5055,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'charmAddedAmount':
                     if (triggerAmountIndex < this._getFormulaValue(cleanedValue, bonusType === "opposed" ? triggerActor : null)) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'capTriggerActivations':
+                    if (triggerAmountIndex > this._getFormulaValue(cleanedValue, bonusType === "opposed" ? triggerActor : null)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5016,6 +5076,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'crashedTheTarget':
                     if (!this.object.crashed) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'incapacitatedTarget':
+                    if (!this.object.target) {
+                        fufillsRequirements = false;
+                    }
+                    else if (this.object.target.system.health.value > (this.object.damageLevelsDealt ?? 0)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5083,15 +5151,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
                     break;
                 case 'targetHasStatus':
-                    if (!this.object.target) {
+                    if (!opposingActor) {
                         fufillsRequirements = false;
                     } else {
                         if (cleanedValue === 'anycover') {
-                            if (!this.object.target.actor.effects.some(e => e.statuses.has('ightcover')) && !this.object.target.actor.effects.some(e => e.statuses.has('heavycover')) && !this.object.target.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                            if (!opposingActor.effects.some(e => e.statuses.has('ightcover')) && !opposingActor.effects.some(e => e.statuses.has('heavycover')) && !opposingActor.effects.some(e => e.statuses.has('fullcover'))) {
                                 fufillsRequirements = false;
                             }
                         } else {
-                            if (!this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                            if (!opposingActor.effects.some(e => e.statuses.has(cleanedValue))) {
                                 fufillsRequirements = false;
                             }
                         }
@@ -5099,45 +5167,57 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
                     break;
                 case 'targetMissingStatus':
-                    if (!this.object.target) {
+                    if (!opposingActor) {
                         fufillsRequirements = false;
                     }
                     else {
                         if (cleanedValue === 'anycover') {
-                            if (this.object.target.actor.effects.some(e => e.statuses.has('ightcover')) || this.object.target.actor.effects.some(e => e.statuses.has('heavycover')) || this.object.target.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                            if (opposingActor.effects.some(e => e.statuses.has('ightcover')) || opposingActor.effects.some(e => e.statuses.has('heavycover')) || opposingActor.effects.some(e => e.statuses.has('fullcover'))) {
                                 fufillsRequirements = false;
                             }
                         } else {
-                            if (this.object.target.actor.effects.some(e => e.statuses.has(cleanedValue))) {
+                            if (opposingActor.effects.some(e => e.statuses.has(cleanedValue))) {
                                 fufillsRequirements = false;
                             }
                         }
                     }
                     break;
                 case 'targetIsBattlegroup':
-                    if (!this.object.target) {
+                    if (!opposingActor) {
                         fufillsRequirements = false;
                     }
-                    else if (!this.object.target.actor.system.battlegroup) {
+                    else if (!opposingActor.system.battlegroup) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'targetHasClassification':
-                    if (!this.object.target) {
+                case 'targetHasCustomClassification':
+                    if (!opposingActor) {
                         fufillsRequirements = false;
                     }
-                    if (!this.object.target.actor.system.traits.classifications.value.includes(cleanedValue)) {
+                    if (!opposingActor.system.traits.classifications.value.includes(cleanedValue)) {
                         fufillsRequirements = false;
                     }
                     break;
                 case 'targetTakenTurn':
-                    if (cleanedValue) {
-                        if (this.object.targetCombatant?.flags?.acted !== true) {
-                            fufillsRequirements = false;
-                        }
+                    let opposingCombatant = null;
+                    if(!opposingActor) {
+                        fufillsRequirements = false;
                     } else {
-                        if (!this.object.targetCombatant?.flags?.acted) {
-                            fufillsRequirements = false;
+                        if (opposingActor?.token?.id || opposingActor.getActiveTokens()[0]) {
+                            const tokenId = opposingActor?.token?.id || opposingActor.getActiveTokens()[0].id;
+                            opposingCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                        }
+                        if(opposingCombatant) {
+                            if (cleanedValue) {
+                                if (opposingCombatant?.flags?.acted !== true) {
+                                    fufillsRequirements = false;
+                                }
+                            } else {
+                                if (!opposingCombatant?.flags?.acted) {
+                                    fufillsRequirements = false;
+                                }
+                            }
                         }
                     }
                     break;
@@ -5165,6 +5245,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         } else if (this.object.total >= this.object.difficulty && cleanedValue === false) {
                             fufillsRequirements = false;
                         }
+                    }
+                    break;
+                case 'gambitSucceeded':
+                    if ((this.object.attackSuccess ?? false) !== cleanedValue) {
+                        fufillsRequirements = false;
                     }
                     break;
                 case 'booleanPrompt':
@@ -6827,7 +6912,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.activateAura && this.object.activateAura !== 'none') {
             actorData.system.details.aura = this.object.activateAura;
         }
-        var restoreMotes = this.object.restore.motes + this.object.steal.motes.gained;
+        let restoreMotes = this.object.restore.motes + this.object.steal.motes.gained;
         if (this.object.motePool === 'personal') {
             actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + restoreMotes);
         }
