@@ -5301,6 +5301,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
             }
+            if((trigger.requirementMode || 'and') === 'or' && fufillsRequirements) {
+                return true;
+            }
         }
         return fufillsRequirements;
     }

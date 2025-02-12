@@ -295,6 +295,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
           name: "",
           triggerTime: "beforeRoll",
           actorType: '',
+          requirementMode: '',
           bonuses: {},
           requirements: {}
         };

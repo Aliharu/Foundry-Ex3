@@ -2678,6 +2678,10 @@ exaltedthird.selects = {
     itemOwner: "Ex3.ItemOwner",
     target: "Ex3.TargetAttacker",
   },
+  triggerRequirementModes: {
+    and: "Ex3.RequirementAND",
+    or: "Ex3.RequirementOR",
+  },
   rollTypes: {
     abilityRoll: "Ex3.AbilityRoll",
     attack: "Ex3.Attack",

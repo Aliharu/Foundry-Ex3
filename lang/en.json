@@ -213,6 +213,8 @@
     "Ex3.Triggers": "Triggers",
     "Ex3.Bonuses": "Bonuses",
     "Ex3.Requirements": "Requirements",
+    "Ex3.RequirementMode": "Requirement Mode",
+
     "Ex3.Bonus": "Bonus",
     "Ex3.Parry": "Parry",
     "Ex3.Evasion": "Evasion",
@@ -1040,6 +1042,10 @@
     "Ex3.MainText": "Main Text",
     "Ex3.UseLinks": "Use Links",
     "Ex3.ShowSpells": "Show Spells",
+
+    "Ex3.DefaultAND": "Default (AND)",
+    "Ex3.RequirementAND": "All (AND)",
+    "Ex3.RequirementOR": "One (OR)",
     
     "Ex3.LeadsTo": "Leads to",
 
