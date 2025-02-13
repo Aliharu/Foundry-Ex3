@@ -1771,6 +1771,7 @@ exaltedthird.bonusTypes = {
       'silverxp-restore': "Ex3.GainSilverXP",
       'goldxp-restore': "Ex3.GainGoldXP",
       'whitexp-restore': "Ex3.GainWhiteXP",
+      'grappleControl-restore': "Ex3.GrappleControlRestore",
     }
   },
   steal: {
@@ -1791,8 +1792,9 @@ exaltedthird.bonusTypes = {
   subtract: {
     label: "Ex3.SubtractTarget",
     bonuses: {
-      'motes-subtract': "Ex3.SubtractMotes",
-      'initiative-subtract': "Ex3.SubtractInitiative",
+      'motes-subtract': "Ex3.SubtractTargetMotes",
+      'initiative-subtract': "Ex3.SubtractTargetInitiative",
+      'willpower-subtract': "Ex3.SubtractTargetWillpower",
     }
   },
   target: {
@@ -1990,6 +1992,7 @@ exaltedthird.requirementTypes = {
       rollType: "Ex3.RollType",
       charmFunctionType: "Ex3.CharmFunctionType",
       attackType: "Ex3.AttackType",
+      defenseType: "Ex3.DefenseType",
       charmAddedAmount: "Ex3.ItemAddedAmount",
       capTriggerActivations: "Ex3.CapTriggerActivations",
       range: "Ex3.Range",
@@ -2211,6 +2214,14 @@ exaltedthird.selects = {
     terrestrial: "Ex3.Terrestrial",
     standard: "Ex3.Standard",
     mastery: "Ex3.Mastery",
+  },
+  martialArtsMasteryTriggers: {
+    terrestrial: "Ex3.Terrestrial",
+    standard: "Ex3.Standard",
+    mastery: "Ex3.Mastery",
+    notterrestrial: "Ex3.NotTerrestrial",
+    notstandard: "Ex3.NotStandard",
+    notmastery: "Ex3.NotMastery",
   },
   sheetBackgrounds: {
     default: "Ex3.Default",
@@ -2561,6 +2572,12 @@ exaltedthird.selects = {
     "withering": "Ex3.Withering",
     "decisive": "Ex3.Decisive",
     "gambit": "Ex3.Gambit",
+  },
+  defenseTypes: {
+    "parry": "Ex3.Parry",
+    "evasion": "Ex3.Evasion",
+    "resolve": "Ex3.Resolve",
+    "guile": "Ex3.Guile",
   },
   decisiveSplits: {
     "evenSplit": "Ex3.EvenSplit",

@@ -214,6 +214,11 @@
                     data-type="String">
                     {{selectOptions ../../selects.attackTypes selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'defenseType'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.defenseTypes selected=requirement.value localize=true blank=''}}
+                </select>
                 {{else ifEquals requirement.requirement 'rollType'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
@@ -238,7 +243,7 @@
                 {{else ifEquals requirement.requirement 'martialArtsLevel'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../selects.martialArtsMastery selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../selects.martialArtsMasteryTriggers selected=requirement.value localize=true blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'hasStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"

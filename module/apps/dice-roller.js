@@ -42,9 +42,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.craftRating = data.craftRating || 0;
             this.object.rollType = data.rollType;
             this.object.targetStat = 'defense';
+            this.object.defenseType = 'parry';
             this.object.specialty = '';
             this.object.rollAccuracyOnce = false;
             this.object.attackType = data.attackType || 'withering';
+
             this.object.cost = {
                 motes: 0,
                 penumbra: 0,
@@ -807,46 +809,48 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.actor) {
             for (const condition of this.actor.allApplicableEffects()) {
-                if (condition.statuses.has('prone')) {
-                    penalties.push(
-                        {
-                            img: "icons/svg/falling.svg",
-                            name: "Ex3.Prone",
-                            summary: "-3 dice on attacks"
-                        },
-                    );
-                }
-                else if (condition.statuses.has('blind')) {
-                    penalties.push(
-                        {
-                            name: "Ex3.Blind",
-                            summary: "-3 dice"
-                        },
-                    );
-                }
-                else if (condition.statuses.has('grappled')) {
-                    penalties.push(
-                        {
-                            img: "systems/exaltedthird/assets/icons/grab.svg",
-                            name: "Ex3.Grappled",
-                            summary: "-1 dice on attacks"
-                        },
-                    );
-                } else if (condition.statuses.has('flyingPenalty')) {
-                    penalties.push(
-                        {
-                            img: "icons/svg/angel.svg",
-                            name: "Ex3.FlyingPenalty",
-                            summary: "-3 dice on attacks"
-                        },
-                    );
-                } else {
-                    effectsAndTags.push(
-                        {
-                            img: condition.img,
-                            name: condition.name,
-                        },
-                    );
+                if (!condition.disabled) {
+                    if (condition.statuses.has('prone')) {
+                        penalties.push(
+                            {
+                                img: "icons/svg/falling.svg",
+                                name: "Ex3.Prone",
+                                summary: "-3 dice on attacks"
+                            },
+                        );
+                    }
+                    else if (condition.statuses.has('blind')) {
+                        penalties.push(
+                            {
+                                name: "Ex3.Blind",
+                                summary: "-3 dice"
+                            },
+                        );
+                    }
+                    else if (condition.statuses.has('grappled')) {
+                        penalties.push(
+                            {
+                                img: "systems/exaltedthird/assets/icons/grab.svg",
+                                name: "Ex3.Grappled",
+                                summary: "-1 dice on attacks"
+                            },
+                        );
+                    } else if (condition.statuses.has('flyingPenalty')) {
+                        penalties.push(
+                            {
+                                img: "icons/svg/angel.svg",
+                                name: "Ex3.FlyingPenalty",
+                                summary: "-3 dice on attacks"
+                            },
+                        );
+                    } else {
+                        effectsAndTags.push(
+                            {
+                                img: condition.img,
+                                name: condition.name,
+                            },
+                        );
+                    }
                 }
             }
             if (this.object.woundPenalty) {
@@ -1344,20 +1348,25 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             effectiveParry -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
 
             if (this.object.targetStat === 'resolve') {
-                target.rollData.defenseType = game.i18n.localize('Ex3.Resolve');
+                target.rollData.defenseType = 'resolve';
+                target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Resolve');
                 target.rollData.defense = effectiveResolve;
             }
             else if (this.object.targetStat === 'guile') {
-                target.rollData.defenseType = game.i18n.localize('Ex3.Guile');
+                target.rollData.defenseType = 'guile';
+                target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Guile');
                 target.rollData.defense = effectiveGuile;
             }
             else {
                 if ((effectiveParry >= effectiveEvasion || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
-                    target.rollData.defenseType = game.i18n.localize('Ex3.Parry');
+                    target.rollData.defenseType = 'parry';
+                    target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Parry');
                     target.rollData.defense = effectiveParry;
                 }
                 if ((effectiveEvasion >= effectiveParry || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
-                    target.rollData.defenseType = game.i18n.localize('Ex3.Evasion');
+                    target.rollData.defenseType = 'evasion';
+                    target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Evasion');
+
                     target.rollData.defense = effectiveEvasion;
                 }
             }
@@ -1392,6 +1401,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.newTargetData = foundry.utils.duplicate(target.actor);
             this.object.updateTargetActorData = false;
             this.object.updateTargetInitiative = false;
+            this.object.targetCombatant = null;
+            if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
+                const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
+                this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
+                    this.object.newTargetInitiative = this.object.targetCombatant.initiative;
+                }
+            }
             if (this.object.rollType === 'command') {
                 if (target.actor.system.battlegroup) {
                     if (target.actor.system.drill.value === '0') {
@@ -2484,10 +2501,24 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     _getCappedFormula(formula, overrideActor = null) {
         let value = 0;
         let cap = 0;
+
         if (formula.includes('cap')) {
-            let split = formula.split(' ');
-            value = parseInt(split[0]);
-            cap = this._getActorFormulaValue(split[2], overrideActor);
+            // let split = formula.split(' ');
+            const match = formula.match(/^(\d+)\s+cap\s+(\(.*\))$/);
+
+            if (!match) {
+                console.error("Invalid formula format:", formula);
+                return {
+                    value: 10,
+                    cap: 0,
+                };
+            }
+
+            const fixedValue = parseInt(match[1], 10); // First number (e.g., 9)
+            const cappedExpression = match[2].trim(); // Expression with parentheses
+
+            value = fixedValue;
+            cap = this._getFormulaValue(cappedExpression, overrideActor);
         }
         else {
             value = parseInt(formula);
@@ -2577,6 +2608,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (formula?.toLowerCase() === 'craftobjectives') {
             return this.object.objectivesCompleted || 0;
+        }
+        if (formula?.toLowerCase() === 'baseinitiative') {
+            return this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier;
         }
         if (formula?.toLowerCase() === 'dicecap') {
             let diceCapReturnValue = forumlaActor.type === 'character' ? forumlaActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : forumlaActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
@@ -2819,6 +2853,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.shieldInitiative = target.rollData.shieldInitiative;
                     this.object.hardness = target.rollData.hardness;
                     this.object.defense = target.rollData.defense;
+                    this.object.defenseType = target.rollData.defenseType;
                     this.object.attackSuccesses = target.rollData.attackSuccesses;
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
                     this.object.targetSpecificSuccessMod = target.rollData.successModifier;
@@ -2842,6 +2877,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         else if (this.object.hasIntervals) {
             this.object.intervals -= 1;
             await this._completeCraftProject();
+            await this._updateRollerResources();
         }
         else if (this.object.showTargets && (this.object.rollType === 'social' || this.object.rollType === 'readIntentions')) {
             this.object.hasDifficulty = true;
@@ -2853,15 +2889,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (this.object.rollType === 'social') {
                         this.object.difficulty = target.rollData.resolve;
                         this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(target.rollData.opposedIntimacy || 0) - parseInt(target.rollData.supportedIntimacy || 0));
+                        this.object.opposedIntimacy = target.rollData.opposedIntimacy;
+                        this.object.supportedIntimacy = target.rollData.supportedIntimacy;
+                        this.object.appearanceBonus = target.rollData.appearanceBonus;
                     }
                     if (this.object.rollType === 'readIntentions') {
                         this.object.difficulty = target.rollData.guile;
                     }
-                    this.object.opposedIntimacy = target.rollData.opposedIntimacy;
-                    this.object.supportedIntimacy = target.rollData.supportedIntimacy;
-                    this.object.appearanceBonus = target.rollData.appearanceBonus;
+
                     await this._abilityRoll();
                     await this._inflictOnTarget();
+                    await this._updateRollerResources();
+
                     if (this.object.updateTargetActorData) {
                         await this._updateTargetActor();
                     }
@@ -2874,6 +2913,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         else {
             await this._abilityRoll();
             await this._inflictOnTarget();
+            await this._updateRollerResources();
             if (this.object.updateTargetActorData) {
                 await this._updateTargetActor();
             }
@@ -3642,9 +3682,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         this.object.diceRoll = diceRoll;
         await this._addTriggerBonuses('afterRoll');
-        if (!this._isAttackRoll() && this.object.rollType !== 'base') {
-            await this._updateRollerResources();
-        }
     }
 
     async _baseRoll() {
@@ -3749,7 +3786,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this.object.goalNumber = goalNumberLeft;
             if (this.object.rollType === "grappleControl") {
-                await this.actor.update({ [`system.grapplecontrolrounds.value`]: (this.actor.system.grapplecontrolrounds.value + this.object.thresholdSuccesses) });
+                this.object.restore.grappleControl += this.object.thresholdSuccesses;
             }
             if (this.object.ability === "fever") {
                 let feverReduction = 0;
@@ -3911,11 +3948,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
         await this._addAttackEffects();
+        await this._inflictOnTarget();
         if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
             await this._updateRollerResources();
             this.close();
         }
-        await this._inflictOnTarget();
         if (this.object.updateTargetActorData) {
             await this._updateTargetActor();
         }
@@ -4606,6 +4643,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         const triggerTensDamageMap = {
             subtracttargettnitiative: 'subtractTargetInitiative',
         }
+        let triggerHasBeenActivatedOnItem = false;
         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === type)) {
             let triggerActor = charm.actor || this.actor;
             if (trigger.actorType === 'target') {
@@ -4625,7 +4663,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             try {
                 for (let triggerAmountIndex = 1; triggerAmountIndex < (type === 'itemAdded' ? 1 : (charm.timesAdded || 1)) + 1; triggerAmountIndex++) {
-                    let triggerHasBeenActivatedOnItem = false;
                     if (await this._triggerRequirementsMet(charm, trigger, bonusType, triggerAmountIndex, false, triggerHasBeenActivatedOnItem, triggerActor)) {
                         triggerHasBeenActivatedOnItem = true;
                         for (const bonus of Object.values(trigger.bonuses)) {
@@ -4924,6 +4961,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'motes-subtract':
                                     case 'initiative-subtract':
+                                    case 'willpower-subtract':
                                         const subtractKey = bonus.effect.replace('-subtract', '');
                                         this.object.subtract[subtractKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
@@ -5006,7 +5044,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex, display, triggerHasBeenActivatedOnItem, triggerActor) {
         let fufillsRequirements = true;
         let opposingActor = this.object.target;
-        if(bonusType === 'benefit' && this.object.rollType === 'useOpposingCharms') {
+        if (bonusType === 'benefit' && this.object.rollType === 'useOpposingCharms') {
             opposingActor = this.object.attacker;
         }
         for (const requirementObject of Object.values(trigger.requirements)) {
@@ -5041,7 +5079,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'charmFunctionType':
-                    if(this.object.rollType === 'useOpposingCharms' && bonusType === requirementObject.value) {
+                    if (this.object.rollType === 'useOpposingCharms' && bonusType === requirementObject.value) {
                         fufillsRequirements = false;
                     }
                     else if (this.object.rollType !== 'useOpposingCharms' && bonusType !== requirementObject.value) {
@@ -5050,6 +5088,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'attackType':
                     if (this.object.attackType !== cleanedValue) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'defenseType':
+                    if (this.object.defenseType !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5088,7 +5131,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'martialArtsLevel':
-                    if (triggerActor.system.settings.martialartsmastery !== cleanedValue) {
+                    if (cleanedValue.includes('not')) {
+                        if (triggerActor.system.settings.martialartsmastery === cleanedValue.replace('not', '')) {
+                            fufillsRequirements = false;
+                        }
+                    }
+                    else if (triggerActor.system.settings.martialartsmastery !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5201,14 +5249,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'targetTakenTurn':
                     let opposingCombatant = null;
-                    if(!opposingActor) {
+                    if (!opposingActor) {
                         fufillsRequirements = false;
                     } else {
                         if (opposingActor?.token?.id || opposingActor.getActiveTokens()[0]) {
                             const tokenId = opposingActor?.token?.id || opposingActor.getActiveTokens()[0].id;
                             opposingCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
                         }
-                        if(opposingCombatant) {
+                        if (opposingCombatant) {
                             if (cleanedValue) {
                                 if (opposingCombatant?.flags?.acted !== true) {
                                     fufillsRequirements = false;
@@ -5288,10 +5336,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'noTriggersActivated':
-                    if (!cleanedValue && !triggerHasBeenActivatedOnItem) {
+                    if (!(typeof cleanedValue === "boolean" ? cleanedValue : true) && !triggerHasBeenActivatedOnItem) {
                         fufillsRequirements = false;
                     }
-                    if (cleanedValue && triggerHasBeenActivatedOnItem) {
+                    if ((typeof cleanedValue === "boolean" ? cleanedValue : true) && triggerHasBeenActivatedOnItem) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5301,7 +5349,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
             }
-            if((trigger.requirementMode || 'and') === 'or' && fufillsRequirements) {
+            if ((trigger.requirementMode || 'and') === 'or' && fufillsRequirements) {
                 return true;
             }
         }
@@ -6883,8 +6931,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         actorData.system.anima.value = newValue;
         actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
-        actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
-
         actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
         actorData.system.ship.momentum.value = Math.max(0, actorData.system.ship.momentum.value - this.object.cost.momentum);
 

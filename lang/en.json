@@ -609,6 +609,7 @@
     "Ex3.Hearthstone": "Hearthstone",
     "Ex3.Range": "Range",
     "Ex3.AttackType": "Attack Type",
+    "Ex3.DefenseType": "Defense Type",
     "Ex3.RollType": "Roll Type",
     "Ex3.CharmFunctionType": "Charm Function Type",
     "Ex3.WeaponType": "Weapon Type",
@@ -840,6 +841,7 @@
     "Ex3.GainSilverXP": "Gain Silver XP",
     "Ex3.GainGoldXP": "Gain Gold XP",
     "Ex3.GainWhiteXP": "Gain White XP",
+    "Ex3.GrappleControlRestore": "Grapple Control Restore",
 
     "Ex3.ExtraSuccess": "Extra Success",
     "Ex3.AddExtraDie": "Add Extra Die",
@@ -862,7 +864,6 @@
     "Ex3.SubractInitiative": "Subract Initiative",
     "Ex3.IncreaseEnemySoak": "Increase Enemy Soak",
     "Ex3.IncreaseEnemyDefense": "Increase Enemy Defense",
-    "Ex3.SubtractInitiative": "Subtract Initiative",
     "Ex3.SubtractSuccesses": "Subtract Successes",
     "Ex3.RerollSuccesses": "Reroll Successes",
     "Ex3.TriggerOnEnemyOnes": "Trigger On Enemy Ones",
@@ -892,6 +893,11 @@
     "Ex3.MartialArtsMastery": "Martial Arts Mastery",
     "Ex3.Mastery": "Mastery",
     "Ex3.SMAEnlightenment": "SMA Enlightenment",
+
+    "Ex3.NotMastery": "Not Mastery",
+    "Ex3.NotTerrestrial": "Not Terrestrial",
+    "Ex3.NotStandard": "Not Standard",
+
 
     "Ex3.SheetStyle": "Sheet Style",
     "Ex3.SheetStyleDescription": "The background image used on exalted sheets",
@@ -1262,7 +1268,8 @@
     "Ex3.StealInitiative": "Steal Initiative",
 
     "Ex3.SubtractTarget": "Subtract (Target)",
-    "Ex3.SubtractMotes": "Subtract Motes",
+    "Ex3.SubtractTargetMotes": "Subtract Target Motes",
+    "Ex3.SubtractTargetWillpower": "Subtract Target Willpower",
 
     "Ex3.RestoreTarget": "Restore (Target)",
     "Ex3.RestoreTargetInitiative": "Restore Target Initiative",
