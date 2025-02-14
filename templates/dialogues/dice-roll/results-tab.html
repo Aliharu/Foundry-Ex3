@@ -1,6 +1,7 @@
 <section class="tab flex-center dice-roller-tab {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="results">
     {{#ifEquals data.rollType 'damageResults'}}
     <div>
+        {{#if data.damageDiceRollResults.diceDisplay}}
         <div class="flex-center resource-label">
             {{localize "Ex3.DamageRoll"}}
         </div>
@@ -9,6 +10,7 @@
                 <ol class="dice-rolls">{{{data.damageDiceRollResults.diceDisplay}}}</ol>
             </div>
         </div>
+        {{/if}}
         <div class="resource grid grid-4col flex-center">
             {{#ifEquals data.attackType 'gambit'}}
             <div>

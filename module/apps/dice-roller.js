@@ -3931,41 +3931,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         });
     }
 
-    async missAttack() {
-        this.object.missedAttacks++;
-        var messageContent = `
-        <div class="dice-roll">
-            <div class="dice-result">
-                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
-                <h4 class="dice-total">Attack Missed!</h4>
-            </div>
-        </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll')
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        });
-        await this._addAttackEffects();
-        await this._inflictOnTarget();
-        if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
-            await this._updateRollerResources();
-            this.close();
-        }
-        if (this.object.updateTargetActorData) {
-            await this._updateTargetActor();
-        }
-        if (this.object.updateTargetInitiative) {
-            await this._updateTargetInitiative();
-        }
-    }
-
     async _damageRoll() {
         await this._addTriggerBonuses('beforeDefense');
         if (this.object.attackSuccesses < this.object.defense) {
-            this.object.thresholdSuccesses = 0;
-            await this._addTriggerBonuses('attackMissed');
             return await this.missAttack();
         } else {
             this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
@@ -4196,7 +4164,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let fullInitiative = 0;
         this.object.attackSuccess = true;
         this.object.damageThresholdSuccesses = 0;
-
         await this._addTriggerBonuses('beforeDamageApplied');
 
         if (this.object.damage.attackDealsDamage) {
@@ -4217,7 +4184,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     ${game.i18n.localize('Ex3.ApplyDecisiveDamage')}
                 </button>
                 `;
-                if (game.settings.get("exaltedthird", "automaticDecisiveDamage")) {
+                if (this.object.damageSuccesses && game.settings.get("exaltedthird", "automaticDecisiveDamage")) {
                     this.dealHealthDamage(this.object.damageSuccesses);
                 }
                 this.object.damageLevelsDealt = this.object.damageSuccesses;
@@ -4292,9 +4259,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     this._removeEffect();
                 }
-                fullInitiative = this.object.damageSuccesses + 1;
+                fullInitiative = this.object.damageSuccesses;
                 if (this.object.damage.maxAttackInitiativeGain) {
                     fullInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, fullInitiative);
+                }
+                if(!this.object.missedAttacks || (this.object.missedAttacks < (this.object.showTargets || 0))) {
+                    fullInitiative++;
                 }
                 if (crashed) {
                     fullInitiative += (this.object.damage.crashBonus ?? 5);
@@ -4389,6 +4359,41 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.attackSequence();
     }
 
+    async missAttack() {
+        this.object.thresholdSuccesses = 0;
+        await this._addTriggerBonuses('attackMissed');
+        this.object.missedAttacks++;
+        var messageContent = `
+        <div class="dice-roll">
+            <div class="dice-result">
+                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-total">Attack Missed!</h4>
+            </div>
+        </div>`;
+        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        });
+        if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
+            this.object.rollType = 'damageResults';
+        }
+        // await this._addAttackEffects();
+        // await this._inflictOnTarget();
+        // if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
+        //     await this._updateRollerResources();
+        //     this.close();
+        // }
+        // if (this.object.updateTargetActorData) {
+        //     await this._updateTargetActor();
+        // }
+        // if (this.object.updateTargetInitiative) {
+        //     await this._updateTargetInitiative();
+        // }
+    }
+
     async _failedDecisive(dice) {
         this.object.failedDecisives++;
         this.object.damageLevelsDealt = 0;
@@ -4420,18 +4425,21 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             content: messageContent,
             style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         });
-        await this._addAttackEffects();
-        // await this._inflictOnTarget();
-        if (!this.object.showTargets || this.object.failedDecisives >= this.object.showTargets) {
-            await this._updateRollerResources();
-            this.close();
+        if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
+            this.object.rollType = 'damageResults';
         }
-        if (this.object.updateTargetActorData) {
-            await this._updateTargetActor();
-        }
-        if (this.object.updateTargetInitiative) {
-            await this._updateTargetInitiative();
-        }
+        // await this._addAttackEffects();
+        // // await this._inflictOnTarget();
+        // if (!this.object.showTargets || this.object.failedDecisives >= this.object.showTargets) {
+        //     await this._updateRollerResources();
+        //     this.close();
+        // }
+        // if (this.object.updateTargetActorData) {
+        //     await this._updateTargetActor();
+        // }
+        // if (this.object.updateTargetInitiative) {
+        //     await this._updateTargetInitiative();
+        // }
     }
 
     async _addAttackEffects() {
@@ -6998,47 +7006,50 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
                 if (this._isAttackRoll()) {
-                    if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
-                        if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
-                            if (this.object.damage.maxAttackInitiativeGain) {
-                                this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
+                    const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
+                    if(triggerMissedAttack) {
+                        if (this.object.attackType === 'decisive' && !game.settings.get("exaltedthird", "forgivingDecisives")) {
+                            if (this.object.characterInitiative < 11) {
+                                this.object.characterInitiative -= 2;
                             }
-                            if (this.object.targetHit) {
-                                this.object.gainedInitiative += 1;
+                            else {
+                                this.object.characterInitiative -= 3;
                             }
-                            if (this.object.crashed) {
-                                if (!this.object.targetCombatant?.flags.crashRecovery) {
-                                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
+                        }
+                    } else {
+                        if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
+                            if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
+                                if (this.object.damage.maxAttackInitiativeGain) {
+                                    this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
+                                }
+                                if (!triggerMissedAttack) {
+                                    this.object.gainedInitiative += 1;
+                                }
+                                if (this.object.crashed) {
+                                    if (!this.object.targetCombatant?.flags.crashRecovery) {
+                                        this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
+                                    }
+                                }
+                                if (this.object.damage.maxInitiativeGain) {
+                                    this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
+                                }
+                                this.object.characterInitiative += this.object.gainedInitiative;
+                                if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
+                                    this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
                                 }
                             }
-                            if (this.object.damage.maxInitiativeGain) {
-                                this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
-                            }
-                            this.object.characterInitiative += this.object.gainedInitiative;
-                            if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
+                        }
+                        if (this.object.attackType === 'decisive') {
+                            if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
                                 this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
                             }
-                        }
-                    }
-                    const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
-                    if (triggerMissedAttack && this.object.attackType !== 'withering' && this.object.damage.resetInit && !game.settings.get("exaltedthird", "forgivingDecisives")) {
-                        if (this.object.characterInitiative < 11) {
-                            this.object.characterInitiative -= 2;
-                        }
-                        else {
-                            this.object.characterInitiative -= 3;
-                        }
-                    }
-                    if (this.object.attackType === 'decisive') {
-                        if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
-                            this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
                         }
                     }
                     if (this.object.attackType === 'gambit') {
                         if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
                             this.object.characterInitiative -= 5;
                         }
-                        this.object.characterInitiative = this.object.characterInitiative - this.object.gambitDifficulty - 1;
+                        this.object.characterInitiative -= (this.object.gambitDifficulty + 1);
                     }
                 }
                 if (this.object.restore.initiative !== 0) {
