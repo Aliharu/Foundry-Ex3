@@ -1095,15 +1095,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         const craftRating = formObject.object.craftRating !== undefined && this.object.craftRating !== formObject.object.craftRating;
         const spellChange = formObject.object.spell !== undefined && this.object.spell !== formObject.object.spell;
 
-        for (let [key, target] of Object.entries(this.object.targets)) {
-            if (target.rollData.defenseType !== formObject.object.targets[key].rollData.defenseType) {
-                if (formObject.object.targets[key].rollData.defenseType === '') {
-                    formData.object[`object.targets.${key}.rollData.defense`] = 0;
-                } else {
-                    formData.object[`object.targets.${key}.rollData.defense`] = target.rollData[formObject.object.targets[key].rollData.defenseType];
+        if (this.object.rollType !== "base") {
+            for (let [key, target] of Object.entries(this.object.targets)) {
+                if (target.rollData.defenseType !== formObject.object.targets[key].rollData.defenseType) {
+                    if (formObject.object.targets[key].rollData.defenseType === '') {
+                        formData.object[`object.targets.${key}.rollData.defense`] = 0;
+                    } else {
+                        formData.object[`object.targets.${key}.rollData.defense`] = target.rollData[formObject.object.targets[key].rollData.defenseType];
+                    }
                 }
             }
         }
+
 
         foundry.utils.mergeObject(this, formData.object);
         if (this.object.rollType !== "base") {
@@ -4777,9 +4780,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'attackUnblockable':
                                         this.object.unblockableAttack = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                        if(typeof cleanedValue === "boolean" ? cleanedValue : true) {
+                                        if (typeof cleanedValue === "boolean" ? cleanedValue : true) {
                                             for (const target of Object.values(this.object.targets)) {
-                                                if(target.rollData.defenseType === 'parry') {
+                                                if (target.rollData.defenseType === 'parry') {
                                                     target.rollData.defenseType = 'evasion';
                                                     target.rollData.defense = target.rollData.evasion;
                                                 }
@@ -4788,9 +4791,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'attackUndodgeable':
                                         this.object.undodgeableAttack = (typeof cleanedValue === "boolean" ? cleanedValue : true);
-                                        if(typeof cleanedValue === "boolean" ? cleanedValue : true) {
+                                        if (typeof cleanedValue === "boolean" ? cleanedValue : true) {
                                             for (const target of Object.values(this.object.targets)) {
-                                                if(target.rollData.defenseType === 'evasion') {
+                                                if (target.rollData.defenseType === 'evasion') {
                                                     target.rollData.defenseType = 'parry';
                                                     target.rollData.defense = target.rollData.parry;
                                                 }
