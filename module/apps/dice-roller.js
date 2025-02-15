@@ -1107,7 +1107,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
 
-
         foundry.utils.mergeObject(this, formData.object);
         if (this.object.rollType !== "base") {
             this.object.diceCap = this._getDiceCap();
@@ -4781,21 +4780,36 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'attackUnblockable':
                                         this.object.unblockableAttack = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         if (typeof cleanedValue === "boolean" ? cleanedValue : true) {
-                                            for (const target of Object.values(this.object.targets)) {
-                                                if (target.rollData.defenseType === 'parry') {
-                                                    target.rollData.defenseType = 'evasion';
-                                                    target.rollData.defense = target.rollData.evasion;
+                                            if (this.object.undodgeableAttack) {
+                                                for (const target of Object.values(this.object.targets)) {
+                                                    target.rollData.defenseType = '';
+                                                    target.rollData.defense = 0;
+                                                }
+                                            } else {
+                                                for (const target of Object.values(this.object.targets)) {
+                                                    if (target.rollData.defenseType === 'parry') {
+                                                        target.rollData.defenseType = 'evasion';
+                                                        target.rollData.defense = target.rollData.evasion;
+                                                    }
                                                 }
                                             }
+
                                         }
                                         break;
                                     case 'attackUndodgeable':
                                         this.object.undodgeableAttack = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         if (typeof cleanedValue === "boolean" ? cleanedValue : true) {
-                                            for (const target of Object.values(this.object.targets)) {
-                                                if (target.rollData.defenseType === 'evasion') {
-                                                    target.rollData.defenseType = 'parry';
-                                                    target.rollData.defense = target.rollData.parry;
+                                            if (this.object.unblockableAttack) {
+                                                for (const target of Object.values(this.object.targets)) {
+                                                    target.rollData.defenseType = '';
+                                                    target.rollData.defense = 0;
+                                                }
+                                            } else {
+                                                for (const target of Object.values(this.object.targets)) {
+                                                    if (target.rollData.defenseType === 'evasion') {
+                                                        target.rollData.defenseType = 'parry';
+                                                        target.rollData.defense = target.rollData.parry;
+                                                    }
                                                 }
                                             }
                                         }

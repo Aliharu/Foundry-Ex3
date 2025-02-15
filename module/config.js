@@ -1701,7 +1701,7 @@ exaltedthird.bonusTypes = {
       specificDieFaceEffect: "Ex3.SpecificDieFaceEffect",
       intervals: "Ex3.Intervals",
       attackUnblockable: "Ex3.AttackUnblockable",
-      attackUndodgeable: "Ex3.AttackUnblockable",
+      attackUndodgeable: "Ex3.AttackUndodgeable",
     },
   },
   damage: {
