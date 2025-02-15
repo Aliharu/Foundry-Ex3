@@ -1658,7 +1658,9 @@ exaltedthird.booleanTriggers = [
   'incapacitatedTarget',
   'noTriggersActivated',
   'doubleSuccesses',
-  'rerollFailed'
+  'rerollFailed',
+  'attackUnblockable',
+  'attackUndodgeable',
 ];
 
 exaltedthird.bonusTypes = {
@@ -1698,6 +1700,8 @@ exaltedthird.bonusTypes = {
       doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses",
       specificDieFaceEffect: "Ex3.SpecificDieFaceEffect",
       intervals: "Ex3.Intervals",
+      attackUnblockable: "Ex3.AttackUnblockable",
+      attackUndodgeable: "Ex3.AttackUnblockable",
     },
   },
   damage: {

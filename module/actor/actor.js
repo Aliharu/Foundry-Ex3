@@ -1597,7 +1597,7 @@ export class ExaltedThirdActor extends Actor {
     if (data.rollType === 'useOpposingCharms') {
       game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 846, height: 642 } }, {}, data).render(true);
     } else {
-      game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 730 } }, {}, data).render(true);
+      game.rollForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 763 } }, {}, data).render(true);
     }
   }
 

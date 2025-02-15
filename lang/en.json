@@ -642,6 +642,8 @@
     "Ex3.Delay": "Delay",
     "Ex3.Unblockable": "Unblockable",
     "Ex3.Undodgeable": "Undodgeable",
+    "Ex3.AttackUnblockable": "Attack Unblockable",
+    "Ex3.AttackUndodgeable": "Attack Undodgeable",
     "Ex3.Crossbow": "Crossbow",
 
     "Ex3.FullCover": "Full Cover",

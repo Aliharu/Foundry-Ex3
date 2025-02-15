@@ -43,6 +43,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.rollType = data.rollType;
             this.object.targetStat = 'defense';
             this.object.defenseType = 'parry';
+            this.object.unblockableAttack = false;
+            this.object.undodgeableAttack = false;
             this.object.specialty = '';
             this.object.rollAccuracyOnce = false;
             this.object.attackType = data.attackType || 'withering';
@@ -413,6 +415,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (this.object.weaponTags["improvised"]) {
                         this.object.cost.initiative += 1;
                     }
+                    if (this.object.weaponTags["unblockable"]) {
+                        this.object.unblockableAttack = true;
+                    }
+                    if (this.object.weaponTags["undodgeable"]) {
+                        this.object.undodgeableAttack = true;
+                    }
                     this.object.overwhelming += (data.weapon.overwhelming || 0);
                     this.object.weaponType = data.weapon.weapontype || "melee";
                     this.object.range = this.object.weaponType === 'melee' ? 'close' : 'short';
@@ -680,7 +688,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             ]
         },
         // position: { width: 730 },
-        position: { width: 730, height: 600 },
+        position: { width: 763, height: 600 },
         tag: "form",
         form: {
             handler: RollForm.myFormHandler,
@@ -914,13 +922,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     summary: "+2 Dice at Close Range"
                 });
             }
-            if (this.object.weaponTags["unblockable"]) {
+            if (this.object.unblockableAttack) {
                 effectsAndTags.push({
                     name: "Ex3.Unblockable",
                     summary: "Target cannot use parry"
                 });
             }
-            if (this.object.weaponTags["undodgeable"]) {
+            if (this.object.undodgeableAttack) {
                 effectsAndTags.push({
                     name: "Ex3.Undodgeable",
                     summary: "Target cannot use evasion"
@@ -1079,7 +1087,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     static async myFormHandler(event, form, formData) {
-        // Do things with the returned FormData
         const formObject = foundry.utils.expandObject(formData.object);
         const finesseChange = formObject.object.finesse !== undefined && this.object.finesse !== formObject.object.finesse;
         const ambitionChange = formObject.object.ambition !== undefined && this.object.ambition !== formObject.object.ambition;
@@ -1087,6 +1094,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         const craftTypeChange = formObject.object.craftType !== undefined && this.object.craftType !== formObject.object.craftType;
         const craftRating = formObject.object.craftRating !== undefined && this.object.craftRating !== formObject.object.craftRating;
         const spellChange = formObject.object.spell !== undefined && this.object.spell !== formObject.object.spell;
+
+        for (let [key, target] of Object.entries(this.object.targets)) {
+            if (target.rollData.defenseType !== formObject.object.targets[key].rollData.defenseType) {
+                if (formObject.object.targets[key].rollData.defenseType === '') {
+                    formData.object[`object.targets.${key}.rollData.defense`] = 0;
+                } else {
+                    formData.object[`object.targets.${key}.rollData.defense`] = target.rollData[formObject.object.targets[key].rollData.defenseType];
+                }
+            }
+        }
 
         foundry.utils.mergeObject(this, formData.object);
         if (this.object.rollType !== "base") {
@@ -1111,7 +1128,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                     }
                 }
-
             }
 
             this._calculateAnimaGain();
@@ -1220,7 +1236,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     _setUpMultitargets() {
         this.object.hasDifficulty = false;
-        var userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].value + this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].upgrade;
         for (const target of Array.from(game.user.targets)) {
             target.rollData = {
                 resolve: 0,
@@ -1231,8 +1246,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 appearanceBonus: 0,
                 armoredSoak: 0,
                 naturalSoak: 0,
-                defenseType: game.i18n.localize('Ex3.None'),
+                defenseType: 'none',
                 defense: 0,
+                evasion: 0,
+                parry: 0,
                 hardness: 0,
                 soak: 0,
                 shieldInitiative: 0,
@@ -1240,9 +1257,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 successModifier: 0,
                 damageModifier: 0,
             }
-            target.rollData.guile = target.actor.system.guile.value;
-            target.rollData.resolve = target.actor.system.resolve.value;
-            target.rollData.appearanceBonus = Math.max(0, userAppearance - target.actor.system.resolve.value);
             target.rollData.targetIntimacies = target.actor.intimacies.filter((i) => i.system.visible || game.user.isGM);
             target.rollData.attackSuccesses = 0;
             target.rollData.damageSuccesses = 0;
@@ -1256,123 +1270,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 target.rollData.naturalSoak = target.actor.system.naturalsoak.value;
                 target.rollData.hardness = target.actor.system.hardness.value;
             }
+            this._setupTargetDefense(target);
             target.rollData.shieldInitiative = target.actor.system.shieldinitiative.value;
             const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
             let combatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
             if (combatant && combatant.initiative && combatant.initiative <= 0) {
                 target.rollData.hardness = 0;
             }
-            let effectiveParry = target.actor.system.parry.value;
-            let effectiveEvasion = target.actor.system.evasion.value;
-            let effectiveResolve = target.actor.system.resolve.value;
-            let effectiveGuile = target.actor.system.guile.value;
 
-            if (target.actor.system.battlegroup) {
-                effectiveParry += parseInt(target.actor.system.drill.value);
-                effectiveEvasion += parseInt(target.actor.system.drill.value);
-                if (target.actor.system.might.value > 1) {
-                    effectiveParry += (target.actor.system.might.value - 1);
-                    effectiveEvasion += (target.actor.system.might.value - 1);
-                }
-                else {
-                    effectiveParry += target.actor.system.might.value;
-                    effectiveEvasion += target.actor.system.might.value;
-                }
-                target.rollData.soak += target.actor.system.size.value;
-                target.rollData.naturalSoak += target.actor.system.size.value;
-            }
-
-            if (target.actor.effects) {
-                if (target.actor.effects.some(e => e.statuses.has('lightcover'))) {
-                    effectiveParry += 1;
-                    effectiveEvasion += 1;
-                }
-                if (target.actor.effects.some(e => e.statuses.has('heavycover'))) {
-                    effectiveParry += 2;
-                    effectiveEvasion += 2;
-                }
-                if (target.actor.effects.some(e => e.statuses.has('fullcover'))) {
-                    effectiveParry += 3;
-                    effectiveEvasion += 3;
-                }
-                if (target.actor.effects.some(e => e.statuses.has('fulldefense')) && !this.object.weaponTags['flexible']) {
-                    effectiveParry += 2;
-                    effectiveEvasion += 2;
-                }
-                if (target.actor.effects.some(e => e.statuses.has('surprised'))) {
-                    effectiveParry -= 2;
-                    effectiveEvasion -= 2;
-                }
-                if (target.actor.effects.some(e => e.statuses.has('grappled')) || target.actor.effects.some(e => e.statuses.has('grappling'))) {
-                    effectiveParry -= 2;
-                    effectiveEvasion -= 2;
-                }
-                if (target.actor.effects.some(e => e.statuses.has('prone'))) {
-                    effectiveParry -= 1;
-                }
-                effectiveParry += Math.min(target.actor.system.negateparrypenalty.value, target.actor.getRollData().currentParryPenalty);
-                if (target.actor.effects.some(e => e.statuses.has('prone'))) {
-                    effectiveEvasion -= 2;
-                }
-                if (target.actor.system.mount.mounted) {
-                    if (!this.actor.system.mount.mounted && this.object.range === 'close') {
-                        const combinedTags = this.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
-                            const tags = weapon.system.traits.weapontags.value || [];
-                            return acc.concat(tags);
-                        }, []);
-                        if (!combinedTags.includes('reaching')) {
-                            effectiveEvasion += 1;
-                            effectiveParry += 1;
-                        }
-                    }
-                }
-                effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
-            }
-            if (target.actor.system.sizecategory === 'tiny') {
-                if (this.actor.system.sizecategory !== 'tiny' && this.actor.system.sizecategory !== 'minuscule') {
-                    effectiveEvasion += 2;
-                }
-            }
-            if (target.actor.system.sizecategory === 'minuscule') {
-                if (this.actor.system.sizecategory !== 'minuscule') {
-                    effectiveEvasion += 3;
-                }
-            }
-            if (target.actor.system.settings.defenseStunts) {
-                effectiveEvasion += 1;
-                effectiveParry += 1;
-                effectiveResolve += 1;
-                effectiveGuile += 1;
-            }
-            effectiveEvasion -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
-            effectiveParry -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
-
-            if (this.object.targetStat === 'resolve') {
-                target.rollData.defenseType = 'resolve';
-                target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Resolve');
-                target.rollData.defense = effectiveResolve;
-            }
-            else if (this.object.targetStat === 'guile') {
-                target.rollData.defenseType = 'guile';
-                target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Guile');
-                target.rollData.defense = effectiveGuile;
-            }
-            else {
-                if ((effectiveParry >= effectiveEvasion || this.object.weaponTags["undodgeable"]) && !this.object.weaponTags["unblockable"]) {
-                    target.rollData.defenseType = 'parry';
-                    target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Parry');
-                    target.rollData.defense = effectiveParry;
-                }
-                if ((effectiveEvasion >= effectiveParry || this.object.weaponTags["unblockable"]) && !this.object.weaponTags["undodgeable"]) {
-                    target.rollData.defenseType = 'evasion';
-                    target.rollData.defenseTypeLabel = game.i18n.localize('Ex3.Evasion');
-
-                    target.rollData.defense = effectiveEvasion;
-                }
-            }
-            if (target.rollData.defense < 0) {
-                target.rollData.defense = 0;
-            }
             if (target.rollData.soak < 0) {
                 target.rollData.soak = 0;
             }
@@ -1392,6 +1297,125 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
             this.object.targets[target.id] = target;
+        }
+    }
+
+    _setupTargetDefense(target) {
+        let userAppearance = this.actor.type === 'npc' ? this.actor.system.appearance.value : this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].value + this.actor.system.attributes[this.actor.system.settings.rollsettings.social.appearanceattribute].upgrade;
+        let effectiveParry = target.actor.system.parry.value;
+        let effectiveEvasion = target.actor.system.evasion.value;
+        let effectiveResolve = target.actor.system.resolve.value;
+        let effectiveGuile = target.actor.system.guile.value;
+
+        if (target.actor.system.battlegroup) {
+            effectiveParry += parseInt(target.actor.system.drill.value);
+            effectiveEvasion += parseInt(target.actor.system.drill.value);
+            if (target.actor.system.might.value > 1) {
+                effectiveParry += (target.actor.system.might.value - 1);
+                effectiveEvasion += (target.actor.system.might.value - 1);
+            }
+            else {
+                effectiveParry += target.actor.system.might.value;
+                effectiveEvasion += target.actor.system.might.value;
+            }
+            target.rollData.soak += target.actor.system.size.value;
+            target.rollData.naturalSoak += target.actor.system.size.value;
+        }
+
+        if (target.actor.effects) {
+            if (target.actor.effects.some(e => e.statuses.has('lightcover'))) {
+                effectiveParry += 1;
+                effectiveEvasion += 1;
+            }
+            if (target.actor.effects.some(e => e.statuses.has('heavycover'))) {
+                effectiveParry += 2;
+                effectiveEvasion += 2;
+            }
+            if (target.actor.effects.some(e => e.statuses.has('fullcover'))) {
+                effectiveParry += 3;
+                effectiveEvasion += 3;
+            }
+            if (target.actor.effects.some(e => e.statuses.has('fulldefense')) && !this.object.weaponTags['flexible']) {
+                effectiveParry += 2;
+                effectiveEvasion += 2;
+            }
+            if (target.actor.effects.some(e => e.statuses.has('surprised'))) {
+                effectiveParry -= 2;
+                effectiveEvasion -= 2;
+            }
+            if (target.actor.effects.some(e => e.statuses.has('grappled')) || target.actor.effects.some(e => e.statuses.has('grappling'))) {
+                effectiveParry -= 2;
+                effectiveEvasion -= 2;
+            }
+            if (target.actor.effects.some(e => e.statuses.has('prone'))) {
+                effectiveParry -= 1;
+            }
+            effectiveParry += Math.min(target.actor.system.negateparrypenalty.value, target.actor.getRollData().currentParryPenalty);
+            if (target.actor.effects.some(e => e.statuses.has('prone'))) {
+                effectiveEvasion -= 2;
+            }
+            if (target.actor.system.mount.mounted) {
+                if (!this.actor.system.mount.mounted && this.object.range === 'close') {
+                    const combinedTags = this.actor.items.filter(item => item.type === 'weapon' && item.system.equipped === true).reduce((acc, weapon) => {
+                        const tags = weapon.system.traits.weapontags.value || [];
+                        return acc.concat(tags);
+                    }, []);
+                    if (!combinedTags.includes('reaching')) {
+                        effectiveEvasion += 1;
+                        effectiveParry += 1;
+                    }
+                }
+            }
+            effectiveEvasion += Math.min(target.actor.system.negateevasionpenalty.value, target.actor.getRollData().currentEvasionPenalty);
+        }
+        if (target.actor.system.sizecategory === 'tiny') {
+            if (this.actor.system.sizecategory !== 'tiny' && this.actor.system.sizecategory !== 'minuscule') {
+                effectiveEvasion += 2;
+            }
+        }
+        if (target.actor.system.sizecategory === 'minuscule') {
+            if (this.actor.system.sizecategory !== 'minuscule') {
+                effectiveEvasion += 3;
+            }
+        }
+        if (target.actor.system.settings.defenseStunts) {
+            effectiveEvasion += 1;
+            effectiveParry += 1;
+            effectiveResolve += 1;
+            effectiveGuile += 1;
+        }
+        effectiveEvasion -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
+        effectiveParry -= Math.max(0, (target.actor.system.health.penalty === 'inc' ? 4 : target.actor.system.health.penalty) - target.actor.system.health.penaltymod);
+
+        if (this.object.targetStat === 'resolve') {
+            target.rollData.defenseType = 'resolve';
+            target.rollData.defense = effectiveResolve;
+        }
+        else if (this.object.targetStat === 'guile') {
+            target.rollData.defenseType = 'guile';
+            target.rollData.defense = effectiveGuile;
+        }
+        else {
+            if ((effectiveParry >= effectiveEvasion || this.object.undodgeableAttack) && !this.object.undodgeableAttack) {
+                target.rollData.defenseType = 'parry';
+                target.rollData.defense = effectiveParry;
+            }
+            if ((effectiveEvasion >= effectiveParry || this.object.undodgeableAttack) && !this.object.undodgeableAttack) {
+                target.rollData.defenseType = 'evasion';
+                target.rollData.defense = effectiveEvasion;
+            }
+        }
+        if (this.object.undodgeableAttack && this.object.undodgeableAttack) {
+            target.rollData.defenseType = '';
+        }
+        target.rollData.evasion = effectiveEvasion;
+        target.rollData.parry = effectiveParry;
+        target.rollData.resolve = effectiveResolve;
+        target.rollData.guile = effectiveGuile;
+        target.rollData.appearanceBonus = Math.max(0, userAppearance - effectiveResolve);
+
+        if (target.rollData.defense < 0) {
+            target.rollData.defense = 0;
         }
     }
 
@@ -1955,6 +1979,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         targetValues[0].rollData.guile -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
                         targetValues[0].rollData.resolve -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
                         targetValues[0].rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                        targetValues[0].rollData.parry -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                        targetValues[0].rollData.evasion -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                         targetValues[0].rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
                         targetValues[0].rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                         targetValues[0].rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
@@ -1971,6 +1997,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 target.rollData.guile -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor);
                                 target.rollData.resolve -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor);
                                 target.rollData.defense -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                                target.rollData.parry -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
+                                target.rollData.evasion -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor);
                                 target.rollData.soak -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor);
                                 target.rollData.shieldInitiative -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor);
                                 target.rollData.hardness -= this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor);
@@ -2244,6 +2272,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 const targetValues = Object.values(this.object.targets);
                 for (const target of targetValues) {
                     target.rollData.defense = Math.max(0, target.rollData.defense - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                    target.rollData.parry = Math.max(0, target.rollData.parry - this._getFormulaValue(item.system.diceroller.reducedifficulty));
+                    target.rollData.evasion = Math.max(0, target.rollData.evasion - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                     target.rollData.resolve = Math.max(0, target.rollData.resolve - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                     target.rollData.guile = Math.max(0, target.rollData.guile - this._getFormulaValue(item.system.diceroller.reducedifficulty));
                     if (this.object.rollType === 'damage') {
@@ -2695,6 +2725,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 targetValues[0].rollData.guile += data.guile;
                 targetValues[0].rollData.resolve += data.resolve;
                 targetValues[0].rollData.defense += data.defense;
+                targetValues[0].rollData.evasion += data.defense;
+                targetValues[0].rollData.parry += data.defense;
                 targetValues[0].rollData.soak += data.soak;
                 targetValues[0].rollData.hardness += data.hardness;
                 targetValues[0].rollData.damageModifier += data.damage;
@@ -2710,6 +2742,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         target.rollData.guile += data.guile;
                         target.rollData.resolve += data.resolve;
                         target.rollData.defense += data.defense;
+                        target.rollData.evasion += data.defense;
+                        target.rollData.parry += data.defense;
                         target.rollData.soak += data.soak;
                         target.rollData.hardness += data.hardness;
                         target.rollData.damageModifier += data.damage;
@@ -2771,6 +2805,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     targetValues[0].rollData.guile += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor, charm);
                     targetValues[0].rollData.resolve += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor, charm);
                     targetValues[0].rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+                    targetValues[0].rollData.parry += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+                    targetValues[0].rollData.evasion += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
                     targetValues[0].rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor, charm);
                     targetValues[0].rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor, charm);
                     targetValues[0].rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor, charm);
@@ -2787,6 +2823,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             target.rollData.guile += this._getFormulaValue(charm.system.diceroller.opposedbonuses.guile, charm.actor, charm);
                             target.rollData.resolve += this._getFormulaValue(charm.system.diceroller.opposedbonuses.resolve, charm.actor, charm);
                             target.rollData.defense += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+                            target.rollData.parry += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
+                            target.rollData.evasion += this._getFormulaValue(charm.system.diceroller.opposedbonuses.defense, charm.actor, charm);
                             target.rollData.soak += this._getFormulaValue(charm.system.diceroller.opposedbonuses.soak, charm.actor, charm);
                             target.rollData.shieldInitiative += this._getFormulaValue(charm.system.diceroller.opposedbonuses.shieldinitiative, charm.actor, charm);
                             target.rollData.hardness += this._getFormulaValue(charm.system.diceroller.opposedbonuses.hardness, charm.actor, charm);
@@ -4263,7 +4301,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (this.object.damage.maxAttackInitiativeGain) {
                     fullInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, fullInitiative);
                 }
-                if(!this.object.missedAttacks || (this.object.missedAttacks < (this.object.showTargets || 0))) {
+                if (!this.object.missedAttacks || (this.object.missedAttacks < (this.object.showTargets || 0))) {
                     fullInitiative++;
                 }
                 if (crashed) {
@@ -4737,6 +4775,28 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'goalNumber':
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
+                                    case 'attackUnblockable':
+                                        this.object.unblockableAttack = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        if(typeof cleanedValue === "boolean" ? cleanedValue : true) {
+                                            for (const target of Object.values(this.object.targets)) {
+                                                if(target.rollData.defenseType === 'parry') {
+                                                    target.rollData.defenseType = 'evasion';
+                                                    target.rollData.defense = target.rollData.evasion;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case 'attackUndodgeable':
+                                        this.object.undodgeableAttack = (typeof cleanedValue === "boolean" ? cleanedValue : true);
+                                        if(typeof cleanedValue === "boolean" ? cleanedValue : true) {
+                                            for (const target of Object.values(this.object.targets)) {
+                                                if(target.rollData.defenseType === 'evasion') {
+                                                    target.rollData.defenseType = 'parry';
+                                                    target.rollData.defense = target.rollData.parry;
+                                                }
+                                            }
+                                        }
+                                        break;
                                     case 'doubleSuccess':
                                         const doubleSuccessResult = this._getCappedFormula(cleanedValue, triggerActor, charm);
                                         if (doubleSuccessResult?.value) {
@@ -4993,6 +5053,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                             if (type === 'itemAdded' && this.object.showTargets) {
                                                 for (const target of Object.values(this.object.targets)) {
                                                     target.rollData[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                    if (bonus.effect === 'defense') {
+                                                        target.rollData.evasion += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                        target.rollData.parry += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                    }
                                                 }
                                             } else {
                                                 if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
@@ -7007,7 +7071,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
                 if (this._isAttackRoll()) {
                     const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
-                    if(triggerMissedAttack) {
+                    if (triggerMissedAttack) {
                         if (this.object.attackType === 'decisive' && !game.settings.get("exaltedthird", "forgivingDecisives")) {
                             if (this.object.characterInitiative < 11) {
                                 this.object.characterInitiative -= 2;
