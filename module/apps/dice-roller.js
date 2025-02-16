@@ -119,8 +119,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
             this.object.validTargetRollType = this._isAttackRoll() || (['social', 'readIntentions'].includes(data.rollType));
-            this.object.hasDifficulty = (['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft', 'sailStratagem'].indexOf(data.rollType) !== -1);
-            this.object.hasIntervals = (['craft', 'prophecy', 'working',].indexOf(data.rollType) !== -1);
+            this.object.hasDifficulty = ['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft', 'sailStratagem'].includes(data.rollType);
+            this.object.hasIntervals = ['craft', 'prophecy', 'working',].includes(data.rollType);
             this.object.stunt = "none";
             this.object.goalNumber = data.goalNumber || 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;

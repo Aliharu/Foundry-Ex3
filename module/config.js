@@ -1661,6 +1661,7 @@ exaltedthird.booleanTriggers = [
   'rerollFailed',
   'attackUnblockable',
   'attackUndodgeable',
+  'targetIsBattlegroup'
 ];
 
 exaltedthird.bonusTypes = {
