@@ -411,9 +411,23 @@ $(document).ready(() => {
   });
 });
 
+// Hooks.on("renderSidebarTab", async (app, html) => {
+//   if (app instanceof ActorDirectory)
+//   {
+//     let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`);
+
+//     button.click(ev => {
+//       CharGenWfrp4e.start();
+//     });
+
+//     button.insertAfter(html.find(".header-actions"));
+    
+//   }
+// });
+
 Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.Import")}</b></button>`);
-  html.find(".directory-footer").append(button);
+  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"> </i>${game.i18n.localize("Ex3.Import")}</button>`);
+  html.find(".header-actions").append(button);
 
   button.click(ev => {
     game.templateImporter = new TemplateImporter("charm").render(true);
@@ -422,22 +436,18 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
   const buttonsText = $(`<div class="flexrow">
-	<button class="character-generator-button">
+	<button class="character-generator-button button-text">
 		<i class="fas fa-user-plus"></i>
-		<b class="button-text">
-    ${game.i18n.localize("Ex3.Create")}
-		</b>
+    ${game.i18n.localize("Ex3.Generate")}
 	</button>
 
-	${game.user.isGM ? `<button class="template-import-button">
+	${game.user.isGM ? `<button class="template-import-button button-text">
 		<i class="fas fa-file-import"></i>
-		<b class="button-text">
 			${game.i18n.localize("Ex3.Import")}
-		</b>
 	</button>` : ''}
 </div>`);
 
-  html.find(".directory-footer").append(buttonsText);
+  html.find(".header-actions").append(buttonsText);
 
   html.on("click", ".character-generator-button", () => {
     new CharacterBuilder({ classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}).render(true);
@@ -451,8 +461,8 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
   if (game.user.isGM) {
-    const button = $(`<button class="item-search-button"><i class="fas fa-book-open"></i><b>${game.i18n.localize("Ex3.CharmCardJournals")}</b></button>`);
-    html.find(".directory-footer").append(button);
+    const button = $(`<button class="item-search-button"><i class="fas fa-book-open"></i>${game.i18n.localize("Ex3.CharmCardJournals")}</button>`);
+    html.find(".header-actions").append(button);
 
     button.click(ev => {
       game.journalCascade = new JournalCascadeGenerator().render(true);
@@ -1161,6 +1171,11 @@ Hooks.on("renderPause", function () {
   $(".paused img").attr("src", `systems/exaltedthird/assets/pause/${iconSrc}.png`);
 });
 
+Hooks.on("renderGamePause", function () {
+  const iconSrc = game.settings.get("exaltedthird", "pauseIcon");
+  $(".paused img").attr("src", `systems/exaltedthird/assets/pause/${iconSrc}.png`);
+});
+
 Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 
@@ -1311,11 +1326,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("1.9.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    const chatData = {
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      content: '<div><b>Commands</b></div><div><b>/info</b> Display possible commands</div><div><b>/newscene</b> End any scene duration charms</div><div><b>/xp #</b> Give xp to player characters</div><div><b>/exaltxp #</b> Give exalt xp to player characters</div><b>/npc</b> NPC creator</div>',
-    };
-    ChatMessage.create(chatData);
     for (let actor of game.actors.filter((actor) => actor.type === 'npc')) {
       try {
         let updateData = foundry.utils.duplicate(actor);

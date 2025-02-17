@@ -243,8 +243,8 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
 }
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
-  const button = $(`<button class="item-search-button"><i class="fas fa-suitcase"> </i><b>${game.i18n.localize("Ex3.ItemSearch")}</b></button>`);
-  html.find(".directory-footer").append(button);
+  const button = $(`<button class="item-search-button"><i class="fas fa-suitcase"> </i>${game.i18n.localize("Ex3.ItemSearch")}</button>`);
+  html.find(".header-actions").append(button);
 
   button.click(ev => {
     game.itemSearch.render(true)

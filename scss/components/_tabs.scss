@@ -26,13 +26,13 @@
     line-height: 30px;
     padding: 0px 13px !important;
     font-weight: bold;
-    color: var(--color-text-dark-primary) !important;
+    color: #222 !important;
   }
 
   .item.active {
     text-shadow: none;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px 5px 0px 0px;
-    color: var(--color-text-dark-primary) !important;
+    color: #222 !important;
   }
 }

@@ -60,12 +60,12 @@
     .opposed-info-inputs {
         .locked-input {
             background: #ded6c7;
-            color: var(--color-text-dark-primary);
+            color: #222;
         }
 
         .total-input {
             background: #dcd19b;
-            color: var(--color-text-dark-primary);
+            color: #222;
             border: 1px solid black;
         }
 
@@ -121,7 +121,7 @@
             padding: 0px 13px !important;
             font-weight: bold;
             border-radius: 5px 5px 0px 0px;
-            color: var(--color-text-dark-primary) !important;
+            color: #222 !important;
 
             &:hover {
                 background: rgba(46, 40, 49, 0.25);
