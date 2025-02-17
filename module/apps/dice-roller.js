@@ -6126,31 +6126,32 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
 
-        // if (display) {
-        //     for (const charm of this.object.addedCharms) {
-        //         for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
-        //             try {
-        //                 for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
-        //                     if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
-
-        //                         for (const bonus of Object.values(trigger.bonuses)) {
-        //                             let cleanedValue = bonus.value.toLowerCase().trim();
-        //                             switch (bonus.effect) {
-        //                                 case 'diceModifier':
-        //                                 case 'diceToSuccesses':
-        //                                     dicePool += this._getFormulaValue(cleanedValue, null);
-        //                                     break;
-        //                             }
-        //                         }
-        //                     }
-        //                 }
-        //             } catch (e) {
-        //                 ui.notifications.error(`<p>Error in Trigger:</p><pre>${trigger?.name || 'No Name Trigger'}</pre><p>See the console (F12) for details</p>`);
-        //                 console.error(e);
-        //             }
-        //         }
-        //     }
-        // }
+        if (display) {
+            for (const charm of this.object.addedCharms) {
+                for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
+                    try {
+                        for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
+                                for (const bonus of Object.values(trigger.bonuses)) {
+                                    let cleanedValue = bonus.value.toLowerCase().trim();
+                                    switch (bonus.effect) {
+                                        case 'diceModifier':
+                                            dicePool += this._getFormulaValue(cleanedValue, null);
+                                            break;
+                                        case 'diceToSuccesses':
+                                            dicePool -= this._getFormulaValue(cleanedValue, null);
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        ui.notifications.error(`<p>Error in Trigger:</p><pre>${trigger?.name || 'No Name Trigger'}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                }
+            }
+        }
 
         return dicePool;
     }
@@ -6228,6 +6229,33 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this.object.damage.diceToSuccesses > 0) {
             damageDicePool = Math.max(0, damageDicePool - this.object.damage.diceToSuccesses);
+        }
+
+        if (display) {
+            for (const charm of this.object.addedCharms) {
+                for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeDamage' || trigger.triggerTime === 'beforeDamage')) {
+                    try {
+                        for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
+                                for (const bonus of Object.values(trigger.bonuses)) {
+                                    let cleanedValue = bonus.value.toLowerCase().trim();
+                                    switch (bonus.effect) {
+                                        case 'damageDice':
+                                            dicePool += this._getFormulaValue(cleanedValue, null);
+                                            break;
+                                        case 'diceToSuccesses-damage':
+                                            dicePool -= this._getFormulaValue(cleanedValue, null);
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        ui.notifications.error(`<p>Error in Trigger:</p><pre>${trigger?.name || 'No Name Trigger'}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                }
+            }
         }
         return damageDicePool;
     }

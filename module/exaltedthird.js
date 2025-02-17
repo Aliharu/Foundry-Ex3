@@ -421,7 +421,7 @@ $(document).ready(() => {
 //     });
 
 //     button.insertAfter(html.find(".header-actions"));
-    
+
 //   }
 // });
 
@@ -1168,12 +1168,16 @@ Hooks.on("renderTokenConfig", (dialog, html) => {
 
 Hooks.on("renderPause", function () {
   const iconSrc = game.settings.get("exaltedthird", "pauseIcon");
-  $(".paused img").attr("src", `systems/exaltedthird/assets/pause/${iconSrc}.png`);
+  document.querySelectorAll(".paused img").forEach(img => {
+    img.src = `systems/exaltedthird/assets/pause/${iconSrc}.png`;
+  });
 });
 
 Hooks.on("renderGamePause", function () {
   const iconSrc = game.settings.get("exaltedthird", "pauseIcon");
-  $(".paused img").attr("src", `systems/exaltedthird/assets/pause/${iconSrc}.png`);
+  document.querySelectorAll(".paused img").forEach(img => {
+    img.src = `systems/exaltedthird/assets/pause/${iconSrc}.png`;
+  });
 });
 
 Hooks.once("ready", async function () {
@@ -1189,13 +1193,13 @@ Hooks.once("ready", async function () {
 
   Hooks.on('updateActiveEffect', (effect, update) => {
     let tempHPRemoved = 0;
-    if(update.disabled && effect.target) {
-      for(const change of effect.changes) {
-        if(change.key === "system.health.levels.temp.value") {
+    if (update.disabled && effect.target) {
+      for (const change of effect.changes) {
+        if (change.key === "system.health.levels.temp.value") {
           tempHPRemoved += getNumberFormula(change.value, effect.target, change);
         }
       }
-      if(tempHPRemoved > 0) {
+      if (tempHPRemoved > 0) {
         effect.target.restoreHealth(tempHPRemoved, true);
       }
     }
@@ -1203,13 +1207,13 @@ Hooks.once("ready", async function () {
 
   Hooks.on('deleteActiveEffect', (effect) => {
     let tempHPRemoved = 0;
-    if(!effect.disabled && effect.target) {
-      for(const change of effect.changes) {
-        if(change.key === "system.health.levels.temp.value") {
+    if (!effect.disabled && effect.target) {
+      for (const change of effect.changes) {
+        if (change.key === "system.health.levels.temp.value") {
           tempHPRemoved += getNumberFormula(change.value, effect.target, change);
         }
       }
-      if(tempHPRemoved > 0) {
+      if (tempHPRemoved > 0) {
         effect.target.restoreHealth(tempHPRemoved, true);
       }
     }
