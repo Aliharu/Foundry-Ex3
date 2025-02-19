@@ -27,7 +27,7 @@
       </div>
       {{/ifEquals}}
       {{#if ../data.character.showAbilityCharms}}
-      <div class="resource-label flexrow flex-center"><span>{{localize "Ex3.Charms"}} <a><i
+      <div class="resource-label flexrow flex-center"><span>{{localize "Ex3.Charms"}} <a><i data-action="randomItem"
               class="fas fa-dice cursor-pointer random-item" data-type="charms" data-item="charm"
               data-ability="{{key}}"></i></a> <a data-action="importItem" class="item-control import-item" title="Import charm"
             data-type="charms" data-item="charm" data-ability="{{key}}"><i class="fas fa-edit"></i></a></span>
