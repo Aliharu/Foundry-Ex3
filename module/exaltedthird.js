@@ -137,6 +137,7 @@ Hooks.once('init', async function () {
   loadTemplates([
     "systems/exaltedthird/templates/dialogues/added-charm-list.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
+    "systems/exaltedthird/templates/item/custom-modifier.html",
     "systems/exaltedthird/templates/item/item-trigger-tab.html",
     "systems/exaltedthird/templates/actor/effects-tab.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",

@@ -130,7 +130,7 @@ export class ExaltedThirdItem extends Item {
 
   static async _onCreateOperation(items, operation, user) {
     for (const item of items) {
-      if (item.isEmbedded && !item.system.custommodifier?.key) {
+      if (item.isEmbedded && item.system.custommodifier?.key) {
         item._createModifiers();
       }
     }
