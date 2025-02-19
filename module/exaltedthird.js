@@ -30,6 +30,7 @@ import {
   ItemIntimacyData,
   ItemMartialArtData,
   ItemMeritData,
+  ItemModifierData,
   ItemRitualData,
   ItemShapeData,
   ItemSpecialAbilityData,
@@ -88,6 +89,7 @@ Hooks.once('init', async function () {
     merit: ItemMeritData,
     ritual: ItemRitualData,
     initiation: ItemInitiationData,
+    modifier: ItemModifierData,
     shape: ItemShapeData,
     specialability: ItemSpecialAbilityData,
     specialty: ItemSpecialtyData,
@@ -317,7 +319,7 @@ Hooks.once('init', async function () {
 //   console.log(updateData);
 // });
 
-async function handleSocket({ type, id, data, actorId, crasherId = null, addStatuses = [], deleteEffects = [] }) {
+async function handleSocket({ type, id, data, actorId, itemData = null, crasherId = null, addStatuses = [], deleteEffects = [] }) {
   if (type === 'addOpposingCharm' || type === 'addMultiOpposingCharms') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor?.id === actorId)?.actor;
@@ -344,6 +346,7 @@ async function handleSocket({ type, id, data, actorId, crasherId = null, addStat
 
   if (type === 'createGeneratedCharacter') {
     let actor = await Actor.create(data);
+    await actor.createEmbeddedDocuments("Item", itemData);
     await actor.update({
       ownership: {
         default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,

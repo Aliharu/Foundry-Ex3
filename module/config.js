@@ -25,6 +25,7 @@ exaltedthird.itemIcons = {
   armor: "systems/exaltedthird/assets/icons/breastplate.svg",
   customability: "systems/exaltedthird/assets/icons/d10.svg",
   charm: "icons/svg/explosion.svg",
+  modifier: "icons/svg/aura.svg",
   specialability: "icons/svg/aura.svg",
   craftproject: "systems/exaltedthird/assets/icons/anvil-impact.svg",
   shape: "icons/svg/mystery-man.svg"
@@ -1823,6 +1824,7 @@ exaltedthird.bonusTypes = {
       specificCharm: "Ex3.SpecificCharm",
       otherEffect: "Ex3.OtherEffect",
       baseInitiativeModifier: "Ex3.BaseInitiativeModifier",
+      updateModifier: "Ex3.UpdateModifier",
     }
   },
   defense: {

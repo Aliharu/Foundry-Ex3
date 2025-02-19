@@ -697,7 +697,9 @@
     "Ex3.ArmorFilters": "Armor Filters",
     "Ex3.RitualFilters": "Ritual Filters",
 
+    "Ex3.Modifier": "Modifier",
     "Ex3.Modifiers": "Modifiers",
+    "Ex3.UpdateModifier": "Update Modifier",
     "Ex3.OtherModifiers": "Other Modifiers",
     "Ex3.Conditions": "Conditions",
     "Ex3.Disarmed": "Disarmed",

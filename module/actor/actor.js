@@ -1,5 +1,4 @@
 import RollForm from "../apps/dice-roller.js";
-import { animaTokenMagic } from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
 import { getNumberFormula } from "../utils/utils.js";
 
@@ -942,6 +941,7 @@ export class ExaltedThirdActor extends Actor {
     const specialties = [];
     const specialAbilities = [];
     const craftProjects = [];
+    const modifiers = [];
     const actions = [];
     const destinies = [];
     const shapes = [];
@@ -994,6 +994,9 @@ export class ExaltedThirdActor extends Actor {
       }
       else if (i.type === 'craftproject') {
         craftProjects.push(i);
+      }
+      else if (i.type === 'modifier') {
+        modifiers.push(i);
       }
       else if (i.type === 'destiny') {
         destinies.push(i);
@@ -1089,6 +1092,7 @@ export class ExaltedThirdActor extends Actor {
     actorData.spells = spells;
     actorData.specialabilities = specialAbilities;
     actorData.projects = craftProjects;
+    actorData.modifiers = modifiers;
     actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
     actorData.destinies = destinies;
     actorData.shapes = shapes;
@@ -1559,6 +1563,13 @@ export class ExaltedThirdActor extends Actor {
       if (!data[customAbility.system.formulaKey]) {
         const customAbilityformulaKey = customAbility.system.formulaKey || customAbility.name.replace(/\s/g, '').toLowerCase();
         data[customAbilityformulaKey] = { 'value': customAbility.system.points };
+      }
+    }
+
+    for (const modifier of this.items.filter(item => item.type === 'modifier')) {
+      if (!data[modifier.system.formulaKey]) {
+        const modifierformulaKey = modifier.system.formulaKey || modifier.name.replace(/\s/g, '').toLowerCase();
+        data[modifierformulaKey] = { 'value': modifier.system.value };
       }
     }
 

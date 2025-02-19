@@ -678,16 +678,17 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (event.type === 'submit') {
       const itemData = [
       ];
-      var actorData = this._getBaseStatblock();
+      let actorData = this._getBaseStatblock();
 
       await this.getBaseCharacterData(actorData, itemData);
       this._getCharacterCharms(itemData);
       await this._getCharacterSpells(itemData);
       await this._getCharacterEquipment(actorData, itemData);
 
-      actorData.items = itemData;
+      // actorData.items = itemData;
       if (Actor.canUserCreate(game.user)) {
         let actor = await Actor.create(actorData);
+        await actor.createEmbeddedDocuments("Item", itemData);
         await actor.calculateAllDerivedStats();
       }
       else {
@@ -695,6 +696,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           type: 'createGeneratedCharacter',
           id: game.user.id,
           data: actorData,
+          itemData: itemData,
         });
       }
       ChatMessage.create({

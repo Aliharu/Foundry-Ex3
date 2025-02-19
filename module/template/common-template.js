@@ -175,6 +175,16 @@ export function artifactData() {
     }
 }
 
+export function customModifier() {
+    return {
+        custommodifier: new fields.SchemaField({
+            key: new fields.StringField({ initial: "" }),
+            name: new fields.StringField({ initial: "" }),
+        }),
+    };
+}
+
+
 export function activatableData() {
     return {
         activatable: new fields.BooleanField({ initial: false }),

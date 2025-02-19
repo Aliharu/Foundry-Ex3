@@ -318,6 +318,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this.object.triggers = [];
             this.object.effectsOnSpecificDice = [];
+            this.object.modifierUpdates = [];
             this.object.spell = "";
             this.object.shipTrait = "maneuverability";
             if (this.object.rollType !== 'base') {
@@ -2528,6 +2529,22 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
+    }
+
+    _getModifierFormula(formula, overrideActor = null, diceRollType) {
+        if (!formula) {
+            return;
+        }
+        const effectSplit = formula.split(':');
+        if (!effectSplit[0] || !effectSplit[1]) {
+            return;
+        }
+        const updateValue = this._getFormulaValue(effectSplit[1], overrideActor);
+
+        this.object.modifierUpdates.push({
+            key: effectSplit[0],
+            value: updateValue,
+        });
     }
 
     _getCappedFormula(formula, overrideActor = null) {
@@ -5118,6 +5135,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                             this.object.newTargetData.effects.push(copiedEffect);
                                         }
                                         break;
+                                    case 'updateModifier':
+                                        this._getModifierFormula(bonus.value, triggerActor, charm);
+                                        break;
                                 }
                             }
                         }
@@ -6957,6 +6977,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.effectsOnSpecificDice === undefined) {
             this.object.effectsOnSpecificDice = []
         }
+        if (this.object.modifierUpdates === undefined) {
+            this.object.modifierUpdates = []
+        }
         if (this.object.damage.attackDealsDamage === undefined) {
             this.object.damage.attackDealsDamage = true;
         }
@@ -7168,6 +7191,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         this.actor.update(actorData);
+        for(const modifierUpdate of this.object.modifierUpdates) {
+            for(const modifier of this.actor.items.filter(item => item.type === "modifier" && item.system.formulaKey === modifierUpdate.key)) {
+                await modifier.update({ [`system.value`]: modifier.system.value += modifierUpdate.value });
+            }
+        }
     }
 
     _lowerMotes(actor, value, motePool = null) {

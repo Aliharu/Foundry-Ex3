@@ -1,4 +1,4 @@
-import { activatableData, artifactData, charmAlternateData, charmPrerequisite, equipmentData, traitField, triggerData } from "./common-template.js";
+import { activatableData, artifactData, charmAlternateData, charmPrerequisite, customModifier, equipmentData, traitField, triggerData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -22,6 +22,7 @@ export class ItemData extends CommonItemData {
             ...equipmentData(),
             ...activatableData(),
             ...triggerData(),
+            ...customModifier(),
             autoaddtorolls: new fields.StringField({ initial: "" }),
             itemtype: new fields.StringField({ initial: "item" }),
             quantity: new fields.NumberField({ initial: 1 }),
@@ -72,6 +73,18 @@ export class ItemCustomAbilityData extends CommonItemData {
             source.excellency = true;
         }
         return super.migrateData(source);
+    }
+}
+
+export class ItemModifierData extends CommonItemData {
+    static defineSchema() {
+        const commonData = super.defineSchema();
+
+        return {
+            ...commonData,
+            formulaKey: new fields.StringField({ initial: "" }),
+            value: new fields.NumberField({ initial: 0 }),
+        }
     }
 }
 

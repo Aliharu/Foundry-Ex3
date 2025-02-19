@@ -128,6 +128,33 @@ export class ExaltedThirdItem extends Item {
     }
   }
 
+  static async _onCreateOperation(items, operation, user) {
+    for (const item of items) {
+      if (item.isEmbedded && !item.system.custommodifier?.key) {
+        item._createModifiers();
+      }
+    }
+    await super._onCreateOperation(items, operation, user);
+  }
+
+  async _createModifiers(target = this.parent) {
+    if (!target) {
+      return;
+    }
+    await target.createEmbeddedDocuments("Item", [
+      {
+        name: this.system.custommodifier.name || "No Name",
+        type: 'modifier',
+        parent: target,
+        renderSheet: undefined,
+        system: {
+          formulaKey: this.system.custommodifier.key,
+          value: 0
+        }
+      }
+    ]);
+  }
+
   getImageUrl(type) {
     if (type === 'intimacy') {
       return "systems/exaltedthird/assets/icons/hearts.svg";
@@ -150,7 +177,7 @@ export class ExaltedThirdItem extends Item {
     if (type === 'charm' || type === 'action') {
       return "icons/svg/explosion.svg";
     }
-    if (type === 'specialability' || type === 'customability') {
+    if (type === 'specialability' || type === 'customability' || type === 'modifier') {
       return "icons/svg/aura.svg";
     }
     if (type === 'customability') {
@@ -377,7 +404,7 @@ export class ExaltedThirdItem extends Item {
       actorData.system.craft.experience.white.value = Math.max(0, actorData.system.craft.experience.white.value - (this.system.cost.whitexp * activateAmount));
     }
     if (actorData.system.details.aura === this.system.cost.aura || this.system.cost.aura === 'any') {
-      actorData.system.details.aura = "none"; 
+      actorData.system.details.aura = "none";
     }
     if (this.system.cost.health > 0) {
       let totalHealth = 0;
@@ -394,7 +421,7 @@ export class ExaltedThirdItem extends Item {
         actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + (this.system.cost.health * activateAmount));
       }
     }
-    
+
     if (actorData.system.settings.charmmotepool === 'personal') {
       actorData.system.motes.personal.value = Math.min(actorData.system.motes.personal.max, actorData.system.motes.personal.value + (getNumberFormula(this.system.restore.motes, this.actor) * activateAmount));
     }
@@ -427,7 +454,7 @@ export class ExaltedThirdItem extends Item {
     if (getNumberFormula(this.system.restore.health, this.actor) > 0) {
       const bashingHealed = (getNumberFormula(this.system.restore.health, this.actor) * activateAmount) - actorData.system.health.lethal;
       actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (getNumberFormula(this.system.restore.health, this.actor) * activateAmount));
-      
+
       if (bashingHealed > 0) {
         actorData.system.health.bashing = Math.max(0, actorData.system.health.bashing - bashingHealed);
       }

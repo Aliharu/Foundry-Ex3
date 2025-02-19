@@ -38,6 +38,32 @@
     </li>
     {{/each}}
 </ol>
+<ol class="items-list">
+    <div class="resource-label list-section-header d-flex flex-between">
+        <div>
+            {{localize "Ex3.Modifiers"}}
+        </div>
+        <a class="item-control item-create" title="Create modifier" data-type="modifier"><i
+                class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+    </div>
+    {{#each actor.modifiers as |item id|}}
+    <li class="item flexrow item-row" data-item-id="{{item._id}}">
+        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                height="24" /></div>
+        <h4 class="item-name">{{item.name}} ({{item.system.value}})</h4>
+        <div class="item-controls">
+            <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+        </div>
+    </li>
+    <li>
+        <div>
+            {{{enrichedHTMLItems ../this "description" item._id}}}
+        </div>
+    </li>
+    {{/each}}
+</ol>
 <div class="resource-label list-section-header d-flex flex-between">
     <div>
         {{localize "Ex3.EffectTriggers"}}
