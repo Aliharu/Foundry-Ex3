@@ -1,19 +1,22 @@
 <footer class="form-footer d-flex {{hideElement}}">
-    <button class="cancel-button" type="button" data-action="close">Cancel</button>
+    <button class="cancel-button" type="button" data-action="close">{{localize "Ex3.Cancel"}}</button>
     {{#ifEquals data.rollType 'craft'}}
-    <button class="save-project-button" type="button" data-action="saveProject">Save Project</button>
+    <button class="save-project-button" type="button" data-action="saveProject">{{localize "Ex3.SaveProject"}}</button>
     {{/ifEquals}}
     <button class="submit-button" type="submit">
         {{#ifEquals data.rollType 'useOpposingCharms'}}
-            Add
+        {{localize "Ex3.Add"}}
         {{else ifEquals data.rollType 'damageResults'}}
-            Confirm Results
+            {{localize "Ex3.ConfirmResults"}}
         {{else}}
-            Roll
+            {{localize "Ex3.Roll"}}
             {{#if data.totalDice}}
                 {{data.totalDice}}
             {{/if}}
-            Dice
+            {{#ifEquals data.rollType 'damage'}}
+            {{localize "Ex3.Damage"}}
+            {{/ifEquals}}
+            {{localize "Ex3.Dice"}}
         {{/ifEquals}}
     </button>
 </footer>
