@@ -118,9 +118,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.targetDoesntResetOnslaught = false;
             this.object.showPool = !this._isAttackRoll();
             this.object.showWithering = this.object.attackType === 'withering' || this.object.rollType === 'damage';
-            this.object.validTargetRollType = this._isAttackRoll() || (['social', 'readIntentions'].includes(data.rollType));
-            this.object.hasDifficulty = ['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'working', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft', 'sailStratagem'].includes(data.rollType);
+            this.object.hasDifficulty = ['ability', 'command', 'grappleControl', 'readIntentions', 'social', 'craft', 'rout', 'craftAbilityRoll', 'martialArt', 'rush', 'disengage', 'prophecy', 'steady', 'simpleCraft', 'sailStratagem', 'working'].includes(data.rollType);
             this.object.hasIntervals = ['craft', 'prophecy', 'working',].includes(data.rollType);
+            this.object.validOpposingRollType = ['ability', 'grappleControl', 'rush', 'disengage', 'sailStratagem'].includes(data.rollType);
+            this.object.validTargetRollType = this._isAttackRoll() || this.object.validOpposingRollType || (['social', 'readIntentions'].includes(data.rollType));
             this.object.stunt = "none";
             this.object.goalNumber = data.goalNumber || 0;
             this.object.woundPenalty = this.object.rollType === 'base' ? false : true;
@@ -610,7 +611,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             if (game.user.targets && game.user.targets.size > 0) {
                 this.object.showTargets = game.user.targets.size;
-                if (this._isAttackRoll() || this.object.rollType === 'social' || this.object.rollType === 'readIntentions') {
+                if (this._isAttackRoll() || this.object.rollType === 'social' || this.object.rollType === 'readIntentions' || this.object.validOpposingRollType) {
                     this._setUpMultitargets();
                 }
                 else {
@@ -1255,6 +1256,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 parry: 0,
                 hardness: 0,
                 soak: 0,
+                difficulty: 0,
+                opposingRoll: null,
                 shieldInitiative: 0,
                 diceModifier: 0,
                 successModifier: 0,
@@ -1296,6 +1299,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         if (target.actor.system.battlegroup) {
                             target.rollData.diceModifier += 1;
                         }
+                    }
+                }
+            }
+            if (this.object.rollType === 'command') {
+                if (target.actor.system.battlegroup) {
+                    if (target.actor.system.drill.value === '0') {
+                        this.object.diceModifier -= 2;
+                    }
+                    if (target.actor.system.drill.value === '2') {
+                        this.object.diceModifier += 2;
                     }
                 }
             }
@@ -2936,7 +2949,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             await this._completeCraftProject();
             await this._updateRollerResources();
         }
-        else if (this.object.showTargets && (this.object.rollType === 'social' || this.object.rollType === 'readIntentions')) {
+        else if (this.object.showTargets && this.object.validTargetRollType) {
             this.object.hasDifficulty = true;
             if (this.object.showTargets) {
                 for (const target of Object.values(this.object.targets)) {
@@ -2950,14 +2963,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.supportedIntimacy = target.rollData.supportedIntimacy;
                         this.object.appearanceBonus = target.rollData.appearanceBonus;
                     }
-                    if (this.object.rollType === 'readIntentions') {
+                    else if (this.object.rollType === 'readIntentions') {
                         this.object.difficulty = target.rollData.guile;
+                    } else {
+                        this.object.difficulty = target.rollData.difficulty;
                     }
 
                     await this._abilityRoll();
                     await this._inflictOnTarget();
-                    await this._updateRollerResources();
-
                     if (this.object.updateTargetActorData) {
                         await this._updateTargetActor();
                     }
@@ -2965,6 +2978,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         await this._updateTargetInitiative();
                     }
                 }
+                await this._updateRollerResources();
             }
         }
         else {
@@ -3904,29 +3918,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         });
-        if (this.object.rollType === "joinBattle") {
-            let combat = game.combat;
-            if (combat) {
-                let combatant = this._getActorCombatant();
-                if (combatant) {
-                    if (combatant.initiative === null) {
-                        combat.setInitiative(combatant.id, this.object.total + 3);
-                    }
-                    else {
-                        combat.setInitiative(combatant.id, combatant.initiative + this.object.total);
-                    }
-                }
-            }
-        }
-        if (this.object.rollType === 'steady') {
-            let combat = game.combat;
-            if (combat) {
-                let combatant = this._getActorCombatant();
-                if (combatant && combatant.initiative != null) {
-                    combat.setInitiative(combatant.id, combatant.initiative + this.object.thresholdSuccesses);
-                }
-            }
-        }
     }
 
     async _attackRoll() {
@@ -6986,16 +6977,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _updateRollerResources() {
+        let combat = game.combat;
+        let combatant = combat ? this._getActorCombatant() : null;
+
         if (this.object.rollType === 'sorcery') {
             this.object.previousSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMotes = this.actor.system.sorcery.motes.value;
             let actorSorceryMoteCap = this.actor.system.sorcery.motes.max;
             let crashed = false;
-            if (game.combat) {
-                let combatant = this._getActorCombatant();
-                if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
-                    crashed = true;
-                }
+            if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
+                crashed = true;
             }
             actorSorceryMotes += this.object.total;
             if (this.object.spell) {
@@ -7125,75 +7116,88 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             actorData.system.stuntdice.value += 2;
         }
         // Update initiative through various effects
-        if (game.combat) {
-            let combatant = this._getActorCombatant();
-            if (combatant && combatant.initiative !== null) {
-                if (this.object.characterInitiative === undefined) {
-                    this.object.characterInitiative = combatant.initiative;
+        if (combatant && combatant.initiative !== null) {
+            if (this.object.characterInitiative === undefined) {
+                this.object.characterInitiative = combatant.initiative;
+            }
+            if (this.object.cost.initiative > 0) {
+                this.object.characterInitiative -= this.object.cost.initiative;
+                if (combatant.initiative > 0 && this.object.characterInitiative <= 0) {
+                    this.object.characterInitiative -= 5;
                 }
-                if (this.object.cost.initiative > 0) {
-                    this.object.characterInitiative -= this.object.cost.initiative;
-                    if (combatant.initiative > 0 && this.object.characterInitiative <= 0) {
-                        this.object.characterInitiative -= 5;
+            }
+            if (this._isAttackRoll()) {
+                const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
+                if (triggerMissedAttack) {
+                    if (this.object.attackType === 'decisive' && !game.settings.get("exaltedthird", "forgivingDecisives")) {
+                        if (this.object.characterInitiative < 11) {
+                            this.object.characterInitiative -= 2;
+                        }
+                        else {
+                            this.object.characterInitiative -= 3;
+                        }
                     }
-                }
-                if (this._isAttackRoll()) {
-                    const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
-                    if (triggerMissedAttack) {
-                        if (this.object.attackType === 'decisive' && !game.settings.get("exaltedthird", "forgivingDecisives")) {
-                            if (this.object.characterInitiative < 11) {
-                                this.object.characterInitiative -= 2;
+                } else {
+                    if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
+                        if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
+                            if (this.object.damage.maxAttackInitiativeGain) {
+                                this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
                             }
-                            else {
-                                this.object.characterInitiative -= 3;
+                            if (!triggerMissedAttack) {
+                                this.object.gainedInitiative += 1;
                             }
-                        }
-                    } else {
-                        if (this.object.attackType === 'withering' && !this.actor.system.battlegroup) {
-                            if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative && this.object.damage.gainInitiative) {
-                                if (this.object.damage.maxAttackInitiativeGain) {
-                                    this.object.gainedInitiative = Math.min(this.object.damage.maxAttackInitiativeGain, this.object.gainedInitiative);
-                                }
-                                if (!triggerMissedAttack) {
-                                    this.object.gainedInitiative += 1;
-                                }
-                                if (this.object.crashed) {
-                                    if (!this.object.targetCombatant?.flags.crashRecovery) {
-                                        this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
-                                    }
-                                }
-                                if (this.object.damage.maxInitiativeGain) {
-                                    this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
-                                }
-                                this.object.characterInitiative += this.object.gainedInitiative;
-                                if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
-                                    this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
+                            if (this.object.crashed) {
+                                if (!this.object.targetCombatant?.flags.crashRecovery) {
+                                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
                                 }
                             }
-                        }
-                        if (this.object.attackType === 'decisive') {
-                            if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
+                            if (this.object.damage.maxInitiativeGain) {
+                                this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
+                            }
+                            this.object.characterInitiative += this.object.gainedInitiative;
+                            if (this.object.initiativeShift && this.object.characterInitiative < this.actor.system.baseinitiative.value) {
                                 this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
                             }
                         }
                     }
-                    if (this.object.attackType === 'gambit') {
-                        if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
-                            this.object.characterInitiative -= 5;
+                    if (this.object.attackType === 'decisive') {
+                        if (!triggerMissedAttack && this.object.attackType === 'decisive' && this.object.damage.resetInit) {
+                            this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
                         }
-                        this.object.characterInitiative -= (this.object.gambitDifficulty + 1);
                     }
                 }
-                if (this.object.restore.initiative !== 0) {
-                    this.object.characterInitiative += this.object.restore.initiative;
+                if (this.object.attackType === 'gambit') {
+                    if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
+                        this.object.characterInitiative -= 5;
+                    }
+                    this.object.characterInitiative -= (this.object.gambitDifficulty + 1);
                 }
-                game.combat.setInitiative(combatant.id, this.object.characterInitiative);
             }
+            if (this.object.restore.initiative !== 0) {
+                this.object.characterInitiative += this.object.restore.initiative;
+            }
+            game.combat.setInitiative(combatant.id, this.object.characterInitiative);
         }
+        
         this.actor.update(actorData);
         for(const modifierUpdate of this.object.modifierUpdates) {
             for(const modifier of this.actor.items.filter(item => item.type === "modifier" && item.system.formulaKey === modifierUpdate.key)) {
                 await modifier.update({ [`system.value`]: modifier.system.value += modifierUpdate.value });
+            }
+        }
+        if(combatant) {
+            if (this.object.rollType === "joinBattle") {
+                if (combatant.initiative === null) {
+                    combat.setInitiative(combatant.id, this.object.total + 3);
+                }
+                else {
+                    combat.setInitiative(combatant.id, combatant.initiative + this.object.total);
+                }
+            }
+            if (this.object.rollType === 'steady') {
+                if (combatant.initiative != null) {
+                    combat.setInitiative(combatant.id, combatant.initiative + this.object.thresholdSuccesses);
+                }
             }
         }
     }
