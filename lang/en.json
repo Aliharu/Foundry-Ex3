@@ -218,6 +218,7 @@
     "Ex3.Bonus": "Bonus",
     "Ex3.Parry": "Parry",
     "Ex3.Evasion": "Evasion",
+    "Ex3.Clash": "Clash",
     "Ex3.EvasionPenalties": "Evasion Penalties",
     "Ex3.ParryPenalties": "Parry Penalties",
 
@@ -346,6 +347,7 @@
     "Ex3.ActiveCharms": "Active Charms",
     "Ex3.ActiveItems": "Active Items",
     "Ex3.OpposingCharms": "Opposing Charms",
+    "Ex3.OpposingRoll": "Opposing Roll",
     "Ex3.CharmType": "Charm Type",
     "Ex3.CostDisplay": "Cost Display",
     "Ex3.Folder": "Folder",
@@ -646,6 +648,7 @@
     "Ex3.Undodgeable": "Undodgeable",
     "Ex3.AttackUnblockable": "Attack Unblockable",
     "Ex3.AttackUndodgeable": "Attack Undodgeable",
+    "Ex3.AttackClash": "Attack Clash",
     "Ex3.Crossbow": "Crossbow",
 
     "Ex3.FullCover": "Full Cover",
@@ -1258,6 +1261,7 @@
 
     "Ex3.SpecificDieFaceEffect": "Specific Die Face Effect",
     "Ex3.SpecificDieFaceEffectDamage": "Specific Die Face Effect (Damage)",
+    "Ex3.OpposedDieFaceEffect": "Opposed Die Face Effect",
 
     "Ex3.UseOpposingCharms": "Use Opposing Charms",
 

@@ -1662,6 +1662,7 @@ exaltedthird.booleanTriggers = [
   'rerollFailed',
   'attackUnblockable',
   'attackUndodgeable',
+  'attackClash',
   'targetIsBattlegroup'
 ];
 
@@ -1701,10 +1702,19 @@ exaltedthird.bonusTypes = {
       doubleSuccesses: "Ex3.DoubleSuccesses",
       doubleThresholdSuccesses: "Ex3.DoubleThresholdSuccesses",
       specificDieFaceEffect: "Ex3.SpecificDieFaceEffect",
+      opposedDieFaceEffect: "Ex3.OpposedDieFaceEffect",
       intervals: "Ex3.Intervals",
+    },
+  },
+  attack: {
+    label: "Ex3.Attack",
+    bonuses: {
       attackUnblockable: "Ex3.AttackUnblockable",
       attackUndodgeable: "Ex3.AttackUndodgeable",
-    },
+      attackClash: "Ex3.AttackClash",
+      setRange: "Ex3.SetRange",
+      ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
+    }
   },
   damage: {
     label: "Ex3.Damage",
@@ -1816,10 +1826,8 @@ exaltedthird.bonusTypes = {
   other: {
     label: "Ex3.Other",
     bonuses: {
-      setRange: "Ex3.SetRange",
       activateAura: "Ex3.ActivateAura",
       displayMessage: "Ex3.DisplayMessage",
-      ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
       triggerSelfDefensePenalty: "Ex3.ApplySelfDefensePenalty",
       specificCharm: "Ex3.SpecificCharm",
       otherEffect: "Ex3.OtherEffect",
@@ -2581,8 +2589,9 @@ exaltedthird.selects = {
     "gambit": "Ex3.Gambit",
   },
   defenseTypes: {
-    "parry": "Ex3.Parry",
+    "clash": "Ex3.Clash",
     "evasion": "Ex3.Evasion",
+    "parry": "Ex3.Parry",
     "resolve": "Ex3.Resolve",
     "guile": "Ex3.Guile",
   },

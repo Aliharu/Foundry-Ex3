@@ -321,7 +321,7 @@ Hooks.once('init', async function () {
 // });
 
 async function handleSocket({ type, id, data, actorId, itemData = null, crasherId = null, addStatuses = [], deleteEffects = [] }) {
-  if (type === 'addOpposingCharm' || type === 'addMultiOpposingCharms') {
+  if (type === 'addOpposingCharm' || type === 'addMultiOpposingCharms' || type === 'addOpposingRoll') {
     if (game.rollForm) {
       data.actor = canvas.tokens.placeables.find(t => t.actor?.id === actorId)?.actor;
       if (!data.actor) {
@@ -329,8 +329,10 @@ async function handleSocket({ type, id, data, actorId, itemData = null, crasherI
       }
       if (type === 'addMultiOpposingCharms') {
         game.rollForm.addMultiOpposedBonuses(data);
-      } else {
+      } else if(type === 'addOpposingCharm') {
         game.rollForm.addOpposingCharm(data);
+      } else {
+        game.rollForm.addOpposingRoll(data);
       }
     }
   }
