@@ -3180,11 +3180,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (customAbility.system.abilitytype === 'craft') {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'craft');
             }
-            else if (customAbility.system.abilitytype === 'martialarts') {
+            else if (customAbility.system.abilitytype === 'martialart') {
                 this.object.specialtyList = this.actor.specialties.filter((specialty) => specialty.system.ability === 'martialarts');
             } else {
                 this.object.specialtyList = []
             }
+            this.object.specialtyList = this.object.specialtyList.concat(this.actor.specialties.filter((specialty) => specialty.system.ability === customAbility._id));
         }
         else {
             if (this.actor.type === 'npc') {
@@ -6238,7 +6239,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
                     try {
                         for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
-                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
+                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true, false, this.actor)) {
                                 for (const bonus of Object.values(trigger.bonuses)) {
                                     let cleanedValue = bonus.value.toLowerCase().trim();
                                     switch (bonus.effect) {
@@ -6343,7 +6344,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeDamage' || trigger.triggerTime === 'beforeDamage')) {
                     try {
                         for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
-                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true)) {
+                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true, false, this.actor)) {
                                 for (const bonus of Object.values(trigger.bonuses)) {
                                     let cleanedValue = bonus.value.toLowerCase().trim();
                                     switch (bonus.effect) {
