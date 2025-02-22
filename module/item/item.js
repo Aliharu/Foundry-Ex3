@@ -138,12 +138,13 @@ export class ExaltedThirdItem extends Item {
   }
 
   async _createModifiers(target = this.parent) {
-    if (!target) {
+    if (!target || !this.system.custommodifier.key || target.items.some(items => items.type === 'modifier' && items.system.formulaKey === this.system.custommodifier.key)) {
       return;
     }
     await target.createEmbeddedDocuments("Item", [
       {
         name: this.system.custommodifier.name || "No Name",
+        img: this.img,
         type: 'modifier',
         parent: target,
         renderSheet: undefined,

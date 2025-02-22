@@ -2504,8 +2504,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             // Split the formula string based on operand
             const [leftOperand, operand, rightOperand] = charmValue.split(operandRegex);
 
-            var leftVar = this._getFormulaValue(leftOperand.trim(), opposedCharmActor, item);
-            var rightVar = this._getFormulaValue(rightOperand.trim(), opposedCharmActor, item);
+            let leftVar = this._getFormulaValue(leftOperand.trim(), opposedCharmActor, item);
+            let rightVar = this._getFormulaValue(rightOperand.trim(), opposedCharmActor, item);
 
             // Perform operation based on operand
             switch (operand) {
@@ -2588,7 +2588,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (formula.includes('cap')) {
             // let split = formula.split(' ');
-            const match = formula.match(/^(\d+)\s+cap\s+(\(.*\))$/);
+            const match = formula.match(/^(\d+)\s+cap\s+(\(?.*?\)?)$/);
 
             if (!match) {
                 console.error("Invalid formula format:", formula);
@@ -2681,7 +2681,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (formula?.toLowerCase() === 'damagedealt') {
             if (this.object.initiativeDamageDealt) {
-                return this.object.initiativeDamageDealt || 0;
+                return this.object.initiativeDamageDealt;
             }
             return this.object.damageLevelsDealt || 0;
         }
@@ -2731,9 +2731,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (formula.includes('rollfaces-')) {
             formula = formula.replace('rollfaces-', '');
-            let countRerolledDice = true;
+            let countRerolledDice = false;
             if (formula.includes('-precedence')) {
                 formula = formula.replace('-precedence', '');
+                countRerolledDice = true;
             }
             if (!parseInt(formula)) {
                 return 0;
@@ -4360,7 +4361,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             }
                         }
                     }
-                    if (this.object.targetCombatant?.actor?.system?.battlegroup) {
+                    if (this.object.target?.actor?.system?.battlegroup) {
                         if (game.settings.get("exaltedthird", "automaticWitheringDamage")) {
                             sizeDamaged = this.dealHealthDamage(this.object.damageSuccesses, true);
                             if (sizeDamaged) {
@@ -4386,7 +4387,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (crashed) {
                     fullInitiative += (this.object.damage.crashBonus ?? 5);
                 }
-                if (this.object.targetCombatant?.actor?.system?.battlegroup) {
+                if (this.object.target?.actor?.system?.battlegroup) {
                     fullInitiative = (5 * sizeDamaged) + 1;
                 }
                 if (!game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.gainedInitiative) {
@@ -4839,7 +4840,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 }
                                 switch (bonus.effect) {
                                     case 'diceModifier':
-                                    case 'successModifier':
                                     case 'penaltyModifier':
                                     case 'ignorePenalties':
                                     case 'rerollNumber':
@@ -4852,6 +4852,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'baseInitiativeModifier':
                                     case 'intervals':
                                     case 'goalNumber':
+                                        this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        break;
+                                    case 'successModifier':
+                                        if(this.object.total) {
+                                            this.object.total += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        }
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'attackClash':
@@ -5232,10 +5238,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _triggerRequirementsMet(charm, trigger, bonusType = "benefit", triggerAmountIndex, display, triggerHasBeenActivatedOnItem, triggerActor) {
         let fufillsRequirements = true;
-        let opposingActor = this.object.target;
+        let opposingActor = this.object.target?.actor;
         if (bonusType === 'benefit' && this.object.rollType === 'useOpposingCharms') {
             opposingActor = this.object.attacker;
         }
+        if(bonusType === 'opposed' && this.object.rollType !== 'useOpposingCharms') {
+            opposingActor = this.actor;
+        }
+
         for (const requirementObject of Object.values(trigger.requirements)) {
             if (!fufillsRequirements) {
                 break;
@@ -5312,10 +5322,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'incapacitatedTarget':
-                    if (!this.object.target) {
+                    if (!this.object.target?.actor) {
                         fufillsRequirements = false;
                     }
-                    else if (this.object.target.system.health.value > (this.object.damageLevelsDealt ?? 0)) {
+                    else if (this.object.target.actor.system.health.value > (this.object.damageLevelsDealt ?? 0)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5423,7 +5433,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (!opposingActor) {
                         fufillsRequirements = false;
                     }
-                    else if (!opposingActor.system.battlegroup) {
+                    else if ((opposingActor.system.battlegroup ?? false) !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
