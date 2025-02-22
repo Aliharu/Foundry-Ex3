@@ -203,6 +203,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 ten: { status: false, number: 10, cap: 0 },
             }
 
+            this.object.roll = null;
+            this.object.diceDisplay = null;
+            this.object.diceRollTotal = null;
+
+            this.object.unusedDiceRoll = null;
+            this.object.unusedDiceRollDisplay = null;
+            this.object.unusedDiceRollTotal = null;
+
+            this.object.damageDiceRollResults = null;
+            this.object.unusedDamageDiceRollResults = null;
+
             this.object.damage = {
                 damageDice: data.damage || 0,
                 damageSuccessModifier: data.damageSuccessModifier || 0,
@@ -2692,10 +2703,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return parseInt(this.object.craftRating || 0);
         }
         if (formula?.toLowerCase() === 'rollsuccesses') {
-            return this.object.total || 0;
+            return this.object.diceRollTotal || 0;
+        }
+        if (formula?.toLowerCase() === 'unuseddicerollsuccesses') {
+            return this.object.unusedDiceRollTotal || 0;
         }
         if (formula?.toLowerCase() === 'gambitdifficulty') {
-            return this.object.total || 0;
+            return this.object.diceRollTotal || 0;
         }
         if (formula?.toLowerCase() === 'craftobjectives') {
             return this.object.objectivesCompleted || 0;
@@ -3052,7 +3066,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.diceRoll && (this.object.rollType === 'accuracy' || this.object.validOpposingRollType)) {
             game.socket.emit('system.exaltedthird', {
                 type: 'addOpposingRoll',
-                data: { diceRoll: this.object.diceRoll, diceDisplay: this.object.diceDisplay, total: this.object.total },
+                data: { diceRoll: this.object.diceRoll, diceDisplay: this.object.diceDisplay, total: this.object.diceRollTotal },
                 actorId: this.actor._id,
             });
         }
@@ -3708,7 +3722,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         const diceRollResults = await this._calculateRoll(dice, rollModifiers);
         this.object.roll = diceRollResults.roll;
         this.object.diceDisplay = diceRollResults.diceDisplay;
-        this.object.total = diceRollResults.total;
+        this.object.diceRollTotal = diceRollResults.total;
         let diceRoll = diceRollResults.diceRoll;
 
         if (this.object.rollTwice || this.object.rollTwiceLowest) {
@@ -3717,16 +3731,32 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (secondRoll.total > diceRollResults.total) {
                     this.object.roll = secondRoll.roll;
                     this.object.diceDisplay = secondRoll.diceDisplay;
-                    this.object.total = secondRoll.total;
+                    this.object.diceRollTotal = secondRoll.total;
+
+                    this.object.unusedDiceRoll = diceRollResults.roll;
+                    this.object.unusedDiceRollDisplay = diceRollResults.diceDisplay;
+                    this.object.unusedDiceRollTotal = diceRollResults.total;
                     diceRoll = secondRoll.diceRoll;
+                } else {
+                    this.object.unusedDiceRoll = secondRoll.roll;
+                    this.object.unusedDiceRollDisplay = secondRoll.diceDisplay;
+                    this.object.unusedDiceRollTotal = secondRoll.total;
                 }
             } else if (this.object.rollTwiceLowest && !this.object.rollTwice) {
                 const secondRoll = await this._calculateRoll(dice, rollModifiers);
                 if (secondRoll.total < diceRollResults.total) {
                     this.object.roll = secondRoll.roll;
                     this.object.diceDisplay = secondRoll.diceDisplay;
-                    this.object.total = secondRoll.total;
+                    this.object.diceRollTotal = secondRoll.total;
+
+                    this.object.unusedDiceRoll = diceRollResults.roll;
+                    this.object.unusedDiceRollDisplay = diceRollResults.diceDisplay;
+                    this.object.unusedDiceRollTotal = diceRollResults.total;
                     diceRoll = secondRoll.diceRoll;
+                } else {
+                    this.object.unusedDiceRoll = secondRoll.roll;
+                    this.object.unusedDiceRollDisplay = secondRoll.diceDisplay;
+                    this.object.unusedDiceRollTotal = secondRoll.total;
                 }
             }
         }
@@ -3759,7 +3789,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'subtractSuccesses':
-                    this.object.total -= onesRolled;
+                    this.object.diceRollTotal -= onesRolled;
                     break;
                 case 'reduceDamage':
                     this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - onesRolled);
@@ -3779,7 +3809,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.damage.postSoakDamage += tensRolled;
                     break;
                 case 'extraSuccess':
-                    this.object.total += tensRolled;
+                    this.object.diceRollTotal += tensRolled;
                     break;
                 case 'ignoreHardness':
                     this.object.damage.ignoreHardness += tensRolled;
@@ -3798,25 +3828,25 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         if (this.object.doubleSuccesses) {
-            this.object.total *= 2;
+            this.object.diceRollTotal *= 2;
         }
         if (this._isAttackRoll()) {
-            this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
+            this.object.thresholdSuccesses = Math.max(0, this.object.diceRollTotal - this.object.defense);
             if (this.object.doubleThresholdSuccesses) {
                 this.object.thresholdSuccesses *= 2;
             }
-            this.object.attackSuccesses = this.object.total;
+            this.object.attackSuccesses = this.object.diceRollTotal;
             if (this.object.target) {
-                this.object.target.rollData.attackSuccesses = this.object.total;
+                this.object.target.rollData.attackSuccesses = this.object.diceRollTotal;
                 if (this.object.rollAccuracyOnce) {
                     for (const target of Object.values(this.object.targets)) {
-                        target.rollData.attackSuccesses = this.object.total;
+                        target.rollData.attackSuccesses = this.object.diceRollTotal;
                     }
                 }
             }
         }
         else {
-            this.object.thresholdSuccesses = Math.max(0, this.object.total - (this.object.difficulty || 0));
+            this.object.thresholdSuccesses = Math.max(0, this.object.diceRollTotal - (this.object.difficulty || 0));
             if (this.object.doubleThresholdSuccesses) {
                 this.object.thresholdSuccesses *= 2;
             }
@@ -3833,9 +3863,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes
                 </h4>
                 <div class="dice-tooltip">
-                    <div class="dice">
-                        <ol class="dice-rolls">${this.object.diceDisplay}</ol>
-                    </div>
+                    ${this._getDiceDisplay()}
                 </div>
                 <h4 class="dice-total">${this.object.total} Successes</h4>
             </div>
@@ -3862,11 +3890,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (game.combat) {
                 let combatant = this._getActorCombatant();
                 if (!combatant || combatant.initiative === null) {
-                    resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+                    resultString += `<h4 class="dice-total">${this.object.diceRollTotal + 3} Initiative</h4>`;
                 }
             }
             else {
-                resultString += `<h4 class="dice-total">${this.object.total + 3} Initiative</h4>`;
+                resultString += `<h4 class="dice-total">${this.object.diceRollTotal + 3} Initiative</h4>`;
             }
         }
         if (this.object.rollType === "sorcery") {
@@ -3880,7 +3908,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
                 const fullSpell = this.actor.items.get(this.object.spell);
                 if (fullSpell) {
-                    resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.total}/${parseInt(fullSpell.system.cost) + (crashed ? 3 : 0)}</h4>`;
+                    resultString += `<h4 class="dice-total">Spell Motes: ${this.object.previousSorceryMotes + this.object.diceRollTotal}/${parseInt(fullSpell.system.cost) + (crashed ? 3 : 0)}</h4>`;
                 }
                 if (this.object.spellCast) {
                     resultString += `<h4 class="dice-total" style="margin-top:5px">Spell Cast</h4>`;
@@ -3888,9 +3916,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         if (this.object.hasDifficulty) {
-            if (this.object.total < this.object.difficulty) {
+            if (this.object.diceRollTotal < this.object.difficulty) {
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>`;
-                if (this.object.total === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
+                if (this.object.diceRollTotal === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
                     resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
                 }
             }
@@ -3956,11 +3984,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <div class="dice-result">
                     <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                     <div class="dice-tooltip">
-                        <div class="dice">
-                            <ol class="dice-rolls">${this.object.diceDisplay}</ol>
-                        </div>
+                        ${this._getDiceDisplay()}
                     </div>
-                    <h4 class="dice-total dice-total-middle">${this.object.total} Successes</h4>
+                    <h4 class="dice-total dice-total-middle">${this.object.diceRollTotal} Successes</h4>
                     ${resultString}
                     ${extendedTest}
                 </div>
@@ -3984,7 +4010,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     dice: this.object.dice,
                     successes: this.object.successes,
                     successModifier: this.object.successModifier,
-                    total: this.object.total
+                    total: this.object.diceRollTotal
                 }
             }
         });
@@ -4017,11 +4043,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <h4 class="dice-total dice-total-middle">Accuracy Roll</h4>
                 <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                 <div class="dice-tooltip">
-                    <div class="dice">
-                        <ol class="dice-rolls">${this.object.diceDisplay}</ol>
-                    </div>
+                    ${this._getDiceDisplay()}
                 </div>
-                <h4 class="dice-total">${this.object.total} Successes</h4>
+                <h4 class="dice-total">${this.object.diceRollTotal} Successes</h4>
                 ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}
             </div>
         </div>`;
@@ -4039,7 +4063,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     dice: this.object.dice,
                     successes: this.object.successes,
                     successModifier: this.object.successModifier,
-                    total: this.object.total,
+                    total: this.object.diceRollTotal,
                     defense: this.object.defense,
                     thresholdSuccesses: this.object.thresholdSuccesses,
                     targetActorId: this.object.target?.actor?._id,
@@ -4054,7 +4078,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.attackSuccesses < this.object.defense) {
             return await this.missAttack();
         } else {
-            this.object.thresholdSuccesses = Math.max(0, this.object.total - this.object.defense);
+            this.object.thresholdSuccesses = Math.max(0, this.object.diceRollTotal - this.object.defense);
             if (this.object.doubleThresholdSuccesses) {
                 this.object.thresholdSuccesses *= 2;
             }
@@ -4134,20 +4158,30 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             });
         }
 
-        this.object.damageDiceRollResults = await this._calculateRoll(dice, rollModifiers);
+        let damageRollResults = await this._calculateRoll(dice, rollModifiers);
         if (this.object.damage.rollTwice || this.object.damage.rollTwiceLowest) {
             if (this.object.damage.rollTwice && !this.object.damage.rollTwiceLowest) {
                 const secondRoll = await this._calculateRoll(dice, rollModifiers);
-                if (secondRoll.total > this.object.damageDiceRollResults.total) {
+                if (secondRoll.total > damageRollResults.total) {
                     this.object.damageDiceRollResults = secondRoll;
-
+                    this.object.unusedDamageDiceRollResults = damageRollResults;
+                }
+                else {
+                    this.object.damageDiceRollResults = damageRollResults;
+                    this.object.unusedDamageDiceRollResults = secondRoll;
                 }
             } else if (this.object.damage.rollTwiceLowest && !this.object.damage.rollTwice) {
                 const secondRoll = await this._calculateRoll(dice, rollModifiers);
-                if (secondRoll.total < this.object.damageDiceRollResults.total) {
+                if (secondRoll.total < damageRollResults.total) {
                     this.object.damageDiceRollResults = secondRoll;
+                    this.object.unusedDamageDiceRollResults = damageRollResults;
+                } else {
+                    this.object.damageDiceRollResults = damageRollResults;
+                    this.object.unusedDamageDiceRollResults = secondRoll;
                 }
             }
+        } else {
+            this.object.damageDiceRollResults = damageRollResults;
         }
 
         this.object.finalDamageDice = dice;
@@ -4223,11 +4257,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 ${this.object.attackType === 'decisive' ? `<h4 class="dice-formula">${this.object.damageDice} Damage dice vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>` : ''}
                                 ${this.object.attackType === 'withering' ? `<h4 class="dice-formula">${this.object.soak} Soak! ${this.object.damage.ignoreSoak ? `(Ignoring ${this.object.damage.ignoreSoak})` : ''}</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>` : ''}
                                 <div class="dice-tooltip">
-                                                    <div class="dice">
-                                                        <ol class="dice-rolls">${this.object.damageDiceRollResults.diceDisplay}</ol>
-                                                    </div>
-                                                </div><h4 class="dice-total">${this.object.damageSuccesses} Total ${this.object.attackType === 'gambit' ? 'Successes' : 'Damage'}!</h4> 
-                                                ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}`;
+                                    ${this._getDiceDisplay('damageRoll')}
+                                </div><h4 class="dice-total">${this.object.damageSuccesses} Total ${this.object.attackType === 'gambit' ? 'Successes' : 'Damage'}!</h4> 
+                                ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}`;
 
         let accuracyContent = ``;
         let messageContent = `
@@ -4251,7 +4283,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     dice: this.object.dice,
                     successes: this.object.successes,
                     successModifier: this.object.successModifier,
-                    total: this.object.total,
+                    total: this.object.diceRollTotal,
                     defense: this.object.defense,
                     thresholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
@@ -4443,7 +4475,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     dice: this.object.dice,
                     successes: this.object.successes,
                     successModifier: this.object.successModifier,
-                    total: this.object.total,
+                    total: this.object.diceRollTotal,
                     defense: this.object.defense,
                     thresholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
@@ -4520,11 +4552,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             accuracyContent = `
                 <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                 <div class="dice-tooltip">
-                    <div class="dice">
-                        <ol class="dice-rolls">${this.object.diceDisplay}</ol>
-                    </div>
+                    ${this._getDiceDisplay()}
                 </div>
-                <h4 class="dice-formula">${this.object.total} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-formula">${this.object.diceRollTotal} Successes vs ${this.object.defense} Defense</h4>
                 <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
             `
         }
@@ -4855,8 +4885,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'successModifier':
-                                        if(this.object.total) {
-                                            this.object.total += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        if (this.object.diceRollTotal) {
+                                            this.object.diceRollTotal += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         }
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
@@ -5242,7 +5272,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (bonusType === 'benefit' && this.object.rollType === 'useOpposingCharms') {
             opposingActor = this.object.attacker;
         }
-        if(bonusType === 'opposed' && this.object.rollType !== 'useOpposingCharms') {
+        if (bonusType === 'opposed' && this.object.rollType !== 'useOpposingCharms') {
             opposingActor = this.actor;
         }
 
@@ -5481,15 +5511,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'rollSucceeded':
                     if (this._isAttackRoll()) {
-                        if (this.object.total < this.object.defense && cleanedValue === true) {
+                        if (this.object.diceRollTotal < this.object.defense && cleanedValue === true) {
                             fufillsRequirements = false;
-                        } else if (this.object.total >= this.object.defense && cleanedValue === false) {
+                        } else if (this.object.diceRollTotal >= this.object.defense && cleanedValue === false) {
                             fufillsRequirements = false;
                         }
                     } else {
-                        if (this.object.total < this.object.difficulty && cleanedValue === true) {
+                        if (this.object.diceRollTotal < this.object.difficulty && cleanedValue === true) {
                             fufillsRequirements = false;
-                        } else if (this.object.total >= this.object.difficulty && cleanedValue === false) {
+                        } else if (this.object.diceRollTotal >= this.object.difficulty && cleanedValue === false) {
                             fufillsRequirements = false;
                         }
                     }
@@ -5591,8 +5621,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.damage.postSoakDamage += dieFaceAmount;
                 break;
             case 'extrasuccess':
-                if(this.object.total) {
-                    this.object.total += dieFaceAmount;
+                if (this.object.diceRollTotal) {
+                    this.object.diceRollTotal += dieFaceAmount;
                 } else {
                     this.object.successModifier += dieFaceAmount;
                 }
@@ -5618,8 +5648,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
                 break;
             case 'subtractsuccesses':
-                if(this.object.total) {
-                    this.object.total -= dieFaceAmount;
+                if (this.object.diceRollTotal) {
+                    this.object.diceRollTotal -= dieFaceAmount;
                 } else {
                     this.object.successModifier -= dieFaceAmount;
                 }
@@ -5848,13 +5878,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let craftSuccess = false;
         let goalNumberLeft = this.object.goalNumber;
         let extendedTest = ``;
-        const thresholdSuccesses = Math.max(0, this.object.total - this.object.difficulty);
+        const thresholdSuccesses = Math.max(0, this.object.diceRollTotal - this.object.difficulty);
         if (this.object.goalNumber > 0) {
             extendedTest = `<h4 class="dice-total dice-total-middle">Goal Number: ${this.object.goalNumber}</h4><h4 class="dice-total">Goal Number Left: ${goalNumberLeft}</h4>`;
         }
-        if (this.object.total < this.object.difficulty) {
+        if (this.object.diceRollTotal < this.object.difficulty) {
             resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Check Failed</h4>${extendedTest}`;
-            if (this.object.total === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
+            if (this.object.diceRollTotal === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
                 this.object.finished = true;
                 resultString = `<h4 class="dice-total dice-total-middle">Difficulty: ${this.object.difficulty}</h4><h4 class="dice-total">Botch</h4>`;
                 craftFailed = true;
@@ -5955,11 +5985,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <div class="dice-result">
                     <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
                     <div class="dice-tooltip">
-                        <div class="dice">
-                            <ol class="dice-rolls">${this.object.diceDisplay}</ol>
-                        </div>
+                        ${this._getDiceDisplay()}
                     </div>
-                    <h4 class="dice-total dice-total-middle">${this.object.total} Successes</h4>
+                    <h4 class="dice-total dice-total-middle">${this.object.diceRollTotal} Successes</h4>
                     ${resultString}
                     ${projectStatus}
                 </div>
@@ -5979,7 +6007,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     dice: this.object.dice,
                     successes: this.object.successes,
                     successModifier: this.object.successModifier,
-                    total: this.object.total
+                    total: this.object.diceRollTotal
                 }
             }
         });
@@ -6141,6 +6169,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             combatStats: combatStats,
         }
         return await renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
+    }
+
+    _getDiceDisplay(type = 'roll') {
+        return `
+            <div class="dice">
+                <ol class="dice-rolls">${type === 'roll' ? this.object.diceDisplay : this.object.damageDiceRollResults.diceDisplay}</ol>
+            </div>
+            ${type === 'roll' && this.object.unusedDiceRollDisplay ? `<div class="flex-center resource-label">Unused Roll</div><div class="dice">
+                <ol class="dice-rolls">${this.object.unusedDiceRollDisplay}</ol>
+            </div>` : ''}
+            ${type === 'damageRoll' && this.object.unusedDamageDiceRollResults?.diceDisplay ? `<div class="flex-center resource-label">Unused Damage Roll</div><div class="dice">
+                <ol class="dice-rolls">${this.object.unusedDamageDiceRollResults.diceDisplay}</ol>
+            </div>` : ''}`
     }
 
     async _assembleDicePool(display) {
@@ -7095,11 +7136,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
                 crashed = true;
             }
-            actorSorceryMotes += this.object.total;
+            actorSorceryMotes += this.object.diceRollTotal;
             if (this.object.spell) {
                 const activeSpell = this.actor.items?.find(item => item.system?.shaping);
                 if (activeSpell && activeSpell.id !== this.object.spell) {
-                    actorSorceryMotes = this.object.total;
+                    actorSorceryMotes = this.object.diceRollTotal;
                     actorSorceryMoteCap = 0;
                     this.object.previousSorceryMotes = 0;
                 }
@@ -7295,10 +7336,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (combatant) {
             if (this.object.rollType === "joinBattle") {
                 if (combatant.initiative === null) {
-                    combat.setInitiative(combatant.id, this.object.total + 3);
+                    combat.setInitiative(combatant.id, this.object.diceRollTotal + 3);
                 }
                 else {
-                    combat.setInitiative(combatant.id, combatant.initiative + this.object.total);
+                    combat.setInitiative(combatant.id, combatant.initiative + this.object.diceRollTotal);
                 }
             }
             if (this.object.rollType === 'steady') {
