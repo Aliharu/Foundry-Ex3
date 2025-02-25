@@ -2011,7 +2011,9 @@ exaltedthird.requirementTypes = {
       charmAddedAmount: "Ex3.ItemAddedAmount",
       capTriggerActivations: "Ex3.CapTriggerActivations",
       range: "Ex3.Range",
-      craftProjectType: "Ex3.CraftProjectType"
+      craftProjectType: "Ex3.CraftProjectType",
+      hasSpecialAttack: "Ex3.HasSpecialAttack",
+      missingSpecialAttack: "Ex3.MissingSpecialAttack",
     },
   },
   character: {
@@ -2742,6 +2744,18 @@ exaltedthird.selects = {
     "speed": "Ex3.Speed",
     "maneuverability": "Ex3.Maneuverability",
     "speedAndManeuverability": "Ex3.SpeedAndManeuverability",
+  },
+  specialAttacks: {
+    aim: "Ex3.Aim",
+    clash: "Ex3.Clash",
+    chopping: "Ex3.Chopping",
+    flurry: "Flurry",
+    fulldefense: "Ex3.FlurryFullDefense",
+    piercing: "Ex3.Piercing",
+    knockdown: "Ex3.Knockdown",
+    knockback: "Ex3.Knockback",
+    impale: "Ex3.Impale",
+    unexpectedattack: "Ex3.UnexpectedAttack"
   }
 };
 

@@ -295,6 +295,16 @@
                     data-type="String">
                     {{selectOptions ../../selects.charmFunctionTypes selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'hasSpecialAttack'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.specialAttacks selected=requirement.value localize=true blank=''}}
+                </select>
+                {{else ifEquals requirement.requirement 'missingSpecialAttack'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.specialAttacks selected=requirement.value localize=true blank=''}}
+                </select>
                 {{else}}
                 {{#isBooleanTrigger requirement.requirement}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"

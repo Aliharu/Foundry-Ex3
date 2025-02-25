@@ -167,6 +167,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
             this.object.isFlurry = false;
             this.object.isClash = false;
+            this.object.unexpectedAttack = false;
             this.object.armorPenalty = (this.object.rollType === 'rush' || this.object.rollType === 'disengage');
             this.object.willpower = false;
             this.object.willpowerTest = "no";
@@ -1380,6 +1381,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (target.actor.effects.some(e => e.statuses.has('surprised'))) {
                 effectiveParry -= 2;
                 effectiveEvasion -= 2;
+                this.object.unexpectedAttack = true;
+                for (let specialAttack of this.object.specialAttacksList) {
+                    if (specialAttack.id === 'unexpectedattack') {
+                        specialAttack.added = true;
+                    }
+                }
             }
             if (target.actor.effects.some(e => e.statuses.has('grappled')) || target.actor.effects.some(e => e.statuses.has('grappling'))) {
                 effectiveParry -= 2;
@@ -1913,6 +1920,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.damage.damageDice += 3;
             }
         }
+        else if (id === 'unexpectedattack') {
+            this.object.unexpectedAttack = true;
+            this.object.defense -= 2;
+            for (const target of Object.values(this.object.targets)) {
+                target.rollData.defense -= 2;
+                target.rollData.parry -= 2;
+                target.rollData.evasion -= 2;
+            }
+        }
         else {
             if (id === 'knockback' || id === 'knockdown') {
                 this.object.cost.initiative += 2;
@@ -1971,6 +1987,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             else {
                 this.object.damage.damageDice -= 3;
+            }
+        }
+        else if (id === 'unexpectedattack') {
+            this.object.unexpectedAttack = false;
+            this.object.defense += 2;
+            for (const target of Object.values(this.object.targets)) {
+                target.rollData.defense += 2;
+                target.rollData.parry += 2;
+                target.rollData.evasion += 2;
             }
         }
         else {
@@ -2134,7 +2159,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     else if (this.object.weaponTags[specialAttack.id] || specialAttack.id === 'flurry') {
                         specialAttack.show = true;
                     }
-                    else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense' || specialAttack.id === 'clash') {
+                    else if (specialAttack.id === 'aim' || specialAttack.id === 'fulldefense' || specialAttack.id === 'clash' || specialAttack.id === 'unexpectedattack') {
                         specialAttack.show = true;
                     }
                     else {
@@ -5573,7 +5598,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'craftProjectType':
-                    if (this.object.craftType === requirementObject.value) {
+                    if (this.object.craftType !== requirementObject.value) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'hasSpecialAttack':
+                    if (!this.object.specialAttacksList.some(attack => attack.added && attack.id === requirementObject.value)) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'missingSpecialAttack':
+                    if (this.object.specialAttacksList.some(attack => attack.added && attack.id === requirementObject.value)) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -7059,6 +7094,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 { id: 'knockdown', name: "Smashing (Knockdown)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1. Knock opponent down', img: 'icons/svg/falling.svg' },
                 { id: 'knockback', name: "Smashing (Knockback)", added: false, show: false, description: 'Cost: 2i and reduce defense by 1.  Knock opponent back 1 range band', img: 'systems/exaltedthird/assets/icons/hammer-drop.svg' },
                 { id: 'impale', name: "Impale", added: false, show: false, description: 'If moved 2 consecutive range bands toward target while mounted.  Deal +5 withering or +3 decisive damage', img: 'systems/exaltedthird/assets/icons/spiked-tail.svg' },
+                { id: 'unexpectedattack', name: "Unexpected Attack", added: false, show: false, description: '-2 To targets Defense', img: 'icons/svg/daze.svg' },
             ];
         }
         if (this.object.charmDiceAdded === undefined) {

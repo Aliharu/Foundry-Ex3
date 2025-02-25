@@ -1321,131 +1321,15 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       ev.preventDefault();
       ev.stopPropagation();
       const target = ev.currentTarget;
-      var itemType = target.dataset.type;
+      let itemType = target.dataset.type;
 
-      let items = game.items.filter(item => item.type === itemType);
-      let archetypeCharms = [];
-      const itemIds = this.actor.items.map(item => {
-        const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
-        const sections = sourceId.split('.'); // Split the sourceId by periods
-        return sections.length > 1 ? sections.pop() : '';
-      }).filter(section => section.trim() !== '');
-      if (itemType === 'charm') {
-        var ability = target.dataset.ability;
-        items = items.filter(charm => charm.system.essence <= this.actor.system.essence.value || charm.system.ability === this.actor.system.details.supernal);
-        const nonAbilityCharms = items.filter(charm => charm.system.charmtype === 'martialarts' || charm.system.charmtype === 'evocation').filter(charm => {
-          if (charm.system.charmtype === 'martialarts') {
-            if (charm.system.parentitemid) {
-              return Object.values(this.actor.items.filter(item => item.type === 'customability' || item.system.abilitytype === 'martialart')).some(martialArt => {
-                const sourceId = martialArt._source?._stats?.compendiumSource || '';
-                const sections = sourceId.split('.');
-                return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points;
-              });
-            }
-            return false;
-          }
-          if (charm.system.charmtype === 'evocation') {
-            if (charm.system.parentitemid) {
-              return itemIds.includes(charm.system.parentitemid);
-            }
-            return false;
-          }
-          return false;
-        });
-        if (this.actor.system.details.exalt === 'exigent') {
-          items = items.filter(charm => charm.system.charmtype === this.actor.system.details.caste.toLowerCase());
-        } else {
-          items = items.filter(charm => charm.system.charmtype === this.actor.system.details.exalt);
-        }
-        archetypeCharms = items.filter(charm => charm.system.archetype.ability);
-        if (ability) {
-          ability = this.actor.charms[ability].list[0]?.system.ability;
-          items = items.filter(charm => charm.system.ability === ability);
-          archetypeCharms = archetypeCharms.filter(charm => {
-            if (charm.system.archetype.ability === "combat") {
-              return ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(ability);
-            }
-            return charm.system.archetype.ability === ability;
-          });
-        }
-        items = items.filter(charm => {
-          if (this.actor.system.attributes[charm.system.ability]) {
-            return charm.system.requirement <= this.actor.system.attributes[charm.system.ability].value + (this.actor.system.attributes[charm.system.ability].upgrade || 0);
-          }
-          if (this.actor.system.abilities[charm.system.ability]) {
-            return charm.system.requirement <= this.actor.system.abilities[charm.system.ability].value;
-          }
-          if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
-            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.ability);
-          }
-          return true;
-        });
-        archetypeCharms = archetypeCharms.filter(charm => charm.system.archetype.ability).filter(charm => {
-          if (charm.system.archetype.ability === "combat") {
-            return charm.system.requirement <= Math.max(this.actor.system.abilities['archery'].value, this.actor.system.abilities['brawl'].value, this.actor.system.abilities['melee'].value, this.actor.system.abilities['thrown'].value, this.actor.system.abilities['war'].value);
-          }
-          if (this.actor.system.attributes[charm.system.archetype.ability]) {
-            return charm.system.requirement <= this.actor.system.attributes[charm.system.archetype.ability].value;
-          }
-          if (this.actor.system.abilities[charm.system.archetype.ability]) {
-            return charm.system.requirement <= this.actor.system.abilities[charm.system.archetype.ability].value;
-          }
-          if (CONFIG.exaltedthird.maidens.includes(charm.system.archetype.ability)) {
-            return charm.system.requirement <= this._getHighestMaidenAbility(charm.system.archetype.ability);
-          }
-          return true;
-        });
-        items = items.concat(nonAbilityCharms);
-      }
-      if (itemType === 'spell') {
-        items = items.filter(spell => {
-          if (spell.system.circle === 'terrestrial' && this.actor.system.settings.sorcerycircle !== 'none') {
-            return true;
-          }
-          if (spell.system.circle === 'celestial' && this.actor.system.settings.sorcerycircle !== 'terrestrial' && this.actor.system.settings.sorcerycircle !== 'none') {
-            return true;
-          }
-          if (spell.system.circle === 'solar' && this.actor.system.settings.sorcerycircle === 'solar') {
-            return true;
-          }
-          if (spell.system.circle === 'ivory' && this.actor.system.settings.necromancycircle !== 'none') {
-            return true;
-          }
-          if (spell.system.circle === 'shadow' && this.actor.system.settings.necromancycircle !== 'ivory' && this.actor.system.settings.necromancycircle !== 'none') {
-            return true;
-          }
-          if (spell.system.circle === 'void' && this.actor.system.settings.necromancycircle === 'void') {
-            return true;
-          }
-          return false;
-        });
-      }
-      if (itemType === 'charm') {
-        items = items.filter(charm => {
-          if (charm.system.numberprerequisites.number > 0) {
-            if (CONFIG.exaltedthird.maidens.includes(charm.system.ability)) {
-              return charm.system.numberprerequisites.number <= this._getMaidenCharmsNumber(charm.system.numberprerequisites.ability);
-            }
-            if (this.actor.items.filter(numberCharm => numberCharm.type === 'charm' && numberCharm.system.ability === charm.system.numberprerequisites.ability).length < charm.system.numberprerequisites.number) {
-              return false;
-            }
-          }
-          return charm.system.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id));
-        });
-        if (archetypeCharms) {
-          archetypeCharms = archetypeCharms.filter(charm => {
-            return !items.includes(charm) && (charm.system.archetype.charmprerequisites.length === 0 || itemIds.includes(charm._id) || charm.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id)));
-          });
-          items = items.concat(archetypeCharms);
-        }
-      }
-      items = items.filter(item => !itemIds.includes(item._id));
+      let items = game.items.filter(item => item.type === itemType && item.system.ability === 'occult' && this.actor.canAquireItem(item));
+      
       for (var item of items) {
         item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
       }
 
       const sectionList = {};
-
       if (itemType === 'spell') {
         var circle = target.dataset.circle;
         if (circle) {
@@ -1491,7 +1375,6 @@ export class ExaltedThirdActorSheet extends ActorSheet {
             }
           }
         }
-
       }
       else {
         for (const charm of items.sort(function (a, b) {

@@ -162,6 +162,171 @@ export class ExaltedThirdActor extends Actor {
     }
   }
 
+  canAquireItem(item) {
+    const itemIds = this.items.map(item => {
+      const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
+      const sections = sourceId.split('.'); // Split the sourceId by periods
+      return sections.length > 1 ? sections.pop() : '';
+    }).filter(section => section.trim() !== '');
+    let charmsList = this.items.filter(item => item.type === 'charm');
+
+    if (itemIds.includes(item._id)) {
+      return false;
+    }
+
+    const itemType = item.type;
+
+    if (itemType !== 'charm' && itemType !== 'spell') {
+      return false;
+    }
+
+    if (itemType === 'charm') {
+      if (!(item.system.essence <= this.system.essence.value || item.system.ability === this.system.details.supernal)) {
+        return false;
+      }
+
+      if (item.system.charmtype === 'martialarts') {
+        if (item.system.parentitemid) {
+          const hasMartialArt = this.items.some(martialArt => {
+            if (martialArt.type !== 'customability' && martialArt.system.abilitytype !== 'martialart') return false;
+            const sourceId = martialArt._source?._stats?.compendiumSource || '';
+            const sections = sourceId.split('.');
+            return sections.includes(item.system.parentitemid) && item.system.requirement <= martialArt.system.points;
+          });
+          if (!hasMartialArt) return false;
+        } else {
+          return false;
+        }
+      }
+      else if (item.system.charmtype === 'evocation') {
+        if (!item.system.parentitemid || !itemIds.includes(item.system.parentitemid)) {
+          return false;
+        }
+      } else {
+        if (this.system.details.exalt === 'exigent' && item.system.charmtype !== this.system.details.caste.toLowerCase()) {
+          return false;
+        }
+
+        if (this.system.details.exalt !== 'exigent' && item.system.charmtype !== this.system.details.exalt) {
+          return false;
+        }
+      }
+
+      let validAbilityRequirement = true;
+      let alternateAbilityRequirementMet = true;
+
+      if (item.system.numberprerequisites.number > 0) {
+        if (item.system.numberprerequisites.ability === "combat") {
+          if (item.system.numberprerequisites.ability === 'physicalAttribute' && (charmsList.filter(numberCharm => ['archery', 'brawl', 'melee', 'thrown', 'war'].includes(numberCharm.system.ability)).length || 0) < item.system.numberprerequisites.number) {
+            validAbilityRequirement = false;
+          }
+        }
+        else if (['physicalAttribute', 'mentalAttribute', 'socialAttribute'].includes(item.system.numberprerequisites.ability)) {
+          if (item.system.numberprerequisites.ability === 'physicalAttribute' && (charmsList.filter(numberCharm => ['strength', 'dexterity', 'stamina'].includes(numberCharm.system.ability)).length || 0) < item.system.numberprerequisites.number) {
+            validAbilityRequirement = false;
+          }
+          if (item.system.numberprerequisites.ability === 'mentalAttribute' && (charmsList.filter(numberCharm => ['intelligence', 'wits', 'perception'].includes(numberCharm.system.ability)).length || 0) < item.system.numberprerequisites.number) {
+            validAbilityRequirement = false;
+          }
+          if (item.system.numberprerequisites.ability === 'socialAttribute' && (charmsList.filter(numberCharm => ['charisma', 'appearance', 'manipulation'].includes(numberCharm.system.ability)).length || 0) < item.system.numberprerequisites.number) {
+            validAbilityRequirement = false;
+          }
+        }
+        else if (CONFIG.exaltedthird.maidens.includes(item.system.ability)) {
+          if (item.system.numberprerequisites.number > this._getMaidenCharmsNumber(item.system.numberprerequisites.ability)) {
+            validAbilityRequirement = false;
+          }
+        } else {
+          const charmCount = this.items.filter(
+            numberCharm => numberCharm.type === 'charm' && numberCharm.system.ability === item.system.numberprerequisites.ability
+          ).length;
+          if (charmCount < item.system.numberprerequisites.number) {
+            validAbilityRequirement = false;
+          }
+        }
+      }
+
+      if (item.system.charmprerequisites.length > 0) {
+        if (!item.system.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id))) {
+          validAbilityRequirement = false;
+        }
+      }
+
+      if (this.system.attributes[item.system.ability] && item.system.requirement > (this.system.attributes[item.system.ability].value + (this.system.attributes[item.system.ability].upgrade || 0))) {
+        validAbilityRequirement = false;
+      }
+
+      if (item.system.ability !== 'martialarts' && this.system.abilities[item.system.ability] && item.system.requirement > this.system.abilities[item.system.ability].value) {
+        validAbilityRequirement = false;
+      }
+
+      if (CONFIG.exaltedthird.maidens.includes(item.system.ability) && item.system.requirement > this._getHighestMaidenAbility(item.system.ability)) {
+        validAbilityRequirement = false;
+      }
+
+      if (validAbilityRequirement) {
+        return true;
+      }
+
+      if (item.system.archetype.ability || item.system.archetype.charmprerequisites.length > 0) {
+        if(item.system.archetype.ability) {
+          if (item.system.archetype.ability === "combat" && item.system.requirement > Math.max(this.system.abilities['archery'].value, this.system.abilities['brawl'].value, this.system.abilities['melee'].value, this.system.abilities['thrown'].value, this.system.abilities['war'].value)) {
+            return false;
+          }
+          if (this.system.attributes[item.system.archetype.ability] && item.system.requirement > this.system.attributes[item.system.archetype.ability].value) {
+            return false;
+          }
+          if (this.system.abilities[item.system.archetype.ability] && item.system.requirement > this.system.abilities[item.system.archetype.ability].value) {
+            return false;
+          }
+          if (CONFIG.exaltedthird.maidens.includes(item.system.archetype.ability) && item.system.requirement > this._getHighestMaidenAbility(item.system.archetype.ability)) {
+            return false;
+          }
+        }
+        if (item.system.archetype.charmprerequisites.length > 0) {
+          if (!item.system.archetype.charmprerequisites.every(prerequisite => itemIds.includes(prerequisite.id))) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+
+
+
+    if (itemType === 'spell') {
+      const circle = item.system.circle;
+      const sorcery = this.system.settings.sorcerycircle;
+      const necromancy = this.system.settings.necromancycircle;
+
+      if (circle === 'terrestrial' && sorcery !== 'none') return true;
+      if (circle === 'celestial' && sorcery !== 'terrestrial' && sorcery !== 'none') return true;
+      if (circle === 'solar' && sorcery === 'solar') return true;
+      if (circle === 'ivory' && necromancy !== 'none') return true;
+      if (circle === 'shadow' && necromancy !== 'ivory' && necromancy !== 'none') return true;
+      if (circle === 'void' && necromancy === 'void') return true;
+
+      return false;
+    }
+
+    return false;
+  }
+
+  _getHighestMaidenAbility(maiden) {
+    const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
+    let highestValue = 0;
+    for (const ability of abilityList) {
+      if ((this.system.abilities[ability]?.value || 0) > highestValue) {
+        highestValue = (this.system.abilities[ability]?.value || 0);
+      }
+    }
+    return highestValue;
+  }
+
+  _getMaidenCharmsNumber(maiden) {
+    return (this.items.filter(numberCharm => numberCharm.type === 'charm' && CONFIG.exaltedthird.maidenabilities[maiden].includes(numberCharm.system.ability)).length || 0)
+  }
+
   spendMotes(moteCost, actorData, motePool = '', muteMotes = 0) {
     let newLevel = actorData.system.anima.level;
     let newValue = actorData.system.anima.value;
@@ -1187,13 +1352,13 @@ export class ExaltedThirdActor extends Actor {
     };
   }
 
-  async restoreHealth(amount, healAggravated=false) {
+  async restoreHealth(amount, healAggravated = false) {
     let bashingLevels = this.system.health.bashing;
     let lethalLevels = this.system.health.lethal;
     let aggravatedLevels = this.system.health.aggravated;
 
     if (amount) {
-      if(healAggravated) {
+      if (healAggravated) {
         if (aggravatedLevels) {
           aggravatedLevels = Math.max(0, aggravatedLevels - amount);
         }
@@ -1215,7 +1380,7 @@ export class ExaltedThirdActor extends Actor {
       [`system.health.bashing`]: bashingLevels,
       [`system.health.lethal`]: lethalLevels,
       [`system.health.aggravated`]: aggravatedLevels,
-  });
+    });
   }
 
   getNpcDiceCapValue(pool) {
