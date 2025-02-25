@@ -6220,10 +6220,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _assembleDicePool(display) {
-        var dicePool = 0;
-        var totalPenalties = this.object.penaltyModifier;
-        var totalIgnorePenalties = this.object.ignorePenalties;
-        var targetAppearanceBonus = this.object.appearanceBonus;
+        let dicePool = 0;
+        let totalPenalties = this.object.penaltyModifier;
+        let totalIgnorePenalties = this.object.ignorePenalties;
+        let targetAppearanceBonus = this.object.appearanceBonus;
 
         if (display && this.object.showTargets && !this.object.target) {
             targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
@@ -6352,7 +6352,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _assembleDamagePool(display) {
         if (display && this.object.showTargets > 1) {
-            return "";
+            return "(Multitarget)";
         }
         let damageDicePool = this.object.damage.damageDice;
         let defense = this.object.defense;
@@ -6360,11 +6360,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let attackSuccesses = this.object.attackSuccesses;
         let targetSpecificDamageMod = this.object.targetSpecificDamageMod;
 
-        if (display && this.object.showTargets && !this.object.target) {
+        if (display && this.object.showTargets === 1) {
             defense = Object.values(this.object.targets)[0].rollData.defense;
             soak = Object.values(this.object.targets)[0].rollData.soak;
             attackSuccesses = Object.values(this.object.targets)[0].rollData.attackSuccesses;
             targetSpecificDamageMod = Object.values(this.object.targets)[0].rollData.damageModifier;
+        }
+
+        if(display && defense > attackSuccesses) {
+            return "0 (Miss)";
         }
 
         if (this.object.damage.stuntToDamage) {
