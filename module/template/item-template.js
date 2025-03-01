@@ -45,6 +45,7 @@ export class ItemCustomAbilityData extends CommonItemData {
 
         return {
             ...commonData,
+            ...customModifier(),
             favored: new fields.BooleanField({ initial: false }),
             points: new fields.NumberField({ initial: 1 }),
             abilitytype: new fields.StringField({ initial: "other" }),
@@ -84,6 +85,7 @@ export class ItemModifierData extends CommonItemData {
             ...commonData,
             formulaKey: new fields.StringField({ initial: "" }),
             value: new fields.NumberField({ initial: 0 }),
+            resettrigger: new fields.StringField({ initial: "" }),
         }
     }
 }
@@ -382,6 +384,7 @@ export class ItemSpellData extends CommonItemData {
             willpower: new fields.NumberField({ initial: 1 }),
             duration: new fields.StringField({ initial: "" }),
             shaping: new fields.BooleanField({ initial: false }),
+            controlspell: new fields.BooleanField({ initial: false }),
         }
     }
 

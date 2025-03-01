@@ -109,14 +109,14 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.formulaKeyPlaceholder = this.item.name.replace(/\s/g, '').toLowerCase();
     context.classifications = CONFIG.exaltedthird.classifications;
     if (itemData.type === 'charm') {
-      if (itemData.system.ability === 'evocation') {
-        for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations)) {
+      if (itemData.system.charmtype === 'evocation') {
+        for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations).sort((a, b) => a.name.localeCompare(b.name))) {
           context.parentItemList[evocation.id] = evocation.name;
         }
         context.showParentItemList = true;
       }
-      if (itemData.system.ability === 'martialarts') {
-        for (const martialArt of game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart')) {
+      if (itemData.system.charmtype === 'martialarts') {
+        for (const martialArt of game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart').sort((a, b) => a.name.localeCompare(b.name))) {
           context.parentItemList[martialArt.id] = martialArt.name;
         }
         context.showParentItemList = true;

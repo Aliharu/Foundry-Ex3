@@ -150,7 +150,8 @@ export class ExaltedThirdItem extends Item {
         renderSheet: undefined,
         system: {
           formulaKey: this.system.custommodifier.key,
-          value: 0
+          value: 0,
+          resettrigger: this.system.custommodifier.resettrigger,
         }
       }
     ]);

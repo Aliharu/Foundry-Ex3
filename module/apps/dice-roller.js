@@ -384,7 +384,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                 }
 
-                if (this.actor.system.settings.rollStunts) {
+                if (this.actor.system.settings.rollStunts && this.object.ability !== 'fever') {
                     this.object.stunt = "one";
                 }
 
@@ -2269,7 +2269,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
         }
-        if (item.system.cost && !item.system.activatable) {
+        if (item.type === 'charm' && !item.system.activatable) {
             if (addCosts) {
                 if (item.system.keywords.toLowerCase().includes('mute')) {
                     this.object.cost.muteMotes += item.system.cost.motes;
@@ -2580,14 +2580,24 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         if (formula.includes('cap')) {
+            const match = formula.match(/^(\d+)\s+cap\s+(\(?.*?\)?)$/);
+
+            if (!match) {
+                console.error("Invalid formula format:", formula);
+                return;
+            }
+
+            const fixedValue = parseInt(match[1], 10); // First number (e.g., 9)
+            const cappedExpression = match[2].trim(); // Expression with parentheses
+
             var split = formula.split(' ');
-            if (rerollFaceMap[split[0]]) {
+            if (rerollFaceMap[fixedValue]) {
                 if (damage) {
-                    this.object.damage.reroll[rerollFaceMap[split[0]]].status = true;
-                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getActorFormulaValue(split[2], opposedCharmActor);
+                    this.object.damage.reroll[rerollFaceMap[fixedValue]].status = true;
+                    this.object.damage.reroll[rerollFaceMap[fixedValue]].cap = this._getActorFormulaValue(cappedExpression, opposedCharmActor);
                 } else {
-                    this.object.damage.reroll[rerollFaceMap[split[0]]].status = true;
-                    this.object.damage.reroll[rerollFaceMap[split[0]]].cap = this._getActorFormulaValue(split[2], opposedCharmActor);
+                    this.object.damage.reroll[rerollFaceMap[fixedValue]].status = true;
+                    this.object.damage.reroll[rerollFaceMap[fixedValue]].cap = this._getActorFormulaValue(cappedExpression, opposedCharmActor);
                 }
             }
         }
@@ -2739,6 +2749,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'craftobjectives') {
             return this.object.objectivesCompleted || 0;
         }
+        if (formula?.toLowerCase() === 'target-defense') {
+            return this.object.defense || 0;
+        }
+        if (formula?.toLowerCase() === 'rangebands') {
+            return {
+                'close': 0,
+                'short': 1,
+                'medium': 2,
+                'long': 3,
+                'extreme': 4,
+            }[this.object.range];
+        }
         if (formula?.toLowerCase() === 'baseinitiative') {
             return this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier;
         }
@@ -2806,6 +2828,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (negativeValue) {
             formulaVal *= -1;
+        }
+        if(formula === 'initiative' || formula === 'willpower') {
+            formulaVal = Math.max(0, formulaVal - this.object.cost[formula]);
         }
         return formulaVal;
     }
@@ -4688,8 +4713,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             "mode": 0
                         },
                         {
-                            "key": `system.dicemodifier.value`,
-                            "value": this.object.poison.penalty * -1,
+                            "key": `system.penaltymodifier.value`,
+                            "value": this.object.poison.penalty,
                             "mode": 2
                         },
                     ]
@@ -5141,6 +5166,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'specificDieFaceEffect-damage':
                                         this._getSpecificDiceTriggerFormula(cleanedValue, triggerActor, 'damageRoll');
                                         break;
+                                    case 'setStaticDecisiveDamage':
+                                        this.object.damage.damageDice = this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        this.object.damage.decisiveDamageType = 'static';
+                                        break;
+                                    case 'multiDecisiveSplit':
+                                        this.object.damage.decisiveDamageCalculation = bonus.effect;
+                                        break;
                                     case 'ignoreSoak':
                                     case 'ignoreHardness':
                                     case 'postSoakDamage':
@@ -5158,6 +5190,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'attackDealsDamage':
                                     case 'stuntToDamage':
                                     case 'halfPostSoakDamage':
+                                    case 'rollAccuracyOnce':
                                         this.object.damage[bonus.effect] = (typeof cleanedValue === "boolean" ? cleanedValue : true);
                                         break;
                                     case 'doubleThresholdSuccesses-damage':
@@ -5609,6 +5642,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'missingSpecialAttack':
                     if (this.object.specialAttacksList.some(attack => attack.added && attack.id === requirementObject.value)) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'isControlSpell':
+                    if(charm?.type !== 'spell') {
+                        fufillsRequirements = false;
+                    } else if(charm.system.controlspell !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -6351,9 +6391,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _assembleDamagePool(display) {
-        if (display && this.object.showTargets > 1) {
-            return "(Multitarget)";
-        }
         let damageDicePool = this.object.damage.damageDice;
         let defense = this.object.defense;
         let soak = this.object.soak;
@@ -6390,7 +6427,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 else if (this.object.damage.decisiveDamageCalculation === 'half') {
                     damageDicePool = Math.ceil(damageDicePool / 2);
                 }
-                else {
+                else if(this.object.damage.decisiveDamageCalculation === 'thirds') {
                     damageDicePool = Math.ceil(damageDicePool / 3);
                 }
             }

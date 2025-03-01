@@ -180,6 +180,7 @@ export function customModifier() {
         custommodifier: new fields.SchemaField({
             key: new fields.StringField({ initial: "" }),
             name: new fields.StringField({ initial: "" }),
+            resettrigger: new fields.StringField({ initial: "" }),
         }),
     };
 }

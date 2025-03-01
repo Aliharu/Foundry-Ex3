@@ -1,7 +1,7 @@
 <div class="flex-center">
     <div class="resource-label">{{localize "Ex3.Modifier"}} (Created when added to Actor)</div>
 </div>
-<div class="grid grid-2col flex-group-center">
+<div class="grid grid-3col flex-group-center">
     <div>
         <label class="resource-label">{{localize "Ex3.Key"}}</label>
         <div>
@@ -13,5 +13,11 @@
         <div>
             <input name="system.custommodifier.name" type="text" value="{{system.custommodifier.name}}" placeholder="Name of Modifier">
         </div>
+    </div>
+    <div>
+        <div class="resource-label">{{localize "Ex3.ResetTrigger"}}</div>
+        <select name="system.custommodifier.resettrigger" data-type="String">
+            {{selectOptions selects.endTriggers selected=system.custommodifier.resettrigger localize=true}}
+        </select>
     </div>
 </div>

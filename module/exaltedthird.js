@@ -329,7 +329,7 @@ async function handleSocket({ type, id, data, actorId, itemData = null, crasherI
       }
       if (type === 'addMultiOpposingCharms') {
         game.rollForm.addMultiOpposedBonuses(data);
-      } else if(type === 'addOpposingCharm') {
+      } else if (type === 'addOpposingCharm') {
         game.rollForm.addOpposingCharm(data);
       } else {
         game.rollForm.addOpposingRoll(data);
@@ -737,7 +737,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           actorData.system.grapplecontrolrounds.value -= 1;
         }
         actorData.system.dontresetonslaught = false;
-        const startTurnItems = actorData.items.filter((item) => item.system.active && item.system.endtrigger === 'startturn');
+        const startTurnItems = actorData.items.filter((item) => (item.system.active && item.system.endtrigger === 'startturn') || (item.type === 'modifier' && item.system.resettrigger === 'startturn'));
         for (const item of startTurnItems) {
           item.system.active = false;
           if (item.type === 'charm') {
@@ -751,6 +751,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
                 actorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
               }
             }
+          }
+          if (item.type === 'modifier') {
+            item.system.value = 0;
           }
           for (const effect of currentCombatant.actor.allApplicableEffects()) {
             if (effect._sourceName === item.name && effect.system.activatewithparentitem) {
@@ -830,7 +833,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
         if (previousActorData.system.battlegroup) {
           previousActorData.system.commandbonus.value = 0;
         }
-        const endTurnItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endturn');
+        const endTurnItems = previousActorData.items.filter((item) => (item.system.active && item.system.endtrigger === 'endturn') || (item.type === 'modifier' && item.system.resettrigger === 'endturn'));
         for (const item of endTurnItems) {
           item.system.active = false;
           if (item.type === 'charm') {
@@ -844,6 +847,9 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
                 previousActorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
               }
             }
+          }
+          if (item.type === 'modifier') {
+            item.system.value = 0;
           }
           for (const effect of previousCombatant.actor.allApplicableEffects()) {
             if (effect._sourceName === item.name && effect.system.activatewithparentitem) {
@@ -871,7 +877,7 @@ Hooks.on("deleteCombat", (entity, deleted) => {
   for (const combatant of entity.combatants) {
     if (combatant?.actor) {
       const previousActorData = foundry.utils.duplicate(combatant.actor);
-      const endSceneItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene');
+      const endSceneItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene' || (item.type === 'modifier' && item.system.resettrigger === 'endscene'));
       if (endSceneItems?.length) {
         for (const item of endSceneItems) {
           item.system.active = false;
@@ -886,6 +892,9 @@ Hooks.on("deleteCombat", (entity, deleted) => {
                 previousActorData.system.motes.peripheral.committed -= item.system.cost.commitmotes;
               }
             }
+          }
+          if (item.type === 'modifier') {
+            item.system.value = 0;
           }
           for (const effect of combatant.actor.allApplicableEffects()) {
             if (effect._sourceName === item.name && effect.system.activatewithparentitem) {

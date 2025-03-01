@@ -1644,11 +1644,13 @@ exaltedthird.booleanTriggers = [
   'doubleRolledDamage',
   'doublePreRolledDamage',
   'doubleThresholdSuccesses-damage',
+  'rerollFailed-damage',
   'resetInit',
   'attackDealsDamage',
   'gainInitiative',
   'stuntToDamage',
   'halfPostSoakDamage',
+  'rollAccuracyOnce',
   'ignoreLegendarySize',
   'smaEnlightenment',
   'targetIsCrashed',
@@ -1663,7 +1665,8 @@ exaltedthird.booleanTriggers = [
   'attackUnblockable',
   'attackUndodgeable',
   'attackClash',
-  'targetIsBattlegroup'
+  'targetIsBattlegroup',
+  'isControlSpell'
 ];
 
 exaltedthird.bonusTypes = {
@@ -1714,6 +1717,7 @@ exaltedthird.bonusTypes = {
       attackClash: "Ex3.AttackClash",
       setRange: "Ex3.SetRange",
       ignoreLegendarySize: "Ex3.IgnoreLegendarySize",
+      rollAccuracyOnce: "Ex3.RollAccuracyOnce",
     }
   },
   damage: {
@@ -1757,7 +1761,9 @@ exaltedthird.bonusTypes = {
       maxAttackInitiativeGain: "Ex3.MaxAttackInitiativeGain",
       maxInitiativeGain: "Ex3.MaxInitiativeGain",
       stuntToDamage: "Ex3.StuntToDamage",
-      halfPostSoakDamage: "Ex3.HalfPostSoakDamage"
+      halfPostSoakDamage: "Ex3.HalfPostSoakDamage",
+      multiDecisiveSplit: "Ex3.MultiDecisiveSplit",
+      setStaticDecisiveDamage: "Ex3.SetStaticDecisiveDamage"
     }
   },
   spend: {
@@ -2064,7 +2070,8 @@ exaltedthird.requirementTypes = {
       booleanPrompt: "Ex3.YesOrNoPrompt",
       upgradeActive: "Ex3.UpgradeActive",
       currentModeActive: "Ex3.ModeActive",
-      noTriggersActivated: "Ex3.NoTriggersActivated"
+      noTriggersActivated: "Ex3.NoTriggersActivated",
+      isControlSpell: "Ex3.IsControlSpell",
     },
   }
 }
@@ -2354,6 +2361,7 @@ exaltedthird.selects = {
     '': "Ex3.None",
     'all': "Ex3.AllRolls",
     'action': "Ex3.CharacterRolls",
+    'disengage': "Ex3.Disengage",
     'opposedRolls': "Ex3.OpposedRolls",
     'sameAbility': "Ex3.SameAbilityAttribute",
     'whenTargeted': "Ex3.WhenTargetedByRoll",
@@ -2370,6 +2378,7 @@ exaltedthird.selects = {
     'resistance': "Ex3.Resistance",
     'social': "Ex3.Social",
     'sorcery': "Ex3.Sorcery",
+    'rush': "Ex3.Rush"
   },
   previousCharmsPrerequisitesOptions: {
     '': "Ex3.None",
@@ -2599,6 +2608,7 @@ exaltedthird.selects = {
   },
   decisiveSplits: {
     "evenSplit": "Ex3.EvenSplit",
+    "full": "Ex3.Full",
     "half": "Ex3.Half",
     "thirds": "Ex3.Thirds",
   },

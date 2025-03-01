@@ -169,6 +169,12 @@
                     {{selectOptions ../../activeEffectIds selected=bonus.value localize=true
                     blank=''}}
                 </select>
+                {{else ifEquals bonus.effect 'multiDecisiveSplit'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.decisiveSplits selected=bonus.value localize=true
+                    blank=''}}
+                </select>
                 {{else}}
                 {{#isBooleanTrigger bonus.effect}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"

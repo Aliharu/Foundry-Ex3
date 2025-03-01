@@ -397,6 +397,9 @@
     "Ex3.Spell": "Spell",
     "Ex3.Spells": "Spells",
     "Ex3.Circle": "Circle",
+    "Ex3.ControlSpell": "Control Spell",
+    "Ex3.IsControlSpell": "Is Control Spell",
+
     "Ex3.SorceryCircle": "Sorcery Circle",
     "Ex3.NecromancyCircle": "Necromancy Circle",
     "Ex3.Terrestrial": "Terrestrial",
@@ -470,6 +473,8 @@
     "Ex3.MaxAttackInitiativeGain": "Max Attack Initiative Gain",
     "Ex3.StuntToDamage": "Stunt to Damage",
     "Ex3.HalfPostSoakDamage": "Half Post Soak Damage",
+    "Ex3.MultiDecisiveSplit": "Multi-Decisive Split",
+    "Ex3.SetStaticDecisiveDamage": "Set Static Decisive Damage",
 
     "Ex3.DivineInspirationTechnique": "Divine Inspiration Technique",
     "Ex3.HolisticMiracleUnderstanding": "Holistic Miracle Understanding",
@@ -497,6 +502,7 @@
     "Ex3.MultiTargetDivide": "Multi Target Divide",
     "Ex3.DamageSuccesses": "Damage Successes",
     "Ex3.InitiativeSuccesses": "Initiative Successes",
+    "Ex3.Full": "Full",
     "Ex3.EvenSplit": "Even Split",
     "Ex3.Half": "Half",
     "Ex3.Thirds": "Thirds",
@@ -545,6 +551,7 @@
     "Ex3.EndScene": "End Scene",
 
     "Ex3.Restriction": "Restriction",
+    "Ex3.ResetTrigger": "Reset Trigger",
     "Ex3.EndTrigger": "End Trigger",
     "Ex3.OncePerScene": "Once per Scene",
     "Ex3.OncePerStory": "Once per Story",
@@ -1444,6 +1451,7 @@
     "Ex3.AnimalLatentAbility": "Animal Latent Ability",
     "Ex3.Submodules": "Submodules",
     "Ex3.Upgrade": "Upgrade",
+    "Ex3.TranspuissantUpgrade": "Transpuissant Upgrade",
     "Ex3.UpgradeActive": "Upgrade Active",
     "Ex3.Upgrades": "Upgrades",
     "Ex3.Repurchases": "Repurchases",
