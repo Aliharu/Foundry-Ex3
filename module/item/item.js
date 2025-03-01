@@ -329,27 +329,39 @@ export class ExaltedThirdItem extends Item {
     if (!this.actor) {
       return;
     }
-    const actorData = await foundry.utils.duplicate(this.actor);
-    await this.spendItemResources(actorData, 1);
-    await this.actor.update(actorData);
-    await this.update({
-      [`flags.exaltedthird.currentIterationsActive`]: (this.flags?.exaltedthird?.currentIterationsActive || 0) + 1,
-    });
+    if (this.type === 'modifier') {
+      await this.update({
+        [`system.value`]: this.system.value + 1,
+      });
+    } else {
+      const actorData = await foundry.utils.duplicate(this.actor);
+      await this.spendItemResources(actorData, 1);
+      await this.actor.update(actorData);
+      await this.update({
+        [`flags.exaltedthird.currentIterationsActive`]: (this.flags?.exaltedthird?.currentIterationsActive || 0) + 1,
+      });
+    }
   }
 
   async decreaseActiations() {
-    const actorData = await foundry.utils.duplicate(this.actor);
-    let charmMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : actorData.system.settings.charmmotepool;
-    if (this.flags?.exaltedthird?.currentIterationsActive === 1) {
-      this.activate();
-    } else {
-      if (this.system.cost.commitmotes > 0) {
-        actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? charmMotePool].committed -= this.system.cost.commitmotes;
-      }
-      await this.actor.update(actorData);
+    if (this.type === 'modifier') {
       await this.update({
-        [`flags.exaltedthird.currentIterationsActive`]: (this.flags?.exaltedthird?.currentIterationsActive || 0) - 1,
+        [`system.value`]: this.system.value - 1,
       });
+    } else {
+      const actorData = await foundry.utils.duplicate(this.actor);
+      let charmMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : actorData.system.settings.charmmotepool;
+      if (this.flags?.exaltedthird?.currentIterationsActive === 1) {
+        this.activate();
+      } else {
+        if (this.system.cost.commitmotes > 0) {
+          actorData.system.motes[this.flags?.exaltedthird?.poolCommitted ?? charmMotePool].committed -= this.system.cost.commitmotes;
+        }
+        await this.actor.update(actorData);
+        await this.update({
+          [`flags.exaltedthird.currentIterationsActive`]: (this.flags?.exaltedthird?.currentIterationsActive || 0) - 1,
+        });
+      }
     }
   }
 

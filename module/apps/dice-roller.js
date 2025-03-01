@@ -1237,7 +1237,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 await this.useOpposingCharms();
             }
             else {
-                if (this.actor) {
+                if (this.actor && (this.object.rollType !== 'damage' && this.object.rollType !== 'damageResults')) {
                     const rollData = this.getSavedRollData();
                     await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
                 }
