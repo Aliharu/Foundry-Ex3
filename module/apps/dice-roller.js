@@ -3910,7 +3910,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}
                 </h4>
                 <div class="dice-tooltip">
                     ${this._getDiceDisplay()}
@@ -4032,7 +4032,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let theContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                     <div class="dice-tooltip">
                         ${this._getDiceDisplay()}
                     </div>
@@ -4091,7 +4091,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         <div class="dice-roll">
             <div class="dice-result">
                 <h4 class="dice-total dice-total-middle">Accuracy Roll</h4>
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                 <div class="dice-tooltip">
                     ${this._getDiceDisplay()}
                 </div>
@@ -4600,7 +4600,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let accuracyContent = '';
         if (this.object.rollType !== 'damage') {
             accuracyContent = `
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                 <div class="dice-tooltip">
                     ${this._getDiceDisplay()}
                 </div>
@@ -6058,7 +6058,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let messageContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} successes</h4>
+                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                     <div class="dice-tooltip">
                         ${this._getDiceDisplay()}
                     </div>

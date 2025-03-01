@@ -1324,7 +1324,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       let itemType = target.dataset.type;
 
       let items = game.items.filter(item => item.type === itemType && item.system.ability === 'occult' && this.actor.canAquireItem(item));
-      
+
       for (var item of items) {
         item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
       }
@@ -1704,34 +1704,24 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       new Importer().render(true);
     });
 
-    html.find('.attack-roll').click(ev => {
-      let itemId = $(ev.target).attr("data-item-id");
+    html.find('.attack-roll').mousedown(ev => {
+      const button = $(ev.target).closest('.attack-roll'); // Ensure we get the button
+      const itemId = button.attr("data-item-id");
+      const attackType = button.attr("data-attack-type");
       let weapon = null;
+
       if (itemId) {
-        weapon = this.actor.items.get($(ev.target).attr("data-item-id"));
+        weapon = this.actor.items.get(itemId);
       }
-      let attackType = $(ev.target).attr("data-attack-type");
 
-      this.actor.actionRoll(
-        {
-          rollType: 'accuracy',
-          attackType: attackType,
-          weapon: weapon?.system
-        }
-      );
+      this.actor.actionRoll({
+        rollType: 'accuracy',
+        attackType: attackType,
+        weapon: weapon?.system
+      });
     });
 
-    html.find('.weapon-icon').click(ev => {
-      ev.stopPropagation();
-      let item = this.actor.items.get($(ev.target.parentElement).attr("data-item-id"));
-      let rollType = $(ev.target.parentElement).attr("data-roll-type");
-      this.actor.actionRoll(
-        {
-          rollType: rollType,
-          weapon: item.system
-        }
-      );
-    });
+
 
     html.find('#anima-up').click(ev => {
       this._updateAnima("up");
