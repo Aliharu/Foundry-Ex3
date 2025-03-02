@@ -1,3 +1,5 @@
+import { getEnritchedHTML } from "../utils/utils.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 const attributeAbilityMap = {
@@ -1657,7 +1659,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             }
             const newItem = foundry.utils.duplicate(item);
             newItem.itemCount = 1;
-            await this.getEnritchedHTML(newItem);
+            await getEnritchedHTML(newItem);
             if (item.type === 'ritual') {
               if (ritualType === 'sorcery') {
                 this.object.character.ritual = newItem;
@@ -1888,7 +1890,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         }
         const newItem = foundry.utils.duplicate(item);
         newItem.itemCount = 1;
-        await this.getEnritchedHTML(newItem);
+        await getEnritchedHTML(newItem);
 
         if (item.type === 'ritual') {
           if (item.system.ritualtype === 'necromancy') {
@@ -2116,7 +2118,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
     items = items.filter(item => !itemIds.includes(item._id));
     for (var item of items) {
-      await this.getEnritchedHTML(item);
+      await getEnritchedHTML(item);
     }
     return items;
   }
@@ -2131,11 +2133,6 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
     return highestValue;
   }
-
-  async getEnritchedHTML(item) {
-    item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
-  }
-
 
   static async saveCharacter(event, target) {
     ChatMessage.create({

@@ -1,4 +1,5 @@
 import { animaTokenMagic, attackSequence } from "../utils/other-modules.js";
+import { getEnritchedHTML, sortDice } from "../utils/utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -334,7 +335,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 risingSunSlash: false,
                 firstMovementoftheDemiurge: false,
             }
-            this.object.triggers = [];
             this.object.effectsOnSpecificDice = [];
             this.object.modifierUpdates = [];
             this.object.spell = "";
@@ -595,7 +595,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
                     charmlist.collapse = (ability !== this.object.ability && ability !== this.object.attribute);
                     for (const charm of charmlist.list) {
-                        this.getEnritchedHTML(charm);
+                        getEnritchedHTML(charm);
                     }
                 }
             }
@@ -1101,9 +1101,42 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return context;
     }
 
-    _onSearchFilter(_event, _query, rgx, html) {
-        console.log("Search");
+    getData() {
+        this.selects = CONFIG.exaltedthird.selects;
+        return {
+            actor: this.actor,
+            selects: this.selects,
+            rollableAbilities: this.rollableAbilities,
+            rollablePools: this.rollablePools,
+            data: this.object,
+        };
     }
+
+    _onRender(context, options) {
+        this.element.querySelectorAll('.collapsable').forEach(element => {
+            element.addEventListener('click', (ev) => {
+                const li = $(ev.currentTarget).next();
+                if (li.attr('id')) {
+                    this.object[li.attr('id')] = li.is(":hidden");
+                }
+                li.toggle("fast");
+            });
+        });
+
+        this.element.querySelectorAll('.charm-list-collapsable').forEach(element => {
+            element.addEventListener('click', (ev) => {
+                const li = $(ev.currentTarget).next();
+                if (li.attr('id')) {
+                    this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
+                }
+                li.toggle("fast");
+            });
+        });
+    }
+
+    // _onSearchFilter(_event, _query, rgx, html) {
+    //     console.log("Search");
+    // }
 
     static async myFormHandler(event, form, formData) {
         const formObject = foundry.utils.expandObject(formData.object);
@@ -1243,7 +1276,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     const rollData = this.getSavedRollData();
                     await this.actor.update({ [`flags.exaltedthird.lastroll`]: rollData });
                 }
-                await this._roll();
+                await this._resolveRoll();
                 if (this.object.intervals <= 0 && this.object.rollType !== 'accuracy' && this.object.rollType !== 'damage') {
                     this.resolve(true);
                     this.close(false);
@@ -1493,10 +1526,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
     }
 
-    async getEnritchedHTML(charm) {
-        charm.enritchedHTML = await TextEditor.enrichHTML(charm.system.description, { async: true, secrets: this.actor.isOwner, relativeTo: charm });
-    }
-
     /**
      * Renders out the Roll form.
      * @returns {Promise} Returns True or False once the Roll or Cancel buttons are pressed.
@@ -1506,7 +1535,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.rollType === 'useOpposingCharms') {
                 await this.useOpposingCharms();
             } else {
-                await this._roll();
+                await this._resolveRoll();
             }
             return true;
         } else {
@@ -1518,6 +1547,118 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.render(true);
             return this.promise;
         }
+    }
+
+    async _resolveRoll() {
+        if (this._isAttackRoll()) {
+            this.object.gainedInitiative = 0;
+            this.object.crashed = false;
+            this.object.targetHit = false;
+            if (this.object.showTargets) {
+                let index = 0;
+                for (const target of Object.values(this.object.targets)) {
+                    this.object.target = target;
+                    this.object.newTargetData = foundry.utils.duplicate(target.actor);
+                    this.object.updateTargetActorData = false;
+                    this.object.updateTargetInitiative = false;
+                    this.object.newTargetInitiative = null;
+                    this.object.targetCombatant = null;
+                    if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
+                        const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
+                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                        if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
+                            this.object.newTargetInitiative = this.object.targetCombatant.initiative;
+                        }
+                    }
+                    this.object.soak = target.rollData.soak;
+                    this.object.shieldInitiative = target.rollData.shieldInitiative;
+                    this.object.hardness = target.rollData.hardness;
+                    this.object.defense = target.rollData.defense;
+                    this.object.defenseType = target.rollData.defenseType;
+                    this.object.attackSuccesses = target.rollData.attackSuccesses;
+                    this.object.targetSpecificDiceMod = target.rollData.diceModifier;
+                    this.object.targetSpecificSuccessMod = target.rollData.successModifier;
+                    this.object.targetSpecificDamageMod = target.rollData.damageModifier;
+                    this.object.isClash = target.rollData.defenseType === 'clash';
+                    await this._attackRoll();
+                    if (this.object.rollAccuracyOnce && this.object.rollType === 'accuracy') {
+                        break;
+                    }
+                }
+            }
+            else {
+                await this._attackRoll();
+            }
+            if (this.object.rollType === 'damageResults') {
+                await this._updateRollerResources();
+            }
+        }
+        else if (this.object.rollType === 'base') {
+            await this._baseRoll();
+        }
+        else if (this.object.hasIntervals) {
+            this.object.intervals -= 1;
+            await this._completeCraftProject();
+            await this._updateRollerResources();
+        }
+        else if (this.object.showTargets && this.object.validTargetRollType) {
+            this.object.hasDifficulty = true;
+            if (this.object.showTargets) {
+                for (const target of Object.values(this.object.targets)) {
+                    this.object.target = target;
+                    this.object.newTargetData = foundry.utils.duplicate(target.actor);
+                    this.object.updateTargetActorData = false;
+                    if (this.object.rollType === 'social') {
+                        this.object.difficulty = target.rollData.resolve;
+                        this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(target.rollData.opposedIntimacy || 0) - parseInt(target.rollData.supportedIntimacy || 0));
+                        this.object.opposedIntimacy = target.rollData.opposedIntimacy;
+                        this.object.supportedIntimacy = target.rollData.supportedIntimacy;
+                        this.object.appearanceBonus = target.rollData.appearanceBonus;
+                    }
+                    else if (this.object.rollType === 'readIntentions') {
+                        this.object.difficulty = target.rollData.guile;
+                    } else {
+                        this.object.difficulty = target.rollData.difficulty;
+                    }
+
+                    await this._abilityRoll();
+                    await this._inflictOnTarget();
+                    if (this.object.updateTargetActorData) {
+                        await this._updateTargetActor();
+                    }
+                    if (this.object.updateTargetInitiative) {
+                        await this._updateTargetInitiative();
+                    }
+                }
+                await this._updateRollerResources();
+            }
+        }
+        else {
+            await this._abilityRoll();
+            await this._inflictOnTarget();
+            await this._updateRollerResources();
+            if (this.object.updateTargetActorData) {
+                await this._updateTargetActor();
+            }
+            if (this.object.updateTargetInitiative) {
+                await this._updateTargetInitiative();
+            }
+        }
+        if (this.object.diceRoll && (this.object.rollType === 'accuracy' || this.object.validOpposingRollType)) {
+            game.socket.emit('system.exaltedthird', {
+                type: 'addOpposingRoll',
+                data: { diceRoll: this.object.diceRoll, diceDisplay: this.object.diceDisplay, total: this.object.diceRollTotal },
+                actorId: this.actor._id,
+            });
+        }
+    }
+
+    async close(deleteMessage = true, options = {}) {
+        this.resolve(false);
+        if (this.messageId && deleteMessage) {
+            game.messages.get(this.messageId)?.delete();
+        }
+        super.close();
     }
 
     static async saveProject() {
@@ -1547,14 +1688,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         this.close();
-    }
-
-    async close(deleteMessage = true, options = {}) {
-        this.resolve(false);
-        if (this.messageId && deleteMessage) {
-            game.messages.get(this.messageId)?.delete();
-        }
-        super.close();
     }
 
     static async saveRoll() {
@@ -1894,7 +2027,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.render();
     }
 
-
     static triggerAddCharm(event, target) {
         event.stopPropagation();
         let li = $(target).parents(".item");
@@ -2118,13 +2250,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.render();
     }
 
-    // static async switchCharmMode(event, target) {
-    //     event.stopPropagation();
-    //     let li = $(target).parents(".item");
-    //     let item = this.actor.items.get(li.data("item-id"));
-    //     await item.switchMode();
-    // }
-
     static enableAddCharms() {
         // this.object.charmList = this.actor.rollcharms;
         for (var [ability, charmlist] of Object.entries(this.object.charmList)) {
@@ -2145,7 +2270,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     charm.charmAdded = false;
                     charm.timesAdded = 0;
                 }
-                this.getEnritchedHTML(charm);
+                getEnritchedHTML(charm);
             }
         }
         if (this._isAttackRoll()) {
@@ -2174,40 +2299,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.addingCharms = !this.object.addingCharms;
         this.render();
     }
-
-    getData() {
-        this.selects = CONFIG.exaltedthird.selects;
-        return {
-            actor: this.actor,
-            selects: this.selects,
-            rollableAbilities: this.rollableAbilities,
-            rollablePools: this.rollablePools,
-            data: this.object,
-        };
-    }
-
-    _onRender(context, options) {
-        this.element.querySelectorAll('.collapsable').forEach(element => {
-            element.addEventListener('click', (ev) => {
-                const li = $(ev.currentTarget).next();
-                if (li.attr('id')) {
-                    this.object[li.attr('id')] = li.is(":hidden");
-                }
-                li.toggle("fast");
-            });
-        });
-
-        this.element.querySelectorAll('.charm-list-collapsable').forEach(element => {
-            element.addEventListener('click', (ev) => {
-                const li = $(ev.currentTarget).next();
-                if (li.attr('id')) {
-                    this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
-                }
-                li.toggle("fast");
-            });
-        });
-    }
-
 
     _autoAddCharm(charm) {
         if (!charm.system.autoaddtorolls) {
@@ -2946,7 +3037,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         else {
             charm.charmAdded = true;
             charm.timesAdded = 1;
-            this.getEnritchedHTML(charm);
+            getEnritchedHTML(charm);
             this.object.opposingCharms.push(charm);
         }
         if (charm.system.diceroller?.opposedbonuses) {
@@ -3017,110 +3108,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this.object.penaltyModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.penaltymodifier, charm.actor, charm);
             this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap, charm.actor, charm);
-        }
-    }
-
-    async _roll() {
-        if (this._isAttackRoll()) {
-            this.object.gainedInitiative = 0;
-            this.object.crashed = false;
-            this.object.targetHit = false;
-            if (this.object.showTargets) {
-                let index = 0;
-                for (const target of Object.values(this.object.targets)) {
-                    this.object.target = target;
-                    this.object.newTargetData = foundry.utils.duplicate(target.actor);
-                    this.object.updateTargetActorData = false;
-                    this.object.updateTargetInitiative = false;
-                    this.object.newTargetInitiative = null;
-                    this.object.targetCombatant = null;
-                    if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
-                        const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
-                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
-                        if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
-                            this.object.newTargetInitiative = this.object.targetCombatant.initiative;
-                        }
-                    }
-                    this.object.soak = target.rollData.soak;
-                    this.object.shieldInitiative = target.rollData.shieldInitiative;
-                    this.object.hardness = target.rollData.hardness;
-                    this.object.defense = target.rollData.defense;
-                    this.object.defenseType = target.rollData.defenseType;
-                    this.object.attackSuccesses = target.rollData.attackSuccesses;
-                    this.object.targetSpecificDiceMod = target.rollData.diceModifier;
-                    this.object.targetSpecificSuccessMod = target.rollData.successModifier;
-                    this.object.targetSpecificDamageMod = target.rollData.damageModifier;
-                    this.object.isClash = target.rollData.defenseType === 'clash';
-                    await this._attackRoll();
-                    if (this.object.rollAccuracyOnce && this.object.rollType === 'accuracy') {
-                        break;
-                    }
-                }
-            }
-            else {
-                await this._attackRoll();
-            }
-            if (this.object.rollType === 'damageResults') {
-                await this._updateRollerResources();
-            }
-        }
-        else if (this.object.rollType === 'base') {
-            await this._baseRoll();
-        }
-        else if (this.object.hasIntervals) {
-            this.object.intervals -= 1;
-            await this._completeCraftProject();
-            await this._updateRollerResources();
-        }
-        else if (this.object.showTargets && this.object.validTargetRollType) {
-            this.object.hasDifficulty = true;
-            if (this.object.showTargets) {
-                for (const target of Object.values(this.object.targets)) {
-                    this.object.target = target;
-                    this.object.newTargetData = foundry.utils.duplicate(target.actor);
-                    this.object.updateTargetActorData = false;
-                    if (this.object.rollType === 'social') {
-                        this.object.difficulty = target.rollData.resolve;
-                        this.object.difficulty = Math.max(0, this.object.difficulty + parseInt(target.rollData.opposedIntimacy || 0) - parseInt(target.rollData.supportedIntimacy || 0));
-                        this.object.opposedIntimacy = target.rollData.opposedIntimacy;
-                        this.object.supportedIntimacy = target.rollData.supportedIntimacy;
-                        this.object.appearanceBonus = target.rollData.appearanceBonus;
-                    }
-                    else if (this.object.rollType === 'readIntentions') {
-                        this.object.difficulty = target.rollData.guile;
-                    } else {
-                        this.object.difficulty = target.rollData.difficulty;
-                    }
-
-                    await this._abilityRoll();
-                    await this._inflictOnTarget();
-                    if (this.object.updateTargetActorData) {
-                        await this._updateTargetActor();
-                    }
-                    if (this.object.updateTargetInitiative) {
-                        await this._updateTargetInitiative();
-                    }
-                }
-                await this._updateRollerResources();
-            }
-        }
-        else {
-            await this._abilityRoll();
-            await this._inflictOnTarget();
-            await this._updateRollerResources();
-            if (this.object.updateTargetActorData) {
-                await this._updateTargetActor();
-            }
-            if (this.object.updateTargetInitiative) {
-                await this._updateTargetInitiative();
-            }
-        }
-        if (this.object.diceRoll && (this.object.rollType === 'accuracy' || this.object.validOpposingRollType)) {
-            game.socket.emit('system.exaltedthird', {
-                type: 'addOpposingRoll',
-                data: { diceRoll: this.object.diceRoll, diceDisplay: this.object.diceDisplay, total: this.object.diceRollTotal },
-                actorId: this.actor._id,
-            });
         }
     }
 
@@ -3271,10 +3258,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // Dovie'andi se tovya sagain.
     async _rollTheDice(dice, diceModifiers, doublesRolled, numbersRerolled) {
-        var total = 0;
-        var tensTriggered = 0;
-        var onesTriggered = 0;
-        var results = null;
+        let total = 0;
+        let tensTriggered = 0;
+        let onesTriggered = 0;
+        let results = null;
         const numbersChart = {
             1: 'one',
             2: 'two',
@@ -3294,17 +3281,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             10: 'tens',
         }
         let rerolls = [];
-        for (var rerollValue in diceModifiers.reroll) {
+        for (let rerollValue in diceModifiers.reroll) {
             if (diceModifiers.reroll[rerollValue].status) {
                 rerolls.push(diceModifiers.reroll[rerollValue].number);
             }
         }
-        var roll = await new Roll(`${dice}d10cs>=${diceModifiers.targetNumber}`).evaluate();
+        let roll = await new Roll(`${dice}d10cs>=${diceModifiers.targetNumber}`).evaluate();
         results = roll.dice[0].results;
         total = roll.total;
         if (rerolls.length > 0) {
             while (results.some(dieResult => (rerolls.includes(dieResult.result) && !dieResult.rerolled && (diceModifiers.reroll[numbersChart[dieResult.result]].cap === 0 || diceModifiers.reroll[numbersChart[dieResult.result]].cap > numbersRerolled[dieResult.result])))) {
-                var toReroll = 0;
+                let toReroll = 0;
                 for (const diceResult of results) {
                     if (!diceResult.rerolled && rerolls.includes(diceResult.result)) {
                         if (diceModifiers.reroll[numbersChart[diceResult.result]].cap === 0 || diceModifiers.reroll[numbersChart[diceResult.result]].cap > numbersRerolled[diceResult.result]) {
@@ -3314,7 +3301,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                     }
                 }
-                var rerollRoll = await new Roll(`${toReroll}d10cs>=${diceModifiers.targetNumber}`).evaluate();
+                let rerollRoll = await new Roll(`${toReroll}d10cs>=${diceModifiers.targetNumber}`).evaluate();
                 results = results.concat(rerollRoll.dice[0].results);
                 total += rerollRoll.total;
             }
@@ -3420,7 +3407,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             total += rerollNumDiceResults.total;
         }
         possibleRerolls = 0;
-        for (const diceResult of this._sortDice(diceRoll)) {
+        for (const diceResult of sortDice(diceRoll)) {
             if (diceModifiers.rerollNumberDescending > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
                 possibleRerolls++;
                 diceResult.rerolled = true;
@@ -3432,7 +3419,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             rerolledDescendingDice += possibleRerolls;
             var rerollNumDiceResults = await this._rollTheDice(descendingDiceToReroll, diceModifiers, doublesRolled, numbersRerolled);
             descendingDiceToReroll = 0
-            for (const diceResult of this._sortDice(rerollNumDiceResults.results, true)) {
+            for (const diceResult of sortDice(rerollNumDiceResults.results, true)) {
                 if (diceModifiers.rerollNumberDescending > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
                     possibleRerolls++;
                     descendingDiceToReroll++;
@@ -3593,7 +3580,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let diceDisplay = "";
         diceRoll.sort((a, b) => a.originalIndex - b.originalIndex);
 
-        for (let dice of this._sortDice(diceRoll)) {
+        for (let dice of sortDice(diceRoll)) {
             if (dice.successCanceled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
             else if (dice.doubled) {
                 diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
@@ -3611,18 +3598,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             diceRoll: diceRoll,
         };
     }
-
-    // _testMacro(rollResult, dice, diceModifiers, doublesRolled, numbersRerolled) {
-    //     let combatant = this._getActorCombatant();
-    //     if (combatant && combatant.initiative != null && combatant.initiative >= 15) {
-    //         this.object.damage.damageDice += this.actor.system.attributes.dexterity;
-    //     }
-    //     else {
-    //         this.object.damage.damageDice += Math.ceil(this.actor.system.attributes.dexterity / 2);
-    //     }
-    //     let { results, roll, total } = rollResult;
-    //     return { results, roll, total };
-    // }
 
     async _baseOrAbilityDieRoll() {
         await this._addTriggerBonuses('beforeRoll');
@@ -4125,6 +4100,41 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         });
     }
 
+    async missAttack() {
+        this.object.thresholdSuccesses = 0;
+        await this._addTriggerBonuses('attackMissed');
+        this.object.missedAttacks++;
+        var messageContent = `
+        <div class="dice-roll">
+            <div class="dice-result">
+                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-total">Attack Missed!</h4>
+            </div>
+        </div>`;
+        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
+        ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: messageContent,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        });
+        if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
+            this.object.rollType = 'damageResults';
+        }
+        // await this._addAttackEffects();
+        // await this._inflictOnTarget();
+        // if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
+        //     await this._updateRollerResources();
+        //     this.close();
+        // }
+        // if (this.object.updateTargetActorData) {
+        //     await this._updateTargetActor();
+        // }
+        // if (this.object.updateTargetInitiative) {
+        //     await this._updateTargetInitiative();
+        // }
+    }
+
     async _damageRoll() {
         await this._addTriggerBonuses('beforeDefense');
         if (this.object.attackSuccesses < this.object.defense) {
@@ -4559,41 +4569,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         await this._inflictOnTarget();
         await this._addAttackEffects();
         attackSequence(this);
-    }
-
-    async missAttack() {
-        this.object.thresholdSuccesses = 0;
-        await this._addTriggerBonuses('attackMissed');
-        this.object.missedAttacks++;
-        var messageContent = `
-        <div class="dice-roll">
-            <div class="dice-result">
-                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
-                <h4 class="dice-total">Attack Missed!</h4>
-            </div>
-        </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        });
-        if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
-            this.object.rollType = 'damageResults';
-        }
-        // await this._addAttackEffects();
-        // await this._inflictOnTarget();
-        // if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
-        //     await this._updateRollerResources();
-        //     this.close();
-        // }
-        // if (this.object.updateTargetActorData) {
-        //     await this._updateTargetActor();
-        // }
-        // if (this.object.updateTargetInitiative) {
-        //     await this._updateTargetInitiative();
-        // }
     }
 
     async _failedDecisive(dice) {
@@ -6827,7 +6802,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return highestAttribute;
     }
 
-
     _getHighestAttributeNumber(attributes, syncedLunar = false) {
         var highestAttributeNumber = 0;
         var highestAttribute = "strength";
@@ -7007,9 +6981,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
             }
-        }
-        if (this.object.triggers === undefined) {
-            this.object.triggers = [];
         }
         if (this.object.damage.threshholdToDamage === undefined) {
             this.object.damage.threshholdToDamage = false;
@@ -7471,17 +7442,4 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object[statusType].push(name);
     }
 
-    _sortDice(diceRoll, ignoreSetting = false) {
-        //ignoreSetting = true will always sort dice
-
-        var sortedDice;
-
-        if (game.settings.get('exaltedthird', 'sortDice') || ignoreSetting === true) {
-            sortedDice = diceRoll.sort((a, b) => b.result - a.result);
-        } else {
-            sortedDice = diceRoll;
-        }
-
-        return sortedDice;
-    }
 }

@@ -79,3 +79,21 @@ export function getNumberFormula(formulaString, actor, item = null) {
     formulaResult = negativeValue ? -formulaResult : formulaResult;
     return formulaResult;
 }
+
+export async function getEnritchedHTML(item) {
+    item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+}
+
+export function sortDice(diceRoll, ignoreSetting = false) {
+    //ignoreSetting = true will always sort dice
+
+    let sortedDice;
+
+    if (game.settings.get('exaltedthird', 'sortDice') || ignoreSetting === true) {
+        sortedDice = diceRoll.sort((a, b) => b.result - a.result);
+    } else {
+        sortedDice = diceRoll;
+    }
+
+    return sortedDice;
+}
