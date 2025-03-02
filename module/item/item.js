@@ -106,7 +106,7 @@ export class ExaltedThirdItem extends Item {
         }
       }
       if (equipped !== this.system.equipped) {
-        // Issues with active effects
+        // Issues with this triggering on fields with active effects
         // if (this.actor) {
         //   const defense = updateData.system.defense ?? this.system.defense;
         //   if(equipped) {
@@ -157,55 +157,9 @@ export class ExaltedThirdItem extends Item {
     ]);
   }
 
-  getImageUrl(type) {
-    if (type === 'intimacy') {
-      return "systems/exaltedthird/assets/icons/hearts.svg";
-    }
-    if (type === 'spell') {
-      return "systems/exaltedthird/assets/icons/magic-swirl.svg";
-    }
-    if (type === 'ritual') {
-      return "icons/svg/book.svg";
-    }
-    if (type === 'merit') {
-      return "icons/svg/coins.svg"
-    }
-    if (type === 'weapon') {
-      return "icons/svg/sword.svg";
-    }
-    if (type === 'armor') {
-      return "systems/exaltedthird/assets/icons/breastplate.svg";
-    }
-    if (type === 'charm' || type === 'action') {
-      return "icons/svg/explosion.svg";
-    }
-    if (type === 'specialability' || type === 'customability' || type === 'modifier') {
-      return "icons/svg/aura.svg";
-    }
-    if (type === 'customability') {
-      return "systems/exaltedthird/assets/icons/d10.svg";
-    }
-    if (type === 'craftproject') {
-      return "systems/exaltedthird/assets/icons/anvil-impact.svg";
-    }
-    if (type === 'destiny') {
-      return "systems/exaltedthird/assets/icons/spy.svg";
-    }
-    if (type === 'shape') {
-      return "icons/svg/mystery-man.svg";
-    }
-    if (type === 'martialart') {
-      return "systems/exaltedthird/assets/icons/punch-blast.svg";
-    }
-    if (type === 'craft') {
-      return "systems/exaltedthird/assets/icons/anvil-impact.svg";
-    }
-    return "icons/svg/item-bag.svg";
-  }
-
   getSheetBackground() {
     if (this.parent) {
-      return this.parent.getSheetBackground()
+      return this.parent.getSheetBackground();
     }
     return `${game.settings.get("exaltedthird", "sheetStyle")}-background`;
   }

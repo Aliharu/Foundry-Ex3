@@ -1936,7 +1936,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
 
-
                 for (let [rerollKey, rerollValue] of Object.entries(item.system.diceroller.rerollcap)) {
                     if (rerollValue) {
                         this.object.reroll[rerollKey].cap -= this._getFormulaValue(rerollValue);
@@ -2911,7 +2910,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 forumlaActor = this.actor;
             }
         }
-        var negativeValue = false;
+        let negativeValue = false;
         if (formula.includes('-')) {
             formula = formula.replace('-', '');
             negativeValue = true;
@@ -3887,12 +3886,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}
+                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `Success` : 'Successes'}
                 </h4>
                 <div class="dice-tooltip">
                     ${this._getDiceDisplay()}
                 </div>
-                <h4 class="dice-total">${this.object.total} Successes</h4>
+                <h4 class="dice-total">${this.object.diceRollTotal} ${this.object.diceRollTotal === 1 ? `Success` : 'Successes'}</h4>
             </div>
         </div>`;
 
@@ -4121,18 +4120,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
             this.object.rollType = 'damageResults';
         }
-        // await this._addAttackEffects();
-        // await this._inflictOnTarget();
-        // if (!this.object.showTargets || this.object.missedAttacks >= this.object.showTargets) {
-        //     await this._updateRollerResources();
-        //     this.close();
-        // }
-        // if (this.object.updateTargetActorData) {
-        //     await this._updateTargetActor();
-        // }
-        // if (this.object.updateTargetInitiative) {
-        //     await this._updateTargetInitiative();
-        // }
     }
 
     async _damageRoll() {
@@ -7438,7 +7425,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         };
     }
 
-    _addStatusEffect(name, statusType = "addStatuses", value = 0) {
+    _addStatusEffect(name, statusType = "addStatuses") {
         this.object[statusType].push(name);
     }
 
