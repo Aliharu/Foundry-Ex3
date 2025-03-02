@@ -1,5 +1,6 @@
 import RollForm from "../apps/dice-roller.js";
-import { animaTokenMagic } from "../apps/dice-roller.js";
+import { animaTokenMagic } from "../utils/other-modules.js";
+
 import Importer from "../apps/importer.js";
 import Prophecy from "../apps/prophecy.js";
 import TraitSelector from "../apps/trait-selector.js";

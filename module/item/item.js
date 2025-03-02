@@ -1,4 +1,4 @@
-import { animaTokenMagic } from "../apps/dice-roller.js";
+import { animaTokenMagic } from "../utils/other-modules.js";
 import { getNumberFormula } from "../utils/utils.js";
 
 /**
