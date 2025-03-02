@@ -186,3 +186,120 @@ export async function animaTokenMagic(actor, newAnimaValue) {
         }
     }
 }
+
+export function attackSequence(diceRollerObject) {
+    const actorToken = diceRollerObject._getActorToken();
+    if (game.modules.get("sequencer")?.active && diceRollerObject.object.target && actorToken && game.settings.get("exaltedthird", "attackEffects")) {
+        if (diceRollerObject.object.attackEffectPreset !== 'none') {
+            let effectsMap = {
+                'arrow': 'jb2a.arrow.physical.white.01.05ft',
+                'bite': 'jb2a.bite.400px.red',
+                'brawl': 'jb2a.flurry_of_blows.physical.blue',
+                'claws': 'jb2a.claws.400px.red',
+                'fireball': 'jb2a.fireball.beam.orange',
+                'firebreath': 'jb2a.breath_weapons.fire.line.orange',
+                'flamepiece': 'jb2a.bullet.01.orange.05ft',
+                'glaive': 'jb2a.glaive.melee.01.white.5',
+                'goremaul': 'jb2a.maul.melee.standard.white',
+                'greatsaxe': 'jb2a.greataxe.melee.standard.white',
+                'greatsword': 'jb2a.greatsword.melee.standard.white',
+                'handaxe': 'jb2a.handaxe.melee.standard.white',
+                'lightning': 'jb2a.chain_lightning.primary.blue.05ft',
+                'quarterstaff': 'jb2a.quarterstaff.melee.01.white.3',
+                'rapier': 'jb2a.rapier.melee.01.white.4',
+                'scimitar': 'jb2a.scimitar.melee.01.white.0',
+                'shortsword': 'jb2a.shortsword.melee.01.white.0',
+                'spear': 'jb2a.spear.melee.01.white.2',
+                'sword': 'jb2a.sword.melee.01.white.4',
+                'throwdagger': 'jb2a.dagger.throw.01.white.15ft',
+            }
+
+            switch (diceRollerObject.object.attackEffectPreset) {
+                case 'fireball':
+                    new Sequence()
+                        // .effect()
+                        // .file('animated-spell-effects-cartoon.fire.118')
+                        // .atLocation(actorToken)
+                        // .delay(300)
+                        .effect()
+                        .file(effectsMap[diceRollerObject.object.attackEffectPreset])
+                        .atLocation(actorToken)
+                        .stretchTo(diceRollerObject.object.target)
+                        .effect()
+                        .file("jb2a.fireball.explosion.orange")
+                        .atLocation(diceRollerObject.object.target)
+                        .delay(2100)
+                        .effect()
+                        .file("jb2a.ground_cracks.orange.01")
+                        .atLocation(diceRollerObject.object.target)
+                        .belowTokens()
+                        .scaleIn(0.5, 150, { ease: "easeOutExpo" })
+                        .duration(5000)
+                        .fadeOut(3250, { ease: "easeInSine" })
+                        .name("Fireball_Impact")
+                        .delay(2300)
+                        .waitUntilFinished(-3250)
+                        .effect()
+                        .file("jb2a.impact.ground_crack.still_frame.01")
+                        .atLocation(diceRollerObject.object.target)
+                        .belowTokens()
+                        .fadeIn(300, { ease: "easeInSine" })
+                        .play();
+                    break;
+                case 'flamepiece':
+                    new Sequence()
+                        .effect()
+                        .file(effectsMap[diceRollerObject.object.attackEffectPreset])
+                        .atLocation(actorToken)
+                        .stretchTo(diceRollerObject.object.target)
+                        .waitUntilFinished(-500)
+                        .effect()
+                        .file("jb2a.impact.010.orange")
+                        .atLocation(diceRollerObject.object.target)
+                        .play()
+                    break;
+                case 'goremaul':
+                    new Sequence()
+                        .effect()
+                        .file(effectsMap[diceRollerObject.object.attackEffectPreset])
+                        .atLocation(actorToken)
+                        .stretchTo(diceRollerObject.object.target)
+                        .waitUntilFinished(-1100)
+                        .effect()
+                        .file("jb2a.impact.ground_crack.orange")
+                        .atLocation(diceRollerObject.object.target)
+                        .scale(0.5)
+                        .belowTokens()
+                        .play();
+                    break;
+                case 'none':
+                    break;
+                default:
+                    new Sequence()
+                        .effect()
+                        .file(effectsMap[diceRollerObject.object.attackEffectPreset])
+                        .atLocation(actorToken)
+                        .stretchTo(diceRollerObject.object.target)
+                        .play()
+                    break;
+            }
+        }
+        else if (diceRollerObject.object.attackEffect) {
+            new Sequence()
+                .effect()
+                .file(diceRollerObject.object.attackEffect)
+                .atLocation(actorToken)
+                .stretchTo(diceRollerObject.object.target)
+                .play()
+        }
+    }
+    if (diceRollerObject.object.weaponMacro) {
+        let macro = new Function(diceRollerObject.object.weaponMacro);
+        try {
+            macro.call(diceRollerObject);
+        } catch (e) {
+            ui.notifications.error(`<p>There was an error in your macro syntax for the weapon macro:</p><pre>${e.message}</pre><p>See the console (F12) for details</p>`);
+            console.error(e);
+        }
+    }
+}
