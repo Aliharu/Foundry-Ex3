@@ -1839,6 +1839,7 @@ exaltedthird.bonusTypes = {
       otherEffect: "Ex3.OtherEffect",
       baseInitiativeModifier: "Ex3.BaseInitiativeModifier",
       updateModifier: "Ex3.UpdateModifier",
+      addSpecialAttack: "Ex3.AddSpecialAttack"
     }
   },
   defense: {

@@ -402,8 +402,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.poison = data.weapon.poison;
                     this.object.targetStat = data.weapon.targetstat;
                     if (this.actor.type === 'character') {
-                        this.object.attribute = data.weapon.attribute || this._getHighestAttribute(this.actor.system.attributes);
-                        this.object.ability = data.weapon.ability || "archery";
+                        this.object.attribute = data.weapon.attribute;
+                        this.object.ability = data.weapon.ability;
                     }
                     if (this.object.attackType === 'withering' || this.actor.type === "npc" || (!data.weapon.ability && !data.weapon.attribute)) {
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
@@ -2037,9 +2037,18 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         event.stopPropagation();
         let li = $(target).parents(".item");
         let id = li.data("item-id");
-        for (var specialAttack of this.object.specialAttacksList) {
+        this._enableSpecialAttack(id);
+        this.render();
+    }
+
+    _enableSpecialAttack(id) {
+        for (let specialAttack of this.object.specialAttacksList) {
             if (specialAttack.id === id) {
+                if (specialAttack.added) {
+                    return;
+                }
                 specialAttack.added = true;
+                specialAttack.show = true;
             }
         }
         if (id === 'aim') {
@@ -2099,7 +2108,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this.object.triggerSelfDefensePenalty += 1;
         }
-        this.render();
     }
 
     static removeSpecialAttack(event, target) {
@@ -2275,7 +2283,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this._isAttackRoll()) {
             this.object.showSpecialAttacks = true;
             if (this.object.rollType !== 'gambit') {
-                for (var specialAttack of this.object.specialAttacksList) {
+                for (let specialAttack of this.object.specialAttacksList) {
                     if ((specialAttack.id === 'knockback' || specialAttack.id === 'knockdown') && this.object.weaponTags['smashing']) {
                         specialAttack.show = true;
                     }
@@ -2921,7 +2929,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (negativeValue) {
             formulaVal *= -1;
         }
-        if(formula === 'initiative' || formula === 'willpower') {
+        if (formula === 'initiative' || formula === 'willpower') {
             formulaVal = Math.max(0, formulaVal - this.object.cost[formula]);
         }
         return formulaVal;
@@ -4884,7 +4892,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 }
                                 switch (bonus.effect) {
                                     case 'diceModifier':
-                                        if(this.object.rollType === 'useOpposingCharms') {
+                                        if (this.object.rollType === 'useOpposingCharms') {
                                             this.object.addOppose.addedBonus.dice += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         } else {
                                             this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
@@ -5282,6 +5290,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'updateModifier':
                                         this._getModifierFormula(bonus.value, triggerActor, charm);
                                         break;
+
+                                    case 'addSpecialAttack':
+                                        this._enableSpecialAttack(bonus.value);
+                                        break;
                                 }
                             }
                         }
@@ -5616,9 +5628,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'isControlSpell':
-                    if(charm?.type !== 'spell') {
+                    if (charm?.type !== 'spell') {
                         fufillsRequirements = false;
-                    } else if(charm.system.controlspell !== cleanedValue) {
+                    } else if (charm.system.controlspell !== cleanedValue) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -5836,7 +5848,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.newTargetData.system.health.lethal = 0;
                     this.object.newTargetData.system.health.aggravated = 0;
                     characterDamage -= remainingHealth;
-                    remainingHealth = totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
+                    remainingHealth = Math.max(0, totalHealth - 1) - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal - this.object.newTargetData.system.health.aggravated;
                     this.object.newTargetData.system.size.value -= 1;
                 }
             }
@@ -5865,7 +5877,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             while (remainingHealth <= damage && targetSize > 0) {
                 sizeDamaged++;
                 damage -= remainingHealth;
-                remainingHealth = totalHealth;
+                remainingHealth = Math.max(0, totalHealth - 1);
                 targetSize -= 1;
             }
         }
@@ -6239,6 +6251,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
         }
 
+        if (display && this.object.showTargets === 1) {
+            dicePool = Object.values(this.object.targets)[0].rollData.diceModifier;
+        }
+
         if (this.actor.type === 'character') {
             if (this.actor.system.attributes[this.object.attribute]) {
                 dicePool += (this.actor.system.attributes[this.object.attribute]?.value || 0) + (this.actor.system.attributes[this.object.attribute]?.upgrade || 0);
@@ -6374,7 +6390,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             targetSpecificDamageMod = Object.values(this.object.targets)[0].rollData.damageModifier;
         }
 
-        if(display && defense > attackSuccesses) {
+        if (display && defense > attackSuccesses) {
             return "0 (Miss)";
         }
 
@@ -6397,7 +6413,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 else if (this.object.damage.decisiveDamageCalculation === 'half') {
                     damageDicePool = Math.ceil(damageDicePool / 2);
                 }
-                else if(this.object.damage.decisiveDamageCalculation === 'thirds') {
+                else if (this.object.damage.decisiveDamageCalculation === 'thirds') {
                     damageDicePool = Math.ceil(damageDicePool / 3);
                 }
             }

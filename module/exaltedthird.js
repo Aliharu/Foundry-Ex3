@@ -1874,7 +1874,7 @@ async function dealHealthDamage(actor, damageValue, damageType) {
       actorData.system.health.lethal = 0;
       actorData.system.health.aggravated = 0;
       damageValue -= remainingHealth;
-      remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+      remainingHealth =  Math.max(0, totalHealth - 1) - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
       actorData.system.size.value -= 1;
       sizeDamaged++;
     }

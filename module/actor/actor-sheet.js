@@ -2278,7 +2278,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           };
           healthData.levels.zero.value = result.zero.value;
 
-          let tempHealthRemoval = Math.max(0, healthData.levels.temp.value - parseInt(result.temp.value));
+          let tempHealthRemoval = Math.max(0, healthData.levels.temp.value - parseInt(result.temp?.value || 0));
 
           if (!this.actor.system.battlegroup) {
             healthData.levels.temp.value = result.temp.value;

@@ -175,6 +175,12 @@
                     {{selectOptions ../../selects.decisiveSplits selected=bonus.value localize=true
                     blank=''}}
                 </select>
+                {{else ifEquals bonus.effect 'addSpecialAttack'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../selects.specialAttacks selected=bonus.value localize=true
+                    blank=''}}
+                </select>
                 {{else}}
                 {{#isBooleanTrigger bonus.effect}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.value"
