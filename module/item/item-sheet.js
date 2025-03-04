@@ -108,6 +108,8 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     context.requirementTypes = CONFIG.exaltedthird.requirementTypes;
     context.formulaKeyPlaceholder = this.item.name.replace(/\s/g, '').toLowerCase();
     context.classifications = CONFIG.exaltedthird.classifications;
+    context.attributes = CONFIG.exaltedthird.attributes;
+    context.abilities = CONFIG.exaltedthird.abilities;
     if (itemData.type === 'charm') {
       if (itemData.system.charmtype === 'evocation') {
         for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations).sort((a, b) => a.name.localeCompare(b.name))) {

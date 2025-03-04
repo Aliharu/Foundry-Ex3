@@ -974,6 +974,7 @@ exaltedthird.armortags = {
   "buoyant": "Buoyant",
   "concealable": "Concealable",
   "silent": "Silent",
+  "special": "Special",
 };
 
 exaltedthird.martialarts = [
@@ -2021,6 +2022,8 @@ exaltedthird.requirementTypes = {
       craftProjectType: "Ex3.CraftProjectType",
       hasSpecialAttack: "Ex3.HasSpecialAttack",
       missingSpecialAttack: "Ex3.MissingSpecialAttack",
+      attribute: "Ex3.Attribute",
+      ability: "Ex3.Ability",
     },
   },
   character: {

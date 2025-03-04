@@ -317,6 +317,16 @@
                     data-type="String">
                     {{selectOptions ../../selects.specialAttacks selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'attribute'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../attributes selected=requirement.value localize=true blank=''}}
+                </select>
+                {{else ifEquals requirement.requirement 'ability'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
+                    data-type="String">
+                    {{selectOptions ../../abilities selected=requirement.value localize=true blank=''}}
+                </select>
                 {{else}}
                 {{#isBooleanTrigger requirement.requirement}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"

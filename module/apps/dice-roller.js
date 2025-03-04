@@ -416,7 +416,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     this.object.damage.damageDice += 4;
                                 }
                                 else {
-                                    this.object.damage.damageDice += (this.actor.system.attributes[data.weapon.damageattribute]?.value || 0);
+                                    this.object.damage.damageDice += (this.actor.system.attributes[data.weapon.damageattribute]?.value || 0) + (this.actor.system.attributes[data.weapon.damageattribute]?.upgrade || 0);
                                 }
                             }
                         }
@@ -5345,6 +5345,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         if (this.object.rollType.toLowerCase() !== requirementObject.value) {
                             fufillsRequirements = false;
                         }
+                    }
+                    break;
+                case 'ability':
+                    if (this.actor.type === 'character' && this.object.ability !== requirementObject.value) {
+                        fufillsRequirements = false;
+                    }
+                    break;
+                case 'attribute':
+                    if (this.actor.type === 'character' && this.object.attribute !== requirementObject.value) {
+                        fufillsRequirements = false;
                     }
                     break;
                 case 'charmFunctionType':

@@ -39,7 +39,6 @@
                         {{selectOptions selects.demons selected=system.details.creaturesubtype localize=true}}
                     </select></h1>
                 {{/ifEquals}}
-
                 {{#ifEquals system.creaturetype 'exalt'}}
                 <h1 class="charname"> <select name="system.details.exalt" data-type="String">
                         {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
@@ -58,6 +57,9 @@
                 <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
                         {{selectOptions selects.wyldCreatures selected=system.details.creaturesubtype localize=true}}
                     </select></h1>
+                {{/ifEquals}}
+                {{#ifEquals system.creaturetype 'other'}}
+                <h1 class="charname"><input name="system.details.creaturesubtype" type="text" value="{{system.details.creaturesubtype}}" /></h1>
                 {{/ifEquals}}
             </div>
             {{> systems/exaltedthird/templates/actor/header-exalt-data.html}}
