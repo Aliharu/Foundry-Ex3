@@ -339,6 +339,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.modifierUpdates = [];
             this.object.spell = "";
             this.object.shipTrait = "maneuverability";
+            this.object.stuntAttribute = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -1071,6 +1072,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         return {
             actor: this.actor,
+            enableStuntAttribute: (this.actor.type === 'character' && this.actor.system.details.exalt === "lunar") || this.actor.system.lunarform?.enabled,
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
@@ -6527,7 +6529,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         return Math.min(10, this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value);
                     }
                     if (this.actor.system.details.exalt === "lunar") {
-                        return `${this.actor.system.attributes[this.object.attribute].value} - ${this.actor.system.attributes[this.object.attribute].value + this._getHighestAttributeNumber(this.actor.system.attributes, true)}`;
+                        return this.actor.system.attributes[this.object.attribute].value + (this.actor.system.attributes[this.object.stuntAttribute]?.value || 0);
                     }
                     if (this.actor.system.details.exalt === "sidereal") {
                         return `${Math.min(5, Math.max(3, this.actor.system.essence.value))}`;
@@ -6641,8 +6643,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (getLunarFormCharmDice) {
                         return Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
                     }
+                    
                     if (lunarHasExcellency) {
-                        diceCap = `${lunarAttributeValue} - ${lunarAttributeValue + this._getHighestAttributeNumber(lunar.system.attributes, true)}`;
+                        diceCap = lunarAttributeValue + (lunar.system.attributes[this.object.stuntAttribute]?.value || 0);
                     }
                     else {
                         diceCap = '';

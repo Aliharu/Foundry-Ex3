@@ -2142,7 +2142,6 @@ exaltedthird.selects = {
     minuscule: 'Ex3.Minuscule',
   },
   attributes: {
-    '': 'Ex3.None',
     strength: 'Ex3.Strength',
     dexterity: 'Ex3.Dexterity',
     stamina: 'Ex3.Stamina',

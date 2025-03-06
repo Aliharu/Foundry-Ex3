@@ -91,7 +91,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     let characterLunars = {
       '': 'Ex3.None'
     }
-    for (const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id)) {
+    for (const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).sort((a, b) => a.name.localeCompare(b.name))) {
       characterLunars[lunar.id] = lunar.name;
     }
     // context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
