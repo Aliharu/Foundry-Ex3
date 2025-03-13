@@ -333,27 +333,27 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     for (let costString of costArray) {
       costString = costString.trim();
       if (costString.includes('m')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.motes = parseInt(num) || 0;
       }
       if (costString.includes('i')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.initiative = parseInt(num) || 0;
       }
       if (costString.includes('a')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.anima = parseInt(num) || 0;
       }
       if (costString.includes('Penumbra')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.penumbra = parseInt(num) || 0;
       }
       if (costString.includes('wp')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.willpower = parseInt(num) || 0;
       }
       if (costString.includes('hl')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.health = parseInt(num) || 0;
         if (costString.includes('ahl')) {
           charmData.system.cost.healthtype = 'aggravated';
@@ -378,26 +378,26 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         charmData.system.cost.aura = 'wood';
       }
       if (costString.includes('gxp')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.goldxp = parseInt(num) || 0;
       }
       else if (costString.includes('sxp')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.silverxp = parseInt(num) || 0;
       }
       else if (costString.includes('wxp')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.whitexp = parseInt(num) || 0;
       }
       else if (costString.includes('xp')) {
-        var num = costString.replace(/[^0-9]/g, '');
+        let num = costString.replace(/[^0-9]/g, '');
         charmData.system.cost.xp = parseInt(num) || 0;
       }
     }
   }
 
   charmRequirements(requirementArray, charmData) {
-    var abilityRequirement = requirementArray[0].trim().split(' ');
+    let abilityRequirement = requirementArray[0].trim().split(' ');
 
     charmData.system.ability = abilityRequirement[0].replace(' ', '');
     charmData.system.requirement = abilityRequirement[1].replace(/[^0-9]/g, '');
@@ -411,7 +411,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       charmData.system.requirement = abilityRequirement[3].replace(/[^0-9]/g, '');
     }
     if (requirementArray.length === 1) {
-      var essenceRequirement = requirementArray[0].trim().split(' ');
+      let essenceRequirement = requirementArray[0].trim().split(' ');
       if (this.data.charmType === 'evocation') {
         charmData.system.ability = 'evocation';
       }
@@ -421,8 +421,8 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       charmData.system.requirement = 0;
       charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
-    if (requirementArray.length === 2) {
-      var essenceRequirement = requirementArray[1].trim().split(' ');
+    if (requirementArray.length === 2 || requirementArray.length === 3) {
+      let essenceRequirement = requirementArray[requirementArray.length === 2 ? 1 :2].trim().split(' ');
       charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
   }
