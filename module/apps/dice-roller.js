@@ -2908,6 +2908,23 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
         }
+        // TODO
+        // if (formula.includes('opposedrollfaces-')) {
+        //     formula = formula.replace('opposedrollfaces-', '');
+        //     let countRerolledDice = false;
+        //     if (formula.includes('-precedence')) {
+        //         formula = formula.replace('-precedence', '');
+        //         countRerolledDice = true;
+        //     }
+        //     if (!parseInt(formula)) {
+        //         return 0;
+        //     }
+        //     if (this.object.opposingDiceRoll) {
+        //         return this.object.opposingDiceRoll.filter(die => (countRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === parseInt(formula)).length;
+        //     } else {
+        //         return 0;
+        //     }
+        // }
         if (formula.includes('attacker-')) {
             formula = formula.replace('attacker-', '');
             if (this.object.rollType === 'useOpposingCharms') {
@@ -3131,13 +3148,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             if (this.object.steal.initiative.max) {
                 this.object.restore.initiative += this.object.steal.initiative.max;
-                if (this.object.newTargetInitiative) {
-                    this.object.updateTargetInitiative = true;
-                    this.object.newTargetInitiative -= this.object.steal.initiative.max;
-                    if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
-                        this.object.crashed = true;
-                    }
-                }
+                this._subtractTargetInitiative(this.object.steal.initiative.max);
             }
             if (this.object.subtract.motes) {
                 this.object.updateTargetActorData = true;
@@ -3154,13 +3165,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.newTargetData.system.motes.personal.value = Math.max(0, this.object.newTargetData.system.motes.peripheral.value - this.object.subtract.peripheralMotes);
             }
             if (this.object.subtract.initiative) {
-                if (this.object.newTargetInitiative) {
-                    this.object.updateTargetInitiative = true;
-                    this.object.newTargetInitiative -= this.object.subtract.initiative;
-                    if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
-                        this.object.crashed = true;
-                    }
-                }
+                this._subtractTargetInitiative(this.object.subtract.initiative);
             }
             if (this.object.subtract.willpower) {
                 this.object.updateTargetActorData = true;
@@ -4281,13 +4286,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (tensRolled > 0 && this.object.settings.damage.triggerOnTens !== 'none') {
             switch (this.object.settings.damage.triggerOnTens) {
                 case 'subtractTargetInitiative':
-                    if (this.object.newTargetInitiative) {
-                        this.object.updateTargetInitiative = true;
-                        this.object.newTargetInitiative -= tensRolled;
-                        if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
-                            this.object.crashed = true;
-                        }
-                    }
+                    this._subtractTargetInitiative(tensRolled);
                     break;
             }
         }
@@ -4416,18 +4415,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.targetHit = true;
                         if ((this.object.targetCombatant.actor.type !== 'npc' || this.object.targetCombatant.actor.system.battlegroup === false) && (!this.actor.system.battlegroup || this.object.targetCombatant.initiative > 0)) {
                             let newInitative = this.object.newTargetInitiative;
-                            var subractTotal = this.object.damageSuccesses;
+                            let subractTotal = this.object.damageSuccesses;
                             if (game.settings.get("exaltedthird", "automaticWitheringDamage") && this.object.useShieldInitiative && this.object.shieldInitiative > 0) {
-                                var newShieldInitiative = Math.max(0, this.object.shieldInitiative - this.object.damageSuccesses);
+                                let newShieldInitiative = Math.max(0, this.object.shieldInitiative - this.object.damageSuccesses);
                                 this.object.newTargetData.system.shieldinitiative.value = newShieldInitiative;
                                 this.object.updateTargetActorData = true;
                                 subractTotal = Math.max(0, this.object.damageSuccesses - this.object.shieldInitiative);
                             }
                             newInitative -= subractTotal;
-                            var attackerCombatant = this._getActorCombatant();
+                            let attackerCombatant = this._getActorCombatant();
                             if ((newInitative <= 0 && this.object.targetCombatant.initiative > 0)) {
                                 if (this._useLegendarySize('withering')) {
                                     newInitative = 1;
+                                    this.object.crashed = false;
                                 }
                                 else {
                                     this.object.crashed = true;
@@ -5727,13 +5727,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - dieFaceAmount);
                 break;
             case 'subtracttargetinitiative':
-                if (this.object.newTargetInitiative) {
-                    this.object.updateTargetInitiative = true;
-                    this.object.newTargetInitiative -= dieFaceAmount;
-                    if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
-                        this.object.crashed = true;
-                    }
-                }
+                this._subtractTargetInitiative(dieFaceAmount);
                 break;
             case 'subtractdamagesuccesses':
                 if (this.object.rollType === 'damageResults') {
@@ -5878,6 +5872,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
         return 0;
+    }
+
+    _subtractTargetInitiative(amount) {
+        if (this.object.newTargetInitiative) {
+            this.object.updateTargetInitiative = true;
+            this.object.newTargetInitiative -= amount;
+            if ((this.object.newTargetInitiative <= 0 && this.object.targetCombatant.initiative > 0)) {
+                this.object.crashed = true;
+            }
+        }
     }
 
     calculateSizeDamage(damage) {
@@ -7366,11 +7370,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             if (!triggerMissedAttack) {
                                 this.object.gainedInitiative += 1;
                             }
-                            if (this.object.crashed) {
-                                if (!this.object.targetCombatant?.flags.crashRecovery) {
-                                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
-                                }
-                            }
                             if (this.object.damage.maxInitiativeGain) {
                                 this.object.gainedInitiative = Math.min(this.object.damage.maxInitiativeGain, this.object.gainedInitiative);
                             }
@@ -7391,6 +7390,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.characterInitiative -= 5;
                     }
                     this.object.characterInitiative -= (this.object.gambitDifficulty + 1);
+                }
+            }
+            if (this.object.crashed) {
+                if (!this.object.targetCombatant?.flags?.crashRecovery) {
+                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
                 }
             }
             if (this.object.restore.initiative !== 0) {
