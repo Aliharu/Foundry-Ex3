@@ -658,6 +658,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }, {}) ?? {};
             this.object.spells[''] = 'Ex3.None';
             if (data.rollType === 'sorcery') {
+                this.object.previousSorceryMotes = this.actor.system.sorcery.motes?.value || 0;
                 const activeSpell = this.actor.items.filter(item => item.type === 'spell' && item.system.cost).find(spell => spell.system.shaping);
                 if (data.spell) {
                     const fullSpell = this.actor.items.get(data.spell);
@@ -6268,7 +6269,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         if (display && this.object.showTargets === 1) {
-            dicePool = Object.values(this.object.targets)[0].rollData.diceModifier;
+            dicePool = Object.values(this.object.targets)[0]?.rollData.diceModifier || 0;
         }
 
         if (this.actor.type === 'character') {
