@@ -1073,7 +1073,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         return {
             actor: this.actor,
-            enableStuntAttribute: (this.actor.type === 'character' && this.actor.system.details.exalt === "lunar") || this.actor.system.lunarform?.enabled,
+            enableStuntAttribute: (this.actor?.type === 'character' && this.actor?.system.details.exalt === "lunar") || this.actor?.system.lunarform?.enabled,
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
@@ -6561,6 +6561,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
                         return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+                    }
+                    if (this.actor.system.details.caste.toLowerCase() === "knives" || this.actor.system.details.caste.toLowerCase() === 'shala assai') {
+                        return `${3} + [Craft, Medicine, Melee, Survival, or Thrown]`;
                     }
                     if (this.actor.system.details.exalt === "sovereign") {
                         return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
