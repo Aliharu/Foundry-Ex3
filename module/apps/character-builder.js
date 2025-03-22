@@ -2294,6 +2294,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     if (actorData.system.details.exalt === 'exigent') {
       actorData.system.details.caste = this.object.character.exigent;
+      if(this.object.character.exigent) {
+        actorData.system.settings.exigenttype = CONFIG.exaltedthird.exigentTiers[this.object.character.exigent];
+      }
     }
     else {
       actorData.system.details.caste = this.object.character.caste;
@@ -2313,7 +2316,6 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (actorData.system.details.exalt === 'solar' || actorData.system.details.exalt === 'abyssal' || actorData.system.details.exalt === 'infernal') {
       actorData.system.settings.martialartsmastery = 'mastery';
     }
-
     if(this.object.character.exalt === 'alchemical') {
       actorData.system.charmslots.value = this.object.character.charmSlots;
     }
