@@ -340,6 +340,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.spell = "";
             this.object.shipTrait = "maneuverability";
             this.object.stuntAttribute = "";
+            this.object.stuntAbility = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -1074,6 +1075,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return {
             actor: this.actor,
             enableStuntAttribute: (this.actor?.type === 'character' && this.actor?.system.details.exalt === "lunar") || this.actor?.system.lunarform?.enabled,
+            stuntAbilityList : CONFIG.exaltedthird.exigentStuntAbilities[this.actor?.system.details.caste.toLowerCase() || ""] || null,
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
@@ -6559,11 +6561,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (this.actor.system.details.caste.toLowerCase() === "architect") {
                         return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
                     }
-                    if (this.actor.system.details.caste.toLowerCase() === "janest" || this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
-                        return `${this.actor.system.attributes[this.object.attribute].value} + [Relevant of Athletics, Awareness, Presence, Resistance, or Survival]`;
+                    if (this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+                        return this.actor.system.attributes[this.object.attribute].value + (this.actor.system.abilities[this.object.stuntAbility]?.value || 0);
                     }
-                    if (this.actor.system.details.caste.toLowerCase() === "knives" || this.actor.system.details.caste.toLowerCase() === 'shala assai') {
-                        return `${3} + [Craft, Medicine, Melee, Survival, or Thrown]`;
+                    if (this.actor.system.details.caste.toLowerCase() === "knives") {
+                        return 3 + (this.actor.system.abilities[this.object.stuntAbility]?.value || 0);
                     }
                     if (this.actor.system.details.exalt === "sovereign") {
                         return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);

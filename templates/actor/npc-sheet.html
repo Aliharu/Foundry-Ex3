@@ -47,6 +47,10 @@
                 <h1 class="charname"> <select name="system.details.caste" data-type="String">
                         {{selectOptions availableCastes selected=system.details.caste localize=true}}
                     </select></h1>
+                {{else ifEquals system.details.exalt 'exigent'}}
+                <h1 class="charname"> <select name="system.details.caste" data-type="String">
+                        {{selectOptions selects.exigentNames selected=system.details.caste localize=true}}
+                    </select></h1>
                 {{else}}
                 <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
                         placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
@@ -59,7 +63,8 @@
                     </select></h1>
                 {{/ifEquals}}
                 {{#ifEquals system.creaturetype 'other'}}
-                <h1 class="charname"><input name="system.details.creaturesubtype" type="text" value="{{system.details.creaturesubtype}}" /></h1>
+                <h1 class="charname"><input name="system.details.creaturesubtype" type="text"
+                        value="{{system.details.creaturesubtype}}" /></h1>
                 {{/ifEquals}}
             </div>
             {{> systems/exaltedthird/templates/actor/header-exalt-data.html}}
@@ -322,12 +327,13 @@
                     <div>
                         {{localize "Ex3.Items"}}
                     </div>
-                    <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+                    <a class="item-control item-create" title="Create item" data-type="item"><i
+                            class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
                 </div>
                 {{#each actor.gear as |item id|}}
                 <li class="item flexrow item-row" data-item-id="{{item._id}}">
-                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-                            height="24" /></div>
+                    <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
+                            width="24" height="24" /></div>
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">
                         {{#if item.system.activatable}}

@@ -43,6 +43,14 @@
       </select>
     </div>
     {{/if}}
+    {{#ifEquals data.character.exalt 'exigent'}}
+    <div>
+      <div class="resource-label">{{localize "Ex3.Exigent"}}</div>
+      <select name="object.character.exigent" data-type="String">
+        {{selectOptions selects.exigentNames selected=data.character.exigent localize=true blank="Ex3.Other"}}
+      </select>
+    </div>
+    {{/ifEquals}}
     {{/ifEquals}}
     <div>
       <label class="resource-label">{{localize "Ex3.Essence"}} </label>
@@ -52,14 +60,6 @@
       <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
       <input name="object.character.willpower" value="{{data.character.willpower}}" type="number">
     </div>
-    {{#ifEquals data.character.exalt 'exigent'}}
-    <div>
-      <div class="resource-label">{{localize "Ex3.Exigent"}}</div>
-      <select name="object.character.exigent" data-type="String">
-        {{selectOptions selects.exigentNames selected=data.character.exigent localize=true}}
-      </select>
-    </div>
-    {{/ifEquals}}
     {{#ifEquals data.character.exalt 'solar'}}
     <div>
       <div class="resource-label">{{localize "Ex3.Supernal"}}</div>

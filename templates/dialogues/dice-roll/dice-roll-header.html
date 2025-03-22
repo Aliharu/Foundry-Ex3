@@ -8,7 +8,7 @@
 
         {{#if enableStuntAttribute}}
         <select name="object.stuntAttribute" value="{{data.stuntAttribute}}" data-type="String">
-            {{selectOptions selects.attributes selected=data.stuntAttribute localize=true blank='Ex3.StuntAttribute'}}
+            {{selectOptions selects.attributes selected=data.stuntAttribute localize=true blank='Ex3.NoStuntAttribute'}}
         </select>
         {{/if}}
 
@@ -16,6 +16,11 @@
         <select class="update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
             {{selectOptions rollableAbilities selected=data.ability localize=true}}
         </select>
+        {{#if stuntAbilityList}}
+        <select name="object.stuntAbility" value="{{data.stuntAbility}}" data-type="String">
+            {{selectOptions stuntAbilityList selected=data.stuntAbility localize=true blank='Ex3.NoStuntAbility'}}
+        </select>
+        {{/if}}
         {{else}}
         {{#if data.showPool}}
         <label class="resource-label">{{localize "Ex3.Pool"}}</label>
@@ -24,7 +29,7 @@
         </select>
         {{#if enableStuntAttribute}}
         <select name="object.stuntAttribute" value="{{data.stuntAttribute}}" data-type="String">
-            {{selectOptions selects.attributes selected=data.stuntAttribute localize=true blank='Ex3.StuntAttribute'}}
+            {{selectOptions selects.attributes selected=data.stuntAttribute localize=true blank='Ex3.NoStuntAttribute'}}
         </select>
         {{/if}}
         {{/if}}

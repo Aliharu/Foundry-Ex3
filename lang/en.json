@@ -108,6 +108,9 @@
     "Ex3.Liminal": "Liminal",
     "Ex3.Lunar": "Lunar",
     "Ex3.Janest": "Janest",
+    "Ex3.Strawmaiden": "Strawmaiden",
+    "Ex3.Knives": "Knives",
+    "Ex3.ChosenOfKnives": "Chosen of Knives",
     "Ex3.Puppeteer": "Puppeteer",
     "Ex3.Architect": "Architect",
     "Ex3.Sovereign": "Sovereign",
@@ -199,8 +202,9 @@
     "Ex3.PhysicalAttribute": "Physical Attribute",
     "Ex3.MentalAttribute": "Mental Attributes",
     "Ex3.SocialAttribute": "Social Attribute",
-    "Ex3.StuntAttribute": "Stunt Attribute",
-    
+    "Ex3.NoStuntAttribute": "No Stunt Attribute",
+    "Ex3.NoStuntAbility": "No Stunt Ability",
+
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
     "Ex3.ApplySelfDefensePenalty": "Apply Self Defense Penalty",
@@ -1193,7 +1197,8 @@
 
     "Ex3.TargetStat": "Target Stat",
     "Ex3.ExigentType": "Exigent Type",
-
+    "Ex3.CustomExigent": "Custom Exigent",
+    
     "Ex3.UseVirtues": "Use Virtues",
     "Ex3.UseVirtuesDescription": "Allow access to virtues on sheet",
 

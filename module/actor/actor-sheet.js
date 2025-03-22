@@ -85,7 +85,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
 
     context.activeSpell = context.items?.find(item => item.system?.shaping);
-    context.availableCastes = []
+    context.availableCastes = null;
     context.availableCastes = CONFIG.exaltedthird.castes[context.system.details.exalt];
     context.selects = CONFIG.exaltedthird.selects;
     let characterLunars = {
@@ -2151,7 +2151,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
           oxBodyText = 'Ox Body: Two -0 levels';
         }
       }
-      else if (this.actor.system.details.caste.toLowerCase() === 'strawmaiden' || this.actor.system.details.caste.toLowerCase() === 'janest') {
+      else if (this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
         if (this.actor.system.attributes.stamina.value < 3) {
           oxBodyText = 'Ox Body: One -1 level and one -2 level';
         }
@@ -2228,7 +2228,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       templateData.two = this.actor.system.health.levels.two.value;
       templateData.three = this.actor.system.health.levels.three.value;
       templateData.four = this.actor.system.health.levels.four.value;
-      if (this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['janest', 'strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
+      if (this.actor.type === 'character' && (['solar', 'lunar', 'dragonblooded', 'sidereal'].includes(this.actor.system.details.exalt) || ['strawmaiden', 'puppeteer', 'architect', 'sovereign'].includes(this.actor.system.details.caste.toLowerCase()))) {
         templateData.hasOxBody = true;
       }
     }

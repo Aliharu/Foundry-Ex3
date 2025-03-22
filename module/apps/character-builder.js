@@ -35,7 +35,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       this.object.template = 'custom';
       this.object.characterType = 'character';
       this.object.poolNumbers = 'mid';
-      this.object.availableCastes = {};
+      this.object.availableCastes = null;
       this.object.abilityList = CONFIG.exaltedthird.abilities;
       this.object.signList = CONFIG.exaltedthird.siderealSigns;
       this.object.creationData = {
@@ -715,6 +715,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
   onChange() {
     if (CONFIG.exaltedthird.castes[this.object.character.exalt]) {
       this.object.availableCastes = CONFIG.exaltedthird.castes[this.object.character.exalt];
+    } else {
+      this.object.availableCastes = null;
     }
     if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect' || this.object.character.exalt === 'alchemical') {
       this.object.character.showAttributeCharms = true;
@@ -745,7 +747,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       'abyssal',
       'sidereal',
       'dragonblooded',
-      'janest',
+      'strawmaiden',
       'sovereign',
       'architect',
       'puppeteer'
@@ -1013,7 +1015,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         aboveThreeUnFavored += Math.max(0, (ability.value - 3));
       }
 
-      if (this.object.character.exigent !== 'janest') {
+      if (this.object.character.exigent !== 'strawmaiden' && this.object.character.exigent === 'knives') {
         if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
           this.object.creationData.spent.favoredAbilities++;
         }
@@ -1171,9 +1173,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value === 1 && index === 0) {
       if (this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].favored && !this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].caste) {
         ui.notifications.notify(`Favored abilities must have at least 1 dot assigned to them.`);
-      } else {
-        this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = 0;
       }
+      this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = 0;
     }
     else {
       this.object.character[event.currentTarget.dataset.type][event.currentTarget.dataset.name].value = index + 1;
@@ -2497,19 +2498,12 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       actorData.system.abilities[key].value = ability.value;
       actorData.system.abilities[key].favored = ability.favored;
-      if (((Object.entries(ability.charms).length > 0) || (ability.favored && ability.value > 0)) && (CONFIG.exaltedthird.abilityExalts.includes(this.object.character.exalt) || this.object.character.exigent === 'janest')) {
+      if (((Object.entries(ability.charms).length > 0) || (ability.favored && ability.value > 0)) && (CONFIG.exaltedthird.abilityExalts.includes(this.object.character.exalt) || this.object.character.exigent === 'strawmaiden' || this.object.character.exigent === 'knives')) {
         actorData.system.abilities[key].excellency = true;
       }
       if (Object.values(ability.charms).some(charm => charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) {
         actorData.system.abilities[key].excellency = true;
       }
-    }
-    if (this.object.character.exigent === 'janest') {
-      actorData.system.abilities.athletics.excellency = true;
-      actorData.system.abilities.awareness.excellency = true;
-      actorData.system.abilities.presence.excellency = true;
-      actorData.system.abilities.resistance.excellency = true;
-      actorData.system.abilities.survival.excellency = true;
     }
 
     actorData.system.charcreation.physical = this.object.creationData.physical;

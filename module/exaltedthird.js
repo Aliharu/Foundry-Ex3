@@ -1604,6 +1604,49 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
+  }
+
+  if (foundry.utils.isNewerVersion("3.7.7", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 3.7.7, please wait`);
+    for (let actor of game.actors) {
+      try {
+        if (actor.system.details.exalt === 'exigent') {
+          if(actor.system.details.caste.toLowerCase() === 'janest' || actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+            await actor.update({ [`system.details.caste`]: 'strawmaiden' });
+          } else {
+            await actor.update({ [`system.details.caste`]: actor.system.details.caste.toLowerCase() });
+          }
+        }
+        for (let item of actor.items.filter(item => item.type === 'charm')) {
+          try {
+            if(item.system.charmtype === 'janest') {
+              await item.update({
+                [`system.charmtype`]: 'strawmaiden'
+              });
+            }
+          } catch (error) {
+            error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        error.message = `Failed migration for Actor ${actor.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
+
+    for (let item of game.items.filter(item => item.type === 'charm')) {
+      try {
+        if(item.system.charmtype === 'janest') {
+          await item.update({
+            [`system.charmtype`]: 'strawmaiden'
+          });
+        }
+      } catch (error) {
+        error.message = `Failed migration for Item ${item.name}: ${error.message} `;
+        console.error(error);
+      }
+    }
 
     await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
     ui.notifications.notify(`Migration Complete`);
@@ -1874,7 +1917,7 @@ async function dealHealthDamage(actor, damageValue, damageType) {
       actorData.system.health.lethal = 0;
       actorData.system.health.aggravated = 0;
       damageValue -= remainingHealth;
-      remainingHealth =  Math.max(0, totalHealth - 1) - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+      remainingHealth = Math.max(0, totalHealth - 1) - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
       actorData.system.size.value -= 1;
       sizeDamaged++;
     }

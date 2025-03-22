@@ -448,8 +448,8 @@ exaltedthird.exaltcharmtypes = {
   exigent: "Ex3.Exigent",
   getimian: "Ex3.Getimian",
   hearteater: "Ex3.Hearteater",
+  knives: "Ex3.ChosenOfKnives",
   infernal: "Ex3.Infernal",
-  janest: "Ex3.Janest",
   liminal: "Ex3.Liminal",
   lunar: "Ex3.Lunar",
   martialarts: "Ex3.MartialArts",
@@ -457,6 +457,7 @@ exaltedthird.exaltcharmtypes = {
   sidereal: "Ex3.Sidereal",
   solar: "Ex3.Solar",
   sovereign: "Ex3.Sovereign",
+  strawmaiden: "Ex3.Strawmaiden",
   umbral: "Ex3.Umbral",
   universal: "Ex3.Universal",
   other: "Ex3.Other"
@@ -671,12 +672,50 @@ exaltedthird.abilitiesList = [
   'war',
 ];
 
+exaltedthird.exigentStuntAbilities = {
+  janest: {
+    athletics: "Ex3.Athletics",
+    awareness: "Ex3.Awareness",
+    presence: "Ex3.Presence",
+    resistance: "Ex3.Resistance",
+    survival: "Ex3.Survival",
+  },
+  strawmaiden: {
+    athletics: "Ex3.Athletics",
+    awareness: "Ex3.Awareness",
+    presence: "Ex3.Presence",
+    resistance: "Ex3.Resistance",
+    survival: "Ex3.Survival",
+  },
+  "shala assai": {
+    craft: "Ex3.Craft",
+    medicine: "Ex3.Medicine",
+    melee: "Ex3.Melee",
+    survival: "Ex3.Survival",
+    thrown: "Ex3.Thrown",
+  },
+  knives: {
+    craft: "Ex3.Craft",
+    medicine: "Ex3.Medicine",
+    melee: "Ex3.Melee",
+    survival: "Ex3.Survival",
+    thrown: "Ex3.Thrown",
+  },
+}
+
+exaltedthird.exigentTiers = {
+  'strawmaiden': 'celestial',
+  'knives': 'celestial',
+  'puppeteer': 'terrestrial',
+  'architect': 'terrestrial',
+}
+
 exaltedthird.abilityExalts = [
   'solar',
   'sidereal',
   'abyssal',
   'infernal'
-]
+];
 
 exaltedthird.npcpools = {
   command: 'Ex3.Command',
@@ -1067,6 +1106,9 @@ exaltedthird.casteabilitiesmap = {
   ],
   'strawmaiden': [
     'athletics', 'awareness', 'presence', 'resistance', 'survival'
+  ],
+  'knives': [
+    'craft', 'medicine', 'melee', 'survival', 'thrown'
   ],
   'sovereign': [
     'craft', 'integrity', 'performance', 'socialize', 'war'
@@ -2095,6 +2137,7 @@ exaltedthird.selects = {
     dragonblooded: "Ex3.Dragonblooded",
     dreamsouled: "Ex3.DreamSouled",
     exigent: "Ex3.Exigent",
+    customExigent: "Ex3.CustomExigent",
     getimian: "Ex3.Getimian",
     hearteater: "Ex3.Hearteater",
     infernal: "Ex3.Infernal",
@@ -2109,9 +2152,9 @@ exaltedthird.selects = {
   },
   exigentNames: {
     "architect": "Ex3.Architect",
-    "janest": "Ex3.Janest",
+    "knives": "Ex3.ChosenOfKnives",
+    "strawmaiden": "Ex3.Strawmaiden",
     "puppeteer": "Ex3.Puppeteer",
-    "": "Ex3.Other",
   },
   attributePriority: {
     primary: 'Ex3.Primary',

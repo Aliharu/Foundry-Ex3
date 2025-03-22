@@ -157,6 +157,20 @@ export class ExaltedThirdActor extends Actor {
           abilities[key].excellency = true;
         }
       }
+      if(this.system.details.exalt === 'exigent') {
+        if (updateData.system?.settings) {
+          updateData.system.settings.exigenttype = CONFIG.exaltedthird.exigentTiers[caste];
+        }
+        else {
+          updateData.system.settings = {
+            hasaura: CONFIG.exaltedthird.exigentTiers[caste]
+          }
+        }
+        updateData.system.traits = {
+          resonance: this.calculateResonance('exigent', caste),
+          dissonance: this.calculateDissonance('exigent', caste),
+        };
+      }
       updateData.system.attributes = attributes;
       updateData.system.abilities = abilities;
     }
@@ -522,7 +536,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         maxMotes = 11 + essenceLevel;
       }
-      if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      if (exaltType === 'alchemical' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         maxMotes = 11 + (essenceLevel * 2);
       }
     }
@@ -567,7 +581,7 @@ export class ExaltedThirdActor extends Actor {
       if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
         maxMotes = 23 + (essenceLevel * 4);
       }
-      if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
         maxMotes = 27 + (essenceLevel * 6);
       }
     }
@@ -682,7 +696,10 @@ export class ExaltedThirdActor extends Actor {
     await this.update(actorData);
   }
 
-  calculateResonance(exaltType) {
+  calculateResonance(exaltType, caste = null) {
+    if(!caste) {
+      caste = this.system.details.caste?.toLowerCase();
+    }
     let resonance = {
       value: [],
       custom: "",
@@ -703,22 +720,25 @@ export class ExaltedThirdActor extends Actor {
       "soverign": [],
       "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "umbral": ['soulsteel'],
+      "strawmaiden": ['orichalcum', 'greenjade'],
+      "puppeteer": [],
+      "knives": [] 
     }
 
     if (exaltType === 'exigent') {
-      if (this.system.details.caste?.toLowerCase() === 'janest' || this.system.details.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
-        resonance.value = ['orichalcum', 'greenjade'];
-      }
-      if (this.system.details.caste?.toLowerCase() === 'puppeteer') {
-        resonance.value = [];
+      resonance.value = resonanceChart[caste] ?? [];
+      if (caste === 'puppeteer') {
         resonance.custom = 'Artifact Puppets';
+      }
+      if (caste === 'knives') {
+        resonance.custom = 'Artifact Knives';
       }
     }
     else if (exaltType === 'alchemical') {
-      if (this.system.details.caste === 'jade') {
+      if (caste === 'jade') {
         resonance.value = ['blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
-      } else if (this.system.details.caste) {
-        resonance.value = [this.system.details.caste];
+      } else if (caste) {
+        resonance.value = [caste];
       }
     }
     else {
@@ -727,7 +747,10 @@ export class ExaltedThirdActor extends Actor {
     return resonance;
   }
 
-  calculateDissonance(exaltType) {
+  calculateDissonance(exaltType, caste = null) {
+    if(!caste) {
+      caste = this.system.details.caste;
+    }
     let dissonance = {
       value: [],
       custom: "",
@@ -748,15 +771,13 @@ export class ExaltedThirdActor extends Actor {
       "solar": [],
       "soverign": ['orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "umbral": [],
+      "strawmaiden": ['soulsteel'],
+      "puppeteer": ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "knives": ['orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'greenjade', 'redjade', 'whitejade'],
     }
 
     if (exaltType === 'exigent') {
-      if (this.system.details?.caste?.toLowerCase() === 'janest' || this.system.details.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
-        dissonance.value = ['soulsteel'];
-      }
-      if (this.system.details?.caste?.toLowerCase() === 'puppeteer') {
-        dissonance.value = ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'];
-      }
+      dissonance.value = dissonanceChart[caste] ?? [];
     }
     else {
       dissonance.value = dissonanceChart[exaltType] ?? [];

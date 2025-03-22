@@ -38,6 +38,10 @@
         <h1 class="charname"> <select name="system.details.caste" data-type="String">
             {{selectOptions availableCastes selected=system.details.caste localize=true}}
           </select></h1>
+        {{else ifEquals system.details.exalt 'exigent'}}
+        <h1 class="charname"> <select name="system.details.caste" data-type="String">
+          {{selectOptions selects.exigentNames selected=system.details.caste localize=true}}
+        </select></h1>
         {{else}}
         <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
             placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
