@@ -1606,8 +1606,8 @@ Hooks.once("ready", async function () {
     }
   }
 
-  if (foundry.utils.isNewerVersion("3.7.7", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 3.7.7, please wait`);
+  if (foundry.utils.isNewerVersion("3.7.8", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
+    ui.notifications.notify(`Migrating data to 3.7.8, please wait`);
     for (let actor of game.actors) {
       try {
         if (actor.system.details.exalt === 'exigent') {
