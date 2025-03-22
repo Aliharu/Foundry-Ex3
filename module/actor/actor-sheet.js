@@ -2407,7 +2407,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async sheetSettings() {
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': this.actor.system.details.exalt === 'exigent', selects: CONFIG.exaltedthird.selects });
+    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': (this.actor.system.details.exalt === 'exigent' || this.actor.system.details.exalt === 'customExigent'), selects: CONFIG.exaltedthird.selects });
 
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.Settings"), },

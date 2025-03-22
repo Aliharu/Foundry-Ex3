@@ -539,7 +539,7 @@ export class ExaltedThirdActor extends Actor {
       // if (exaltType === 'alchemical' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
       //   maxMotes = 11 + (essenceLevel * 2);
       // }
-      if (exaltType === 'exigent' && (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden')) {
+      if (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden') {
         maxMotes = CONFIG.exaltedthird.exaltMotePools.personal.base['default'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['celestialExigent']);
       } else {
         maxMotes = (CONFIG.exaltedthird.exaltMotePools.personal.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.personal.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier[exaltType] ??  CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['default']));
@@ -589,7 +589,7 @@ export class ExaltedThirdActor extends Actor {
       // if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
       //   maxMotes = 27 + (essenceLevel * 6);
       // }
-      if (exaltType === 'exigent' && (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden')) {
+      if (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden') {
         maxMotes = CONFIG.exaltedthird.exaltMotePools.peripheral.base['celestialExigent'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier['celestialExigent']);
       } else {
         maxMotes = (CONFIG.exaltedthird.exaltMotePools.peripheral.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.peripheral.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier['default']));
