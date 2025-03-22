@@ -504,40 +504,45 @@ export class ExaltedThirdActor extends Actor {
   calculateMaxExaltedMotes(moteType, exaltType, essenceLevel) {
     var maxMotes = 0;
     if (moteType === 'personal') {
-      if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
-        maxMotes = 10 + (essenceLevel * 3);
-      }
-      if (exaltType === 'dragonblooded') {
-        maxMotes = 11 + essenceLevel;
-      }
-      if (exaltType === 'lunar' || exaltType === 'getimian') {
-        maxMotes = 15 + essenceLevel;
-      }
-      if (exaltType === 'sovereign') {
-        maxMotes = 4 + essenceLevel;
-      }
-      if (exaltType === 'exigent') {
-        if (this.system.settings?.exigenttype === 'celestial') {
-          maxMotes = 11 + (essenceLevel * 2);
-        }
-        else {
-          maxMotes = 11 + essenceLevel;
-        }
-      }
-      if (exaltType === 'sidereal') {
-        maxMotes = 9 + (essenceLevel * 2);
-      }
-      if (exaltType === 'liminal') {
-        maxMotes = 10 + (essenceLevel * 3);
-      }
-      if (exaltType === 'other') {
-        maxMotes = 10 * essenceLevel;
-      }
-      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
-        maxMotes = 11 + essenceLevel;
-      }
-      if (exaltType === 'alchemical' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
-        maxMotes = 11 + (essenceLevel * 2);
+      // if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
+      //   maxMotes = 10 + (essenceLevel * 3);
+      // }
+      // if (exaltType === 'dragonblooded') {
+      //   maxMotes = 11 + essenceLevel;
+      // }
+      // if (exaltType === 'lunar' || exaltType === 'getimian') {
+      //   maxMotes = 15 + essenceLevel;
+      // }
+      // if (exaltType === 'sovereign') {
+      //   maxMotes = 4 + essenceLevel;
+      // }
+      // if (exaltType === 'exigent') {
+      //   if (this.system.settings?.exigenttype === 'celestial') {
+      //     maxMotes = 11 + (essenceLevel * 2);
+      //   }
+      //   else {
+      //     maxMotes = 11 + essenceLevel;
+      //   }
+      // }
+      // if (exaltType === 'sidereal') {
+      //   maxMotes = 9 + (essenceLevel * 2);
+      // }
+      // if (exaltType === 'liminal') {
+      //   maxMotes = 10 + (essenceLevel * 3);
+      // }
+      // if (exaltType === 'other') {
+      //   maxMotes = 10 * essenceLevel;
+      // }
+      // if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
+      //   maxMotes = 11 + essenceLevel;
+      // }
+      // if (exaltType === 'alchemical' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      //   maxMotes = 11 + (essenceLevel * 2);
+      // }
+      if (exaltType === 'exigent' && (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden')) {
+        maxMotes = CONFIG.exaltedthird.exaltMotePools.personal.base['default'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['celestialExigent']);
+      } else {
+        maxMotes = (CONFIG.exaltedthird.exaltMotePools.personal.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.personal.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier[exaltType] ??  CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['default']));
       }
     }
     else if (moteType === 'glorymotecap') {
@@ -552,37 +557,42 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     else {
-      if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
-        maxMotes = 26 + (essenceLevel * 7);
-      }
-      if (exaltType === 'dragonblooded') {
-        maxMotes = 23 + (essenceLevel * 4);
-      }
-      if (exaltType === 'lunar') {
-        maxMotes = 34 + (essenceLevel * 4);
-      }
-      if (exaltType === 'sovereign') {
-        maxMotes = 30 + (essenceLevel * 4);
-      }
-      if (exaltType === 'exigent') {
-        if (this.system.settings?.exigenttype === 'celestial') {
-          maxMotes = 27 + (essenceLevel * 6);
-        }
-        else {
-          maxMotes = 23 + (essenceLevel * 4);
-        }
-      }
-      if (exaltType === 'sidereal' || exaltType === 'getimian') {
-        maxMotes = 25 + (essenceLevel * 6);
-      }
-      if (exaltType === 'liminal') {
-        maxMotes = 23 + (essenceLevel * 4);
-      }
-      if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
-        maxMotes = 23 + (essenceLevel * 4);
-      }
-      if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
-        maxMotes = 27 + (essenceLevel * 6);
+      // if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
+      //   maxMotes = 26 + (essenceLevel * 7);
+      // }
+      // if (exaltType === 'dragonblooded') {
+      //   maxMotes = 23 + (essenceLevel * 4);
+      // }
+      // if (exaltType === 'lunar') {
+      //   maxMotes = 34 + (essenceLevel * 4);
+      // }
+      // if (exaltType === 'sovereign') {
+      //   maxMotes = 30 + (essenceLevel * 4);
+      // }
+      // if (exaltType === 'exigent') {
+      //   if (this.system.settings?.exigenttype === 'celestial') {
+      //     maxMotes = 27 + (essenceLevel * 6);
+      //   }
+      //   else {
+      //     maxMotes = 23 + (essenceLevel * 4);
+      //   }
+      // }
+      // if (exaltType === 'sidereal' || exaltType === 'getimian') {
+      //   maxMotes = 25 + (essenceLevel * 6);
+      // }
+      // if (exaltType === 'liminal') {
+      //   maxMotes = 23 + (essenceLevel * 4);
+      // }
+      // if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
+      //   maxMotes = 23 + (essenceLevel * 4);
+      // }
+      // if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
+      //   maxMotes = 27 + (essenceLevel * 6);
+      // }
+      if (exaltType === 'exigent' && (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden')) {
+        maxMotes = CONFIG.exaltedthird.exaltMotePools.peripheral.base['celestialExigent'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier['celestialExigent']);
+      } else {
+        maxMotes = (CONFIG.exaltedthird.exaltMotePools.peripheral.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.peripheral.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier['default']));
       }
     }
     return maxMotes

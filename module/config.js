@@ -866,6 +866,67 @@ exaltedthird.circles = {
   void: 'Ex3.Void',
 };
 
+exaltedthird.exaltMotePools = {
+  personal: {
+    base: {
+      default: 11,
+      solar: 10,
+      abyssal: 10,
+      infernal: 10,
+      lunar: 15,
+      getimian: 15,
+      sovereign: 4,
+      sidereal: 9,
+      liminal: 10,
+      other: 10,
+    },
+    essenceLevelMultiplier: {
+      default: 1,
+      solar: 3,
+      abyssal: 3,
+      infernal: 3,
+      celestialExigent: 2,
+      alchemical: 2,
+      liminal: 3,
+      sidereal: 2,
+      other: 0,
+    }
+  },
+  peripheral: {
+    base: {
+      default: 23,
+      solar: 26,
+      abyssal: 26,
+      infernal: 26,
+      lunar: 34,
+      celestialExigent: 27,
+      hearteater: 27,
+      umbral: 27,
+      alchemical: 27,
+      getimian: 25,
+      sovereign: 30,
+      sidereal: 25,
+      other: 0,
+      mortal: 0,
+    },
+    // Base 4
+    essenceLevelMultiplier: {
+      default: 4,
+      solar: 7,
+      abyssal: 7,
+      infernal: 7,
+      celestialExigent: 6,
+      hearteater: 6,
+      umbral: 6,
+      alchemical: 6,
+      getimian: 6,
+      sidereal: 6,
+      other: 0,
+      mortal: 0,
+    }
+  }
+}
+
 exaltedthird.languages = {
   "lowrealm": "Low Realm",
   "highrealm": "High Realm",
