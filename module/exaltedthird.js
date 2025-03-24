@@ -453,16 +453,26 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 	</button>` : ''}
 </div>`);
 
-  html.find(".header-actions").append(buttonsText);
+  html.querySelector(".header-actions").append(buttonsText);
 
-  html.on("click", ".character-generator-button", () => {
-    new CharacterBuilder({ classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}).render(true);
+  // html.on("click", ".character-generator-button", () => {
+  //   new CharacterBuilder({ classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}).render(true);
+  // });
+
+  html.querySelectorAll('.character-generator-button').forEach(element => {
+    element.addEventListener('click', async (ev) => {
+      new CharacterBuilder({ classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}).render(true);
+    });
   });
 
-  html.on("click", ".template-import-button", () => {
-    game.templateImporter = new TemplateImporter("qc").render(true);
+  html.querySelectorAll('.template-import-button').forEach(element => {
+    element.addEventListener('click', async (ev) => {
+      game.templateImporter = new TemplateImporter("qc").render(true);
+    });
   });
-
+  // html.on("click", ".template-import-button", () => {
+  //   game.templateImporter = new TemplateImporter("qc").render(true);
+  // });
 });
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
@@ -1611,7 +1621,7 @@ Hooks.once("ready", async function () {
     for (let actor of game.actors) {
       try {
         if (actor.system.details.exalt === 'exigent') {
-          if(actor.system.details.caste.toLowerCase() === 'janest' || actor.system.details.caste.toLowerCase() === 'strawmaiden') {
+          if (actor.system.details.caste.toLowerCase() === 'janest' || actor.system.details.caste.toLowerCase() === 'strawmaiden') {
             await actor.update({ [`system.details.caste`]: 'strawmaiden' });
           } else {
             await actor.update({ [`system.details.caste`]: actor.system.details.caste.toLowerCase() });
@@ -1619,7 +1629,7 @@ Hooks.once("ready", async function () {
         }
         for (let item of actor.items.filter(item => item.type === 'charm')) {
           try {
-            if(item.system.charmtype === 'janest') {
+            if (item.system.charmtype === 'janest') {
               await item.update({
                 [`system.charmtype`]: 'strawmaiden'
               });
@@ -1637,7 +1647,7 @@ Hooks.once("ready", async function () {
 
     for (let item of game.items.filter(item => item.type === 'charm')) {
       try {
-        if(item.system.charmtype === 'janest') {
+        if (item.system.charmtype === 'janest') {
           await item.update({
             [`system.charmtype`]: 'strawmaiden'
           });
