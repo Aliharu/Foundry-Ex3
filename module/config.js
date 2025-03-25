@@ -460,6 +460,7 @@ exaltedthird.exaltcharmtypes = {
   strawmaiden: "Ex3.Strawmaiden",
   umbral: "Ex3.Umbral",
   universal: "Ex3.Universal",
+  wounds: "Ex3.ChosenOfWounds",
   other: "Ex3.Other"
 };
 
@@ -671,6 +672,13 @@ exaltedthird.abilitiesList = [
   'thrown',
   'war',
 ];
+
+exaltedthird.attributeExalts = [
+  'alchemical',
+  'architect',
+  'lunar',
+  'wounds',
+]
 
 exaltedthird.exigentStuntAbilities = {
   janest: {
@@ -2216,6 +2224,7 @@ exaltedthird.selects = {
     "knives": "Ex3.ChosenOfKnives",
     "strawmaiden": "Ex3.Strawmaiden",
     "puppeteer": "Ex3.Puppeteer",
+    "wounds": "Ex3.ChosenOfWounds",
   },
   attributePriority: {
     primary: 'Ex3.Primary',

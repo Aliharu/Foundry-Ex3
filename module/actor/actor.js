@@ -732,7 +732,8 @@ export class ExaltedThirdActor extends Actor {
       "umbral": ['soulsteel'],
       "strawmaiden": ['orichalcum', 'greenjade'],
       "puppeteer": [],
-      "knives": [] 
+      "knives": [],
+      "wounds": ['soulsteel', 'redjade'],
     }
 
     if (exaltType === 'exigent') {
@@ -784,6 +785,7 @@ export class ExaltedThirdActor extends Actor {
       "strawmaiden": ['soulsteel'],
       "puppeteer": ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "knives": ['orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'greenjade', 'redjade', 'whitejade'],
+      "wounds": ['adamant', 'orichalcum', 'moonsilver', 'blackjade', 'bluejade', 'whitejade'],
     }
 
     if (exaltType === 'exigent') {

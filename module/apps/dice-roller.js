@@ -6526,7 +6526,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     let abilityValue = 0;
                     let attributeValue = this.actor.system.attributes[this.object.attribute].value;
                     abilityValue = this.actor.getCharacterAbilityValue(this.object.ability);
-                    if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt)) {
+                    if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt) || this.actor.system.details.caste === "wounds") {
                         return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                     }
                     if (this.actor.system.details.exalt === "dragonblooded") {

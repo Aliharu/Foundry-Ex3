@@ -718,7 +718,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     } else {
       this.object.availableCastes = null;
     }
-    if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect' || this.object.character.exalt === 'alchemical') {
+    if (CONFIG.exaltedthird.attributeExalts.includes(this.object.character.exalt) || CONFIG.exaltedthird.attributeExalts.includes(this.object.character.exigent)) {
       this.object.character.showAttributeCharms = true;
       this.object.character.showAbilityCharms = false;
     }
@@ -2818,7 +2818,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
 
 
-    if (this.object.character.exalt === 'lunar' || this.object.character.exigent === 'architect' || this.object.character.exalt === 'alchemical') {
+    if (CONFIG.exaltedthird.attributeExalts.includes(this.object.character.exalt) || CONFIG.exaltedthird.attributeExalts.includes(this.object.character.exigent)) {
       itemData.push({
         type: 'charm',
         img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
