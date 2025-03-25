@@ -17,7 +17,7 @@ export class ExaltedCombatTracker extends CombatTracker {
                 ...t,
                 css: t.css,
                 acted: combatant?.flags.acted,
-                initiativeIconColor: combatant?.actor?.system?.details?.initiativeiconcolor  || '#F9B516',
+                initiativeIconColor: combatant?.actor?.system?.details?.initiativeiconcolor || '#F9B516',
                 initiativeIcon: combatant?.actor?.system?.details?.initiativeicon?.toLowerCase() || 'sun',
                 turnOrderInitiative: ((combatant?.initiative || 0) + (combatant?.actor?.system?.turnorderinitiative.value || 0))
             };
@@ -25,7 +25,7 @@ export class ExaltedCombatTracker extends CombatTracker {
         data.turns.sort(function (a, b) {
             const ad = (a.acted && !a.active) ? 1 : 0;
             const bd = (b.acted && !b.active) ? 1 : 0;
-            if(ad === bd) {
+            if (ad === bd) {
                 return (b.turnOrderInitiative || 0) - (a.turnOrderInitiative || 0);
             }
             return ad - bd;
@@ -35,13 +35,9 @@ export class ExaltedCombatTracker extends CombatTracker {
     }
     activateListeners(html) {
         super.activateListeners(html);
-        html
-            .find(".toggle-turn-over")
-            .on("click", this._toggleTurnOver.bind(this));
+        html.find(".toggle-turn-over").on("click", this._toggleTurnOver.bind(this));
 
-        html
-            .find(".set-character-turn")
-            .on("click", this._setCharacterTurn.bind(this));
+        html.find(".set-character-turn").on("click", this._setCharacterTurn.bind(this));
 
         html.find(".init-combatant-control").click(ev => this._initCombatantControl(ev));
     }

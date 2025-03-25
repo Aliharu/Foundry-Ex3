@@ -417,47 +417,27 @@ $(document).ready(() => {
   });
 });
 
-// Hooks.on("renderSidebarTab", async (app, html) => {
-//   if (app instanceof ActorDirectory)
-//   {
-//     let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`);
-
-//     button.click(ev => {
-//       CharGenWfrp4e.start();
-//     });
-
-//     button.insertAfter(html.find(".header-actions"));
-
-//   }
-// });
-
-Hooks.on("renderItemDirectory", (app, html, data) => {
-  const button = $(`<button class="tempalte-importer"><i class="fas fa-suitcase"> </i>${game.i18n.localize("Ex3.Import")}</button>`);
-  html.find(".header-actions").append(button);
-
-  button.click(ev => {
-    game.templateImporter = new TemplateImporter("charm").render(true);
-  })
-});
-
 Hooks.on("renderActorDirectory", (app, html, data) => {
-  const buttonsText = $(`<div class="flexrow">
-	<button class="character-generator-button button-text">
-		<i class="fas fa-user-plus"></i>
-    ${game.i18n.localize("Ex3.Generate")}
-	</button>
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
 
-	${game.user.isGM ? `<button class="template-import-button button-text">
-		<i class="fas fa-file-import"></i>
-			${game.i18n.localize("Ex3.Import")}
-	</button>` : ''}
-</div>`);
+  const buttonsText = document.createElement("div");
+  buttonsText.classList.add("flexrow");
+
+  const generateButton = document.createElement("button");
+  generateButton.classList.add("character-generator-button", "button-text");
+  generateButton.innerHTML = `<i class="fas fa-user-plus"></i> ${game.i18n.localize("Ex3.Generate")}`;
+  buttonsText.appendChild(generateButton);
+
+  if (game.user.isGM) {
+    const importButton = document.createElement("button");
+    importButton.classList.add("template-import-button", "button-text");
+    importButton.innerHTML = `<i class="fas fa-file-import"></i> ${game.i18n.localize("Ex3.Import")}`;
+    buttonsText.appendChild(importButton);
+  }
 
   html.querySelector(".header-actions").append(buttonsText);
-
-  // html.on("click", ".character-generator-button", () => {
-  //   new CharacterBuilder({ classes: [" exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}).render(true);
-  // });
 
   html.querySelectorAll('.character-generator-button').forEach(element => {
     element.addEventListener('click', async (ev) => {
@@ -470,25 +450,65 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
       game.templateImporter = new TemplateImporter("qc").render(true);
     });
   });
-  // html.on("click", ".template-import-button", () => {
-  //   game.templateImporter = new TemplateImporter("qc").render(true);
-  // });
+});
+
+
+Hooks.on("renderItemDirectory", (app, html, data) => {
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
+  const button = document.createElement("button");
+  button.classList.add("template-import-button");
+  button.innerHTML = `<i class="fas fa-suitcase"></i> ${game.i18n.localize("Ex3.Import")}`;
+  html.querySelector(".header-actions").append(button);
+
+  html.querySelectorAll('.template-import-button').forEach(element => {
+    element.addEventListener('click', async (ev) => {
+      game.templateImporter = new TemplateImporter("charm").render(true);
+    });
+  });
 });
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
-  if (game.user.isGM) {
-    const button = $(`<button class="item-search-button"><i class="fas fa-book-open"></i>${game.i18n.localize("Ex3.CharmCardJournals")}</button>`);
-    html.find(".header-actions").append(button);
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
 
-    button.click(ev => {
-      game.journalCascade = new JournalCascadeGenerator().render(true);
-    })
+  if (game.user.isGM) {
+    const button = document.createElement("button");
+    button.classList.add("charm-card-button");
+    button.innerHTML = `<i class="fas fa-book-open"></i> ${game.i18n.localize("Ex3.CharmCardJournals")}`;
+    html.querySelector(".header-actions").append(button);
+
+    html.querySelectorAll('.charm-card-button').forEach(element => {
+      element.addEventListener('click', async (ev) => {
+        game.journalCascade = new JournalCascadeGenerator().render(true);
+      });
+    });
   }
 });
 
+Hooks.on("renderCompendiumDirectory", (app, html, data) => {
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
+  const button = document.createElement("button");
+  button.classList.add("item-search-button");
+  button.innerHTML = `<i class="fas fa-suitcase"></i> ${game.i18n.localize("Ex3.ItemSearch")}`;
+  html.querySelector(".header-actions").append(button);
+
+  html.querySelectorAll('.item-search-button').forEach(element => {
+    element.addEventListener('click', async (ev) => {
+      game.itemSearch.render(true)
+    });
+  });
+})
+
 Hooks.on("renderChatMessage", (message, html, data) => {
-  html[0]
-    .querySelectorAll('.apply-decisive-damage')
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
+  html.querySelectorAll('.apply-decisive-damage')
     .forEach((target) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
@@ -496,8 +516,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         await applyDecisiveDamage(message);
       });
     });
-  html[0]
-    .querySelectorAll('.apply-withering-damage')
+  html.querySelectorAll('.apply-withering-damage')
     .forEach((target) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
@@ -505,8 +524,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         await applyWitheringDamage(message);
       });
     });
-  html[0]
-    .querySelectorAll('.gain-attack-initiative')
+  html.querySelectorAll('.gain-attack-initiative')
     .forEach((target) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
@@ -514,8 +532,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         await gainAttackInitiative(message);
       });
     });
-  html[0]
-    .querySelectorAll('.resume-character')
+  html.querySelectorAll('.resume-character')
     .forEach((target) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
@@ -523,8 +540,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         new CharacterBuilder({ classes: ["exaltedthird exaltedthird-dialog", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, message.flags?.exaltedthird?.character).render(true);
       });
     });
-  html[0]
-    .querySelectorAll('.add-oppose-charms')
+  html.querySelectorAll('.add-oppose-charms')
     .forEach((target) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
@@ -563,8 +579,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         }
       });
     });
-  html[0]
-    .querySelectorAll('.make-chat-roll')
+  html.querySelectorAll('.make-chat-roll')
     .forEach((target) => {
       target.addEventListener('click', async (ev) => {
         ev.preventDefault();
@@ -1171,12 +1186,18 @@ Hooks.on("chatMessage", (html, content, msg) => {
 });
 
 Hooks.on("renderChatLog", (app, html, data) => {
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
   Chat.addChatListeners(html);
 });
 
 //Martialart, craft, and initiation are deprecated but i don't want to delete them because it will break characters
 Hooks.on("renderDialog", (dialog, html) => {
-  Array.from(html.find("#document-create option")).forEach(i => {
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
+  Array.from(html.querySelectorAll("#document-create option")).forEach(i => {
     if (i.value == "martialart" || i.value == "craft" || i.value == "initiation") {
       i.remove()
     }
@@ -1184,9 +1205,12 @@ Hooks.on("renderDialog", (dialog, html) => {
 });
 
 Hooks.on("renderTokenConfig", (dialog, html) => {
-  Array.from(html.find(".bar-attribute option")).forEach(i => {
-    if (i.value.includes('savedRolls')) {
-      i.remove()
+  if (html instanceof jQuery) {
+    html = $(html)[0];
+  }
+  Array.from(html.querySelectorAll(".bar-attribute option")).forEach(i => {
+    if (i.value.includes("savedRolls")) {
+      i.remove();
     }
   });
 });
@@ -1700,9 +1724,13 @@ Hooks.once("ready", async function () {
   //   await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   // }
 
-  $("#chat-log").on("click", " .item-row", ev => {
-    const li = $(ev.currentTarget).next();
-    li.toggle("fast");
+  document.querySelector("#chat-log").addEventListener("click", ev => {
+    if (ev.target.closest(".item-row")) {
+      const li = ev.target.closest(".item-row").nextElementSibling;
+      if (li) {
+        li.style.display = li.style.display === "none" ? "block" : "none";
+      }
+    }
   });
 
 });
