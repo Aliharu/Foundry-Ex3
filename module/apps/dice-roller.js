@@ -158,6 +158,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.hardness = 0;
             this.object.characterInitiative = 0;
             this.object.gambitDifficulty = 0;
+            this.object.reduceGambitCost = 0;
             this.object.maxCraftXP = 5;
             this.object.craftProjectId = data.craftProjectId || '';
             this.object.standardCraftProjectId = data.standardCraftProjectId || "";
@@ -5241,7 +5242,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.restoreOnTarget[restoreTargetKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'reduceGambitDifficulty':
-                                        this.object.settings.gambitDifficulty -= this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        this.object.gambitDifficulty -= this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        break;
+                                    case 'reduceGambitCost':
+                                        this.object.reduceGambitCost += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'defense':
                                     case 'soak':
@@ -7193,6 +7197,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.hardness === undefined) {
             this.object.hardness = 0;
         }
+        if (this.object.reduceGambitCost === undefined) {
+            this.object.reduceGambitCost = 0;
+        }
         if (this.object.shieldInitiative === undefined) {
             this.object.shieldInitiative = 0;
         }
@@ -7408,10 +7415,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
                 if (this.object.attackType === 'gambit') {
-                    if (this.object.characterInitiative > 0 && (this.object.characterInitiative - this.object.gambitDifficulty - 1 <= 0)) {
+                    const finalGambitCost = Math.max(0, (this.object.gambitDifficulty + 1 - this.object.reduceGambitCost));
+                    if (this.object.characterInitiative > 0 && (this.object.characterInitiative - finalGambitCost <= 0)) {
                         this.object.characterInitiative -= 5;
                     }
-                    this.object.characterInitiative -= (this.object.gambitDifficulty + 1);
+                    this.object.characterInitiative -= finalGambitCost;
                 }
             }
             if (this.object.crashed) {

@@ -1304,6 +1304,8 @@
     "Ex3.DisplayMessage": "Display Message",
     "Ex3.SetDamageType": "Set Damage Type",
     "Ex3.ReduceGambitDifficulty": "Reduce Gambit Difficulty",
+    "Ex3.ReduceCost": "Reduce Cost",
+    "Ex3.ReduceGambitCost": "Reduce Gambit Cost",
     "Ex3.StealMotes": "Steal Motes",
     "Ex3.StealInitiative": "Steal Initiative",
 
