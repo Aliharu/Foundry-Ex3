@@ -664,11 +664,13 @@ export class ExaltedThirdActor extends Actor {
     let specialtyBonus = actorData.system?.settings?.staticcapsettings[type]?.specialty ? 1 : 0;
     if (type === 'parry' || type === 'all') {
       actorData.system.parry.value = Math.ceil((staticAttributeValue + staticAbilityValue + specialtyBonus) / 2);
+      let weaponParryBonus = 0;
       for (let weapon of this.weapons) {
-        if (weapon.system.equipped) {
-          actorData.system.parry.value = actorData.system.parry.value + weapon.system.defense;
+        if (weapon.system.equipped && weapon.system.defense > weaponParryBonus) {
+          weaponParryBonus = weapon.system.defense;
         }
       }
+      actorData.system.parry.value += weaponParryBonus;
     }
     if (type === 'evasion' || type === 'all') {
       var newEvasionValue = Math.ceil((staticAttributeValue + staticAbilityValue + specialtyBonus) / 2);
