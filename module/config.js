@@ -716,6 +716,7 @@ exaltedthird.exigentTiers = {
   'knives': 'celestial',
   'puppeteer': 'terrestrial',
   'architect': 'terrestrial',
+  'wounds': 'celestial',
 }
 
 exaltedthird.abilityExalts = [
