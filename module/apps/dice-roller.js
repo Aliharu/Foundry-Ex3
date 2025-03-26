@@ -72,6 +72,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.restore = {
                 motes: 0,
                 willpower: 0,
+                capBreakingWillpower: 0,
                 health: 0,
                 initiative: 0,
                 grappleControl: 0,
@@ -1075,7 +1076,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return {
             actor: this.actor,
             enableStuntAttribute: (this.actor?.type === 'character' && this.actor?.system.details.exalt === "lunar") || this.actor?.system.lunarform?.enabled,
-            stuntAbilityList : CONFIG.exaltedthird.exigentStuntAbilities[this.actor?.system.details.caste.toLowerCase() || ""] || null,
+            stuntAbilityList: CONFIG.exaltedthird.exigentStuntAbilities[this.actor?.system.details.caste.toLowerCase() || ""] || null,
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
@@ -1883,7 +1884,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
                 this.object.restore.motes -= this._getFormulaValue(item.system.restore.motes);
-                this.object.restore.willpower -= this._getFormulaValue(item.system.restore.willpower);
+                if (item.system.restore.willpoweriscapbreaking) {
+                    this.object.restore.capBreakingWillpower -= this._getFormulaValue(item.system.restore.willpower);
+                } else {
+                    this.object.restore.willpower -= this._getFormulaValue(item.system.restore.willpower);
+                }
                 this.object.restore.health -= this._getFormulaValue(item.system.restore.health);
                 this.object.restore.initiative -= this._getFormulaValue(item.system.restore.initiative);
                 this.object.restore.grappleControl -= this._getFormulaValue(item.system.restore.grapplecontrol);
@@ -2408,7 +2413,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
 
             this.object.restore.motes += this._getFormulaValue(item.system.restore.motes);
-            this.object.restore.willpower += this._getFormulaValue(item.system.restore.willpower);
+            if (item.system.restore.willpoweriscapbreaking) {
+                this.object.restore.capBreakingWillpower += this._getFormulaValue(item.system.restore.willpower);
+            } else {
+                this.object.restore.willpower += this._getFormulaValue(item.system.restore.willpower);
+            }
             this.object.restore.health += this._getFormulaValue(item.system.restore.health);
             this.object.restore.initiative += this._getFormulaValue(item.system.restore.initiative);
             this.object.restore.grappleControl += this._getFormulaValue(item.system.restore.grapplecontrol);
@@ -5210,6 +5219,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'silverxp-restore':
                                     case 'goldxp-restore':
                                     case 'whitexp-restore':
+                                    case 'capBreakingWillpower-restore':
                                         const restoreKey = bonus.effect.replace('-restore', '');
                                         this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
@@ -6653,7 +6663,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (getLunarFormCharmDice) {
                         return Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
                     }
-                    
+
                     if (lunarHasExcellency) {
                         diceCap = lunarAttributeValue + (lunar.system.attributes[this.object.stuntAttribute]?.value || 0);
                     }
@@ -6935,6 +6945,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.restore = {
                 motes: 0,
                 willpower: 0,
+                capBreakingWillpower: 0,
                 health: 0,
                 initiative: 0,
                 silverxp: 0,
@@ -6945,6 +6956,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this.object.restore.grappleControl) {
             this.object.restore.grappleControl = 0;
+        }
+        if (this.object.restore.capBreakingWillpower) {
+            this.object.restore.capBreakingWillpower = 0;
         }
         if (this.object.rerollNumberDescending === undefined) {
             this.object.rerollNumberDescending = 0;
@@ -7329,7 +7343,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         else {
             actorData.system.motes.peripheral.value = Math.min(actorData.system.motes.peripheral.max, actorData.system.motes.peripheral.value + restoreMotes);
         }
-        actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + this.object.restore.willpower);
+        actorData.system.willpower.value = Math.min(Math.max(actorData.system.willpower.max, actorData.system.willpower.value), actorData.system.willpower.value + this.object.restore.willpower);
+        actorData.system.willpower.value += this.object.restore.capBreakingWillpower;
+
         if (this.object.restore.health > 0) {
             const bashingHealed = this.object.restore.health - actorData.system.health.lethal;
             actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - this.object.restore.health);

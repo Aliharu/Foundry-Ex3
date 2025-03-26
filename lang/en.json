@@ -1294,6 +1294,9 @@
 
     "Ex3.RestoreMotes": "Restore Motes",
     "Ex3.RestoreWillpower": "Restore Willpower",
+    "Ex3.RestoreWillpowerCapBreaking": "Restore Willpower (Cap-Breaking)",
+    "Ex3.WPCapBreaking": "WP Cap-Breaking",
+    
     "Ex3.RestoreHealth": "Restore Health",
     "Ex3.RestoreInitiative": "Restore Initiative",
     "Ex3.RestoreGrappleControl": "Restore Grapple Control",

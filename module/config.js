@@ -1900,6 +1900,7 @@ exaltedthird.bonusTypes = {
     bonuses: {
       'motes-restore': "Ex3.RestoreMotes",
       'willpower-restore': "Ex3.RestoreWillpower",
+      'capBreakingWillpower-restore': "Ex3.RestoreWillpowerCapBreaking",
       'health-restore': "Ex3.RestoreHealth",
       'initiative-restore': "Ex3.GainInitiative",
       'silverxp-restore': "Ex3.GainSilverXP",

@@ -224,6 +224,7 @@ export function charmAlternateData() {
         restore: new fields.SchemaField({
             motes: new fields.StringField({ initial: "0" }),
             willpower: new fields.StringField({ initial: "0" }),
+            willpoweriscapbreaking: new fields.BooleanField({ initial: false }),
             anima: new fields.StringField({ initial: "0" }),
             health: new fields.StringField({ initial: "0" }),
             initiative: new fields.StringField({ initial: "0" }),

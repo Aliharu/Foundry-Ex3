@@ -418,7 +418,11 @@ export class ExaltedThirdItem extends Item {
       actorData.system.anima.level = newLevel;
       actorData.system.anima.value = newValue;
     }
-    actorData.system.willpower.value = Math.min(actorData.system.willpower.max, actorData.system.willpower.value + (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount));
+    if(this.system.restore.willpoweriscapbreaking) {
+      actorData.system.willpower.value += (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount);
+    } else {
+      actorData.system.willpower.value = Math.min(Math.max(actorData.system.willpower.max, actorData.system.willpower.value), actorData.system.willpower.value + (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount));
+    }
     if (getNumberFormula(this.system.restore.health, this.actor) > 0) {
       const bashingHealed = (getNumberFormula(this.system.restore.health, this.actor) * activateAmount) - actorData.system.health.lethal;
       actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (getNumberFormula(this.system.restore.health, this.actor) * activateAmount));

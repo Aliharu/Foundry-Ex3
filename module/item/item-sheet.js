@@ -267,17 +267,28 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
     html.on("dragstart", "a.embeded-item-pill", this._onDragEmbeddedItem);
 
-    html.find('.toggle-charm-dice').mousedown(ev => {
-      const itemData = foundry.utils.duplicate(this.item);
-      itemData.system.diceroller.settings.noncharmdice = !itemData.system.diceroller.settings.noncharmdice;
-      this.item.update(itemData);
-    });
-
-
-    html.find('.toggle-charm-successes').mousedown(ev => {
-      const itemData = foundry.utils.duplicate(this.item);
-      itemData.system.diceroller.settings.noncharmsuccesses = !itemData.system.diceroller.settings.noncharmsuccesses;
-      this.item.update(itemData);
+    html.find('.toggle-charm-dice, .toggle-charm-successes, .toggle-cap-breaking').mousedown(ev => {
+      let settingKey, path, currentValue;
+    
+      if (ev.currentTarget.classList.contains('toggle-charm-dice')) {
+        settingKey = 'noncharmdice';
+        path = 'system.diceroller.settings';
+        currentValue = this.item.system.diceroller.settings.noncharmdice;
+      } else if (ev.currentTarget.classList.contains('toggle-charm-successes')) {
+        settingKey = 'noncharmsuccesses';
+        path = 'system.diceroller.settings';
+        currentValue = this.item.system.diceroller.settings.noncharmsuccesses;
+      } else if (ev.currentTarget.classList.contains('toggle-cap-breaking')) {
+        settingKey = 'willpoweriscapbreaking';
+        path = 'system.restore';
+        currentValue = this.item.system.restore.willpoweriscapbreaking;
+      }
+    
+      if (settingKey && path) {
+        this.item.update({
+          [`${path}.${settingKey}`]: !currentValue,
+        });
+      }
     });
 
     html.find('.add-trigger').click(ev => {
@@ -389,6 +400,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
               restore: {
                 motes: result['restore.motes'].value,
                 willpower: result['restore.willpower'].value,
+                willpoweriscapbreaking: result['restore.willpoweriscapbreaking'].checked,
                 anima: result['restore.anima'].value,
                 health: result['restore.health'].value,
                 initiative: result['restore.initiative'].value,
@@ -656,6 +668,11 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     });
     html.find('.non-charm-successes').each(function (i) {
       if (itemData.system.diceroller.settings.noncharmsuccesses) {
+        $(this).css("color", '#F9B516');
+      }
+    });
+    html.find('.cap-breaking-willpower').each(function (i) {
+      if (itemData.system.restore.willpoweriscapbreaking) {
         $(this).css("color", '#F9B516');
       }
     });
