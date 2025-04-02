@@ -814,6 +814,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       obj.update(formData);
     }
   }
+  
   async _onDropActiveEffect(event, data) {
     const effect = await ActiveEffect.implementation.fromDropData(data);
     if ( !this.item.isOwner || !effect
