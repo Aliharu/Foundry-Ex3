@@ -211,6 +211,7 @@ export function charmAlternateData() {
             initiative: new fields.NumberField({ initial: 0 }),
             anima: new fields.NumberField({ initial: 0 }),
             penumbra: new fields.NumberField({ initial: 0 }),
+            limit: new fields.NumberField({ initial: 0 }),
             willpower: new fields.NumberField({ initial: 0 }),
             grapplecontrol: new fields.NumberField({ initial: 0 }),
             aura: new fields.StringField({ initial: "" }),
@@ -229,6 +230,7 @@ export function charmAlternateData() {
             health: new fields.StringField({ initial: "0" }),
             initiative: new fields.StringField({ initial: "0" }),
             grapplecontrol: new fields.StringField({ initial: "0" }),
+            limit: new fields.StringField({ initial: "0" }),
         }),
     };
 }

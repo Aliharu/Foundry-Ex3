@@ -452,6 +452,7 @@ exaltedthird.exaltcharmtypes = {
   infernal: "Ex3.Infernal",
   liminal: "Ex3.Liminal",
   lunar: "Ex3.Lunar",
+  marchlord: "Ex3.MarchLord",
   martialarts: "Ex3.MartialArts",
   puppeteer: "Ex3.Puppeteer",
   sidereal: "Ex3.Sidereal",
@@ -495,7 +496,6 @@ exaltedthird.statictypes = {
 
 exaltedthird.castes = {
   solar: {
-    '': 'Ex3.None',
     dawn: 'Ex3.Dawn',
     zenith: 'Ex3.Zenith',
     twilight: 'Ex3.Twilight',
@@ -503,14 +503,12 @@ exaltedthird.castes = {
     eclipse: 'Ex3.Eclipse',
   },
   lunar: {
-    '': 'Ex3.None',
     fullmoon: 'Ex3.FullMoon',
     changingmoon: 'Ex3.ChangingMoon',
     nomoon: 'Ex3.NoMoon',
     casteless: 'Ex3.Casteless',
   },
   dragonblooded: {
-    '': 'Ex3.None',
     air: 'Ex3.Air',
     earth: 'Ex3.Earth',
     fire: 'Ex3.Fire',
@@ -518,7 +516,6 @@ exaltedthird.castes = {
     wood: 'Ex3.Wood',
   },
   sidereal: {
-    '': 'Ex3.None',
     journeys: 'Ex3.Journeys',
     serenity: 'Ex3.Serenity',
     battles: 'Ex3.Battles',
@@ -526,7 +523,6 @@ exaltedthird.castes = {
     endings: 'Ex3.Endings',
   },
   abyssal: {
-    '': 'Ex3.None',
     dusk: 'Ex3.Dusk',
     midnight: 'Ex3.Midnight',
     daybreak: 'Ex3.Daybreak',
@@ -534,7 +530,6 @@ exaltedthird.castes = {
     moonshadow: 'Ex3.Moonshadow',
   },
   alchemical: {
-    '': 'Ex3.None',
     adamant: 'Ex3.Adamant',
     jade: 'Ex3.Jade',
     moonsilver: 'Ex3.Moonsilver',
@@ -543,14 +538,12 @@ exaltedthird.castes = {
     starmetal: 'Ex3.Starmetal',
   },
   getimian: {
-    '': 'Ex3.None',
     spring: 'Ex3.Spring',
     summer: 'Ex3.Summer',
     autumn: 'Ex3.Autumn',
     winter: 'Ex3.Winter',
   },
   infernal: {
-    '': 'Ex3.None',
     azimuth: 'Ex3.Azimuth',
     ascendant: 'Ex3.Ascendant',
     horizon: 'Ex3.Horizon',
@@ -558,7 +551,6 @@ exaltedthird.castes = {
     penumbra: 'Ex3.Penumbra',
   },
   sovereign: {
-    '': 'Ex3.None',
     diamond: 'Ex3.Diamond',
     emerald: 'Ex3.Emerald',
     opal: 'Ex3.Opal',
@@ -566,12 +558,17 @@ exaltedthird.castes = {
     sapphire: 'Ex3.Sapphire',
   },
   liminal: {
-    '': 'Ex3.None',
     blood: 'Ex3.Blood',
     breath: 'Ex3.Breath',
     flesh: 'Ex3.Flesh',
     marrow: 'Ex3.Marrow',
     soil: 'Ex3.Soil',
+  },
+  marchlord: {
+    north: 'Ex3.North',
+    south: 'Ex3.South',
+    east: 'Ex3.East',
+    west: 'Ex3.West',
   },
 };
 
@@ -1889,6 +1886,7 @@ exaltedthird.bonusTypes = {
       'anima-spend': "Ex3.SpendAnima",
       'willpower-spend': "Ex3.SpendWillpower",
       'grappleControl-spend': "Ex3.SpendGrappleControl",
+      'limit-spend': "Ex3.SpendLimit",
       'health-spend': "Ex3.SpendHealth",
       'aura-spend': "Ex3.SpendAura",
       'penumbra-spend': "Ex3.SpendPenumbra",
@@ -1909,6 +1907,7 @@ exaltedthird.bonusTypes = {
       'goldxp-restore': "Ex3.GainGoldXP",
       'whitexp-restore': "Ex3.GainWhiteXP",
       'grappleControl-restore': "Ex3.GrappleControlRestore",
+      'limit-restore': "Ex3.GainLimit",
     }
   },
   steal: {
@@ -2216,6 +2215,7 @@ exaltedthird.selects = {
     infernal: "Ex3.Infernal",
     liminal: "Ex3.Liminal",
     lunar: "Ex3.Lunar",
+    marchlord: "Ex3.MarchLord",
     mortal: "Ex3.Mortal",
     sidereal: "Ex3.Sidereal",
     solar: "Ex3.Solar",

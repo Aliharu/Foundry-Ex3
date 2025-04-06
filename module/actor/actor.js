@@ -732,13 +732,15 @@ export class ExaltedThirdActor extends Actor {
       "soverign": [],
       "solar": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "umbral": ['soulsteel'],
+      //Exigents
       "strawmaiden": ['orichalcum', 'greenjade'],
       "puppeteer": [],
       "knives": [],
       "wounds": ['soulsteel', 'redjade'],
+      "marchlord": [],
     }
 
-    if (exaltType === 'exigent') {
+    if (exaltType === 'exigent' || exaltType === 'marchlord') {
       resonance.value = resonanceChart[caste] ?? [];
       if (caste === 'puppeteer') {
         resonance.custom = 'Artifact Puppets';
@@ -788,9 +790,13 @@ export class ExaltedThirdActor extends Actor {
       "puppeteer": ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
       "knives": ['orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'greenjade', 'redjade', 'whitejade'],
       "wounds": ['adamant', 'orichalcum', 'moonsilver', 'blackjade', 'bluejade', 'whitejade'],
+      'north': ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'greenjade', 'redjade', 'starmetal'],
+      'south': ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'starmetal'],
+      'east': ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'redjade', 'starmetal'],
+      'west': ['adamant', 'orichalcum', 'soulsteel', 'bluejade', 'greenjade', 'redjade', 'starmetal'],
     }
 
-    if (exaltType === 'exigent') {
+    if (exaltType === 'exigent' || exaltType === 'marchlord') {
       dissonance.value = dissonanceChart[caste] ?? [];
     }
     else {

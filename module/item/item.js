@@ -365,7 +365,8 @@ export class ExaltedThirdItem extends Item {
     actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - (this.system.cost.grapplecontrol * activateAmount) + (getNumberFormula(this.system.restore.grapplecontrol, this.actor) * activateAmount));
     actorData.system.anima.level = newLevel;
     actorData.system.anima.value = newValue;
-    actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.system.cost.willpower);
+    actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - (this.system.cost.willpower * activateAmount));
+    actorData.system.limit.value = Math.max(0, actorData.system.limit.value - (this.system.cost.limit * activateAmount));
     if (this.actor.type === 'character') {
       actorData.system.craft.experience.silver.value = Math.max(0, actorData.system.craft.experience.silver.value - (this.system.cost.silverxp * activateAmount));
       actorData.system.craft.experience.gold.value = Math.max(0, actorData.system.craft.experience.gold.value - (this.system.cost.goldxp * activateAmount));
@@ -423,6 +424,7 @@ export class ExaltedThirdItem extends Item {
     } else {
       actorData.system.willpower.value = Math.min(Math.max(actorData.system.willpower.max, actorData.system.willpower.value), actorData.system.willpower.value + (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount));
     }
+    actorData.system.limit.value = Math.min(10, (getNumberFormula(this.system.restore.limit, this.actor) * activateAmount) + actorData.system.limit.value);
     if (getNumberFormula(this.system.restore.health, this.actor) > 0) {
       const bashingHealed = (getNumberFormula(this.system.restore.health, this.actor) * activateAmount) - actorData.system.health.lethal;
       actorData.system.health.lethal = Math.max(0, actorData.system.health.lethal - (getNumberFormula(this.system.restore.health, this.actor) * activateAmount));

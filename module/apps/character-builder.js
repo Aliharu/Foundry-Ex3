@@ -1111,7 +1111,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       nonFavoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1);
     }
 
-    if (this.object.character.exalt === 'dragonblooded') {
+    if (this.object.character.exalt === 'dragonblooded' || this.object.character.exalt === 'marchlord') {
       this.object.creationData.spent.excellencies = Math.min(5, Object.values(this.object.character.charms).filter(charm => charm.system.keywords.toLowerCase().includes('excellency') && this.object.character.abilities[charm.system.ability]?.favored).length);
       favoredCharms = Math.max(0, favoredCharms - this.object.creationData.spent.excellencies);
     }
@@ -2302,9 +2302,11 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       actorData.system.details.caste = this.object.character.caste;
     }
 
-    if (actorData.system.details.exalt === 'dragonblooded') {
-      actorData.system.settings.hasaura = true;
+    if (actorData.system.details.exalt === 'marchlord' || actorData.system.details.exalt === 'dragonblooded') {
       actorData.system.settings.martialartsmastery = 'terrestrial';
+      if (actorData.system.details.exalt === 'dragonblooded') {
+        actorData.system.settings.hasaura = true;
+      }
     }
     if (actorData.system.details.exalt === 'sidereal') {
       actorData.system.settings.showmaidens = true;

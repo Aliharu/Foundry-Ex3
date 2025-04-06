@@ -117,6 +117,7 @@
     "Ex3.Puppeteer": "Puppeteer",
     "Ex3.Architect": "Architect",
     "Ex3.Sovereign": "Sovereign",
+    "Ex3.MarchLord": "March Lord",
     "Ex3.Sidereal": "Sidereal",
     "Ex3.Solar": "Solar",
     "Ex3.SheetBackground": "Sheet Background",
@@ -1526,5 +1527,14 @@
     "Ex3.SailStratagem": "Sail Stratagem",
     "Ex3.Costing": "Costing",
     "Ex3.Using": "Using",
-    "Ex3.Stratagem": "Stratagem"
+    "Ex3.Stratagem": "Stratagem",
+
+    "Ex3.North": "North",
+    "Ex3.South": "South",
+    "Ex3.East": "East",
+    "Ex3.West": "West",
+    "Ex3.Divergence": "Divergence",
+
+    "Ex3.GainLimit": "Gain Limit",
+    "Ex3.SpendLimit": "Spend Limit"
 }

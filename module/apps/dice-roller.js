@@ -1868,6 +1868,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.cost.whitexp -= item.system.cost.whitexp;
                 this.object.cost.initiative -= item.system.cost.initiative;
                 this.object.cost.grappleControl -= item.system.cost.grapplecontrol;
+                this.object.cost.limit -= item.system.cost.limit;
 
                 if (item.system.cost.aura === this.object.cost.aura) {
                     this.object.cost.aura = "";
@@ -1893,6 +1894,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.restore.health -= this._getFormulaValue(item.system.restore.health);
                 this.object.restore.initiative -= this._getFormulaValue(item.system.restore.initiative);
                 this.object.restore.grappleControl -= this._getFormulaValue(item.system.restore.grapplecontrol);
+                this.object.restore.limit -= this._getFormulaValue(item.system.restore.limit);
             }
 
             if (item.system.diceroller) {
@@ -2396,6 +2398,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.cost.whitexp += item.system.cost.whitexp;
                 this.object.cost.initiative += item.system.cost.initiative;
                 this.object.cost.grappleControl += item.system.cost.grapplecontrol;
+                this.object.cost.limit += item.system.cost.limit;
 
                 if (item.system.cost.aura) {
                     this.object.cost.aura = item.system.cost.aura;
@@ -2422,6 +2425,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.restore.health += this._getFormulaValue(item.system.restore.health);
             this.object.restore.initiative += this._getFormulaValue(item.system.restore.initiative);
             this.object.restore.grappleControl += this._getFormulaValue(item.system.restore.grapplecontrol);
+            this.object.restore.limit += this._getFormulaValue(item.system.restore.limit);
         }
         if (item.system.diceroller) {
             this.object.diceModifier += this._getFormulaValue(item.system.diceroller.bonusdice);
@@ -5194,6 +5198,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'anima-spend':
                                     case 'willpower-spend':
                                     case 'penumbra-spend':
+                                    case 'limit-spend':
                                     case 'silverxp-spend':
                                     case 'goldxp-spend':
                                     case 'whitexp-spend':
@@ -5220,6 +5225,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'silverxp-restore':
                                     case 'goldxp-restore':
                                     case 'whitexp-restore':
+                                    case 'limit-restore':
                                     case 'capBreakingWillpower-restore':
                                         const restoreKey = bonus.effect.replace('-restore', '');
                                         this.object.restore[restoreKey] += this._getFormulaValue(cleanedValue, triggerActor, charm);
@@ -6543,7 +6549,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt) || this.actor.system.details.caste === "wounds") {
                         return abilityValue + this.actor.system.attributes[this.object.attribute].value;
                     }
-                    if (this.actor.system.details.exalt === "dragonblooded") {
+                    if (this.actor.system.details.exalt === "dragonblooded" || this.actor.system.details.exalt === "marchlord") {
                         return abilityValue + (this.object.specialty ? 1 : 0);
                     }
                     if (this.actor.system.details.exalt === "alchemical") {
@@ -6961,6 +6967,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.restore.grappleControl) {
             this.object.restore.grappleControl = 0;
         }
+        if (this.object.restore.limit) {
+            this.object.restore.limit = 0;
+        }
         if (this.object.restore.capBreakingWillpower) {
             this.object.restore.capBreakingWillpower = 0;
         }
@@ -7314,6 +7323,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         actorData.system.penumbra.value = Math.max(0, actorData.system.penumbra.value - this.object.cost.penumbra);
         actorData.system.willpower.value = Math.max(0, actorData.system.willpower.value - this.object.cost.willpower);
         actorData.system.grapplecontrolrounds.value = Math.max(0, actorData.system.grapplecontrolrounds.value - this.object.cost.grappleControl + this.object.restore.grappleControl);
+        actorData.system.limit.value = Math.max(0, actorData.system.limit.value - this.object.cost.limit + this.object.restore.limit);
         actorData.system.ship.momentum.value = Math.max(0, actorData.system.ship.momentum.value - this.object.cost.momentum);
 
         if (this.actor.type === 'character') {

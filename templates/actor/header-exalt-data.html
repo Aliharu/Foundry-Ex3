@@ -111,6 +111,8 @@
                     {{#ifNotEquals system.details.exalt 'other'}}
                         {{#ifEquals system.details.exalt 'alchemical'}}
                         <label class="resource-label">{{localize "Ex3.Clarity"}}</label>
+                        {{else ifEquals system.details.exalt 'marchlord'}}
+                        <label class="resource-label">{{localize "Ex3.Divergence"}}</label>
                         {{else}}
                         <label class="resource-label">{{localize "Ex3.Limit"}}</label>
                         {{/ifEquals}}

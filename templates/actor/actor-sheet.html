@@ -36,7 +36,7 @@
           </select></h1>
         {{#if availableCastes}}
         <h1 class="charname"> <select name="system.details.caste" data-type="String">
-            {{selectOptions availableCastes selected=system.details.caste localize=true}}
+            {{selectOptions availableCastes selected=system.details.caste localize=true blank='Ex3.None'}}
           </select></h1>
         {{else ifEquals system.details.exalt 'exigent'}}
         <h1 class="charname"> <select name="system.details.caste" data-type="String">
