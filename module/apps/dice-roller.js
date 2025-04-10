@@ -68,6 +68,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 whitexp: this.object.craftType === 'legendary' ? 10 : 0,
                 aura: "",
                 momentum: 0,
+                limit: 0,
             };
             this.object.restore = {
                 motes: 0,
@@ -80,6 +81,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 goldxp: 0,
                 whitexp: 0,
                 xp: 0,
+                limit: 0,
             };
             this.object.steal = {
                 motes: {
@@ -6964,10 +6966,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 xp: 0,
             };
         }
-        if (this.object.restore.grappleControl) {
+        if (this.object.restore.grappleControl === undefined) {
             this.object.restore.grappleControl = 0;
         }
-        if (this.object.restore.limit) {
+        if (this.object.cost.limit === undefined) {
+            this.object.cost.limit = 0;
+        }
+        if (this.object.restore.limit === undefined) {
             this.object.restore.limit = 0;
         }
         if (this.object.restore.capBreakingWillpower) {

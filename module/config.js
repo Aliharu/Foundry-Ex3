@@ -1112,6 +1112,57 @@ exaltedthird.martialarts = [
   "Hungry Ghost Style",
 ];
 
+exaltedthird.castesPerExalt = {
+  "solar": {
+    "dawn": ["archery", "awareness", "brawl", "martialarts", "dodge", "melee", "resistance", "thrown", "war"],
+    "zenith": ["athletics", "integrity", "performance", "lore", "presence", "resistance", "survival", "war"],
+    "twilight": ["bureaucracy", "craft", "integrity", "investigation", "linguistics", "lore", "medicine", "occult"],
+    "night": ["athletics", "awareness", "dodge", "investigation", "larceny", "ride", "stealth", "socialize"],
+    "eclipse": ["bureaucracy", "larceny", "linguistics", "occult", "presence", "ride", "sail", "socialize"]
+  },
+  "dragonblooded": {
+    "air": ["linguistics", "lore", "occult", "stealth", "thrown"],
+    "earth": ["awareness", "craft", "integrity", "resistance", "war"],
+    "fire": ["athletics", "dodge", "melee", "presence", "socialize"],
+    "water": ["brawl", "martialarts", "bureaucracy", "investigation", "larceny", "sail"],
+    "wood": ["archery", "medicine", "performance", "ride", "survival"]
+  },
+  "lunar": {
+    "fullmoon": ["dexterity", "stamina", "strength"],
+    "changingmoon": ["appearance", "charisma", "manipulation"],
+    "nomoon": ["intelligence", "perception", "wits"]
+  },
+  "sidereal": {
+    "journeys": ["resistance", "ride", "sail", "survival", "thrown", "martialarts"],
+    "serenity": ["craft", "dodge", "linguistics", "performance", "socialize", "martialarts"],
+    "battles": ["archery", "brawl", "melee", "presence", "war", "martialarts"],
+    "secrets": ["investigation", "larceny", "lore", "occult", "stealth", "martialarts"],
+    "endings": ["athletics", "awareness", "bureaucracy", "integrity", "medicine", "martialarts"]
+  },
+  "alchemical": {
+    "orichalcum": ["charisma", "intelligence", "strength"],
+    "moonsilver": ["appearance", "dexterity", "wits"],
+    "jade": ["charisma", "stamina", "wits"],
+    "starmetal": ["dexterity", "intelligence", "manipulation"],
+    "soulsteel": ["manipulation", "perception", "stamina"],
+    "adamant": ["appearance", "perception", "strength"]
+  },
+  "abyssal": {
+    "dusk": ["archery", "athletics", "brawl", "melee", "resistance", "ride", "thrown", "war"],
+    "midnight": ["integrity", "larceny", "linguistics", "lore", "performance", "presence", "resistance", "survival"],
+    "daybreak": ["awareness", "bureaucracy", "craft", "investigation", "lore", "medicine", "occult", "sail"],
+    "day": ["athletics", "awareness", "investigation", "dodge", "larceny", "socialize", "stealth", "survival"],
+    "moonshadow": ["bureaucracy", "integrity", "linguistics", "occult", "presence", "ride", "sail", "socialize"]
+  },
+  "other": {
+    "janest": ["athletics", "awareness", "presence", "resistance", "survival"],
+    "strawmaiden": ["athletics", "awareness", "presence", "resistance", "survival"],
+    "knives": ["craft", "medicine", "melee", "survival", "thrown"],
+    "sovereign": ["craft", "integrity", "performance", "socialize", "war"],
+    "puppeteer": ["craft", "larceny", "performance"]
+  }
+}
+
 
 exaltedthird.casteabilitiesmap = {
   'dawn': [

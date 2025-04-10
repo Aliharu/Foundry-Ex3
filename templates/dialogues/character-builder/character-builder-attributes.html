@@ -49,6 +49,12 @@
         <span class="resource-value-step" data-type="attributes" data-name="{{key}}" data-index="{{this}}"></span>
         {{/ifGreater}}
         {{/numLoop}}
+        {{#if attribute.casteMarks}}
+          {{#each attribute.casteMarks as |casteMark index|}}
+          <img class="borderless-image" src="systems/exaltedthird/assets/caste-marks/{{../../data.character.exalt}}/{{casteMark}}.png"
+            title="{{casteMark}}" height="14" width="14" />
+          {{/each}}
+        {{/if}}
       </div>
       {{#ifEquals ../data.character.exalt 'alchemical'}}
       <div class="flexrow flex-center">

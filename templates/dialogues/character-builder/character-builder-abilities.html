@@ -20,10 +20,12 @@
         <span class="resource-value-step" data-type="abilities" data-name="{{key}}" data-index="{{this}}"></span>
         {{/ifGreater}}
         {{/numLoop}}
-        {{#ifEquals ../data.character.exalt 'sidereal'}}
-        <img class="borderless-image" src="systems/exaltedthird/assets/caste-marks/{{ability.maiden}}.png"
-          title="{{ability.maiden}}" height="14" width="14" />
-        {{/ifEquals}}
+        {{#if ability.casteMarks}}
+          {{#each ability.casteMarks as |casteMark index|}}
+          <img class="borderless-image" src="systems/exaltedthird/assets/caste-marks/{{../../data.character.exalt}}/{{casteMark}}.png"
+            title="{{casteMark}}" height="14" width="14" />
+          {{/each}}
+        {{/if}}
       </div>
       {{/ifEquals}}
       {{#if ../data.character.showAbilityCharms}}

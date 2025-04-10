@@ -22,7 +22,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       if (!this.object.character.classificationType) {
         this.object.character.classificationType = 'exalt';
       }
-      if(!this.object.character.languages) {
+      if (!this.object.character.languages) {
         this.object.character.languages = Object.entries(CONFIG.exaltedthird.languages).reduce((obj, e) => {
           let [k, v] = e;
           obj[k] = { label: v, chosen: false };
@@ -649,7 +649,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (resetFavored) {
       for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
         if (CONFIG.exaltedthird.casteabilitiesmap[this.object.character.caste.toLowerCase()]?.includes(key)) {
-          if(this.object.character.exalt === 'alchemcial') {
+          if (this.object.character.exalt === 'alchemcial') {
             attribute.favored = true;
           }
           attribute.caste = true;
@@ -738,6 +738,30 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     else {
       this.object.character.showAttributeCharms = false;
       this.object.character.showAbilityCharms = true;
+    }
+
+
+
+    for (let [key, ability] of Object.entries(this.object.character.abilities)) {
+      ability.casteMarks = [];
+      if (['solar', 'dragonblooded', 'abyssal', 'sidereal'].includes(this.object.character.exalt)) {
+        for (const [caste, list] of Object.entries(CONFIG.exaltedthird.castesPerExalt[this.object.character.exalt])) {
+          if (list.includes(key)) {
+            ability.casteMarks.push(caste);
+          }
+        }
+      }
+    }
+
+    for (let [key, attribute] of Object.entries(this.object.character.attributes)) {
+      attribute.casteMarks = [];
+      if (['lunar', 'alchemical'].includes(this.object.character.exalt)) {
+        for (const [caste, list] of Object.entries(CONFIG.exaltedthird.castesPerExalt[this.object.character.exalt])) {
+          if (list.includes(key)) {
+            attribute.casteMarks.push(caste);
+          }
+        }
+      }
     }
 
     const oxBodyAvailable = [
@@ -833,7 +857,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         this.object.creationData.available.bonusPoints = 18;
       }
     }
-    if(this.object.character.exalt === 'alchemical') {
+    if (this.object.character.exalt === 'alchemical') {
       this.object.creationData.available.favoredAttributes = 1;
       this.object.creationData.available.favoredAbilities = 0;
       this.object.creationData.available.charmSlots = (17 + (this.object.character.essence * 3)) - 15;
@@ -954,14 +978,14 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     let useFavoredAbilities = true;
     let useFavoredAttributes = false;
 
-    if(this.object.character.exalt === 'lunar' || this.object.character.exalt === 'alchemical') {
+    if (this.object.character.exalt === 'lunar' || this.object.character.exalt === 'alchemical') {
       useFavoredAbilities = false;
       useFavoredAttributes = true;
       this.object.creationData.spent.bonusPoints.cost.attributes = '4 per dot, 3 per caste/favored dot';
       this.object.creationData.spent.bonusPoints.cost.Abilities = '2 per dot';
       this.object.creationData.spent.bonusPoints.cost.charms = '4, 5 per non-favored (Always 4 if casteless)'
     }
-    if(this.object.character.exalt === 'alchemical') {
+    if (this.object.character.exalt === 'alchemical') {
       this.object.creationData.spent.bonusPoints.cost.charms = '1 for caste/favored, 2 for non-favored, 5 for spells (4 if intelligence is caste/favored), 5 for Martial Arts, 4 for Evocations';
     }
 
@@ -1139,7 +1163,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     this.object.creationData.spent.bonusPoints.charms += totalNonFavoredCharms * 5;
     this.object.creationData.spent.bonusPoints.charms += totalFavoredCharms * 4;
     this.object.creationData.spent.bonusPoints.total = this.object.creationData.spent.bonusPoints.willpower + this.object.creationData.spent.bonusPoints.merits + this.object.creationData.spent.bonusPoints.specialties + this.object.creationData.spent.bonusPoints.abilities + this.object.creationData.spent.bonusPoints.attributes + this.object.creationData.spent.bonusPoints.charms + this.object.creationData.spent.bonusPoints.charmSlots + this.object.creationData.spent.bonusPoints.other;
-    if(this.object.character.exalt === 'alchemical') {
+    if (this.object.character.exalt === 'alchemical') {
       this.object.creationData.spent.bonusPoints.total -= alchemicalCharmBonusPointDiscount;
     }
     this.object.creationData.spent.experience.attributes += (favoredAttributesSpent * 8) + (unFavoredAttributesSpent * 10);
@@ -1597,7 +1621,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           sectionList[ritual.system.archetypename].list.push(ritual);
         }
       }
-    } else if(itemType === 'specialability') {
+    } else if (itemType === 'specialability') {
       sectionList['specialAbilities'] = {
         name: game.i18n.localize("Ex3.SpecialAbilities"),
         list: items
@@ -1946,7 +1970,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         if (target.dataset.ability) {
           items = items.filter(charm => charm.system.ability === target.dataset.ability);
           archetypeCharms = archetypeCharms.filter(charm => {
-            if(!charm.system.archetype.ability) {
+            if (!charm.system.archetype.ability) {
               return true;
             }
             if (charm.system.archetype.ability === "combat") {
@@ -1969,19 +1993,19 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             return true;
           });
           archetypeCharms = archetypeCharms.filter(charm => {
-            if(!charm.system.archetype.ability) {
+            if (!charm.system.archetype.ability) {
               return true;
             }
             if (charm.system.archetype.ability === "combat") {
               return charm.system.requirement <= Math.max(this.object.character.abilities['archery'].value, this.object.character.abilities['brawl'].value, this.object.character.abilities['melee'].value, this.object.character.abilities['thrown'].value, this.object.character.abilities['war'].value);
             }
-            if(charm.system.archetype.ability === 'physicalAttribute') {
+            if (charm.system.archetype.ability === 'physicalAttribute') {
               return charm.system.requirement <= Math.max(this.object.character.attributes['strength'].value + (this.object.character.attributes['strength'].upgrade || 0), this.object.character.attributes['dexterity'].value + (this.object.character.attributes['dexterity'].upgrade || 0), this.object.character.attributes['stamina'].value + (this.object.character.attributes['stamina'].upgrade || 0));
             }
-            if(charm.system.archetype.ability === 'mentalAttribute') {
+            if (charm.system.archetype.ability === 'mentalAttribute') {
               return charm.system.requirement <= Math.max(this.object.character.attributes['perception'].value + (this.object.character.attributes['perception'].upgrade || 0), this.object.character.attributes['intelligence'].value + (this.object.character.attributes['intelligence'].upgrade || 0), this.object.character.attributes['wits'].value + (this.object.character.attributes['wits'].upgrade || 0));
             }
-            if(charm.system.archetype.ability === 'socialAttribute') {
+            if (charm.system.archetype.ability === 'socialAttribute') {
               return charm.system.requirement <= Math.max(this.object.character.attributes['charisma'].value + (this.object.character.attributes['charisma'].upgrade || 0), this.object.character.attributes['manipulation'].value + (this.object.character.attributes['manipulation'].upgrade || 0), this.object.character.attributes['appearance'].value + (this.object.character.attributes['appearance'].upgrade || 0));
             }
             if (this.object.character.attributes[charm.system.archetype.ability]) {
@@ -2294,7 +2318,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     if (actorData.system.details.exalt === 'exigent') {
       actorData.system.details.caste = this.object.character.exigent;
-      if(this.object.character.exigent) {
+      if (this.object.character.exigent) {
         actorData.system.settings.exigenttype = CONFIG.exaltedthird.exigentTiers[this.object.character.exigent];
       }
     }
@@ -2318,7 +2342,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (actorData.system.details.exalt === 'solar' || actorData.system.details.exalt === 'abyssal' || actorData.system.details.exalt === 'infernal') {
       actorData.system.settings.martialartsmastery = 'mastery';
     }
-    if(this.object.character.exalt === 'alchemical') {
+    if (this.object.character.exalt === 'alchemical') {
       actorData.system.charmslots.value = this.object.character.charmSlots;
     }
     actorData.system.settings.sorcerycircle = this.object.character.sorcerer;
@@ -2340,7 +2364,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].three.two * this.object.character.oxBodies);
           actorData.system.health.levels.four.value += (oxBodyChart[this.object.character.exalt].three.four * this.object.character.oxBodies);
         }
-        else if(oxBodyValue < 6 || !oxBodyChart[this.object.character.exalt].six) {
+        else if (oxBodyValue < 6 || !oxBodyChart[this.object.character.exalt].six) {
           actorData.system.health.levels.zero.value += (oxBodyChart[this.object.character.exalt].five.zero * this.object.character.oxBodies);
           actorData.system.health.levels.one.value += (oxBodyChart[this.object.character.exalt].five.one * this.object.character.oxBodies);
           actorData.system.health.levels.two.value += (oxBodyChart[this.object.character.exalt].five.two * this.object.character.oxBodies);
@@ -2377,14 +2401,14 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     // Obtain choices
     const chosenLanguages = [];
-    for ( let [k, v] of Object.entries(this.object.character.languages)) {
-      if(v.chosen) {
+    for (let [k, v] of Object.entries(this.object.character.languages)) {
+      if (v.chosen) {
         chosenLanguages.push(k);
       }
     }
 
     actorData.system.traits.languages.value = chosenLanguages;
-    actorData.system.traits.languages.custom = this.object.character.customLanguages; 
+    actorData.system.traits.languages.custom = this.object.character.customLanguages;
 
     for (let craft of Object.values(this.object.character.crafts)) {
       itemData.push({
@@ -2864,7 +2888,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       });
     }
 
-    if(this.object.character.exalt === 'alchemical') {
+    if (this.object.character.exalt === 'alchemical') {
       itemData.push({
         type: 'charm',
         img: CONFIG.exaltedthird.excellencyIcons[this.object.character.exalt] || 'icons/magic/light/explosion-star-large-orange.webp',
