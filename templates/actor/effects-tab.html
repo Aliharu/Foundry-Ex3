@@ -130,6 +130,14 @@
         <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
             system.dontresetonslaught}}>
     </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.MoteRecoveryCombat"}}</label>
+        <input name="system.motes.recovery.combat.value" type="number" value="{{system.motes.recovery.combat.value}}" data-dtype="Number" />
+    </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.MoteRecoveryOutOfCombat"}}</label>
+        <input name="system.motes.recovery.noncombat.value" type="number" value="{{system.motes.recovery.noncombat.value}}" data-dtype="Number" />
+    </div>
     {{#ifEquals data.type 'character'}}
     {{#if system.settings.editmode}}
     <div>

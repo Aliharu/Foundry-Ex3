@@ -620,7 +620,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       let aggravatedDamage = 0;
       let initiativeDamage = 0;
       let moteCost = 0;
-      let moteGain = 5;
+      let moteGain = combatant.actor.system.motes.recovery.combat.value;
       let crasherId = null;
       let currentCombatantInitiative = combatant.initiative;
       for (let [key, health_level] of Object.entries(actorData.system.health.levels)) {
@@ -1174,7 +1174,7 @@ Hooks.on("chatMessage", (html, content, msg) => {
                 "system.health.lethal": Math.max(0, actor.system.health.lethal - lethalHealed),
                 "system.health.aggravated": Math.max(0, actor.system.health.aggravated - aggHealed),
               });
-              actor.restoreMotes(hours * 5);
+              actor.restoreMotes(hours * actor.system.motes.recovery.noncombat.value);
             }
           });
           ui.notifications.info('Advanced Time');

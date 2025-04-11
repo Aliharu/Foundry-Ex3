@@ -337,6 +337,8 @@
     "Ex3.StuntLevel": "Stunt Level",
     "Ex3.Dice": "Dice",
     "Ex3.DiceCap": "Dice Cap",
+    "Ex3.MoteRecoveryCombat": "Mote Recovery (Round in Combat)",
+    "Ex3.MoteRecoveryOutOfCombat": "Mote Recovery (Hour Out of Combat)",
     "Ex3.Virtue": "Virtue",
     "Ex3.Virtues": "Virtues",
     "Ex3.Intimacy": "Intimacy",

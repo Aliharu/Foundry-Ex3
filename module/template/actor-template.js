@@ -44,6 +44,10 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
           max: new fields.NumberField({ initial: 0 }),
           committed: new fields.NumberField({ initial: 0 }),
         }),
+        recovery: new fields.SchemaField({
+          noncombat: statField(5),
+          combat: statField(5),
+        }),
       }),
       anima: new fields.SchemaField({
         value: new fields.NumberField({ initial: 0 }),
