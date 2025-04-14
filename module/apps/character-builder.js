@@ -1039,7 +1039,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         aboveThreeUnFavored += Math.max(0, (ability.value - 3));
       }
 
-      if (this.object.character.exigent !== 'strawmaiden' && this.object.character.exigent === 'knives') {
+      if (this.object.character.exigent !== 'strawmaiden' && this.object.character.exigent !== 'knives') {
         if (!casteAbilitiesMap[this.object.character.caste.toLowerCase()]?.includes(key) && ability.favored && key !== 'martialarts') {
           this.object.creationData.spent.favoredAbilities++;
         }
