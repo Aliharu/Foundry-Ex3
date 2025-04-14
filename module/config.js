@@ -210,6 +210,7 @@ exaltedthird.activeEffectChanges = {
     effectList: {
       'system.motes.gain.round': 'Ex3.MoteGainPerRound',
       'system.motes.gain.turn': 'Ex3.MoteGainPerTurn',
+      'system.motes.recovery.noncombat.value': 'Ex3.MoteGainPerHour',
       'system.initiative.gain.round': 'Ex3.InitiativeGainPerRound',
       'system.initiative.gain.turn': 'Ex3.InitiativeGainPerTurn',
     }
