@@ -5438,12 +5438,25 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'martialArtsLevel':
                     if (cleanedValue.includes('not')) {
-                        if (triggerActor.system.settings.martialartsmastery === cleanedValue.replace('not', '')) {
+                        if(cleanedValue.replace('not', '') === 'mastery' && charm.system?.parentitemid) {
+                            if(this.actor._determineMartialArtsMastery(charm.system?.parentitemid)) {
+                                fufillsRequirements = false;
+                            }
+                        } else {
+                            if (triggerActor.system.settings.martialartsmastery === cleanedValue.replace('not', '')) {
+                                fufillsRequirements = false;
+                            }
+                        }
+
+                    }
+                    else  {
+                        if(cleanedValue === 'mastery' && charm.system?.parentitemid) {
+                            if(!this.actor._determineMartialArtsMastery(charm.system?.parentitemid)) {
+                                fufillsRequirements = false;
+                            }
+                        } else if(triggerActor.system.settings.martialartsmastery !== cleanedValue) {
                             fufillsRequirements = false;
                         }
-                    }
-                    else if (triggerActor.system.settings.martialartsmastery !== cleanedValue) {
-                        fufillsRequirements = false;
                     }
                     break;
                 case 'smaEnlightenment':

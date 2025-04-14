@@ -157,7 +157,7 @@ export class ExaltedThirdActor extends Actor {
           abilities[key].excellency = true;
         }
       }
-      if(this.system.details.exalt === 'exigent') {
+      if (this.system.details.exalt === 'exigent') {
         if (updateData.system?.settings) {
           updateData.system.settings.exigenttype = CONFIG.exaltedthird.exigentTiers[caste];
         }
@@ -283,7 +283,7 @@ export class ExaltedThirdActor extends Actor {
       }
 
       if (item.system.archetype.ability || item.system.archetype.charmprerequisites.length > 0) {
-        if(item.system.archetype.ability) {
+        if (item.system.archetype.ability) {
           if (item.system.archetype.ability === "combat" && item.system.requirement > Math.max(this.system.abilities['archery'].value, this.system.abilities['brawl'].value, this.system.abilities['melee'].value, this.system.abilities['thrown'].value, this.system.abilities['war'].value)) {
             return false;
           }
@@ -324,6 +324,52 @@ export class ExaltedThirdActor extends Actor {
     }
 
     return false;
+  }
+
+  _determineMartialArtsMastery(styleId) {
+    if (this.system.details.exalt === 'sidereal') {
+      const style = game.items.find(item => item.id === styleId);
+      if (!style) {
+        return this.system.settings.martialartsmastery === 'mastery';
+      }
+      const allItems = this.items;
+
+      // Get all character's active charms
+      const activeCharms = allItems.filter(item =>
+        item.type === 'charm' && item.system?.active
+      );
+
+      for (let charm of activeCharms) {
+        const isForm = charm.system.keywords.toLowerCase().includes("form");
+
+        if (!isForm) continue;
+
+        // Case 1: Form charm from the same style
+        if (charm.system.parentitemid === styleId) {
+          return true;
+        }
+
+        // Case 2: Form charm whose parent is a sidereal martial art
+        const parent = game.items.find(i => i.id === charm.system.parentitemid);
+        if (parent.system?.siderealmartialart === true) {
+          return true;
+        }
+      }
+
+      // Case 3: Character has all charms from this style
+      const characterStyleCharms = allItems.filter(item =>
+        item.type === 'charm' && item.system?.parentitemid === styleId
+      );
+
+      const globalStyleCharms = game.items.filter(item =>
+        item.type === 'charm' && item.system?.parentitemid === styleId
+      );
+
+      if (characterStyleCharms.length === globalStyleCharms.length && characterStyleCharms.length > 0) {
+        return true;
+      }
+    }
+    return this.system.settings.martialartsmastery === 'mastery';
   }
 
   _getHighestMaidenAbility(maiden) {
@@ -542,7 +588,7 @@ export class ExaltedThirdActor extends Actor {
       if (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden') {
         maxMotes = CONFIG.exaltedthird.exaltMotePools.personal.base['default'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['celestialExigent']);
       } else {
-        maxMotes = (CONFIG.exaltedthird.exaltMotePools.personal.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.personal.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier[exaltType] ??  CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['default']));
+        maxMotes = (CONFIG.exaltedthird.exaltMotePools.personal.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.personal.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['default']));
       }
     }
     else if (moteType === 'glorymotecap') {
@@ -709,7 +755,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   calculateResonance(exaltType, caste = null) {
-    if(!caste) {
+    if (!caste) {
       caste = this.system.details.caste?.toLowerCase();
     }
     let resonance = {
@@ -763,7 +809,7 @@ export class ExaltedThirdActor extends Actor {
   }
 
   calculateDissonance(exaltType, caste = null) {
-    if(!caste) {
+    if (!caste) {
       caste = this.system.details.caste;
     }
     let dissonance = {
