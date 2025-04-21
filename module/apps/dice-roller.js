@@ -4494,7 +4494,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 if (!this.object.missedAttacks || (this.object.missedAttacks < (this.object.showTargets || 0))) {
                     fullInitiative++;
                 }
-                if (crashed) {
+                if (crashed && !this.object.targetCombatant?.flags?.crashRecovery) {
                     fullInitiative += (this.object.damage.crashBonus ?? 5);
                 }
                 if (this.object.target?.actor?.system?.battlegroup) {
@@ -5438,8 +5438,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'martialArtsLevel':
                     if (cleanedValue.includes('not')) {
-                        if(cleanedValue.replace('not', '') === 'mastery' && charm.system?.parentitemid) {
-                            if(this.actor._determineMartialArtsMastery(charm.system?.parentitemid)) {
+                        if (cleanedValue.replace('not', '') === 'mastery' && charm.system?.parentitemid) {
+                            if (this.actor._determineMartialArtsMastery(charm.system?.parentitemid)) {
                                 fufillsRequirements = false;
                             }
                         } else {
@@ -5449,12 +5449,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
 
                     }
-                    else  {
-                        if(cleanedValue === 'mastery' && charm.system?.parentitemid) {
-                            if(!this.actor._determineMartialArtsMastery(charm.system?.parentitemid)) {
+                    else {
+                        if (cleanedValue === 'mastery' && charm.system?.parentitemid) {
+                            if (!this.actor._determineMartialArtsMastery(charm.system?.parentitemid)) {
                                 fufillsRequirements = false;
                             }
-                        } else if(triggerActor.system.settings.martialartsmastery !== cleanedValue) {
+                        } else if (triggerActor.system.settings.martialartsmastery !== cleanedValue) {
                             fufillsRequirements = false;
                         }
                     }

@@ -1323,7 +1323,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const target = ev.currentTarget;
       let itemType = target.dataset.type;
 
-      let items = game.items.filter(item => item.type === itemType && item.system.ability === 'occult' && this.actor.canAquireItem(item));
+      let items = game.items.filter(item => item.type === itemType && this.actor.canAquireItem(item));
 
       for (var item of items) {
         item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
