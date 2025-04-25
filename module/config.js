@@ -1922,6 +1922,7 @@ exaltedthird.bonusTypes = {
       modifyRolledDamage: "Ex3.ModifyRolledDamage",
       attackDealsDamage: "Ex3.AttackDealsDamage",
       maxAttackInitiativeGain: "Ex3.MaxAttackInitiativeGain",
+      capDamageSuccesses: "Ex3.CapDamageSuccesses",
       maxInitiativeGain: "Ex3.MaxInitiativeGain",
       stuntToDamage: "Ex3.StuntToDamage",
       halfPostSoakDamage: "Ex3.HalfPostSoakDamage",

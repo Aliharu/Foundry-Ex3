@@ -248,6 +248,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 resetInit: true,
                 maxAttackInitiativeGain: null,
                 maxInitiativeGain: null,
+                capDamageSuccesses: null,
                 doubleRolledDamage: false,
                 doublePreRolledDamage: false,
                 halfPostSoakDamage: false,
@@ -2873,6 +2874,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (formula?.toLowerCase() === 'target-defense') {
             return this.object.defense || 0;
         }
+        if (formula?.toLowerCase() === 'overwhelming') {
+            return this.object.overwhelming || 0;
+        }
         if (formula?.toLowerCase() === 'rangebands') {
             return {
                 'close': 0,
@@ -4327,6 +4331,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.damageDice = dice;
         await this._addTriggerBonuses('afterDamageRoll');
 
+        if(this.object.damage.capDamageSuccesses) {
+            this.object.damageSuccesses = this.object.damage.capDamageSuccesses;
+        }
+
         let damageDisplayResults = `
                                 <h4 class="dice-total dice-total-middle">${this.object.attackType === 'gambit' ? 'Initiative' : 'Damage'} Roll</h4>
                                 <h4 class="dice-formula">${this.object.attackSuccesses} accuracy successes vs ${this.object.defense} defense</h4>
@@ -4392,6 +4400,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.attackSuccess = true;
         this.object.damageThresholdSuccesses = 0;
         await this._addTriggerBonuses('beforeDamageApplied');
+
+        if(this.object.damage.capDamageSuccesses) {
+            this.object.damageSuccesses = this.object.damage.capDamageSuccesses;
+        }
 
         if (this.object.damage.attackDealsDamage) {
             if (this.object.attackType === 'decisive') {
@@ -5095,6 +5107,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         break;
                                     case 'maxAttackInitiativeGain':
                                     case 'maxInitiativeGain':
+                                    case 'capDamageSuccesses':
                                         if (this.object.damage[bonus.effect] === null) {
                                             this.object.damage[bonus.effect] = 0;
                                         }

@@ -152,6 +152,11 @@
                 </div>
                 <div>
                     <b>{{localize "Ex3.DiceBonus"}}: </b>{{rollData.damage.damageDice}}, <b>{{localize "Ex3.SuccessBonus"}}: </b>{{rollData.damage.damageSuccessModifier}}
+                    {{#if rollData.damage.capDamageSuccesses}}
+                    <div>
+                        (<b>{{localize "Ex3.CapDamageSuccesses"}}:</b> {{rollData.damage.capDamageSuccesses}})
+                    </div>
+                    {{/if}}
                 </div>
                 <div>
                     <b>{{localize "Ex3.TargetNumber"}}: </b>{{rollData.damage.targetNumber}}, <b>{{localize "Ex3.DoubleSuccess"}}: </b>{{rollData.damage.doubleSuccess}}+
