@@ -1883,7 +1883,7 @@ exaltedthird.bonusTypes = {
     }
   },
   damage: {
-    label: "Ex3.Damage",
+    label: "Ex3.AttackDamage",
     bonuses: {
       damageDice: "Ex3.DamageDiceModifier",
       damageSuccessModifier: "Ex3.DamageSuccessModifier",
@@ -1929,6 +1929,15 @@ exaltedthird.bonusTypes = {
       multiDecisiveSplit: "Ex3.MultiDecisiveSplit",
       setStaticDecisiveDamage: "Ex3.SetStaticDecisiveDamage"
     }
+  },
+  nonAttackDamage: {
+    label: "Ex3.NonAttackDamage",
+    bonuses: {
+      initiativeDamageDice: "Ex3.InitiativeDamageDice",
+      healthDamageDice: "Ex3.HealthDamageDice",
+      decisiveDamageDice: "Ex3.DecisiveDamageDice",
+      healthDamageLevels: "Ex3.HealthDamageLevels",
+    },
   },
   spend: {
     label: "Ex3.Spend",

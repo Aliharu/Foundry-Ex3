@@ -992,6 +992,8 @@
     "Ex3.DecisiveAttacks": "Decisive Attacks",
     "Ex3.GambitAttacks": "Gambit Attacks",
     "Ex3.WitheringDecisive": "Withering/Decisive",
+    "Ex3.AttackDamage": "Attack Damage",
+    "Ex3.NonAttackDamage": "Non-Attack Damage",
     "Ex3.WitheringAttackDamage": "Withering Attack Damage",
     "Ex3.DecisiveAttackDamage": "Decisive Attack Damage",
     "Ex3.GambitInitiative": "Gambit Initiative",
@@ -1003,6 +1005,13 @@
     "Ex3.DiceRollBonus": "Dice Roll Bonus",
     "Ex3.RollCharms": "Roll Charms",
     "Ex3.Hearthstones": "Hearthstones",
+
+    "Ex3.InitiativeDamageDice": "Initiative Damage Dice",
+    "Ex3.InitiativeDamage": "Initiative Damage",
+    "Ex3.HealthDamage": "Health Damage",
+    "Ex3.DecisiveHealthDamage": "Decisive Health Damage",
+    "Ex3.HealthDamageDice": "Health Damage Dice",
+    "Ex3.HealthDamageLevels": "Health Damage Levels",
 
     "Ex3.Dawn": "Dawn",
     "Ex3.Zenith": "Zenith",
