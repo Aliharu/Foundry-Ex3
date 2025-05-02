@@ -81,7 +81,7 @@ export function getNumberFormula(formulaString, actor, item = null) {
 }
 
 export async function getEnritchedHTML(item) {
-    item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+    item.enritchedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
 }
 
 export function sortDice(diceRoll, ignoreSetting = false) {

@@ -134,7 +134,7 @@ Hooks.once('init', async function () {
   Items.registerSheet("exaltedthird", ExaltedThirdItemSheet, { makeDefault: true });
 
   // Pre-load templates
-  loadTemplates([
+  foundry.applications.handlebars.loadTemplates([
     "systems/exaltedthird/templates/dialogues/added-charm-list.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
     "systems/exaltedthird/templates/item/custom-modifier.html",
@@ -466,7 +466,7 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   });
 })
 
-Hooks.on("renderChatMessage", (message, html, data) => {
+Hooks.on("renderChatMessageHTML", (message, html, data) => {
   if (html instanceof jQuery) {
     html = $(html)[0];
   }
@@ -1686,9 +1686,18 @@ Hooks.once("ready", async function () {
   //   await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   // }
 
-  document.querySelector("#chat-log").addEventListener("click", ev => {
-    if (ev.target.closest(".item-row")) {
-      const li = ev.target.closest(".item-row").nextElementSibling;
+  // document.querySelector("#chat-log").addEventListener("click", ev => {
+  //   if (ev.target.closest(".item-row")) {
+  //     const li = ev.target.closest(".item-row").nextElementSibling;
+  //     if (li) {
+  //       li.style.display = li.style.display === "none" ? "block" : "none";
+  //     }
+  //   }
+  // });
+
+  document.querySelectorAll('#chat-log').forEach(element => {
+    if (element.target.closest(".item-row")) {
+      const li = element.target.closest(".item-row").nextElementSibling;
       if (li) {
         li.style.display = li.style.display === "none" ? "block" : "none";
       }
@@ -1874,7 +1883,7 @@ async function applyDamageDialogue(targetUuid, damageContext) {
   const actor = target?.documentName === 'Token' ? target?.actor : target;
 
   const template = "systems/exaltedthird/templates/dialogues/damage-dialogue.html"
-  const html = await renderTemplate(template, { 'damageContext': damageContext, damageTypes: CONFIG.exaltedthird.selects.damageTypes });
+  const html = await foundry.applications.handlebars.renderTemplate(template, { 'damageContext': damageContext, damageTypes: CONFIG.exaltedthird.selects.damageTypes });
   new foundry.applications.api.DialogV2({
     window: { title: `Apply Damage to ${actor.name}` },
     content: html,

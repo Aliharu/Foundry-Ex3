@@ -614,7 +614,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         },
       ],
       buttons: [
-        { type: "submit", icon: "fa-solid fa-user-plus", label: "Ex3.Generate" }
+        { type: "submit", icon: "fa-solid fa-user-plus", label: "Ex3.Generate", cssClass: "full-footer-button" }
       ],
     };
   }
@@ -1654,7 +1654,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       }
     }
     const template = "systems/exaltedthird/templates/dialogues/import-item.html";
-    const html = await renderTemplate(template, { 'sectionList': sectionList });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'sectionList': sectionList });
 
     await foundry.applications.api.DialogV2.wait({
       window: {
@@ -2173,7 +2173,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
   }
 
   static async showHelpDialog(event, target) {
-    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dialog-help.html", { 'link': 'https://github.com/Aliharu/Foundry-Ex3/wiki/Character-Creator' });
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/dialog-help.html", { 'link': 'https://github.com/Aliharu/Foundry-Ex3/wiki/Character-Creator' });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
       content: html,

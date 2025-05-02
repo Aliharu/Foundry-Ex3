@@ -293,6 +293,14 @@
   }
 }
 
+.full-textarea {
+  width: 100%;
+}
+
+.full-footer-button {
+  width: 100%;
+}
+
 .exaltedthird .resource-counter .resource-counter-step[data-state="*"] {
   background:
     linear-gradient(45deg,
@@ -433,6 +441,10 @@
 
 .black-icon {
   filter: invert(1);
+}
+
+.roll-card-icon {
+  display: inline;
 }
 
 .chat-card {

@@ -1713,7 +1713,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     static async saveRoll() {
-        let html = await renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
+        let html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/save-roll.html", { 'name': this.object.name || 'New Roll' });
 
         new foundry.applications.api.DialogV2({
             window: { title: game.i18n.localize("Ex3.SaveRoll"), },
@@ -1769,7 +1769,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     static async editSettings() {
-        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll, 'selects': this.selects });
+        const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/dice-roller-settings.html", { 'isAttack': this._isAttackRoll(), 'selfDefensePenalty': this.object.triggerSelfDefensePenalty, 'targetDefensePenalty': this.object.triggerTargetDefensePenalty, 'settings': this.object.settings, 'rerolls': this.object.reroll, 'damageRerolls': this.object.damage.reroll, 'selects': this.selects });
 
         new foundry.applications.api.DialogV2({
             window: { title: game.i18n.localize("Ex3.DiceRollSettings"), resizable: true },
@@ -1829,7 +1829,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     static async showGambitDialog(event, target) {
-        const html = await renderTemplate("systems/exaltedthird/templates/dialogues/gambits.html", { 'useEssenceGambit': this.object.useEssenceGambit });
+        const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/gambits.html", { 'useEssenceGambit': this.object.useEssenceGambit });
 
         new foundry.applications.api.DialogV2({
             window: { title: game.i18n.localize("Ex3.Gambits"), resizable: true },
@@ -3258,7 +3258,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             data: data,
             actorId: this.actor._id,
         });
-        const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/added-opposing-charms-card.html", {
+        const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/added-opposing-charms-card.html", {
             actor: this.actor,
             addingCharms: addingCharms,
         });
@@ -6344,7 +6344,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             rollingActor: this.actor,
             combatStats: combatStats,
         }
-        return await renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
+        return await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
     }
 
     _getDiceRollDisplay(type = 'roll') {

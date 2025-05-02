@@ -167,7 +167,7 @@ export default class Prophecy extends HandlebarsApplicationMixin(ApplicationV2) 
         timeValue = Math.min(timeValue + parseInt(this.object.means.additionalIntervalTime.value), 6);
         this.object.baseIntervalTime = baseTimeMap[timeValue];
         for (const [meanType, mean] of Object.entries(this.object.means)) {
-            if(meanType !== 'additionalIntervalTime') {
+            if (meanType !== 'additionalIntervalTime') {
                 mean.text = valueMap[meanType][mean.value];
             }
         }
@@ -175,7 +175,7 @@ export default class Prophecy extends HandlebarsApplicationMixin(ApplicationV2) 
         return {
             data: this.object,
             buttons: [
-                { type: "submit", icon: "fa-solid fa-dice-d10", label: "Ex3.Roll" }
+                { type: "submit", icon: "fa-solid fa-dice-d10", label: "Ex3.Roll", cssClass: "full-footer-button" }
             ],
         };
     }
@@ -195,7 +195,7 @@ export default class Prophecy extends HandlebarsApplicationMixin(ApplicationV2) 
 
             const sign = `The ${this.object.sign?.capitalize() || "No Sign"}`;
 
-            const cardContent = await renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, 'actor': this.actor, intervalTimeString: this.object.baseIntervalTime, sign: sign });
+            const cardContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/prophecy-card.html", { 'data': this.object, 'actor': this.actor, intervalTimeString: this.object.baseIntervalTime, sign: sign });
 
             ChatMessage.create({
                 user: game.user.id,
@@ -203,7 +203,7 @@ export default class Prophecy extends HandlebarsApplicationMixin(ApplicationV2) 
                 content: cardContent,
                 style: CONST.CHAT_MESSAGE_STYLES.OTHER,
             });
-            game.rollForm = new RollForm(this.actor, {classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`]}, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
+            game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}, { rollType: 'prophecy', prophecyAmbition: this.object.totalUsedAmbition, bonusIntervals: bonusIntervals }).render(true);
             this.close();
         }
         this.render();

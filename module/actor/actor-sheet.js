@@ -60,7 +60,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     const actorData = this.actor.toObject(false);
     context.system = actorData.system;
     context.flags = actorData.flags;
-    context.biographyHTML = await TextEditor.enrichHTML(context.system.biography, {
+    context.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.biography, {
       secrets: this.document.isOwner,
       async: true
     });
@@ -112,7 +112,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     }
     context.itemDescriptions = {};
     for (let item of this.actor.items) {
-      context.itemDescriptions[item.id] = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: this.actor.isOwner, relativeTo: item });
+      context.itemDescriptions[item.id] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, { async: true, secrets: this.actor.isOwner, relativeTo: item });
     }
 
     context.effects = prepareActiveEffectCategories(this.document.effects);
@@ -875,7 +875,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find(".charms-cheat-sheet").click(async ev => {
-      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
         content: html,
@@ -1045,7 +1045,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
     });
 
     html.find('.set-dice-cap').mousedown(async ev => {
-      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/set-dice-cap.html", { 'dicecap': this.actor.system.settings.dicecap });
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/set-dice-cap.html", { 'dicecap': this.actor.system.settings.dicecap });
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.SetCustomDiceCap") },
         content: html,
@@ -1326,7 +1326,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       let items = game.items.filter(item => item.type === itemType && this.actor.canAquireItem(item));
 
       for (var item of items) {
-        item.enritchedHTML = await TextEditor.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+        item.enritchedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
       }
 
       const sectionList = {};
@@ -1398,7 +1398,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       }
 
       const template = "systems/exaltedthird/templates/dialogues/import-item.html";
-      const html = await renderTemplate(template, { 'sectionList': sectionList });
+      const html = await foundry.applications.handlebars.renderTemplate(template, { 'sectionList': sectionList });
 
       await foundry.applications.api.DialogV2.wait({
         window: {
@@ -2235,7 +2235,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       template = "systems/exaltedthird/templates/dialogues/calculate-battlegroup-health.html";
       templateData.hasOxBody = false;
     }
-    const html = await renderTemplate(template, templateData);
+    const html = await foundry.applications.handlebars.renderTemplate(template, templateData);
 
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.CalculateHealth") },
@@ -2354,7 +2354,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       default:
         break;
     }
-    const html = await renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.InfoDialog"), resizable: true },
       content: html,
@@ -2367,7 +2367,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
   }
 
   async pickColor() {
-    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.PickColor") },
       position: { height: 1000, width: 406 },
@@ -2406,7 +2406,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async sheetSettings() {
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
-    const html = await renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': (this.actor.system.details.exalt === 'exigent' || this.actor.system.details.exalt === 'customExigent'), selects: CONFIG.exaltedthird.selects });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': (this.actor.system.details.exalt === 'exigent' || this.actor.system.details.exalt === 'customExigent'), selects: CONFIG.exaltedthird.selects });
 
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.Settings"), },
@@ -2460,7 +2460,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
 
   async helpDialogue(type) {
     const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
-    const html = await renderTemplate(template, { 'type': type });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'type': type });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
       content: html,
@@ -2804,7 +2804,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       content: content,
       title: title,
     };
-    const html = await renderTemplate("systems/exaltedthird/templates/chat/exalt-ability-card.html", templateData);
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/exalt-ability-card.html", templateData);
 
     // Create the ChatMessage data object
     const chatData = {
@@ -2843,7 +2843,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       labels: this.labels,
       cardType: cardType,
     };
-    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
 
     // Create the ChatMessage data object
     const chatData = {
@@ -2896,7 +2896,7 @@ export class ExaltedThirdActorSheet extends ActorSheet {
       const actorData = foundry.utils.duplicate(this.actor);
 
       const template = "systems/exaltedthird/templates/dialogues/lunar-sync.html";
-      const html = await renderTemplate(template);
+      const html = await foundry.applications.handlebars.renderTemplate(template);
 
       const confirmed = await foundry.applications.api.DialogV2.confirm({
         window: { title: game.i18n.localize("Ex3.LunarSync") },

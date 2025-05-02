@@ -50,7 +50,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
 
   async openMacroDialog() {
     const template = "systems/exaltedthird/templates/dialogues/charm-macros.html";
-    const html = await renderTemplate(template, { 'prerollmacro': this.item.system.prerollmacro, 'macro': this.item.system.macro, 'damagemacro': this.item.system.damagemacro, });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'prerollmacro': this.item.system.prerollmacro, 'macro': this.item.system.macro, 'damagemacro': this.item.system.damagemacro, });
 
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.Macros"), },
@@ -152,7 +152,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       context.rollData = actor.getRollData();
     }
 
-    context.descriptionHTML = await TextEditor.enrichHTML(context.system.description, {
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.description, {
       secrets: this.document.isOwner,
       async: true
     });
@@ -351,7 +351,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
       }
 
       const template = "systems/exaltedthird/templates/dialogues/edit-alternate-mode.html";
-      const html = await renderTemplate(template, { name: currentAlternateData ? currentAlternateData.name : "New Alt Mode", system: currentAlternateData ? currentAlternateData : this.item.system, selects: CONFIG.exaltedthird.selects });
+      const html = await foundry.applications.handlebars.renderTemplate(template, { name: currentAlternateData ? currentAlternateData.name : "New Alt Mode", system: currentAlternateData ? currentAlternateData : this.item.system, selects: CONFIG.exaltedthird.selects });
 
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Alternate"), resizable: true },
@@ -559,7 +559,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     // });
 
     html.find(".charms-cheat-sheet").click(async ev => {
-      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
         content: html,
@@ -572,7 +572,7 @@ export class ExaltedThirdItemSheet extends ItemSheet {
     });
 
     html.find(".formula-help").click(async ev => {
-      const html = await renderTemplate("systems/exaltedthird/templates/dialogues/formula-dialogue.html");
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/formula-dialogue.html");
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Formulas"), resizable: true },
         content: html,

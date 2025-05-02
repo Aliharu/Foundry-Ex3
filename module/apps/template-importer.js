@@ -60,7 +60,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     }
   };
 
-  async close(options={}) {
+  async close(options = {}) {
     const applyChanges = await foundry.applications.api.DialogV2.confirm({
       window: { title: `${game.i18n.localize("Ex3.Close")}?` },
       content: "<p>Any unsaved changed will be lost</p>",
@@ -101,7 +101,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     if (event.type === 'submit') {
       this.data.showError = false;
       await this.importTemplate(event);
-      if(!this.data.showError) {
+      if (!this.data.showError) {
         ui.notifications.notify(`Import Complete`);
       }
     }
@@ -124,7 +124,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     const hintMap = { 'charm': 'CharmImportHint', 'spell': 'SpellImportHint', 'adversary': 'AdversaryImportHint', 'qc': 'QCImportHint', 'other': 'OtherImportHint' }
     this.data.templateHint = game.i18n.localize(`Ex3.${hintMap[this.data.type]}`);
     this.data.buttons = [
-      { type: "submit", icon: "fa-solid fa-save", label: "Ex3.Import" }
+      { type: "submit", icon: "fa-solid fa-save", label: "Ex3.Import", cssClass: "full-footer-button" }
     ]
     return this.data;
   }
@@ -422,7 +422,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
     if (requirementArray.length === 2 || requirementArray.length === 3) {
-      let essenceRequirement = requirementArray[requirementArray.length === 2 ? 1 :2].trim().split(' ');
+      let essenceRequirement = requirementArray[requirementArray.length === 2 ? 1 : 2].trim().split(' ');
       charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
   }
@@ -1980,7 +1980,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
   }
 
   static async showHelpDialog(event, target) {
-    const html = await renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/help-dialogue.html");
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
       content: html,

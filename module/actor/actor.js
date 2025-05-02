@@ -532,7 +532,7 @@ export class ExaltedThirdActor extends Actor {
       tokenId: token?.uuid || null,
       item: item.system
     };
-    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
 
     // Create the ChatMessage data object
     const chatData = {
@@ -1876,7 +1876,7 @@ export class ExaltedThirdActor extends Actor {
     const rollTypeLabel = CONFIG.exaltedthird.rollTypeTargetLabels[data.attackType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll";
     if (game.user.targets && game.user.targets.size > 0) {
       for (const target of Array.from(game.user.targets)) {
-        const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
+        const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
           actor: this,
           targetActor: target.actor,
           imgUrl: imageUrl,
@@ -1896,7 +1896,7 @@ export class ExaltedThirdActor extends Actor {
         });
       }
     } else if (CONFIG.exaltedthird.targetableRollTypes.includes(data.rollType)) {
-      const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
+      const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
         actor: this,
         targetActor: null,
         imgUrl: imageUrl,
@@ -1915,7 +1915,7 @@ export class ExaltedThirdActor extends Actor {
         },
       });
     } else if (game.settings.get("exaltedthird", "nonTargetRollCards")) {
-      const messageContent = await renderTemplate("systems/exaltedthird/templates/chat/pre-roll-card.html", {
+      const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/pre-roll-card.html", {
         actor: this,
         imgUrl: imageUrl,
         rollType: rollTypeLabel,
@@ -2028,7 +2028,7 @@ export class ExaltedThirdActor extends Actor {
       item: item,
       cardType: cardType,
     };
-    const html = await renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/item-card.html", templateData);
 
     // Create the ChatMessage data object
     const chatData = {

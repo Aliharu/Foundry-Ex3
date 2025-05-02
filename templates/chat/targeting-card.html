@@ -3,14 +3,14 @@
     <div class="grid grid-3col" style="text-align:center;">
         <div>
             <div>
-                <img class="borderless-image" src="{{actor.img}}" title="{{actor.name}}" width="64" height="64" />
+                <img class="borderless-image roll-card-icon" src="{{actor.img}}" title="{{actor.name}}" width="64" height="64" />
             </div>
             <div>
                 <b>{{actor.name}}</b>
             </div>
         </div>
         <div>
-            <img class="borderless-image black-icon" src="{{imgUrl}}" width="64" height="64" />
+            <img class="borderless-image black-icon roll-card-icon" src="{{imgUrl}}" width="64" height="64" />
             <div>
                 <b>{{localize rollType}}</b>
             </div>
@@ -18,7 +18,7 @@
         {{#if targetActor}}
         <div>
             <div>
-                <img class="borderless-image" class="list-item-image" src="{{targetActor.img}}" title="{{targetActor.name}}" width="64" height="64" />
+                <img class="borderless-image roll-card-icon" class="list-item-image" src="{{targetActor.img}}" title="{{targetActor.name}}" width="64" height="64" />
             </div>
             <div>
                 <b>{{targetActor.name}}</b>
@@ -26,7 +26,7 @@
         </div>
         {{else}}
         <div>
-            <img class="borderless-image black-icon" src="icons/svg/mystery-man.svg" width="64" height="64" />
+            <img class="borderless-image black-icon roll-card-icon" src="icons/svg/mystery-man.svg" width="64" height="64" />
             <div>
                 <b>{{localize "Ex3.NoTargets"}}</b>
             </div>
@@ -34,8 +34,8 @@
         {{/if}}
     </div>
     {{#if targetActor}}
-        <div style="width:100%;">
-            <button class="add-oppose-charms"> <i class="fas fa-shield-plus"></i>{{localize "Ex3.AddOpposingCharms"}}</button>
+        <div>
+            <button class="add-oppose-charms full-footer-button"> <i class="fas fa-shield-plus"></i>{{localize "Ex3.AddOpposingCharms"}}</button>
         </div>
     {{/if}}
 </div>
