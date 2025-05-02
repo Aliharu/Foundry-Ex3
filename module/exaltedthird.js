@@ -1,21 +1,27 @@
 // Import Modules
 import { exaltedthird } from "./config.js";
 
-import { ExaltedThirdActor } from "./actor/actor.js";
 import { ExaltedThirdActorSheet } from "./actor/actor-sheet.js";
-import { ExaltedThirdItem } from "./item/item.js";
-import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
+import { ExaltedThirdActor } from "./actor/actor.js";
 import * as Chat from "./chat.js";
+import { ExaltedThirdItemSheet } from "./item/item-sheet.js";
+import { ExaltedThirdItem } from "./item/item.js";
 
-import TraitSelector from "./apps/trait-selector.js";
-import { registerSettings } from "./settings.js";
-import ItemSearch from "./apps/item-search.js";
-import Importer from "./apps/importer.js";
-import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
-import { ExaltedCombatant } from "./combat/combatant.js";
-import ExaltedActiveEffect from "./active-effect.js";
 import ExaltedActiveEffectConfig from "./active-effect-config.js";
+import ExaltedActiveEffect from "./active-effect.js";
+import CharacterBuilder from "./apps/character-builder.js";
+import RollForm from "./apps/dice-roller.js";
+import Importer from "./apps/importer.js";
+import ItemSearch from "./apps/item-search.js";
 import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
+import Prophecy from "./apps/prophecy.js";
+import TemplateImporter from "./apps/template-importer.js";
+import TraitSelector from "./apps/trait-selector.js";
+import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
+import { ExaltedCombat } from "./combat/combat.js";
+import { ExaltedCombatant } from "./combat/combatant.js";
+import { registerSettings } from "./settings.js";
+import { BaseActiveEffectData } from "./template/active-effect-template.js";
 import { CharacterData, NpcData } from "./template/actor-template.js";
 import {
   ItemActionData,
@@ -38,13 +44,7 @@ import {
   ItemSpellData,
   ItemWeaponData
 } from "./template/item-template.js";
-import { ExaltedCombat } from "./combat/combat.js";
-import Prophecy from "./apps/prophecy.js";
-import TemplateImporter from "./apps/template-importer.js";
-import CharacterBuilder from "./apps/character-builder.js";
-import RollForm from "./apps/dice-roller.js";
-import { BaseActiveEffectData } from "./template/active-effect-template.js";
-import { getNumberFormula } from "./utils/utils.js";
+import { appendSidebarButtons, getNumberFormula } from "./utils/utils.js";
 
 Hooks.once('init', async function () {
 
@@ -418,26 +418,7 @@ $(document).ready(() => {
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
-  if (html instanceof jQuery) {
-    html = $(html)[0];
-  }
-
-  const buttonsText = document.createElement("div");
-  buttonsText.classList.add("flexrow");
-
-  const generateButton = document.createElement("button");
-  generateButton.classList.add("character-generator-button", "button-text");
-  generateButton.innerHTML = `<i class="fas fa-user-plus"></i> ${game.i18n.localize("Ex3.Generate")}`;
-  buttonsText.appendChild(generateButton);
-
-  if (game.user.isGM) {
-    const importButton = document.createElement("button");
-    importButton.classList.add("template-import-button", "button-text");
-    importButton.innerHTML = `<i class="fas fa-file-import"></i> ${game.i18n.localize("Ex3.Import")}`;
-    buttonsText.appendChild(importButton);
-  }
-
-  html.querySelector(".header-actions").append(buttonsText);
+  appendSidebarButtons(html, 'actor');
 
   html.querySelectorAll('.character-generator-button').forEach(element => {
     element.addEventListener('click', async (ev) => {
@@ -454,13 +435,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
 
 Hooks.on("renderItemDirectory", (app, html, data) => {
-  if (html instanceof jQuery) {
-    html = $(html)[0];
-  }
-  const button = document.createElement("button");
-  button.classList.add("template-import-button");
-  button.innerHTML = `<i class="fas fa-suitcase"></i> ${game.i18n.localize("Ex3.Import")}`;
-  html.querySelector(".header-actions").append(button);
+  appendSidebarButtons(html, 'item');
 
   html.querySelectorAll('.template-import-button').forEach(element => {
     element.addEventListener('click', async (ev) => {
@@ -470,15 +445,8 @@ Hooks.on("renderItemDirectory", (app, html, data) => {
 });
 
 Hooks.on("renderJournalDirectory", (app, html, data) => {
-  if (html instanceof jQuery) {
-    html = $(html)[0];
-  }
-
   if (game.user.isGM) {
-    const button = document.createElement("button");
-    button.classList.add("charm-card-button");
-    button.innerHTML = `<i class="fas fa-book-open"></i> ${game.i18n.localize("Ex3.CharmCardJournals")}`;
-    html.querySelector(".header-actions").append(button);
+    appendSidebarButtons(html, 'journal');
 
     html.querySelectorAll('.charm-card-button').forEach(element => {
       element.addEventListener('click', async (ev) => {
@@ -489,13 +457,7 @@ Hooks.on("renderJournalDirectory", (app, html, data) => {
 });
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
-  if (html instanceof jQuery) {
-    html = $(html)[0];
-  }
-  const button = document.createElement("button");
-  button.classList.add("item-search-button");
-  button.innerHTML = `<i class="fas fa-suitcase"></i> ${game.i18n.localize("Ex3.ItemSearch")}`;
-  html.querySelector(".header-actions").append(button);
+  appendSidebarButtons(html, 'compendium');
 
   html.querySelectorAll('.item-search-button').forEach(element => {
     element.addEventListener('click', async (ev) => {

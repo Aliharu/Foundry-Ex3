@@ -97,3 +97,46 @@ export function sortDice(diceRoll, ignoreSetting = false) {
 
     return sortedDice;
 }
+
+export function appendSidebarButtons(html, type) {
+    const buttonClassMap = {
+        'actor': 'character-generator-button',
+        'item': 'template-import-button',
+        'journal': 'charm-card-button',
+        'compendium': 'item-search-button',
+    }
+    const buttonClassLabel = {
+        'actor': game.i18n.localize("Ex3.Generate"),
+        'item': game.i18n.localize("Ex3.Import"),
+        'journal': game.i18n.localize("Ex3.CharmCardJournals"),
+        'compendium': game.i18n.localize("Ex3.ItemSearch"),
+    }
+    const buttonClassIcon = {
+        'actor': 'fa-user-plus',
+        'item': 'fa-suitcase',
+        'journal': 'fa-book-open',
+        'compendium': 'fa-suitcase',
+    }
+    if (html instanceof jQuery) {
+        html = $(html)[0];
+    }
+    const buttonsText = document.createElement("div");
+    buttonsText.classList.add("action-buttons");
+    buttonsText.classList.add("flexrow");
+
+    const button = document.createElement("button");
+    button.classList.add(buttonClassMap[type]);
+    button.innerHTML = `<i class="fas ${buttonClassIcon[type]}"></i> ${buttonClassLabel[type]}`;
+    buttonsText.appendChild(button);
+
+    if (type === 'actor' && game.user.isGM) {
+        const importButton = document.createElement("button");
+        importButton.classList.add("template-import-button", "button-text");
+        importButton.innerHTML = `<i class="fas fa-file-import"></i> ${game.i18n.localize("Ex3.Import")}`;
+        buttonsText.appendChild(importButton);
+    }
+    const headerActions = html.querySelector(".header-actions");
+    if (headerActions) {
+        headerActions.after(buttonsText);
+    }
+}
