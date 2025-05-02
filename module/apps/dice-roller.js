@@ -3943,7 +3943,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `Success` : 'Successes'}
+                <h4 class="dice-total">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `Success` : 'Successes'}
                 </h4>
                 <div class="dice-tooltip">
                     ${this._getDiceRollDisplay()}
@@ -4065,7 +4065,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let theContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
+                    <h4 class="dice-total">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                     <div class="dice-tooltip">
                         ${this._getDiceRollDisplay()}
                     </div>
@@ -4124,7 +4124,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         <div class="dice-roll">
             <div class="dice-result">
                 <h4 class="dice-total dice-total-middle">Accuracy Roll</h4>
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
+                <h4 class="dice-total">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                 <div class="dice-tooltip">
                     ${this._getDiceRollDisplay()}
                 </div>
@@ -4163,7 +4163,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         var messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
-                <h4 class="dice-formula">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-total">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
                 <h4 class="dice-total">Attack Missed!</h4>
             </div>
         </div>`;
@@ -4356,10 +4356,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         let damageDisplayResults = `
                                 <h4 class="dice-total dice-total-middle">${this.object.attackType === 'gambit' ? 'Initiative' : 'Damage'} Roll</h4>
-                                <h4 class="dice-formula">${this.object.attackSuccesses} accuracy successes vs ${this.object.defense} defense</h4>
-                                <h4 class="dice-formula">${this.object.baseDamage || 0} Dice + ${this.object.damage.damageSuccessModifier} successes</h4>
-                                ${this.object.attackType === 'decisive' ? `<h4 class="dice-formula">${this.object.damageDice} Damage dice vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>` : ''}
-                                ${this.object.attackType === 'withering' ? `<h4 class="dice-formula">${this.object.soak} Soak! ${this.object.damage.ignoreSoak ? `(Ignoring ${this.object.damage.ignoreSoak})` : ''}</h4><h4 class="dice-formula">${this.object.overwhelming} Overwhelming!</h4>` : ''}
+                                <h4 class="dice-total">${this.object.attackSuccesses} Accuracy successes vs ${this.object.defense} Defense</h4>
+                                <h4 class="dice-total">${this.object.baseDamage || 0} Dice + ${this.object.damage.damageSuccessModifier} Successes</h4>
+                                ${this.object.attackType === 'decisive' ? `<h4 class="dice-total">${this.object.damageDice} Damage dice vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>` : ''}
+                                ${this.object.attackType === 'withering' ? `<h4 class="dice-total">${this.object.soak} Soak! ${this.object.damage.ignoreSoak ? `(Ignoring ${this.object.damage.ignoreSoak})` : ''}</h4><h4 class="dice-total">${this.object.overwhelming} Overwhelming!</h4>` : ''}
                                 <div class="dice-tooltip">
                                     ${this._getDiceRollDisplay('damageRoll')}
                                 </div><h4 class="dice-total">${this.object.damageSuccesses} Total ${this.object.attackType === 'gambit' ? 'Successes' : 'Damage'}!</h4> 
@@ -4428,7 +4428,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.attackType === 'decisive') {
                 typeSpecificResults = `<h4 class="dice-total">${this.object.damageSuccesses} ${this.object.damage.type.capitalize()} Damage!</h4>`;
                 if (this._useLegendarySize('decisive')) {
-                    typeSpecificResults += `<h4 class="dice-formula">Legendary Size</h4><h4 class="dice-formula">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
+                    typeSpecificResults += `<h4 class="dice-total">Legendary Size</h4><h4 class="dice-total">Damage capped at ${3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier} + Charm damage levels</h4>`;
                     this.object.damageSuccesses = Math.min(this.object.damageSuccesses, 3 + this.actor.system.attributes.strength.value + this.object.damage.damageSuccessModifier);
                 }
                 typeSpecificResults += `
@@ -4453,7 +4453,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.attackSuccess = false;
                     resultsText = `<h4 class="dice-total">Gambit Failed</h4>`
                 }
-                typeSpecificResults = `<h4 class="dice-formula">${this.object.damageSuccesses} Successes vs ${this.object.gambitDifficulty} Difficulty!</h4>${resultsText}`;
+                typeSpecificResults = `<h4 class="dice-total">${this.object.damageSuccesses} Successes vs ${this.object.gambitDifficulty} Difficulty!</h4>${resultsText}`;
                 this.object.damageThresholdSuccesses = (this.object.damageSuccesses - this.object.gambitDifficulty);
             }
             else {
@@ -4624,19 +4624,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let accuracyContent = '';
         if (this.object.rollType !== 'damage') {
             accuracyContent = `
-                <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
+                <h4 class="dice-total">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                 <div class="dice-tooltip">
                     ${this._getDiceRollDisplay()}
                 </div>
-                <h4 class="dice-formula">${this.object.diceRollTotal} Successes vs ${this.object.defense} Defense</h4>
-                <h4 class="dice-formula">${this.object.thresholdSuccesses} Threshhold Successes</h4>
+                <h4 class="dice-total">${this.object.diceRollTotal} Successes vs ${this.object.defense} Defense</h4>
+                <h4 class="dice-total">${this.object.thresholdSuccesses} Threshhold Successes</h4>
             `
         }
         var messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
                 ${accuracyContent}
-                <h4 class="dice-formula">${dice} Damage vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>
+                <h4 class="dice-total">${dice} Damage vs ${this.object.hardness} Hardness ${this.object.damage.ignoreHardness ? `(Ignoring ${this.object.damage.ignoreHardness})` : ''}</h4>
                 <h4 class="dice-total">Hardness Stopped Decisive!</h4>
             </div>
         </div>`;
@@ -6159,7 +6159,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let messageContent = `
             <div class="dice-roll">
                 <div class="dice-result">
-                    <h4 class="dice-formula">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
+                    <h4 class="dice-total">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                     <div class="dice-tooltip">
                         ${this._getDiceRollDisplay()}
                     </div>
