@@ -1,34 +1,23 @@
 export class ExaltedCombatant extends Combatant {
-    prepareBaseData() {
-        super.prepareBaseData();
-        if (
-            this.flags?.acted === undefined &&
-            canvas?.ready) {
-            this.flags.acted = false;
+    async _preUpdate(updateData, options, user) {
+        await super._preUpdate(updateData, options, user);
+        if(this.initiative <= 0 && (updateData.initiative ?? 0) > 0) {
+            updateData.flags = {
+                exaltedthird: {
+                    crashedBy: null,
+                    crashRecovery: 2,
+                }
+            }
         }
     }
+
     testUserPermission(...[user, permission, options]) {
         return (this.actor?.testUserPermission(user, permission, options) ?? user.isGM);
     }
 
     async toggleCombatantTurnOver() {
-        return this.update({
-            [`flags.acted`]: !this.flags.acted,
+        await this.update({
+            [`system.acted`]: !this.system.acted,
         });
-    }
-
-    async updateInit(increase) {
-        if (increase && this.initiative >= 0) {
-            this.update({ [`flags.crashedBy`]: null });
-            if (this.initiative === 0) {
-                this.update({ [`flags.crashRecovery`]: 2 });
-            }
-        }
-        if (increase) {
-            return this.update({ initiative: this.initiative + 1 });
-        }
-        else {
-            return this.update({ initiative: this.initiative - 1 });
-        }
     }
 }

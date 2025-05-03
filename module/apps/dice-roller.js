@@ -5640,11 +5640,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         }
                         if (opposingCombatant) {
                             if (cleanedValue) {
-                                if (opposingCombatant?.flags?.acted !== true) {
+                                if (opposingCombatant?.system.acted !== true) {
                                     fufillsRequirements = false;
                                 }
                             } else {
-                                if (!opposingCombatant?.flags?.acted) {
+                                if (!opposingCombatant?.system.acted) {
                                     fufillsRequirements = false;
                                 }
                             }
@@ -6312,13 +6312,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 combatStats.inCombat = true;
                 if (combatant?.initiative !== null) {
                     combatStats.actorInitiative = combatant.initiative;
-                    combatStats.turnTaken = combatant.flags?.acted;
+                    combatStats.turnTaken = combatant.system.acted;
                 }
             }
             if (this.object.targetCombatant) {
                 if (this.object.targetCombatant?.initiative !== null) {
                     combatStats.targetInitiative = this.object.targetCombatant.initiative;
-                    combatStats.targetTurnTaken = this.object.targetCombatant.flags?.acted;
+                    combatStats.targetTurnTaken = this.object.targetCombatant.system.acted;
                 }
             }
         }

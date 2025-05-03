@@ -3,7 +3,7 @@ export class ExaltedCombat extends Combat {
       const updates = this.combatants.map(c => {
         return {
           _id: c.id,
-          [`flags.acted`]: c.isDefeated
+          [`system.acted`]: c.isDefeated
             ? true
             : false,
         };
@@ -27,20 +27,20 @@ export class ExaltedCombat extends Combat {
         initiative: value
       };
       if (value <= 0 && combatant.initiative && combatant.initiative > 0 && crasherId) {
-        newVal[`flags.crashedBy`] = crasherId;
+        newVal[`flags.exaltedthird.crashedBy`] = crasherId;
       }
       if (value > 0) {
-        newVal[`flags.crashedBy`] = null;
+        newVal[`flags.exaltedthird.crashedBy`] = null;
         if(combatant.initiative !== null && combatant.initiative <= 0) {
-          newVal[`flags.crashRecovery`] = 2;
+          newVal[`flags.exaltedthird.crashRecovery`] = 2;
         }
       }
       await combatant.update(newVal);
     }
   
     // _sortCombatants(a,b) {
-    //   const ia = (Number.isNumeric(a.initiative) && !a.flags.acted) ? a.initiative : -Infinity;
-    //   const ib = (Number.isNumeric(b.initiative) && !b.flags.acted) ? b.initiative : -Infinity;
+    //   const ia = (Number.isNumeric(a.initiative) && !a.system.acted) ? a.initiative : -Infinity;
+    //   const ib = (Number.isNumeric(b.initiative) && !b.system.acted) ? b.initiative : -Infinity;
     //   return (ib - ia) || (a.id > b.id ? 1 : -1);
     // }
   
@@ -55,10 +55,10 @@ export class ExaltedCombat extends Combat {
     // async nextTurn() {
     //   let round = this.round;
     //   const currentPerson = this.turns[this.turn];
-    //   if(!currentPerson.flags.acted) {
+    //   if(!currentPerson.system.acted) {
     //     await this.toggleTurnOver(currentPerson.id);
     //   }
-    //   const nextTurn = this.turns.filter(t => t.flags.acted === false && t.initiative !== undefined).sort((a, b) => {
+    //   const nextTurn = this.turns.filter(t => t.system.acted === false && t.initiative !== undefined).sort((a, b) => {
     //     return a.initiative > b.initiative ? 1 : -1;
     //   });
     //   if(nextTurn.length === 0) {

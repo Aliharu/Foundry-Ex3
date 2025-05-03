@@ -17,9 +17,9 @@ import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
 import Prophecy from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
 import TraitSelector from "./apps/trait-selector.js";
-import { ExaltedCombatTracker } from "./combat/combat-tracker.js";
 import { ExaltedCombat } from "./combat/combat.js";
 import { ExaltedCombatant } from "./combat/combatant.js";
+import ExaltedCombatTracker from "./combat/combat-tracker.js";
 import { registerSettings } from "./settings.js";
 import { BaseActiveEffectData } from "./template/active-effect-template.js";
 import { CharacterData, NpcData } from "./template/actor-template.js";
@@ -45,6 +45,7 @@ import {
   ItemWeaponData
 } from "./template/item-template.js";
 import { appendSidebarButtons, getNumberFormula } from "./utils/utils.js";
+import { BaseCombatantData } from "./template/combatant-template.js";
 
 Hooks.once('init', async function () {
 
@@ -100,6 +101,15 @@ Hooks.once('init', async function () {
   CONFIG.ActiveEffect.dataModels = {
     base: BaseActiveEffectData,
   }
+
+  CONFIG.Combatant.dataModels = {
+    base: BaseCombatantData,
+  }
+
+  CONFIG.Combat.initiativeIcon = {
+    icon: "../systems/exaltedthird/assets/icons/d10.svg",
+    hover: "../systems/exaltedthird/assets/icons/d10.svg"
+  };
 
   /**
    * Set an initiative formula for the system
@@ -693,7 +703,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
 
       if (combatant.flags?.crashRecovery) {
         await combatant.update({
-          [`flags.crashRecovery`]: combatant.flags.crashRecovery - 1,
+          [`flags.exaltedthird.crashRecovery`]: (combatant.flags?.exaltedthird?.crashRecovery ?? 2) - 1,
         });
       }
 
@@ -782,8 +792,8 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
           actorData.system.anima.level = moteResults.newAnimaLevel;
           actorData.system.anima.value = moteResults.newAnimaValue;
         }
-        if (combatant.initiative !== null && initiativeGain) {
-          game.combat.setInitiative(combatant.id, combatant.initiative + initiativeGain, null);
+        if (currentCombatant.initiative !== null && initiativeGain) {
+          game.combat.setInitiative(currentCombatant.id, currentCombatant.initiative + initiativeGain, null);
         }
         if (moteGain) {
           let missingPersonal = (currentCombatant.actor.system.motes.personal.max - currentCombatant.actor.system.motes.personal.committed) - actorData.system.motes.personal.value;
