@@ -1,0 +1,390 @@
+<div class="tab items" data-group="primary" data-tab="charms">
+    <ol class="items-list">
+        {{#if system.settings.showanima}}
+        <li>
+            <div class="resource-label list-section-header mb-2">
+                {{localize "Ex3.AnimaEffects"}}
+            </div>
+        </li>
+        <li>
+            <div class="d-flex flex-between collapsable cursor-pointer list-section-header mb-1" data-type="passive">
+                <div class="resource-label">
+                    {{localize "Ex3.Anima"}} <a class="item-control data-chat" title="Chat" data-type="passive"><i
+                            class="fas fa-comment"></i></a> </div>
+                <div>
+                    <i class="fas fa-caret-down"></i>
+                </div>
+            </div>
+            <div {{#if system.collapse.passive }} style="display:none;" {{/if}}>
+                <textarea type="text" name="system.anima.passive" rows="12">{{system.anima.passive}}</textarea>
+            </div>
+        </li>
+        <li>
+            <div class="d-flex flex-between collapsable cursor-pointer list-section-header mb-1" data-type="active">
+                <div class="resource-label">
+                    {{localize "Ex3.Anima"}} <a class="item-control data-chat" title="Chat" data-type="active"><i
+                            class="fas fa-comment"></i></a> </div>
+                <div>
+                    <i class="fas fa-caret-down"></i>
+                </div>
+            </div>
+            <div {{#if system.collapse.active }} style="display:none;" {{/if}}>
+                <textarea type="text" name="system.anima.active" rows="12">{{system.anima.active}}</textarea>
+            </div>
+        </li>
+        <li>
+            <div class="d-flex flex-between collapsable cursor-pointer list-section-header mb-1" data-type="iconic">
+                <div class="resource-label">
+                    {{localize "Ex3.Anima"}} <a class="item-control data-chat" title="Chat" data-type="iconic"><i
+                            class="fas fa-comment"></i></a> </div>
+                <div>
+                    <i class="fas fa-caret-down"></i>
+                </div>
+            </div>
+            <div {{#if system.collapse.iconic }} style="display:none;" {{/if}}>
+                <textarea type="text" name="system.anima.iconic" rows="12">{{system.anima.iconic}}</textarea>
+            </div>
+        </li>
+        {{/if}}
+        {{#if characterEditMode}}
+        <div class="flex-center" style="margin-bottom:10px;">
+            {{localize "Ex3.Charms"}}: {{system.charcreation.spent.charms}}/{{system.charcreation.available.charms}}
+            {{#ifEquals system.details.exalt 'dragonblooded'}}(5 are excellencies){{/ifEquals}}
+        </div>
+        {{/if}}
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.Charms"}} {{#ifEquals system.details.exalt 'alchemical'}}
+                ({{system.usedCharmSlots}} / {{system.charmslots.value}})
+                {{/ifEquals}} <a><i class="fas fa-info-circle charms-cheat-sheet cursor-pointer"></i></a>
+            </div>
+            <div>
+                {{#ifEquals actor.type 'character'}}
+                <a class="item-control add-new-item" title="Import charm" data-type="charm"><i class="fas fa-edit"></i>
+                    {{localize "Ex3.Import"}}</a>
+                {{/ifEquals}}
+                <a class="item-control item-create" title="Create charm" data-type="charm"><i class="fas fa-plus"></i>
+                    {{localize "Ex3.Add"}}</a>
+            </div>
+        </div>
+        {{#each actor.charms as |charm ability|}}
+        {{#if charm.visible}}
+        <div class="item d-flex flex-between mb-1 charm-list-collapsable cursor-pointer">
+            <div class="flexrow item-header">
+                <div class="item-name">{{localize charm.name}}</div>
+            </div>
+            <div>
+                {{#if ../characterEditMode}}
+                <a class="fas fa-plus add-new-item" data-ability="{{ability}}" data-type="charm"><i></i></a>
+                {{/if}}
+                <a><i class="fas fa-caret-down"></i></a>
+            </div>
+        </div>
+        <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
+            {{#each charm.list as |item id|}}
+            <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                        height="24" /></div>
+                <h4 class="item-name"><b>{{item.name}}
+                        {{#if item.system.modes.currentmodename}}
+                        ({{item.system.modes.currentmodename}})
+                        {{/if}}
+                        {{#if item.system.active}}
+                        {{#if item.system.multiactivate}}
+                        {{#if item.flags.exaltedthird.currentIterationsActive}}
+                        (Active: <a class="item-control item-decrease-activations" title="Decrease Activations"><i
+                                class="fas fa-minus"></i></a> {{item.flags.exaltedthird.currentIterationsActive}}
+                        <a class="item-control item-increase-activations" title="Increase Activations"><i
+                                class="fas fa-plus"></i></a>)
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+                    </b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}</h4>
+                <div class="item-controls">
+                    {{#if item.system.modes.alternates}}
+                    <a class="item-control switch-mode" title="Switch Modes"><i class="fas fa-right-left"></i></a>
+                    {{/if}}
+                    {{#if item.system.diceroller.opposedbonuses.enabled}}
+                    <a class="item-control add-opposing-charm"
+                        title="Add charm's opposed bonuses to other characters rolls"><i
+                            class="fas fa-shield-plus"></i></a>
+                    {{/if}}
+                    <!-- {{#if item.system.userestriction}}
+                    {{#if item.system.available}}
+                    <a class="item-control item-disable" title="Charm Available"><i class="fas fa-sun" style="color:#F9B516;"></i></a>
+                    {{else}}
+                    <a class="item-control item-disable" title="Charm Available"><i class="fas fa-sun"></i></a>
+                    {{/if}}
+                    {{/if}} -->
+                    {{#ifEquals ../../system.details.exalt 'alchemical'}}
+                    {{#if item.system.equipped}}
+                    <a class="item-control toggle-item-value" data-key="equipped" title="Unequip"
+                        style="color:#F9B516;"><i class="fas fa-head-side-gear"></i></a>
+                    {{else}}
+                    <a class="item-control toggle-item-value" data-key="equipped" title="Equip"><i
+                            class="fas fa-head-side-gear"></i></a>
+                    {{/if}}
+                    {{/ifEquals}}
+                    {{#if item.system.cost.commitmotes}}
+                    {{#if item.system.active}}
+                    <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
+                    {{else}}
+                    <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
+                    {{/if}}
+                    {{else if item.system.activatable}}
+                    {{#if item.system.active}}
+                    <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
+                    {{else}}
+                    <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
+                    {{/if}}
+                    {{else}}
+                    <a class="item-control item-spend" title="Spend Charm"><i class="fas fa-bolt"></i></a>
+                    {{/if}}
+                    <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+            <li class="item-description">
+                <div>
+                    {{{charmCostDisplay item.system}}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Mins"}}</b>: {{#ifNotEquals item.system.requirement "0"}}<span
+                        class="capitalize">{{getAbilityDisplay ../../this item.system.ability}}</span>
+                    {{item.system.requirement}},{{/ifNotEquals}} {{localize "Ex3.Essence"}} {{item.system.essence}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Type"}}</b>: {{item.system.type}}
+                </div>
+                {{#if item.system.keywords}}
+                <div>
+                    <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                </div>
+                {{/if}}
+                <div>
+                    <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                </div>
+                <div>
+                    {{{enrichedHTMLItems ../../this "description" item._id}}}
+                </div>
+            </li>
+            {{/each}}
+        </div>
+        {{/if}}
+        {{/each}}
+        {{#if system.settings.issorcerer}}
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.Spells"}}
+            </div>
+            <div>
+                {{#ifEquals actor.type 'character'}}
+                <a class="item-control add-new-item" title="Import spell" data-type="spell"><i class="fas fa-edit"></i>
+                    {{localize "Ex3.Import"}}</a>
+                {{/ifEquals}}
+                <a class="item-control item-create" title="Create spell" data-type="spell"><i
+                        class="fas fa-plus"></i>{{localize
+                    "Ex3.Add"}}</a>
+            </div>
+        </div>
+        {{#each actor.spells as |spell circle|}}
+        {{#if spell.visible}}
+        <div class="item d-flex flex-between mb-1 spell-list-collapsable cursor-pointer">
+            <li class="flexrow item-header">
+                <div class="item-name">{{localize spell.name}}</div>
+            </li>
+            <div>
+                {{#if ../characterEditMode}}
+                <a class="fas fa-plus add-new-item" data-type="spell" data-circle="{{circle}}"><i></i></a>
+                {{/if}}
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+        <div id="{{circle}}" {{#if spell.collapse }} style="display:none;" {{/if}}>
+            {{#each spell.list as |item id|}}
+            <li class="item flexrow item-row" data-item-id="{{item._id}}">
+                <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                        height="24" /></div>
+                <h4 class="item-name"><b>{{item.name}}</b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}
+                </h4>
+                <div class="item-controls">
+                    {{#if item.system.activatable}}
+                    {{#if item.system.active}}
+                    <a class="item-control item-spend" title="Deactivate Spell"><i class="fas fa-lightbulb-on"></i></a>
+                    {{else}}
+                    <a class="item-control item-spend" title="Activate Spell"><i class="fas fa-lightbulb"></i></a>
+                    {{/if}}
+                    {{/if}}
+                    {{#if item.system.cost}}
+                    {{#if item.system.shaping}}
+                    <a class="item-control shape-sorcery" title="Shape Spell"><i class="fas fa-hand-sparkles"
+                            style="color:#F9B516"></i></a>
+                    <a class="item-control item-stop-shape" title="Stop Shaping"><i class="fas fa-ban"></i></a>
+                    {{else}}
+                    <a class="item-control item-shape" title="Shape Spell"><i class="fas fa-hand-sparkles"></i></a>
+                    {{/if}}
+                    {{else}}
+                    <a class="item-control item-spend" title="Spend Spell"><i class="fas fa-bolt"></i></a>
+                    {{/if}}
+                    <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+            <li class="item-description">
+                <div>
+                    <b>{{localize "Ex3.Cost"}}</b>: {{#if item.system.cost}} {{item.system.cost}}sm{{else}}
+                    Ritual{{/if}},
+                    {{item.system.willpower}}wp
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Circle"}}</b>: {{item.system.circle}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Keywords"}}</b>: {{item.system.keywords}}
+                </div>
+                <div>
+                    <b>{{localize "Ex3.Duration"}}</b>: {{item.system.duration}}
+                </div>
+                <div>
+                    {{{enrichedHTMLItems ../../this "description" item._id}}}
+                </div>
+            </li>
+            {{/each}}
+        </div>
+        {{/if}}
+        {{/each}}
+        {{/if}}
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.SpecialAbilities"}}
+            </div>
+            <a class="item-control item-create" title="Create specialability" data-type="specialability"><i
+                    class="fas fa-plus"></i>Add</a>
+        </div>
+        {{#each actor.specialabilities as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" />
+            </div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls">
+                {{#if item.system.active}}
+                <a class="item-control item-spend" title="Deactivate Ability"><i class="fas fa-lightbulb-on"></i></a>
+                {{else}}
+                <a class="item-control item-spend" title="Activate Ability"><i class="fas fa-lightbulb"></i></a>
+                {{/if}}
+                <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        <li class="item-description">
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+        {{#if system.settings.issorcerer}}
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.ShapingRituals"}}
+            </div>
+            <a class="item-control item-create" title="Create ritual" data-type="ritual"><i
+                    class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+        </div>
+        {{#each actor.rituals as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls">
+                {{#if item.system.active}}
+                <a class="item-control item-spend" title="Deactivate Ritual"><i class="fas fa-lightbulb-on"></i></a>
+                {{else}}
+                <a class="item-control item-spend" title="Activate Ritual"><i class="fas fa-lightbulb"></i></a>
+                {{/if}}
+                <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        <li class="item-description">
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+        {{/if}}
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.Merits"}}
+            </div>
+            <a class="item-control item-create" title="Create merit" data-type="merit"><i class="fas fa-plus"></i>{{localize
+                "Ex3.Add"}}</a>
+        </div>
+        {{#each actor.merits as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" />
+            </div>
+            <h4 class="item-name">{{item.name}}</h4>
+            {{#if item.system.points}}
+            <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
+                {{#numLoop 5}}
+                <span class="resource-value-static-step" data-index="{{this}}"></span>
+                {{/numLoop}}
+            </div>
+            {{/if}}
+            <div class="item-controls">
+                {{#if item.system.active}}
+                <a class="item-control item-spend" title="Deactivate Merit"><i class="fas fa-lightbulb-on"></i></a>
+                {{else}}
+                <a class="item-control item-spend" title="Activate Merit"><i class="fas fa-lightbulb"></i></a>
+                {{/if}}
+                <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        <li class="item-description">
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.Items"}}
+            </div>
+            <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i>{{localize
+                "Ex3.Add"}}</a>
+        </div>
+        {{#each actor.gear as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-controls">
+                {{#if item.system.activatable}}
+                {{#if item.system.active}}
+                <a class="item-control item-spend" title="Deactivate"><i class="fas fa-lightbulb-on"></i></a>
+                {{else}}
+                <a class="item-control item-spend" title="Activate"><i class="fas fa-lightbulb"></i></a>
+                {{/if}}
+                {{/if}}
+                <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        <li class="item-description">
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+
+</div>

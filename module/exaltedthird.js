@@ -151,11 +151,14 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/item/item-trigger-tab.html",
     "systems/exaltedthird/templates/actor/effects-tab.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",
-    "systems/exaltedthird/templates/actor/header-exalt-data.html",
+    "systems/exaltedthird/templates/actor/actor-header.html",
+    "systems/exaltedthird/templates/actor/npc-stats.html",
     "systems/exaltedthird/templates/actor/combat-tab.html",
-    "systems/exaltedthird/templates/actor/charm-list.html",
+    "systems/exaltedthird/templates/actor/charms-tab.html",
     "systems/exaltedthird/templates/actor/social-tab.html",
     "systems/exaltedthird/templates/actor/biography-tab.html",
+    "systems/exaltedthird/templates/actor/character-tab.html",
+    "systems/exaltedthird/templates/actor/character-stats-tab.html",
   ]);
 
   Combatant.prototype._getInitiativeFormula = function () {

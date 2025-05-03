@@ -1,0 +1,241 @@
+<header class="sheet-header">
+    <div class="profile-img-wrapper">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+        <div class="flex-center">
+            <label class="resource-label">{{localize "Ex3.Essence"}}</label>
+            <input type="number" name="system.essence.value" value="{{system.essence.value}}" data-dtype="Number" />
+            <div>
+                <a><i id="anima-down" class="fas fa-caret-down cursor-pointer"></i></a><label
+                    class="resource-label">{{localize
+                    "Ex3.Anima"}}</label><a><i id="anima-up" class="fas fa-caret-up cursor-pointer"></i></a>
+                <div>{{system.anima.level}}</div>
+            </div>
+            <!-- <button class="test-button test"><i class="fas fa-hammer"></i>{{localize
+        "Ex3.Test"}}</button> -->
+            {{#if system.settings.hasaura}}
+            <div>
+                <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+                <select name="system.details.aura" data-type="String">
+                    {{selectOptions selects.elements selected=system.details.aura localize=true}}
+                </select>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    <div class="header-fields">
+        <div>
+            <h1 class="charname"><input name="name" type="text" value="{{actor.name}}"
+                    placeholder="{{localize 'Ex3.NameTitle'}}" /></h1>
+        </div>
+        {{#if isNPC}}
+        <div class="grid grid-3col flexrow">
+            <h1 class="charname"> <select name="system.creaturetype" data-type="String">
+                    {{selectOptions selects.creatureTypes selected=system.creaturetype localize=true}}
+                </select></h1>
+            {{#ifEquals system.creaturetype 'demon'}}
+            <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
+                    {{selectOptions selects.demons selected=system.details.creaturesubtype localize=true}}
+                </select></h1>
+            {{/ifEquals}}
+            {{#ifEquals system.creaturetype 'exalt'}}
+            <h1 class="charname"> <select name="system.details.exalt" data-type="String">
+                    {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
+                </select></h1>
+            {{#if availableCastes}}
+            <h1 class="charname"> <select name="system.details.caste" data-type="String">
+                    {{selectOptions availableCastes selected=system.details.caste localize=true blank='Ex3.None'}}
+                </select></h1>
+            {{else ifEquals system.details.exalt 'exigent'}}
+            <h1 class="charname"> <select name="system.details.caste" data-type="String">
+                    {{selectOptions selects.exigentNames selected=system.details.caste localize=true}}
+                </select></h1>
+            {{else}}
+            <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
+                    placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
+            {{/if}}
+            {{/ifEquals}}
+
+            {{#ifEquals system.creaturetype 'fae'}}
+            <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
+                    {{selectOptions selects.wyldCreatures selected=system.details.creaturesubtype localize=true}}
+                </select></h1>
+            {{/ifEquals}}
+            {{#ifEquals system.creaturetype 'other'}}
+            <h1 class="charname"><input name="system.details.creaturesubtype" type="text"
+                    value="{{system.details.creaturesubtype}}" /></h1>
+            {{/ifEquals}}
+        </div>
+        {{else}}
+        <div class="grid grid-2col flexrow">
+            <h1 class="charname"> <select name="system.details.exalt" data-type="String">
+                    {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
+                </select></h1>
+            {{#if availableCastes}}
+            <h1 class="charname"> <select name="system.details.caste" data-type="String">
+                    {{selectOptions availableCastes selected=system.details.caste localize=true blank='Ex3.None'}}
+                </select></h1>
+            {{else ifEquals system.details.exalt 'exigent'}}
+            <h1 class="charname"> <select name="system.details.caste" data-type="String">
+                    {{selectOptions selects.exigentNames selected=system.details.caste localize=true}}
+                </select></h1>
+            {{else}}
+            <h1 class="charname"><input name="system.details.caste" type="text" value="{{system.details.caste}}"
+                    placeholder="{{localize 'Ex3.CasteAspect'}}" /></h1>
+            {{/if}}
+        </div>
+        {{/if}}
+        <div class="resources grid grid-3col">
+            {{#if gloryOverwhelming}}
+            <div class="flex-center">
+                <div>
+                    <label class="resource-label"> {{localize "Ex3.MoteCap"}} <a><i
+                                class="fas fa-plus-square calculate-motes cursor-pointer" title="Reset Cap"></i></a>
+                    </label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" name="system.motes.glorymotecap.value"
+                            value="{{system.motes.glorymotecap.value}}" data-dtype="Number" />
+                        /
+                        <input type="number" name="system.motes.glorymotecap.max"
+                            value="{{system.motes.glorymotecap.max}}" data-dtype="Number" />
+                    </div>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Committed"}} {{#if system.settings.editmode}} <a><i
+                                class="fas fa-calculator calculate-glorymotecap-commit cursor-pointer"
+                                title="Auto Set Motes"></i></a>{{/if}}</label>
+                    <input type="number" name="system.motes.glorymotecap.committed"
+                        value="{{system.motes.glorymotecap.committed}}" data-dtype="Number" />
+                </div>
+            </div>
+            <div class="flex-center">
+                <div>
+                    <label class="resource-label roll-ability" data-ability="fever">{{localize "Ex3.Fever"}}</label>
+                    <input type="number" name="system.fever.value" value="{{system.fever.value}}" data-dtype="Number" />
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.ComplicationPoints"}}</label>
+                    <input type="number" name="system.complicationpoints.value"
+                        value="{{system.complicationpoints.value}}" data-dtype="Number" />
+                </div>
+            </div>
+            {{else}}
+            <div class="flex-center">
+                <div>
+                    <a><i class="fas fa-bolt set-pool-personal cursor-pointer"
+                            title="Spend motes from this pool"></i></a>
+                    <label class="resource-label"> {{localize "Ex3.Personal"}} <a><i
+                                class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} calculate-motes cursor-pointer"
+                                title="{{#if system.settings.editmode}} Auto Set Motes {{else}} Restore Motes {{/if}}"></i></a>
+                    </label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" name="system.motes.personal.value" value="{{system.motes.personal.value}}"
+                            data-dtype="Number" />
+                        /
+                        <input type="number" name="system.motes.personal.max" value="{{system.motes.personal.max}}"
+                            data-dtype="Number" />
+                    </div>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Committed"}} {{#if system.settings.editmode}} <a><i
+                                class="fas fa-calculator calculate-personal-commit cursor-pointer"
+                                title="Auto Set Motes"></i></a>{{/if}}</label>
+                    <input type="number" name="system.motes.personal.committed"
+                        value="{{system.motes.personal.committed}}" data-dtype="Number" />
+                </div>
+            </div>
+            {{#if isExalt}}
+            <div class="flex-center">
+                <div>
+                    <a><i class="fas fa-bolt set-pool-peripheral cursor-pointer"
+                            title="Spend motes from this pool"></i></a><label class="resource-label"> {{localize
+                        "Ex3.Peripheral"}}
+                        <a><i class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} calculate-motes cursor-pointer"
+                                title="{{#if system.settings.editmode}} Auto Set Motes {{else}} Restore Motes {{/if}}"></i></a></label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" name="system.motes.peripheral.value"
+                            value="{{system.motes.peripheral.value}}" data-dtype="Number" />
+                        /
+                        <input type="number" name="system.motes.peripheral.max" value="{{system.motes.peripheral.max}}"
+                            data-dtype="Number" />
+                    </div>
+                </div>
+                <div>
+                    <label class="resource-label">{{localize "Ex3.Committed"}} {{#if system.settings.editmode}} <a><i
+                                class="fas fa-calculator calculate-peripheral-commit cursor-pointer"
+                                title="Auto Set Motes"></i></a>{{/if}}</label>
+                    <input type="number" name="system.motes.peripheral.committed"
+                        value="{{system.motes.peripheral.committed}}" data-dtype="Number" />
+                </div>
+            </div>
+            {{/if}}
+            {{/if}}
+            <div class="flex-center">
+                <label class="resource-label roll-ability" data-ability="willpower">{{localize "Ex3.Willpower"}}</label>
+                {{#if system.settings.usedotsvalues}}
+                <div class="resource-value" data-value="{{system.willpower.max}}" data-name="system.willpower.max">
+                    {{#numLoop 10}}
+                    <span class="resource-value-step" data-index="{{this}}"></span>
+                    {{/numLoop}}
+                </div>
+                <div class="resource-counter" data-states="x:value" data-value="{{system.willpower.value}}"
+                    data-name="system.willpower">
+                    {{#numLoop 10}}
+                    <span class="resource-counter-step non-health-boxes" data-type="willpower" data-index="{{this}}"
+                        data-state=""></span>
+                    {{/numLoop}}
+                </div>
+                {{else}}
+                <div class="resource-content flexrow flex-center flex-between" style="margin-bottom:3px;">
+                    <input type="number" name="system.willpower.value" value="{{system.willpower.value}}"
+                        data-dtype="Number" />/
+                    <input type="number" name="system.willpower.max" value="{{system.willpower.max}}"
+                        data-dtype="Number" />
+                </div>
+                {{/if}}
+                {{#ifEquals actor.type 'character'}}
+                {{#ifNotEquals system.details.exalt 'umbral'}}
+                {{#ifNotEquals system.details.exalt 'other'}}
+                {{#ifEquals system.details.exalt 'alchemical'}}
+                <label class="resource-label">{{localize "Ex3.Clarity"}}</label>
+                {{else ifEquals system.details.exalt 'marchlord'}}
+                <label class="resource-label">{{localize "Ex3.Divergence"}}</label>
+                {{else}}
+                <label class="resource-label">{{localize "Ex3.Limit"}}</label>
+                {{/ifEquals}}
+                {{#if system.settings.usedotsvalues}}
+                <div>
+                    <div class="resource-value" data-value="{{system.limit.value}}" data-name="system.limit.value">
+                        {{#numLoop 10}}
+                        <span class="resource-value-step" data-index="{{this}}"></span>
+                        {{/numLoop}}
+                    </div>
+                </div>
+                {{else}}
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="number" name="system.limit.value" value="{{system.limit.value}}" data-dtype="Number" />
+                </div>
+                {{/if}}
+                {{/ifNotEquals}}
+                {{else}}
+                <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
+                {{#if system.settings.usedotsvalues}}
+                <div>
+                    <div class="resource-value" data-value="{{system.penumbra.value}}"
+                        data-name="system.penumbra.value">
+                        {{#numLoop 10}}
+                        <span class="resource-value-step" data-index="{{this}}"></span>
+                        {{/numLoop}}
+                    </div>
+                </div>
+                {{else}}
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="number" name="system.penumbra.value" value="{{system.penumbra.value}}"
+                        data-dtype="Number" />
+                </div>
+                {{/if}}
+                {{/ifNotEquals}}
+                {{/ifEquals}}
+            </div>
+        </div>
+    </div>
+</header>

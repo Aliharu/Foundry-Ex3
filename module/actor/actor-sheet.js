@@ -79,6 +79,8 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     context.abilitySelectList = CONFIG.exaltedthird.selects.abilities;
     context.abilityWithCustomsSelectList = { ...CONFIG.exaltedthird.selects.abilities };
     context.isExalt = this.actor.type === 'character' || this.actor.system.creaturetype === 'exalt';
+    context.isNPC = this.actor.type === 'npc';
+    context.characterEditMode = (this.actor.type === 'character' && this.actor.system.settings.editmode);
 
     for (const customAbility of this.actor.items.filter(item => item.type === 'customability')) {
       context.abilityWithCustomsSelectList[customAbility.id] = customAbility.name;

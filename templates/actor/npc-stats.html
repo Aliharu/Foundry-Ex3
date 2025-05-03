@@ -1,0 +1,113 @@
+<div class="tab flex-center" data-group="primary" data-tab="stats">
+    <div style="padding-top:10px;">
+        <label class="resource-label">{{localize "Ex3.Actions"}}</label>
+        <a class="item-control item-create" title="Create action" data-type="action"><i
+                class="fas fa-plus"></i></a>
+    </div>
+    <div class="attributes grid grid-3col flex-group-center">
+        {{#each system.pools as |pool key|}}
+        <div class="pool flex-center">
+            <label for="system.pools.{{key}}.value" class="resource-label vrollable roll-pool"
+                data-roll="{{pool.value}}" data-pool="{{key}}" data-label="{{pool.name}}">{{localize
+                pool.name}}</label>
+            <input type="number" name="system.pools.{{key}}.value" value="{{pool.value}}" data-dtype="Number" />
+        </div>
+        {{/each}}
+        {{#each actor.actions as |action key|}}
+        <div class="item flex-center" data-item-id="{{action._id}}">
+            <label class="resource-label roll-action">{{action.name}}</label>
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            <input class="npc-action" type="number" name="action.system.value" value="{{action.system.value}}"
+                data-dtype="Number" />
+        </div>
+        {{/each}}
+    </div>
+    {{#if system.settings.showescort}}
+    <div>
+        <label class="resource-label">{{localize "Ex3.Escort"}}</label>
+        <textarea type="text" name="system.escort" rows="6">{{system.escort}}</textarea>
+    </div>
+    {{/if}}
+    <div>
+        <label class="resource-label">{{localize "Ex3.Qualities"}}</label>
+    </div>
+    <div class="grid grid-4col flex-group-center">
+        <div class="check-button">
+            <label class="resource-label">{{localize "Ex3.Battlegroup"}}:</label>
+            <input data-dtype="Boolean" name="system.battlegroup" type="checkbox" {{checked
+                system.battlegroup}}>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+            <select name="system.sizecategory" data-type="String">
+                {{selectOptions selects.sizeCategory selected=system.sizecategory localize=true}}
+            </select>
+        </div>
+        {{#ifEquals system.details.exalt 'abyssal'}}
+        <div>
+            <div class="resource-label">{{localize "Ex3.Apocalyptic"}}</div>
+            <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
+                {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'solar'}}
+        <div>
+            <div class="resource-label">{{localize "Ex3.Supernal"}}</div>
+            <select name="system.details.supernal" value="{{system.details.supernal}}" data-type="String">
+                {{selectOptions abilitySelectList selected=system.details.supernal localize=true}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'lunar'}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.Tell"}}</label>
+            <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.SpiritShape"}}</label>
+            <input type="text" name="system.details.spiritshape" value="{{system.details.spiritshape}}" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'sidereal'}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.BirthSign"}}</label>
+            <input type="text" name="system.details.birthsign" value="{{system.details.birthsign}}" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.ExaltationSign"}}</label>
+            <input type="text" name="system.details.exaltsign" value="{{system.details.exaltsign}}" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals system.details.exalt 'umbral'}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
+            <input type="number" name="system.penumbra.value" value="{{system.penumbra.value}}" />
+        </div>
+        {{/ifEquals}}
+        {{#if isNPC}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.SpeedBonus"}}</label>
+            <input type="number" name="system.speed.value" value="{{system.speed.value}}" data-dtype="Number" />
+        </div>
+        {{/if}}
+    </div>
+    <div class="flex-group-left">
+        <div class="mt-1">
+            <label class="resource-label">{{localize "Ex3.Classifications"}}</label>
+            <a class="trait-selector" data-options="classifications"
+                data-target="system.traits.classifications">
+                <i class="fas fa-edit"></i>
+            </a>
+            <div class="mt-1">
+                {{#each system.traits.classifications.selected as |v k|}}
+                <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div>
+        <textarea type="text" name="system.qualities" rows="12">{{system.qualities}}</textarea>
+    </div>
+</div>

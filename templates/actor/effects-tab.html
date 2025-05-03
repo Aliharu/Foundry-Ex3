@@ -1,345 +1,357 @@
-{{#if flags.exaltedthird.lastroll}}
-<div class="resource-label list-section-header d-flex flex-between">
-    <div>
-        {{localize "Ex3.LastRoll"}}
-    </div>
-</div>
-<ol class="items-list">
-    <li class="item flexrow">
-        <h4 class="item-name resource-table-value">{{flags.exaltedthird.lastroll.rollType}}</h4>
-        <div class="item-controls">
-            <a class="item-control last-roll" title="Dialogue"><i class="fas fa-dice-d10"></i></a>
-        </div>
-    </li>
-</ol>
-{{/if}}
+<div class="tab effects" data-group="primary" data-tab="effects">
 
-<div class="resource-label list-section-header d-flex flex-between">
-    <div>
-        {{localize "Ex3.SavedRolls"}}
-    </div>
-</div>
-<ol class="items-list">
-    {{#each system.savedRolls as |item id|}}
-    <li class="item flexrow saved-roll-row" data-item-id="{{id}}" data-saved-roll-id="{{id}}">
-        <h4 class="item-name">{{item.name}}</h4>
-        <div class="resource-table-value resource-value-static">
-            {{item.rollType}}
-        </div>
-        <div class="item-controls">
-            {{#ifEquals item.rollType 'useOpposingCharms'}}
-            <a class="item-control quick-roll" title="Add"><i class="fas fa-shield-plus"></i></a>
-            {{else}}
-            <a class="item-control quick-roll" title="Roll"><i class="fas fa-dice-d10"></i></a>
-            {{/ifEquals}}
-            <a class="item-control saved-roll" title="Dialogue"><i class="fas fa-edit"></i></a>
-            <a class="item-control delete-saved-roll" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-    </li>
-    {{/each}}
-</ol>
-<ol class="items-list">
+    {{#if flags.exaltedthird.lastroll}}
     <div class="resource-label list-section-header d-flex flex-between">
         <div>
-            {{localize "Ex3.Modifiers"}}
-        </div>
-        <a class="item-control item-create" title="Create modifier" data-type="modifier"><i
-                class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
-    </div>
-    {{#each actor.modifiers as |item id|}}
-    <li class="item flexrow item-row" data-item-id="{{item._id}}">
-        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-                height="24" /></div>
-        <h4 class="item-name">{{item.name}} <a class="item-control item-decrease-activations" title="Decrease Value"><i class="fas fa-minus"></i></a> {{item.system.value}}
-            <a class="item-control item-increase-activations" title="Increase Value"><i class="fas fa-plus"></i></a></h4>
-        <div class="item-controls">
-            <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-    </li>
-    <li>
-        <div>
-            {{{enrichedHTMLItems ../this "description" item._id}}}
-        </div>
-    </li>
-    {{/each}}
-</ol>
-<div class="resource-label list-section-header d-flex flex-between">
-    <div>
-        {{localize "Ex3.EffectTriggers"}}
-    </div>
-</div>
-<div class="grid grid-2col flex-group-center">
-    <div>
-        <label class="resource-label">{{localize "Ex3.DiceModifier"}}</label>
-        <input type="number" name="system.dicemodifier.value" value="{{system.dicemodifier.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.PenaltyModifier"}}</label>
-        <input type="number" name="system.penaltymodifier.value" value="{{system.penaltymodifier.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a><i
-                    class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
-        <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <div class="resource-label">{{localize "Ex3.NegateParryPenalty"}}</div>
-        <input type="number" name="system.negateparrypenalty.value" value="{{system.negateparrypenalty.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.NegateEvasionPenalty"}}</label>
-        <input type="number" name="system.negateevasionpenalty.value" value="{{system.negateevasionpenalty.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.TurnOrderInitiative"}}</label>
-        <input type="number" name="system.turnorderinitiative.value" value="{{system.turnorderinitiative.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.BaseInitiative"}}</label>
-        <input type="number" name="system.baseinitiative.value" value="{{system.baseinitiative.value}}"
-            data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.CrashBonus"}}</label>
-        <input type="number" name="system.crashbonus.value" value="{{system.crashbonus.value}}" data-dtype="Number" />
-    </div>
-    {{#if useShieldInitiative}}
-    <div>
-        <label class="resource-label">{{localize "Ex3.ShieldInitiative"}}</label>
-        <div class="resource-content flexrow flex-center flex-between">
-            <input name="system.shieldinitiative.value" value="{{system.shieldinitiative.value}}" type="Number" />
-            /
-            <input name="system.shieldinitiative.max" value="{{system.shieldinitiative.max}}" type="Number" />
+            {{localize "Ex3.LastRoll"}}
         </div>
     </div>
-    {{/if}}
-    <div>
-        <label class="resource-label">{{localize "Ex3.HealthPenaltyModifier"}}</label>
-        <input name="system.health.penaltymod" type="number" value="{{system.health.penaltymod}}" data-dtype="Number" />
-    </div>
-    <div>
-        <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
-        <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
-            system.dontresetonslaught}}>
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.MoteRecoveryCombat"}}</label>
-        <input name="system.motes.recovery.combat.value" type="number" value="{{system.motes.recovery.combat.value}}" data-dtype="Number" />
-    </div>
-    <div>
-        <label class="resource-label">{{localize "Ex3.MoteRecoveryOutOfCombat"}}</label>
-        <input name="system.motes.recovery.noncombat.value" type="number" value="{{system.motes.recovery.noncombat.value}}" data-dtype="Number" />
-    </div>
-    {{#ifEquals data.type 'character'}}
-    {{#if system.settings.editmode}}
-    <div>
-        <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
-        <button class="roll-button set-dice-cap"><i class="fas fa-cog"></i>{{localize
-            "Ex3.SetCustomDiceCap"}}</button>
-    </div>
-    {{/if}}
-    {{/ifEquals}}
-</div>
-<div>
-    <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i
-            class="fas fa-minus"></i></a> {{system.currentOnslaughtPenalty}} <a
-        class="item-control add-onslaught-penalty"><i class="fas fa-plus"></i></a>,
-    <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control subtract-defense-penalty"><i
-            class="fas fa-minus"></i></a> {{system.currentDefensePenalty}} <a
-        class="item-control add-defense-penalty"><i class="fas fa-plus"></i></a>,
-</div>
-<div>
-    <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
-        "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
-</div>
-{{#if system.settings.editmode}}
-<div class="resource-label list-section-header d-flex flex-between">
-    <div>
-        {{localize "Ex3.RollSettings"}}
-    </div>
-</div>
-<div class="grid grid-3col flex-group-center">
-    {{#each system.settings.rollsettings as |roll key|}}
-    <div>
-        <div>
-            <label class="resource-label">{{localize roll.name}}</label>
-        </div>
-        {{#ifEquals ../data.type 'character'}}
-        <div class="flexrow flex-center">
-            <div>
-                <label class="resource-label">{{localize "Ex3.Attribute"}} </label>
+    <ol class="items-list">
+        <li class="item flexrow">
+            <h4 class="item-name resource-table-value">{{flags.exaltedthird.lastroll.rollType}}</h4>
+            <div class="item-controls">
+                <a class="item-control last-roll" title="Dialogue"><i class="fas fa-dice-d10"></i></a>
             </div>
-            <select name="system.settings.rollsettings.{{key}}.attribute" value="{{roll.attribute}}" data-type="String">
-                {{selectOptions ../selects.attributes selected=roll.attribute localize=true}}
-            </select>
+        </li>
+    </ol>
+    {{/if}}
+
+    <div class="resource-label list-section-header d-flex flex-between">
+        <div>
+            {{localize "Ex3.SavedRolls"}}
         </div>
-        <div class="flexrow flex-center">
-            <div>
-                <label class="resource-label">{{localize "Ex3.Ability"}} </label>
+    </div>
+    <ol class="items-list">
+        {{#each system.savedRolls as |item id|}}
+        <li class="item flexrow saved-roll-row" data-item-id="{{id}}" data-saved-roll-id="{{id}}">
+            <h4 class="item-name">{{item.name}}</h4>
+            <div class="resource-table-value resource-value-static">
+                {{item.rollType}}
             </div>
-            <select name="system.settings.rollsettings.{{key}}.ability" value="{{roll.ability}}" data-type="String"
-                style="max-width: 52%;">
-                {{selectOptions ../abilityWithCustomsSelectList selected=roll.ability localize=true}}
-            </select>
+            <div class="item-controls">
+                {{#ifEquals item.rollType 'useOpposingCharms'}}
+                <a class="item-control quick-roll" title="Add"><i class="fas fa-shield-plus"></i></a>
+                {{else}}
+                <a class="item-control quick-roll" title="Roll"><i class="fas fa-dice-d10"></i></a>
+                {{/ifEquals}}
+                <a class="item-control saved-roll" title="Dialogue"><i class="fas fa-edit"></i></a>
+                <a class="item-control delete-saved-roll" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+    <ol class="items-list">
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.Modifiers"}}
+            </div>
+            <a class="item-control item-create" title="Create modifier" data-type="modifier"><i
+                    class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
         </div>
-        {{#if roll.appearanceattribute}}
-        <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.Appearance"}} </label>
-            <select name="system.settings.rollsettings.{{key}}.appearanceattribute" value="{{roll.appearanceattribute}}"
-                data-type="String">
-                {{selectOptions ../attributeList selected=roll.appearanceattribute localize=true}}
-            </select>
+        {{#each actor.modifiers as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+            <h4 class="item-name">{{item.name}} <a class="item-control item-decrease-activations"
+                    title="Decrease Value"><i class="fas fa-minus"></i></a> {{item.system.value}}
+                <a class="item-control item-increase-activations" title="Increase Value"><i class="fas fa-plus"></i></a>
+            </h4>
+            <div class="item-controls">
+                <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
+                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        <li>
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+    <div class="resource-label list-section-header d-flex flex-between">
+        <div>
+            {{localize "Ex3.EffectTriggers"}}
+        </div>
+    </div>
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.DiceModifier"}}</label>
+            <input type="number" name="system.dicemodifier.value" value="{{system.dicemodifier.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.PenaltyModifier"}}</label>
+            <input type="number" name="system.penaltymodifier.value" value="{{system.penaltymodifier.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a><i
+                        class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
+            <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.NegateParryPenalty"}}</div>
+            <input type="number" name="system.negateparrypenalty.value" value="{{system.negateparrypenalty.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.NegateEvasionPenalty"}}</label>
+            <input type="number" name="system.negateevasionpenalty.value" value="{{system.negateevasionpenalty.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.TurnOrderInitiative"}}</label>
+            <input type="number" name="system.turnorderinitiative.value" value="{{system.turnorderinitiative.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.BaseInitiative"}}</label>
+            <input type="number" name="system.baseinitiative.value" value="{{system.baseinitiative.value}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.CrashBonus"}}</label>
+            <input type="number" name="system.crashbonus.value" value="{{system.crashbonus.value}}"
+                data-dtype="Number" />
+        </div>
+        {{#if useShieldInitiative}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.ShieldInitiative"}}</label>
+            <div class="resource-content flexrow flex-center flex-between">
+                <input name="system.shieldinitiative.value" value="{{system.shieldinitiative.value}}" type="Number" />
+                /
+                <input name="system.shieldinitiative.max" value="{{system.shieldinitiative.max}}" type="Number" />
+            </div>
+        </div>
+        {{/if}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.HealthPenaltyModifier"}}</label>
+            <input name="system.health.penaltymod" type="number" value="{{system.health.penaltymod}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.DontResetOnslaughtNextTurn"}}</div>
+            <input data-dtype="Boolean" name="system.dontresetonslaught" type="checkbox" {{checked
+                system.dontresetonslaught}}>
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.MoteRecoveryCombat"}}</label>
+            <input name="system.motes.recovery.combat.value" type="number"
+                value="{{system.motes.recovery.combat.value}}" data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.MoteRecoveryOutOfCombat"}}</label>
+            <input name="system.motes.recovery.noncombat.value" type="number"
+                value="{{system.motes.recovery.noncombat.value}}" data-dtype="Number" />
+        </div>
+        {{#ifEquals data.type 'character'}}
+        {{#if system.settings.editmode}}
+        <div>
+            <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
+            <button class="roll-button set-dice-cap"><i class="fas fa-cog"></i>{{localize
+                "Ex3.SetCustomDiceCap"}}</button>
         </div>
         {{/if}}
         {{/ifEquals}}
-        <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
-            <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}"
-                data-dtype="Number" />
-        </div>
     </div>
-    {{/each}}
-    {{#each system.settings.attackrollsettings as |roll key|}}
     <div>
-        <div>
-            <label class="resource-label">{{localize roll.name}}</label>
-        </div>
-        <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
-            <input type="number" name="system.settings.attackrollsettings.{{key}}.bonus" value="{{roll.bonus}}"
-                data-dtype="Number" />
-        </div>
-        <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.Damage"}} </label>
-            <input type="number" name="system.settings.attackrollsettings.{{key}}.damage" value="{{roll.damage}}"
-                data-dtype="Number" />
-        </div>
-        {{#ifEquals key 'withering'}}
-        <div class="flexrow flex-center">
-            <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
-            <input type="number" name="system.settings.attackrollsettings.{{key}}.overwhelming"
-                value="{{roll.overwhelming}}" data-dtype="Number" />
-        </div>
-        {{/ifEquals}}
+        <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i
+                class="fas fa-minus"></i></a> {{system.currentOnslaughtPenalty}} <a
+            class="item-control add-onslaught-penalty"><i class="fas fa-plus"></i></a>,
+        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control subtract-defense-penalty"><i
+                class="fas fa-minus"></i></a> {{system.currentDefensePenalty}} <a
+            class="item-control add-defense-penalty"><i class="fas fa-plus"></i></a>,
     </div>
-    {{/each}}
-</div>
-{{#ifEquals data.type 'character'}}
-<div>
+    <div>
+        <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
+            "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
+    </div>
+    {{#if system.settings.editmode}}
     <div class="resource-label list-section-header d-flex flex-between">
         <div>
-            {{localize "Ex3.StaticValueSettings"}}
+            {{localize "Ex3.RollSettings"}}
         </div>
     </div>
     <div class="grid grid-3col flex-group-center">
-        {{#each system.settings.staticcapsettings as |setting key|}}
+        {{#each system.settings.rollsettings as |roll key|}}
         <div>
             <div>
-                <label class="resource-label">{{localize setting.name}}</label>
+                <label class="resource-label">{{localize roll.name}}</label>
             </div>
+            {{#ifEquals ../data.type 'character'}}
             <div class="flexrow flex-center">
                 <div>
                     <label class="resource-label">{{localize "Ex3.Attribute"}} </label>
                 </div>
-                <select name="system.settings.staticcapsettings.{{key}}.attribute" value="{{setting.attribute}}"
+                <select name="system.settings.rollsettings.{{key}}.attribute" value="{{roll.attribute}}"
                     data-type="String">
-                    {{selectOptions ../attributeList selected=setting.attribute localize=true}}
+                    {{selectOptions ../selects.attributes selected=roll.attribute localize=true}}
                 </select>
             </div>
             <div class="flexrow flex-center">
                 <div>
                     <label class="resource-label">{{localize "Ex3.Ability"}} </label>
                 </div>
-                <select name="system.settings.staticcapsettings.{{key}}.ability" value="{{setting.ability}}"
-                    data-type="String" style="max-width: 52%;">
-                    {{selectOptions ../abilityWithCustomsSelectList selected=setting.ability localize=true}}
+                <select name="system.settings.rollsettings.{{key}}.ability" value="{{roll.ability}}" data-type="String"
+                    style="max-width: 52%;">
+                    {{selectOptions ../abilityWithCustomsSelectList selected=roll.ability localize=true}}
                 </select>
             </div>
-            {{#ifNotEquals key 'soak'}}
+            {{#if roll.appearanceattribute}}
             <div class="flexrow flex-center">
-                <div>
-                    <label class="resource-label">{{localize "Ex3.Specialty"}} </label>
-                </div>
-                <div>
-                    <input type="checkbox" name="system.settings.staticcapsettings.{{key}}.specialty" {{checked
-                        setting.specialty}}>
-                </div>
+                <label class="resource-label">{{localize "Ex3.Appearance"}} </label>
+                <select name="system.settings.rollsettings.{{key}}.appearanceattribute"
+                    value="{{roll.appearanceattribute}}" data-type="String">
+                    {{selectOptions ../attributeList selected=roll.appearanceattribute localize=true}}
+                </select>
             </div>
-            {{/ifNotEquals}}
+            {{/if}}
+            {{/ifEquals}}
+            <div class="flexrow flex-center">
+                <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
+                <input type="number" name="system.settings.rollsettings.{{key}}.bonus" value="{{roll.bonus}}"
+                    data-dtype="Number" />
+            </div>
+        </div>
+        {{/each}}
+        {{#each system.settings.attackrollsettings as |roll key|}}
+        <div>
+            <div>
+                <label class="resource-label">{{localize roll.name}}</label>
+            </div>
+            <div class="flexrow flex-center">
+                <label class="resource-label">{{localize "Ex3.DiceBonus"}} </label>
+                <input type="number" name="system.settings.attackrollsettings.{{key}}.bonus" value="{{roll.bonus}}"
+                    data-dtype="Number" />
+            </div>
+            <div class="flexrow flex-center">
+                <label class="resource-label">{{localize "Ex3.Damage"}} </label>
+                <input type="number" name="system.settings.attackrollsettings.{{key}}.damage" value="{{roll.damage}}"
+                    data-dtype="Number" />
+            </div>
+            {{#ifEquals key 'withering'}}
+            <div class="flexrow flex-center">
+                <label class="resource-label">{{localize "Ex3.Overwhelming"}} </label>
+                <input type="number" name="system.settings.attackrollsettings.{{key}}.overwhelming"
+                    value="{{roll.overwhelming}}" data-dtype="Number" />
+            </div>
+            {{/ifEquals}}
         </div>
         {{/each}}
     </div>
-</div>
-{{/ifEquals}}
-{{/if}}
-{{#if actor.activeitems}}
-<div class="resource-label list-section-header d-flex flex-between">
+    {{#ifEquals data.type 'character'}}
     <div>
-        {{localize "Ex3.ActiveItems"}}</a>
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.StaticValueSettings"}}
+            </div>
+        </div>
+        <div class="grid grid-3col flex-group-center">
+            {{#each system.settings.staticcapsettings as |setting key|}}
+            <div>
+                <div>
+                    <label class="resource-label">{{localize setting.name}}</label>
+                </div>
+                <div class="flexrow flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Attribute"}} </label>
+                    </div>
+                    <select name="system.settings.staticcapsettings.{{key}}.attribute" value="{{setting.attribute}}"
+                        data-type="String">
+                        {{selectOptions ../attributeList selected=setting.attribute localize=true}}
+                    </select>
+                </div>
+                <div class="flexrow flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Ability"}} </label>
+                    </div>
+                    <select name="system.settings.staticcapsettings.{{key}}.ability" value="{{setting.ability}}"
+                        data-type="String" style="max-width: 52%;">
+                        {{selectOptions ../abilityWithCustomsSelectList selected=setting.ability localize=true}}
+                    </select>
+                </div>
+                {{#ifNotEquals key 'soak'}}
+                <div class="flexrow flex-center">
+                    <div>
+                        <label class="resource-label">{{localize "Ex3.Specialty"}} </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="system.settings.staticcapsettings.{{key}}.specialty" {{checked
+                            setting.specialty}}>
+                    </div>
+                </div>
+                {{/ifNotEquals}}
+            </div>
+            {{/each}}
+        </div>
     </div>
-</div>
-<ol class="items-list">
-    {{#each actor.activeitems as |item id|}}
-    <li class="item flexrow item-row" data-item-id="{{item._id}}">
-        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-                height="24" />
-        </div>
-        <h4 class="item-name"><b>{{item.name}}</b></h4>
-        <div class="item-controls">
-            {{#if item.system.active}}
-            <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
-            {{else}}
-            <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
-            {{/if}}
-        </div>
-    </li>
-    <li class="item-description">
+    {{/ifEquals}}
+    {{/if}}
+    {{#if actor.activeitems}}
+    <div class="resource-label list-section-header d-flex flex-between">
         <div>
-            {{{enrichedHTMLItems ../this "description" item._id}}}
-        </div>
-    </li>
-    {{/each}}
-</ol>
-{{/if}}
-{{#ifEquals actor.type 'npc'}}
-{{#if actor.system.lunarform.enabled}}
-<div class="resource-label list-section-header d-flex flex-between">
-    <div>
-        {{localize "Ex3.LunarAnimalForm"}}
-    </div>
-</div>
-<div class="grid grid-2col flex-group-center">
-    <div class="d-flex flex-center">
-        <label class="resource-label">{{localize "Ex3.Lunar"}}:</label>
-        <select class="ml-1" name="system.lunarform.actorid" data-type="String">
-            {{selectOptions characterLunars selected=system.lunarform.actorid localize=true}}
-        </select>
-        <div class="ml-1">
-            <button class="roll-button lunar-sync"><i class="fa-solid fa-rotate"></i>{{localize "Ex3.Sync"}}</button>
+            {{localize "Ex3.ActiveItems"}}</a>
         </div>
     </div>
-</div>
-<label class="resource-label">{{localize "Ex3.Specialties"}}<a class="item-create" title="Create specialty"
-        data-type="specialty"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
-<div class="attributes grid grid-3col flex-group-center">
-    {{#each actor.specialties as |item id|}}
-    <div class="item flexrow flex-center" data-item-id="{{item._id}}">
-        <div class="item-controls ability-item-edit">
-            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
-            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+    <ol class="items-list">
+        {{#each actor.activeitems as |item id|}}
+        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" />
+            </div>
+            <h4 class="item-name"><b>{{item.name}}</b></h4>
+            <div class="item-controls">
+                {{#if item.system.active}}
+                <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>
+                {{else}}
+                <a class="item-control item-spend" title="Activate Charm"><i class="fas fa-lightbulb"></i></a>
+                {{/if}}
+            </div>
+        </li>
+        <li class="item-description">
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+    {{/if}}
+    {{#if isNPC}}
+    {{#if actor.system.lunarform.enabled}}
+    <div class="resource-label list-section-header d-flex flex-between">
+        <div>
+            {{localize "Ex3.LunarAnimalForm"}}
         </div>
-        <label class="resource-label">{{localize item.name}} ({{getAbilityDisplay ../this item.system.ability}})</label>
     </div>
-    {{/each}}
+    <div class="grid grid-2col flex-group-center">
+        <div class="d-flex flex-center">
+            <label class="resource-label">{{localize "Ex3.Lunar"}}:</label>
+            <select class="ml-1" name="system.lunarform.actorid" data-type="String">
+                {{selectOptions characterLunars selected=system.lunarform.actorid localize=true}}
+            </select>
+            <div class="ml-1">
+                <button class="roll-button lunar-sync"><i class="fa-solid fa-rotate"></i>{{localize
+                    "Ex3.Sync"}}</button>
+            </div>
+        </div>
+    </div>
+    <label class="resource-label">{{localize "Ex3.Specialties"}}<a class="item-create" title="Create specialty"
+            data-type="specialty"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
+    <div class="attributes grid grid-3col flex-group-center">
+        {{#each actor.specialties as |item id|}}
+        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+            <div class="item-controls ability-item-edit">
+                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+            <label class="resource-label">{{localize item.name}} ({{getAbilityDisplay ../this
+                item.system.ability}})</label>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+    {{/if}}
+    {{> systems/exaltedthird/templates/actor/active-effects.html}}
 </div>
-{{/if}}
-{{/ifEquals}}
-{{> systems/exaltedthird/templates/actor/active-effects.html}}
