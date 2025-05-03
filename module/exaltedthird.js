@@ -130,7 +130,7 @@ Hooks.once('init', async function () {
   CONFIG.Combatant.documentClass = ExaltedCombatant;
   CONFIG.ui.combat = ExaltedCombatTracker;
   CONFIG.ActiveEffect.documentClass = ExaltedActiveEffect;
-  DocumentSheetConfig.registerSheet(ActiveEffect, "exaltedthird", ExaltedActiveEffectConfig, { makeDefault: true });
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(ActiveEffect, "exaltedthird", ExaltedActiveEffectConfig, { makeDefault: true });
 
   CONFIG.ActiveEffect.sheetClass = ExaltedActiveEffectConfig;
   CONFIG.ActiveEffect.legacyTransferral = false;
@@ -138,10 +138,10 @@ Hooks.once('init', async function () {
   game.socket.on('system.exaltedthird', handleSocket);
 
   // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("exaltedthird", ExaltedThirdActorSheet, { makeDefault: true });
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("exaltedthird", ExaltedThirdItemSheet, { makeDefault: true });
+  foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+  foundry.documents.collections.Actors.registerSheet("exaltedthird", ExaltedThirdActorSheet, { makeDefault: true });
+  foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+  foundry.documents.collections.Items.registerSheet("exaltedthird", ExaltedThirdItemSheet, { makeDefault: true });
 
   // Pre-load templates
   foundry.applications.handlebars.loadTemplates([

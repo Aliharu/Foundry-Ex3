@@ -5,7 +5,7 @@ import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ExaltedThirdItemSheet extends ItemSheet {
+export class ExaltedThirdItemSheet extends foundry.appv1.sheets.ItemSheet {
 
   constructor(...args) {
     super(...args);
