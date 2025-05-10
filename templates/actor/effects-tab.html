@@ -160,7 +160,7 @@
                 {{selectOptions selects.sizeCategory selected=system.sizecategory localize=true}}
             </select>
         </div>
-        {{#ifEquals data.type 'character'}}
+        {{#unless isNPC}}
         {{#if system.settings.editmode}}
         <div>
             <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
@@ -168,7 +168,7 @@
                 "Ex3.SetCustomDiceCap"}}</button>
         </div>
         {{/if}}
-        {{/ifEquals}}
+        {{/unless}}
     </div>
     <div>
         <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
