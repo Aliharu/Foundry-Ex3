@@ -19,7 +19,7 @@
         <div id="specialAttackList" {{#if data.specialAttackList}} {{else}} style="display:none;" {{/if}}>
             {{#each data.specialAttacksList as |attack id|}}
             {{#if attack.show}}
-            <div class="item large-item collapsable" data-item-id="{{attack.id}}">
+            <div class="item large-item collapsable" data-item-id="{{attack.id}}" data-document-class="Item">
                 <div class="item-text gap">
                     <div class="item-image"><img class="list-item-image" src="{{attack.img}}" title="{{attack.name}}"
                             width="35" height="35" /></div>
@@ -50,7 +50,7 @@
         </div>
         <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
             {{#each charm.list as |item id|}}
-            <div class="item large-item collapsable" data-item-id="{{item.id}}">
+            <div class="item large-item collapsable" data-item-id="{{item.id}}" data-document-class="Item">
                 <div class="item-text gap">
                     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"
                             width="34" height="34" /></div>
@@ -112,7 +112,7 @@
         <div class="roller-item-list">
             <div>
                 {{#each data.addedCharms as |item id|}}
-                <div class="item large-item collapsable" data-item-id="{{item._id}}">
+                <div class="item large-item collapsable"  data-document-class="Item">
                     <div class="item-text gap">
                         <span class="item-name">{{item.name}}</span>
                         <span class="text-summary">{{item.system.summary}}</span>
@@ -161,7 +161,7 @@
             </div>
             <div>
                 {{#each data.opposingCharms as |item id|}}
-                <div class="item large-item collapsable" data-item-id="{{item._id}}">
+                <div class="item large-item collapsable" data-item-id="{{item._id}}" data-document-class="Item">
                     <div class="item-text gap">
                         <span class="item-name">{{item.name}}</span>
                         <span class="text-summary">{{item.system.summary}}</span>

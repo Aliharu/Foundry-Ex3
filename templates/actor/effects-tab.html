@@ -1,4 +1,4 @@
-<div class="tab effects" data-group="primary" data-tab="effects">
+<div class="tab effects {{tab.cssClass}}" data-group="primary" data-tab="effects">
 
     {{#if flags.exaltedthird.lastroll}}
     <div class="resource-label list-section-header d-flex flex-between">
@@ -10,7 +10,8 @@
         <li class="item flexrow">
             <h4 class="item-name resource-table-value">{{flags.exaltedthird.lastroll.rollType}}</h4>
             <div class="item-controls">
-                <a class="item-control last-roll" title="Dialogue"><i class="fas fa-dice-d10"></i></a>
+                <a class="item-control last-roll" data-action="lastRoll" title="Dialogue"><i
+                        class="fas fa-dice-d10"></i></a>
             </div>
         </li>
     </ol>
@@ -30,12 +31,16 @@
             </div>
             <div class="item-controls">
                 {{#ifEquals item.rollType 'useOpposingCharms'}}
-                <a class="item-control quick-roll" title="Add"><i class="fas fa-shield-plus"></i></a>
+                <a class="item-control" data-action="savedRollAction" data-actiontype="quickRoll" title="Add"><i
+                        class="fas fa-shield-plus"></i></a>
                 {{else}}
-                <a class="item-control quick-roll" title="Roll"><i class="fas fa-dice-d10"></i></a>
+                <a class="item-control" data-action="savedRollAction" data-actiontype="quickRoll" title="Roll"><i
+                        class="fas fa-dice-d10"></i></a>
                 {{/ifEquals}}
-                <a class="item-control saved-roll" title="Dialogue"><i class="fas fa-edit"></i></a>
-                <a class="item-control delete-saved-roll" title="Delete Item"><i class="fas fa-trash"></i></a>
+                <a class="item-control" data-action="savedRollAction" data-actiontype="savedRoll" title="Dialogue"><i
+                        class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="savedRollAction" data-actiontype="deleteSavedRoll"
+                    title="Delete Item"><i class="fas fa-trash"></i></a>
             </div>
         </li>
         {{/each}}
@@ -45,21 +50,24 @@
             <div>
                 {{localize "Ex3.Modifiers"}}
             </div>
-            <a class="item-control item-create" title="Create modifier" data-type="modifier"><i
+            <a class="item-control" data-action="createItem" title="Create modifier" data-type="modifier"><i
                     class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
         </div>
         {{#each actor.modifiers as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
-            <h4 class="item-name">{{item.name}} <a class="item-control item-decrease-activations"
-                    title="Decrease Value"><i class="fas fa-minus"></i></a> {{item.system.value}}
-                <a class="item-control item-increase-activations" title="Increase Value"><i class="fas fa-plus"></i></a>
+            <h4 class="item-name">{{item.name}} <a class="item-control"
+                data-action="itemAction" data-actiontype="decreaseItemActivations" title="Decrease Value"><i class="fas fa-minus"></i></a> {{item.system.value}}
+                <a class="item-control" data-action="itemAction" data-actiontype="increaseItemActivations" title="Increase Value"><i class="fas fa-plus"></i></a>
             </h4>
             <div class="item-controls">
-                <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+                        class="fas fa-comment"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+                        class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+                        class="fas fa-trash"></i></a>
             </div>
         </li>
         <li>
@@ -86,8 +94,8 @@
                 data-dtype="Number" />
         </div>
         <div>
-            <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a><i
-                        class="fas fa-info-circle show-feats-of-strength cursor-pointer"></i></a></label>
+            <label class="resource-label">{{localize "Ex3.EffectiveStrength"}} <a data-action="showDialog"
+                    data-dialogtype="featsOfStrength"><i class="fas fa-info-circle cursor-pointer"></i></a></label>
             <input type="number" name="system.effectivestrength.value" value="{{system.effectivestrength.value}}"
                 data-dtype="Number" />
         </div>
@@ -146,23 +154,31 @@
             <input name="system.motes.recovery.noncombat.value" type="number"
                 value="{{system.motes.recovery.noncombat.value}}" data-dtype="Number" />
         </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.SizeCategory"}}</div>
+            <select name="system.sizecategory" data-type="String">
+                {{selectOptions selects.sizeCategory selected=system.sizecategory localize=true}}
+            </select>
+        </div>
         {{#ifEquals data.type 'character'}}
         {{#if system.settings.editmode}}
         <div>
             <div class="resource-label">{{localize "Ex3.DiceCap"}}</div>
-            <button class="roll-button set-dice-cap"><i class="fas fa-cog"></i>{{localize
+            <button class="roll-button" data-action="setDiceCap"><i class="fas fa-cog"></i>{{localize
                 "Ex3.SetCustomDiceCap"}}</button>
         </div>
         {{/if}}
         {{/ifEquals}}
     </div>
     <div>
-        <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control subtract-onslaught-penalty"><i
-                class="fas fa-minus"></i></a> {{system.currentOnslaughtPenalty}} <a
-            class="item-control add-onslaught-penalty"><i class="fas fa-plus"></i></a>,
-        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control subtract-defense-penalty"><i
-                class="fas fa-minus"></i></a> {{system.currentDefensePenalty}} <a
-            class="item-control add-defense-penalty"><i class="fas fa-plus"></i></a>,
+        <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
+            data-defensetype="onslaught" data-direction="decrease"><i class="fas fa-minus"></i></a>
+        {{system.currentOnslaughtPenalty}} <a class="item-control" data-action="alterDefensePenalty"
+            data-defensetype="onslaught" data-direction="increase"><i class="fas fa-plus"></i></a>,
+        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
+            data-defensetype="defensePenalty" data-direction="decrease"><i class="fas fa-minus"></i></a>
+        {{system.currentDefensePenalty}} <a data-action="alterDefensePenalty" data-defensetype="defensePenalty"
+            data-direction="increase" class="item-control"><i class="fas fa-plus"></i></a>,
     </div>
     <div>
         <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
@@ -297,7 +313,7 @@
     </div>
     <ol class="items-list">
         {{#each actor.activeitems as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" />
             </div>
@@ -337,16 +353,18 @@
             </div>
         </div>
     </div>
-    <label class="resource-label">{{localize "Ex3.Specialties"}}<a class="item-create" title="Create specialty"
+    <label class="resource-label">{{localize "Ex3.Specialties"}}<a data-action="createItem" title="Create specialty"
             data-type="specialty"><i class="fas fa-plus cursor-pointer" style="margin-left:5px;"></i></a></label>
     <div class="attributes grid grid-3col flex-group-center">
         {{#each actor.specialties as |item id|}}
-        <div class="item flexrow flex-center" data-item-id="{{item._id}}">
+        <div class="item flexrow flex-center" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-controls ability-item-edit">
-                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i> </a>
-                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+                        class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+                        class="fas fa-trash"></i></a>
             </div>
-            <label class="resource-label">{{localize item.name}} ({{getAbilityDisplay ../this
+            <label class="resource-label">{{localize item.name}} ({{getAbilityDisplay ../this.actor
                 item.system.ability}})</label>
         </div>
         {{/each}}

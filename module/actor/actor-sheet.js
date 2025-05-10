@@ -6,68 +6,225 @@ import Prophecy from "../apps/prophecy.js";
 import TraitSelector from "../apps/trait-selector.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
+import { isColor, parseCounterStates, toggleDisplay } from "../utils/utils.js";
+
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ActorSheetV2 } = foundry.applications.sheets;
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
-
-  constructor(...args) {
-    super(...args);
-
-    this._filters = {
-      effects: new Set()
+export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+  constructor(options = {}) {
+    super(options);
+    this.#dragDrop = this.#createDragDropHandlers();
+    this.collapseStates = {
+      charm: {},
+      spell: {},
     }
-    if (this.object.type === "character") {
-      this.options.width = this.position.width = game.settings.get("exaltedthird", "compactSheets") ? 560 : 800;
-      this.options.height = this.position.height = game.settings.get("exaltedthird", "compactSheets") ? 620 : 1061;
-    }
-    if (this.object.type === "npc") {
-      this.position.width = this.position.width = game.settings.get("exaltedthird", "compactSheetsNPC") ? 560 : 800;
-      this.position.height = this.position.height = game.settings.get("exaltedthird", "compactSheetsNPC") ? 620 : 1061;
-    }
-    this.options.classes = [...this.options.classes, this.actor.getSheetBackground()];
   }
 
-  /**
- * Get the correct HTML template path to use for rendering this particular sheet
- * @type {String}
- */
-  get template() {
-    if (this.actor.type === "npc") return "systems/exaltedthird/templates/actor/npc-sheet.html";
-    return "systems/exaltedthird/templates/actor/actor-sheet.html";
+  static DEFAULT_OPTIONS = {
+    window: {
+      title: "Actor Sheet",
+      resizable: true,
+      controls: [
+        {
+          icon: 'fa-solid fa-cog',
+          label: "Ex3.Settings",
+          action: "sheetSettings",
+        },
+        {
+          icon: 'fa-solid fa-question',
+          label: "Help",
+          action: "helpDialogue",
+        },
+        {
+          icon: 'fa-solid fa-palette',
+          label: "Ex3.Stylings",
+          action: "pickColor",
+        },
+        {
+          icon: 'fa-solid fa-dice-d10',
+          label: "Ex3.Roll",
+          action: "baseRoll",
+        },
+      ]
+    },
+    // position: { width: 730 },
+    position: { width: 800, height: 1061 },
+    // tag: "form",
+    // form: {
+    //   handler: RollForm.myFormHandler,
+    //   submitOnClose: false,
+    //   submitOnChange: true,
+    //   closeOnSubmit: false
+    // },
+    classes: ["exaltedthird", "sheet", "actor"],
+    actions: {
+      sheetSettings: this.sheetSettings,
+      helpDialogue: this.helpDialogue,
+      pickColor: this.pickColor,
+      baseRoll: this.baseRoll,
+      createItem: this.createItem,
+      itemAction: this.itemAction,
+      savedRollAction: this.savedRollAction,
+      lastRoll: this.lastRoll,
+      makeActionRoll: this.makeActionRoll,
+      rollAction: this.rollAction,
+      updateAnima: this.updateAnima,
+      lunarSync: this.lunarSync,
+      displayDataChat: this._displayDataChat,
+      importItem: this.importItem,
+      showDialog: this.showDialog,
+      calculateHealth: this.calculateHealth,
+      calculateDerivedStat: this.calculateDerivedStat,
+      recoverHealth: this.recoverHealth,
+      alterDefensePenalty: this.alterDefensePenalty,
+      setDiceCap: this.setDiceCap,
+      setSpendPool: this.setSpendPool,
+      calculateMotes: this.calculateMotes,
+      createProphecy: this.createProphecy,
+      editTraits: this.editTraits,
+      dotCounterChange: this._onDotCounterChange,
+      squareCounterChange: this._onSquareCounterChange,
+      effectControl: this.effectControl,
+      toggleCollapse: this.toggleCollapse,
+    },
+    dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
+    form: {
+      submitOnChange: true,
+    },
+  };
+
+  get title() {
+    return `${game.i18n.localize(this.actor.name)}`
   }
 
-  /** @override */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["exaltedthird", "sheet", "actor"],
-      template: "systems/exaltedthird/templates/actor/actor-sheet.html",
-      width: 800,
-      height: 1061,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
+  static PARTS = {
+    header: {
+      template: "systems/exaltedthird/templates/actor/actor-header.html",
+    },
+    tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
+    stats: {
+      template: "systems/exaltedthird/templates/actor/stats-tab.html",
+    },
+    combat: {
+      template: "systems/exaltedthird/templates/actor/combat-tab.html",
+    },
+    social: {
+      template: "systems/exaltedthird/templates/actor/social-tab.html",
+    },
+    charms: {
+      template: "systems/exaltedthird/templates/actor/charms-tab.html",
+    },
+    character: {
+      template: "systems/exaltedthird/templates/actor/character-tab.html",
+    },
+    effects: {
+      template: "systems/exaltedthird/templates/actor/effects-tab.html",
+    },
+    biography: {
+      template: "systems/exaltedthird/templates/actor/biography-tab.html",
+    },
+  };
+
+  _initializeApplicationOptions(options) {
+    options.classes = [options.document.getSheetBackground(), "exaltedthird", "sheet", "actor"];
+    return super._initializeApplicationOptions(options);
+  }
+
+
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options);
+    if (game.settings.get("exaltedthird", "compactSheets")) {
+      options.position.height = 620;
+      options.position.width = 560;
+    }
+  }
+
+  async _prepareContext(_options) {
+    const context = {
+      // Validates both permissions and compendium status
+      editable: this.isEditable,
+      owner: this.document.isOwner,
+      limited: this.document.limited,
+      // Add the actor document.
+      actor: this.actor,
+      // Add the actor's data to context.data for easier access, as well as flags.
+      system: this.actor.system,
+      flags: this.actor.flags,
+      config: CONFIG.EXALTEDTHIRD,
+      isNPC: this.actor.type === 'npc',
+      characterEditMode: (this.actor.type === 'character' && this.actor.system.settings.editmode),
+      collapseStates: this.collapseStates,
+    };
+
+    if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'stats';
+    context.selects = CONFIG.exaltedthird.selects;
+    const tabs = [{
+      id: 'stats',
+      group: 'primary',
+      label: 'Ex3.Stats',
+      cssClass: this.tabGroups['primary'] === 'stats' ? 'active' : '',
+    }, {
+      id: 'combat',
+      group: 'primary',
+      label: 'Ex3.Combat',
+      cssClass: this.tabGroups['primary'] === 'combat' ? 'active' : '',
+    },
+    {
+      id: 'social',
+      group: 'primary',
+      label: 'Ex3.Social',
+      cssClass: this.tabGroups['primary'] === 'social' ? 'active' : '',
+    },
+    {
+      id: 'charms',
+      group: 'primary',
+      label: 'Ex3.Charms',
+      cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
+    },
+    {
+      id: "character",
+      group: "primary",
+      label: "Ex3.Character",
+      cssClass: this.tabGroups['primary'] === 'character' ? 'active' : '',
+    },
+    {
+      id: 'effects',
+      group: 'primary',
+      label: 'Ex3.Effects',
+      cssClass: this.tabGroups['primary'] === 'effects' ? 'active' : '',
+    }];
+    tabs.push({
+      id: "biography",
+      group: "primary",
+      label: "Ex3.Description",
+      cssClass: this.tabGroups['primary'] === 'biography' ? 'active' : '',
     });
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  async getData() {
-    const context = await super.getData();
+    context.tabs = tabs;
     context.dtypes = ["String", "Number", "Boolean"];
 
     const actorData = this.actor.toObject(false);
     context.system = actorData.system;
     context.flags = actorData.flags;
-    context.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.biography, {
-      secrets: this.document.isOwner,
-      async: true
-    });
+    context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      this.actor.system.biography,
+      {
+        // Whether to show secret blocks in the finished html
+        secrets: this.document.isOwner,
+        // Data to fill in for inline rolls
+        rollData: this.actor.getRollData(),
+        // Relative UUID resolution
+        relativeTo: this.actor,
+      }
+    );
     context.attributeList = CONFIG.exaltedthird.attributes;
     context.signList = CONFIG.exaltedthird.siderealSigns;
     context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
-    context.rollData = context.actor.getRollData();
+    context.rollData = this.actor.getRollData();
     context.showVirtues = game.settings.get("exaltedthird", "virtues");
     context.unifiedCharacterCreation = game.settings.get("exaltedthird", "unifiedCharacterCreation");
     context.unifiedCharacterAdvancement = game.settings.get("exaltedthird", "unifiedCharacterAdvancement");
@@ -79,8 +236,6 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     context.abilitySelectList = CONFIG.exaltedthird.selects.abilities;
     context.abilityWithCustomsSelectList = { ...CONFIG.exaltedthird.selects.abilities };
     context.isExalt = this.actor.type === 'character' || this.actor.system.creaturetype === 'exalt';
-    context.isNPC = this.actor.type === 'npc';
-    context.characterEditMode = (this.actor.type === 'character' && this.actor.system.settings.editmode);
 
     for (const customAbility of this.actor.items.filter(item => item.type === 'customability')) {
       context.abilityWithCustomsSelectList[customAbility.id] = customAbility.name;
@@ -93,10 +248,10 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     let characterLunars = {
       '': 'Ex3.None'
     }
-    for (const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).sort((a, b) => a.name.localeCompare(b.name))) {
+    for (const lunar of game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== this.actor.id).sort((a, b) => a.name.localeCompare(b.name))) {
       characterLunars[lunar.id] = lunar.name;
     }
-    // context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== context.actor.id).map((actor) => {
+    // context.characterLunars = game.actors.filter(actor => actor.system.details.exalt === 'lunar' && actor.id !== this.actor.id).map((actor) => {
     //   return {
     //     id: actor.id,
     //     label: actor.name
@@ -106,10 +261,10 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     this._prepareTraits(context.system.traits);
     this._prepareActorSheetData(context);
     this._prepareCharacterItems(context);
-    if (context.actor.type === 'character') {
+    if (this.actor.type === 'character') {
       this._prepareCharacterData(context);
     }
-    if (context.actor.type === 'npc') {
+    if (this.actor.type === 'npc') {
       this._prepareNPCData(context);
     }
     context.itemDescriptions = {};
@@ -118,6 +273,12 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }
 
     context.effects = prepareActiveEffectCategories(this.document.effects);
+    context.tab = this.tabGroups['primary'];
+    return context;
+  }
+
+  async _preparePartContext(partId, context) {
+    context.tab = context.tabs.find(item => item.id === partId);
     return context;
   }
 
@@ -491,7 +652,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   _prepareCharacterItems(sheetData) {
-    const actorData = sheetData.actor;
+    const actorData = this.actor;
 
     // Initialize containers.
     const gear = [];
@@ -565,7 +726,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
       endings: 0,
     }
     // Iterate through items, allocating to containers
-    for (let i of sheetData.items) {
+    for (let i of this.document.items) {
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'item') {
         gear.push(i);
@@ -629,7 +790,8 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
       if (i.system.circle !== undefined) {
         spells[i.system.circle].list.push(i);
         spells[i.system.circle].visible = true;
-        spells[i.system.circle].collapse = this.actor.spells ? this.actor.spells[i.system.circle].collapse : true;
+        // spells[i.system.circle].collapse = this.actor.spells ? this.actor.spells[i.system.circle].collapse : true;
+        spells[i.system.circle].collapse = this.collapseStates.spell[i.system.circle] ?? true;
       }
     }
 
@@ -677,13 +839,13 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
       }
       if (i.system.listingname) {
         if (!charms[i.system.listingname]) {
-          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: this.actor?.charms ? this.actor?.charms[i.system.listingname]?.collapse : true };
+          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: this.collapseStates.charm[i.system.listingname] ?? true };
         }
         charms[i.system.listingname].list.push(i);
       }
       else {
         if (!charms[i.system.ability]) {
-          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: this.actor?.charms ? this.actor?.charms[i.system.ability]?.collapse : true };
+          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: this.collapseStates.charm[i.system.ability] ?? true };
         }
         charms[i.system.ability].list.push(i);
       }
@@ -742,1260 +904,394 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }
   }
 
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    // Token Configuration
-    const canConfigure = game.user.isGM || this.actor.isOwner;
-    if (this.options.editable && canConfigure) {
-      const settingsButton = {
-        label: game.i18n.localize('Ex3.Settings'),
-        class: 'sheet-settings',
-        icon: 'fas fa-cog',
-        onclick: () => this.sheetSettings(),
-      };
-      const helpButton = {
-        label: game.i18n.localize('Ex3.Help'),
-        class: 'help-dialogue',
-        icon: 'fas fa-question',
-        onclick: () => this.helpDialogue(this.actor.type),
-      };
-      buttons = [settingsButton, helpButton, ...buttons];
-      const colorButton = {
-        label: game.i18n.localize('Ex3.Stylings'),
-        class: 'set-color',
-        icon: 'fas fa-palette',
-        onclick: (ev) => this.pickColor(ev),
-      };
-      buttons = [colorButton, ...buttons];
-      const rollButton = {
-        label: game.i18n.localize('Ex3.Roll'),
-        class: 'roll-dice',
-        icon: 'fas fa-dice-d10',
-        onclick: (ev) => new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'base' }).render(true),
-      };
-      buttons = [rollButton, ...buttons];
+  /** @override */
+  _onRender(context, options) {
+    this.#dragDrop.forEach((d) => d.bind(this.element));
+    this._setupDotCounters(this.element);
+    this._setupSquareCounters(this.element);
+    this._setupButtons(this.element);
+
+    // this.element.querySelectorAll('.item-row').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+
+    // this.element.querySelectorAll('.item-list-collapsable').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     const itemType = ev.currentTarget.dataset.itemtype;
+    //     const li = ev.currentTarget.nextElementSibling;
+    //     if (li.getAttribute('id')) {
+    //       this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
+    //     }
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+
+    // this.element.querySelectorAll('.collapsable').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+
+    // this.element.querySelectorAll('.anima-collapsable').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     const animaType = ev.currentTarget.dataset.type;
+    //     const li = ev.currentTarget.nextElementSibling;
+    //     this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+
+    // // Everything below here is only needed if the sheet is editable
+    if (!this.isEditable) return;
+
+    this.element.querySelectorAll('.list-ability').forEach(element => {
+      element.addEventListener('change', async (ev) => {
+        const itemElement = ev.currentTarget.closest('.item');
+        const itemID = itemElement?.dataset.itemId;
+        const newNumber = parseInt(ev.currentTarget.value);
+
+        if (itemID) {
+          await this.actor.updateEmbeddedDocuments('Item', [
+            {
+              _id: itemID,
+              system: {
+                points: newNumber,
+              },
+            }
+          ]);
+        }
+      });
+    });
+
+    this.element.querySelectorAll('.npc-action').forEach(element => {
+      element.addEventListener('change', async (ev) => {
+        const itemElement = ev.currentTarget.closest('.item');
+        const itemID = itemElement?.dataset.itemId;
+        const newNumber = parseInt(ev.currentTarget.value);
+
+        if (itemID) {
+          await this.actor.updateEmbeddedDocuments('Item', [
+            {
+              _id: itemID,
+              system: {
+                value: newNumber,
+              },
+            }
+          ]);
+        }
+      });
+    });
+
+    // // Add Inventory Item
+
+    // html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
+
+    // // Drag events for macros.
+    // if (game.user.isGM || this.actor.isOwner) {
+    //   let handler = ev => this._onDragStart(ev);
+    //   let savedRollhandler = ev => this._onDragSavedRoll(ev);
+    //   html.find('li.item').each((i, li) => {
+    //     if (li.classList.contains("inventory-header")) return;
+    //     li.setAttribute("draggable", true);
+    //     if (li.classList.contains("saved-roll-row")) {
+    //       li.addEventListener("dragstart", savedRollhandler, false);
+    //     }
+    //     else {
+    //       li.addEventListener("dragstart", handler, false);
+    //     }
+    //   });
+    // }
+  }
+
+  /**
+ * Define whether a user is able to begin a dragstart workflow for a given drag selector
+ * @param {string} selector       The candidate HTML selector for dragging
+ * @returns {boolean}             Can the current user drag this selector?
+ * @protected
+ */
+  _canDragStart(selector) {
+    // game.user fetches the current user
+    return this.isEditable;
+  }
+
+  /**
+   * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
+   * @param {string} selector       The candidate HTML selector for the drop target
+   * @returns {boolean}             Can the current user drop on this selector?
+   * @protected
+   */
+  _canDragDrop(selector) {
+    // game.user fetches the current user
+    return this.isEditable;
+  }
+
+  /**
+ * Callback actions which occur at the beginning of a drag start workflow.
+ * @param {DragEvent} event       The originating DragEvent
+ * @protected
+ */
+  _onDragStart(event) {
+    const docRow = event.currentTarget.closest('li');
+    if ('link' in event.target.dataset) return;
+
+    // Chained operation
+    let dragData = this._getEmbeddedDocument(docRow)?.toDragData();
+
+    if (!dragData) return;
+
+    // Set data transfer
+    event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+  }
+
+  /**
+   * Callback actions which occur when a dragged element is over a drop target.
+   * @param {DragEvent} event       The originating DragEvent
+   * @protected
+   */
+  _onDragOver(event) { }
+
+  /**
+   * Callback actions which occur when a dragged element is dropped on a target.
+   * @param {DragEvent} event       The originating DragEvent
+   * @protected
+   */
+  async _onDrop(event) {
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const actor = this.actor;
+    const allowed = Hooks.call('dropActorSheetData', actor, this, data);
+    if (allowed === false) return;
+
+    // Handle different data types
+    switch (data.type) {
+      case 'ActiveEffect':
+        return this._onDropActiveEffect(event, data);
+      case 'Actor':
+        return this._onDropActor(event, data);
+      case 'Item':
+        return this._onDropItem(event, data);
+      case 'Folder':
+        return this._onDropFolder(event, data);
     }
-    return buttons;
+  }
+
+  /**
+ * Handle the dropping of ActiveEffect data onto an Actor Sheet
+ * @param {DragEvent} event                  The concluding DragEvent which contains drop data
+ * @param {object} data                      The data transfer extracted from the event
+ * @returns {Promise<ActiveEffect|boolean>}  The created ActiveEffect object or false if it couldn't be created.
+ * @protected
+ */
+  async _onDropActiveEffect(event, data) {
+    const aeCls = getDocumentClass('ActiveEffect');
+    const effect = await aeCls.fromDropData(data);
+    if (!this.actor.isOwner || !effect) return false;
+    if (effect.target === this.actor)
+      return this._onSortActiveEffect(event, effect);
+    return aeCls.create(effect, { parent: this.actor });
+  }
+
+  /**
+   * Handle a drop event for an existing embedded Active Effect to sort that Active Effect relative to its siblings
+   *
+   * @param {DragEvent} event
+   * @param {ActiveEffect} effect
+   */
+  async _onSortActiveEffect(event, effect) {
+    /** @type {HTMLElement} */
+    const dropTarget = event.target.closest('[data-effect-id]');
+    if (!dropTarget) return;
+    const target = this._getEmbeddedDocument(dropTarget);
+
+    // Don't sort on yourself
+    if (effect.uuid === target.uuid) return;
+
+    // Identify sibling items based on adjacent HTML elements
+    const siblings = [];
+    for (const el of dropTarget.parentElement.children) {
+      const siblingId = el.dataset.effectId;
+      const parentId = el.dataset.parentId;
+      if (
+        siblingId &&
+        parentId &&
+        (siblingId !== effect.id || parentId !== effect.parent.id)
+      )
+        siblings.push(this._getEmbeddedDocument(el));
+    }
+
+    // Perform the sort
+    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+      target,
+      siblings,
+    });
+
+    // Split the updates up by parent document
+    const directUpdates = [];
+
+    const grandchildUpdateData = sortUpdates.reduce((items, u) => {
+      const parentId = u.target.parent.id;
+      const update = { _id: u.target.id, ...u.update };
+      if (parentId === this.actor.id) {
+        directUpdates.push(update);
+        return items;
+      }
+      if (items[parentId]) items[parentId].push(update);
+      else items[parentId] = [update];
+      return items;
+    }, {});
+
+    // Effects-on-items updates
+    for (const [itemId, updates] of Object.entries(grandchildUpdateData)) {
+      await this.actor.items
+        .get(itemId)
+        .updateEmbeddedDocuments('ActiveEffect', updates);
+    }
+
+    // Update on the main actor
+    return this.actor.updateEmbeddedDocuments('ActiveEffect', directUpdates);
+  }
+
+  /**
+   * Handle dropping of an Actor data onto another Actor sheet
+   * @param {DragEvent} event            The concluding DragEvent which contains drop data
+   * @param {object} data                The data transfer extracted from the event
+   * @returns {Promise<object|boolean>}  A data object which describes the result of the drop, or false if the drop was
+   *                                     not permitted.
+   * @protected
+   */
+  async _onDropActor(event, data) {
+    if (!this.actor.isOwner) return false;
   }
 
   /* -------------------------------------------- */
 
-  /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    this._setupDotCounters(html)
-    this._setupSquareCounters(html)
-    this._setupButtons(html)
-
-    html.find('.item-row').click(ev => {
-      const li = $(ev.currentTarget).next();
-      li.toggle("fast");
-    });
-
-    html.find('.collapsable').click(ev => {
-      let type = $(ev.currentTarget).data("type");
-      const li = $(ev.currentTarget).next();
-      if (type) {
-        this.actor.update({ [`system.collapse.${type}`]: !li.is(":hidden") });
-      }
-    });
-
-    html.find('.charm-list-collapsable').click(ev => {
-      const li = $(ev.currentTarget).next();
-      if (li.attr('id')) {
-        this.actor.charms[li.attr('id')].collapse = !li.is(":hidden");
-      }
-      li.toggle("fast");
-    });
-
-    html.find('.spell-list-collapsable').click(ev => {
-      const li = $(ev.currentTarget).next();
-      if (li.attr('id')) {
-        this.actor.spells[li.attr('id')].collapse = !li.is(":hidden");
-      }
-      li.toggle("fast");
-    });
-
-    // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
-
-    html.find('.trait-selector').click(this._onTraitSelector.bind(this));
-
-    // Add Inventory Item
-    html.find('.item-create').click(this._onItemCreate.bind(this));
-
-    html.find('.resource-value > .resource-value-step').click(this._onDotCounterChange.bind(this))
-    html.find('.resource-value > .resource-value-empty').click(this._onDotCounterEmpty.bind(this))
-    html.find('.resource-counter > .resource-counter-step').click(this._onSquareCounterChange.bind(this))
-
-    // Update Inventory Item
-    html.find('.item-edit').click(ev => {
-      ev.stopPropagation();
-      const li = $(ev.currentTarget).parents(".item");
-      const item = this.actor.items.get(li.data("itemId"));
-      item.sheet.render(true);
-    });
-
-    html.find('.shape-edit').click(ev => {
-      ev.stopPropagation();
-      const li = $(ev.currentTarget).parents(".item");
-      const item = this.actor.items.get(li.data("itemId"));
-      const formActor = game.actors.get(item.system.actorid);
-      if (formActor) {
-        formActor.sheet.render(true);
-      }
-    });
-
-    html.find('.item-favored').on('click', async (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const itemID = li.data('itemId');
-      const item = this.actor.items.get(itemID);
-      await this.actor.updateEmbeddedDocuments('Item', [
-        {
-          _id: itemID,
-          system: {
-            favored: !item.system.favored,
-          },
-        }
-      ]);
-    });
-
-    // Delete Inventory Item
-    html.find('.item-delete').click(async ev => {
-      const applyChanges = await foundry.applications.api.DialogV2.confirm({
-        window: { title: game.i18n.localize("Ex3.Delete") },
-        content: "<p>Are you sure you want to delete this item?</p>",
-        classes: [this.actor.getSheetBackground()],
-        modal: true
-      });
-      if (applyChanges) {
-        const li = $(ev.currentTarget).parents(".item");
-        this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
-        li.slideUp(200, () => this.render(false));
-      }
-    });
-
-    html.find(".charms-cheat-sheet").click(async ev => {
-      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
-      new foundry.applications.api.DialogV2({
-        window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
-        content: html,
-        position: {
-          width: 1000,
-          height: 1000
-        },
-        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-        classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
-      }).render(true);
-    });
-
-    html.find('.exalt-xp').mousedown(ev => {
-      this.showDialogue('exalt-xp');
-    });
-
-    html.find('.show-experience').mousedown(ev => {
-      this.showDialogue('experience');
-    });
-
-    html.find('.show-bonus-points').mousedown(ev => {
-      this.showDialogue('bonus-points');
-    });
-
-    html.find('.show-weapon-tags').mousedown(ev => {
-      this.showDialogue('weapons');
-    });
-
-    html.find('.show-armor-tags').mousedown(ev => {
-      this.showDialogue('armor');
-    });
-
-    html.find('#calculate-health').mousedown(ev => {
-      this.calculateHealth();
-    });
-
-    html.find('.rout-modifiers').mousedown(async ev => {
-      this.showDialogue('rout');
-    });
-
-    html.find('.show-social').mousedown(ev => {
-      this.showDialogue('social');
-    });
-
-    html.find('.show-combat').mousedown(ev => {
-      this.showDialogue('combat');
-    });
-
-    html.find('.show-feats-of-strength').mousedown(ev => {
-      this.showDialogue('feats-of-strength');
-    });
-
-    html.find('.show-advancement').mousedown(ev => {
-      this.showDialogue('advancement');
-    });
-
-    html.find('.show-craft').mousedown(ev => {
-      this.showDialogue('craft');
-    });
-
-    html.find('.show-workings').mousedown(ev => {
-      this.showDialogue('workings');
-    });
-
-    html.find('.show-health').mousedown(ev => {
-      this.showDialogue('health');
-    });
-
-    html.find('.set-pool-peripheral').mousedown(ev => {
-      this.setSpendPool('peripheral');
-    });
-
-    html.find('.set-pool-personal').mousedown(ev => {
-      this.setSpendPool('personal');
-    });
-
-    html.find('.calculate-personal-commit').mousedown(ev => {
-      this.calculateCommitMotes('personal');
-    });
-
-    html.find('.calculate-peripheral-commit').mousedown(ev => {
-      this.calculateCommitMotes('peripheral');
-    });
-
-    html.find('.calculate-glorymotecap-commit').mousedown(ev => {
-      this.calculateCommitMotes('glorymotecap');
-    });
-
-    html.find('.calculate-motes').mousedown(ev => {
-      this.calculateMotes();
-    });
-
-    html.find('.calculate-soak').mousedown(ev => {
-      this.actor.calculateDerivedStats('soak');
-    });
-
-    html.find('.calculate-natural-soak').mousedown(ev => {
-      this.actor.calculateDerivedStats('natural-soak');
-    });
-
-    html.find('.calculate-armored-soak').mousedown(ev => {
-      this.actor.calculateDerivedStats('armored-soak');
-    });
-
-    html.find('.calculate-parry').mousedown(ev => {
-      this.actor.calculateDerivedStats('parry');
-    });
-
-    html.find('.calculate-resonance').mousedown(ev => {
-      this.actor.calculateDerivedStats('resonance');
-    });
-
-    html.find('.calculate-evasion').mousedown(ev => {
-      this.actor.calculateDerivedStats('evasion');
-    });
-
-    html.find('.calculate-resolve').mousedown(ev => {
-      this.actor.calculateDerivedStats('resolve');
-    });
-
-    html.find('.calculate-guile').mousedown(ev => {
-      this.actor.calculateDerivedStats('guile');
-    });
-
-    html.find('.calculate-hardness').mousedown(ev => {
-      this.actor.calculateDerivedStats('hardness');
-    });
-
-    html.find('#calculate-warstrider-health').mousedown(ev => {
-      this.calculateHealth('warstrider');
-    });
-
-    html.find('#calculate-ship-health').mousedown(ev => {
-      this.calculateHealth('ship');
-    });
-
-    html.find('#color-picker').mousedown(ev => {
-      this.pickColor();
-    });
-
-    html.find('#healDamage').mousedown(ev => {
-      this.recoverHealth();
-    });
-
-    html.find('#healDamageWarstrider').mousedown(ev => {
-      this.recoverHealth('warstrider');
-    });
-
-    html.find('#healDamageShip').mousedown(ev => {
-      this.recoverHealth('ship');
-    });
-
-    html.find('.add-defense-penalty').mousedown(ev => {
-      this.actor.alterDefensePenalty("increase", "defensePenalty");
-    });
-
-    html.find('.add-onslaught-penalty').mousedown(ev => {
-      this.actor.alterDefensePenalty("increase", "onslaught");
-    });
-
-    html.find('.subtract-defense-penalty').mousedown(ev => {
-      this.actor.alterDefensePenalty("decrease", "defensePenalty");
-    });
-
-    html.find('.subtract-onslaught-penalty').mousedown(ev => {
-      this.actor.alterDefensePenalty("decrease", "onslaught");
-    });
-
-    html.find('.set-dice-cap').mousedown(async ev => {
-      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/set-dice-cap.html", { 'dicecap': this.actor.system.settings.dicecap });
-      new foundry.applications.api.DialogV2({
-        window: { title: game.i18n.localize("Ex3.SetCustomDiceCap") },
-        content: html,
-        classes: [this.actor.getSheetBackground()],
-        buttons: [{
-          action: "choice",
-          label: game.i18n.localize("Ex3.Save"),
-          default: true,
-          callback: (event, button, dialog) => button.form.elements
-        }, {
-          action: "cancel",
-          label: game.i18n.localize("Ex3.Cancel"),
-          callback: (event, button, dialog) => false
-        }],
-        submit: result => {
-          if (result) {
-            let diceCapData = {
-              iscustom: result['dicecap.iscustom']?.checked ?? false,
-              useattribute: result['dicecap.useattribute']?.checked ?? false,
-              useability: result['dicecap.useability']?.checked ?? false,
-              usespecialty: result['dicecap.usespecialty']?.checked ?? false,
-              other: result['dicecap.other'].value,
-              extratext: result['dicecap.extratext'].value,
-            };
-            this.actor.update({ [`system.settings.dicecap`]: diceCapData });
-          }
-        }
-      }).render({ force: true });
-    });
-
-    html.find('.test-button').mousedown(ev => {
-      let effectsData = [
-        'diceModifier',
-        'successModifier',
-        'doubleSuccess',
-        'decreaseTargetNumber',
-        'rerollDice',
-        'diceToSuccesses',
-        'reduceDifficulty',
-        'rerollDieFace',
-        'rollTwice',
-        'excludeOnes',
-        'rerollFailed',
-        'triggerOnTens',
-        'triggerNinesAndTens',
-        'triggerTensCap',
-
-        //Damage
-        'damageDice',
-        'damageSuccessModifier',
-        'doubleSuccess-damage',
-        'decreaseTargetNumber-damage',
-        'rerollDice-damage',
-        'diceToSuccesses-damage',
-        'reduceDifficulty-damage',
-        'rerollDieFace-damage',
-        'rollTwice-damage',
-        'excludeOnes-damage',
-        'rerollFailed-damage',
-        'triggerOnTens-damage',
-        'triggerNinesAndTens-damage',
-        'triggerTensCap-damage',
-        'threshholdToDamage',
-        'ignoreSoak',
-        'overwhelming',
-        'postSoakDamage',
-        'noInitiativeReset',
-        //Costs
-        'motes-spend',
-        'muteMotes-spend',
-        'initiative-spend',
-        'anima-spend',
-        'willpower-spend',
-        'grappleControl-spend',
-        'health-spend',
-        'aura-spend',
-        'penumbra-spend',
-        'silverXp-spend',
-        'goldXp-spend',
-        'whiteXp-spend',
-        //restore
-        'motes-restore',
-        'initiative-restore',
-        'health-restore',
-        'willpower-restore',
-        //Other
-        'triggerSelfDefensePenalty',
-        'triggerTargetDefensePenalty',
-        'activateAura',
-        'ignoreLegendarySize',
-        //Defense
-        'defense',
-        'soak',
-        'hardness',
-        'resolve',
-        'guile',
-      ];
-      let itemData = [];
-      for (const triggerEffect of effectsData) {
-        if (triggerEffect === 'activateAura' || triggerEffect === 'aura-spend') {
-          itemData.push(
-            {
-              name: triggerEffect,
-              type: 'charm',
-              system: {
-                ability: 'archery',
-                triggers: {
-                  dicerollertriggers: {
-                    0: {
-                      name: triggerEffect,
-                      triggerTime: "beforeRoll",
-                      bonuses: {
-                        0: {
-                          effect: triggerEffect,
-                          value: "fire"
-                        }
-                      },
-                      requirements: {}
-                    }
-                  }
-                }
-              }
-            }
-          );
-        } else {
-          itemData.push(
-            {
-              name: triggerEffect,
-              type: 'charm',
-              system: {
-                ability: 'archery',
-                triggers: {
-                  dicerollertriggers: {
-                    0: {
-                      name: triggerEffect,
-                      triggerTime: "beforeRoll",
-                      bonuses: {
-                        0: {
-                          effect: triggerEffect,
-                          value: (triggerEffect === "triggerOnTens" || triggerEffect === "triggerOnTens-damage") ? "extrasuccess" : "1"
-                        }
-                      },
-                      requirements: {}
-                    }
-                  }
-                }
-              }
-            }
-          );
-        }
-      }
-      Actor.create({
-        name: "Trigger Man",
-        type: "character",
-        system: {
-          settings: {
-            hasaura: true,
-          }
-        },
-        items: itemData
-      });
-      let restrictionsData = [
-        {
-          restriction: "attackType",
-          value: "withering",
-        },
-        {
-          restriction: "charmAddedAmount",
-          value: "1",
-        },
-        {
-          restriction: "range",
-          value: "short",
-        },
-        {
-          restriction: "martialArtsLevel",
-          value: "mastery",
-        },
-        {
-          restriction: "smaEnlightenment",
-          value: "true",
-        },
-        {
-          restriction: "materialResonance",
-          value: "soulsteel",
-        },
-        {
-          restriction: "materialStandard",
-          value: "soulsteel",
-        },
-        {
-          restriction: "materialDissonance",
-          value: "soulsteel",
-        },
-        {
-          restriction: "formula",
-          value: "essence > 1",
-        },
-        {
-          restriction: "hasStatus",
-          value: "prone",
-        },
-        {
-          restriction: "targetHasStatus",
-          value: "prone",
-        },
-        {
-          restriction: "targetIsBattlegroup",
-          value: "true",
-        },
-        {
-          restriction: "targetIsCrashed",
-          value: "true",
-        },
-        {
-          restriction: "thresholdSuccesses",
-          value: "true",
-        },
-        {
-          restriction: "damageLevelsDealt",
-          value: "1",
-        },
-        {
-          restriction: "crashedTheTarget",
-          value: "true",
-        },
-      ]
-      let itemRescrictionData = [];
-      for (const restrictionEffect of restrictionsData) {
-        itemRescrictionData.push(
-          {
-            name: restrictionEffect.restriction,
-            type: 'charm',
-            system: {
-              ability: 'archery',
-              triggers: {
-                dicerollertriggers: {
-                  0: {
-                    name: restrictionEffect.restriction,
-                    triggerTime: "beforeRoll",
-                    bonuses: {
-                      0: {
-                        effect: 'diceModifier',
-                        value: "1"
-                      }
-                    },
-                    requirements: {
-                      0: {
-                        requirement: restrictionEffect.restriction,
-                        value: restrictionEffect.value
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        );
-      }
-      Actor.create({
-        name: "Requirement Man",
-        type: "character",
-        system: {
-          settings: {
-            hasaura: true,
-          }
-        },
-        items: itemRescrictionData
-      });
-    });
-
-    html.find('.add-new-item').click(async ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const target = ev.currentTarget;
-      let itemType = target.dataset.type;
-
-      let items = game.items.filter(item => item.type === itemType && this.actor.canAquireItem(item));
-
-      for (var item of items) {
-        item.enritchedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
-      }
-
-      const sectionList = {};
-      if (itemType === 'spell') {
-        var circle = target.dataset.circle;
-        if (circle) {
-          sectionList[circle] = {
-            name: CONFIG.exaltedthird.circles[circle],
-            list: items.filter(item => item.system.circle === circle)
-          }
-        } else {
-          if (items.some(item => item.system.circle === 'terrestrial')) {
-            sectionList['terrestrial'] = {
-              name: game.i18n.localize("Ex3.Terrestrial"),
-              list: items.filter(item => item.system.circle === 'terrestrial')
-            }
-          }
-          if (items.some(item => item.system.circle === 'celestial')) {
-            sectionList['celestial'] = {
-              name: game.i18n.localize("Ex3.Celestial"),
-              list: items.filter(item => item.system.circle === 'celestial')
-            }
-          }
-          if (items.some(item => item.system.circle === 'solar')) {
-            sectionList['solar'] = {
-              name: game.i18n.localize("Ex3.Solar"),
-              list: items.filter(item => item.system.circle === 'solar')
-            }
-          }
-          if (items.some(item => item.system.circle === 'ivory')) {
-            sectionList['ivory'] = {
-              name: game.i18n.localize("Ex3.Ivory"),
-              list: items.filter(item => item.system.circle === 'ivory')
-            }
-          }
-          if (items.some(item => item.system.circle === 'shadow')) {
-            sectionList['shadow'] = {
-              name: game.i18n.localize("Ex3.Shadow"),
-              list: items.filter(item => item.system.circle === 'shadow')
-            }
-          }
-          if (items.some(item => item.system.circle === 'void')) {
-            sectionList['void'] = {
-              name: game.i18n.localize("Ex3.Void"),
-              list: items.filter(item => item.system.circle === 'void')
-            }
-          }
-        }
-      }
-      else {
-        for (const charm of items.sort(function (a, b) {
-          const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
-          const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-          return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-        })) {
-          if (charm.system.listingname) {
-            if (!sectionList[charm.system.listingname]) {
-              sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
-            }
-            sectionList[charm.system.listingname].list.push(charm);
-          }
-          else {
-            if (!sectionList[charm.system.ability]) {
-              sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
-            }
-            sectionList[charm.system.ability].list.push(charm);
-          }
-        }
-      }
-
-      const template = "systems/exaltedthird/templates/dialogues/import-item.html";
-      const html = await foundry.applications.handlebars.renderTemplate(template, { 'sectionList': sectionList });
-
-      await foundry.applications.api.DialogV2.wait({
-        window: {
-          title: "Import Item",
-        },
-        position: {
-          height: 800,
-          width: 650,
-        },
-        content: html,
-        buttons: [{
-          class: "closeImportItem",
-          label: "Close",
-          action: "closeImportItem",
-        }],
-        render: (event, html) => {
-          html.querySelectorAll('.add-item').forEach(element => {
-            element.addEventListener('click', (ev) => {
-              ev.stopPropagation();
-              let li = $(ev.currentTarget).parents(".item");
-              let item = items.find((item) => item._id === li.data("item-id"));
-              if (!item.flags?.core?.sourceId) {
-                item.updateSource({ "flags.core.sourceId": item.uuid });
-              }
-              if (!item._stats?.compendiumSource) {
-                item.updateSource({ "_stats.compendiumSource": item.uuid });
-              }
-              this.actor.createEmbeddedDocuments("Item", [item]);
-              const closeImportItem = html.querySelector('.closeImportItem');
-              if (closeImportItem) {
-                closeImportItem.click();
-              }
-            });
-          });
-
-          html.querySelectorAll('.collapsable').forEach(element => {
-            element.addEventListener('click', (ev) => {
-              const li = $(ev.currentTarget).next();
-              li.toggle("fast");
-            });
-          });
-        },
-        classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
-      });
-    });
-
-    html.find('#rollDice').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'base',
-        }
-      );
-    });
-
-    html.find('.rollAbility').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'ability',
-        }
-      );
-    });
-
-    html.find('.prophecy').mousedown(ev => {
-      new Prophecy(this.actor, {}).render(true);
-    });
-
-    html.find('.roll-ability').mousedown(ev => {
-      let ability = $(ev.target).attr("data-ability");
-      if (ability === 'fever') {
-        if (this.actor.type === "npc") {
-          this.actor.actionRoll(
-            {
-              rollType: 'ability',
-              pool: 'fever',
-            }
-          );
-        }
-        else {
-          this.actor.actionRoll(
-            {
-              rollType: 'ability',
-              ability: 'fever',
-              attribute: 'none'
-            }
-          );
-        }
-      }
-      else if (ability === 'willpower') {
-        if (this.actor.type === "npc") {
-          this.actor.actionRoll(
-            {
-              rollType: 'ability',
-              pool: 'willpower',
-            }
-          );
-        }
-        else {
-          this.actor.actionRoll(
-            {
-              rollType: 'ability',
-              ability: 'willpower',
-              attribute: 'none'
-            }
-          );
-        }
-      }
-      else {
-        const abilityObject = this.actor.system.abilities[ability];
-        this.actor.actionRoll(
-          { rollType: 'ability', ability: ability, attribute: abilityObject.prefattribute }
-        );
-      }
-    });
-
-    html.find('.roll-pool').mousedown(ev => {
-      var pool = $(ev.target).attr("data-pool");
-      this.actor.actionRoll(
-        {
-          rollType: 'ability',
-          pool: pool
-        }
-      );
-    });
-
-    html.find('.roll-action').mousedown(ev => {
-      let li = $(event.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      this.actor.actionRoll(
-        {
-          rollType: 'ability',
-          pool: item.id
-        }
-      );
-    });
-
-    html.find('.rout-check').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'rout',
-          pool: 'willpower'
-        }
-      );
-    });
-
-    html.find('.roll-ma').mousedown(ev => {
-      let li = $(event.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'ability', ability: item.id }).render(true);
-    });
-
-    html.find('.roll-craft').mousedown(ev => {
-      let li = $(event.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'ability', ability: item.id }).render(true);
-    });
-
-    html.find('.join-battle').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'joinBattle',
-          pool: 'joinbattle'
-        }
-      );
-    });
-
-
-    html.find('.rush').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'rush',
-          pool: 'movement',
-        }
-      );
-    });
-
-    html.find('.disengage').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'disengage',
-          pool: 'movement',
-          initiativeCost: game.settings.get("exaltedthird", "disengageCost") ? 2 : 0
-        }
-      );
-    });
-
-    html.find('.grapple-control').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'grappleControl',
-          pool: 'grapple',
-        }
-      );
-    });
-
-    html.find('.command').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'command',
-          pool: 'command',
-        }
-      );
-    });
-
-    html.find('.sail-stratagem').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'sailStratagem',
-          pool: 'command',
-        }
-      );
-    });
-
-    html.find('.steady').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'steady',
-          pool: 'resistance',
-        }
-      );
-    });
-
-    html.find('.shape-sorcery').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      this.actor.actionRoll(
-        {
-          rollType: 'sorcery',
-          pool: 'sorcery',
-        }
-      );
-    });
-
-    html.find('.item-shape').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      let li = $(event.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      this.actor.actionRoll(
-        {
-          rollType: 'sorcery',
-          pool: 'sorcery',
-          spell: li.data("item-id")
-        }
-      );
-    });
-
-    html.find('.item-stop-shape').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      let li = $(event.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      if (item) {
-        item.update({ [`system.shaping`]: false });
-        this.actor.update({
-          [`system.sorcery.motes.value`]: 0,
-          [`system.sorcery.motes.max`]: 0
-        });
-      }
-    });
-
-    html.find('.read-intentions').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'readIntentions',
-          pool: 'readintentions'
-        }
-      );
-    });
-
-    html.find('.social-influence').mousedown(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: 'social',
-          pool: 'social'
-        }
-      );
-    });
-
-    html.find('.craft-project').click(ev => {
-      var type = $(ev.target).attr("data-type");
-
-      this.actor.actionRoll(
-        { rollType: 'craft', ability: "craft", craftType: type, craftRating: 2 }
-      );
-    });
-
-    html.find('.craft-simple-project').click(ev => {
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-
-      this.actor.actionRoll(
-        { rollType: 'simpleCraft', ability: "craft", craftProjectId: item?.id, difficulty: item?.system.difficulty }
-      );
-    });
-
-    html.find('.sorcerous-working').click(ev => {
-      this.actor.actionRoll(
-        { rollType: 'working', pool: "sorcery" }
-      );
-    });
-
-    html.find('#import-stuff').mousedown(async ev => {
-      new Importer().render(true);
-    });
-
-    html.find('.attack-roll').mousedown(ev => {
-      const button = $(ev.target).closest('.attack-roll'); // Ensure we get the button
-      const itemId = button.attr("data-item-id");
-      const attackType = button.attr("data-attack-type");
-      let weapon = null;
-
-      if (itemId) {
-        weapon = this.actor.items.get(itemId);
-      }
-
-      this.actor.actionRoll({
-        rollType: 'accuracy',
-        attackType: attackType,
-        weapon: weapon?.system
-      });
-    });
-
-
-
-    html.find('#anima-up').click(ev => {
-      this._updateAnima("up");
-    });
-
-    html.find('#anima-down').click(ev => {
-      this._updateAnima("down");
-    });
-
-    html.find('.toggle-poison').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      // Render the chat card template
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      item.update({
-        [`system.poison.apply`]: !item.system.poison.apply,
-      });
-    });
-
-    html.find('.toggle-item-value').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const key = ev.currentTarget.dataset.key;
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      item.update({
-        [`system.${key}`]: !item.system[key],
-      });
-    });
-
-    html.find('.data-chat').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      this._displayDataChat(ev);
-    });
-
-    html.find('.item-chat').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      // Render the chat card template
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      this._displayCard(item);
-    });
-
-    html.find('.item-complete').click(ev => {
-      this._completeCraft(ev);
-    });
-
-    html.find('.switch-mode').click(async ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      event.preventDefault();
-      event.stopPropagation();
-
-      let li = $(event.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      await item.switchMode();
-    });
-
-    html.find('.add-opposing-charm').click(ev => {
-      this._addOpposingCharm(ev);
-    });
-
-    html.find('.item-spend').click(ev => {
-      this._spendItem(ev);
-    });
-
-    html.find('.item-decrease-activations').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      item.decreaseActiations();
-    });
-
-    html.find('.item-increase-activations').click(ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      let li = $(ev.currentTarget).parents(".item");
-      let item = this.actor.items.get(li.data("item-id"));
-      item.increaseActivations();
-    });
-
-    html.find('.lunar-sync').click(ev => {
-      this._lunarSync();
-    });
-
-    html.find('.lunar-sync').click(ev => {
-      this._lunarSync();
-    });
-
-    html.find('.quick-roll').click(ev => {
-      let li = $(event.currentTarget).parents(".item");
-      new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollId: li.data("saved-roll-id"), skipDialog: true }).roll();
-    });
-
-    html.find('.saved-roll').click(ev => {
-      let li = $(event.currentTarget).parents(".item");
-      this.actor.actionRoll(
-        {
-          rollType: this.actor.system.savedRolls[li.data("saved-roll-id")].rollType,
-          rollId: li.data("saved-roll-id")
-        }
-      );
-    });
-
-    html.find('.last-roll').click(ev => {
-      this.actor.actionRoll(
-        {
-          rollType: this.actor.flags.exaltedthird.lastroll.rollType,
-          lastRoll: true
-        }
-      );
-    });
-
-    html.find('.anima-flux').click(ev => {
-      if (game.user.targets && game.user.targets.size > 0) {
-        for (const target of game.user.targets) {
-          const tokenId = target.actor.token?.id || target.actor.getActiveTokens()[0]?.id;
-          let combatant = game.combat.combatants.find(c => c.tokenId == tokenId);
-          var roll = new Roll(`1d10cs>=7`).evaluate({ async: false });
-          let diceDisplay = "";
-          var total = roll.total;
-          for (let dice of roll.dice[0].results.sort((a, b) => b.result - a.result)) {
-            if (dice.result === 10) {
-              diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
-            }
-            else if (dice.result >= 7) { diceDisplay += `<li class="roll die d10 success">${dice.result}</li>`; }
-            else if (dice.rerolled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
-            else if (dice.result == 1) { diceDisplay += `<li class="roll die d10 failure">${dice.result}</li>`; }
-            else { diceDisplay += `<li class="roll die d10">${dice.result}</li>`; }
-            if (dice.result >= 10) {
-              total += 1;
-            }
-          }
-          let resultsMessage = `<h4 class="dice-total">${total} Damage</h4>`;
-          if (total > 0) {
-            if (game.combat) {
-              if (combatant && combatant.initiative != null) {
-                if (combatant.initiative > 0) {
-                  if (target.actor.system.hardness.value <= 0) {
-                    if (game.user.isGM) {
-                      game.combat.setInitiative(combatant.id, combatant.initiative - total);
-                    }
-                    else {
-                      game.socket.emit('system.exaltedthird', {
-                        type: 'updateInitiative',
-                        id: combatant.id,
-                        data: combatant.initiative - total,
-                        // crasherId: crasherId,
-                      });
-                    }
-                  }
-                }
-                else {
-                  let totalHealth = 0;
-                  const targetActorData = foundry.utils.duplicate(target.actor);
-                  for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
-                    totalHealth += health_level.value;
-                  }
-                  targetActorData.system.health.lethal = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.aggravated, targetActorData.system.health.lethal + total);
-                  if (game.user.isGM) {
-                    target.actor.update(targetActorData);
-                  }
-                  else {
-                    game.socket.emit('system.exaltedthird', {
-                      type: 'updateTargetData',
-                      id: target.id,
-                      data: targetActorData,
-                    });
-                  }
-                }
-              }
-            }
-            if (combatant.initiative > 0 && target.actor.system.hardness.value > 0) {
-              resultsMessage = `<h4 class="dice-total">Blocked by hardness</h4>`;
-            }
-          }
-          let messageContent = `
-          <div class="dice-roll">
-              <div class="dice-result">
-                  <h4 class="dice-formula">Anima Flux vs ${target.actor.name}</h4>
-                  <div class="dice-tooltip">
-                      <div class="dice">
-                          <ol class="dice-rolls">${diceDisplay}</ol>
-                      </div>
-                  </div>
-                  ${resultsMessage}
-              </div>
-          </div>`;
-          ChatMessage.create({ user: game.user.id, style: CONST.CHAT_MESSAGE_STYLES.OTHER, roll: roll, content: messageContent });
-        }
-      }
-      else {
-        ui.notifications.warn('Ex3.NoTargets', {
-          localize: true,
-        });
-      }
-    });
-
-    html.find('.delete-saved-roll').click(async ev => {
-      let li = $(event.currentTarget).parents(".item");
-      var key = li.data("saved-roll-id");
-      const rollDeleteString = "system.savedRolls.-=" + key;
-
-      const deleteConfirm = await foundry.applications.api.DialogV2.confirm({
-        window: { title: game.i18n.localize('Ex3.Delete') },
-        content: `<p>Delete Saved Roll?</p>`,
-        classes: [this.actor.getSheetBackground()],
-        modal: true
-      });
-      if (deleteConfirm) {
-        this.actor.update({ [rollDeleteString]: null });
-        ui.notifications.notify(`Saved Roll Deleted`);
-      }
-    });
-
-    $(document.getElementById('chat-log')).on('click', '.chat-card', (ev) => {
-      const li = $(ev.currentTarget).next();
-      li.toggle("fast");
-    });
-
-    html.find('.npc-action').on('change', async (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const itemID = li.data('itemId');
-      const newNumber = parseInt(ev.currentTarget.value);
-      await this.actor.updateEmbeddedDocuments('Item', [
-        {
-          _id: itemID,
-          system: {
-            value: newNumber,
-          },
-        }
-      ]);
-    });
-
-    html.find('.list-ability').on('change', async (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const itemID = li.data('itemId');
-      const newNumber = parseInt(ev.currentTarget.value);
-      await this.actor.updateEmbeddedDocuments('Item', [
-        {
-          _id: itemID,
-          system: {
-            points: newNumber,
-          },
-        }
-      ]);
-    });
-
-    html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
-
-    html.find('.rollable').click(this._onRoll.bind(this));
-
-    // Drag events for macros.
-    if (game.user.isGM || this.actor.isOwner) {
-      let handler = ev => this._onDragStart(ev);
-      let savedRollhandler = ev => this._onDragSavedRoll(ev);
-      html.find('li.item').each((i, li) => {
-        if (li.classList.contains("inventory-header")) return;
-        li.setAttribute("draggable", true);
-        if (li.classList.contains("saved-roll-row")) {
-          li.addEventListener("dragstart", savedRollhandler, false);
-        }
-        else {
-          li.addEventListener("dragstart", handler, false);
-        }
-      });
-    }
+  /**
+   * Handle dropping of an item reference or item data onto an Actor Sheet
+   * @param {DragEvent} event            The concluding DragEvent which contains drop data
+   * @param {object} data                The data transfer extracted from the event
+   * @returns {Promise<Item[]|boolean>}  The created or updated Item instances, or false if the drop was not permitted.
+   * @protected
+   */
+  async _onDropItem(event, data) {
+    if (!this.actor.isOwner) return false;
+    const item = await Item.implementation.fromDropData(data);
+
+    // Handle item sorting within the same Actor
+    if (this.actor.uuid === item.parent?.uuid)
+      return this._onSortItem(event, item);
+
+    // Create the owned item
+    return this._onDropItemCreate(item, event);
   }
+
+  /**
+   * Handle dropping of a Folder on an Actor Sheet.
+   * The core sheet currently supports dropping a Folder of Items to create all items as owned items.
+   * @param {DragEvent} event     The concluding DragEvent which contains drop data
+   * @param {object} data         The data transfer extracted from the event
+   * @returns {Promise<Item[]>}
+   * @protected
+   */
+  async _onDropFolder(event, data) {
+    if (!this.actor.isOwner) return [];
+    const folder = await Folder.implementation.fromDropData(data);
+    if (folder.type !== 'Item') return [];
+    const droppedItemData = await Promise.all(
+      folder.contents.map(async (item) => {
+        if (!(document instanceof Item)) item = await fromUuid(item.uuid);
+        return item;
+      })
+    );
+    return this._onDropItemCreate(droppedItemData, event);
+  }
+
+  /**
+   * Handle the final creation of dropped Item data on the Actor.
+   * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
+   * @param {object[]|object} itemData      The item data requested for creation
+   * @param {DragEvent} event               The concluding DragEvent which provided the drop data
+   * @returns {Promise<Item[]>}
+   * @private
+   */
+  async _onDropItemCreate(itemData, event) {
+    itemData = itemData instanceof Array ? itemData : [itemData];
+    return this.actor.createEmbeddedDocuments('Item', itemData);
+  }
+
+  /**
+   * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
+   * @param {Event} event
+   * @param {Item} item
+   * @private
+   */
+  _onSortItem(event, item) {
+    // Get the drag source and drop target
+    const items = this.actor.items;
+    const dropTarget = event.target.closest('[data-item-id]');
+    if (!dropTarget) return;
+    const target = items.get(dropTarget.dataset.itemId);
+
+    // Don't sort on yourself
+    if (item.id === target.id) return;
+
+    // Identify sibling items based on adjacent HTML elements
+    const siblings = [];
+    for (let el of dropTarget.parentElement.children) {
+      const siblingId = el.dataset.itemId;
+      if (siblingId && siblingId !== item.id)
+        siblings.push(items.get(el.dataset.itemId));
+    }
+
+    // Perform the sort
+    const sortUpdates = SortingHelpers.performIntegerSort(item, {
+      target,
+      siblings,
+    });
+    const updateData = sortUpdates.map((u) => {
+      const update = u.update;
+      update._id = u.target._id;
+      return update;
+    });
+
+    // Perform the update
+    return this.actor.updateEmbeddedDocuments('Item', updateData);
+  }
+
+  /** The following pieces set up drag handling and are unlikely to need modification  */
+
+  /**
+   * Returns an array of DragDrop instances
+   * @type {DragDrop[]}
+   */
+  get dragDrop() {
+    return this.#dragDrop;
+  }
+
+  // This is marked as private because there's no real need
+  // for subclasses or external hooks to mess with it directly
+  #dragDrop;
+
+  /**
+   * Create drag-and-drop workflow handlers for this Application
+   * @returns {DragDrop[]}     An array of DragDrop handlers
+   * @private
+   */
+  #createDragDropHandlers() {
+    return this.options.dragDrop.map((d) => {
+      d.permissions = {
+        dragstart: this._canDragStart.bind(this),
+        drop: this._canDragDrop.bind(this),
+      };
+      d.callbacks = {
+        dragstart: this._onDragStart.bind(this),
+        dragover: this._onDragOver.bind(this),
+        drop: this._onDrop.bind(this),
+      };
+      return new foundry.applications.ux.DragDrop.implementation(d);
+    });
+  }
+
 
   async _onDragSavedRoll(ev) {
     const li = ev.currentTarget;
@@ -2004,7 +1300,9 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     ev.dataTransfer.setData("text/plain", JSON.stringify({ actorId: this.actor.uuid, type: 'savedRoll', id: li.dataset.itemId, name: savedRoll.name }));
   }
 
-  _updateAnima(direction) {
+  static updateAnima(event, target) {
+    const direction = target.dataset.direction;
+
     let newAnima = this.actor.system.anima;
     let newLevel = this.actor.system.anima.level;
     let newValue = this.actor.system.anima.value;
@@ -2052,8 +1350,9 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     this.actor.update({ [`system.anima`]: newAnima });
   }
 
-  async setSpendPool(type) {
-    this.actor.update({ [`system.settings.charmmotepool`]: type });
+  static async setSpendPool(event, target) {
+    const motePool = target.dataset.pool;
+    await this.actor.update({ [`system.settings.charmmotepool`]: motePool });
   }
 
   async calculateCommitMotes(type) {
@@ -2066,45 +1365,93 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     this.actor.update({ [`system.motes.${type}.committed`]: commitMotes });
   }
 
-  async calculateMotes() {
+  static async calculateMotes(event, target) {
+    const motePool = target.dataset.pool;
+    const functionType = target.dataset.functiontype;
     const system = this.actor.system;
 
-    if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
-      if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
-        system.motes.glorymotecap.max = 10;
-        if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
-          system.motes.glorymotecap.max = 20 + (this.actor.system.essence.value * 10);
+    if (functionType === 'commit') {
+      let commitMotes = 0;
+      for (const item of this.actor.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
+        if (item.type === 'item' || item.system.equipped) {
+          commitMotes += item.system.attunement;
         }
-        system.motes.glorymotecap.value = (system.motes.glorymotecap.max - this.actor.system.motes.glorymotecap.committed);
-      } else {
-        system.motes.glorymotecap.max = this.actor.calculateMaxExaltedMotes('glorymotecap', this.actor.system.details.exalt, this.actor.system.essence.value);
-        system.motes.glorymotecap.value = (system.motes.glorymotecap.max - this.actor.system.motes.glorymotecap.committed);
       }
+      this.actor.update({ [`system.motes.${motePool}.committed`]: commitMotes });
     } else {
-      if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
-        if (system.settings.editmode) {
-          system.motes.personal.max = 10 * system.essence.value;
+      if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
+        if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
+          system.motes.glorymotecap.max = 10;
           if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
-            system.motes.personal.max += 50;
+            system.motes.glorymotecap.max = 20 + (this.actor.system.essence.value * 10);
           }
+          system.motes.glorymotecap.value = (system.motes.glorymotecap.max - this.actor.system.motes.glorymotecap.committed);
+        } else {
+          system.motes.glorymotecap.max = this.actor.calculateMaxExaltedMotes('glorymotecap', this.actor.system.details.exalt, this.actor.system.essence.value);
+          system.motes.glorymotecap.value = (system.motes.glorymotecap.max - this.actor.system.motes.glorymotecap.committed);
         }
-        system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
-      }
-      else {
-        if (system.settings.editmode) {
-          system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
-          system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+      } else {
+        if (system.details.exalt === 'other' || (this.actor.type === 'npc' && system.creaturetype !== 'exalt')) {
+          if (system.settings.editmode) {
+            system.motes.personal.max = 10 * system.essence.value;
+            if (system.creaturetype === 'god' || system.creaturetype === 'undead' || system.creaturetype === 'demon' || system.creaturetype === 'elemental') {
+              system.motes.personal.max += 50;
+            }
+          }
+          system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
         }
-        system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
-        system.motes.peripheral.value = (system.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
+        else {
+          if (system.settings.editmode) {
+            system.motes.personal.max = this.actor.calculateMaxExaltedMotes('personal', this.actor.system.details.exalt, this.actor.system.essence.value);
+            system.motes.peripheral.max = this.actor.calculateMaxExaltedMotes('peripheral', this.actor.system.details.exalt, this.actor.system.essence.value);
+          }
+          system.motes.personal.value = (system.motes.personal.max - this.actor.system.motes.personal.committed);
+          system.motes.peripheral.value = (system.motes.peripheral.max - this.actor.system.motes.peripheral.committed);
+        }
       }
+      this.actor.update({ [`system.motes`]: system.motes });
     }
 
-
-    this.actor.update({ [`system.motes`]: system.motes });
   }
 
-  async calculateHealth(healthType = 'person') {
+  static createProphecy(event, target) {
+    new Prophecy(this.actor, {}).render(true);
+  }
+
+  static async setDiceCap(event, target) {
+    const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/set-dice-cap.html", { 'dicecap': this.actor.system.settings.dicecap });
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("Ex3.SetCustomDiceCap") },
+      content: html,
+      classes: [this.actor.getSheetBackground()],
+      buttons: [{
+        action: "choice",
+        label: game.i18n.localize("Ex3.Save"),
+        default: true,
+        callback: (event, button, dialog) => button.form.elements
+      }, {
+        action: "cancel",
+        label: game.i18n.localize("Ex3.Cancel"),
+        callback: (event, button, dialog) => false
+      }],
+      submit: result => {
+        if (result) {
+          let diceCapData = {
+            iscustom: result['dicecap.iscustom']?.checked ?? false,
+            useattribute: result['dicecap.useattribute']?.checked ?? false,
+            useability: result['dicecap.useability']?.checked ?? false,
+            usespecialty: result['dicecap.usespecialty']?.checked ?? false,
+            other: result['dicecap.other'].value,
+            extratext: result['dicecap.extratext'].value,
+          };
+          this.actor.update({ [`system.settings.dicecap`]: diceCapData });
+        }
+      }
+    }).render({ force: true });
+  }
+
+  static async calculateHealth(event, target) {
+    const healthType = target.dataset.healthtype;
     var oxBodyText = '';
 
     if (this.actor.type !== 'npc') {
@@ -2300,7 +1647,15 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }).render({ force: true });
   }
 
-  async recoverHealth(healthType = 'person') {
+  static calculateDerivedStat(event, target) {
+    const key = target.dataset.key;
+    this.actor.calculateDerivedStats(key);
+  }
+
+
+  static async recoverHealth(event, target) {
+    const healthType = target.dataset.healthtype;
+
     let newDamage = {
       bashing: 0,
       lethal: 0,
@@ -2314,61 +1669,84 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }
   }
 
-  async showDialogue(type) {
-    var template = "systems/exaltedthird/templates/dialogues/armor-tags.html";
-    switch (type) {
-      case 'experience':
-        template = "systems/exaltedthird/templates/dialogues/experience-points-dialogue.html";
-        break;
-      case 'weapons':
-        template = "systems/exaltedthird/templates/dialogues/weapon-tags.html";
-        break;
-      case 'craft':
-        template = "systems/exaltedthird/templates/dialogues/craft-cheatsheet.html";
-        break;
-      case 'advancement':
-        template = "systems/exaltedthird/templates/dialogues/advancement-dialogue.html";
-        break;
-      case 'combat':
-        template = "systems/exaltedthird/templates/dialogues/combat-dialogue.html";
-        break;
-      case 'social':
-        template = "systems/exaltedthird/templates/dialogues/social-dialogue.html";
-        break;
-      case 'rout':
-        template = "systems/exaltedthird/templates/dialogues/rout-modifiers.html";
-        break;
-      case 'exalt-xp':
-        template = "systems/exaltedthird/templates/dialogues/exalt-xp-dialogue.html";
-        break;
-      case 'feats-of-strength':
-        template = "systems/exaltedthird/templates/dialogues/feats-of-strength-dialogue.html";
-        break;
-      case 'bonus-points':
-        template = "systems/exaltedthird/templates/dialogues/bonus-points-dialogue.html";
-        break;
-      case 'health':
-        template = "systems/exaltedthird/templates/dialogues/health-dialogue.html";
-        break;
-      case 'workings':
-        template = "systems/exaltedthird/templates/dialogues/workings-dialogue.html";
-        break;
-      default:
-        break;
-    }
-    const html = await foundry.applications.handlebars.renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
-    new foundry.applications.api.DialogV2({
-      window: { title: game.i18n.localize("Ex3.InfoDialog"), resizable: true },
-      content: html,
-      buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
-      classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
-      position: {
-        width: 500,
-      },
-    }).render(true);
+  static alterDefensePenalty(event, target) {
+    const defenseType = target.dataset.defensetype;
+    const direction = target.dataset.direction;
+    this.actor.alterDefensePenalty(direction, defenseType);
   }
 
-  async pickColor() {
+  static async showDialog(event, target) {
+    const dialogType = target.dataset.dialogtype;
+
+    if (dialogType === 'charmCheatSheet') {
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
+        content: html,
+        position: {
+          width: 1000,
+          height: 1000
+        },
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
+      }).render(true);
+    } else {
+      let template = "systems/exaltedthird/templates/dialogues/armor-tags.html";
+      switch (dialogType) {
+        case 'experience':
+          template = "systems/exaltedthird/templates/dialogues/experience-points-dialogue.html";
+          break;
+        case 'weapons':
+          template = "systems/exaltedthird/templates/dialogues/weapon-tags.html";
+          break;
+        case 'craft':
+          template = "systems/exaltedthird/templates/dialogues/craft-cheatsheet.html";
+          break;
+        case 'advancement':
+          template = "systems/exaltedthird/templates/dialogues/advancement-dialogue.html";
+          break;
+        case 'combat':
+          template = "systems/exaltedthird/templates/dialogues/combat-dialogue.html";
+          break;
+        case 'social':
+          template = "systems/exaltedthird/templates/dialogues/social-dialogue.html";
+          break;
+        case 'rout':
+          template = "systems/exaltedthird/templates/dialogues/rout-modifiers.html";
+          break;
+        case 'exalt-xp':
+          template = "systems/exaltedthird/templates/dialogues/exalt-xp-dialogue.html";
+          break;
+        case 'featsOfStrength':
+          template = "systems/exaltedthird/templates/dialogues/feats-of-strength-dialogue.html";
+          break;
+        case 'bonusPoints':
+          template = "systems/exaltedthird/templates/dialogues/bonus-points-dialogue.html";
+          break;
+        case 'health':
+          template = "systems/exaltedthird/templates/dialogues/health-dialogue.html";
+          break;
+        case 'workings':
+          template = "systems/exaltedthird/templates/dialogues/workings-dialogue.html";
+          break;
+        default:
+          break;
+      }
+      const html = await foundry.applications.handlebars.renderTemplate(template, { 'exalt': this.actor.system.details.exalt, 'caste': this.actor.system.details.caste.toLowerCase(), 'unifiedCharacterAdvancement': game.settings.get("exaltedthird", "unifiedCharacterAdvancement") });
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.InfoDialog"), resizable: true },
+        content: html,
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
+        position: {
+          width: 500,
+        },
+      }).render(true);
+    }
+
+  }
+
+  static async pickColor() {
     const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.PickColor") },
@@ -2406,7 +1784,11 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }).render({ force: true });
   }
 
-  async sheetSettings() {
+  static async baseRoll() {
+    new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'base' }).render(true);
+  }
+
+  static async sheetSettings() {
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
     const html = await foundry.applications.handlebars.renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': (this.actor.system.details.exalt === 'exigent' || this.actor.system.details.exalt === 'customExigent'), selects: CONFIG.exaltedthird.selects });
 
@@ -2460,9 +1842,9 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }).render({ force: true });
   }
 
-  async helpDialogue(type) {
+  static async helpDialogue() {
     const template = "systems/exaltedthird/templates/dialogues/help-dialogue.html"
-    const html = await foundry.applications.handlebars.renderTemplate(template, { 'type': type });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'type': this.actor.type });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
       content: html,
@@ -2471,15 +1853,13 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }).render(true);
   }
 
-  _onSquareCounterChange(event) {
-    event.preventDefault()
-    const element = event.currentTarget
-    const index = Number(element.dataset.index)
-    const parent = $(element.parentNode)
-    const data = parent[0].dataset
-    const states = parseCounterStates(data.states)
-    const fields = data.name.split('.')
-    const steps = parent.find('.resource-counter-step')
+  static _onSquareCounterChange(event, target) {
+    const index = Number(target.dataset.index);
+    const parent = target.parentNode;
+    const data = parent.dataset;
+    const states = parseCounterStates(data.states);
+    const fields = data.name.split('.');
+    const steps = parent.querySelectorAll('.resource-counter-step');
 
     if (index < 0 || index > steps.length) {
       return
@@ -2555,6 +1935,53 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     this._assignToActorField(fields, newValue)
   }
 
+  static effectControl(event, target) {
+    onManageActiveEffect(target, this.actor);
+  }
+
+  static toggleCollapse(event, target) {
+    // this.element.querySelectorAll('.item-list-collapsable').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     const itemType = ev.currentTarget.dataset.itemtype;
+    //     const li = ev.currentTarget.nextElementSibling;
+    //     if (li.getAttribute('id')) {
+    //       this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
+    //     }
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+
+    // this.element.querySelectorAll('.collapsable').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+
+    // this.element.querySelectorAll('.anima-collapsable').forEach(element => {
+    //   element.addEventListener('click', (ev) => {
+    //     const animaType = ev.currentTarget.dataset.type;
+    //     const li = ev.currentTarget.nextElementSibling;
+    //     this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });
+    //     toggleDisplay(ev.currentTarget);
+    //   });
+    // });
+    const collapseType = target.dataset.collapsetype;
+    const itemType = target.dataset.itemtype;
+    if(collapseType === 'itemSection') {
+      const li = target.nextElementSibling;
+      if (itemType && li.getAttribute('id')) {
+        this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
+      }
+    }
+    if(collapseType === 'anima') {
+      const animaType = target.dataset.type;
+      const li = target.nextElementSibling;
+      this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });
+    }
+
+    toggleDisplay(target);
+  }
+
   _getHighestMaidenAbility(maiden) {
     const abilityList = CONFIG.exaltedthird.maidenabilities[maiden];
     let highestValue = 0;
@@ -2571,30 +1998,34 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     return (this.actor.items.filter(numberCharm => numberCharm.type === 'charm' && abilityList.includes(numberCharm.system.ability)).length || 0)
   }
 
-  _onDotCounterChange(event) {
-    event.preventDefault()
+  static _onDotCounterChange(event, target) {
     const color = this.actor.system.details.color;
-    const element = event.currentTarget
-    const dataset = element.dataset
-    const index = Number(dataset.index)
-    const itemID = dataset.id;
-    const parent = $(element.parentNode)
-    const fieldStrings = parent[0].dataset.name
-    const fields = fieldStrings.split('.')
-    const steps = parent.find('.resource-value-step')
+    const index = Number(target.dataset.index);
+    const itemID = target.dataset.id;
+
+    const parent = target.parentNode;
+    const fieldStrings = parent.dataset.name;
+    const fields = fieldStrings.split('.');
+
+    const steps = parent.querySelectorAll('.resource-value-step');
+
     if (index < 0 || index > steps.length) {
-      return
+      return;
     }
 
-    steps.removeClass('active')
-    steps.each(function (i) {
+    steps.forEach(step => {
+      step.classList.remove('active');
+      step.style.backgroundColor = ''; // Clear previous color
+    });
+
+    steps.forEach((step, i) => {
       if (i <= index) {
-        // $(this).addClass('active')
-        $(this).css("background-color", color);
+        step.classList.add('active');
+        step.style.backgroundColor = color;
       }
-    })
-    if (itemID) {
-      const item = this.actor.items.get(itemID);
+    });
+    if (target.dataset.id) {
+      const item = this.actor.items.get(target.dataset.id);
       let newVal = index + 1;
       if (index === 0 && item.system.points === 1) {
         newVal = 0;
@@ -2602,7 +2033,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
       if (item) {
         this.actor.updateEmbeddedDocuments('Item', [
           {
-            _id: itemID,
+            _id: target.dataset.id,
             system: {
               points: newVal,
             },
@@ -2637,76 +2068,65 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     this.actor.update(actorData)
   }
 
-  _onDotCounterEmpty(event) {
-    event.preventDefault()
-    const actorData = foundry.utils.duplicate(this.actor)
-    const element = event.currentTarget
-    const parent = $(element.parentNode)
-    const fieldStrings = parent[0].dataset.name
-    const fields = fieldStrings.split('.')
-    const steps = parent.find('.resource-value-empty')
-
-    steps.removeClass('active')
-    this._assignToActorField(fields, 0)
-  }
-
-  _setupButtons(html) {
-    const actorData = foundry.utils.duplicate(this.actor);
-    html.find('.set-pool-personal').each(function (i) {
-      if (actorData.system.settings.charmmotepool === 'personal') {
-        $(this).css("color", '#F9B516');
+  _setupButtons(element) {
+    element.querySelectorAll('.set-pool-personal').forEach(el => {
+      if (this.actor.system.settings.charmmotepool === 'personal') {
+        el.style.color = '#F9B516';
       }
     });
-    html.find('.set-pool-peripheral').each(function (i) {
-      if (actorData.system.settings.charmmotepool === 'peripheral') {
-        $(this).css("color", '#F9B516');
+
+    element.querySelectorAll('.set-pool-peripheral').forEach(el => {
+      if (this.actor.system.settings.charmmotepool === 'peripheral') {
+        el.style.color = '#F9B516';
       }
     });
   }
 
-  _setupDotCounters(html) {
+  _setupDotCounters(element) {
     const actorData = foundry.utils.duplicate(this.actor)
-    html.find('.resource-value').each(function () {
-      const value = Number(this.dataset.value);
-      $(this).find('.resource-value-step').each(function (i) {
+    // Handle .resource-value
+    element.querySelectorAll('.resource-value').forEach(resourceEl => {
+      const value = Number(resourceEl.dataset.value);
+      const steps = resourceEl.querySelectorAll('.resource-value-step');
+      steps.forEach((stepEl, i) => {
         if (i + 1 <= value) {
-          $(this).addClass('active');
-          $(this).css("background-color", actorData.system.details.color);
+          stepEl.classList.add('active');
+          stepEl.style.backgroundColor = actorData.system.details.color;
         }
       });
-    })
-    html.find('.resource-value-static').each(function () {
-      const value = Number(this.dataset.value)
-      $(this).find('.resource-value-static-step').each(function (i) {
+    });
+
+    // Handle .resource-value-static
+    element.querySelectorAll('.resource-value-static').forEach(resourceEl => {
+      const value = Number(resourceEl.dataset.value);
+      const steps = resourceEl.querySelectorAll('.resource-value-static-step');
+      steps.forEach((stepEl, i) => {
         if (i + 1 <= value) {
-          $(this).addClass('active');
-          $(this).css("background-color", actorData.system.details.color);
+          stepEl.classList.add('active');
+          stepEl.style.backgroundColor = actorData.system.details.color;
         }
-      })
-    })
+      });
+    });
   }
 
-  _setupSquareCounters(html) {
-    html.find('.resource-counter').each(function () {
-      const data = this.dataset;
+  _setupSquareCounters(element) {
+    element.querySelectorAll('.resource-counter').forEach(counterEl => {
+      const data = counterEl.dataset;
       const states = parseCounterStates(data.states);
 
       const halfs = Number(data[states['/']]) || 0;
-      const crossed = Number(data[states.x]) || 0;
+      const crossed = Number(data[states['x']]) || 0;
       const stars = Number(data[states['*']]) || 0;
 
       const values = new Array(stars + crossed + halfs);
-
       values.fill('*', 0, stars);
       values.fill('x', stars, stars + crossed);
-      values.fill('/', stars + crossed, halfs + crossed + stars);
+      values.fill('/', stars + crossed, stars + crossed + halfs);
 
-
-      $(this).find('.resource-counter-step').each(function () {
-        this.dataset.state = ''
-        if (this.dataset.index < values.length) {
-          this.dataset.state = values[this.dataset.index];
-        }
+      const steps = counterEl.querySelectorAll('.resource-counter-step');
+      steps.forEach(step => {
+        const index = Number(step.dataset.index);
+        step.dataset.state = index < values.length ? values[index] : '';
       });
     });
   }
@@ -2716,14 +2136,13 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-  _onItemCreate(event) {
+  static createItem(event, target) {
     event.preventDefault();
     event.stopPropagation();
-    const header = event.currentTarget;
     // Get the type of item to create.
-    const type = header.dataset.type;
+    const type = target.dataset.type;
     // Grab any data associated with this control.
-    const data = foundry.utils.duplicate(header.dataset);
+    const data = foundry.utils.duplicate(target.dataset);
     // Initialize a default name.
     const name = `New ${type.capitalize()}`;
     // Prepare the item object.
@@ -2744,17 +2163,455 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     return this.actor.createEmbeddedDocuments("Item", [itemData]);
   }
 
-  /**
- * Handle spawning the TraitSelector application which allows a checkbox of multiple trait options
- * @param {Event} event   The click event which originated the selection
- * @private
- */
-  _onTraitSelector(event) {
+  static async importItem(event, target) {
+    let itemType = target.dataset.type;
+
+    let items = game.items.filter(item => item.type === itemType && this.actor.canAquireItem(item));
+
+    for (let item of items) {
+      item.enritchedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
+    }
+
+    const sectionList = {};
+    if (itemType === 'spell') {
+      let circle = target.dataset.circle;
+      if (circle) {
+        sectionList[circle] = {
+          name: CONFIG.exaltedthird.circles[circle],
+          list: items.filter(item => item.system.circle === circle)
+        }
+      } else {
+        if (items.some(item => item.system.circle === 'terrestrial')) {
+          sectionList['terrestrial'] = {
+            name: game.i18n.localize("Ex3.Terrestrial"),
+            list: items.filter(item => item.system.circle === 'terrestrial')
+          }
+        }
+        if (items.some(item => item.system.circle === 'celestial')) {
+          sectionList['celestial'] = {
+            name: game.i18n.localize("Ex3.Celestial"),
+            list: items.filter(item => item.system.circle === 'celestial')
+          }
+        }
+        if (items.some(item => item.system.circle === 'solar')) {
+          sectionList['solar'] = {
+            name: game.i18n.localize("Ex3.Solar"),
+            list: items.filter(item => item.system.circle === 'solar')
+          }
+        }
+        if (items.some(item => item.system.circle === 'ivory')) {
+          sectionList['ivory'] = {
+            name: game.i18n.localize("Ex3.Ivory"),
+            list: items.filter(item => item.system.circle === 'ivory')
+          }
+        }
+        if (items.some(item => item.system.circle === 'shadow')) {
+          sectionList['shadow'] = {
+            name: game.i18n.localize("Ex3.Shadow"),
+            list: items.filter(item => item.system.circle === 'shadow')
+          }
+        }
+        if (items.some(item => item.system.circle === 'void')) {
+          sectionList['void'] = {
+            name: game.i18n.localize("Ex3.Void"),
+            list: items.filter(item => item.system.circle === 'void')
+          }
+        }
+      }
+    }
+    else {
+      for (const charm of items.sort(function (a, b) {
+        const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
+        const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+        return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+      })) {
+        if (charm.system.listingname) {
+          if (!sectionList[charm.system.listingname]) {
+            sectionList[charm.system.listingname] = { name: charm.system.listingname, list: [] };
+          }
+          sectionList[charm.system.listingname].list.push(charm);
+        }
+        else {
+          if (!sectionList[charm.system.ability]) {
+            sectionList[charm.system.ability] = { name: CONFIG.exaltedthird.charmabilities[charm.system.ability] || 'Ex3.Other', visible: true, list: [] };
+          }
+          sectionList[charm.system.ability].list.push(charm);
+        }
+      }
+    }
+
+    const template = "systems/exaltedthird/templates/dialogues/import-item.html";
+    const html = await foundry.applications.handlebars.renderTemplate(template, { 'sectionList': sectionList });
+
+    await foundry.applications.api.DialogV2.wait({
+      window: {
+        title: "Import Item",
+      },
+      position: {
+        height: 800,
+        width: 650,
+      },
+      content: html,
+      buttons: [{
+        class: "closeImportItem",
+        label: "Close",
+        action: "closeImportItem",
+      }],
+      render: (event, dialog) => {
+        dialog.element.querySelectorAll('.add-item').forEach(element => {
+          element.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            let li = $(ev.currentTarget).parents(".item");
+            let item = items.find((item) => item._id === li.data("item-id"));
+            if (!item.flags?.core?.sourceId) {
+              item.updateSource({ "flags.core.sourceId": item.uuid });
+            }
+            if (!item._stats?.compendiumSource) {
+              item.updateSource({ "_stats.compendiumSource": item.uuid });
+            }
+            this.actor.createEmbeddedDocuments("Item", [item]);
+            // const closeImportItem = html.querySelector('.closeImportItem');
+            // if (closeImportItem) {
+            //   closeImportItem.click();
+            // }
+          });
+        });
+
+        dialog.element.querySelectorAll('.collapsable').forEach(element => {
+          element.addEventListener('click', (ev) => {
+            const li = ev.currentTarget.nextElementSibling;
+            if (li.style.display == 'none') {
+              li.style.display = '';
+            } else {
+              li.style.display = 'none';
+            }
+          });
+        });
+      },
+      classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
+    });
+  }
+
+  static async itemAction(event, target) {
     event.preventDefault();
-    const a = event.currentTarget;
-    const label = a.parentElement.querySelector("label");
-    const choices = CONFIG.exaltedthird[a.dataset.options];
-    const options = { name: a.dataset.target, title: label.innerText, choices };
+    event.stopPropagation();
+    const doc = this._getEmbeddedDocument(target);
+    const actionType = target.dataset.actiontype;
+    if (!doc) {
+      if (actionType === 'craftSimpleProject') {
+        this.actor.actionRoll(
+          { rollType: 'simpleCraft', ability: "craft" }
+        );
+      }
+      return;
+    }
+    switch (actionType) {
+      case 'editItem':
+        doc.sheet.render(true);
+        break;
+      case 'deleteItem':
+        const applyChanges = await foundry.applications.api.DialogV2.confirm({
+          window: { title: game.i18n.localize("Ex3.Delete") },
+          content: "<p>Are you sure you want to delete this item?</p>",
+          classes: [this.actor.getSheetBackground()],
+          modal: true
+        });
+        if (applyChanges) {
+          await doc.delete();
+        }
+        break;
+      case 'chatItem':
+        this._displayCard(doc);
+        break;
+      case 'switchMode':
+        await doc.switchMode();
+        break;
+      case 'addOpposingCharm':
+        await this._addOpposingCharm(doc);
+        break;
+      case 'spendItem':
+        this._spendItem(doc);
+        break;
+      case 'increaseItemActivations':
+        doc.increaseActivations();
+        break;
+      case 'decreaseItemActivations':
+        doc.decreaseActiations();
+        break;
+      case 'togglePoison':
+        await doc.update({
+          [`system.poison.apply`]: !doc.system.poison.apply,
+        });
+        break;
+      case 'toggleItemValue':
+        const key = target.dataset.key;
+        await doc.update({
+          [`system.${key}`]: !doc.system[key],
+        });
+        break;
+      case 'shapeSpell':
+        this.actor.actionRoll(
+          {
+            rollType: 'sorcery',
+            pool: 'sorcery',
+            spell: doc.id
+          }
+        );
+        break;
+      case 'stopSpellShape':
+        await doc.update({ [`system.shaping`]: false });
+        await this.actor.update({
+          [`system.sorcery.motes.value`]: 0,
+          [`system.sorcery.motes.max`]: 0
+        });
+        break;
+      case 'completeCraft':
+        this._completeCraft(doc);
+        break;
+      case 'craftSimpleProject':
+        this.actor.actionRoll(
+          { rollType: 'simpleCraft', ability: "craft", craftProjectId: doc?.id, difficulty: doc?.system?.difficulty }
+        );
+        break;
+      case 'editShape':
+        const formActor = game.actors.get(doc.system.actorid);
+        if (formActor) {
+          formActor.sheet.render(true);
+        }
+        break;
+    }
+  }
+
+  static async savedRollAction(event, target) {
+    const savedRollId = this._getEmbeddedDocument(target);
+    const actionType = target.dataset.actiontype;
+
+    switch (actionType) {
+      case 'quickRoll':
+        new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollId: savedRollId, skipDialog: true }).roll();
+        break;
+      case 'savedRoll':
+        this.actor.actionRoll(
+          {
+            rollType: this.actor.system.savedRolls[savedRollId].rollType,
+            rollId: savedRollId
+          }
+        );
+        break;
+      case 'deleteSavedRoll':
+        const rollDeleteString = "system.savedRolls.-=" + savedRollId;
+        const deleteConfirm = await foundry.applications.api.DialogV2.confirm({
+          window: { title: game.i18n.localize('Ex3.Delete') },
+          content: `<p>Delete Saved Roll?</p>`,
+          classes: [this.actor.getSheetBackground()],
+          modal: true
+        });
+        if (deleteConfirm) {
+          this.actor.update({ [rollDeleteString]: null });
+          ui.notifications.notify(`Saved Roll Deleted`);
+        }
+        break;
+    }
+  }
+
+  static lastRoll(event, target) {
+    this.actor.actionRoll(
+      {
+        rollType: this.actor.flags.exaltedthird.lastroll.rollType,
+        lastRoll: true
+      }
+    );
+  }
+
+  static animaFlux(event, target) {
+    if (game.user.targets && game.user.targets.size > 0) {
+      for (const target of game.user.targets) {
+        const tokenId = target.actor.token?.id || target.actor.getActiveTokens()[0]?.id;
+        let combatant = game.combat.combatants.find(c => c.tokenId == tokenId);
+        var roll = new Roll(`1d10cs>=7`).evaluate({ async: false });
+        let diceDisplay = "";
+        var total = roll.total;
+        for (let dice of roll.dice[0].results.sort((a, b) => b.result - a.result)) {
+          if (dice.result === 10) {
+            diceDisplay += `<li class="roll die d10 success double-success">${dice.result}</li>`;
+          }
+          else if (dice.result >= 7) { diceDisplay += `<li class="roll die d10 success">${dice.result}</li>`; }
+          else if (dice.rerolled) { diceDisplay += `<li class="roll die d10 rerolled">${dice.result}</li>`; }
+          else if (dice.result == 1) { diceDisplay += `<li class="roll die d10 failure">${dice.result}</li>`; }
+          else { diceDisplay += `<li class="roll die d10">${dice.result}</li>`; }
+          if (dice.result >= 10) {
+            total += 1;
+          }
+        }
+        let resultsMessage = `<h4 class="dice-total">${total} Damage</h4>`;
+        if (total > 0) {
+          if (game.combat) {
+            if (combatant && combatant.initiative != null) {
+              if (combatant.initiative > 0) {
+                if (target.actor.system.hardness.value <= 0) {
+                  if (game.user.isGM) {
+                    game.combat.setInitiative(combatant.id, combatant.initiative - total);
+                  }
+                  else {
+                    game.socket.emit('system.exaltedthird', {
+                      type: 'updateInitiative',
+                      id: combatant.id,
+                      data: combatant.initiative - total,
+                      // crasherId: crasherId,
+                    });
+                  }
+                }
+              }
+              else {
+                let totalHealth = 0;
+                const targetActorData = foundry.utils.duplicate(target.actor);
+                for (let [key, health_level] of Object.entries(targetActorData.system.health.levels)) {
+                  totalHealth += health_level.value;
+                }
+                targetActorData.system.health.lethal = Math.min(totalHealth - targetActorData.system.health.bashing - targetActorData.system.health.aggravated, targetActorData.system.health.lethal + total);
+                if (game.user.isGM) {
+                  target.actor.update(targetActorData);
+                }
+                else {
+                  game.socket.emit('system.exaltedthird', {
+                    type: 'updateTargetData',
+                    id: target.id,
+                    data: targetActorData,
+                  });
+                }
+              }
+            }
+          }
+          if (combatant.initiative > 0 && target.actor.system.hardness.value > 0) {
+            resultsMessage = `<h4 class="dice-total">Blocked by hardness</h4>`;
+          }
+        }
+        let messageContent = `
+          <div class="dice-roll">
+              <div class="dice-result">
+                  <h4 class="dice-formula">Anima Flux vs ${target.actor.name}</h4>
+                  <div class="dice-tooltip">
+                      <div class="dice">
+                          <ol class="dice-rolls">${diceDisplay}</ol>
+                      </div>
+                  </div>
+                  ${resultsMessage}
+              </div>
+          </div>`;
+        ChatMessage.create({ user: game.user.id, style: CONST.CHAT_MESSAGE_STYLES.OTHER, roll: roll, content: messageContent });
+      }
+    }
+    else {
+      ui.notifications.warn('Ex3.NoTargets', {
+        localize: true,
+      });
+    }
+  }
+
+  static makeActionRoll(event, target) {
+    const poolMap = {
+      'ability': null,
+      'accuracy': null,
+      'sorcery': 'sorcery',
+      'readIntentions': 'readintentions',
+      'social': 'social',
+      'steady': 'resistance',
+      'sailStratagem': 'command',
+      'command': 'command',
+      'rout': 'willpower',
+      'joinBattle': 'joinbattle',
+      'rush': 'movement',
+      'grappleControl': 'grapple',
+      'working': 'sorcery',
+      'craft': 'craft',
+    }
+    const rollType = target.dataset.rolltype;
+
+    const data = {
+      rollType: rollType,
+      pool: poolMap[rollType],
+    }
+
+    if (rollType === 'craft') {
+      const craftType = target.dataset.crafttype;
+      data.craftType = craftType;
+      data.craftRating = 2;
+    }
+
+    if (rollType === 'ability') {
+      const ability = target.dataset.ability;
+      data.ability = ability;
+      if (ability === 'fever') {
+        data.pool = 'fever';
+        data.attribute = 'none';
+      }
+      else if (ability === 'willpower') {
+        data.attribute = 'none';
+        data.pool = 'wilpower';
+      }
+      else {
+        const abilityObject = this.actor.system.abilities[ability];
+        data.attribute = abilityObject?.prefattribute;
+      }
+    }
+
+    if (rollType === 'ability') {
+      data.pool = target.dataset.pool;
+    }
+    if (rollType === 'accuracy') {
+      const doc = this._getEmbeddedDocument(target);
+      data.attackType = target.dataset.attacktype;
+      data.weapon = doc?.system;
+    }
+
+    this.actor.actionRoll(data);
+  }
+
+  static rollAction(event, target) {
+    const doc = this._getEmbeddedDocument(target);
+    this.actor.actionRoll(
+      {
+        rollType: 'ability',
+        pool: doc.id
+      }
+    );
+  }
+
+  /**
+  * Fetches the embedded document representing the containing HTML element
+  *
+  * @param {HTMLElement} target    The element subject to search
+  * @returns {Item | ActiveEffect} The embedded Item or ActiveEffect
+  */
+  _getEmbeddedDocument(target) {
+    const docRow = target.closest('li[data-document-class]');
+    if (!docRow?.dataset) {
+      return null;
+    }
+    if (docRow.dataset.documentClass === 'savedRoll') {
+      return docRow.dataset.itemId;
+    }
+    else if (docRow.dataset.documentClass === 'Item') {
+      return this.actor.items.get(docRow.dataset.itemId);
+    } else if (docRow.dataset.documentClass === 'ActiveEffect') {
+      const parent =
+        docRow.dataset.parentId === this.actor.id
+          ? this.actor
+          : this.actor.items.get(docRow?.dataset.parentId);
+      return parent.effects.get(docRow?.dataset.effectId);
+    } else return console.warn('Could not find document class');
+  }
+
+  /**
+  * Handle spawning the TraitSelector application which allows a checkbox of multiple trait options
+  * @param {Event} event   The click event which originated the selection
+  * @private
+  */
+  static editTraits(event, target) {
+    event.preventDefault();
+    const label = target.parentElement.querySelector("label");
+    const choices = CONFIG.exaltedthird[target.dataset.options];
+    const options = { name: target.dataset.target, title: label.innerText, choices };
     return new TraitSelector(this.actor, options).render(true);
   }
 
@@ -2778,14 +2635,12 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     }
   }
 
-  async _completeCraft(ev) {
-    let li = $(event.currentTarget).parents(".item");
-    let item = this.actor.items.get(li.data("item-id"));
-    game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'craft', ability: "craft", standardCraftProjectId: item.id, craftType: item.system.type, craftRating: item.system.rating, goalNumber: item.system.goalnumber, intervals: item.system.intervals }).render(true);
+  async _completeCraft(doc) {
+    game.rollForm = new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'craft', ability: "craft", standardCraftProjectId: doc.id, craftType: doc.system.type, craftRating: doc.system.rating, goalNumber: doc.system.goalnumber, intervals: doc.system.intervals }).render(true);
   }
 
-  async _displayDataChat(event) {
-    let type = $(event.currentTarget).data("type");
+  static async _displayDataChat(event, target) {
+    let type = target.dataset.type;
     const token = this.actor.token;
     var content = '';
     var title = 'Anima Power';
@@ -2858,13 +2713,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     return ChatMessage.create(chatData);
   }
 
-  _addOpposingCharm(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    let li = $(event.currentTarget).parents(".item");
-    let item = this.actor.items.get(li.data("item-id"));
-
+  _addOpposingCharm(item) {
     if (game.opposedRollForm) {
       game.opposingCharmForm.addOpposingCharm(item);
     }
@@ -2879,11 +2728,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     });
   }
 
-  _spendItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    let li = $(event.currentTarget).parents(".item");
-    let item = this.actor.items.get(li.data("item-id"));
+  _spendItem(item) {
     item.activate();
     if (game.settings.get("exaltedthird", "spendChatCards")) {
       this._displayCard(item, "Spent");
@@ -2892,7 +2737,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
     // game.rollForm.addCharm(item);
   }
 
-  async _lunarSync() {
+  static async lunarSync() {
     const lunar = game.actors.get(this.actor.system.lunarform.actorid);
     if (lunar) {
       const actorData = foundry.utils.duplicate(this.actor);
@@ -3000,17 +2845,3 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 }
 
-
-function parseCounterStates(states) {
-  return states.split(',').reduce((obj, state) => {
-    const [k, v] = state.split(':')
-    obj[k] = v
-    return obj
-  }, {})
-}
-
-function isColor(strColor) {
-  const s = new Option().style;
-  s.color = strColor;
-  return s.color !== '';
-}

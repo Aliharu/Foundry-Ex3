@@ -671,9 +671,9 @@ export class ExaltedThirdActor extends Actor {
       await this.calculateDerivedStats('evasion');
       await this.calculateDerivedStats('guile');
       await this.calculateDerivedStats('resolve');
-      await this.calculateDerivedStats('natural-soak');
+      await this.calculateDerivedStats('naturalSoak');
     }
-    await this.calculateDerivedStats('armored-soak');
+    await this.calculateDerivedStats('armoredSoak');
     await this.calculateDerivedStats('soak');
     await this.calculateDerivedStats('hardness');
     await this.calculateDerivedStats('resonance');
@@ -687,16 +687,16 @@ export class ExaltedThirdActor extends Actor {
     let staticAttributeValue = (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.value || 0) + (actorData.system.attributes?.[actorData.system.settings.staticcapsettings?.[type]?.attribute]?.upgrade || 0);
     let staticAbilityValue = this.getCharacterAbilityValue(actorData.system.settings.staticcapsettings[type]?.ability);
 
-    if (type === 'natural-soak') {
+    if (type === 'naturalSoak') {
       actorData.system.naturalsoak.value = actorData.system.attributes[actorData.system.settings.staticcapsettings.soak.attribute]?.value;
     }
-    if (type === 'soak' || type === 'armored-soak' || type === 'all') {
+    if (type === 'soak' || type === 'armoredSoak' || type === 'all') {
       for (let armor of this.armor) {
         if (armor.system.equipped) {
           armoredSoakValue = armoredSoakValue + armor.system.soak;
         }
       }
-      if (type === 'armored-soak' || type === 'all') {
+      if (type === 'armoredSoak' || type === 'all') {
         actorData.system.armoredsoak.value = armoredSoakValue;
       }
     }

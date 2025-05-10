@@ -2998,8 +2998,7 @@ export class ExaltedThirdActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 }
 
-
-function parseCounterStates(states) {
+export function parseCounterStates(states) {
   return states.split(',').reduce((obj, state) => {
     const [k, v] = state.split(':')
     obj[k] = v
@@ -3007,7 +3006,7 @@ function parseCounterStates(states) {
   }, {})
 }
 
-function isColor(strColor) {
+export function isColor(strColor) {
   const s = new Option().style;
   s.color = strColor;
   return s.color !== '';

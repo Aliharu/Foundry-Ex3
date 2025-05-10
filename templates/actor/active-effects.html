@@ -10,7 +10,7 @@
         <div class="effect-source">{{localize "Ex3.Source"}}</div>
         <div class="effect-source">{{localize "Ex3.Duration"}}</div>
         <div class="item-controls effect-controls flexrow">
-            <a class="effect-control" data-action="create" title="{{localize 'Ex3.EffectCreate'}}">
+            <a data-action="effectControl" class="effect-control" data-actiontype="create" title="{{localize 'Ex3.EffectCreate'}}">
                 <i class="fas fa-plus"></i> {{localize "Ex3.Add"}}
             </a>
         </div>
@@ -18,23 +18,23 @@
 
     <ol class="effects-list">
         {{#each section.effects as |effect|}}
-        <li class="item effect flexrow" data-effect-id="{{effect.id}}">
+        <li class="item effect flexrow" data-effect-id="{{effect.id}}" data-parent-id='{{effect.parent.id}}' data-document-class='ActiveEffect' data-drag="true">
             <!-- <div class="item-name effect-name flexrow"> -->
             <div class="item-image"><img class="list-item-image" src="{{effect.img}}" title="{{effect.name}}" width="24"
                     height="24" /></div>
             <!-- </div> -->
-            <h4>{{effect.name}}</h4>
+            <h4 class="item-name">{{effect.name}}</h4>
 
             <div class="effect-source">{{effect.sourceName}}</div>
             <div class="effect-duration">{{effect.duration.label}}</div>
             <div class="item-controls effect-controls flexrow">
-                <a class="effect-control" data-action="toggle" title="{{localize 'Ex3.EffectToggle'}}">
+                <a data-action="effectControl" class="effect-control" data-actiontype="toggle" title="{{localize 'Ex3.EffectToggle'}}">
                     <i class="fas {{#if effect.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
                 </a>
-                <a class="effect-control" data-action="edit" title="{{localize 'Ex3.EffectEdit'}}">
+                <a data-action="effectControl" class="effect-control" data-actiontype="edit" title="{{localize 'Ex3.EffectEdit'}}">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a class="effect-control" data-action="delete" title="{{localize 'Ex3.EffectDelete'}}">
+                <a data-action="effectControl" class="effect-control" data-actiontype="delete" title="{{localize 'Ex3.EffectDelete'}}">
                     <i class="fas fa-trash"></i>
                 </a>
             </div>
@@ -42,4 +42,6 @@
         {{/each}}
     </ol>
     {{/each}}
+
+    
 </ol>

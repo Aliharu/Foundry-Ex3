@@ -31,7 +31,7 @@
     </div>
     <ol class="items-list">
         {{#each data.addedCharms as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+        <li class="item flexrow item-row" data-item-id="{{item._id}}" data-document-class="Item">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
             <h4 class="item-name">{{item.name}}{{#if item.system.macro}}(Macro){{/if}}{{#if item.system.damagemacro}}(Damage Macro){{/if}}{{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
             <div class="item-controls">
@@ -137,11 +137,10 @@
 <div id="opposedCharmsDropdown" {{#if data.opposedCharmsDropdown}} {{else}} style="display:none;" {{/if}}>
     <ol class="items-list">
         {{#each data.opposingCharms as |item id|}}
-        <li class="item flexrow item-row" data-item-id="{{item._id}}">
+        <li class="item flexrow item-row" data-item-id="{{item._id}}" data-document-class="Item">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></div>
             <h4 class="item-name">{{item.name}} {{#if item.timesAdded}}(x{{item.timesAdded}}){{/if}}</h4>
             <div class="item-controls">
-                <a class="item-control remove-opposing-charm" data-action="removeOpposingCharm" title="Remove Opposing Charm"><i class="fas fa-trash"></i></a>
             </div>
         </li>
         {{/each}}

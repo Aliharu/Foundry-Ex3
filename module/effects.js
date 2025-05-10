@@ -3,12 +3,12 @@
  * @param {MouseEvent} event      The left-click event on the effect control
  * @param {Actor|Item} owner      The owning entity which manages this effect
  */
-export function onManageActiveEffect(event, owner) {
+export function onManageActiveEffect(target, owner) {
   event.preventDefault();
-  const a = event.currentTarget;
+  const a = target;
   const li = a.closest("li");
   const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;
-  switch ( a.dataset.action ) {
+  switch ( a.dataset.actiontype ) {
     case "create":
       return owner.createEmbeddedDocuments("ActiveEffect", [{
         name: "New Active Effect",

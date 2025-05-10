@@ -1,20 +1,20 @@
-<div class="tab flex-center" data-group="primary" data-tab="combat">
+<div class="tab flex-center {{tab.cssClass}}" data-group="primary" data-tab="combat">
 
     <div class="resource flex-group-center d-flex">
         <div {{#if system.battlegroup}}{{else}}style="margin-right:20px;" {{/if}}>
             <div class="flexrow">
                 <label for="system.health" class="resource-label">
                     {{#if system.settings.editmode}}
-                    <a><i class="fas fa-calculator cursor-pointer" id="calculate-health" style="margin-right:3px;"
+                    <a data-action="calculateHealth" data-healthtype="standard"><i class="fas fa-calculator cursor-pointer" style="margin-right:3px;"
                             title="Calculate Health"></i></a>
                     {{else}}
-                    <a><i class="fas fa-info-circle show-health cursor-pointer" style="margin-right:3px;"></i></a>
+                    <a data-action="showDialog" data-dialogtype="health"><i class="fas fa-info-circle show-health cursor-pointer" style="margin-right:3px;"></i></a>
                     {{/if}}
                     {{#if system.battlegroup}}
                     {{localize "Ex3.Magnitude"}}
                     {{else}}
                     {{localize "Ex3.Health"}}
-                    {{/if}}<a><i id="healDamage" title="Heal Damage" class="fas fa-plus-square cursor-pointer"
+                    {{/if}}<a data-action="recoverHealth" data-healthtype="character"><i title="Heal Damage" class="fas fa-plus-square cursor-pointer"
                             style="margin-left:3px;"></i></a></label>
             </div>
             <div class="resource-content flexrow flex-center flex-between">
@@ -24,11 +24,11 @@
                     data-name="system.health">
                     {{#if system.battlegroup}}
                     {{#numLoop system.health.max}}
-                    <span class="health-boxes resource-counter-step" data-index="{{this}}" data-state=""></span>
+                    <span data-action="squareCounterChange" class="health-boxes resource-counter-step" data-index="{{this}}" data-state=""></span>
                     {{/numLoop}}
                     {{else}}
                     {{#numLoop system.health.max}}
-                    <span class="health-boxes resource-counter-step" data-index="{{this}}" data-state="">
+                    <span data-action="squareCounterChange" class="health-boxes resource-counter-step" data-index="{{this}}" data-state="">
                         {{healthCheck this 'character'}}
                     </span>
                     {{/numLoop}}
@@ -47,34 +47,34 @@
         {{/if}}
     </div>
     <div class="resource-content flexrow flex-center flex-between mt-1">
-        <label class="resource-label"><a><i id="rollAbility" class="fas fa-dice-d10 cursor-pointer rollAbility"></i></a>
-            {{localize "Ex3.Combat"}} <a><i class="fas fa-info-circle show-combat cursor-pointer"></i></a></label>
+        <label class="resource-label"><a data-action="makeActionRoll" data-rolltype="ability"><i class="fas fa-dice-d10 cursor-pointer"></i></a>
+            {{localize "Ex3.Combat"}} <a data-action="showDialog" data-dialogtype="combat"><i class="fas fa-info-circle cursor-pointer"></i></a></label>
     </div>
     <div class="grid {{#if steadyAction}} grid-4col {{else}} grid-3col {{/if}} flex-group-center">
-        <button class="roll-button attack-roll" data-attack-type="withering"><i class="fas fa-swords"></i>{{localize
+        <button class="roll-button" data-action="makeActionRoll" data-rolltype="accuracy" data-attacktype="withering"><i class="fas fa-swords"></i>{{localize
             "Ex3.Withering"}}</button>
-        <button class="roll-button attack-roll" data-attack-type="decisive"><i class="fas fa-axe-battle"></i>{{localize
+        <button class="roll-button" data-action="makeActionRoll" data-rolltype="accuracy" data-attacktype="decisive"><i class="fas fa-axe-battle"></i>{{localize
             "Ex3.Decisive"}}</button>
-        <button class="roll-button attack-roll" data-attack-type="gambit"><i class="fas fa-fist-raised"></i>{{localize
+        <button class="roll-button" data-action="makeActionRoll" data-rolltype="accuracy" data-attacktype="gambit"><i class="fas fa-fist-raised"></i>{{localize
             "Ex3.Gambit"}}</button>
         {{#if steadyAction}}
-        <button class="roll-button steady"><i class="fas fa-wave-pulse"></i>{{localize "Ex3.Steady"}}</button>
+        <button class="roll-button" data-action="makeActionRoll" data-rolltype="steady"><i class="fas fa-wave-pulse"></i>{{localize "Ex3.Steady"}}</button>
         {{/if}}
     </div>
     <div class="grid grid-4col flex-group-center">
         <div>
             <label class="resource-label">{{localize "Ex3.JoinBattle"}}</label>
-            <button class="roll-button join-battle"><i class="fas fa-play"></i>{{localize
+            <button class="roll-button" data-action="makeActionRoll" data-rolltype="joinBattle"><i class="fas fa-play"></i>{{localize
                 "Ex3.Roll"}}</button>
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.Command"}}</label>
-            <button class="roll-button command"><i class="fas fa-flag"></i>{{localize
+            <button class="roll-button" data-action="makeActionRoll" data-rolltype="command"><i class="fas fa-flag"></i>{{localize
                 "Ex3.Roll"}}</button>
         </div>
         <div>
             <label class="resource-label">{{localize "Ex3.GrappleControl"}}</label>
-            <button class="roll-button grapple-control"><i class="fas fa-hand-fist"></i>{{localize
+            <button class="roll-button" data-action="makeActionRoll" data-rolltype="grappleControl"><i class="fas fa-hand-fist"></i>{{localize
                 "Ex3.Roll"}}</button>
         </div>
         <div>
@@ -89,7 +89,7 @@
                 <div {{#if system.parry.padding}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}
                         {{#if system.settings.editmode}}
-                        <a><i class="fas fa-calculator calculate-parry cursor-pointer" title="Auto Set Parry"
+                        <a data-action="calculateDerivedStat" data-key="parry"><i class="fas fa-calculator cursor-pointer" title="Auto Set Parry"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
                         {{/ifEquals}}{{#if system.aboveParryCap}} ({{system.aboveParryCap}} {{localize
@@ -101,7 +101,7 @@
                     <label class="resource-label">{{localize "Ex3.Evasion"}}
                         {{#ifEquals data.type 'character'}}
                         {{#if system.settings.editmode}}
-                        <a><i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
+                        <a data-action="calculateDerivedStat" data-key="evasion"><i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
                         {{/ifEquals}} {{#if system.aboveEvasionCap}} ({{system.aboveEvasionCap}} {{localize
@@ -112,18 +112,18 @@
                 </div>
                 <div {{#if system.defenseCapPadding}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.Rush"}}</label>
-                    <button class="roll-button rush"><i class="fas fa-person-running"></i>{{localize
+                    <button class="roll-button" data-action="makeActionRoll" data-rolltype="rush"><i class="fas fa-person-running"></i>{{localize
                         "Ex3.Roll"}}</button>
                 </div>
                 <div {{#if system.defenseCapPadding}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.Disengage"}}</label>
-                    <button class="roll-button disengage"><i class="fas fa-person-running"></i>{{localize
+                    <button class="roll-button disengage" data-action="makeActionRoll" data-rolltype="disengage"><i class="fas fa-person-running"></i>{{localize
                         "Ex3.Roll"}}</button>
                 </div>
                 <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}
                         {{#if system.settings.editmode}}
-                        <a><i class="fas fa-calculator calculate-armored-soak cursor-pointer"
+                        <a data-action="calculateDerivedStat" data-key="armoredSoak"><i class="fas fa-calculator cursor-pointer"
                                 title="Auto Set Armored Soak" style="margin-left:3px;"></i></a>
                         {{/if}}
                     </label>
@@ -134,7 +134,7 @@
                     <label class="resource-label">{{localize "Ex3.NaturalSoak"}}
                         {{#ifEquals data.type 'character'}}
                         {{#if system.settings.editmode}}
-                        <a><i class="fas fa-calculator calculate-natural-soak cursor-pointer"
+                        <a data-action="calculateDerivedStat" data-key="naturalSoak"><i class="fas fa-calculator cursor-pointer"
                                 title="Auto Set Natural Soak" style="margin-left:3px;"></i></a>
                         {{/if}}
                         {{/ifEquals}}
@@ -146,7 +146,7 @@
                     <label class="resource-label">{{localize "Ex3.TotalSoak"}}
                         {{#ifEquals data.type 'character'}}
                         {{#if system.settings.editmode}}
-                        <a><i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
+                        <a data-action="calculateDerivedStat" data-key="soak"><i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
                         {{/ifEquals}}
@@ -157,7 +157,7 @@
                 <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.Hardness"}}{{#ifEquals data.type 'character'}}
                         {{#if system.settings.editmode}}
-                        <a><i class="fas fa-calculator calculate-hardness cursor-pointer" title="Auto Set Hardness"
+                        <a data-action="calculateDerivedStat" data-key="hardness"><i class="fas fa-calculator cursor-pointer" title="Auto Set Hardness"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
                         {{/ifEquals}}</label>
@@ -198,13 +198,13 @@
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.ShapeSorcery"}}</label>
-                    <button class="roll-button shape-sorcery"><i class="fas fa-hat-wizard"></i>{{localize
+                    <button class="roll-button" data-action="makeActionRoll" data-rolltype="sorcery"><i class="fas fa-hat-wizard"></i>{{localize
                         "Ex3.Roll"}}</button>
                 </div>
                 <div>
-                    <label class="resource-label">{{localize "Ex3.SorcerousWorking"}} <a><i
-                                class="fas fa-info-circle show-workings cursor-pointer"></i></a></label>
-                    <button class="roll-button sorcerous-working"><i class="fas fa-cauldron"></i>{{localize
+                    <label class="resource-label">{{localize "Ex3.SorcerousWorking"}} <a data-action="showDialog" data-dialogtype="workings"><i
+                                class="fas fa-info-circle cursor-pointer"></i></a></label>
+                    <button class="roll-button" data-action="makeActionRoll" data-rolltype="working"><i class="fas fa-cauldron"></i>{{localize
                         "Ex3.Roll"}}</button>
                 </div>
             </div>
@@ -236,9 +236,9 @@
                         data-dtype="Number" />
                 </div>
                 <div>
-                    <label class="resource-label">{{localize "Ex3.Rout"}} <a><i
-                                class="fas fa-info-circle rout-modifiers cursor-pointer"></i></a></label>
-                    <button class="roll-button rout-check"><i class="fas fa-swords"></i>{{localize
+                    <label class="resource-label">{{localize "Ex3.Rout"}} <a data-action="showDialog" data-dialogtype="rout"><i
+                                class="fas fa-info-circle cursor-pointer"></i></a></label>
+                    <button class="roll-button" data-action="makeActionRoll" data-rolltype="rout"><i class="fas fa-swords"></i>{{localize
                         "Ex3.Roll"}}</button>
                 </div>
             </div>

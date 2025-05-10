@@ -1,5 +1,5 @@
 import { animaTokenMagic, attackSequence } from "../utils/other-modules.js";
-import { getEnritchedHTML, sortDice } from "../utils/utils.js";
+import { getEnritchedHTML, sortDice, toggleDisplay } from "../utils/utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -1127,21 +1127,21 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     _onRender(context, options) {
         this.element.querySelectorAll('.collapsable').forEach(element => {
             element.addEventListener('click', (ev) => {
-                const li = $(ev.currentTarget).next();
+                const li = ev.currentTarget.nextElementSibling;
                 if (li.attr('id')) {
-                    this.object[li.attr('id')] = li.is(":hidden");
+                    this.object[li.attr('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
                 }
-                li.toggle("fast");
+                toggleDisplay(ev.currentTarget);
             });
         });
 
         this.element.querySelectorAll('.charm-list-collapsable').forEach(element => {
             element.addEventListener('click', (ev) => {
-                const li = $(ev.currentTarget).next();
+                const li = ev.currentTarget.nextElementSibling;
                 if (li.attr('id')) {
-                    this.object.charmList[li.attr('id')].collapse = !li.is(":hidden");
+                    this.object.charmList[li.attr('id')].collapse = !(li.offsetWidth || li.offsetHeight || li.getClientRects().length);
                 }
-                li.toggle("fast");
+                toggleDisplay(ev.currentTarget);
             });
         });
     }
@@ -2888,6 +2888,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (formula?.toLowerCase() === 'overwhelming') {
             return this.object.overwhelming || 0;
+        }
+        if (formula?.toLowerCase() === 'postsoakdamage') {
+            return this.object.damage.postSoakDamage || 0;
         }
         if (formula?.toLowerCase() === 'rangebands') {
             return {

@@ -140,3 +140,27 @@ export function appendSidebarButtons(html, type) {
         headerActions.after(buttonsText);
     }
 }
+
+export function toggleDisplay(target) {
+    const li = target.nextElementSibling;
+    if (li.style.display == 'none') {
+      li.style.display = 'block';
+    } else {
+      li.style.display = 'none';
+    }
+}
+
+export function parseCounterStates(states) {
+    return states.split(',').reduce((obj, state) => {
+      const [k, v] = state.split(':')
+      obj[k] = v
+      return obj
+    }, {})
+  }
+  
+  export function isColor(strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color !== '';
+  }
+  

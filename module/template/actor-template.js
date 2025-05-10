@@ -58,13 +58,13 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         active: new fields.StringField({ initial: "" }),
         iconic: new fields.StringField({ initial: "" }),
       }),
-      fever: statField(0),
-      complicationpoints: statField(0),
       collapse: new fields.SchemaField({
         passive: new fields.BooleanField({ initial: true }),
         active: new fields.BooleanField({ initial: true }),
         iconic: new fields.BooleanField({ initial: true }),
       }),
+      fever: statField(0),
+      complicationpoints: statField(0),
       limit: new fields.SchemaField({
         value: new fields.NumberField({ initial: 0 }),
         min: new fields.NumberField({ initial: 0 }),

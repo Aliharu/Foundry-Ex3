@@ -1,9 +1,4 @@
-<div class="tab social" data-group="primary" data-tab="social">
-
-  <!-- <div class="resource-content flexrow flex-center flex-between mt-1">
-  <label class="resource-label">{{localize "Ex3.Social"}} <i
-          class="fas fa-info-circle show-social cursor-pointer"></i></label>
-</div> -->
+<div class="tab social {{tab.cssClass}}" data-group="primary" data-tab="social">
   <div class="grid {{#if isNPC}} grid-5col {{else}} grid-4col {{/if}} flex-group-center">
     {{#if isNPC}}
     <div {{#if system.socialCapPadding}}style="margin-bottom:17px" {{/if}}>
@@ -14,7 +9,7 @@
     <div {{#if system.resolve.padding}}style="margin-bottom:17px" {{/if}}>
       <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}
         {{#if system.settings.editmode}}
-        <a><i class="fas fa-calculator calculate-resolve cursor-pointer" title="Auto Set Resolve"
+        <a data-action="calculateDerivedStat" data-key="resolve"><i class="fas fa-calculator cursor-pointer" title="Auto Set Resolve"
             style="margin-left:3px;"></i></a>
         {{/if}}
         {{/ifEquals}}</label>
@@ -24,7 +19,7 @@
     <div {{#if system.guile.padding}}style="margin-bottom:17px" {{/if}}>
       <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}
         {{#if system.settings.editmode}}
-        <a><i class="fas fa-calculator calculate-guile cursor-pointer" title="Auto Set Guile"
+        <a data-action="calculateDerivedStat" data-key="guile"><i class="fas fa-calculator cursor-pointer" title="Auto Set Guile"
             style="margin-left:3px;"></i></a>
         {{/if}}
         {{/ifEquals}}</label>
@@ -33,11 +28,11 @@
     </div>
     <div {{#if system.socialCapPadding}}style="margin-bottom:17px" {{/if}}>
       <label class="resource-label">{{localize "Ex3.ReadIntentions"}}</label>
-      <button class="roll-button read-intentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
+      <button class="roll-button" data-action="makeActionRoll" data-rolltype="readIntentions"><i class="fas fa-eye"></i>{{localize "Ex3.Roll"}}</button>
     </div>
     <div {{#if system.socialCapPadding}}style="margin-bottom:17px" {{/if}}>
       <label class="resource-label">{{localize "Ex3.SocialInfluence"}}</label>
-      <button class="roll-button social-influence"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
+      <button class="roll-button social-influence" data-action="makeActionRoll" data-rolltype="social"><i class="fas fa-heart"></i>{{localize "Ex3.Roll"}}</button>
     </div>
   </div>
   {{#if showVirtues}}
@@ -57,25 +52,28 @@
       <div>
         {{localize "Ex3.Intimacies"}}
       </div>
-      <a class="item-control item-create" title="Create intimacy" data-type="intimacy"><i
+      <a class="item-control" data-action="createItem" title="Create intimacy" data-type="intimacy"><i
           class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
     </div>
     {{#each actor.intimacies as |item id|}}
-    <li class="item flexrow item-row" data-item-id="{{item._id}}">
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item"  data-drag="true">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
       <h4 class="item-name"><span class="capitalize">{{item.system.strength}}:
         </span>{{item.name}}</h4>
       <div class="item-controls">
         {{#if item.system.visible}}
-        <a class="item-control toggle-item-value" data-key="visible" title="Visible"><i class="fas fa-eye"></i></a>
+        <a class="item-control" data-action="toggleItemValue" data-key="visible" title="Visible"><i class="fas fa-eye"></i></a>
         {{else}}
-        <a class="item-control toggle-item-value" data-key="visible" title="Not Visible"><i
+        <a class="item-control" data-action="toggleItemValue" data-key="visible" title="Not Visible"><i
             class="fas fa-eye-slash"></i></a>
         {{/if}}
-        <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+          class="fas fa-comment"></i></a>
+      <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+          class="fas fa-edit"></i></a>
+      <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+          class="fas fa-trash"></i></a>
       </div>
     </li>
     <li class="item-description">

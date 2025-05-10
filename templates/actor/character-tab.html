@@ -1,375 +1,392 @@
-<div class="tab character" data-group="primary" data-tab="character">
-    <ol class="items-list">
+<div class="tab character {{tab.cssClass}}" data-group="primary" data-tab="character">
+  <ol class="items-list">
+    {{#unless isNPC}}
+    <div class="resource-content flexrow flex-center flex-between">
+      <label class="resource-label">{{localize "Ex3.Advancement"}} <a data-action="showDialog"
+          data-dialogtype="advancement"><i class="fas fa-info-circle cursor-pointer"></i></a> </label>
+    </div>
+    <div class="grid grid-2col flex-group-center">
       <div class="resource-content flexrow flex-center flex-between">
-        <label class="resource-label">{{localize "Ex3.Advancement"}} <a><i
-              class="fas fa-info-circle show-advancement cursor-pointer"></i></a> </label>
+        <div>
+          <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.remaining}}
+            {{localize "Ex3.Remaining"}})</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input name="system.experience.standard.value" value="{{system.experience.standard.value}}" type="text"
+              placeholder="Spent" />
+            /
+            <input name="system.experience.standard.total" value="{{system.experience.standard.total}}" type="text"
+              placeholder="Earned" />
+          </div>
+        </div>
       </div>
-      <div class="grid grid-2col flex-group-center">
-        <div class="resource-content flexrow flex-center flex-between">
-          <div>
-            <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.remaining}}
-              {{localize "Ex3.Remaining"}})</label>
+      <div class="resource-content flexrow flex-center flex-between">
+        <div>
+          <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize
+            "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
+            {{localize "Ex3.Remaining"}})
+            <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
             <div class="resource-content flexrow flex-center flex-between">
-              <input name="system.experience.standard.value" value="{{system.experience.standard.value}}" type="text"
+              <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
                 placeholder="Spent" />
               /
-              <input name="system.experience.standard.total" value="{{system.experience.standard.total}}" type="text"
+              <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}" type="text"
                 placeholder="Earned" />
             </div>
-          </div>
-        </div>
-        <div class="resource-content flexrow flex-center flex-between">
-          <div>
-            <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize
-              "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
-              {{localize "Ex3.Remaining"}})
-              <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
-              <div class="resource-content flexrow flex-center flex-between">
-                <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
-                  placeholder="Spent" />
-                /
-                <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}" type="text"
-                  placeholder="Earned" />
-              </div>
-          </div>
         </div>
       </div>
-      <li>
-        <textarea type="text" name="system.experience.trigger" rows="6">{{system.experience.trigger}}</textarea>
-      </li>
-      {{#if system.settings.iscrafter}}
-      <div class="flex-center">
-        <label class="resource-label">{{localize "Ex3.Craft"}} {{#if simplifiedCrafting}}{{else}}
-          <a><i class="fas fa-info-circle show-craft cursor-pointer"></i></a>
-          {{/if}}</label>
+    </div>
+    <li>
+      <textarea type="text" name="system.experience.trigger" rows="6">{{system.experience.trigger}}</textarea>
+    </li>
+    {{#if system.settings.iscrafter}}
+    <div class="flex-center">
+      <label class="resource-label">{{localize "Ex3.Craft"}} {{#if simplifiedCrafting}}{{else}}
+        <a data-action="showDialog" data-dialogtype="craft"><i class="fas fa-info-circle cursor-pointer"></i></a>
+        {{/if}}</label>
 
-        {{#if simplifiedCrafting}}
-        <div class="grid grid-2col flex-group-center">
-          <div>
-            <label class="resource-label">{{localize "Ex3.Craft"}}</label>
-            <button class="roll-button craft-simple-project"><i class="fas fa-hammer"></i>{{localize
-              "Ex3.Craft"}}</button>
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.CraftXP"}}</label>
-            <input type="number" name="system.craft.experience.simple.value"
-              value="{{system.craft.experience.simple.value}}" data-dtype="Number" />
-          </div>
+      {{#if simplifiedCrafting}}
+      <div class="grid grid-2col flex-group-center">
+        <div>
+          <label class="resource-label">{{localize "Ex3.Craft"}}</label>
+          <button class="roll-button" data-action="itemAction" data-actiontype="craftSimpleProject"><i
+              class="fas fa-hammer"></i>{{localize
+            "Ex3.Craft"}}</button>
         </div>
-        {{else}}
-        <div class="grid grid-4col flex-group-center">
-          <div>
-            <button class="roll-button craft-project" data-type="basic"><i class="fas fa-hammer"></i>{{localize
-              "Ex3.Basic"}}</button>
-          </div>
-          <div>
-            <button class="roll-button craft-project" data-type="major"><i class="fas fa-hammer"></i>{{localize
-              "Ex3.Major"}}</button>
-          </div>
-          <div>
-            <button class="roll-button craft-project" data-type="superior"><i class="fas fa-hammer"></i>{{localize
-              "Ex3.Superior"}}</button>
-          </div>
-          <div>
-            <button class="roll-button craft-project" data-type="legendary"><i class="fas fa-hammer"></i>{{localize
-              "Ex3.Legendary"}}</button>
-          </div>
+        <div>
+          <label class="resource-label">{{localize "Ex3.CraftXP"}}</label>
+          <input type="number" name="system.craft.experience.simple.value"
+            value="{{system.craft.experience.simple.value}}" data-dtype="Number" />
         </div>
-        <div class="grid grid-3col flex-group-center">
-          <div>
-            <label class="resource-label">{{localize "Ex3.SilverXP"}}</label>
-            <input type="number" name="system.craft.experience.silver.value"
-              value="{{system.craft.experience.silver.value}}" data-dtype="Number" />
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.GoldXP"}}</label>
-            <input type="number" name="system.craft.experience.gold.value"
-              value="{{system.craft.experience.gold.value}}" data-dtype="Number" />
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.WhiteXP"}}</label>
-            <input type="number" name="system.craft.experience.white.value"
-              value="{{system.craft.experience.white.value}}" data-dtype="Number" />
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.Major"}}</label>
-            <div class="resource-content flexrow flex-center flex-between">
-              <input name="system.craft.slots.major.value" value="{{system.craft.slots.major.value}}" type="text"
-                placeholder="Available" />
-              /
-              <input name="system.craft.slots.major.total" value="{{system.craft.slots.major.total}}" type="text"
-                placeholder="Total" />
-            </div>
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.Superior"}}</label>
-            <div class="resource-content flexrow flex-center flex-between">
-              <input name="system.craft.slots.superior.value" value="{{system.craft.slots.superior.value}}"
-                type="text" placeholder="Available" />
-              /
-              <input name="system.craft.slots.superior.total" value="{{system.craft.slots.superior.total}}"
-                type="text" placeholder="Total" />
-            </div>
-          </div>
-          <div>
-            <label class="resource-label">{{localize "Ex3.Legendary"}}</label>
-            <div class="resource-content flexrow flex-center flex-between">
-              <input name="system.craft.slots.legendary.value" value="{{system.craft.slots.legendary.value}}"
-                type="text" placeholder="Available" />
-              /
-              <input name="system.craft.slots.legendary.total" value="{{system.craft.slots.legendary.total}}"
-                type="text" placeholder="Total" />
-            </div>
-          </div>
-        </div>
-        {{/if}}
       </div>
-      <div class="resource-label list-section-header d-flex flex-between">
+      {{else}}
+      <div class="grid grid-4col flex-group-center">
         <div>
-          {{localize "Ex3.CraftProjects"}}
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
+            data-crafttype="basic"><i class="fas fa-hammer"></i>{{localize
+            "Ex3.Basic"}}</button>
         </div>
-        <a class="item-control item-create" title="Create craftproject" data-type="craftproject"><i
-            class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+        <div>
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
+            data-crafttype="major"><i class="fas fa-hammer"></i>{{localize
+            "Ex3.Major"}}</button>
+        </div>
+        <div>
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
+            data-crafttype="superior"><i class="fas fa-hammer"></i>{{localize
+            "Ex3.Superior"}}</button>
+        </div>
+        <div>
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
+            data-crafttype="legendary"><i class="fas fa-hammer"></i>{{localize
+            "Ex3.Legendary"}}</button>
+        </div>
       </div>
-      {{#each actor.projects as |item id|}}
-      <li class="item flexrow item-row" data-item-id="{{item._id}}">
-        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-            height="24" /></div>
-        <h4 class="item-name">{{item.name}}</h4>
-        {{#if ../simplifiedCrafting}}
+      <div class="grid grid-3col flex-group-center">
         <div>
-          {{item.system.experience.completed}}/{{item.system.experience.required}}
+          <label class="resource-label">{{localize "Ex3.SilverXP"}}</label>
+          <input type="number" name="system.craft.experience.silver.value"
+            value="{{system.craft.experience.silver.value}}" data-dtype="Number" />
         </div>
-        {{/if}}
-        <div class="item-controls">
-          {{#if ../simplifiedCrafting}}
-          <a class="item-control craft-simple-project" title="Craft Item" data-craftId="{{id}}"><i
-              class="fas fa-hammer"></i></a>
-          {{else}}
-          <a class="item-control item-complete" title="Complete Item"><i class="fas fa-hammer"></i></a>
-          {{/if}}
-          <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-      </li>
-      <li>
         <div>
-          {{{enrichedHTMLItems ../this "description" item._id}}}
+          <label class="resource-label">{{localize "Ex3.GoldXP"}}</label>
+          <input type="number" name="system.craft.experience.gold.value" value="{{system.craft.experience.gold.value}}"
+            data-dtype="Number" />
         </div>
-      </li>
-      {{/each}}
+        <div>
+          <label class="resource-label">{{localize "Ex3.WhiteXP"}}</label>
+          <input type="number" name="system.craft.experience.white.value"
+            value="{{system.craft.experience.white.value}}" data-dtype="Number" />
+        </div>
+        <div>
+          <label class="resource-label">{{localize "Ex3.Major"}}</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input name="system.craft.slots.major.value" value="{{system.craft.slots.major.value}}" type="text"
+              placeholder="Available" />
+            /
+            <input name="system.craft.slots.major.total" value="{{system.craft.slots.major.total}}" type="text"
+              placeholder="Total" />
+          </div>
+        </div>
+        <div>
+          <label class="resource-label">{{localize "Ex3.Superior"}}</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input name="system.craft.slots.superior.value" value="{{system.craft.slots.superior.value}}" type="text"
+              placeholder="Available" />
+            /
+            <input name="system.craft.slots.superior.total" value="{{system.craft.slots.superior.total}}" type="text"
+              placeholder="Total" />
+          </div>
+        </div>
+        <div>
+          <label class="resource-label">{{localize "Ex3.Legendary"}}</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input name="system.craft.slots.legendary.value" value="{{system.craft.slots.legendary.value}}" type="text"
+              placeholder="Available" />
+            /
+            <input name="system.craft.slots.legendary.total" value="{{system.craft.slots.legendary.total}}" type="text"
+              placeholder="Total" />
+          </div>
+        </div>
+      </div>
       {{/if}}
-      <li>
-        <label class="resource-label">{{localize "Ex3.LimitTrigger"}}</label>
-        <input type="text" name="system.limit.trigger" value="{{system.limit.trigger}}" />
-      </li>
-      <li>
-        <label class="resource-label">{{localize "Ex3.LoreBackgrounds"}}</label>
-        <input type="text" name="system.lorebackgrounds" value="{{system.lorebackgrounds}}" />
-      </li>
-      {{#ifEquals system.details.exalt 'abyssal'}}
-      <div class="mt-1">
-        <label class="resource-label">{{localize "Ex3.Apocalyptic"}}:</label>
-        <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
-          {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
-        </select>
+    </div>
+    <div class="resource-label list-section-header d-flex flex-between">
+      <div>
+        {{localize "Ex3.CraftProjects"}}
       </div>
-      {{/ifEquals}}
-      {{#ifEquals system.details.exalt 'solar'}}
-      <div class="mt-1">
+      <a class="item-control" data-action="createItem" title="Create craftproject" data-type="craftproject"><i
+          class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+    </div>
+    {{#each actor.projects as |item id|}}
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
+      <h4 class="item-name">{{item.name}}</h4>
+      {{#if ../simplifiedCrafting}}
+      <div>
+        {{item.system.experience.completed}}/{{item.system.experience.required}}
+      </div>
+      {{/if}}
+      <div class="item-controls">
+        {{#if ../simplifiedCrafting}}
+        <a class="item-control" data-action="itemAction" data-actiontype="craftSimpleProject" title="Craft Item"><i
+            class="fas fa-hammer"></i></a>
+        {{else}}
+        <a class="item-control" data-action="itemAction" data-actiontype="completeCraft" title="Complete Item"><i
+            class="fas fa-hammer"></i></a>
+        {{/if}}
+        <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+            class="fas fa-comment"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+            class="fas fa-edit"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+            class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    <li>
+      <div>
+        {{{enrichedHTMLItems ../this "description" item._id}}}
+      </div>
+    </li>
+    {{/each}}
+    {{/if}}
+    {{/unless}}
+    <li>
+      <label class="resource-label">{{localize "Ex3.LimitTrigger"}}</label>
+      <input type="text" name="system.limit.trigger" value="{{system.limit.trigger}}" />
+    </li>
+    <li>
+      <label class="resource-label">{{localize "Ex3.LoreBackgrounds"}}</label>
+      <input type="text" name="system.lorebackgrounds" value="{{system.lorebackgrounds}}" />
+    </li>
+    {{#ifEquals system.details.exalt 'abyssal'}}
+    <div class="mt-1">
+      <label class="resource-label">{{localize "Ex3.Apocalyptic"}}:</label>
+      <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
+        {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
+      </select>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'solar'}}
+    <div class="grid grid-2col flexrow">
+      <div>
         <label class="resource-label">{{localize "Ex3.Supernal"}}:</label>
         <select name="system.details.supernal" value="{{system.details.supernal}}" data-type="String">
           {{selectOptions abilitySelectList selected=system.details.supernal localize=true}}
         </select>
       </div>
-      {{/ifEquals}}
-      {{#ifEquals system.details.exalt 'lunar'}}
-      <div class="grid grid-2col flexrow">
-        <div>
-          <label class="resource-label">{{localize "Ex3.Tell"}}</label>
-          <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
-        </div>
-        <div>
-          <label class="resource-label">{{localize "Ex3.SpiritShape"}}</label>
-          <input type="text" name="system.details.spiritshape" value="{{system.details.spiritshape}}" />
-        </div>
-      </div>
-      {{/ifEquals}}
-      {{#ifEquals system.details.exalt 'alchemical'}}
-      <div class="grid grid-2col flexrow">
-        <div>
-          <label class="resource-label">{{localize "Ex3.CharmSlots"}}</label>
-          <input type="number" name="system.charmslots.value" value="{{system.charmslots.value}}" />
-        </div>
-      </div>
-      {{/ifEquals}}
-      {{#ifEquals system.details.exalt 'sidereal'}}
-      <div class="grid grid-2col flexrow">
-        <div>
-          <label class="resource-label">{{localize "Ex3.BirthSign"}}: </label>
-          <select name="system.details.birthsign" data-type="String">
-            {{#each signList as |signCategory signCategoryType|}}
-            <optgroup label="{{signCategory.label}}">
-              {{selectOptions signCategory.signs selected=../system.details.birthsign localize=true}}
-            </optgroup>
-            {{/each}}
-          </select>
-        </div>
-        <div>
-          <label class="resource-label">{{localize "Ex3.ExaltationSign"}}: </label>
-          <select name="system.details.exaltsign" data-type="String">
-            {{#each signList as |signCategory signCategoryType|}}
-            <optgroup label="{{signCategory.label}}">
-              {{selectOptions signCategory.signs selected=../system.details.exaltsign localize=true}}
-            </optgroup>
-            {{/each}}
-          </select>
-        </div>
-        <div>
-          <button class="roll-button prophecy"><i class="fas fa-stars"></i>{{localize
-            "Ex3.Prophecy"}}</button>
-        </div>
-      </div>
-      {{/ifEquals}}
-      {{#ifEquals system.details.exalt 'umbral'}}
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'lunar'}}
+    <div class="grid grid-2col flexrow">
       <div>
-        <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
-        <input type="number" name="system.penumbra.value" value="{{system.penumbra.value}}" />
+        <label class="resource-label">{{localize "Ex3.Tell"}}</label>
+        <input type="text" name="system.details.tell" value="{{system.details.tell}}" />
       </div>
-      {{/ifEquals}} {{#ifEquals system.details.exalt 'dreamsouled'}}
-      <li>
-        <label class="resource-label">{{localize "Ex3.Ideal"}}</label>
-        <input type="text" name="system.details.ideal" value="{{system.details.ideal}}" />
-      </li>
-      {{/ifEquals}}
       <div>
-        <label class="resource-label">{{localize "Ex3.SizeCategory"}}: </label>
-        <select name="system.sizecategory" data-type="String">
-          {{selectOptions selects.sizeCategory selected=system.sizecategory localize=true}}
+        <label class="resource-label">{{localize "Ex3.SpiritShape"}}</label>
+        <input type="text" name="system.details.spiritshape" value="{{system.details.spiritshape}}" />
+      </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'alchemical'}}
+    <div class="grid grid-2col flexrow">
+      <div>
+        <label class="resource-label">{{localize "Ex3.CharmSlots"}}</label>
+        <input type="number" name="system.charmslots.value" value="{{system.charmslots.value}}" />
+      </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'sidereal'}}
+    <div class="grid grid-2col flexrow">
+      <div>
+        <label class="resource-label">{{localize "Ex3.BirthSign"}}: </label>
+        <select name="system.details.birthsign" data-type="String">
+          {{#each signList as |signCategory signCategoryType|}}
+          <optgroup label="{{signCategory.label}}">
+            {{selectOptions signCategory.signs selected=../system.details.birthsign localize=true}}
+          </optgroup>
+          {{/each}}
         </select>
       </div>
-      <!-- <div class="grid flex-group-center">
+      <div>
+        <label class="resource-label">{{localize "Ex3.ExaltationSign"}}: </label>
+        <select name="system.details.exaltsign" data-type="String">
+          {{#each signList as |signCategory signCategoryType|}}
+          <optgroup label="{{signCategory.label}}">
+            {{selectOptions signCategory.signs selected=../system.details.exaltsign localize=true}}
+          </optgroup>
+          {{/each}}
+        </select>
+      </div>
+      <div>
+        <button data-action="createProphecy" class="roll-button"><i class="fas fa-stars"></i>{{localize
+          "Ex3.Prophecy"}}</button>
+      </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'umbral'}}
+    <div>
+      <label class="resource-label">{{localize "Ex3.Penumbra"}}</label>
+      <input type="number" name="system.penumbra.value" value="{{system.penumbra.value}}" />
+    </div>
+    {{/ifEquals}} {{#ifEquals system.details.exalt 'dreamsouled'}}
+    <li>
+      <label class="resource-label">{{localize "Ex3.Ideal"}}</label>
+      <input type="text" name="system.details.ideal" value="{{system.details.ideal}}" />
+    </li>
+    {{/ifEquals}}
+    <!-- <div class="grid flex-group-center">
         <button id="import-stuff">Import</button>
       </div> -->
+    <div class="mt-1">
+      <label class="resource-label">{{localize "Ex3.Resonance"}} {{#if system.settings.editmode}} <a
+          data-action="calculateDerivedStat" data-key="resonance"><i
+            class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Resonance/Dissonance"
+            style="margin-left:3px;"></i></a>{{/if}}</label>
+      <a data-action="editTraits" data-options="resonance" data-target="system.traits.resonance">
+        <i class="fas fa-edit"></i>
+      </a>
       <div class="mt-1">
-        <label class="resource-label">{{localize "Ex3.Resonance"}} {{#if system.settings.editmode}} <a><i
-              class="fas fa-calculator calculate-resonance cursor-pointer" title="Auto Set Resonance/Dissonance"
-              style="margin-left:3px;"></i></a>{{/if}}</label>
-        <a class="trait-selector" data-options="resonance" data-target="system.traits.resonance">
-          <i class="fas fa-edit"></i>
-        </a>
-        <div class="mt-1">
-          {{#each system.traits.resonance.selected as |v k|}}
-          <li class="tag {{k}}">{{v}}</li>
-          {{/each}}
-        </div>
+        {{#each system.traits.resonance.selected as |v k|}}
+        <li class="tag {{k}}">{{v}}</li>
+        {{/each}}
       </div>
+    </div>
+    <div class="mt-1">
+      <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
+      <a data-action="editTraits" data-options="dissonance" data-target="system.traits.dissonance">
+        <i class="fas fa-edit"></i>
+      </a>
       <div class="mt-1">
-        <label class="resource-label">{{localize "Ex3.Dissonance"}}</label>
-        <a class="trait-selector" data-options="dissonance" data-target="system.traits.dissonance">
-          <i class="fas fa-edit"></i>
-        </a>
-        <div class="mt-1">
-          {{#each system.traits.dissonance.selected as |v k|}}
-          <li class="tag {{k}}">{{v}}</li>
-          {{/each}}
-        </div>
+        {{#each system.traits.dissonance.selected as |v k|}}
+        <li class="tag {{k}}">{{v}}</li>
+        {{/each}}
       </div>
+    </div>
+    <div class="mt-1">
+      <label class="resource-label">{{localize "Ex3.Classifications"}}</label>
+      <a data-action="editTraits" data-options="classifications" data-target="system.traits.classifications">
+        <i class="fas fa-edit"></i>
+      </a>
       <div class="mt-1">
-        <label class="resource-label">{{localize "Ex3.Classifications"}}</label>
-        <a class="trait-selector" data-options="classifications" data-target="system.traits.classifications">
-          <i class="fas fa-edit"></i>
-        </a>
-        <div class="mt-1">
-          {{#each system.traits.classifications.selected as |v k|}}
-          <li class="tag {{k}}">{{v}}</li>
-          {{/each}}
-        </div>
+        {{#each system.traits.classifications.selected as |v k|}}
+        <li class="tag {{k}}">{{v}}</li>
+        {{/each}}
       </div>
+    </div>
+    <div class="mt-1">
+      <label class="resource-label">{{localize "Ex3.Languages"}}</label>
+      <a data-action="editTraits" data-options="languages" data-target="system.traits.languages">
+        <i class="fas fa-edit"></i>
+      </a>
       <div class="mt-1">
-        <label class="resource-label">{{localize "Ex3.Languages"}}</label>
-        <a class="trait-selector" data-options="languages" data-target="system.traits.languages">
-          <i class="fas fa-edit"></i>
-        </a>
-        <div class="mt-1">
-          {{#each system.traits.languages.selected as |v k|}}
-          <li class="tag {{k}}">{{v}}</li>
-          {{/each}}
-        </div>
+        {{#each system.traits.languages.selected as |v k|}}
+        <li class="tag {{k}}">{{v}}</li>
+        {{/each}}
       </div>
-      {{#if system.settings.editmode}}
-      <div class="flex-center" style="margin-bottom:10px;">
-        Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals
-        system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
-      </div>
-      {{/if}}
-      {{#ifEquals system.details.exalt 'lunar'}}
-      <div class="resource-label list-section-header d-flex flex-between">
-        <div>
-          {{localize "Ex3.LunarShapes"}}
-        </div>
-        <a class="item-control item-create" title="Create shape" data-type="shape"><i
-            class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
-      </div>
-      {{#each actor.shapes as |item id|}}
-      <li class="item flexrow item-row" data-item-id="{{item._id}}">
-        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-            height="24" /></div>
-        <h4 class="item-name">{{item.name}}</h4>
-        <div class="item-controls">
-          {{#if item.system.actorid}}
-          <a class="item-control shape-edit" title="Character Sheet"><i class="fas fa-user-pen"></i></a>
-          {{/if}}
-          <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-      </li>
-      <li>
-        <div>
-          {{{enrichedHTMLItems ../this "description" item._id}}}
-        </div>
-      </li>
-      {{/each}}
-      {{/ifEquals}}
-      {{#ifEquals system.details.exalt 'sidereal'}}
-      <div class="resource-label list-section-header d-flex flex-between">
-        <div>
-          {{localize "Ex3.ResplendentDestinies"}}
-        </div>
-        <a class="item-control item-create" title="Create destiny" data-type="destiny"><i
-            class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
-      </div>
-      {{#each actor.destinies as |item id|}}
-      <li class="item flexrow item-row" data-item-id="{{item._id}}">
-        <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-            height="24" /></div>
-        <h4 class="item-name">{{item.name}}</h4>
-        <div class="item-controls">
-          {{#if item.system.frayed}}
-          <a class="item-control toggle-item-value" data-key="frayed" title="Unfray"><i
-              class="fas fa-heart-crack"></i></a>
-          {{else}}
-          <a class="item-control toggle-item-value" data-key="frayed" title="fray"><i class="fas fa-heart"></i></a>
-          {{/if}}
-          <a class="item-control item-chat" title="Chat Item"><i class="fas fa-comment"></i></a>
-          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-      </li>
-      <li>
-        <div>
-          {{{enrichedHTMLItems ../this "description" item._id}}}
-        </div>
-      </li>
-      {{/each}}
+    </div>
+    {{#if system.settings.editmode}}
+    <div class="flex-center" style="margin-bottom:10px;">
+      Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals
+      system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
+    </div>
+    {{/if}}
+    {{#ifEquals system.details.exalt 'lunar'}}
+    <div class="resource-label list-section-header d-flex flex-between">
       <div>
-        <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{system.maidencharms.journeys}}, {{localize
-        "Ex3.Serenity"}}:
-        {{system.maidencharms.serenity}}, {{localize "Ex3.Battles"}}: {{system.maidencharms.battles}}, {{localize
-        "Ex3.Secrets"}}: {{system.maidencharms.secrets}}, {{localize "Ex3.Endings"}}: {{system.maidencharms.endings}}
+        {{localize "Ex3.LunarShapes"}}
       </div>
-      {{/ifEquals}}
-    </ol>
-  </div>
+      <a class="item-control" data-action="createItem" title="Create shape" data-type="shape"><i
+          class="fas fa-plus"></i>{{localize
+        "Ex3.Add"}}</a>
+    </div>
+    {{#each actor.shapes as |item id|}}
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
+      <h4 class="item-name">{{item.name}}</h4>
+      <div class="item-controls">
+        {{#if item.system.actorid}}
+        <a class="item-control" data-action="itemAction" data-actiontype="editShape" title="Character Sheet"><i
+            class="fas fa-user-pen"></i></a>
+        {{/if}}
+        <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+            class="fas fa-comment"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+            class="fas fa-edit"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+            class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    <li>
+      <div>
+        {{{enrichedHTMLItems ../this "description" item._id}}}
+      </div>
+    </li>
+    {{/each}}
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'sidereal'}}
+    <div class="resource-label list-section-header d-flex flex-between">
+      <div>
+        {{localize "Ex3.ResplendentDestinies"}}
+      </div>
+      <a class="item-control" data-action="createItem" title="Create destiny" data-type="destiny"><i
+          class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+    </div>
+    {{#each actor.destinies as |item id|}}
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+      <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+          height="24" /></div>
+      <h4 class="item-name">{{item.name}}</h4>
+      <div class="item-controls">
+        {{#if item.system.frayed}}
+        <a class="item-control" data-action="itemAction" data-actiontype="toggleItemValue" data-key="frayed"
+          title="Unfray"><i class="fas fa-heart-crack"></i></a>
+        {{else}}
+        <a class="item-control" data-action="itemAction" data-actiontype="toggleItemValue" data-key="frayed"
+          title="Fray"><i class="fas fa-heart"></i></a>
+        {{/if}}
+        <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+            class="fas fa-comment"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+            class="fas fa-edit"></i></a>
+        <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+            class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    <li>
+      <div>
+        {{{enrichedHTMLItems ../this "description" item._id}}}
+      </div>
+    </li>
+    {{/each}}
+    <div>
+      <b>{{localize "Ex3.Charms"}}:</b> {{localize "Ex3.Journeys"}}: {{system.maidencharms.journeys}}, {{localize
+      "Ex3.Serenity"}}:
+      {{system.maidencharms.serenity}}, {{localize "Ex3.Battles"}}: {{system.maidencharms.battles}}, {{localize
+      "Ex3.Secrets"}}: {{system.maidencharms.secrets}}, {{localize "Ex3.Endings"}}: {{system.maidencharms.endings}}
+    </div>
+    {{/ifEquals}}
+  </ol>
+</div>

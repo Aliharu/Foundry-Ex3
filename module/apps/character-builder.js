@@ -1,4 +1,4 @@
-import { getEnritchedHTML } from "../utils/utils.js";
+import { getEnritchedHTML, toggleDisplay } from "../utils/utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -546,7 +546,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       d.callbacks = {
         drop: this._onDropItem.bind(this),
       };
-      return new DragDrop(d);
+      return new foundry.applications.ux.DragDrop.implementation(d);
     });
   }
 
@@ -635,8 +635,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     this.element.querySelectorAll('.item-row').forEach(element => {
       element.addEventListener('click', (ev) => {
-        const li = $(ev.currentTarget).next();
-        li.toggle("fast");
+        toggleDisplay(ev.currentTarget);
       });
     });
   }
@@ -1670,8 +1669,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         label: "Close",
         action: "closeImportItem",
       }],
-      render: (event, html) => {
-        html.querySelectorAll('.add-item').forEach(element => {
+      render: (event, dialog) => {
+        dialog.element.querySelectorAll('.add-item').forEach(element => {
           element.addEventListener('click', async (ev) => {
             ev.stopPropagation();
             let li = $(ev.currentTarget).parents(".item");
@@ -1708,17 +1707,21 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             }
 
             this.onChange();
-            const closeImportItem = html.querySelector('.closeImportItem');
+            const closeImportItem = dialog.element.querySelector('.closeImportItem');
             if (closeImportItem) {
               closeImportItem.click();
             }
           });
         });
 
-        html.querySelectorAll('.collapsable').forEach(element => {
+        dialog.element.querySelectorAll('.collapsable').forEach(element => {
           element.addEventListener('click', (ev) => {
-            const li = $(ev.currentTarget).next();
-            li.toggle("fast");
+            const li = ev.currentTarget.nextElementSibling;
+            if (li.style.display == 'none') {
+              li.style.display = '';
+            } else {
+              li.style.display = 'none';
+            }
           });
         });
       },

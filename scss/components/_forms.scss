@@ -36,11 +36,13 @@
     padding: 0px;
     margin: 5px 0;
     border-bottom: 0;
+
     input {
       width: 100%;
       height: 100%;
       margin: 0;
     }
+
     select {
       width: 100%;
       height: 100%;
@@ -53,11 +55,13 @@
     padding: 0px;
     margin: 5px 0;
     border-bottom: 0;
+
     input {
       width: 90%;
       height: 100%;
       margin: 0;
     }
+
     select {
       width: 100%;
       height: 100%;
@@ -76,6 +80,7 @@
 }
 
 .roll-button {
+  width: 100%;
   height: 26px;
   line-height: 22px;
 }
@@ -83,6 +88,7 @@
 textarea {
   font-family: inherit;
   font-size: inherit;
+  width: 100%;
 }
 
 .margin-right {

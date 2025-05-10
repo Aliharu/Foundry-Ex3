@@ -158,7 +158,7 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/actor/social-tab.html",
     "systems/exaltedthird/templates/actor/biography-tab.html",
     "systems/exaltedthird/templates/actor/character-tab.html",
-    "systems/exaltedthird/templates/actor/character-stats-tab.html",
+    "systems/exaltedthird/templates/actor/character-stats.html",
   ]);
 
   Combatant.prototype._getInitiativeFormula = function () {
