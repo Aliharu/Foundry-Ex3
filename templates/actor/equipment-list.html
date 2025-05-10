@@ -108,10 +108,10 @@
       </div>
       <div class="item-controls">
         {{#if item.system.equipped}}
-        <a class="item-control" data-action="toggleItemValue" data-key="equipped" title="Unequip"
+        <a class="item-control" data-actiontype="toggleItemValue" data-action="itemAction" data-key="equipped" title="Unequip"
           style="color:#F9B516;"><i class="fas fa-helmet-battle"></i></a>
         {{else}}
-        <a class="item-control" data-action="toggleItemValue" data-key="equipped" title="Equip"><i
+        <a class="item-control" data-actiontype="toggleItemValue" data-action="itemAction" data-key="equipped" title="Equip"><i
             class="fas fa-helmet-battle"></i></a>
         {{/if}}
         <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i

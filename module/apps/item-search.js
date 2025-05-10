@@ -49,7 +49,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       submitOnChange: true,
       closeOnSubmit: false
     },
-    classes: ['exaltedthird-dialog', `solar-background`],
+    classes: ['exaltedthird-dialog', `tree-background`],
     position: { width: 850, height: 900 },
   };
 

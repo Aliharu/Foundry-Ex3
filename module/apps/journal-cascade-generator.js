@@ -50,7 +50,7 @@ export default class JournalCascadeGenerator extends HandlebarsApplicationMixin(
       submitOnChange: true,
       closeOnSubmit: false
     },
-    classes: [`solar-background`],
+    classes: [`tree-background`],
     position: { width: 550 },
   };
 

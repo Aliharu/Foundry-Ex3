@@ -24,7 +24,7 @@
     </div>
     <ol class="items-list">
         {{#each system.savedRolls as |item id|}}
-        <li class="item flexrow saved-roll-row" data-item-id="{{id}}" data-saved-roll-id="{{id}}">
+        <li class="item flexrow saved-roll-row" data-item-id="{{id}}" data-saved-roll-id="{{id}}" data-document-class="savedRoll">
             <h4 class="item-name">{{item.name}}</h4>
             <div class="resource-table-value resource-value-static">
                 {{item.rollType}}

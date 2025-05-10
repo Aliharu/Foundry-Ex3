@@ -725,7 +725,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             submitOnChange: true,
             closeOnSubmit: false
         },
-        classes: [`solar-background`],
+        classes: [`tree-background`],
         actions: {
             saveRoll: RollForm.saveRoll,
             editSettings: RollForm.editSettings,

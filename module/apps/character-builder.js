@@ -507,7 +507,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       submitOnChange: true,
       closeOnSubmit: false
     },
-    classes: [`solar-background`],
+    classes: [`tree-background`],
     position: { width: 875, height: 1100 },
     actions: {
       showHelpDialog: CharacterBuilder.showHelpDialog,
