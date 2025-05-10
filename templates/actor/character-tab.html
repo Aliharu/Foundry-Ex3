@@ -306,8 +306,8 @@
         {{/each}}
       </div>
     </div>
-    {{#if system.settings.editmode}}
-    <div class="flex-center" style="margin-bottom:10px;">
+    {{#if characterEditMode}}
+    <div class="flex-center mb-1">
       Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals
       system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
     </div>
