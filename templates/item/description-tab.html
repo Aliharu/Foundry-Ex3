@@ -42,12 +42,12 @@
         <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
     </div>
     <div class="embeded-item-list-wrapper" {{#if
-        options.editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
+        editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
         <div class="flex-group-center embeded-item-list">
             <ul>
-                {{#if options.editable}}
+                {{#if editable}}
                 {{#each system.charmprerequisites as |item id|}}
-                <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}" data-item-name="{{item.name}}"
+                <a data-drag="true" class="embeded-item-pill" data-id="{{item.id}}" data-item-name="{{item.name}}"
                     data-item-index="{{id}}">
                     <li data-item-index="{{id}}">
                         {{item.name}}{{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}

@@ -1,4 +1,4 @@
-<div id="details-tab" class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
     <div class="flex-group-center">
         <label class="resource-label">{{localize "Ex3.Summary"}}</label>
         <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
@@ -82,12 +82,12 @@
         <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
     </div>
     <div class="embeded-item-list-wrapper" {{#if
-        options.editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
+        editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
         <div class="flex-group-center embeded-item-list">
             <ul>
-                {{#if options.editable}}
+                {{#if editable}}
                 {{#each system.archetype.charmprerequisites as |item id|}}
-                <a draggable="true" class="embeded-item-pill" data-action="showEmbeddedItem" data-id="{{item.id}}"
+                <a data-drag="true" class="embeded-item-pill" data-action="showEmbeddedItem" data-id="{{item.id}}"
                     data-item-name="{{item.name}}" data-item-index="{{id}}" data-type="archetype">
                     <li data-item-index="{{id}}">
                         {{item.name}} {{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}

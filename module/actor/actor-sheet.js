@@ -1275,7 +1275,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     const { img } =
       this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
       {};
-    const fp = new FilePicker({
+    const fp = new foundry.applications.apps.FilePicker.implementation({
       current,
       type: 'image',
       redirectToRoot: img ? [img] : [],

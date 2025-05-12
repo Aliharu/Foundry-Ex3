@@ -12,6 +12,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
   constructor(...args) {
     super(...args);
+    this.#dragDrop = this.#createDragDropHandlers();
   }
 
   static DEFAULT_OPTIONS = {
@@ -227,8 +228,8 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
       lunarForms[lunarForm.id] = lunarForm.name;
     }
     context.lunarForms = lunarForms;
-    if (this.object?.parent) {
-      for (const customAbility of this.object.parent.customabilities) {
+    if (this.item?.parent) {
+      for (const customAbility of this.item.parent.customabilities) {
         context.abilityList[customAbility._id] = customAbility.name;
         context.charmAbilityList[customAbility._id] = customAbility.name;
         context.charmAbilityListSectioned.custom.entries[customAbility._id] = customAbility.name;
@@ -236,7 +237,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }
 
     context.rollData = {};
-    let actor = this.object?.parent ?? null;
+    let actor = this.item?.parent ?? null;
     if (actor) {
       context.rollData = actor.getRollData();
     }
@@ -282,6 +283,8 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
   /** @override */
   _onRender(context, options) {
+    this.#dragDrop.forEach((d) => d.bind(this.element));
+
     this._setupButtons(this.element);
   }
 
@@ -345,6 +348,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
           break;
         case 'armorDetails':
         case 'actionDetails':
+        case 'charmDetails':
         case 'itemDetails':
         case 'meritDetails':
         case 'ritualDetails':
@@ -442,7 +446,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     const { img } =
       this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
       {};
-    const fp = new FilePicker({
+    const fp = new foundry.applications.apps.FilePicker.implementation({
       current,
       type: 'image',
       redirectToRoot: img ? [img] : [],
@@ -597,7 +601,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
     if (functionType === 'add' || functionType === 'edit') {
       if (functionType === 'edit') {
-        currentAlternateData = this.object.system.modes.alternates[index];
+        currentAlternateData = this.item.system.modes.alternates[index];
       }
 
       const template = "systems/exaltedthird/templates/dialogues/edit-alternate-mode.html";
@@ -664,7 +668,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
             let formData = {};
 
-            let items = this.object?.system.modes.alternates;
+            let items = this.item?.system.modes.alternates;
             if (!items) {
               items = [];
             }
@@ -673,36 +677,36 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
                 system: {
                   modes: {
                     mainmode: {
-                      type: this.object.system.type,
-                      summary: this.object.system.summary,
-                      duration: this.object.system.duration,
-                      activatable: this.object.system.activatable,
-                      multiactivate: this.object.system.multiactivate,
-                      endtrigger: this.object.system.endtrigger,
-                      costdisplay: this.object.system.costdisplay,
-                      keywords: this.object.system.keywords,
+                      type: this.item.system.type,
+                      summary: this.item.system.summary,
+                      duration: this.item.system.duration,
+                      activatable: this.item.system.activatable,
+                      multiactivate: this.item.system.multiactivate,
+                      endtrigger: this.item.system.endtrigger,
+                      costdisplay: this.item.system.costdisplay,
+                      keywords: this.item.system.keywords,
                       cost: {
-                        motes: this.object.system['cost.motes'],
-                        commitmotes: this.object.system['cost.commitmotes'],
-                        initiative: this.object.system['cost.initiative'],
-                        anima: this.object.system['cost.anima'],
-                        penumbra: this.object.system['cost.penumbra'],
-                        willpower: this.object.system['cost.willpower'],
-                        aura: this.object.system['cost.aura'],
-                        grapplecontrol: this.object.system['cost.grapplecontrol'],
-                        healthtype: this.object.system['cost.healthtype'],
-                        xp: this.object.system['cost.xp'],
-                        silverxp: this.object.system['cost.silverxp'],
-                        goldxp: this.object.system['cost.goldxp'],
-                        whitexp: this.object.system['cost.whitexp'],
+                        motes: this.item.system['cost.motes'],
+                        commitmotes: this.item.system['cost.commitmotes'],
+                        initiative: this.item.system['cost.initiative'],
+                        anima: this.item.system['cost.anima'],
+                        penumbra: this.item.system['cost.penumbra'],
+                        willpower: this.item.system['cost.willpower'],
+                        aura: this.item.system['cost.aura'],
+                        grapplecontrol: this.item.system['cost.grapplecontrol'],
+                        healthtype: this.item.system['cost.healthtype'],
+                        xp: this.item.system['cost.xp'],
+                        silverxp: this.item.system['cost.silverxp'],
+                        goldxp: this.item.system['cost.goldxp'],
+                        whitexp: this.item.system['cost.whitexp'],
                       },
                       restore: {
-                        motes: this.object.system['restore.motes'],
-                        willpower: this.object.system['restore.willpower'],
-                        anima: this.object.system['restore.anima'],
-                        health: this.object.system['restore.health'],
-                        initiative: this.object.system['restore.initiative'],
-                        grapplecontrol: this.object.system['restore.grapplecontrol'],
+                        motes: this.item.system['restore.motes'],
+                        willpower: this.item.system['restore.willpower'],
+                        anima: this.item.system['restore.anima'],
+                        health: this.item.system['restore.health'],
+                        initiative: this.item.system['restore.initiative'],
+                        grapplecontrol: this.item.system['restore.grapplecontrol'],
                       }
                     }
                   }
@@ -722,7 +726,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
             foundry.utils.setProperty(formData, `system.modes.alternates`, items);
 
-            this.object.update(formData);
+            this.item.update(formData);
 
           }
         }
@@ -730,10 +734,10 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }
     if (functionType === 'delete') {
       let formData = {};
-      const items = this.object.system.modes.alternates;
+      const items = this.item.system.modes.alternates;
       items.splice(index, 1);
       foundry.utils.setProperty(formData, `system.modes.alternates`, items);
-      this.object.update(formData);
+      this.item.update(formData);
     }
   }
 
@@ -788,10 +792,10 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     let embededItem;
 
     if (li.dataset.type === 'archetype') {
-      embededItem = this.object.system.archetype.charmprerequisites[itemIndex];
+      embededItem = this.item.system.archetype.charmprerequisites[itemIndex];
     }
     else {
-      embededItem = this.object.system.charmprerequisites[itemIndex];
+      embededItem = this.item.system.charmprerequisites[itemIndex];
     }
 
     var item;
@@ -824,16 +828,16 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     const itemIndex = parent.dataset.itemIndex;
 
     if (target.dataset?.type === 'archetype') {
-      const items = this.object.system.archetype.charmprerequisites;
+      const items = this.item.system.archetype.charmprerequisites;
       items.splice(itemIndex, 1);
       foundry.utils.setProperty(formData, `system.archetype.charmprerequisites`, items);
-      this.object.update(formData);
+      this.item.update(formData);
     }
     else {
-      const items = this.object.system.charmprerequisites;
+      const items = this.item.system.charmprerequisites;
       items.splice(itemIndex, 1);
       foundry.utils.setProperty(formData, `system.charmprerequisites`, items);
-      this.object.update(formData);
+      this.item.update(formData);
     }
   }
 
@@ -868,17 +872,6 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
-  async _onDrop(event) {
-    let data;
-    try {
-      data = JSON.parse(event.dataTransfer.getData("text/plain"));
-      if (data.type === "Item") return this._onDropItem(event, data);
-      if (data.type === "ActiveEffect") return this._onDropActiveEffect(event, data);
-    } catch (err) {
-      return false;
-    }
-  }
-
   async _onDrag(event) {
     const li = event.currentTarget;
     if ("link" in event.target.dataset) return;
@@ -899,7 +892,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
   }
 
   async _onDropItem(event, data) {
-    const obj = this.object;
+    const obj = this.item;
     const li = event.currentTarget;
 
     data.id = data.uuid.split('.')[1];
@@ -934,8 +927,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     };
 
     if (itemObject.type === "charm") {
-      const detailsTab = li.querySelector(`#details-tab`);
-      const detailsTabactive = detailsTab.classList.contains("active");
+      const detailsTabactive = this.tabGroups.primary === 'details';
       let items = obj?.system.charmprerequisites;
       if (detailsTabactive) {
         items = obj?.system.archetype.charmprerequisites;
@@ -982,5 +974,183 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     const options = { parent: this.item, keepOrigin: false };
 
     return ActiveEffect.create(effectData, options);
+  }
+
+    /**
+   *
+   * DragDrop
+   *
+   */
+
+  /**
+   * Define whether a user is able to begin a dragstart workflow for a given drag selector
+   * @param {string} selector       The candidate HTML selector for dragging
+   * @returns {boolean}             Can the current user drag this selector?
+   * @protected
+   */
+  _canDragStart(selector) {
+    // game.user fetches the current user
+    return this.isEditable;
+  }
+
+  /**
+   * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
+   * @param {string} selector       The candidate HTML selector for the drop target
+   * @returns {boolean}             Can the current user drop on this selector?
+   * @protected
+   */
+  _canDragDrop(selector) {
+    // game.user fetches the current user
+    return this.isEditable;
+  }
+
+  /**
+   * Callback actions which occur at the beginning of a drag start workflow.
+   * @param {DragEvent} event       The originating DragEvent
+   * @protected
+   */
+  _onDragStart(event) {
+    const li = event.currentTarget;
+    if ('link' in event.target.dataset) return;
+
+    let dragData = null;
+
+    // Active Effect
+    if (li.dataset.effectId) {
+      const effect = this.item.effects.get(li.dataset.effectId);
+      dragData = effect.toDragData();
+    }
+
+    if (!dragData) return;
+
+    // Set data transfer
+    event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+  }
+
+  /**
+   * Callback actions which occur when a dragged element is over a drop target.
+   * @param {DragEvent} event       The originating DragEvent
+   * @protected
+   */
+  _onDragOver(event) {}
+
+  /**
+   * Callback actions which occur when a dragged element is dropped on a target.
+   * @param {DragEvent} event       The originating DragEvent
+   * @protected
+   */
+  async _onDrop(event) {
+    const data = foundry.applications.ux.TextEditor.getDragEventData(event);
+    const item = this.item;
+    const allowed = Hooks.call('dropItemSheetData', item, this, data);
+    if (allowed === false) return;
+
+    // Handle different data types
+    switch (data.type) {
+      case 'ActiveEffect':
+        return this._onDropActiveEffect(event, data);
+      case 'Actor':
+        return this._onDropActor(event, data);
+      case 'Item':
+        return this._onDropItem(event, data);
+      case 'Folder':
+        return this._onDropFolder(event, data);
+    }
+  }
+
+  /**
+   * Sorts an Active Effect based on its surrounding attributes
+   *
+   * @param {DragEvent} event
+   * @param {ActiveEffect} effect
+   */
+  _onEffectSort(event, effect) {
+    const effects = this.item.effects;
+    const dropTarget = event.target.closest('[data-effect-id]');
+    if (!dropTarget) return;
+    const target = effects.get(dropTarget.dataset.effectId);
+
+    // Don't sort on yourself
+    if (effect.id === target.id) return;
+
+    // Identify sibling items based on adjacent HTML elements
+    const siblings = [];
+    for (let el of dropTarget.parentElement.children) {
+      const siblingId = el.dataset.effectId;
+      if (siblingId && siblingId !== effect.id)
+        siblings.push(effects.get(el.dataset.effectId));
+    }
+
+    // Perform the sort
+    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+      target,
+      siblings,
+    });
+    const updateData = sortUpdates.map((u) => {
+      const update = u.update;
+      update._id = u.target._id;
+      return update;
+    });
+
+    // Perform the update
+    return this.item.updateEmbeddedDocuments('ActiveEffect', updateData);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle dropping of an Actor data onto another Actor sheet
+   * @param {DragEvent} event            The concluding DragEvent which contains drop data
+   * @param {object} data                The data transfer extracted from the event
+   * @returns {Promise<object|boolean>}  A data object which describes the result of the drop, or false if the drop was
+   *                                     not permitted.
+   * @protected
+   */
+  async _onDropActor(event, data) {
+    if (!this.item.isOwner) return false;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle dropping of a Folder on an Actor Sheet.
+   * The core sheet currently supports dropping a Folder of Items to create all items as owned items.
+   * @param {DragEvent} event     The concluding DragEvent which contains drop data
+   * @param {object} data         The data transfer extracted from the event
+   * @protected
+   */
+  async _onDropFolder(event, data) {
+    if (!this.item.isOwner) return [];
+  }
+
+  /** The following pieces set up drag handling and are unlikely to need modification  */
+
+  /**
+   * Returns an array of DragDrop instances
+   */
+  get dragDrop() {
+    return this.#dragDrop;
+  }
+
+  // This is marked as private because there's no real need
+  // for subclasses or external hooks to mess with it directly
+  #dragDrop;
+
+  /**
+   * Create drag-and-drop workflow handlers for this Application
+   */
+  #createDragDropHandlers() {
+    return this.options.dragDrop.map((d) => {
+      d.permissions = {
+        dragstart: this._canDragStart.bind(this),
+        drop: this._canDragDrop.bind(this),
+      };
+      d.callbacks = {
+        dragstart: this._onDragStart.bind(this),
+        dragover: this._onDragOver.bind(this),
+        drop: this._onDrop.bind(this),
+      };
+      return new foundry.applications.ux.DragDrop.implementation(d);
+    });
   }
 }

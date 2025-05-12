@@ -99,8 +99,8 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
           id: item.id,
           uuid: item.uuid
         };
-        if (item.compendium) {
-          transfer.pack = `${item.compendium.metadata.package}.${item.compendium.metadata.name}`;
+        if (item.collection) {
+          transfer.pack = `${item.collection.metadata.package}.${item.collection.metadata.name}`;
         }
         event.dataTransfer.setData("text/plain", JSON.stringify(transfer));
       });
@@ -153,7 +153,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
             filteredItems = filteredItems.filter(i => i.system.description.value && i.system.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
             break;
           case "worldItems":
-            filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.compendium)
+            filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.inCompendium)
             break;
           case "essence":
             filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence >= parseInt(this.filters.attribute.essence.min) && i.system.essence <= parseInt(this.filters.attribute.essence.max)))
