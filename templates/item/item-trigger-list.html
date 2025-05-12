@@ -1,6 +1,6 @@
 <div class="resource flex-center mb-1" style="font-size: 17px;">
-    <a><i class="fas fa-info-circle show-roll-triggers-link cursor-pointer"></i></a> <label
-        class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control add-trigger"
+    <a><i class="fas fa-info-circle cursor-pointer" data-action="showDialog" data-dialogtype="showTriggersLink"></i></a> <label
+        class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control" data-action="triggerAction" data-actiontype="add"
             title="Create trigger" data-type="dicerollertriggers"><i class="fas fa-plus"></i></a></label>
 </div>
 {{#each system.triggers.dicerollertriggers as |trigger index|}}
@@ -23,7 +23,7 @@
                 <select name="system.triggers.dicerollertriggers.{{index}}.triggerTime" data-type="String">
                     {{selectOptions ../selects.triggerTimes selected=trigger.triggerTime localize=true}}
                 </select>
-                <a class="item-control delete-trigger" title="Delete trigger" data-type="dicerollertriggers"
+                <a class="item-control" data-action="triggerAction" data-actiontype="delete" title="Delete trigger" data-type="dicerollertriggers"
                     data-index="{{index}}"><i class="fas fa-trash"
                         style="margin-right: 15px; margin-left:15px;"></i></a>
             </div>
@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="resource flex-center mb-1" style="font-size: 17px;">
-        <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control add-trigger-subitem"
+        <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control" data-functiontype="add" data-action="triggerSubItemAction"
                 title="Create bonus" data-type="dicerollertriggers" data-subtype="bonuses" data-index="{{index}}"><i
                     class="fas fa-plus"></i></a></label>
     </div>
@@ -193,7 +193,7 @@
                     value="{{bonus.value}}" type="text">
                 {{/isBooleanTrigger}}
                 {{/ifEquals}}
-                <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
+                <a class="item-control" data-functiontype="delete" data-action="triggerSubItemAction" title="Delete bonus" data-type="dicerollertriggers"
                     data-index="{{index}}" data-subindex="{{bonusIndex}}" data-subtype="bonuses"><i class="fas fa-trash"
                         style="margin-right: 15px; margin-left: 15px;"></i></a>
             </div>
@@ -201,7 +201,7 @@
         {{/each}}
     </div>
     <div class="resource flex-center mb-1" style="font-size: 17px;">
-        <label class="resource-label">{{localize "Ex3.Requirements"}} <a class="item-control add-trigger-subitem"
+        <label class="resource-label">{{localize "Ex3.Requirements"}} <a class="item-control" data-functiontype="add" data-action="triggerSubItemAction"
                 title="Create requirement" data-type="dicerollertriggers" data-subtype="requirements"
                 data-index="{{index}}"><i class="fas fa-plus"></i></a></label>
     </div>
@@ -339,7 +339,7 @@
                     value="{{requirement.value}}" type="text">
                 {{/isBooleanTrigger}}
                 {{/ifEquals}}
-                <a class="item-control delete-trigger-subitem" title="Delete bonus" data-type="dicerollertriggers"
+                <a class="item-control" data-functiontype="delete" data-action="triggerSubItemAction" title="Delete bonus" data-type="dicerollertriggers"
                     data-index="{{index}}" data-subindex="{{requirementIndex}}" data-subtype="requirements"><i
                         class="fas fa-trash" style="margin-right: 15px; margin-left: 15px;"></i></a>
             </div>

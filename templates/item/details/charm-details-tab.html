@@ -1,0 +1,130 @@
+<div id="details-tab" class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+    <div class="flex-group-center">
+        <label class="resource-label">{{localize "Ex3.Summary"}}</label>
+        <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
+    </div>
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.CharmType"}}</div>
+            <select name="system.charmtype" data-type="String">
+                {{selectOptions charmExaltType selected=system.charmtype localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.CostDisplay"}}</div>
+            </div>
+            <input type="text" name="system.costdisplay" value="{{system.costdisplay}}" />
+        </div>
+        <div>
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.ListingName"}}</div>
+            </div>
+            <input type="text" name="system.listingname" value="{{system.listingname}}"
+                placeholder="Defaults to ability name" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
+            <select name="system.endtrigger" data-type="String">
+                {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.AutoAddToRolls"}}</div>
+            <select name="system.autoaddtorolls" data-type="String">
+                {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
+            </select>
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Activatable"}}</label>
+            <div>
+                <input name="system.activatable" type="checkbox" {{checked system.activatable}}>
+            </div>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.MultiActivate"}}</div>
+            <input type="checkbox" name="system.multiactivate" {{checked system.multiactivate}} />
+        </div>
+    </div>
+    <div class="d-flex flex-center resource-label">
+        <div class="resource-label">{{localize "Ex3.PreviousCharmsPrerequisites"}}</div>
+    </div>
+    <div class="resource-content flexrow flex-center">
+        <input placeholder="Previous Charms from: " type="number" name="system.numberprerequisites.number"
+            value="{{system.numberprerequisites.number}}" />
+        <select name="system.numberprerequisites.ability" data-type="String">
+            {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
+            <optgroup label="{{localize charmCategory.label}}">
+                {{selectOptions charmCategory.entries selected=../system.numberprerequisites.ability
+                localize=true}}
+            </optgroup>
+            {{/each}}
+            {{selectOptions selects.previousCharmsPrerequisitesOptions
+            selected=system.numberprerequisites.ability localize=true}}
+        </select>
+    </div>
+    <div class="d-flex flex-center resource-label">
+        <div class="resource-label">{{localize "Ex3.AlternatePrerequisites"}}</div>
+    </div>
+    <div>
+        <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+        <select name="system.archetype.ability" data-type="String">
+            {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
+            <optgroup label="{{localize charmCategory.label}}">
+                {{selectOptions charmCategory.entries selected=../system.archetype.ability localize=true}}
+            </optgroup>
+            {{/each}}
+            {{selectOptions selects.uniqueArchetypeAbilityOptions selected=system.archetype.ability
+            localize=true}}
+        </select>
+    </div>
+    <div class="flex-center mt-1">
+        <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
+    </div>
+    <div class="embeded-item-list-wrapper" {{#if
+        options.editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
+        <div class="flex-group-center embeded-item-list">
+            <ul>
+                {{#if options.editable}}
+                {{#each system.archetype.charmprerequisites as |item id|}}
+                <a draggable="true" class="embeded-item-pill" data-action="showEmbeddedItem" data-id="{{item.id}}"
+                    data-item-name="{{item.name}}" data-item-index="{{id}}" data-type="archetype">
+                    <li data-item-index="{{id}}">
+                        {{item.name}} {{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}
+                        <i class="fas fa-trash" data-action="deleteEmbeddedItem" data-type="archetype"></i>
+                    </li>
+                </a>
+                {{/each}}
+                {{else}}
+                {{#each system.archetype.charmprerequisites as |item id|}}
+                <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}"
+                    data-type="archetype">
+                    {{item.name}}
+                </li>
+                {{/each}}
+                {{/if}}
+            </ul>
+        </div>
+    </div>
+    <div class="flex-center mt-1">
+        <div class="resource-label">{{localize "Ex3.OtherPrerequisites"}}</div>
+    </div>
+    <textarea type="text" name="system.archetype.prerequisites"
+        rows="4">{{system.archetype.prerequisites}}</textarea>
+    {{#if showParentItemList}}
+    <div>
+        {{#ifEquals system.charmtype 'evocation'}}
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+        </div>
+        {{else}}
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.MartialArt"}}</div>
+        </div>
+        {{/ifEquals}}
+        <select name="system.parentitemid" data-type="String">
+            {{selectOptions parentItemList selected=system.parentitemid localize=true}}
+        </select>
+    </div>
+    {{/if}}
+</div>

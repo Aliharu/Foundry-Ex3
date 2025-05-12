@@ -1,0 +1,93 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+    <div>
+        <div class="grid grid-2col flex-group-center">
+            <div>
+                <div class="resource-label">{{localize "Ex3.Type"}}</div>
+                <select name="system.weighttype" data-type="String">
+                    {{selectOptions selects.weaponWeightTypes selected=system.weighttype localize=true}}
+                </select>
+            </div>
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Cost"}}</label>
+                <input type="text" name="system.cost" value="{{system.cost}}" data-dtype="Number" />
+            </div>
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Attunement"}}</label>
+                <input type="text" name="system.attunement" value="{{system.attunement}}" data-dtype="Number" />
+            </div>
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Hearthstones"}}</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="system.hearthstones.value" value="{{system.hearthstones.value}}"
+                        data-dtype="Number" />/
+                    <input type="text" name="system.hearthstones.max" value="{{system.hearthstones.max}}"
+                        data-dtype="Number" />
+                </div>
+            </div>
+            <div>
+                <label class="resource-label">{{localize "Ex3.HasEvocations"}} </label>
+                <div>
+                    <input type="checkbox" name="system.hasevocations" {{checked system.hasevocations}}>
+                </div>
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.TargetStat"}}</div>
+                <select name="system.targetstat" data-type="String">
+                    {{selectOptions selects.targetDefenseStats selected=system.targetstat localize=true}}
+                </select>
+            </div>
+        </div>
+        <div class="d-flex flex-center resource-label">
+            <div class="resource-label mr-1">{{localize "Ex3.PoisonRoundTrigger"}} </div>
+            <input name="system.poison.apply" type="checkbox" {{checked
+                system.poison.apply}}>
+        </div>
+        <div class="grid grid-3col flex-group-center">
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Name"}}</label>
+                <input type="text" name="system.poison.name" value="{{system.poison.name}}"/>
+            </div>
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Damage"}}</label>
+                <input type="text" name="system.poison.damage" value="{{system.poison.damage}}" data-dtype="Number" />
+            </div>
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Penalty"}}</label>
+                <input type="text" name="system.poison.penalty" value="{{system.poison.penalty}}" data-dtype="Number" />
+            </div>
+            <div class="resource">
+                <label class="resource-label">{{localize "Ex3.Duration"}}</label>
+                <input type="text" name="system.poison.duration" value="{{system.poison.duration}}" data-dtype="Number" />
+            </div>
+            <div>
+                <div class="resource-label">{{localize "Ex3.DamageType"}}</div>
+                <select name="system.poison.damagetype" data-type="String">
+                    {{selectOptions selects.poisonDamageTypes selected=system.poison.damagetype localize=true}}
+                </select>
+            </div>
+        </div>
+        <div class="d-flex flex-center resources">
+            <label class="resource-label mr-1">{{localize "Ex3.AttackEffect"}} </label>
+        </div>
+        <div>
+            <label class="resource-label mr-1">{{localize "Ex3.Preset"}}: </label>
+            <select name="system.attackeffectpreset" data-type="String">
+                {{selectOptions selects.attackEffectPresets selected=system.attackeffectpreset localize=true}}
+            </select>
+            <div>
+                <label class="resource-label mr-1">{{localize "Ex3.CustomInput"}}: </label>
+                <input type="text" name="system.attackeffect" value="{{system.attackeffect}}"
+                    placeholder="jb2a.quarterstaff.melee.01.white" />
+            </div>
+            <div class="resource-label list-section-header d-flex flex-between">
+                <div>
+                    {{localize "Ex3.AttackMacro"}}
+                </div>
+            </div>
+            <div class="flex-group-center d-flex flex-col">
+                <textarea type="text" name="system.attackmacro" rows="16"
+                    placeholder='{{localize "Ex3.AttackMacroHint"}}'>{{system.attackmacro}}</textarea>
+            </div>
+        </div>
+    </div>
+</div>

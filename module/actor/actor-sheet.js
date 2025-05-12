@@ -3,10 +3,10 @@ import { animaTokenMagic } from "../utils/other-modules.js";
 
 import Importer from "../apps/importer.js";
 import Prophecy from "../apps/prophecy.js";
-import TraitSelector from "../apps/trait-selector.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
 import { isColor, parseCounterStates, toggleDisplay } from "../utils/utils.js";
+import TraitSelector from "../apps/trait-selector.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -52,17 +52,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         },
       ]
     },
-    // position: { width: 730 },
     position: { width: 800, height: 1061 },
-    // tag: "form",
-    // form: {
-    //   handler: RollForm.myFormHandler,
-    //   submitOnClose: false,
-    //   submitOnChange: true,
-    //   closeOnSubmit: false
-    // },
     classes: ["exaltedthird", "sheet", "actor"],
     actions: {
+      onEditImage: this._onEditImage,
       sheetSettings: this.sheetSettings,
       helpDialogue: this.helpDialogue,
       pickColor: this.pickColor,
@@ -123,7 +116,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       template: "systems/exaltedthird/templates/actor/character-tab.html",
     },
     effects: {
-      template: "systems/exaltedthird/templates/actor/effects-tab.html",
+      template: "systems/exaltedthird/templates/actor/actor-effects-tab.html",
     },
     biography: {
       template: "systems/exaltedthird/templates/actor/biography-tab.html",
@@ -911,38 +904,6 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     this._setupSquareCounters(this.element);
     this._setupButtons(this.element);
 
-    // this.element.querySelectorAll('.item-row').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
-
-    // this.element.querySelectorAll('.item-list-collapsable').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     const itemType = ev.currentTarget.dataset.itemtype;
-    //     const li = ev.currentTarget.nextElementSibling;
-    //     if (li.getAttribute('id')) {
-    //       this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
-    //     }
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
-
-    // this.element.querySelectorAll('.collapsable').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
-
-    // this.element.querySelectorAll('.anima-collapsable').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     const animaType = ev.currentTarget.dataset.type;
-    //     const li = ev.currentTarget.nextElementSibling;
-    //     this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
-
     // // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
@@ -1298,6 +1259,33 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     if (ev.target.classList.contains("content-link")) return;
     const savedRoll = this.actor.system.savedRolls[li.dataset.itemId];
     ev.dataTransfer.setData("text/plain", JSON.stringify({ actorId: this.actor.uuid, type: 'savedRoll', id: li.dataset.itemId, name: savedRoll.name }));
+  }
+
+  /**
+   * Handle changing a Document's image.
+   *
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @returns {Promise}
+   * @protected
+   */
+  static async _onEditImage(event, target) {
+    const attr = target.dataset.edit;
+    const current = foundry.utils.getProperty(this.document, attr);
+    const { img } =
+      this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
+      {};
+    const fp = new FilePicker({
+      current,
+      type: 'image',
+      redirectToRoot: img ? [img] : [],
+      callback: (path) => {
+        this.document.update({ [attr]: path });
+      },
+      top: this.position.top + 40,
+      left: this.position.left + 10,
+    });
+    return fp.browse();
   }
 
   static updateAnima(event, target) {
@@ -1940,40 +1928,15 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   static toggleCollapse(event, target) {
-    // this.element.querySelectorAll('.item-list-collapsable').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     const itemType = ev.currentTarget.dataset.itemtype;
-    //     const li = ev.currentTarget.nextElementSibling;
-    //     if (li.getAttribute('id')) {
-    //       this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
-    //     }
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
-
-    // this.element.querySelectorAll('.collapsable').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
-
-    // this.element.querySelectorAll('.anima-collapsable').forEach(element => {
-    //   element.addEventListener('click', (ev) => {
-    //     const animaType = ev.currentTarget.dataset.type;
-    //     const li = ev.currentTarget.nextElementSibling;
-    //     this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });
-    //     toggleDisplay(ev.currentTarget);
-    //   });
-    // });
     const collapseType = target.dataset.collapsetype;
     const itemType = target.dataset.itemtype;
-    if(collapseType === 'itemSection') {
+    if (collapseType === 'itemSection') {
       const li = target.nextElementSibling;
       if (itemType && li.getAttribute('id')) {
         this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
       }
     }
-    if(collapseType === 'anima') {
+    if (collapseType === 'anima') {
       const animaType = target.dataset.type;
       const li = target.nextElementSibling;
       this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });

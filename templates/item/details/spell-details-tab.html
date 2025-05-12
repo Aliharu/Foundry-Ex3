@@ -1,0 +1,32 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+    <div class="flex-group-center">
+        <label class="resource-label">{{localize "Ex3.Summary"}}</label>
+        <textarea type="text" name="system.summary" rows="4">{{system.summary}}</textarea>
+    </div>
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.Activatable"}}</label>
+            <div>
+                <input name="system.activatable" type="checkbox" {{checked system.activatable}}>
+            </div>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
+            <select name="system.endtrigger" data-type="String">
+                {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.AutoAddToRolls"}}</div>
+            <select name="system.autoaddtorolls" data-type="String">
+                {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
+            </select>
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.ControlSpell"}}</label>
+            <div>
+                <input name="system.controlspell" type="checkbox" {{checked system.controlspell}}>
+            </div>
+        </div>
+    </div>
+</div>

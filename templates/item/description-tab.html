@@ -1,0 +1,221 @@
+{{!-- Description Tab --}}
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="description">
+    {{#ifEquals type 'armor'}}
+    <div class="grid grid-4col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Soak"}}</div>
+            <input type="number" name="system.soak" value="{{system.soak}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Penalty"}}</div>
+            <input type="number" name="system.penalty" value="{{system.penalty}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Hardness"}}</div>
+            <input type="number" name="system.hardness" value="{{system.hardness}}" data-dtype="Number" />
+        </div>
+        <div>
+            <label class="resource-label">{{localize "Ex3.Equipped"}}</label>
+            <div>
+                <input name="system.equipped" type="checkbox" {{checked system.equipped}}>
+            </div>
+        </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals type 'charm'}}
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <input type="text" name="system.type" value="{{system.type}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Duration"}}</div>
+            <input type="text" name="system.duration" value="{{system.duration}}" />
+        </div>
+    </div>
+    <div class="flex-center mt-1">
+        <div class="resource-label">{{localize "Ex3.Keywords"}} <a><i class="fas fa-info-circle cursor-pointer"
+                    data-action="showDialog" data-dialogtype="charmCheatSheet"></i></a></div>
+    </div>
+    <input type="text" name="system.keywords" value="{{system.keywords}}" />
+    <div class="flex-center mt-1">
+        <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
+    </div>
+    <div class="embeded-item-list-wrapper" {{#if
+        options.editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
+        <div class="flex-group-center embeded-item-list">
+            <ul>
+                {{#if options.editable}}
+                {{#each system.charmprerequisites as |item id|}}
+                <a draggable="true" class="embeded-item-pill" data-id="{{item.id}}" data-item-name="{{item.name}}"
+                    data-item-index="{{id}}">
+                    <li data-item-index="{{id}}">
+                        {{item.name}}{{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}
+                        <i class="fas fa-trash" data-action="deleteEmbeddedItem"></i>
+                    </li>
+                </a>
+                {{/each}}
+                {{else}}
+                {{#each system.charmprerequisites as |item id|}}
+                <li class="embeded-item-pill" data-action="showEmbeddedItem" data-item-name="{{../name}}"
+                    data-item-index="{{id}}">
+                    {{item.name}}{{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}
+                </li>
+                {{/each}}
+                {{/if}}
+            </ul>
+        </div>
+    </div>
+    <div class="flex-center mt-1">
+        <div class="resource-label">{{localize "Ex3.OtherPrerequisites"}}</div>
+    </div>
+    <input class="mb-1" type="text" name="system.prerequisites" value="{{system.prerequisites}}" />
+    {{/ifEquals}}
+    {{#ifEquals type 'craftproject'}}
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.GoalNumber"}}</div>
+            <input type="number" name="system.goalnumber" value="{{system.goalnumber}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Intervals"}}</div>
+            <input type="number" name="system.intervals" value="{{system.intervals}}" />
+        </div>
+    </div>
+    {{#if simplifiedCrafting}}
+    <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.Experience"}}</div>
+    </div>
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Completed"}}</div>
+            <input type="number" name="system.experience.completed" value="{{system.experience.completed}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Required"}}</div>
+            <input type="number" name="system.experience.required" value="{{system.experience.required}}" />
+        </div>
+    </div>
+    {{/if}}
+    {{/ifEquals}}
+    {{#ifEquals type 'intimacy'}}
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Strength"}}</div>
+            <select name="system.strength" data-type="String">
+                {{selectOptions selects.intimacyStrengths selected=system.strength localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="system.intimacytype" data-type="String">
+                {{selectOptions selects.intimacyTypes selected=system.intimacytype localize=true}}
+            </select>
+        </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals type 'spell'}}
+    <div class="flex-center mt-1">
+        <div class="resource-label">{{localize "Ex3.Keywords"}}</div>
+    </div>
+    <input type="text" name="system.keywords" value="{{system.keywords}}" />
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
+            <input type="text" name="system.willpower" value="{{system.willpower}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Duration"}}</div>
+            <input type="text" name="system.duration" value="{{system.duration}}" />
+        </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals type 'weapon'}}
+    <div class="grid grid-4col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
+            <select name="system.attribute" data-type="String">
+                {{selectOptions selects.attributes selected=system.attribute localize=true blank='Ex3.None'}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Ability"}}</div>
+            <select name="system.ability" data-type="String">
+                {{selectOptions abilityList selected=system.ability localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Damage"}}</div>
+            <select name="system.damageattribute" data-type="String">
+                {{selectOptions selects.attributes selected=system.damageattribute localize=true blank='Ex3.None'}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="system.weapontype" data-type="String">
+                {{selectOptions selects.weaponTypes selected=system.weapontype localize=true}}
+            </select>
+        </div>
+    </div>
+    <div class="d-flex flex-center resources">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Accuracy"}} </div>
+            <input type="number" name="system.witheringaccuracy" value="{{system.witheringaccuracy}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Damage"}}</div>
+            <input type="number" name="system.witheringdamage" value="{{system.witheringdamage}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Defense"}}</div>
+            <input type="number" name="system.defense" value="{{system.defense}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Overwhelming"}}</div>
+            <input type="number" name="system.overwhelming" value="{{system.overwhelming}}" data-dtype="Number" />
+        </div>
+    </div>
+    <div class="d-flex flex-center mt-1 mb-1">
+        Use short range for ranged weapon accuracy.
+    </div>
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.DecisiveDamageDice"}}</div>
+            <select name="system.decisivedamagetype" data-type="String">
+                {{selectOptions selects.decisiveDamageTypes selected=system.decisivedamagetype localize=true}}
+            </select>
+        </div>
+        {{#ifEquals system.decisivedamagetype 'static'}}
+        <div>
+            <div class="resource-label">{{localize "Ex3.StaticDamage"}}</div>
+            <input type="number" name="system.staticdamage" value="{{system.staticdamage}}" data-dtype="Number" />
+        </div>
+        {{/ifEquals}}
+        <div>
+            <label class="resource-label">{{localize "Ex3.ResetInitiative"}}</label>
+            <div>
+                <input name="system.resetinitiative" type="checkbox" {{checked system.resetinitiative}}>
+            </div>
+        </div>
+    </div>
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <label class="resource-label">{{localize "Ex3.RollAccuracyOnce"}} (Multi-Target)</label>
+            <div>
+                <input name="system.rollaccuracyonce" type="checkbox" {{checked system.rollaccuracyonce}}>
+            </div>
+        </div>
+    </div>
+    {{/ifEquals}}
+    <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.Description"}}</div>
+    </div>
+    {{#if editable}}
+    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{system.description}}"
+        collaborate="true" toggled="true">
+        {{{enrichedDescription}}}
+    </prose-mirror>
+    {{else}} {{{enrichedDescription}}}
+    {{/if}}
+</div>

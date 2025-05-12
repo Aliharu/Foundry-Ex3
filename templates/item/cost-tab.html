@@ -1,0 +1,118 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="cost">
+    <div class="d-flex flex-center resources">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Motes"}}</div>
+            <input type="number" name="system.cost.motes" value="{{system.cost.motes}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.CommitM"}}</div>
+            <input type="number" name="system.cost.commitmotes" value="{{system.cost.commitmotes}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Initiative"}}</div>
+            <input type="number" name="system.cost.initiative" value="{{system.cost.initiative}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Anima"}}</div>
+            <input type="number" name="system.cost.anima" value="{{system.cost.anima}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
+            <input type="number" name="system.cost.willpower" value="{{system.cost.willpower}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.GrappleControl"}}</div>
+            <input type="number" name="system.cost.grapplecontrol" value="{{system.cost.grapplecontrol}}"
+                data-dtype="Number" />
+        </div>
+    </div>
+    <div class="grid grid-5col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}</div>
+            <input type="number" name="system.cost.health" value="{{system.cost.health}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.HealthType"}}</div>
+            <select name="system.cost.healthtype" data-type="String">
+                {{selectOptions selects.damageTypes selected=system.cost.healthtype localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Aura"}}</div>
+            <select name="system.cost.aura" data-type="String">
+                {{selectOptions selects.costElements selected=system.cost.aura localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.XP"}}</div>
+            <input type="number" name="system.cost.xp" value="{{system.cost.xp}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Penumbra"}}</div>
+            <input type="number" name="system.cost.penumbra" value="{{system.cost.penumbra}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Limit"}}</div>
+            <input type="number" name="system.cost.limit" value="{{system.cost.limit}}"
+                data-dtype="Number" />
+        </div>
+    </div>
+    <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.Craft"}} {{localize "Ex3.Cost"}}</div>
+    </div>
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Silver"}}</div>
+            <input type="number" name="system.cost.silverxp" value="{{system.cost.silverxp}}"
+                data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Gold"}}</div>
+            <input type="number" name="system.cost.goldxp" value="{{system.cost.goldxp}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.White"}}</div>
+            <input type="number" name="system.cost.whitexp" value="{{system.cost.whitexp}}"
+                data-dtype="Number" />
+        </div>
+    </div>
+    <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.Restore"}}</div>
+    </div>
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Motes"}}*</div>
+            <input type="text" name="system.restore.motes" value="{{system.restore.motes}}"
+                 />
+        </div>
+        <div>
+            <div class="resource-label"><a data-action="toggleField" data-name="capBreakingWP"><i
+                class="fa-solid fa-circle-check cap-breaking-willpower" title="Toggle Cap-Breaking"></i></a> {{localize "Ex3.Willpower"}}*</div>
+            <input type="text" name="system.restore.willpower" value="{{system.restore.willpower}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Anima"}}*</div>
+            <input type="text" name="system.restore.anima" value="{{system.restore.anima}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Health"}}*</div>
+            <input type="text" name="system.restore.health" value="{{system.restore.health}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Initiative"}}*</div>
+            <input type="text" name="system.restore.initiative" value="{{system.restore.initiative}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.GrappleControl"}}*</div>
+            <input type="text" name="system.restore.grapplecontrol" value="{{system.restore.grapplecontrol}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Limit"}}*</div>
+            <input type="text" name="system.restore.limit" value="{{system.restore.limit}}" />
+        </div>
+    </div>
+</div>

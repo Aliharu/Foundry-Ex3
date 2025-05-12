@@ -1,0 +1,21 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+    <div class="resource-label list-section-header d-flex flex-between">
+        <div>
+            {{localize "Ex3.LunarFormSettings"}}
+        </div>
+    </div>
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
+            <select name="system.lunarstats.attribute" data-type="String">
+                {{selectOptions selects.attributes selected=system.lunarstats.attribute localize=true blank='Ex3.None'}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Ability"}}</div>
+            <select name="system.lunarstats.ability" data-type="String">
+                {{selectOptions selects.abilities selected=system.lunarstats.ability localize=true}}
+            </select>
+        </div>
+    </div>
+</div>

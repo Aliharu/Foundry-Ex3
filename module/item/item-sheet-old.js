@@ -1,134 +1,59 @@
 import TraitSelector from "../apps/trait-selector.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
-import { toggleDisplay } from "../utils/utils.js";
 
-const { HandlebarsApplicationMixin } = foundry.applications.api;
-const { ItemSheetV2 } = foundry.applications.sheets;
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+export class ExaltedThirdItemSheet extends foundry.appv1.sheets.ItemSheet {
 
   constructor(...args) {
     super(...args);
-  }
-
-  static DEFAULT_OPTIONS = {
-    window: {
-      title: "Item Sheet",
-      resizable: true,
-      controls: [
-        {
-          icon: 'fa-solid fa-gear-code',
-          label: "Ex3.Macros",
-          action: "openMacroDialog",
-        },
-      ]
-    },
-    position: { width: 520, height: 480 },
-    classes: ["tree-background", "exaltedthird", "sheet", "item"],
-    actions: {
-      onEditImage: this._onEditImage,
-      openMacroDialog: this.openMacroDialog,
-      editTraits: this.editTraits,
-      effectControl: this.effectControl,
-      toggleField: this.toggleField,
-      triggerAction: this.triggerAction,
-      triggerSubItemAction: this.triggerSubItemAction,
-      upgradeAction: this.upgradeAction,
-      alternateAction: this.alternateAction,
-      showDialog: this.showDialog,
-      showEmbeddedItem: this.showEmbeddedItem,
-      deleteEmbeddedItem: this.deleteEmbeddedItem,
-    },
-    dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
-    form: {
-      submitOnChange: true,
-    },
-  };
-
-  static PARTS = {
-    header: {
-      template: "systems/exaltedthird/templates/item/item-header.html",
-    },
-    tabs: { template: 'systems/exaltedthird/templates/dialogues/tabs.html' },
-    description: { template: 'systems/exaltedthird/templates/item/description-tab.html' },
-    cost: { template: 'systems/exaltedthird/templates/item/cost-tab.html' },
-    bonuses: { template: 'systems/exaltedthird/templates/item/dice-bonuses-tab.html' },
-    automations: { template: 'systems/exaltedthird/templates/item/automations-tab.html' },
-    upgrades: { template: 'systems/exaltedthird/templates/item/charm-upgrades-tab.html' },
-    actionDetails: { template: 'systems/exaltedthird/templates/item/details/action-details-tab.html' },
-    armorDetails: { template: 'systems/exaltedthird/templates/item/details/armor-details-tab.html' },
-    charmDetails: { template: 'systems/exaltedthird/templates/item/details/charm-details-tab.html' },
-    itemDetails: { template: 'systems/exaltedthird/templates/item/details/item-details-tab.html' },
-    meritDetails: { template: 'systems/exaltedthird/templates/item/details/merit-details-tab.html' },
-    ritualDetails: { template: 'systems/exaltedthird/templates/item/details/ritual-details-tab.html' },
-    shapeDetails: { template: 'systems/exaltedthird/templates/item/details/shape-details-tab.html' },
-    specialAbilityDetails: { template: 'systems/exaltedthird/templates/item/details/specialability-details-tab.html' },
-    spellDetails: { template: 'systems/exaltedthird/templates/item/details/spell-details-tab.html' },
-    weaponDetails: { template: 'systems/exaltedthird/templates/item/details/weapon-details-tab.html' },
-  };
-
-  _initializeApplicationOptions(options) {
-    options.classes = [options.document.getSheetBackground(), "exaltedthird", "sheet", "item"];
-    return super._initializeApplicationOptions(options);
-  }
-
-  _configureRenderOptions(options) {
-    super._configureRenderOptions(options);
-    if (options.position && ['charm', 'spell', 'merit', 'specialability', 'item', 'weapon'].includes(this.document.type)) {
-      options.position.width = 615;
-      options.position.height = 850;
+    if (this.object.type === "charm" || this.object.type === "spell" || this.object.type === "merit" || this.object.type === "specialability" || this.object.type === "item" || this.object.type === "weapon") {
+      this.options.width = this.position.width = 615;
+      this.options.height = this.position.height = 850;
     }
+    this.options.classes = [...this.options.classes, this.item.getSheetBackground()];
+  }
 
-    options.parts = ['header', 'tabs', 'description', 'automations'];
-    // // Control which parts show based on document subtype
-    switch (this.document.type) {
-      case 'charm':
-        options.parts.push('cost', 'bonuses', 'upgrades', 'charmDetails');
-        break;
-      case 'action':
-        options.parts.push('actionDetails');
-        break;
-      case 'armor':
-        options.parts.push('armorDetails');
-        break;
-      case 'item':
-        options.parts.push('itemDetails');
-        break;
-      case 'merit':
-        options.parts.push('meritDetails');
-        break;
-      case 'ritual':
-        options.parts.push('ritualDetails');
-        break;
-      case 'shape':
-        options.parts.push('shapeDetails');
-        break;
-      case 'specialability':
-        options.parts.push('specialAbilityDetails');
-        break;
-      case 'spell':
-        options.parts.push('spellDetails');
-        break;
-      case 'weapon':
-        options.parts.push('weaponDetails');
-        break;
+  /** @override */
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["exaltedthird", "sheet", "item"],
+      width: 520,
+      height: 480,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
+    });
+  }
+
+  /** @override */
+  get template() {
+    const path = "systems/exaltedthird/templates/item";
+    return `${path}/item-${this.item.type}-sheet.html`;
+  }
+
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    // Token Configuration
+    const canConfigure = game.user.isGM || this.item.parent?.isOwner;
+    if (this.options.editable && canConfigure && this.item.type === 'charm') {
+      const macroButton = {
+        label: game.i18n.localize('Ex3.Macros'),
+        class: 'sheet-settings',
+        icon: 'fas fa-gear-code',
+        onclick: () => this.openMacroDialog(),
+      };
+      buttons = [macroButton, ...buttons];
     }
+    return buttons;
   }
 
-  get title() {
-    return `${game.i18n.localize(this.item.name)}`
-  }
-
-  static async openMacroDialog() {
+  async openMacroDialog() {
     const template = "systems/exaltedthird/templates/dialogues/charm-macros.html";
     const html = await foundry.applications.handlebars.renderTemplate(template, { 'prerollmacro': this.item.system.prerollmacro, 'macro': this.item.system.macro, 'damagemacro': this.item.system.damagemacro, });
 
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.Macros"), },
-      position: { width: 520, height: 'auto' },
       content: html,
       classes: [this.item.getSheetBackground()],
       buttons: [{
@@ -153,57 +78,41 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }).render({ force: true });
   }
 
-  async _prepareContext(options) {
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  async getData() {
+    const context = super.getData();
     const itemData = this.item.toObject(false);
+    context.system = itemData.system;
+    context.useShieldInitiative = game.settings.get("exaltedthird", "useShieldInitiative");
+    context.simplifiedCrafting = game.settings.get("exaltedthird", "simplifiedCrafting");
+    context.attributeList = CONFIG.exaltedthird.attributes;
+    context.charmAbilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities));
+    context.charmAbilityListSectioned = JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmAbilitiesSectioned));
+    context.abilityList = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
+    context.abilityList[''] = "Ex3.None";
+    context.charmExaltType = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes));
+    context.parentItemList = {
+      '': 'Ex3.None'
+    }
+    context.showParentItemList = false;
+    context.selects = CONFIG.exaltedthird.selects;
+    context.itemModes = {};
+    context.upgradeSelects = {};
+    context.activeEffectIds = {};
 
-    const context = {
-      // Validates both permissions and compendium status
-      editable: this.isEditable,
-      owner: this.document.isOwner,
-      limited: this.document.limited,
-      // Add the item document.
-      item: this.item,
-      // Adding system and flags for easier access
-      system: this.item.system,
-      flags: this.item.flags,
-      type: this.item.type,
-      // Adding a pointer to CONFIG.BOILERPLATE
-      config: CONFIG.EXALTEDTHIRD,
-      useShieldInitiative: game.settings.get("exaltedthird", "useShieldInitiative"),
-      simplifiedCrafting: game.settings.get("exaltedthird", "simplifiedCrafting"),
-      // You can factor out context construction to helper functions
-      tabs: this._getTabs(options.parts),
-
-      // Moved properties
-      attributeList: CONFIG.exaltedthird.attributes,
-      charmAbilityList: JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmabilities)),
-      charmAbilityListSectioned: JSON.parse(JSON.stringify(CONFIG.exaltedthird.charmAbilitiesSectioned)),
-      abilityList: (() => {
-        const list = JSON.parse(JSON.stringify(CONFIG.exaltedthird.abilities));
-        list[''] = "Ex3.None";
-        return list;
-      })(),
-      charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
-      parentItemList: {
-        '': 'Ex3.None'
-      },
-      showParentItemList: false,
-      selects: CONFIG.exaltedthird.selects,
-      itemModes: {},
-      upgradeSelects: {},
-      activeEffectIds: {},
-      bonusTypes: CONFIG.exaltedthird.bonusTypes,
-      triggerBonusDropdowns: CONFIG.exaltedthird.triggerBonusDropdowns,
-      requirementTypes: CONFIG.exaltedthird.requirementTypes,
-      formulaKeyPlaceholder: this.item.name.replace(/\s/g, '').toLowerCase(),
-      classifications: CONFIG.exaltedthird.classifications,
-      attributes: CONFIG.exaltedthird.attributes,
-      abilities: CONFIG.exaltedthird.abilities,
-      traitHeader: itemData.type === 'armor' || itemData.type === 'weapon',
-      hasDiceTriggers: ['charm', 'spell', 'merit', 'specialability', 'item', 'weapon'].includes(itemData.type),
-      hasCustomModifier: ['charm', 'spell', 'customability', 'item', 'merit', 'specialability', 'weapon', 'armor'].includes(itemData.type),
-    };
-
+    context.bonusTypes = CONFIG.exaltedthird.bonusTypes;
+    context.triggerBonusDropdowns = CONFIG.exaltedthird.triggerBonusDropdowns;
+    context.requirementTypes = CONFIG.exaltedthird.requirementTypes;
+    context.formulaKeyPlaceholder = this.item.name.replace(/\s/g, '').toLowerCase();
+    context.classifications = CONFIG.exaltedthird.classifications;
+    context.attributes = CONFIG.exaltedthird.attributes;
+    context.abilities = CONFIG.exaltedthird.abilities;
+    context.traitHeader = itemData.type === 'armor' || itemData.type === 'weapon';
+    context.type = itemData.type;
+    
     if (itemData.type === 'charm') {
       if (itemData.system.charmtype === 'evocation') {
         for (const evocation of game.items.filter(item => (item.type === 'weapon' || item.type === 'armor' || item.type === 'item') && item.system.hasevocations).sort((a, b) => a.name.localeCompare(b.name))) {
@@ -218,6 +127,11 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         context.showParentItemList = true;
       }
     }
+    // if(itemData.type === 'merit') {
+    //   if (itemData.system.merittype === 'sorcery') {
+    //     context.parentItemList = game.items.filter(item => item.type === 'ritual');
+    //   }
+    // }
     context.childCharms = game.items.filter(charm => charm.type === 'charm' && charm.system.parentitemid === itemData._id);
 
     let lunarForms = {
@@ -241,13 +155,10 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
       context.rollData = actor.getRollData();
     }
 
-    context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      this.item.system.description,
-      {
-        secrets: this.document.isOwner,
-        relativeTo: this.item,
-      }
-    );
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.description, {
+      secrets: this.document.isOwner,
+      async: true
+    });
 
     if (itemData.system.upgrades) {
       context.upgradeSelects = Object.values(itemData.system.upgrades).reduce((acc, upgrade) => {
@@ -276,95 +187,8 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }
 
     context.effects = prepareActiveEffectCategories(this.item.effects);
-
     return context;
   }
-
-  /** @override */
-  _onRender(context, options) {
-    this._setupButtons(this.element);
-  }
-
-  async _preparePartContext(partId, context) {
-    context.tab = context.tabs.find(item => item.partId === partId);
-    return context;
-  }
-
-  /**
-   * Generates the data for the generic tab navigation template
-   * @param {string[]} parts An array of named template parts to render
-   * @returns {Record<string, Partial<ApplicationTab>>}
-   * @protected
-   */
-  _getTabs(parts) {
-    // If you have sub-tabs this is necessary to change
-    const tabs = [];
-    const tabGroup = 'primary';
-    // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'description';
-    for (const part of parts) {
-      const tab = {
-        cssClass: this.tabGroups['primary'] === 'charms' ? 'active' : '',
-        group: tabGroup,
-        // Matches tab property to
-        id: '',
-        // FontAwesome Icon, if you so choose
-        icon: '',
-        // Run through localization
-        label: '',
-      };
-      switch (part) {
-        case 'description':
-          tab.id = 'description';
-          tab.partId = 'description';
-          tab.label += 'Description';
-          tab.cssClass = this.tabGroups['primary'] === 'description' ? 'active' : '';
-          break;
-        case 'cost':
-          tab.id = 'cost';
-          tab.partId = 'cost';
-          tab.label += 'Cost';
-          tab.cssClass = this.tabGroups['primary'] === 'cost' ? 'active' : '';
-          break;
-        case 'bonuses':
-          tab.id = 'bonuses';
-          tab.label += 'Bonuses';
-          tab.cssClass = this.tabGroups['primary'] === 'bonuses' ? 'active' : '';
-          break;
-        case 'automations':
-          tab.id = 'automations';
-          tab.partId = 'automations';
-          tab.label += 'Automations';
-          tab.cssClass = this.tabGroups['primary'] === 'automations' ? 'active' : '';
-          break;
-        case 'upgrades':
-          tab.id = 'upgrades';
-          tab.partId = 'upgrades';
-          tab.label += 'Upgrades';
-          tab.cssClass = this.tabGroups['primary'] === 'upgrades' ? 'active' : '';
-          break;
-        case 'armorDetails':
-        case 'actionDetails':
-        case 'itemDetails':
-        case 'meritDetails':
-        case 'ritualDetails':
-        case 'specialAbilityDetails':
-        case 'spellDetails':
-        case 'weaponDetails':
-          tab.id = 'details';
-          tab.partId = part;
-          tab.label += 'Details';
-          tab.cssClass = this.tabGroups['primary'] === 'details' ? 'active' : '';
-          break;
-      }
-      if (tab.id) {
-        tabs.push(tab);
-      }
-    }
-
-    return tabs;
-  }
-
 
   /**
 * Prepare the data structure for traits data like tags
@@ -403,101 +227,75 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }
   }
 
-
-  _setupButtons(element) {
-    const itemData = foundry.utils.duplicate(this.item);
-    // Highlight non-charm dice
-    element.querySelectorAll('.non-charm-dice').forEach(el => {
-      if (itemData.system.diceroller.settings.noncharmdice) {
-        el.style.color = '#F9B516';
-      }
-    });
-
-    // Highlight non-charm successes
-    element.querySelectorAll('.non-charm-successes').forEach(el => {
-      if (itemData.system.diceroller.settings.noncharmsuccesses) {
-        el.style.color = '#F9B516';
-      }
-    });
-
-    // Highlight cap-breaking willpower
-    element.querySelectorAll('.cap-breaking-willpower').forEach(el => {
-      if (itemData.system.restore.willpoweriscapbreaking) {
-        el.style.color = '#F9B516';
-      }
-    });
-  }
-
   /**
- * Handle changing a Document's image.
- *
- * @param {PointerEvent} event   The originating click event
- * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
- * @returns {Promise}
- * @protected
- */
-  static async _onEditImage(event, target) {
-    const attr = target.dataset.edit;
-    const current = foundry.utils.getProperty(this.document, attr);
-    const { img } =
-      this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
-      {};
-    const fp = new FilePicker({
-      current,
-      type: 'image',
-      redirectToRoot: img ? [img] : [],
-      callback: (path) => {
-        this.document.update({ [attr]: path });
-      },
-      top: this.position.top + 40,
-      left: this.position.left + 10,
-    });
-    return fp.browse();
-  }
-
-  static editTraits(event, target) {
+* Handle spawning the TraitSelector application which allows a checkbox of multiple trait options
+* @param {Event} event   The click event which originated the selection
+* @private
+*/
+  _onTraitSelector(event) {
     event.preventDefault();
-    const a = target;
+    const a = event.currentTarget;
     const choices = CONFIG.exaltedthird[a.dataset.options];
     const options = { name: a.dataset.target, choices };
-    return new TraitSelector(this.item, options).render(true);
+    return new TraitSelector(this.item, options).render(true)
   }
 
-  static effectControl(event, target) {
-    onManageActiveEffect(target, this.item);
-  }
+  /* -------------------------------------------- */
 
-  static toggleField(event, target) {
-    const fieldName = target.dataset.name;
+  /** @override */
+  activateListeners(html) {
+    super.activateListeners(html);
 
-    let settingKey, path, currentValue;
+    // Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) return;
 
-    if (fieldName === 'nonCharmDice') {
-      settingKey = 'noncharmdice';
-      path = 'system.diceroller.settings';
-      currentValue = this.item.system.diceroller.settings.noncharmdice;
-    } else if (fieldName === 'nonCharmSuccesses') {
-      settingKey = 'noncharmsuccesses';
-      path = 'system.diceroller.settings';
-      currentValue = this.item.system.diceroller.settings.noncharmsuccesses;
-    } else if (fieldName === 'capBreakingWP') {
-      settingKey = 'willpoweriscapbreaking';
-      path = 'system.restore';
-      currentValue = this.item.system.restore.willpoweriscapbreaking;
-    }
+    this._setupButtons(html);
 
-    if (settingKey && path) {
-      this.item.update({
-        [`${path}.${settingKey}`]: !currentValue,
-      });
-    }
-  }
+    let embedItemshandler = this._onDragEmbeddedItem.bind(this);
 
-  static triggerAction(event, target) {
-    const actionType = target.dataset.actiontype;
-    const triggerType = target.dataset.type;
+    html.find('a.embeded-item-pill').each((i, li) => {
+      li.addEventListener("dragstart", embedItemshandler, false);
+    });
 
-    if (actionType === 'add') {
+    html.find('.trait-selector').click(this._onTraitSelector.bind(this));
+
+    html.find(".effect-control").click(ev => {
+      onManageActiveEffect(ev, this.item);
+    });
+
+    html.find('.collapsable').click(ev => {
+      const li = $(ev.currentTarget).next();
+      li.toggle("fast");
+    });
+
+    html.on("dragstart", "a.embeded-item-pill", this._onDragEmbeddedItem);
+
+    html.find('.toggle-charm-dice, .toggle-charm-successes, .toggle-cap-breaking').mousedown(ev => {
+      let settingKey, path, currentValue;
+    
+      if (ev.currentTarget.classList.contains('toggle-charm-dice')) {
+        settingKey = 'noncharmdice';
+        path = 'system.diceroller.settings';
+        currentValue = this.item.system.diceroller.settings.noncharmdice;
+      } else if (ev.currentTarget.classList.contains('toggle-charm-successes')) {
+        settingKey = 'noncharmsuccesses';
+        path = 'system.diceroller.settings';
+        currentValue = this.item.system.diceroller.settings.noncharmsuccesses;
+      } else if (ev.currentTarget.classList.contains('toggle-cap-breaking')) {
+        settingKey = 'willpoweriscapbreaking';
+        path = 'system.restore';
+        currentValue = this.item.system.restore.willpoweriscapbreaking;
+      }
+    
+      if (settingKey && path) {
+        this.item.update({
+          [`${path}.${settingKey}`]: !currentValue,
+        });
+      }
+    });
+
+    html.find('.add-trigger').click(ev => {
+      let triggerType = ev.currentTarget.dataset.type;
       if (triggerType) {
         const newList = this.item.system.triggers[triggerType];
         let listIndex = 0;
@@ -519,58 +317,17 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         };
         this.item.update({ [`system.triggers.${triggerType}`]: newList });
       }
-    }
-    if (actionType === 'delete') {
-      let index = target.dataset.index;
+    });
+
+    html.find('.delete-trigger').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
       this.item.update({
         [`system.triggers.${triggerType}.-=${index}`]: null,
       });
-    }
-  }
+    });
 
-  static triggerSubItemAction(event, target) {
-    let functionType = target.dataset.functiontype;
-    let triggerType = target.dataset.type;
-    let index = target.dataset.index;
-    let subType = target.dataset.subtype;
-    let subindex = target.dataset.subindex;
-
-    if (functionType === 'add') {
-      const newList = this.item.system.triggers[triggerType][index][subType];
-      let listIndex = 0;
-      let indexAdd = "0";
-      //Add Bonuses and requirements
-      for (const key of Object.keys(newList)) {
-        if (key !== listIndex.toString()) {
-          break;
-        }
-        listIndex++;
-      }
-      indexAdd = listIndex.toString();
-      if (subType === 'bonuses') {
-        newList[indexAdd] = {
-          effect: "",
-          value: "",
-        };
-      }
-      else {
-        newList[indexAdd] = {
-          requirement: "",
-          value: "",
-        };
-      }
-      this.item.update({ [`system.triggers.${triggerType}.${index}.${subType}`]: newList });
-    }
-    if (functionType === 'delete') {
-      this.item.update({
-        [`system.triggers.${triggerType}.${index}.${subType}.-=${subindex}`]: null,
-      });
-    }
-  }
-
-  static upgradeAction(event, target) {
-    const actionType = target.dataset.actiontype;
-    if (actionType === 'add') {
+    html.find('.add-upgrade').click(ev => {
       const newList = this.item.system.upgrades;
       newList[Object.entries(newList).length] = {
         id: foundry.utils.randomID(16),
@@ -578,24 +335,20 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         active: false,
       };
       this.item.update({ [`system.upgrades`]: newList });
-    }
-    if (actionType === 'delete') {
-      let index = target.dataset.index;
+    });
+
+    html.find('.delete-upgrade').click(ev => {
+      var index = ev.currentTarget.dataset.index;
       this.item.update({
         [`system.upgrades.-=${index}`]: null,
       });
-    }
-  }
+    });
 
-  static async alternateAction(event, target) {
-    event.preventDefault();
-    event.stopPropagation();
-    const functionType = target.dataset.function;
-    const index = target.dataset.itemIndex;
+    html.find('.edit-alternate-mode').click(async ev => {
+      const functionType = ev.currentTarget.dataset.function;
+      const index = ev.currentTarget.dataset.itemIndex;
+      var currentAlternateData = null;
 
-    let currentAlternateData = null;
-
-    if (functionType === 'add' || functionType === 'edit') {
       if (functionType === 'edit') {
         currentAlternateData = this.object.system.modes.alternates[index];
       }
@@ -727,27 +480,88 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
           }
         }
       }).render({ force: true });
-    }
-    if (functionType === 'delete') {
+    });
+
+    html.find('.delete-alternate').click(async ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
       let formData = {};
+
+      const index = ev.currentTarget.dataset.itemIndex;
       const items = this.object.system.modes.alternates;
       items.splice(index, 1);
       foundry.utils.setProperty(formData, `system.modes.alternates`, items);
       this.object.update(formData);
-    }
-  }
+    });
 
-  static async showDialog(event, target) {
-    const dialogType = target.dataset.dialogtype;
-    if (dialogType === 'showTriggersLink') {
+    // html.on("change", ".trigger-name", ev => {
+    //   var triggerType = ev.currentTarget.dataset.type;
+    //   var index = ev.currentTarget.dataset.index;
+    //   const newList = this.item.system.triggers[triggerType];
+    //   newList[index].name = ev.currentTarget.value;
+    //   this.item.update({ [`system.triggers.${triggerType}`]: newList });
+    // });
+
+    html.find('.add-trigger-subitem').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
+      var subType = ev.currentTarget.dataset.subtype;
+      const newList = this.item.system.triggers[triggerType][index][subType];
+      let listIndex = 0;
+      let indexAdd = "0";
+      //Add Bonuses and requirements
+      for (const key of Object.keys(newList)) {
+        if (key !== listIndex.toString()) {
+          break;
+        }
+        listIndex++;
+      }
+      indexAdd = listIndex.toString();
+      if (subType === 'bonuses') {
+        newList[indexAdd] = {
+          effect: "",
+          value: "",
+        };
+      }
+      else {
+        newList[indexAdd] = {
+          requirement: "",
+          value: "",
+        };
+      }
+      this.item.update({ [`system.triggers.${triggerType}.${index}.${subType}`]: newList });
+    });
+
+    html.find('.delete-trigger-subitem').click(ev => {
+      var triggerType = ev.currentTarget.dataset.type;
+      var index = ev.currentTarget.dataset.index;
+      var subindex = ev.currentTarget.dataset.subindex;
+      var subType = ev.currentTarget.dataset.subtype;
+      this.item.update({
+        [`system.triggers.${triggerType}.${index}.${subType}.-=${subindex}`]: null,
+      });
+    });
+
+    html.find('.show-roll-triggers-link').click(ev => {
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.ReadMe"), resizable: true },
         content: '<div><p><a href="https://github.com/Aliharu/Foundry-Ex3/wiki/Dice-Roll-Triggers">Instructions and Syntax.</a></p></div>',
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
         classes: [`${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
-    }
-    if (dialogType === 'charmCheatSheet') {
+    });
+
+    // html.on("change", ".bonus-change", ev => {
+    //   var triggerType = ev.currentTarget.dataset.type;
+    //   var index = ev.currentTarget.dataset.index;
+    //   var bonusIndex = ev.currentTarget.dataset.index;
+    //   var fieldName = ev.currentTarget.dataset.fieldname;
+    //   const newList = this.item.system.triggers[triggerType][index].bonuses;
+    //   newList[bonusIndex][fieldName] = ev.currentTarget.value;
+    //   this.item.update({ [`system.triggers.${triggerType}`]: newList });
+    // });
+
+    html.find(".charms-cheat-sheet").click(async ev => {
       const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/charms-dialogue.html");
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Keywords"), resizable: true },
@@ -758,8 +572,9 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
         classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
-    }
-    if (dialogType === 'formulaHelp') {
+    });
+
+    html.find(".formula-help").click(async ev => {
       const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/formula-dialogue.html");
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.Formulas"), resizable: true },
@@ -767,74 +582,103 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
         classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
+    });
+
+    html.find(".embeded-item-delete").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      let formData = {};
+
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      const itemIndex = parent.dataset.itemIndex;
+
+      if (event.currentTarget.dataset?.type === 'archetype') {
+        const items = this.object.system.archetype.charmprerequisites;
+        items.splice(itemIndex, 1);
+        foundry.utils.setProperty(formData, `system.archetype.charmprerequisites`, items);
+        this.object.update(formData);
+      }
+      else {
+        const items = this.object.system.charmprerequisites;
+        items.splice(itemIndex, 1);
+        foundry.utils.setProperty(formData, `system.charmprerequisites`, items);
+        this.object.update(formData);
+      }
+    });
+
+    // Embeded Item code taken and modified from the Star Wars FFG FoundryVTT module
+    // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    // SOFTWARE.
+
+    html.find(".embeded-item-pill").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.itemName;
+      let itemIndex = li.dataset.itemIndex;
+      let embededItem;
+
+      if (li.dataset.type === 'archetype') {
+        embededItem = this.object.system.archetype.charmprerequisites[itemIndex];
+      }
+      else {
+        embededItem = this.object.system.charmprerequisites[itemIndex];
+      }
+
+      var item;
+
+      if (embededItem.pack) {
+        // Case 1 - Import from a Compendium pack
+        item = await this.importItemFromCollection(embededItem.pack, embededItem.id);
+      }
+      else {
+        // Case 2 - Import from World entity
+        if (this.item.pack) {
+          item = await this.importItemFromCollection(this.item.pack, embededItem.id);
+        }
+        if (!item) {
+          item = await game.items.get(embededItem.id);
+        }
+      }
+      if (!item) return ui.notifications.error(`Error: Could not find item, it may have been deleted.`);
+
+      item.sheet.render(true);
+    });
+
+    if (this.object.type === 'charm') {
+      const itemToItemAssociation = new DragDrop({
+        dragSelector: ".item",
+        dropSelector: null,
+        permissions: { dragstart: true, drop: true },
+        callbacks: { drop: this._onDrop.bind(this), dragstart: this._onDrag.bind(this) },
+      });
+      itemToItemAssociation.bind(html[0]);
     }
   }
 
-  // Embeded Item code taken and modified from the Star Wars FFG FoundryVTT module
-  // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  // SOFTWARE.
-
-  static async showEmbeddedItem(event, target) {
-    event.preventDefault();
-    event.stopPropagation();
-    const li = target;
-    let itemType = li.dataset.itemName;
-    let itemIndex = li.dataset.itemIndex;
-    let embededItem;
-
-    if (li.dataset.type === 'archetype') {
-      embededItem = this.object.system.archetype.charmprerequisites[itemIndex];
-    }
-    else {
-      embededItem = this.object.system.charmprerequisites[itemIndex];
-    }
-
-    var item;
-
-    if (embededItem.pack) {
-      // Case 1 - Import from a Compendium pack
-      item = await this.importItemFromCollection(embededItem.pack, embededItem.id);
-    }
-    else {
-      // Case 2 - Import from World entity
-      if (this.item.pack) {
-        item = await this.importItemFromCollection(this.item.pack, embededItem.id);
+  _setupButtons(html) {
+    const itemData = foundry.utils.duplicate(this.item);
+    html.find('.non-charm-dice').each(function (i) {
+      if (itemData.system.diceroller.settings.noncharmdice) {
+        $(this).css("color", '#F9B516');
       }
-      if (!item) {
-        item = await game.items.get(embededItem.id);
+    });
+    html.find('.non-charm-successes').each(function (i) {
+      if (itemData.system.diceroller.settings.noncharmsuccesses) {
+        $(this).css("color", '#F9B516');
       }
-    }
-    if (!item) return ui.notifications.error(`Error: Could not find item, it may have been deleted.`);
-
-    item.sheet.render(true);
-  }
-
-  static deleteEmbeddedItem(event, target) {
-    event.preventDefault();
-    event.stopPropagation();
-    let formData = {};
-
-    const li = target;
-    const parent = li.parentElement;
-    const itemIndex = parent.dataset.itemIndex;
-
-    if (target.dataset?.type === 'archetype') {
-      const items = this.object.system.archetype.charmprerequisites;
-      items.splice(itemIndex, 1);
-      foundry.utils.setProperty(formData, `system.archetype.charmprerequisites`, items);
-      this.object.update(formData);
-    }
-    else {
-      const items = this.object.system.charmprerequisites;
-      items.splice(itemIndex, 1);
-      foundry.utils.setProperty(formData, `system.charmprerequisites`, items);
-      this.object.update(formData);
-    }
+    });
+    html.find('.cap-breaking-willpower').each(function (i) {
+      if (itemData.system.restore.willpoweriscapbreaking) {
+        $(this).css("color", '#F9B516');
+      }
+    });
   }
 
   importItemFromCollection(collection, entryId) {
@@ -844,6 +688,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
       return ent;
     });
   }
+
 
   _onDragEmbeddedItem(event) {
     event.stopPropagation();
@@ -881,18 +726,18 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
   async _onDrag(event) {
     const li = event.currentTarget;
-    if ("link" in event.target.dataset) return;
+    if ( "link" in event.target.dataset ) return;
 
     // Create drag data
     let dragData;
 
     // Active Effect
-    if (li.dataset.effectId) {
+    if ( li.dataset.effectId ) {
       const effect = this.item.effects.get(li.dataset.effectId);
       dragData = effect.toDragData();
     }
 
-    if (!dragData) return;
+    if ( !dragData ) return;
 
     // Set data transfer
     event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
@@ -934,10 +779,10 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     };
 
     if (itemObject.type === "charm") {
-      const detailsTab = li.querySelector(`#details-tab`);
-      const detailsTabactive = detailsTab.classList.contains("active");
+      const otherTab = li.querySelector(`#other-tab`);
+      const otherTabactive = otherTab.classList.contains("active");
       let items = obj?.system.charmprerequisites;
-      if (detailsTabactive) {
+      if (otherTabactive) {
         items = obj?.system.archetype.charmprerequisites;
       }
       if (!items) {
@@ -967,17 +812,17 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
 
       let formData = {};
-      foundry.utils.setProperty(formData, `system${detailsTabactive ? '.archetype' : ''}.charmprerequisites`, items);
+      foundry.utils.setProperty(formData, `system${otherTabactive ? '.archetype' : ''}.charmprerequisites`, items);
 
       obj.update(formData);
     }
   }
-
+  
   async _onDropActiveEffect(event, data) {
     const effect = await ActiveEffect.implementation.fromDropData(data);
-    if (!this.item.isOwner || !effect
+    if ( !this.item.isOwner || !effect
       || (this.item.uuid === effect.parent?.uuid)
-      || (this.item.uuid === effect.origin)) return false;
+      || (this.item.uuid === effect.origin) ) return false;
     const effectData = effect.toObject();
     const options = { parent: this.item, keepOrigin: false };
 

@@ -12,6 +12,12 @@ export default class ExaltedActiveEffectConfig extends foundry.applications.shee
         footer: { template: "templates/generic/form-footer.hbs" }
     };
 
+    // _initializeApplicationOptions(options) {
+    //     options.classes = [options.document?.parent?.getSheetBackground() ?? 'tree-background', "exaltedthird"];
+    //     return super._initializeApplicationOptions(options);
+    // }
+
+
     /** @inheritDoc */
     async _prepareContext(options) {
         const context = await super._prepareContext(options);

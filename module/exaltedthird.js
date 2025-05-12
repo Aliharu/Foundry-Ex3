@@ -16,7 +16,6 @@ import ItemSearch from "./apps/item-search.js";
 import JournalCascadeGenerator from "./apps/journal-cascade-generator.js";
 import Prophecy from "./apps/prophecy.js";
 import TemplateImporter from "./apps/template-importer.js";
-import TraitSelector from "./apps/trait-selector.js";
 import { ExaltedCombat } from "./combat/combat.js";
 import { ExaltedCombatant } from "./combat/combatant.js";
 import ExaltedCombatTracker from "./combat/combat-tracker.js";
@@ -46,6 +45,7 @@ import {
 } from "./template/item-template.js";
 import { appendSidebarButtons, getNumberFormula } from "./utils/utils.js";
 import { BaseCombatantData } from "./template/combatant-template.js";
+import TraitSelector from "./apps/trait-selector.js";
 
 Hooks.once('init', async function () {
 
@@ -148,8 +148,7 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/dialogues/added-charm-list.html",
     "systems/exaltedthird/templates/actor/active-effects.html",
     "systems/exaltedthird/templates/item/custom-modifier.html",
-    "systems/exaltedthird/templates/item/item-trigger-tab.html",
-    "systems/exaltedthird/templates/actor/effects-tab.html",
+    "systems/exaltedthird/templates/item/item-trigger-list.html",
     "systems/exaltedthird/templates/actor/equipment-list.html",
     "systems/exaltedthird/templates/actor/actor-header.html",
     "systems/exaltedthird/templates/actor/npc-stats.html",
@@ -159,6 +158,13 @@ Hooks.once('init', async function () {
     "systems/exaltedthird/templates/actor/biography-tab.html",
     "systems/exaltedthird/templates/actor/character-tab.html",
     "systems/exaltedthird/templates/actor/character-stats.html",
+    "systems/exaltedthird/templates/item/item-header.html",
+    "systems/exaltedthird/templates/item/description-tab.html",
+
+    "systems/exaltedthird/templates/item/cost-tab.html",
+    "systems/exaltedthird/templates/item/dice-bonuses-tab.html",
+    "systems/exaltedthird/templates/item/automations-tab.html",
+    "systems/exaltedthird/templates/item/charm-upgrades-tab.html",
   ]);
 
   Combatant.prototype._getInitiativeFormula = function () {

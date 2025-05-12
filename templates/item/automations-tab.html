@@ -1,0 +1,9 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="automations">
+    {{#if hasDiceTriggers}}
+    {{> systems/exaltedthird/templates/item/item-trigger-list.html}}
+    {{/if}}
+    {{#if hasCustomModifier}}
+    {{> systems/exaltedthird/templates/item/custom-modifier.html}}
+    {{/if}}
+    {{> systems/exaltedthird/templates/actor/active-effects.html}}
+</div>

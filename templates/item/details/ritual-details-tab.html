@@ -1,0 +1,22 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.Archetype"}}</div>
+            </div>
+            <input type="text" name="system.archetypename" value="{{system.archetypename}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="system.ritualtype" data-type="String">
+                {{selectOptions selects.ritualTypes selected=system.ritualtype localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
+            <select name="system.endtrigger" data-type="String">
+                {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
+            </select>
+        </div>
+    </div>
+</div>

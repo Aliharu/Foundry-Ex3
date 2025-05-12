@@ -1,0 +1,46 @@
+<div class="tab {{tab.cssClass}}" data-group="primary" data-tab="details">
+    <div class="grid grid-3col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="system.merittype" data-type="String">
+                {{selectOptions selects.meritTypes selected=system.merittype localize=true blank=""}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.EndTrigger"}}</div>
+            <select name="system.endtrigger" data-type="String">
+                {{selectOptions selects.endTriggers selected=system.endtrigger localize=true}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.AutoAddToRolls"}}</div>
+            <select name="system.autoaddtorolls" data-type="String">
+                {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
+            </select>
+        </div>
+    </div>
+    {{#ifEquals system.merittype 'sorcery'}}
+    <div>
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Archetype"}}</div>
+        </div>
+        <input type="text" name="system.archetypename" value="{{system.archetypename}}" />
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.autoaddtorolls 'sameAbility'}}
+    <div class="grid grid-2col flex-group-center">
+        <div>
+            <div class="resource-label">{{localize "Ex3.Attribute"}}</div>
+            <select name="system.attribute" data-type="String">
+                {{selectOptions selects.attributes selected=system.attribute localize=true blank='Ex3.None'}}
+            </select>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Ability"}}</div>
+            <select name="system.ability" data-type="String">
+                {{selectOptions abilityList selected=system.ability localize=true}}
+            </select>
+        </div>
+    </div>
+    {{/ifEquals}}
+</div>

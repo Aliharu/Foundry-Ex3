@@ -1,0 +1,109 @@
+<header class="sheet-header item-sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="header-fields">
+        {{#if traitHeader}}
+        <h1 class="itemname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" />
+            <a class="edit-trait-button" data-action="editTraits" data-options="{{type}}tags"
+                data-target="system.traits.{{type}}tags">
+                <i class="fas fa-edit"></i>
+            </a>
+        </h1>
+        {{else}}
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+        {{/if}}
+        {{#ifEquals type 'action'}}
+        <label class="resource-label">{{localize "Ex3.Value"}}: </label>
+        <input type="number" name="system.value" value="{{system.value}}" />
+        {{/ifEquals}}
+        {{#ifEquals type 'armor'}}
+        <div class="mt-1">
+            <div class="mt-1">
+                {{#each system.traits.armortags.selected as |v k|}}
+                <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </div>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'charm'}}
+        <div class="item-header-details">
+            <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+            <select name="system.ability" data-type="String">
+                {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
+                <optgroup label="{{localize charmCategory.label}}">
+                    {{selectOptions charmCategory.entries selected=../system.ability localize=true}}
+                </optgroup>
+                {{/each}}
+            </select>
+            <select name="system.requirement" data-type="String">
+                {{selectOptions selects.abilityRequirementLevels selected=system.requirement localize=false}}
+            </select>
+            <label class="resource-label">{{localize "Ex3.Essence"}}: </label>
+            <select name="system.essence" data-type="String">
+                {{selectOptions selects.essenceLevels selected=system.essence localize=false}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'intimacy'}}
+        <div class="check-button">
+            <label class="resource-label">{{localize "Ex3.Visible"}}: </label>
+            <input name="system.visible" type="checkbox" {{checked system.visible}}>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'item'}}
+        <div class="item-header-details">
+            <label class="resource-label">{{localize "Ex3.Type"}}</label>
+            <select name="system.itemtype" value="{{system.itemtype}}" data-type="String">
+                {{selectOptions selects.itemTypes selected=system.itemtype localize=true}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'merit'}}
+        <div class="item-header-details">
+            <label class="resource-label">{{localize "Ex3.Points"}}: </label>
+            <input type="number" name="system.points" value="{{system.points}}" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'modifier'}}
+        <div class="item-header-details">
+            <label class="resource-label">{{localize "Ex3.Key"}}: </label>
+            <input type="text" name="system.formulaKey" value="{{system.formulaKey}}" style="width:255px;"
+                placeholder="{{formulaKeyPlaceholder}}" />
+            <label class="resource-label">{{localize "Ex3.Value"}}: </label>
+            <input type="number" name="system.value" value="{{system.value}}" style="width:55px;" />
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'shape'}}
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+        <select name="system.actorid" data-type="String">
+            {{selectOptions lunarForms selected=system.actorid localize=true}}
+        </select>
+        {{/ifEquals}}
+        {{#ifEquals type 'specialty'}}
+        <div class="item-header-details">
+            <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
+            <select name="system.ability" data-type="String">
+                {{selectOptions abilityList selected=system.ability localize=true}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'spell'}}
+        <div class="item-header-details">
+            <label class="resource-label">{{localize "Ex3.Cost"}}: </label>
+            <input type="number" name="system.cost" value="{{system.cost}}" style="width:55px;" />
+            <label class="resource-label">{{localize "Ex3.Circle"}}: </label>
+            <select name="system.circle" data-type="String">
+                {{selectOptions selects.allSpellCircles selected=system.circle localize=true}}
+            </select>
+        </div>
+        {{/ifEquals}}
+        {{#ifEquals type 'weapon'}}
+        <div class="mt-1">
+            <div class="mt-1">
+                {{#each system.traits.weapontags.selected as |v k|}}
+                <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </div>
+        </div>
+        {{/ifEquals}}
+    </div>
+</header>

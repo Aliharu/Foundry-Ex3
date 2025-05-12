@@ -180,17 +180,19 @@
       <input type="text" name="system.lorebackgrounds" value="{{system.lorebackgrounds}}" />
     </li>
     {{#ifEquals system.details.exalt 'abyssal'}}
-    <div class="mt-1">
-      <label class="resource-label">{{localize "Ex3.Apocalyptic"}}:</label>
-      <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
-        {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
-      </select>
+    <div class="grid grid-2col flexrow">
+      <div>
+        <label class="resource-label">{{localize "Ex3.Apocalyptic"}}</label>
+        <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
+          {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
+        </select>
+      </div>
     </div>
     {{/ifEquals}}
     {{#ifEquals system.details.exalt 'solar'}}
     <div class="grid grid-2col flexrow">
       <div>
-        <label class="resource-label">{{localize "Ex3.Supernal"}}:</label>
+        <label class="resource-label">{{localize "Ex3.Supernal"}}</label>
         <select name="system.details.supernal" value="{{system.details.supernal}}" data-type="String">
           {{selectOptions abilitySelectList selected=system.details.supernal localize=true}}
         </select>

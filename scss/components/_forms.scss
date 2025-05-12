@@ -22,6 +22,7 @@
   }
 
   .profile-img {
+    cursor: pointer;
     background: black;
     flex: 0 0 100px;
     height: 100px;
@@ -51,10 +52,16 @@
   }
 
   h1.itemname {
+    display: flex;
     height: 50px;
     padding: 0px;
     margin: 5px 0;
     border-bottom: 0;
+
+    .edit-trait-button {
+      color: black;
+      margin-left: 5px;
+    }
 
     input {
       width: 90%;
@@ -68,6 +75,16 @@
       font-size: 29px;
     }
   }
+
+  .item-header-details {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.sheet-header.item-sheet-header {
+  flex: none;
+  gap: 5px;
 }
 
 .pool {
