@@ -1707,7 +1707,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             }
 
             this.onChange();
-            const closeImportItem = dialog.element.querySelector('.closeImportItem');
+            const closeImportItem = document.querySelector('.closeImportItem');
             if (closeImportItem) {
               closeImportItem.click();
             }

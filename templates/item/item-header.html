@@ -26,7 +26,6 @@
         {{/ifEquals}}
         {{#ifEquals type 'charm'}}
         <div class="item-header-details">
-            <label class="resource-label">{{localize "Ex3.Ability"}}: </label>
             <select name="system.ability" data-type="String">
                 {{#each charmAbilityListSectioned as |charmCategory charmCategoryType|}}
                 <optgroup label="{{localize charmCategory.label}}">

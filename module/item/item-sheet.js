@@ -284,7 +284,6 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
   /** @override */
   _onRender(context, options) {
     this.#dragDrop.forEach((d) => d.bind(this.element));
-
     this._setupButtons(this.element);
   }
 

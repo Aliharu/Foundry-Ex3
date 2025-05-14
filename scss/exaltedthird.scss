@@ -167,6 +167,16 @@
   input {
     text-align: center;
   }
+
+  label {
+    color: #222;
+  }
+
+  .form-group {
+    label {
+      color: #222;
+    }
+  }
 }
 
 .exaltedthird .window-content .abilities,
@@ -454,6 +464,10 @@
 .borderless-image {
   border: none;
   border-radius: 0px;
+}
+
+.caste-mark-image {
+  display: inline-table;
 }
 
 .black-icon {

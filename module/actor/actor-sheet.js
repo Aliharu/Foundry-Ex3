@@ -2233,10 +2233,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
               item.updateSource({ "_stats.compendiumSource": item.uuid });
             }
             this.actor.createEmbeddedDocuments("Item", [item]);
-            // const closeImportItem = html.querySelector('.closeImportItem');
-            // if (closeImportItem) {
-            //   closeImportItem.click();
-            // }
+            const closeImportItem = document.querySelector('.closeImportItem');
+            if (closeImportItem) {
+              closeImportItem.click();
+            }
           });
         });
 
