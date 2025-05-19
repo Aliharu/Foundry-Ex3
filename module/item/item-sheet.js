@@ -1081,7 +1081,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+    const sortUpdates = foundry.utils.SortingHelpers.performIntegerSort(effect, {
       target,
       siblings,
     });

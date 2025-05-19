@@ -4,7 +4,6 @@
  * @param {Actor|Item} owner      The owning entity which manages this effect
  */
 export function onManageActiveEffect(target, owner) {
-  event.preventDefault();
   const a = target;
   const li = a.closest("li");
   const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;

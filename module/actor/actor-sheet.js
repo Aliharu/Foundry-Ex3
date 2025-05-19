@@ -844,25 +844,33 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       }
     }
 
+    for (const s of Object.values(spells)) {
+      s.list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    }
+
+    for (const c of Object.values(charms)) {
+      c.list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    }
+
     // Assign and return
-    actorData.gear = gear;
+    actorData.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     actorData.customabilities = customAbilities;
     actorData.activeitems = activeItems;
-    actorData.weapons = weapons;
-    actorData.armor = armor;
-    actorData.merits = merits;
-    actorData.rituals = rituals;
-    actorData.intimacies = intimacies;
-    actorData.specialties = specialties;
+    actorData.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.merits = merits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.rituals = rituals.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.intimacies = intimacies.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.specialties = specialties.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     actorData.charms = charms;
     actorData.rollcharms = rollCharms;
     actorData.defensecharms = defenseCharms;
     actorData.spells = spells;
-    actorData.specialabilities = specialAbilities;
-    actorData.projects = craftProjects;
+    actorData.specialabilities = specialAbilities.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.projects = craftProjects.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
-    actorData.destinies = destinies;
-    actorData.shapes = shapes;
+    actorData.destinies = destinies.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.shapes = shapes.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
   /**
@@ -1082,7 +1090,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+    const sortUpdates = foundry.utils.SortingHelpers.performIntegerSort(effect, {
       target,
       siblings,
     });
@@ -1205,7 +1213,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(item, {
+    const sortUpdates = foundry.utils.SortingHelpers.performIntegerSort(item, {
       target,
       siblings,
     });
@@ -1612,16 +1620,16 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
               },
             },
           };
-          healthData.levels.zero.value = result.zero.value;
+          healthData.levels.zero.value = parseInt(result.zero.value);
 
           let tempHealthRemoval = Math.max(0, healthData.levels.temp.value - parseInt(result.temp?.value || 0));
 
           if (!this.actor.system.battlegroup) {
-            healthData.levels.temp.value = result.temp.value;
-            healthData.levels.one.value = result.one.value;
-            healthData.levels.two.value = result.two.value;
-            healthData.levels.three.value = result.three.value;
-            healthData.levels.four.value = result.four.value;
+            healthData.levels.temp.value = parseInt(result.temp.value);
+            healthData.levels.one.value = parseInt(result.one.value);
+            healthData.levels.two.value = parseInt(result.two.value);
+            healthData.levels.three.value = parseInt(result.three.value);
+            healthData.levels.four.value = parseInt(result.four.value);
           }
           if (healthType === 'person') {
             await this.actor.update({ [`system.health`]: healthData });

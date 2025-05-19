@@ -8,6 +8,13 @@
                 <i class="fas fa-edit"></i>
             </a>
         </h1>
+        {{else ifEquals type 'customability'}}
+        <h1 class="itemname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" />
+            <a class="edit-trait-button" data-action="editTraits" data-options="weapons"
+                data-target="system.traits.weapons">
+                <i class="fas fa-edit"></i>
+            </a>
+        </h1>
         {{else}}
         <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         {{/if}}

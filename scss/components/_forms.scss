@@ -2,6 +2,10 @@
   font-family: $font-primary;
 }
 
+.editor-content {
+  position: inherit;
+}
+
 .sheet-header {
   flex: 0 0 225px;
   // overflow: hidden;

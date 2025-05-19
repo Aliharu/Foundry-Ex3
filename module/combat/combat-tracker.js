@@ -29,25 +29,27 @@ export default class ExaltedCombatTracker extends foundry.applications.sidebar
 
     async _prepareTrackerContext(context, options) {
         await super._prepareTrackerContext(context, options);
-        context.turns = context.turns.map(t => {
-            const combatant = (this.viewed.getEmbeddedDocument("Combatant", t.id));
-            return {
-                ...t,
-                css: t.css,
-                acted: combatant?.system.acted,
-                initiativeIconColor: combatant?.actor?.system?.details?.initiativeiconcolor || '#F9B516',
-                initiativeIcon: combatant?.actor?.system?.details?.initiativeicon?.toLowerCase() || 'sun',
-                turnOrderInitiative: ((combatant?.initiative || 0) + (combatant?.actor?.system?.turnorderinitiative.value || 0))
-            };
-        });
-        context.turns.sort(function (a, b) {
-            const ad = (a.acted && !a.active) ? 1 : 0;
-            const bd = (b.acted && !b.active) ? 1 : 0;
-            if (ad === bd) {
-                return (b.turnOrderInitiative || 0) - (a.turnOrderInitiative || 0);
-            }
-            return ad - bd;
-        });
+        if (context.turns) {
+            context.turns = context.turns.map(t => {
+                const combatant = (this.viewed.getEmbeddedDocument("Combatant", t.id));
+                return {
+                    ...t,
+                    css: t.css,
+                    acted: combatant?.system.acted,
+                    initiativeIconColor: combatant?.actor?.system?.details?.initiativeiconcolor || '#F9B516',
+                    initiativeIcon: combatant?.actor?.system?.details?.initiativeicon?.toLowerCase() || 'sun',
+                    turnOrderInitiative: ((combatant?.initiative || 0) + (combatant?.actor?.system?.turnorderinitiative.value || 0))
+                };
+            });
+            context.turns.sort(function (a, b) {
+                const ad = (a.acted && !a.active) ? 1 : 0;
+                const bd = (b.acted && !b.active) ? 1 : 0;
+                if (ad === bd) {
+                    return (b.turnOrderInitiative || 0) - (a.turnOrderInitiative || 0);
+                }
+                return ad - bd;
+            });
+        }
     }
 
     // async getData(options) {
