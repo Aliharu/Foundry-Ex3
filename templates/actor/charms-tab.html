@@ -83,7 +83,7 @@
         </div>
         <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
             {{#each charm.list as |item id|}}
-            <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class='Item' data-drag="true">
+            <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                         height="24" /></div>
                 <h4 class="item-name"><b>{{item.name}}

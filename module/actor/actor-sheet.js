@@ -912,7 +912,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     this._setupSquareCounters(this.element);
     this._setupButtons(this.element);
 
-    // // Everything below here is only needed if the sheet is editable
+    // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
     this.element.querySelectorAll('.list-ability').forEach(element => {
@@ -2539,7 +2539,8 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   static rollAction(event, target) {
-    const doc = this._getEmbeddedDocument(target);
+    const docRow = target.closest('div[data-document-class]');
+    const doc = this.actor.items.get(docRow.dataset.itemId);
     this.actor.actionRoll(
       {
         rollType: 'ability',
@@ -2655,7 +2656,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 *                                  the prepared message data (if false)
 */
   async _displayCard(item, cardType = "") {
-    const token = this.actor.token
+    const token = this.actor.token;
     if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
       if (item.system.active) {
         cardType = "Deactivate";

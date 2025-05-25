@@ -13,7 +13,7 @@
     </div>
     {{/each}}
     {{#each actor.actions as |action key|}}
-    <div class="item flex-center" data-item-id="{{action._id}}" data-document-class="Item"  data-drag="true">
+    <div class="item flex-center" data-item-id="{{action._id}}" data-document-class="Item" data-drag="true">
         <label class="resource-label roll-action" data-action="rollAction">{{action.name}}</label>
         <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
                 class="fas fa-edit"></i></a>
