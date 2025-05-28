@@ -84,6 +84,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       squareCounterChange: this._onSquareCounterChange,
       effectControl: this.effectControl,
       toggleCollapse: this.toggleCollapse,
+      npcAction: this.npcAction,
     },
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
     form: {
@@ -2261,6 +2262,37 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       },
       classes: ['exaltedthird-dialog', this.actor.getSheetBackground()],
     });
+  }
+
+  static async npcAction(event, target) {
+    const actionType = target.dataset.actiontype;
+    const docRow = target.closest('div[data-document-class]');
+    const doc = this.actor.items.get(docRow.dataset.itemId);
+    switch (actionType) {
+      case 'editItem':
+        doc.sheet.render(true);
+        break;
+      case 'deleteItem':
+        const applyChanges = await foundry.applications.api.DialogV2.confirm({
+          window: { title: game.i18n.localize("Ex3.Delete") },
+          content: "<p>Are you sure you want to delete this item?</p>",
+          classes: [this.actor.getSheetBackground()],
+          modal: true
+        });
+        if (applyChanges) {
+          await doc.delete();
+        }
+        break;
+      case 'rollItem':
+        this.actor.actionRoll(
+          {
+            rollType: 'ability',
+            pool: doc.id
+          }
+        );
+        break;
+    }
+
   }
 
   static async itemAction(event, target) {
