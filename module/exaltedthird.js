@@ -1701,14 +1701,24 @@ Hooks.once("ready", async function () {
   //   }
   // });
 
-  document.querySelectorAll('#chat-log').forEach(element => {
-    if (element.target.closest(".item-row")) {
-      const li = element.target.closest(".item-row").nextElementSibling;
-      if (li) {
-        li.style.display = li.style.display === "none" ? "block" : "none";
-      }
-    }
-  });
+  // document.querySelectorAll('.chat-card').forEach(chatCard => {
+  //   chatCard.addEventListener('click', (event) => {
+  //     // Find the nearest .item-row from the click target
+  //     const itemRow = event.target.closest('.item-row');
+
+  //     // Make sure the click was inside this specific .chat-card
+  //     if (itemRow && chatCard.contains(itemRow)) {
+  //       // Get the next sibling element — should be .item-description
+  //       const description = itemRow.nextElementSibling;
+
+  //       if (description && description.classList.contains('item-description')) {
+  //         // Toggle visibility
+  //         description.style.display =
+  //           description.style.display === 'none' ? 'block' : 'none';
+  //       }
+  //     }
+  //   });
+  // });
 
 });
 

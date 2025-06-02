@@ -3,6 +3,20 @@ export function addChatListeners(html) {
         if (ev.target.closest(".collapsable")) {
             _collapsableToggle(ev);
         }
+
+        const itemRow = ev.target.closest('.item-row');
+
+        // Make sure the click was inside this specific .chat-card
+        if (itemRow && html.contains(itemRow)) {
+            // Get the next sibling element — should be .item-description
+            const description = itemRow.nextElementSibling;
+
+            if (description && description.classList.contains('item-description')) {
+                // Toggle visibility
+                description.style.display =
+                    (description.style.display || 'none') === 'none' ? 'block' : 'none';
+            }
+        }
     });
 }
 

@@ -51,10 +51,10 @@ export default class TraitSelector extends HandlebarsApplicationMixin(DocumentSh
 
 
   async _prepareContext(_options) {
-    const attr = foundry.utils.getProperty(this.object, this.attribute);
+    const attr = foundry.utils.getProperty(this.document, this.attribute);
     const o = this.options;
-    const value = (o.valueKey) ? attr[o.valueKey] ?? [] : attr;
-    const custom = (o.customKey) ? attr[o.customKey] ?? "" : "";
+    const value = attr.value;
+    const custom = attr.custom;
 
     // Populate choices
     const choices = Object.entries(o.choices).reduce((obj, e) => {
