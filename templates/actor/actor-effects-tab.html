@@ -8,7 +8,7 @@
     </div>
     <ol class="items-list">
         <li class="item flexrow">
-            <h4 class="item-name resource-table-value">{{flags.exaltedthird.lastroll.rollType}}</h4>
+            <div class="item-name resource-table-value item-header">{{flags.exaltedthird.lastroll.rollType}}</div>
             <div class="item-controls">
                 <a class="item-control last-roll" data-action="lastRoll" title="Dialogue"><i
                         class="fas fa-dice-d10"></i></a>
@@ -25,7 +25,7 @@
     <ol class="items-list">
         {{#each system.savedRolls as |item id|}}
         <li class="item flexrow saved-roll-row" data-item-id="{{id}}" data-saved-roll-id="{{id}}" data-document-class="savedRoll">
-            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-name item-header">{{item.name}}</div>
             <div class="resource-table-value resource-value-static">
                 {{item.rollType}}
             </div>
@@ -57,10 +57,10 @@
         <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
-            <h4 class="item-name">{{item.name}} <a class="item-control"
+            <div class="item-name item-header">{{item.name}} <a class="item-control"
                 data-action="itemAction" data-actiontype="decreaseItemActivations" title="Decrease Value"><i class="fas fa-minus"></i></a> {{item.system.value}}
                 <a class="item-control" data-action="itemAction" data-actiontype="increaseItemActivations" title="Increase Value"><i class="fas fa-plus"></i></a>
-            </h4>
+            </div>
             <div class="item-controls">
                 <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
                         class="fas fa-comment"></i></a>
@@ -317,7 +317,7 @@
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" />
             </div>
-            <h4 class="item-name"><b>{{item.name}}</b></h4>
+            <div class="item-name item-header"><b>{{item.name}}</b></div>
             <div class="item-controls">
                 {{#if item.system.active}}
                 <a class="item-control item-spend" title="Deactivate Charm"><i class="fas fa-lightbulb-on"></i></a>

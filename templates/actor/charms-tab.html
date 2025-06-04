@@ -86,7 +86,7 @@
             <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                         height="24" /></div>
-                <h4 class="item-name"><b>{{item.name}}
+                <div class="item-name"><b>{{item.name}}
                         {{#if item.system.modes.currentmodename}}
                         ({{item.system.modes.currentmodename}})
                         {{/if}}
@@ -102,7 +102,7 @@
                         {{/if}}
                         {{/if}}
                         {{/if}}
-                    </b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}</h4>
+                    </b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}</div>
                 <div class="item-controls">
                     {{#if item.system.modes.alternates}}
                     <a class="item-control" data-action="itemAction" data-actiontype="switchMode"
@@ -220,8 +220,8 @@
             <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                         height="24" /></div>
-                <h4 class="item-name"><b>{{item.name}}</b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}
-                </h4>
+                <div class="item-name"><b>{{item.name}}</b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}
+                </div>
                 <div class="item-controls">
                     {{#if item.system.activatable}}
                     {{#if item.system.active}}
@@ -290,7 +290,7 @@
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" />
             </div>
-            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-name item-header">{{item.name}}</div>
             <div class="item-controls">
                 {{#if item.system.active}}
                 <a class="item-control" data-action="itemAction" data-actiontype="spendItem"
@@ -325,7 +325,7 @@
         <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
-            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-name item-header">{{item.name}}</div>
             <div class="item-controls">
                 {{#if item.system.active}}
                 <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate Ritual"><i class="fas fa-lightbulb-on"></i></a>
@@ -357,7 +357,7 @@
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" />
             </div>
-            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-name item-header">{{item.name}}</div>
             {{#if item.system.points}}
             <div class="resource-value-static" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
                 {{#numLoop 5}}
@@ -394,7 +394,7 @@
         <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
-            <h4 class="item-name">{{item.name}}</h4>
+            <div class="item-name item-header">{{item.name}}</div>
             <div class="item-controls">
                 {{#if item.system.activatable}}
                 {{#if item.system.active}}
