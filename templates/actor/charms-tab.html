@@ -7,10 +7,11 @@
             </div>
         </li>
         <li>
-            <div class="d-flex flex-between cursor-pointer list-section-header mb-1" data-action="toggleCollapse" data-collapsetype="anima" data-type="passive">
+            <div class="d-flex flex-between cursor-pointer list-section-header mb-1" data-action="toggleCollapse"
+                data-collapsetype="anima" data-type="passive">
                 <div class="resource-label">
-                    {{localize "Ex3.Anima"}} <a class="item-control" data-action="displayDataChat" title="Chat" data-type="passive"><i
-                            class="fas fa-comment"></i></a> </div>
+                    {{localize "Ex3.Anima"}} <a class="item-control" data-action="displayDataChat" title="Chat"
+                        data-type="passive"><i class="fas fa-comment"></i></a> </div>
                 <div>
                     <i class="fas fa-caret-down"></i>
                 </div>
@@ -20,10 +21,11 @@
             </div>
         </li>
         <li>
-            <div class="d-flex flex-between cursor-pointer list-section-header mb-1" data-action="toggleCollapse" data-collapsetype="anima" data-type="active">
+            <div class="d-flex flex-between cursor-pointer list-section-header mb-1" data-action="toggleCollapse"
+                data-collapsetype="anima" data-type="active">
                 <div class="resource-label">
-                    {{localize "Ex3.Anima"}} <a class="item-control" data-action="displayDataChat" title="Chat" data-type="active"><i
-                            class="fas fa-comment"></i></a> </div>
+                    {{localize "Ex3.Anima"}} <a class="item-control" data-action="displayDataChat" title="Chat"
+                        data-type="active"><i class="fas fa-comment"></i></a> </div>
                 <div>
                     <i class="fas fa-caret-down"></i>
                 </div>
@@ -33,10 +35,11 @@
             </div>
         </li>
         <li>
-            <div class="d-flex flex-between cursor-pointer list-section-header mb-1" data-action="toggleCollapse" data-collapsetype="anima" data-type="iconic">
+            <div class="d-flex flex-between cursor-pointer list-section-header mb-1" data-action="toggleCollapse"
+                data-collapsetype="anima" data-type="iconic">
                 <div class="resource-label">
-                    {{localize "Ex3.Anima"}} <a class="item-control" data-action="displayDataChat" title="Chat" data-type="iconic"><i
-                            class="fas fa-comment"></i></a> </div>
+                    {{localize "Ex3.Anima"}} <a class="item-control" data-action="displayDataChat" title="Chat"
+                        data-type="iconic"><i class="fas fa-comment"></i></a> </div>
                 <div>
                     <i class="fas fa-caret-down"></i>
                 </div>
@@ -56,11 +59,13 @@
             <div>
                 {{localize "Ex3.Charms"}} {{#ifEquals system.details.exalt 'alchemical'}}
                 ({{system.usedCharmSlots}} / {{system.charmslots.value}})
-                {{/ifEquals}} <a data-action="showDialog" data-dialogtype="charmCheatSheet"><i class="fas fa-info-circle cursor-pointer"></i></a>
+                {{/ifEquals}} <a data-action="showDialog" data-dialogtype="charmCheatSheet"><i
+                        class="fas fa-info-circle cursor-pointer"></i></a>
             </div>
             <div>
                 {{#ifEquals actor.type 'character'}}
-                <a class="item-control" data-action="importItem" title="Import charm" data-type="charm"><i class="fas fa-edit"></i>
+                <a class="item-control" data-action="importItem" title="Import charm" data-type="charm"><i
+                        class="fas fa-edit"></i>
                     {{localize "Ex3.Import"}}</a>
                 {{/ifEquals}}
                 <a class="item-control" data-action="createItem" title="Create charm" data-type="charm"><i
@@ -70,7 +75,8 @@
         </div>
         {{#each actor.charms as |charm ability|}}
         {{#if charm.visible}}
-        <div class="item d-flex flex-between mb-1 cursor-pointer" data-action="toggleCollapse" data-collapsetype="itemSection" data-itemtype="charm">
+        <div class="item d-flex flex-between mb-1 cursor-pointer" data-action="toggleCollapse"
+            data-collapsetype="itemSection" data-itemtype="charm">
             <div class="flexrow item-header">
                 <div class="item-name">{{localize charm.name}}</div>
             </div>
@@ -83,7 +89,8 @@
         </div>
         <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
             {{#each charm.list as |item id|}}
-            <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+            <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+                data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                         height="24" /></div>
                 <div class="item-name"><b>{{item.name}}
@@ -96,9 +103,8 @@
                         (Active: <a class="item-control" data-action="itemAction"
                             data-actiontype="decreaseItemActivations" title="Decrease Activations"><i
                                 class="fas fa-minus"></i></a> {{item.flags.exaltedthird.currentIterationsActive}}
-                        <a class="item-control" data-action="itemAction"
-                            data-actiontype="increaseItemActivations" title="Increase Activations"><i
-                                class="fas fa-plus"></i></a>)
+                        <a class="item-control" data-action="itemAction" data-actiontype="increaseItemActivations"
+                            title="Increase Activations"><i class="fas fa-plus"></i></a>)
                         {{/if}}
                         {{/if}}
                         {{/if}}
@@ -109,8 +115,7 @@
                         title="Switch Modes"><i class="fas fa-right-left"></i></a>
                     {{/if}}
                     {{#if item.system.diceroller.opposedbonuses.enabled}}
-                    <a class="item-control" data-action="itemAction"
-                        data-actiontype="addOpposingCharm"
+                    <a class="item-control" data-action="itemAction" data-actiontype="addOpposingCharm"
                         title="Add charm's opposed bonuses to other characters rolls"><i
                             class="fas fa-shield-plus"></i></a>
                     {{/if}}
@@ -151,12 +156,12 @@
                     <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Spend Charm"><i
                             class="fas fa-bolt"></i></a>
                     {{/if}}
-                    <a class="item-control" data-action="itemAction" data-actiontype="chatItem"
-                        title="Chat Item"><i class="fas fa-comment"></i></a>
-                    <a class="item-control" data-action="itemAction" data-actiontype="editItem"
-                        title="Edit Item"><i class="fas fa-edit"></i></a>
-                    <a class="item-control" data-action="itemAction" data-actiontype="deleteItem"
-                        title="Delete Item"><i class="fas fa-trash"></i></a>
+                    <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+                            class="fas fa-comment"></i></a>
+                    <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+                            class="fas fa-edit"></i></a>
+                    <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+                            class="fas fa-trash"></i></a>
                 </div>
             </li>
             <li class="item-description">
@@ -194,7 +199,8 @@
             </div>
             <div>
                 {{#ifEquals actor.type 'character'}}
-                <a class="item-control" data-action="importItem" title="Import spell" data-type="spell"><i class="fas fa-edit"></i>
+                <a class="item-control" data-action="importItem" title="Import spell" data-type="spell"><i
+                        class="fas fa-edit"></i>
                     {{localize "Ex3.Import"}}</a>
                 {{/ifEquals}}
                 <a class="item-control" data-action="createItem" title="Create spell" data-type="spell"><i
@@ -204,7 +210,8 @@
         </div>
         {{#each actor.spells as |spell circle|}}
         {{#if spell.visible}}
-        <div class="item d-flex flex-between mb-1 cursor-pointer" data-action="toggleCollapse" data-collapsetype="itemSection" data-itemtype="spell">
+        <div class="item d-flex flex-between mb-1 cursor-pointer" data-action="toggleCollapse"
+            data-collapsetype="itemSection" data-itemtype="spell">
             <li class="flexrow item-header">
                 <div class="item-name">{{localize spell.name}}</div>
             </li>
@@ -217,7 +224,8 @@
         </div>
         <div id="{{circle}}" {{#if spell.collapse }} style="display:none;" {{/if}}>
             {{#each spell.list as |item id|}}
-            <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+            <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+                data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
                 <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                         height="24" /></div>
                 <div class="item-name"><b>{{item.name}}</b>{{#if item.system.summary}}: {{item.system.summary}}{{/if}}
@@ -286,7 +294,8 @@
                     class="fas fa-plus"></i>Add</a>
         </div>
         {{#each actor.specialabilities as |item id|}}
-        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+            data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" />
             </div>
@@ -322,19 +331,25 @@
                     class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
         </div>
         {{#each actor.rituals as |item id|}}
-        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+            data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
             <div class="item-name item-header">{{item.name}}</div>
             <div class="item-controls">
                 {{#if item.system.active}}
-                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate Ritual"><i class="fas fa-lightbulb-on"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="spendItem"
+                    title="Deactivate Ritual"><i class="fas fa-lightbulb-on"></i></a>
                 {{else}}
-                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Activate Ritual"><i class="fas fa-lightbulb"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Activate Ritual"><i
+                        class="fas fa-lightbulb"></i></a>
                 {{/if}}
-                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i class="fas fa-comment"></i></a>
-                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i class="fas fa-edit"></i></a>
-                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i class="fas fa-trash"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+                        class="fas fa-comment"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+                        class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+                        class="fas fa-trash"></i></a>
             </div>
         </li>
         <li class="item-description">
@@ -353,7 +368,8 @@
                 "Ex3.Add"}}</a>
         </div>
         {{#each actor.merits as |item id|}}
-        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+            data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" />
             </div>
@@ -367,13 +383,18 @@
             {{/if}}
             <div class="item-controls">
                 {{#if item.system.active}}
-                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate Merit"><i class="fas fa-lightbulb-on"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate Merit"><i
+                        class="fas fa-lightbulb-on"></i></a>
                 {{else}}
-                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Activate Merit"><i class="fas fa-lightbulb"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Activate Merit"><i
+                        class="fas fa-lightbulb"></i></a>
                 {{/if}}
-                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i class="fas fa-comment"></i></a>
-                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i class="fas fa-edit"></i></a>
-                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i class="fas fa-trash"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+                        class="fas fa-comment"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+                        class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+                        class="fas fa-trash"></i></a>
             </div>
         </li>
         <li class="item-description">
@@ -382,6 +403,12 @@
             </div>
         </li>
         {{/each}}
+        {{#if characterEditMode}}
+        <div class="flex-center mb-1">
+            {{localize "Ex3.Merits"}}: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals
+            system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
+        </div>
+        {{/if}}
         <div class="resource-label list-section-header d-flex flex-between">
             <div>
                 {{localize "Ex3.Items"}}
@@ -391,21 +418,27 @@
                 "Ex3.Add"}}</a>
         </div>
         {{#each actor.gear as |item id|}}
-        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+            data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
             <div class="item-name item-header">{{item.name}}</div>
             <div class="item-controls">
                 {{#if item.system.activatable}}
                 {{#if item.system.active}}
-                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate"><i class="fas fa-lightbulb-on"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate"><i
+                        class="fas fa-lightbulb-on"></i></a>
                 {{else}}
-                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Activate"><i class="fas fa-lightbulb"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Activate"><i
+                        class="fas fa-lightbulb"></i></a>
                 {{/if}}
                 {{/if}}
-                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i class="fas fa-comment"></i></a>
-                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i class="fas fa-edit"></i></a>
-                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i class="fas fa-trash"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="chatItem" title="Chat Item"><i
+                        class="fas fa-comment"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
+                        class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
+                        class="fas fa-trash"></i></a>
             </div>
         </li>
         <li class="item-description">

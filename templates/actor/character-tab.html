@@ -308,12 +308,6 @@
         {{/each}}
       </div>
     </div>
-    {{#if characterEditMode}}
-    <div class="flex-center mb-1">
-      Merits: {{system.charcreation.spent.merits}}/{{system.charcreation.available.merits}} {{#ifEquals
-      system.details.exalt 'dragonblooded'}}(5 from background){{/ifEquals}}
-    </div>
-    {{/if}}
     {{#ifEquals system.details.exalt 'lunar'}}
     <div class="resource-label list-section-header d-flex flex-between">
       <div>

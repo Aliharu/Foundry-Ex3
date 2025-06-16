@@ -87,24 +87,24 @@
         <div>
             <div class="grid grid-4col flex-group-center">
                 <div {{#if system.parry.padding}}style="margin-bottom:17px" {{/if}}>
-                    <label class="resource-label">{{localize "Ex3.Parry"}}{{#ifEquals data.type 'character'}}
-                        {{#if system.settings.editmode}}
+                    <label class="resource-label">{{localize "Ex3.Parry"}}
+                        {{#if characterEditMode}}
                         <a data-action="calculateDerivedStat" data-key="parry"><i class="fas fa-calculator cursor-pointer" title="Auto Set Parry"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
-                        {{/ifEquals}}{{#if system.aboveParryCap}} ({{system.aboveParryCap}} {{localize
+                        {{#if system.aboveParryCap}} ({{system.aboveParryCap}} {{localize
                         "Ex3.AboveLunars"}}){{/if}}</label>
                     <input type="number" name="system.parry.value" value="{{system.parry.value}}" data-dtype="Number" />
                     <label>{{system.parry.cap}}</label>
                 </div>
                 <div {{#if system.evasion.padding}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.Evasion"}}
-                        {{#ifEquals data.type 'character'}}
-                        {{#if system.settings.editmode}}
+                        
+                        {{#if characterEditMode}}
                         <a data-action="calculateDerivedStat" data-key="evasion"><i class="fas fa-calculator calculate-evasion cursor-pointer" title="Auto Set Evasion"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
-                        {{/ifEquals}} {{#if system.aboveEvasionCap}} ({{system.aboveEvasionCap}} {{localize
+                        {{#if system.aboveEvasionCap}} ({{system.aboveEvasionCap}} {{localize
                         "Ex3.AboveLunars"}}){{/if}}</label>
                     <input type="number" name="system.evasion.value" value="{{system.evasion.value}}"
                         data-dtype="Number" />
@@ -122,7 +122,7 @@
                 </div>
                 <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.ArmoredSoak"}}
-                        {{#if system.settings.editmode}}
+                        {{#if characterEditMode}}
                         <a data-action="calculateDerivedStat" data-key="armoredSoak"><i class="fas fa-calculator cursor-pointer"
                                 title="Auto Set Armored Soak" style="margin-left:3px;"></i></a>
                         {{/if}}
@@ -132,35 +132,32 @@
                 </div>
                 <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
                     <label class="resource-label">{{localize "Ex3.NaturalSoak"}}
-                        {{#ifEquals data.type 'character'}}
-                        {{#if system.settings.editmode}}
+                        {{#if characterEditMode}}
                         <a data-action="calculateDerivedStat" data-key="naturalSoak"><i class="fas fa-calculator cursor-pointer"
                                 title="Auto Set Natural Soak" style="margin-left:3px;"></i></a>
                         {{/if}}
-                        {{/ifEquals}}
+
                     </label>
                     <input type="number" name="system.naturalsoak.value" value="{{system.naturalsoak.value}}"
                         data-dtype="Number" />
                 </div>
                 <div>
                     <label class="resource-label">{{localize "Ex3.TotalSoak"}}
-                        {{#ifEquals data.type 'character'}}
-                        {{#if system.settings.editmode}}
+                        {{#if characterEditMode}}
                         <a data-action="calculateDerivedStat" data-key="soak"><i class="fas fa-calculator calculate-soak cursor-pointer" title="Auto Set Soak"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
-                        {{/ifEquals}}
                     </label>
                     <input type="number" name="system.soak.value" value="{{system.soak.value}}" data-dtype="Number" />
                     <label>{{system.soak.cap}}</label>
                 </div>
                 <div {{#if system.soak.cap}}style="margin-bottom:17px" {{/if}}>
-                    <label class="resource-label">{{localize "Ex3.Hardness"}}{{#ifEquals data.type 'character'}}
-                        {{#if system.settings.editmode}}
+                    <label class="resource-label">{{localize "Ex3.Hardness"}}
+                        {{#if characterEditMode}}
                         <a data-action="calculateDerivedStat" data-key="hardness"><i class="fas fa-calculator cursor-pointer" title="Auto Set Hardness"
                                 style="margin-left:3px;"></i></a>
                         {{/if}}
-                        {{/ifEquals}}</label>
+                        </label>
                     <input type="number" name="system.hardness.value" value="{{system.hardness.value}}"
                         data-dtype="Number" />
                 </div>
