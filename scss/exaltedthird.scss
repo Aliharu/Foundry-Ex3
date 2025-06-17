@@ -135,6 +135,14 @@
   }
 }
 
+.abyssal-background {
+  .window-content {
+    background: url('../assets/backgrounds/abyssal-background.jpg');
+    background-size: cover;
+    color: #222;
+  }
+}
+
 .application {
   .window-content {
     overflow-y: auto;
@@ -158,7 +166,7 @@
     color: #222;
     text-shadow: none;
   }
-  
+
   h4 {
     color: #222;
     text-shadow: none;

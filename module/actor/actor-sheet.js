@@ -2552,7 +2552,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         data.attribute = 'none';
         data.pool = 'wilpower';
       }
-      else {
+      else if(this.actor.type === 'character') {
         const abilityObject = this.actor.system.abilities[ability];
         data.attribute = abilityObject?.prefattribute;
       }

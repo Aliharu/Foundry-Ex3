@@ -6,7 +6,7 @@
 <div class="attributes grid grid-3col flex-group-center">
     {{#each system.pools as |pool key|}}
     <div class="pool flex-center">
-        <label for="system.pools.{{key}}.value" class="resource-label vrollable roll-pool" data-rolltype="ability"
+        <label for="system.pools.{{key}}.value" class="resource-label vrollable roll-pool" data-action="makeActionRoll" data-rolltype="ability"
             data-roll="{{pool.value}}" data-pool="{{key}}" data-label="{{pool.name}}">{{localize
             pool.name}}</label>
         <input type="number" name="system.pools.{{key}}.value" value="{{pool.value}}" data-dtype="Number" />

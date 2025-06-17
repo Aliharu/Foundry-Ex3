@@ -83,7 +83,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       element.addEventListener('click', async (ev) => {
         if (dragStarted) return; // Prevent click handler if dragging
         ev.stopPropagation();
-        let itemId = $(ev.currentTarget).attr("data-item-id");
+        let itemId = ev.currentTarget.dataset.itemId;
         this.items.find(i => i.id == itemId).sheet.render(true);
       });
 
@@ -92,7 +92,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       element.addEventListener("dragstart", event => {
         dragStarted = true; // Set the flag when dragging starts
         event.stopPropagation();
-        let itemId = $(event.currentTarget).attr("data-item-id");
+        let itemId = ev.currentTarget.dataset.itemId;
         const item = this.items.find(i => i.id == itemId);
         let transfer = {
           type: "Item",
