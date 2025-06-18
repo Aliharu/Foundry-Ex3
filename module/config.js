@@ -2431,6 +2431,7 @@ exaltedthird.selects = {
   },
   sheetBackgrounds: {
     default: "Ex3.Default",
+    abyssal: "Ex3.Abyssal",
     db: "Ex3.Dragonblooded",
     exigent: "Ex3.Exigent",
     janest: "Ex3.Janest",

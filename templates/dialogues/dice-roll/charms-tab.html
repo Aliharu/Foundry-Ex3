@@ -8,7 +8,7 @@
     {{#if data.addingCharms}}
     <div class="roller-item-list">
         {{#if data.showSpecialAttacks}}
-        <div class="item d-flex flex-between mb-1 collapsable cursor-pointer roller-item-header">
+        <div class="item d-flex flex-between mb-1 cursor-pointer roller-item-header" data-action="toggleCollapse" data-collapsetype="specialAttacks">
             <li class="flexrow">
                 <div class="item-name resource-label">{{localize "Ex3.SpecialAttacks"}}</div>
             </li>
@@ -38,18 +38,18 @@
             {{/each}}
         </div>
         {{/if}}
-        {{#each data.charmList as |charm ability|}}
-        {{#if charm.visible}}
-        <div class="item d-flex flex-between mb-1 charm-list-collapsable cursor-pointer roller-item-header">
+        {{#each data.charmList as |charmList ability|}}
+        {{#if charmList.visible}}
+        <div class="item d-flex flex-between mb-1 cursor-pointer roller-item-header" data-action="toggleCollapse" data-collapsetype="charmList">
             <li class="flexrow item-header">
-                <div class="item-name resource-label">{{localize charm.name}}</div>
+                <div class="item-name resource-label">{{localize charmList.name}}</div>
             </li>
             <div>
                 <i class="fas fa-caret-down"></i>
             </div>
         </div>
-        <div id="{{ability}}" {{#if charm.collapse }} style="display:none;" {{/if}}>
-            {{#each charm.list as |item id|}}
+        <div id="{{ability}}" {{#if charmList.collapse }} style="display:none;" {{/if}}>
+            {{#each charmList.list as |item id|}}
             <div class="item large-item collapsable" data-item-id="{{item.id}}" data-document-class="Item">
                 <div class="item-text gap">
                     <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}"

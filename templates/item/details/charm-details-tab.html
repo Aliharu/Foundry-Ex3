@@ -45,6 +45,15 @@
             <div class="resource-label">{{localize "Ex3.MultiActivate"}}</div>
             <input type="checkbox" name="system.multiactivate" {{checked system.multiactivate}} />
         </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.ShowInDiceRoller"}}</div>
+            <input name="system.diceroller.enabled" type="checkbox" {{checked system.diceroller.enabled}}>
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.IsOpposedCharm"}}</div>
+            <input name="system.diceroller.opposedbonuses.enabled" type="checkbox" {{checked
+                system.diceroller.opposedbonuses.enabled}}>
+        </div>
     </div>
     <div class="d-flex flex-center resource-label">
         <div class="resource-label">{{localize "Ex3.PreviousCharmsPrerequisites"}}</div>
@@ -81,8 +90,8 @@
     <div class="flex-center mt-1">
         <div class="resource-label">{{localize "Ex3.CharmPrerequisites"}}</div>
     </div>
-    <div class="embeded-item-list-wrapper" {{#if
-        editable}}style="border: 1px solid var(--color-border-light-tertiary);" {{/if}}>
+    <div class="embeded-item-list-wrapper" {{#if editable}}style="border: 1px solid var(--color-border-light-tertiary);"
+        {{/if}}>
         <div class="flex-group-center embeded-item-list">
             <ul>
                 {{#if editable}}
@@ -109,8 +118,7 @@
     <div class="flex-center mt-1">
         <div class="resource-label">{{localize "Ex3.OtherPrerequisites"}}</div>
     </div>
-    <textarea type="text" name="system.archetype.prerequisites"
-        rows="4">{{system.archetype.prerequisites}}</textarea>
+    <textarea type="text" name="system.archetype.prerequisites" rows="4">{{system.archetype.prerequisites}}</textarea>
     {{#if showParentItemList}}
     <div>
         {{#ifEquals system.charmtype 'evocation'}}

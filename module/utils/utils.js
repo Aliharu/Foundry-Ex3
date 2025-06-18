@@ -143,7 +143,7 @@ export function appendSidebarButtons(html, type) {
 
 export function toggleDisplay(target) {
     const li = target.nextElementSibling;
-    if ((li.style.display || 'none') == 'none') {
+    if ((getComputedStyle(li)?.display || 'none') == 'none') {
       li.style.display = 'block';
     } else {
       li.style.display = 'none';

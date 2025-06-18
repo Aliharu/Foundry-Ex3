@@ -620,7 +620,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 let combatant = this._getActorCombatant();
                 if (combatant && combatant.initiative !== null) {
                     if (!this.object.showWithering) {
-                        if (data.weapon && this.object.damage.decisiveDamageType === 'initiative') {
+                        if (this.object.damage.decisiveDamageType === 'initiative') {
                             this.object.damage.damageDice += combatant.initiative;
                         }
                     }
@@ -737,6 +737,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             removeSpecialAttack: RollForm.removeSpecialAttack,
             removeOpposingCharm: RollForm.removeOpposingCharm,
             saveProject: RollForm.saveProject,
+            toggleCollapse: this.toggleCollapse,
             // switchCharmMode: RollForm.switchCharmMode,
         },
     };
@@ -1127,20 +1128,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     _onRender(context, options) {
         this.element.querySelectorAll('.collapsable').forEach(element => {
             element.addEventListener('click', (ev) => {
-                const li = ev.currentTarget.nextElementSibling;
-                if (li.attr('id')) {
-                    this.object[li.attr('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
-                }
-                toggleDisplay(ev.currentTarget);
-            });
-        });
-
-        this.element.querySelectorAll('.charm-list-collapsable').forEach(element => {
-            element.addEventListener('click', (ev) => {
-                const li = ev.currentTarget.nextElementSibling;
-                if (li.attr('id')) {
-                    this.object.charmList[li.attr('id')].collapse = !(li.offsetWidth || li.offsetHeight || li.getClientRects().length);
-                }
                 toggleDisplay(ev.currentTarget);
             });
         });
@@ -1710,6 +1697,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
 
         this.close();
+    }
+
+    static toggleCollapse(event, target) {
+        const collapseType = target.dataset.collapsetype;
+        const li = target.nextElementSibling;
+        if (li.id) {
+            if (collapseType === 'charmList') {
+                this.object.charmList[li.id].collapse = !this.object.charmList[li.id].collapse || false;
+            } else {
+                this.object[li.id] = !this.object[li.id] || false;
+            }
+        }
+        toggleDisplay(target);
     }
 
     static async saveRoll() {
@@ -3173,6 +3173,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.penaltyModifier += this._getFormulaValue(charm.system.diceroller.opposedbonuses.penaltymodifier, charm.actor, charm);
             this.object.settings.triggerOnesCap += this._getFormulaValue(charm.system.diceroller.opposedbonuses.triggeronescap, charm.actor, charm);
         }
+        await this._addBonuses(charm, 'itemAdded', "opposed");
     }
 
     async _inflictOnTarget() {
@@ -5329,19 +5330,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         if (this.object.rollType === 'useOpposingCharms') {
                                             this.object.addOppose.addedBonus[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         } else {
-                                            if (type === 'itemAdded' && this.object.showTargets) {
+                                            if (type !== 'itemAdded' || !this.object.showTargets) {
+                                                if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
+                                                    this.object.difficulty += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                } else {
+                                                    this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                                }
+                                            }
+                                            if (this.object.showTargets) {
                                                 for (const target of Object.values(this.object.targets)) {
                                                     target.rollData[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                                     if (bonus.effect === 'defense') {
                                                         target.rollData.evasion += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                                         target.rollData.parry += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                                     }
-                                                }
-                                            } else {
-                                                if (bonus.effect === 'resolve' || bonus.effect === 'guile') {
-                                                    this.object.difficulty += this._getFormulaValue(cleanedValue, triggerActor, charm);
-                                                } else {
-                                                    this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                                 }
                                             }
                                         }
@@ -6034,7 +6036,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (attackerCombatant && this.object.crashed) {
             crasherId = attackerCombatant.id;
         }
-        if(this.object.targetCombatant?.id) {
+        if (this.object.targetCombatant?.id) {
             if (game.user.isGM) {
                 game.combat.setInitiative(this.object.targetCombatant.id, this.object.newTargetInitiative, crasherId);
             }
