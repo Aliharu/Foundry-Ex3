@@ -2438,6 +2438,7 @@ exaltedthird.selects = {
     leaves: "Ex3.Leaves",
     lunar: "Ex3.Lunar",
     mountain: "Ex3.Mountain",
+    none: "Ex3.None",
     puppeteer: "Ex3.Puppeteer",
     sidereal: "Ex3.Sidereal",
     solar: "Ex3.Solar",

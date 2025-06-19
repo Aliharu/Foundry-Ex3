@@ -23,6 +23,7 @@ export function registerSettings() {
             "leaves": "Ex3.Leaves",
             "lunar": "Ex3.Lunar",
             "mountain": "Ex3.Mountain",
+            "none": "Ex3.None",
             "puppeteer": "Ex3.Puppeteer",
             "sidereal": "Ex3.Sidereal",
             "solar": "Ex3.Solar",
@@ -327,7 +328,7 @@ class RulesConfigurator extends FormApplication {
 
         data.settings.forEach(s => s.value = game.settings.get(s.namespace, s.key));
         data.homebrewSettings.forEach(s => s.value = game.settings.get(s.namespace, s.key));
-        return data
+        return data;
     }
 
 
