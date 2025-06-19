@@ -772,6 +772,24 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
       }).render(true);
     }
+    if (dialogType === 'modeHelp') {
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/modes-dialogue.html");
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.Modes"), resizable: true },
+        content: html,
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      }).render(true);
+    }
+    if (dialogType === 'upgradeHelp') {
+      const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/upgrades-dialogue.html");
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.Upgrades"), resizable: true },
+        content: html,
+        buttons: [{ action: 'close', label: game.i18n.localize("Ex3.Close") }],
+        classes: ['exaltedthird-dialog', `${game.settings.get("exaltedthird", "sheetStyle")}-background`],
+      }).render(true);
+    }
   }
 
   // Embeded Item code taken and modified from the Star Wars FFG FoundryVTT module
@@ -976,11 +994,11 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     return ActiveEffect.create(effectData, options);
   }
 
-    /**
-   *
-   * DragDrop
-   *
-   */
+  /**
+ *
+ * DragDrop
+ *
+ */
 
   /**
    * Define whether a user is able to begin a dragstart workflow for a given drag selector
@@ -1032,7 +1050,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
    * @param {DragEvent} event       The originating DragEvent
    * @protected
    */
-  _onDragOver(event) {}
+  _onDragOver(event) { }
 
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
