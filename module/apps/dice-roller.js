@@ -24,16 +24,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (data.lastRoll) {
             this.object = foundry.utils.duplicate(this.actor.flags.exaltedthird.lastroll);
-            this.object.skipDialog = false;
+            this.object.skipDialog = true;
         }
         else if (data.rollId) {
             this.object = foundry.utils.duplicate(this.actor.system.savedRolls[data.rollId]);
-            this.object.skipDialog = data.skipDialog || true;
+            this.object.skipDialog = data.skipDialog ?? true;
             this.object.isSavedRoll = true;
         }
         else {
             this.object.isSavedRoll = false;
-            this.object.skipDialog = data.skipDialog || true;
+            this.object.skipDialog = data.skipDialog ?? true;
             this.object.crashed = false;
             this.object.dice = data.dice || 0;
             this.object.diceModifier = 0;
@@ -1578,6 +1578,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.targetSpecificDiceMod = target.rollData.diceModifier;
                     this.object.targetSpecificSuccessMod = target.rollData.successModifier;
                     this.object.targetSpecificDamageMod = target.rollData.damageModifier;
+                    this.object.damageSuccesses = this.object.target.rollData.damageSuccesses;
                     this.object.isClash = target.rollData.defenseType === 'clash';
                     await this._attackRoll();
                     if (this.object.rollAccuracyOnce && this.object.rollType === 'accuracy') {

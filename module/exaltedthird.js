@@ -43,7 +43,7 @@ import {
   ItemSpellData,
   ItemWeaponData
 } from "./template/item-template.js";
-import { appendSidebarButtons, getNumberFormula } from "./utils/utils.js";
+import { appendSidebarButtons, getNumberFormula, noActorBaseRoll } from "./utils/utils.js";
 import { BaseCombatantData } from "./template/combatant-template.js";
 import TraitSelector from "./apps/trait-selector.js";
 
@@ -1158,6 +1158,24 @@ Hooks.on("renderChatLog", (app, html, data) => {
     html = $(html)[0];
   }
   Chat.addChatListeners(html);
+  const container = html.querySelector(".control-buttons");
+  if (!container) return;
+
+  // Create the new button element
+  const newButton = document.createElement("button");
+  newButton.type = "button";
+  newButton.className = "ui-control icon fa-solid fa-dice-d10"; // Use same classes, with fa-dice-d10
+  newButton.dataset.tooltip = "Base Roll"; // Optional tooltip text
+  newButton.setAttribute("aria-label", "Base Roll"); // Accessibility
+
+  // Add event listener
+  newButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    noActorBaseRoll();
+  });
+
+  // Insert button at the beginning
+  container.prepend(newButton);
 });
 
 //Martialart, craft, and initiation are deprecated but i don't want to delete them because it will break characters

@@ -18,6 +18,8 @@ export function addChatListeners(html) {
             }
         }
     });
+
+    
 }
 
 function _collapsableToggle(ev) {

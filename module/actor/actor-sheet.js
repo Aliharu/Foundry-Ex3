@@ -5,7 +5,7 @@ import Importer from "../apps/importer.js";
 import Prophecy from "../apps/prophecy.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
-import { isColor, parseCounterStates, toggleDisplay } from "../utils/utils.js";
+import { constructHTMLButton, isColor, parseCounterStates, toggleDisplay } from "../utils/utils.js";
 import TraitSelector from "../apps/trait-selector.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -56,6 +56,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     classes: ["exaltedthird", "sheet", "actor"],
     actions: {
       onEditImage: this._onEditImage,
+      toggleEditMode: this.toggleEditMode,
       sheetSettings: this.sheetSettings,
       helpDialogue: this.helpDialogue,
       pickColor: this.pickColor,
@@ -137,6 +138,17 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       options.position.width = 560;
     }
   }
+
+  /** @inheritdoc */
+  async _renderFrame(options) {
+    const frame = await super._renderFrame(options);
+    const buttons = [constructHTMLButton({ label: "", classes: ["toggle-edit-button", "header-control", "icon", "fa-solid", "fa-user-gear"], dataset: { action: "toggleEditMode", tooltip: "Ex3.ToggleEditMode" } })];
+    
+    this.window.controls.after(...buttons);
+
+    return frame;
+  }
+
 
   async _prepareContext(_options) {
     const context = {
@@ -1785,6 +1797,15 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'base' }).render(true);
   }
 
+  static async toggleEditMode(event, target) {
+    if (!this.isEditable) {
+      console.error("You can't switch to Edit mode if the sheet is uneditable");
+      return;
+    }
+    this.actor.update({ [`system.settings.editmode`]: !this.actor.system.settings.editmode });
+    this.render();
+  }
+
   static async sheetSettings() {
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
     const html = await foundry.applications.handlebars.renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': (this.actor.system.details.exalt === 'exigent' || this.actor.system.details.exalt === 'customExigent'), selects: CONFIG.exaltedthird.selects });
@@ -2552,7 +2573,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         data.attribute = 'none';
         data.pool = 'wilpower';
       }
-      else if(this.actor.type === 'character') {
+      else if (this.actor.type === 'character') {
         const abilityObject = this.actor.system.abilities[ability];
         data.attribute = abilityObject?.prefattribute;
       }

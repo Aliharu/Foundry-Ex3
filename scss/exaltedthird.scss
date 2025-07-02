@@ -219,6 +219,7 @@
   border-radius: 50%;
 }
 
+
 .exaltedthird .augment-attribute-active {
   color: #147c14;
 }
@@ -479,6 +480,10 @@
 .borderless-image {
   border: none;
   border-radius: 0px;
+}
+
+.inline-image {
+  display: inline-block;
 }
 
 .caste-mark-image {
