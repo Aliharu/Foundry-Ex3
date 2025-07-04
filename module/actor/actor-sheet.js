@@ -61,6 +61,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       helpDialogue: this.helpDialogue,
       pickColor: this.pickColor,
       baseRoll: this.baseRoll,
+      toggleStatus: this.toggleStatus,
       createItem: this.createItem,
       itemAction: this.itemAction,
       savedRollAction: this.savedRollAction,
@@ -143,7 +144,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   async _renderFrame(options) {
     const frame = await super._renderFrame(options);
     const buttons = [constructHTMLButton({ label: "", classes: ["toggle-edit-button", "header-control", "icon", "fa-solid", "fa-user-gear"], dataset: { action: "toggleEditMode", tooltip: "Ex3.ToggleEditMode" } })];
-    
+
     this.window.controls.after(...buttons);
 
     return frame;
@@ -163,6 +164,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       flags: this.actor.flags,
       config: CONFIG.EXALTEDTHIRD,
       isNPC: this.actor.type === 'npc',
+      statuses: await this._prepareStatusEffects(),
       characterEditMode: (this.actor.type === 'character' && this.actor.system.settings.editmode),
       collapseStates: this.collapseStates,
     };
@@ -281,6 +283,36 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     context.effects = prepareActiveEffectCategories(this.document.effects);
     context.tab = this.tabGroups['primary'];
     return context;
+  }
+
+  /**
+ * Prepare the data structure for status effects and whether they are active.
+ * @protected
+ */
+  async _prepareStatusEffects() {
+    const statusInfo = {};
+    for (const status of CONFIG.exaltedthird.statusEffects) {
+      if ((!status.id)) continue;
+      statusInfo[status.id] = {
+        id: status.id,
+        name: status.name,
+        img: status.img,
+        disabled: false,
+        active: "",
+        tooltip: status.tooltip,
+      };
+    }
+
+    // If the actor has the status and it's not from the canonical statusEffect
+    // Then we want to force more individual control rather than allow toggleStatusEffect
+    for (const effect of this.actor.allApplicableEffects()) {
+      for (const id of effect.statuses) {
+        if (!(id in statusInfo)) continue;
+        statusInfo[id].active = "active";
+      }
+    }
+
+    return statusInfo;
   }
 
   async _preparePartContext(partId, context) {
@@ -1795,6 +1827,11 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
   static async baseRoll() {
     new RollForm(this.actor, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.actor.getSheetBackground()] }, {}, { rollType: 'base' }).render(true);
+  }
+
+  static async toggleStatus(event, target) {
+    const status = target.dataset.statusId;
+    await this.actor.toggleStatusEffect(status);
   }
 
   static async toggleEditMode(event, target) {

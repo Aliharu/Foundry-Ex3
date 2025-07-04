@@ -1292,137 +1292,141 @@ exaltedthird.statusEffects = [
   {
     img: 'systems/exaltedthird/assets/icons/targeting.svg',
     id: 'aiming',
-    label: 'Ex3.Aiming',
-    name: 'aiming',
-    description: '<p>Character is aiming, can make ranged attacked beyond short range.  Aiming again or at short range gives +3 dice to attack rolls.</p>'
+    name: 'Ex3.Aiming',
+    description: '<p>Character is aiming, can make ranged attacked beyond short range.  Aiming again or at short range gives +3 dice to attack rolls.</p>',
+    tooltip: '<p>Character is aiming, can make ranged attacked beyond short range.  Aiming again or at short range gives +3 dice to attack rolls.</p>',
   },
   {
     img: 'icons/svg/falling.svg',
     id: 'prone',
-    label: 'Ex3.Prone',
-    name: 'prone',
-    description: '<p>Character suffers a -3 penalty to attack rolls, -1 to Parry, and -2 to Evasion</p>'
+    name: 'Ex3.Prone',
+    description: '<p>Character suffers a -3 penalty to attack rolls, -1 to Parry, and -2 to Evasion</p>',
+    tooltip: '<p>Character suffers a -3 penalty to attack rolls, -1 to Parry, and -2 to Evasion</p>',
   },
   {
     img: 'icons/svg/ruins.svg',
     id: 'lightcover',
-    label: 'Ex3.LightCover',
-    name: 'lightcover',
-    description: "<p>Character is behind light cover, Character adds +1 to Defense</p>"
+    name: 'Ex3.LightCover',
+    description: "<p>Character is behind light cover, Character adds +1 to Defense</p>",
+    tooltip: "<p>Character is behind light cover, Character adds +1 to Defense</p>"
   },
   {
     img: 'icons/svg/castle.svg',
     id: 'heavycover',
-    label: 'Ex3.HeavyCover',
-    name: 'heavycover',
-    description: "<p>Character is behind heavy cover, +2 to Defense</p>"
+    name: 'Ex3.HeavyCover',
+    description: "<p>Character is behind heavy cover, +2 to Defense</p>",
+    tooltip: "<p>Character is behind heavy cover, +2 to Defense</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/brick-wall.svg',
     id: 'fullcover',
-    label: 'Ex3.FullCover',
-    name: 'fullcover',
-    description: "<p>Character cannot be targeted, if a opponent has an ability to target her anyway add +3 to Defense</p>"
+    name: 'Ex3.FullCover',
+    description: "<p>Character cannot be targeted, if a opponent has an ability to target her anyway add +3 to Defense</p>",
+    tooltip: "<p>Character cannot be targeted, if a opponent has an ability to target her anyway add +3 to Defense</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/grab.svg',
     id: 'grappled',
-    label: 'Ex3.Grappled',
-    name: 'grappled',
-    description: "<p>Character is grapped by an opponent, -2 to Defense and -1 die to attack rolls</p>"
+    name: 'Ex3.Grappled',
+    description: "<p>Character is grapped by an opponent, -2 to Defense and -1 die to attack rolls</p>",
+    tooltip: "<p>Character is grapped by an opponent, -2 to Defense and -1 die to attack rolls</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/shaking-hands.svg',
     id: 'grappling',
-    label: 'Ex3.Grappling',
-    name: 'grappling',
-    description: "<p>Character has initiated a grapple, -2 to Defense</p>"
+    name: 'Ex3.Grappling',
+    description: "<p>Character has initiated a grapple, -2 to Defense</p>",
+    tooltip: "<p>Character has initiated a grapple, -2 to Defense</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/drop-weapon.svg',
     id: 'disarmed',
-    label: 'Ex3.Disarmed',
-    name: 'disarmed',
+    name: 'Ex3.Disarmed',
+    tooltip: "<p>Character has dropped or lost her weapon.</p>",
   },
   {
     img: 'icons/svg/shield.svg',
     id: 'fulldefense',
-    label: 'Ex3.FullDefense',
-    name: 'fulldefense',
-    description: "<p>Character has taken the Full Defense action, +2 to Defense</p>"
+    name: 'Ex3.FullDefense',
+    description: "<p>Character has taken the Full Defense action, +2 to Defense</p>",
+    tooltip: "<p>Character has taken the Full Defense action, +2 to Defense</p>",
   },
   {
     img: 'icons/svg/daze.svg',
     id: 'surprised',
-    label: 'Ex3.Surprised',
-    name: 'surprised',
-    description: "<p>Character is suprised, -2 Defense</p>"
+    name: 'Ex3.Surprised',
+    description: "<p>Characer is aware of potential attacks but doesn't know the location of them, -2 Defense</p>",
+    tooltip: "<p>Characer is aware of potential attacks but doesn't know the location of them, -2 Defense</p>",
   },
   {
     img: 'icons/svg/blood.svg',
     id: 'bleeding',
-    label: 'EFFECT.StatusBleeding',
-    name: 'bleeding',
-    description: ""
+    name: 'EFFECT.StatusBleeding',
+    description: "Take 1L damage each minute until healed.",
+    tooltip: "Take 1L damage each minute until healed.",
   },
   {
     img: 'icons/svg/poison.svg',
     id: 'poisoned',
-    label: 'EFFECT.StatusPoison',
-    name: 'poisoned',
+    name: 'EFFECT.StatusPoison',
+    tooltip: "Poisoned, different poisons have different effects.",
   },
   {
     img: 'icons/svg/fire.svg',
     id: 'burning',
-    label: 'EFFECT.StatusBurning',
-    name: 'burning',
+    name: 'EFFECT.StatusBurning',
+    tooltip: "On fire.",
   },
   {
     img: 'icons/svg/invisible.svg',
     id: 'dematerialized',
-    label: 'Ex3.Dematerialized',
-    name: 'dematerialized',
-    description: "<p>Character is dematerialized, cannot be attacked without special techniques or magic.</p>"
+    name: 'Ex3.Dematerialized',
+    description: "<p>Character is dematerialized, cannot be attacked without special techniques or magic.</p>",
+    tooltip: "<p>Character is dematerialized, cannot be attacked without special techniques or magic.</p>",
   },
   {
     img: 'icons/svg/blind.svg',
     id: 'blind',
-    label: 'EFFECT.StatusBlind',
-    name: 'blind',
-    description: "<p>Character is blinded, -3 Dice to all rolls</p>"
+    name: 'EFFECT.StatusBlind',
+    description: "<p>Character is blinded, -3 Dice to all rolls</p>",
+    tooltip: "<p>Character is blinded, -3 Dice to all rolls</p>",
   },
   {
     img: 'icons/svg/paralysis.svg',
     id: 'paralyzed',
-    label: 'Ex3.Paralyzed',
-    name: 'paralyzed',
+    name: 'Ex3.Paralyzed',
+    tooltip: "<p>Character cannot move</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/cobweb.svg',
     id: 'entangled',
-    label: 'Ex3.Entangled',
-    name: 'entangled',
-    description: "<p>Character is entangled, +1 Mobility Penalty.</p>"
+    name: 'Ex3.Entangled',
+    description: "<p>Character is entangled, +1 Mobility Penalty.</p>",
+    tooltip: "<p>Character is entangled, +1 Mobility Penalty.</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/hidden.svg',
     id: 'hidden',
-    label: 'Ex3.Hidden',
+    name: 'Ex3.Hidden',
+    tooltip: "<p>Character is hidden</p>",
   },
   {
     img: 'icons/svg/angel.svg',
     id: 'flyingPenalty',
-    label: 'Ex3.FlyingPenalty',
+    name: 'Ex3.FlyingPenalty',
+    tooltip: "<p>Characters that fly using the wings merit suffer a -3 penalty on dexterous/precision based actions (Including Attacks)</p>",
   },
   {
     img: 'systems/exaltedthird/assets/icons/screaming.svg',
     id: 'routing',
-    label: 'Ex3.Routing',
+    name: 'Ex3.Routing',
+    tooltip: "<p>A battlegroup is routing, can be subject to slaughter actions before the battlegroup fully disolves.</p>",
   },
   {
     img: 'icons/svg/skull.svg',
     id: 'incapacitated',
-    label: 'Ex3.Incapacitated',
+    name: 'Ex3.Incapacitated',
+    tooltip: "<p>Character is unconscious or dying</p>",
   },
 ]
 
