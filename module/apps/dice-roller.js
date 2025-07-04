@@ -21,6 +21,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.search = "";
         this.object.totalDice = 0;
         this.object.attacker = data.attacker;
+        this.object.actorCombatant = data.actorCombatant ?? this._getActorCombatant();
 
         if (data.lastRoll) {
             this.object = foundry.utils.duplicate(this.actor.flags.exaltedthird.lastroll);
@@ -395,6 +396,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                 }
 
+                if(this.object.rollType === 'disengage' && game.settings.get("exaltedthird", "disengageCost")) {
+                    this.object.cost.initiative += 2;
+                }
+
                 if (this.actor.system.settings.rollStunts && this.object.ability !== 'fever') {
                     this.object.stunt = "one";
                 }
@@ -617,7 +622,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             let combat = game.combat;
             if (combat) {
-                let combatant = this._getActorCombatant();
+                let combatant = this.object.actorCombatant;
                 if (combatant && combatant.initiative !== null) {
                     if (!this.object.showWithering) {
                         if (this.object.damage.decisiveDamageType === 'initiative') {
@@ -1335,8 +1340,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this._setupTargetDefense(target);
             target.rollData.shieldInitiative = target.actor.system.shieldinitiative.value;
-            const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
-            let combatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+            let combatant = game.combat?.combatants?.find(c => c.tokenId === target.id) || null;
             if (combatant && combatant.initiative && combatant.initiative <= 0) {
                 target.rollData.hardness = 0;
             }
@@ -1505,9 +1509,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.updateTargetActorData = false;
             this.object.updateTargetInitiative = false;
             this.object.targetCombatant = null;
-            if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
-                const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
-                this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+            if (target.id) {
+                this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === target.id) || null;
                 if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
                     this.object.newTargetInitiative = this.object.targetCombatant.initiative;
                 }
@@ -1562,9 +1565,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.updateTargetInitiative = false;
                     this.object.newTargetInitiative = null;
                     this.object.targetCombatant = null;
-                    if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
-                        const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
-                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                    if (target.id) {
+                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === target.id) || null;
                         if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
                             this.object.newTargetInitiative = this.object.targetCombatant.initiative;
                         }
@@ -1611,9 +1613,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.updateTargetInitiative = false;
                     this.object.newTargetInitiative = null;
                     this.object.targetCombatant = null;
-                    if (target.actor?.token?.id || target.actor.getActiveTokens()[0]) {
-                        const tokenId = target.actor?.token?.id || target.actor.getActiveTokens()[0].id;
-                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                    if (target.id) {
+                        this.object.targetCombatant = game.combat?.combatants?.find(c => c.tokenId === target.id) || null;
                         if (this.object.targetCombatant && this.object.targetCombatant.initiative !== null) {
                             this.object.newTargetInitiative = this.object.targetCombatant.initiative;
                         }
@@ -3976,7 +3977,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.object.rollType === "joinBattle") {
             if (game.combat) {
-                let combatant = this._getActorCombatant();
+                let combatant = this.object.actorCombatant;
                 if (!combatant || combatant.initiative === null) {
                     resultString += `<h4 class="dice-total">${this.object.diceRollTotal + 3} Initiative</h4>`;
                 }
@@ -3989,7 +3990,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this.object.spell) {
                 let crashed = false;
                 if (game.combat) {
-                    let combatant = this._getActorCombatant();
+                    let combatant = this.object.actorCombatant;
                     if (combatant && combatant?.initiative !== null && combatant.initiative <= 0) {
                         crashed = true;
                     }
@@ -4396,7 +4397,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     defense: this.object.defense,
                     thresholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
-                    attackerCombatantId: this._getActorCombatant()?._id || null,
+                    attackerCombatantId: this.object.actorCombatant?._id || null,
                     targetId: this.object.target?.id || null,
                     targetActorId: this.object.target?.actor?._id,
                     targetTokenId: this.object.target?.id,
@@ -4478,7 +4479,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 subractTotal = Math.max(0, this.object.damageSuccesses - this.object.shieldInitiative);
                             }
                             newInitative -= subractTotal;
-                            let attackerCombatant = this._getActorCombatant();
                             if ((newInitative <= 0 && this.object.targetCombatant.initiative > 0)) {
                                 if (this._useLegendarySize('withering')) {
                                     newInitative = 1;
@@ -4488,7 +4488,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     this.object.crashed = true;
                                     crashed = true;
                                     targetResults = `<h4 class="dice-total" style="margin-top: 5px;">Target Crashed!</h4>`;
-                                    if (attackerCombatant && this.object.targetCombatant.id === attackerCombatant.flags?.crashedBy) {
+                                    if (this.object.actorCombatant && this.object.targetCombatant.id === this.object.actorCombatant?.flags?.crashedBy) {
                                         this.object.initiativeShift = true
                                         targetResults += '<h4 class="dice-total" style="margin-top: 5px;">Initiative Shift!</h4>';
                                     }
@@ -4593,7 +4593,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     defense: this.object.defense,
                     thresholdSuccesses: this.object.thresholdSuccesses,
                     attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
-                    attackerCombatantId: this._getActorCombatant()?._id || null,
+                    attackerCombatantId: this.object.actorCombatant?._id || null,
                     targetId: this.object.target?.id || null,
                     damage: {
                         dice: this.object.baseDamage,
@@ -4731,7 +4731,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     },
                     flags: {
                         "exaltedthird": {
-                            poisonerCombatantId: this._getActorCombatant()?._id || null,
+                            poisonerCombatantId: this.object.actorCombatant?._id || null,
                             weaponInflictedPosion: true,
                         }
                     },
@@ -5640,9 +5640,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (!opposingActor) {
                         fufillsRequirements = false;
                     } else {
-                        if (opposingActor?.token?.id || opposingActor.getActiveTokens()[0]) {
-                            const tokenId = opposingActor?.token?.id || opposingActor.getActiveTokens()[0].id;
-                            opposingCombatant = game.combat?.combatants?.find(c => c.tokenId === tokenId) || null;
+                        if (opposingActor?.id) {
+                            opposingCombatant = game.combat?.combatants?.find(c => c.actorId === opposingActor.id) || null;
                         }
                         if (opposingCombatant) {
                             if (cleanedValue) {
@@ -6032,10 +6031,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     async _updateTargetInitiative() {
-        let attackerCombatant = this._getActorCombatant();
         let crasherId = null;
-        if (attackerCombatant && this.object.crashed) {
-            crasherId = attackerCombatant.id;
+        if (this.object.actorCombatant && this.object.crashed) {
+            crasherId = this.object.actorCombatant.id;
         }
         if (this.object.targetCombatant?.id) {
             if (game.user.isGM) {
@@ -6208,6 +6206,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
             return game.combat.combatants.find(c => c.tokenId === tokenId);
         }
+        return null;
     }
 
     _getActorToken() {
@@ -6215,6 +6214,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             const tokenId = this.actor.token?.id || this.actor.getActiveTokens()[0]?.id;
             return canvas.tokens.placeables.filter(x => x.id === tokenId)[0];
         }
+        return null;
     }
 
     _getCraftDifficulty() {
@@ -6313,12 +6313,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             targetTurnTaken: "Turn not taken",
         }
         if (game.combat) {
-            let combatant = this._getActorCombatant();
-            if (combatant) {
+            if (this.object.actorCombatant) {
                 combatStats.inCombat = true;
-                if (combatant?.initiative !== null) {
-                    combatStats.actorInitiative = combatant.initiative;
-                    combatStats.turnTaken = combatant.system.acted;
+                if (this.object.actorCombatant?.initiative !== null) {
+                    combatStats.actorInitiative = this.object.actorCombatant.initiative;
+                    combatStats.turnTaken = this.object.actorCombatant.system.acted;
                 }
             }
             if (this.object.targetCombatant) {
@@ -7354,7 +7353,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _updateRollerResources() {
         let combat = game.combat;
-        let combatant = combat ? this._getActorCombatant() : null;
+        let combatant = combat ? this.object.actorCombatant : null;
 
         if (this.object.rollType === 'sorcery') {
             this.object.previousSorceryMotes = this.actor.system.sorcery.motes.value;

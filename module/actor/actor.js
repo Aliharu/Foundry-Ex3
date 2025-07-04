@@ -1853,6 +1853,21 @@ export class ExaltedThirdActor extends Actor {
   }
 
   async actionRoll(data) {
+    if (!data.actorCombatant && game.combat && !this.isToken && game.combat.combatants.filter(c => c.actorId === this.id).length > 1) {
+      // const activeTokens = this.getActiveTokens();
+      const combatant = await foundry.applications.api.DialogV2.wait({
+        window: { title: game.i18n.localize("Ex3.SelectInitiativeTrack"), resizable: true },
+        content: '',
+        classes: [this.getSheetBackground(), 'button-select-dialog'],
+        modal: true,
+        buttons: game.combat.combatants.filter(c => c.actorId === this.id).sort((a, b) => (a.initiative || -100) - (b.initiative || -100)).map((combatant, index) => ({
+          action: `${index}`,
+          label: `${combatant.initiative}i`,
+          callback: (event, button, dialog) => combatant
+        }))
+      });
+      data.actorCombatant = combatant;
+    }
     let message = data.rollType !== 'useOpposingCharms' ? await this.sendTargetingChatMessage(data) : null;
     if (message) {
       data.preMessageId = message.id;

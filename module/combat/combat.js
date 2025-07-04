@@ -104,7 +104,8 @@ export class ExaltedCombat extends Combat {
         combatant.token.actor.actionRoll(
           {
             rollType: 'joinBattle',
-            pool: 'joinbattle'
+            pool: 'joinbattle',
+            actorCombatant: combatant,
           }
         );
       }
