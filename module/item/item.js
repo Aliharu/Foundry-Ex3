@@ -126,6 +126,41 @@ export class ExaltedThirdItem extends Item {
         }
       }
     }
+    if (this.type === 'charm' && this.system.modes.alternates.length > 0 && this.system.modes.currentmodeid === '' && ((updateData?.system?.modes?.currentmodeid ?? '') === '')) {
+      const mainmodeFields = [
+        'type', 'summary', 'duration', 'activatable', 'multiactivate',
+        'endtrigger', 'costdisplay', 'keywords'
+      ];
+
+      if (!updateData.system.modes) {
+        updateData.system.modes = {};
+      }
+
+      if (!updateData.system.modes.mainmode) {
+        updateData.system.modes.mainmode = {};
+      }
+
+      for (let field of mainmodeFields) {
+        if (field in updateData.system) {
+          updateData.system.modes.mainmode[field] = updateData.system[field];
+        }
+      }
+
+      if (updateData.system.cost) {
+        if (!updateData.system.modes.mainmode.cost) updateData.system.modes.mainmode.cost = {};
+        for (let [key, value] of Object.entries(updateData.system.cost)) {
+          updateData.system.modes.mainmode.cost[key] = value;
+        }
+      }
+
+      if (updateData.system.restore) {
+        if (!updateData.system.modes.mainmode.restore) updateData.system.modes.mainmode.restore = {};
+        for (let [key, value] of Object.entries(updateData.system.restore)) {
+          updateData.system.modes.mainmode.restore[key] = value;
+        }
+      }
+
+    }
   }
 
   static async _onCreateOperation(items, operation, user) {
@@ -183,6 +218,10 @@ export class ExaltedThirdItem extends Item {
         })),
       ]
     });
+
+    if (!newMode) {
+      return;
+    }
 
     const formData = {
       system: {
@@ -419,7 +458,7 @@ export class ExaltedThirdItem extends Item {
       actorData.system.anima.level = newLevel;
       actorData.system.anima.value = newValue;
     }
-    if(this.system.restore.willpoweriscapbreaking) {
+    if (this.system.restore.willpoweriscapbreaking) {
       actorData.system.willpower.value += (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount);
     } else {
       actorData.system.willpower.value = Math.min(Math.max(actorData.system.willpower.max, actorData.system.willpower.value), actorData.system.willpower.value + (getNumberFormula(this.system.restore.willpower, this.actor) * activateAmount));
