@@ -197,8 +197,8 @@ export function activatableData() {
 export function charmAlternateData() {
     return {
         endtrigger: new fields.StringField({ initial: "none" }),
-        type: new fields.StringField({ initial: "supplemental" }),
-        duration: new fields.StringField({ initial: "instant" }),
+        type: new fields.StringField({ initial: "Supplemental" }),
+        duration: new fields.StringField({ initial: "Instant" }),
         activatable: new fields.BooleanField({ initial: false }),
         summary: new fields.StringField({ initial: "" }),
         multiactivate: new fields.BooleanField({ initial: false }),
