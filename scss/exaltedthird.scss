@@ -194,6 +194,23 @@
   }
 }
 
+.item-list-search {
+  position: relative;
+
+  .search-input {
+    text-align: start;
+    padding-left: 2em;
+  }
+
+  .fa-magnifying-glass {
+    position: absolute;
+    left: 0.7em;
+    top: 50%;
+    color: var(--color-light-5);
+    pointer-events: none;
+  }
+}
+
 .exaltedthird .window-content .abilities,
 .exaltedthird.sheet.actor .window-content .abilities {
   border: none;

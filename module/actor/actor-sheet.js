@@ -19,6 +19,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   constructor(options = {}) {
     super(options);
     this.#dragDrop = this.#createDragDropHandlers();
+    this.#filters = this.#createFiltersHandlers();
     this.collapseStates = {
       charm: {},
       spell: {},
@@ -89,6 +90,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       npcAction: this.npcAction,
     },
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
+    filters: [
+      { inputSelector: '[name="search"]', contentSelector: '.item-lists' },
+    ],
     form: {
       submitOnChange: true,
     },
@@ -150,6 +154,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     return frame;
   }
 
+  _onChangeForm(formConfig, event) {
+    if (event.target.name === "search") return; // or whatever conditional to exclude your filter input
+    return super._onChangeForm(formConfig, event)
+  }
 
   async _prepareContext(_options) {
     const context = {
@@ -953,6 +961,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   /** @override */
   _onRender(context, options) {
     this.#dragDrop.forEach((d) => d.bind(this.element));
+    this.#filters.forEach((f) => f.bind(this.element));
     this._setupDotCounters(this.element);
     this._setupSquareCounters(this.element);
     this._setupButtons(this.element);
@@ -1017,6 +1026,39 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     //     }
     //   });
     // }
+  }
+
+  _onSearchFilter(_event, _query, _rgx, html) {
+    const query = foundry.applications.ux.SearchFilter.cleanQuery(_query);
+    const itemSections = '.list-section';
+    const itemSectionsQuery = html.querySelectorAll(itemSections);
+    const itemRows = '.item-row';
+    const itemRowsQuery = html.querySelectorAll(itemRows);
+    for (const li of itemRowsQuery) {
+      if (this.actor.items.filter(item => _rgx.test(item.name)).some((e) => e._id === li.dataset.itemId)) {
+        li.style.display = 'flex';
+      }
+      else {
+        li.style.display = 'none';
+      }
+    }
+    for (const element of itemSectionsQuery) {
+      const sectionName = element.dataset.sectionName;
+
+      // Get the section list from charms or spells
+      const section = this.actor.charms[sectionName] || this.actor.spells[sectionName];
+      const itemList = section?.list || [];
+
+      // Check if any item in the list matches the regex
+      const hasMatch = itemList.some(item => _rgx.test(item.name));
+
+      // If no match, hide the element
+      if (!hasMatch) {
+        element.style.display = 'none';
+      } else {
+        element.style.display = ''; // Optional: ensure visible if previously hidden
+      }
+    }
   }
 
   /**
@@ -1285,6 +1327,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   // This is marked as private because there's no real need
   // for subclasses or external hooks to mess with it directly
   #dragDrop;
+  #filters;
 
   /**
    * Create drag-and-drop workflow handlers for this Application
@@ -1303,6 +1346,14 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         drop: this._onDrop.bind(this),
       };
       return new foundry.applications.ux.DragDrop.implementation(d);
+    });
+  }
+
+  #createFiltersHandlers() {
+    return this.options.filters.map((f) => {
+      f.callback = this._onSearchFilter.bind(this);
+      // f.initial = this.element.querySelector(f.inputSelector)?.value;
+      return new foundry.applications.ux.SearchFilter(f);
     });
   }
 
