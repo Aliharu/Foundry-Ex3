@@ -206,7 +206,9 @@
     position: absolute;
     left: 0.7em;
     top: 50%;
+    transform: translateY(-50%);
     color: var(--color-light-5);
+    font-size: 1em;
     pointer-events: none;
   }
 }
