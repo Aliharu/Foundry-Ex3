@@ -5,6 +5,11 @@
       <input class="world-filter" name="filters.attribute.worldItems" type="checkbox" data-filter="worldItems" {{checked
         filters.attribute.worldItems}} />
     </div>
+    <div class="check-button">
+      <label class="resource-label">{{localize "Ex3.IncludeCompendiumItems"}}: </label>
+      <input class="world-filter" name="filters.attribute.compendiumItems" type="checkbox" data-filter="compendiumItems" {{checked
+        filters.attribute.compendiumItems}} />
+    </div>
     <!-- <div class="check-button">
       <label class="resource-label">{{localize "Ex3.UseLessThen"}}: </label>
       <input class="less-then" name="filters.attribute.lessThen" type="checkbox" {{checked
@@ -148,13 +153,28 @@
     {{/if}}
   </div>
   <div class="query-results">
-    {{#each filteredItems as |item|}}
-    <div class="search-item-row item-row cursor-pointer" data-drag="true" data-item-id={{item.id}}
-      data-filter-id={{item.filterId}}>
-      <div class="item-image mr-1"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
-          height="24" /></div>
-      <div class="item-name">{{item.name}}</div>
+    <div class="items-list">
+      {{#each itemSections as |itemSection itemKey|}}
+      <div class="item d-flex flex-between mb-1 cursor-pointer list-section" data-action="toggleCollapse"
+        data-collapsetype="itemSection" data-section-name="{{itemKey}}">
+        <div class="flexrow item-header">
+          <div class="item-name">{{localize itemSection.name}}</div>
+        </div>
+        <div>
+          <a><i class="fas fa-caret-down"></i></a>
+        </div>
+      </div>
+      <div id="{{itemKey}}" {{#if itemSection.collapse }} style="display:none;" {{/if}}>
+        {{#each itemSection.list as |item id|}}
+        <div class="search-item-row item-row cursor-pointer" data-drag="true" data-item-id={{item.id}}
+          data-filter-id={{item.filterId}}>
+          <div class="item-image mr-1"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+              height="24" /></div>
+          <div class="item-name">{{item.name}}</div>
+        </div>
+        {{/each}}
+      </div>
+      {{/each}}
     </div>
-    {{/each}}
   </div>
 </div>

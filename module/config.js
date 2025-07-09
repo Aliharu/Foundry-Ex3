@@ -873,6 +873,36 @@ exaltedthird.circles = {
   void: 'Ex3.Void',
 };
 
+exaltedthird.meritTypes = {
+  flaw: "Ex3.Flaw",
+  story: "Ex3.Story",
+  innate: "Ex3.Innate",
+  purchased: "Ex3.Purchased",
+  sorcery: "Ex3.Sorcery",
+  thaumaturgy: "Ex3.Thaumaturgy",
+};
+
+exaltedthird.weightTypes = {
+  light: "Ex3.Light",
+  medium: "Ex3.Medium",
+  heavy: "Ex3.Heavy",
+  other: "Ex3.Other",
+};
+
+exaltedthird.itemTypes = {
+  item: "Ex3.Item",
+  artifact: "Ex3.Artifact",
+  hearthstone: "Ex3.Hearthstone",
+};
+
+exaltedthird.martialArtsArmorAllowances = {
+  'none': "Ex3.None",
+  'light': "Ex3.Light",
+  'medium': "Ex3.Medium",
+  'heavy': "Ex3.Heavy",
+  '': "Ex3.NotSet",
+};
+
 exaltedthird.exaltMotePools = {
   personal: {
     base: {

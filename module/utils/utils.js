@@ -196,3 +196,152 @@ export function isColor(strColor) {
 export function noActorBaseRoll() {
     new RollForm(null, { classes: [" exaltedthird exaltedthird-dialog dice-roller", `${game.settings.get("exaltedthird", "sheetStyle")}-background`] }, {}, { rollType: 'base' }).render(true);
 }
+
+export function createListSections(items) {
+    const sectionList = {};
+
+    for (const item of items) {
+        if (item.system.listingname) {
+            if (!sectionList[item.system.listingname]) {
+                sectionList[item.system.listingname] = { name: item.system.listingname, visible: true, list: [], collapse: true };
+            }
+            sectionList[item.system.listingname].list.push(item);
+        }
+        else {
+            switch (item.type) {
+                case 'charm':
+                    if (!sectionList[item.system.ability]) {
+                        sectionList[item.system.ability] = { name: game.i18n.localize(CONFIG.exaltedthird.charmabilities[item.system.ability]) || 'Ex3.Other', visible: true, list: [], collapse: true };
+                    }
+                    sectionList[item.system.ability].list.push(item);
+                    break;
+                case 'spell':
+                    if (!sectionList[item.system.circle]) {
+                        sectionList[item.system.circle] = { name: `${game.i18n.localize(CONFIG.exaltedthird.circles[item.system.circle])} Spells`, visible: true, list: [], collapse: true };
+                    }
+                    sectionList[item.system.circle].list.push(item);
+                    break;
+                case 'merit':
+                    if (item.system.archetypename) {
+                        if (!sectionList[`merit${item.system.archetypename}`]) {
+                            sectionList[`merit${item.system.archetypename}`] = { name: `${item.system.archetypename} Merits`, list: [], collapse: true };
+                        }
+                        sectionList[`merit${item.system.archetypename}`].list.push(item);
+                    } else {
+                        if (!sectionList[item.system.merittype]) {
+                            sectionList[item.system.merittype] = { name: `${game.i18n.localize(CONFIG.exaltedthird.meritTypes[item.system.merittype])} Merits`, visible: true, list: [], collapse: true };
+                        }
+                        sectionList[item.system.merittype].list.push(item);
+                    }
+                    break;
+                case 'armor':
+                    if (item.system.traits.armortags.value.includes('artifact')) {
+                        sectionList[`armorArtifact${item.system.weighttype}`] = {
+                            name: `${game.i18n.localize(CONFIG.exaltedthird.weightTypes[item.system.weighttype])} Artifact Armor`,
+                            list: [],
+                            collapse: true
+                        }
+                        sectionList[`armorArtifact${item.system.weighttype}`].list.push(item);
+                    }
+                    else {
+                        sectionList[`armor${item.system.weighttype}`] = {
+                            name: `${game.i18n.localize(CONFIG.exaltedthird.weightTypes[item.system.weighttype])} Mundane Armor`,
+                            list: [],
+                            collapse: true
+                        }
+                        sectionList[`armor${item.system.weighttype}`].list.push(item);
+                    }
+                    break;
+                case 'weapon':
+                    if (item.system.traits.weapontags.value.includes('artifact')) {
+                        if (!sectionList[`weaponArtifact${item.system.weighttype}`]) {
+                            sectionList[`weaponArtifact${item.system.weighttype}`] = {
+                                name: `${game.i18n.localize(CONFIG.exaltedthird.weightTypes[item.system.weighttype])} Artifact Weapons`,
+                                list: [],
+                                collapse: true
+                            }
+                        }
+                        sectionList[`weaponArtifact${item.system.weighttype}`].list.push(item);
+                    }
+                    else {
+                        if (!sectionList[`weapon${item.system.weighttype}`]) {
+                            sectionList[`weapon${item.system.weighttype}`] = {
+                                name: `${game.i18n.localize(CONFIG.exaltedthird.weightTypes[item.system.weighttype])} Mundane Weapons`,
+                                list: [], collapse: true
+                            }
+                        }
+
+                        sectionList[`weapon${item.system.weighttype}`].list.push(item);
+                    }
+                    break;
+                case 'customability':
+                    if (item.system.siderealmartialart) {
+                        if (!sectionList['siderealmartialarts']) {
+                            sectionList[`siderealmartialarts`] = {
+                                name: game.i18n.localize("Ex3.SiderealMartialArts"),
+                                list: [],
+                                collapse: true
+                            }
+                        }
+                        sectionList['siderealmartialarts'].list.push(item);
+                    } else {
+                        if (!sectionList['martialarts']) {
+                            sectionList[`martialarts`] = {
+                                name: game.i18n.localize("Ex3.MartialArts"),
+                                list: [],
+                                collapse: true
+                            }
+                        }
+                        sectionList['martialarts'].list.push(item);
+                    }
+                    if (item.system.armorallowance) {
+                        if (!sectionList[`martialArts${item.system.armorallowance}`]) {
+                            sectionList[`martialArts${item.system.armorallowance}`] = {
+                                name: `Martial Arts (${game.i18n.localize(CONFIG.exaltedthird.martialArtsArmorAllowances[item.system.armorallowance])} or Lower Armor)`,
+                                list: [],
+                                collapse: true
+                            }
+                        }
+                        sectionList[`martialArts${item.system.armorallowance}`].list.push(item);
+                    }
+
+                    break;
+                case 'item':
+                    if (!sectionList[`item${item.system.itemtype}`]) {
+                        sectionList[`item${item.system.itemtype}`] = {
+                            name: `Items (${game.i18n.localize(CONFIG.exaltedthird.itemTypes[item.system.itemtype])})`,
+                            list: [],
+                            collapse: true
+                        }
+                    }
+                    sectionList[`item${item.system.itemtype}`].list.push(item);
+                    break;
+                case 'ritual':
+                    if (item.system.archetypename) {
+                        if (!sectionList[item.system.archetypename]) {
+                            sectionList[item.system.archetypename] = { name: item.system.archetypename, list: [], collapse: true };
+                        }
+                        sectionList[item.system.archetypename].list.push(item);
+                    } else {
+                        if (!sectionList['shapingRituals']) {
+                            sectionList['shapingRituals'] = { name: game.i18n.localize("Ex3.ShapingRituals"), list: [], collapse: true };
+                        }
+                        sectionList['shapingRituals'].list.push(item);
+                    }
+                    break;
+                case 'specialability':
+                    if (!sectionList['specialAbilities']) {
+                        sectionList['specialAbilities'] = { name: game.i18n.localize("Ex3.SpecialAbilities"), list: [], collapse: true };
+                    }
+                    sectionList['specialAbilities'].list.push(item);
+                default:
+                    if (!sectionList['otherItems']) {
+                        sectionList['otherItems'] = { name: game.i18n.localize("Ex3.Other"), list: [], collapse: true };
+                    }
+                    sectionList['otherItems'].list.push(item);
+                    break;
+            }
+        }
+    }
+    return sectionList;
+}

@@ -1,3 +1,5 @@
+import { createListSections, toggleDisplay } from "../utils/utils.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -17,6 +19,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       attribute: {
         name: "",
         description: "",
+        compendiumItems: true,
         worldItems: false,
         ability: "",
         requirement: {
@@ -50,6 +53,9 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       closeOnSubmit: false
     },
     classes: ['exaltedthird-dialog', `tree-background`],
+    actions: {
+      toggleCollapse: this.toggleCollapse,
+    },
     position: { width: 850, height: 900 },
   };
 
@@ -67,6 +73,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       selects: CONFIG.exaltedthird.selects,
       items: this.items,
       filteredItems: this.applyFilter(),
+      itemSections: this.getListSections(),
       charmAbilities: CONFIG.exaltedthird.charmabilities,
       charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
     };
@@ -143,17 +150,24 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
     if (noItemFilter)
       filteredItems = items;
 
+
+    if (!this.filters.attribute.worldItems || this.filters.attribute.compendiumItems) {
+      if (!this.filters.attribute.compendiumItems) {
+        filteredItems = filteredItems.filter(i => !i.inCompendium);
+      }
+      if (!this.filters.attribute.worldItems) {
+        filteredItems = filteredItems.filter(i => i.inCompendium);
+      }
+    }
+
     for (let filter in this.filters.attribute) {
-      if (this.filters.attribute[filter] || filter == "worldItems") {
+      if (this.filters.attribute[filter]) {
         switch (filter) {
           case "name":
             filteredItems = filteredItems.filter(i => i.name.toLowerCase().includes(this.filters.attribute.name.toLowerCase()))
             break;
           case "description":
             filteredItems = filteredItems.filter(i => i.system.description.value && i.system.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
-            break;
-          case "worldItems":
-            filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.inCompendium)
             break;
           case "essence":
             filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence >= parseInt(this.filters.attribute.essence.min) && i.system.essence <= parseInt(this.filters.attribute.essence.max)))
@@ -223,7 +237,35 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       }
     }
 
+    // const itemSections = createListSections();
+
     return filteredItems;
+  }
+
+  getListSections() {
+    const filteredItems = this.applyFilter();
+
+    const listSections = createListSections(filteredItems);
+
+    // Step 1: Convert to entries
+    const sortedEntries = Object.entries(listSections).sort(([, valA], [, valB]) =>
+      valA.name.localeCompare(valB.name)
+    );
+
+    return Object.fromEntries(sortedEntries);;
+  }
+
+  static toggleCollapse(event, target) {
+    const collapseType = target.dataset.collapsetype;
+    const itemType = target.dataset.itemtype;
+    // if (collapseType === 'itemSection') {
+    //   const li = target.nextElementSibling;
+    //   if (itemType && li.getAttribute('id')) {
+    //     this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
+    //   }
+    // }
+
+    toggleDisplay(target);
   }
 
   static async myFormHandler(event, form, formData) {
