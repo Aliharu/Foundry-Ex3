@@ -462,7 +462,7 @@ export class ExaltedThirdActor extends Actor {
       newPersonalMotes = Math.max(0, actorData.system.motes.personal.value - spentPersonal);
 
       if ((spentPeripheral - muteMotes) > 4) {
-        for (let i = 0; i < Math.floor(spentPeripheral - muteMotes / 5); i++) {
+        for (let i = 0; i < Math.floor((spentPeripheral - muteMotes) / 5); i++) {
           if (newLevel === "Dim") {
             newLevel = "Glowing";
             newValue = 1;
