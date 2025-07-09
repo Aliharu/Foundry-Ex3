@@ -1158,9 +1158,21 @@ Hooks.on("renderChatLog", (app, html, data) => {
     html = $(html)[0];
   }
   Chat.addChatListeners(html);
-  const container = html.querySelector(".control-buttons");
-  if (!container) return;
+  let container = html.querySelector(".control-buttons");
+  if (!container) {
+    // Create the control-buttons container
+    container = document.createElement("div");
+    container.className = "control-buttons";
 
+    // Find the .chat-controls container
+    const chatControls = html.querySelector(".chat-controls");
+    if (chatControls) {
+      chatControls.appendChild(container);
+    } else {
+      // Fallback: prepend to html root if .chat-controls isn't found
+      html.prepend(container);
+    }
+  }
   // Create the new button element
   const newButton = document.createElement("button");
   newButton.type = "button";
