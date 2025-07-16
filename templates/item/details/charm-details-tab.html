@@ -106,7 +106,7 @@
                 {{/each}}
                 {{else}}
                 {{#each system.archetype.charmprerequisites as |item id|}}
-                <li class="embeded-item-pill" data-item-name="{{../name}}" data-item-index="{{id}}"
+                <li class="embeded-item-pill" data-action="showEmbeddedItem" data-item-name="{{../name}}" data-item-index="{{id}}"
                     data-type="archetype">
                     {{item.name}}
                 </li>

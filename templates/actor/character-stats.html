@@ -14,7 +14,7 @@
 {{else}}
 <div style="padding-top:10px;">
     <label class="resource-label">{{localize "Ex3.BonusPoints"}}
-        <a data-action="showDialog" data-dialogtype="bonusPoint"><i
+        <a data-action="showDialog" data-dialogtype="bonusPoints"><i
                 class="fas fa-info-circle show-bonus-points cursor-pointer"></i></a></label>
 </div>
 <div style="padding-top:10px;">
@@ -184,9 +184,9 @@
     {{/each}}
     {{#each actor.customabilities as |item id|}}
     <div class="item flexrow flex-center" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
-        <input class="item-favored" data-action="itemAction" actionType="toggleItemValue" key="favored" type="checkbox"
+        <input class="item-favored" data-action="toggleCustomAbilityValue" data-key="favored" type="checkbox"
             {{checked item.system.favored}}>
-        <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}" style="text-align:start;">
+        <label class="resource-label roll-hover" data-action="rollCustomAbility" data-item-id="{{action._id}}" style="text-align:start;">
             {{#if item.system.maiden}}
             <img class="borderless-image"
                 src="systems/exaltedthird/assets/caste-marks/sidereal/{{item.system.maiden}}.png"
@@ -219,14 +219,14 @@
                 style="margin-left:5px;"></i></a></label>
     <div class="attributes grid grid-3col flex-group-center">
         {{#each actor.customabilities as |item id|}}
-        <li class="item flexrow flex-center" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+        <div class="item flexrow flex-center" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-controls ability-item-edit">
                 <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
                         class="fas fa-edit"></i></a>
                 <a class="item-control" data-action="itemAction" data-actiontype="deleteItem" title="Delete Item"><i
                         class="fas fa-trash"></i></a>
             </div>
-            <label class="resource-label roll-ma roll-hover" data-item-id="{{action._id}}">{{localize
+            <label class="resource-label roll-hover" data-action="rollCustomAbility" data-item-id="{{action._id}}">{{localize
                 item.name}}</label>
             {{#if ../system.settings.usedotsvalues}}
             <div class="resource-value" data-value="{{item.system.points}}" data-name="items.{{item._id}}">
@@ -244,7 +244,7 @@
             <input class="list-ability list-input" type="number" name="item.system.points"
                 value="{{item.system.points}}" data-dtype="Number" />
             {{/if}}
-        </li>
+        </div>
         {{/each}}
     </div>
     {{localize "Ex3.Abilities"}}:

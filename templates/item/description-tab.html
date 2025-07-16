@@ -47,7 +47,7 @@
             <ul>
                 {{#if editable}}
                 {{#each system.charmprerequisites as |item id|}}
-                <a data-drag="true" class="embeded-item-pill" data-id="{{item.id}}" data-item-name="{{item.name}}"
+                <a data-drag="true" class="embeded-item-pill" data-action="showEmbeddedItem"  data-id="{{item.id}}" data-item-name="{{item.name}}"
                     data-item-index="{{id}}">
                     <li data-item-index="{{id}}">
                         {{item.name}}{{#ifGreater item.count 1}}x{{item.count}}{{/ifGreater}}

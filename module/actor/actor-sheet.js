@@ -69,6 +69,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       lastRoll: this.lastRoll,
       makeActionRoll: this.makeActionRoll,
       rollAction: this.rollAction,
+      rollCustomAbility: this.rollCustomAbility,
       updateAnima: this.updateAnima,
       lunarSync: this.lunarSync,
       displayDataChat: this._displayDataChat,
@@ -88,6 +89,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       effectControl: this.effectControl,
       toggleCollapse: this.toggleCollapse,
       npcAction: this.npcAction,
+      toggleCustomAbilityValue: this.toggleCustomAbilityValue,
     },
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
     filters: [
@@ -2677,6 +2679,29 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     this.actor.actionRoll(data);
+  }
+
+  static async toggleCustomAbilityValue(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+    const docRow = target.closest('div[data-document-class]');
+    const doc = this.actor.items.get(docRow.dataset.itemId);
+    const key = target.dataset.key;
+    await doc.update({
+      [`system.${key}`]: !doc.system[key],
+    });
+  }
+
+
+  static rollCustomAbility(event, target) {
+    const docRow = target.closest('div[data-document-class]');
+    const doc = this.actor.items.get(docRow.dataset.itemId);
+    this.actor.actionRoll(
+      {
+        rollType: 'ability',
+        ability: doc.id
+      }
+    );
   }
 
   static rollAction(event, target) {

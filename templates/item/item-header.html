@@ -111,5 +111,14 @@
             </div>
         </div>
         {{/ifEquals}}
+        {{#ifEquals type 'customability'}}
+        <div class="mt-1">
+            <div class="mt-1">
+                {{#each system.traits.weapons.selected as |v k|}}
+                <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </div>
+        </div>
+        {{/ifEquals}}
     </div>
 </header>
