@@ -396,7 +396,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.diceModifier += this.actor.system.settings.rollsettings[this.object.rollType.toLowerCase()].bonus;
                 }
 
-                if(this.object.rollType === 'disengage' && game.settings.get("exaltedthird", "disengageCost")) {
+                if (this.object.rollType === 'disengage' && game.settings.get("exaltedthird", "disengageCost")) {
                     this.object.cost.initiative += 2;
                 }
 
@@ -5441,6 +5441,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         if (this.object.rollType.toLowerCase() !== requirementObject.value) {
                             fufillsRequirements = false;
                         }
+                    }
+                    break;
+                case 'gambitType':
+                    if (this.object.gambit === 'none' || this.object.gambit !== requirementObject.value) {
+                        fufillsRequirements = false;
                     }
                     break;
                 case 'ability':

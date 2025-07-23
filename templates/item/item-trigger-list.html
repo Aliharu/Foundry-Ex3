@@ -1,7 +1,8 @@
 <div class="resource flex-center mb-1" style="font-size: 17px;">
-    <a><i class="fas fa-info-circle cursor-pointer" data-action="showDialog" data-dialogtype="showTriggersLink"></i></a> <label
-        class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control" data-action="triggerAction" data-actiontype="add"
-            title="Create trigger" data-type="dicerollertriggers"><i class="fas fa-plus"></i></a></label>
+    <a><i class="fas fa-info-circle cursor-pointer" data-action="showDialog" data-dialogtype="showTriggersLink"></i></a>
+    <label class="resource-label">{{localize "Ex3.DiceRollTriggers"}} <a class="item-control"
+            data-action="triggerAction" data-actiontype="add" title="Create trigger" data-type="dicerollertriggers"><i
+                class="fas fa-plus"></i></a></label>
 </div>
 {{#each system.triggers.dicerollertriggers as |trigger index|}}
 <div class="flex-group-center mb-1">
@@ -23,8 +24,8 @@
                 <select name="system.triggers.dicerollertriggers.{{index}}.triggerTime" data-type="String">
                     {{selectOptions ../selects.triggerTimes selected=trigger.triggerTime localize=true}}
                 </select>
-                <a class="item-control" data-action="triggerAction" data-actiontype="delete" title="Delete trigger" data-type="dicerollertriggers"
-                    data-index="{{index}}"><i class="fas fa-trash"
+                <a class="item-control" data-action="triggerAction" data-actiontype="delete" title="Delete trigger"
+                    data-type="dicerollertriggers" data-index="{{index}}"><i class="fas fa-trash"
                         style="margin-right: 15px; margin-left:15px;"></i></a>
             </div>
         </div>
@@ -52,9 +53,9 @@
         </div>
     </div>
     <div class="resource flex-center mb-1" style="font-size: 17px;">
-        <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control" data-functiontype="add" data-action="triggerSubItemAction"
-                title="Create bonus" data-type="dicerollertriggers" data-subtype="bonuses" data-index="{{index}}"><i
-                    class="fas fa-plus"></i></a></label>
+        <label class="resource-label">{{localize "Ex3.Bonuses"}} <a class="item-control" data-functiontype="add"
+                data-action="triggerSubItemAction" title="Create bonus" data-type="dicerollertriggers"
+                data-subtype="bonuses" data-index="{{index}}"><i class="fas fa-plus"></i></a></label>
     </div>
     <div class="grid grid-2col flex-center">
         {{#each trigger.bonuses as |bonus bonusIndex|}}
@@ -193,17 +194,18 @@
                     value="{{bonus.value}}" type="text">
                 {{/isBooleanTrigger}}
                 {{/ifEquals}}
-                <a class="item-control" data-functiontype="delete" data-action="triggerSubItemAction" title="Delete bonus" data-type="dicerollertriggers"
-                    data-index="{{index}}" data-subindex="{{bonusIndex}}" data-subtype="bonuses"><i class="fas fa-trash"
+                <a class="item-control" data-functiontype="delete" data-action="triggerSubItemAction"
+                    title="Delete bonus" data-type="dicerollertriggers" data-index="{{index}}"
+                    data-subindex="{{bonusIndex}}" data-subtype="bonuses"><i class="fas fa-trash"
                         style="margin-right: 15px; margin-left: 15px;"></i></a>
             </div>
         </div>
         {{/each}}
     </div>
     <div class="resource flex-center mb-1" style="font-size: 17px;">
-        <label class="resource-label">{{localize "Ex3.Requirements"}} <a class="item-control" data-functiontype="add" data-action="triggerSubItemAction"
-                title="Create requirement" data-type="dicerollertriggers" data-subtype="requirements"
-                data-index="{{index}}"><i class="fas fa-plus"></i></a></label>
+        <label class="resource-label">{{localize "Ex3.Requirements"}} <a class="item-control" data-functiontype="add"
+                data-action="triggerSubItemAction" title="Create requirement" data-type="dicerollertriggers"
+                data-subtype="requirements" data-index="{{index}}"><i class="fas fa-plus"></i></a></label>
     </div>
     <div class="grid grid-2col flex-center">
         {{#each trigger.requirements as |requirement requirementIndex|}}
@@ -236,6 +238,14 @@
                     data-type="String">
                     {{selectOptions ../../selects.rollTypes selected=requirement.value localize=true blank=''}}
                 </select>
+                {{else ifEquals requirement.requirement 'gambitType'}}
+                <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value" data-type="String">
+                    {{#each ../../selects.gambits as |gambitCategory gambitCategoryType|}}
+                    <optgroup label="{{gambitCategory.label}}">
+                        {{selectOptions gambitCategory.gambitTypes selected=requirement.value localize=true}}
+                    </optgroup>
+                    {{/each}}
+                </select>
                 {{else ifEquals requirement.requirement 'range'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
@@ -255,7 +265,8 @@
                 {{else ifEquals requirement.requirement 'martialArtsLevel'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
                     data-type="String">
-                    {{selectOptions ../../selects.martialArtsMasteryTriggers selected=requirement.value localize=true blank=''}}
+                    {{selectOptions ../../selects.martialArtsMasteryTriggers selected=requirement.value localize=true
+                    blank=''}}
                 </select>
                 {{else ifEquals requirement.requirement 'hasStatus'}}
                 <select name="system.triggers.dicerollertriggers.{{index}}.requirements.{{requirementIndex}}.value"
@@ -339,9 +350,10 @@
                     value="{{requirement.value}}" type="text">
                 {{/isBooleanTrigger}}
                 {{/ifEquals}}
-                <a class="item-control" data-functiontype="delete" data-action="triggerSubItemAction" title="Delete bonus" data-type="dicerollertriggers"
-                    data-index="{{index}}" data-subindex="{{requirementIndex}}" data-subtype="requirements"><i
-                        class="fas fa-trash" style="margin-right: 15px; margin-left: 15px;"></i></a>
+                <a class="item-control" data-functiontype="delete" data-action="triggerSubItemAction"
+                    title="Delete bonus" data-type="dicerollertriggers" data-index="{{index}}"
+                    data-subindex="{{requirementIndex}}" data-subtype="requirements"><i class="fas fa-trash"
+                        style="margin-right: 15px; margin-left: 15px;"></i></a>
             </div>
         </div>
         {{/each}}

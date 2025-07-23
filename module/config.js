@@ -2223,6 +2223,7 @@ exaltedthird.requirementTypes = {
     label: "Ex3.Roll",
     requirements: {
       rollType: "Ex3.RollType",
+      gambitType: "Ex3.GambitType",
       charmFunctionType: "Ex3.CharmFunctionType",
       attackType: "Ex3.AttackType",
       defenseType: "Ex3.DefenseType",

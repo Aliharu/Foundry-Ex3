@@ -639,6 +639,7 @@
     "Ex3.AttackType": "Attack Type",
     "Ex3.DefenseType": "Defense Type",
     "Ex3.RollType": "Roll Type",
+    "Ex3.GambitType": "Gambit Type",
     "Ex3.CharmFunctionType": "Charm Function Type",
     "Ex3.WeaponType": "Weapon Type",
     "Ex3.WeaponTags": "Weapon Tags",
