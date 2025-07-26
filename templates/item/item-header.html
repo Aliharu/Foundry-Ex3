@@ -79,7 +79,6 @@
         </div>
         {{/ifEquals}}
         {{#ifEquals type 'shape'}}
-        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         <select name="system.actorid" data-type="String">
             {{selectOptions lunarForms selected=system.actorid localize=true}}
         </select>
