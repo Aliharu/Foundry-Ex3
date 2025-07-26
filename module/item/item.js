@@ -126,7 +126,7 @@ export class ExaltedThirdItem extends Item {
         }
       }
     }
-    if (this.type === 'charm' && this.system.modes.alternates.length > 0 && this.system.modes.currentmodeid === '' && ((updateData?.system?.modes?.currentmodeid ?? '') === '')) {
+    if (updateData?.system && this.type === 'charm' && this.system.modes.alternates.length > 0 && this.system.modes.currentmodeid === '' && ((updateData?.system?.modes?.currentmodeid ?? '') === '')) {
       const mainmodeFields = [
         'type', 'summary', 'duration', 'activatable', 'multiactivate',
         'endtrigger', 'costdisplay', 'keywords'

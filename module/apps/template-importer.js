@@ -264,8 +264,6 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
             );
           }
         } else {
-          // Return an empty string if "Archetype" was not found
-          return '';
         }
       }
       charmsList.push(await Item.create(charmData));

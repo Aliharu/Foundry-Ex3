@@ -261,7 +261,7 @@
         </div>
         {{/each}}
     </div>
-    {{#ifEquals data.type 'character'}}
+    {{#if characterEditMode}}
     <div>
         <div class="resource-label list-section-header d-flex flex-between">
             <div>
@@ -307,7 +307,7 @@
             {{/each}}
         </div>
     </div>
-    {{/ifEquals}}
+    {{/if}}
     {{/if}}
     {{#if actor.activeitems}}
     <div class="resource-label list-section-header d-flex flex-between">
