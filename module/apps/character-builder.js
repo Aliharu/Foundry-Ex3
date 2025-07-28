@@ -1716,12 +1716,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
         dialog.element.querySelectorAll('.collapsable').forEach(element => {
           element.addEventListener('click', (ev) => {
-            const li = ev.currentTarget.nextElementSibling;
-            if (li.style.display == 'none') {
-              li.style.display = '';
-            } else {
-              li.style.display = 'none';
-            }
+            toggleDisplay(ev.currentTarget);
           });
         });
       },
