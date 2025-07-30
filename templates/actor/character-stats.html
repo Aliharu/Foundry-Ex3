@@ -219,7 +219,7 @@
                 style="margin-left:5px;"></i></a></label>
     <div class="attributes grid grid-3col flex-group-center">
         {{#each actor.customabilities as |item id|}}
-        <div class="item flexrow flex-center" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+        <li class="item flexrow flex-center" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
             <div class="item-controls ability-item-edit">
                 <a class="item-control" data-action="itemAction" data-actiontype="editItem" title="Edit Item"><i
                         class="fas fa-edit"></i></a>
@@ -244,7 +244,7 @@
             <input class="list-ability list-input" type="number" name="item.system.points"
                 value="{{item.system.points}}" data-dtype="Number" />
             {{/if}}
-        </div>
+        </li>
         {{/each}}
     </div>
     {{localize "Ex3.Abilities"}}:
