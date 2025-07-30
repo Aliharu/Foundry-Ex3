@@ -2081,8 +2081,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         if (merit.system.merittype !== "sorcery") {
           return true;
         }
-        if (this.object.character.ritual?.system?.archetypename) {
-          if (!merit.system.archetypename || merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase()) {
+        if (this.object.character.ritual?.system?.archetypename || this.object.character.necromancyRitual?.system?.archetypename) {
+          if (!merit.system.archetypename || (merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase() || merit.system.archetypename.toLowerCase() === this.object.character.necromancyRitual?.system?.archetypename.toLowerCase() )) {
             return true;
           }
         }
@@ -2102,7 +2102,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       ...Object.values(this.object.character.specialAbilities).map(item => item._id),
       ...Object.values(this.object.character.merits).map(merit => merit._id),
     ];
-    if (itemType === 'charm') {
+    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
       items = items.filter(charm => {
         if (charm.system.numberprerequisites.number > 0) {
           let existingCharms = 0;
