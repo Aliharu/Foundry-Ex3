@@ -7,22 +7,22 @@
     </div>
     {{/if}}
     <div {{#if system.resolve.padding}}style="margin-bottom:17px" {{/if}}>
-      <label class="resource-label">{{localize "Ex3.Resolve"}}{{#ifEquals data.type 'character'}}
-        {{#if system.settings.editmode}}
+      <label class="resource-label">{{localize "Ex3.Resolve"}}
+        {{#if characterEditMode}}
         <a data-action="calculateDerivedStat" data-key="resolve"><i class="fas fa-calculator cursor-pointer" title="Auto Set Resolve"
             style="margin-left:3px;"></i></a>
         {{/if}}
-        {{/ifEquals}}</label>
+       </label>
       <input type="number" name="system.resolve.value" value="{{system.resolve.value}}" data-dtype="Number" />
       <label>{{system.resolve.cap}}</label>
     </div>
     <div {{#if system.guile.padding}}style="margin-bottom:17px" {{/if}}>
-      <label class="resource-label">{{localize "Ex3.Guile"}}{{#ifEquals data.type 'character'}}
-        {{#if system.settings.editmode}}
+      <label class="resource-label">{{localize "Ex3.Guile"}}
+        {{#if characterEditMode}}
         <a data-action="calculateDerivedStat" data-key="guile"><i class="fas fa-calculator cursor-pointer" title="Auto Set Guile"
             style="margin-left:3px;"></i></a>
         {{/if}}
-        {{/ifEquals}}</label>
+       </label>
       <input type="number" name="system.guile.value" value="{{system.guile.value}}" data-dtype="Number" />
       <label>{{system.guile.cap}}</label>
     </div>
