@@ -296,6 +296,10 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       charmData.system.prerequisites = textArray[index].replace('Prerequisite Charms: ', '');
       index++;
     }
+    if (textArray[index].includes('Prerequisites:')) {
+      charmData.system.prerequisites = textArray[index].replace('Prerequisites: ', '');
+      index++;
+    }
     return index;
   }
 
@@ -547,8 +551,8 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
           var tagSplit = tagString.split(/,|;/);
           var itemTags = [];
           for (let tag of tagSplit) {
-            if (tag.includes('(')) {
-              var rangeTag = tag.match(/\(([^)]+)\)/)[1]?.replace(/\s+/g, '').replace('-', '').trim();
+            if (tag.includes('(') && tag.match(/\(([^)]+)\)/)) {
+              var rangeTag = tag.match(/\(([^)]+)\)/)[1].replace(/\s+/g, '').replace('-', '').trim();
               if (weaponTags[rangeTag] && this.data.itemType === 'weapon') {
                 itemTags.push(rangeTag);
               }
