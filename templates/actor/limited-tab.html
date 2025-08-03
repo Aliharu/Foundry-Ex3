@@ -31,11 +31,5 @@
         {{/each}}
     </ol>
     <div class="resource-label flex-center">{{localize "Ex3.CharacterNotes"}}</div>
-    {{#if editable}}
-    <prose-mirror name="system.biography" data-document-u-u-i-d="{{actor.uuid}}" value="{{system.biography}}"
-        collaborate="true" toggled="true">
-        {{{enrichedBiography}}}
-    </prose-mirror>
-    {{else}} {{{enrichedBiography}}}
-    {{/if}}
+    {{{enrichedBiography}}}
 </div>

@@ -123,6 +123,7 @@ exaltedthird.activeEffectChanges = {
       'system.health.levels.one.value': 'Ex3.PenaltyOneHealth',
       'system.health.levels.two.value': 'Ex3.PenaltyTwoHealth',
       'system.health.levels.four.value': 'Ex3.PenaltyFourHealth',
+      "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
     },
   },
   npcAbilities: {
@@ -187,7 +188,6 @@ exaltedthird.activeEffectChanges = {
       'system.baseinitiative.value': 'Ex3.BaseInitiative',
       'system.crashbonus.value': 'Ex3.CrashBonus',
       'system.effectivestrength.value': 'Ex3.EffectiveStrength',
-      "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
       'system.penaltymodifier.value': 'Ex3.DicePenalty',
       'system.dicemodifier.value': 'Ex3.DiceModifier',
       'system.settings.martialartsmastery': "Ex3.MartialArtsMastery",
