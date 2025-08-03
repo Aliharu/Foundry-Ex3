@@ -1876,7 +1876,9 @@ exaltedthird.bonusTypes = {
     label: "Ex3.DiceRoll",
     bonuses: {
       diceModifier: "Ex3.DiceModifier",
+      nonCharmDiceModifier: "Ex3.NonCharmDice",
       successModifier: "Ex3.SuccessModifier",
+      nonCharmSuccessModifier: "Ex3.NonCharmSuccesses",
       penaltyModifier: "Ex3.PenaltyModifier",
       ignorePenalties: "Ex3.IgnorePenalties",
       doubleSuccess: "Ex3.DoubleSuccess",

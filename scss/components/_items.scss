@@ -56,7 +56,7 @@
     flex: 0 0 172px;
     text-align: right;
   }
-  
+
   .merits-controls {
     flex: 0 0 200px;
     text-align: right;
@@ -73,5 +73,14 @@
 
   .effects-list {
     padding: 0;
+  }
+}
+
+.triggers {
+  .trigger-value-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: center;
   }
 }

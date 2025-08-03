@@ -1,0 +1,41 @@
+<div class="tab limited {{tab.cssClass}}" data-group="primary" data-tab="limited">
+    <ol class="items-list">
+        <div class="resource-label list-section-header d-flex flex-between">
+            <div>
+                {{localize "Ex3.VisibleIntimacies"}}
+            </div>
+        </div>
+        {{#each actor.intimacies as |item id|}}
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+            data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+            <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
+                    height="24" /></div>
+            <div class="item-name item-header"><span class="capitalize">{{item.system.strength}}:
+                </span>{{item.name}}</div>
+        </li>
+        <li class="item-description">
+            <div class="d-flex flex-between">
+                <div>
+                    <div class="resource-label">
+                        Type
+                    </div>
+                    <div class="resource-table-value">
+                        {{item.system.intimacytype}}
+                    </div>
+                </div>
+            </div>
+            <div>
+                {{{enrichedHTMLItems ../this "description" item._id}}}
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+    <div class="resource-label flex-center">{{localize "Ex3.CharacterNotes"}}</div>
+    {{#if editable}}
+    <prose-mirror name="system.biography" data-document-u-u-i-d="{{actor.uuid}}" value="{{system.biography}}"
+        collaborate="true" toggled="true">
+        {{{enrichedBiography}}}
+    </prose-mirror>
+    {{else}} {{{enrichedBiography}}}
+    {{/if}}
+</div>

@@ -44,7 +44,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         {
           icon: 'fa-solid fa-palette',
           label: "Ex3.Stylings",
-          action: "pickColor",
+          action: "pickStylings",
         },
         {
           icon: 'fa-solid fa-dice-d10',
@@ -60,7 +60,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       toggleEditMode: this.toggleEditMode,
       sheetSettings: this.sheetSettings,
       helpDialogue: this.helpDialogue,
-      pickColor: this.pickColor,
+      pickStylings: this.pickStylings,
       baseRoll: this.baseRoll,
       toggleStatus: this.toggleStatus,
       createItem: this.createItem,
@@ -130,6 +130,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     biography: {
       template: "systems/exaltedthird/templates/actor/biography-tab.html",
     },
+    limited: {
+      template: "systems/exaltedthird/templates/actor/limited-tab.html",
+    }
   };
 
   _initializeApplicationOptions(options) {
@@ -144,15 +147,20 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       options.position.height = 620;
       options.position.width = 560;
     }
+    if (this.document.limited) {
+      options.parts = ['header', 'limited'];
+    } else {
+      options.parts = ['header', 'tabs', 'stats', 'combat', 'social', 'charms', 'character', 'effects', 'biography'];
+    }
   }
 
   /** @inheritdoc */
   async _renderFrame(options) {
     const frame = await super._renderFrame(options);
-    const buttons = [constructHTMLButton({ label: "", classes: ["toggle-edit-button", "header-control", "icon", "fa-solid", "fa-user-gear"], dataset: { action: "toggleEditMode", tooltip: "Ex3.ToggleEditMode" } })];
-
-    this.window.controls.after(...buttons);
-
+    if (this.isEditable) {
+      const buttons = [constructHTMLButton({ label: "", classes: ["toggle-edit-button", "header-control", "icon", "fa-solid", "fa-user-gear"], dataset: { action: "toggleEditMode", tooltip: "Ex3.ToggleEditMode" } })];
+      this.window.controls.after(...buttons);
+    }
     return frame;
   }
 
@@ -178,6 +186,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       characterEditMode: (this.actor.type === 'character' && this.actor.system.settings.editmode),
       collapseStates: this.collapseStates,
     };
+
+    if (this.document.limited) {
+      this.tabGroups['primary'] = 'limited';
+    }
 
     if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'stats';
     context.selects = CONFIG.exaltedthird.selects;
@@ -222,6 +234,14 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       label: "Ex3.Description",
       cssClass: this.tabGroups['primary'] === 'biography' ? 'active' : '',
     });
+    if (this.document.limited) {
+      tabs.push({
+        id: "limited",
+        group: "primary",
+        label: "Ex3.Description",
+        cssClass: this.tabGroups['primary'] === 'limited' ? 'active' : '',
+      });
+    }
     context.tabs = tabs;
     context.dtypes = ["String", "Number", "Boolean"];
 
@@ -708,7 +728,6 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     const weapons = [];
     const armor = [];
     const merits = [];
-    const intimacies = [];
     const rituals = [];
     const martialarts = [];
     const crafts = [];
@@ -719,6 +738,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     const destinies = [];
     const shapes = [];
     const activeItems = [];
+    let intimacies = [];
 
     const charms = {};
     const rollCharms = {};
@@ -829,6 +849,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       if (i.system.active) {
         activeItems.push(i);
       }
+    }
+    if(this.document.limited) {
+      intimacies = intimacies.filter(intimacy => intimacy.system.visible);
     }
     let actorSpells = actorData.items.filter((item) => item.type === 'spell');
     actorSpells = actorSpells.sort(function (a, b) {
@@ -1840,7 +1863,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
   }
 
-  static async pickColor() {
+  static async pickStylings() {
+    if (!this.isEditable) {
+      return;
+    }
     const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/color-picker.html", { 'color': this.actor.system.details.color, 'animaColor': this.actor.system.details.animacolor, 'initiativeIcon': this.actor.system.details.initiativeicon, 'initiativeIconColor': this.actor.system.details.initiativeiconcolor });
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("Ex3.PickColor") },
@@ -1897,6 +1923,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   static async sheetSettings() {
+    if (!this.isEditable) {
+      return;
+    }
     const template = "systems/exaltedthird/templates/dialogues/sheet-settings.html"
     const html = await foundry.applications.handlebars.renderTemplate(template, { 'actorType': this.actor.type, settings: this.actor.system.settings, 'maxAnima': this.actor.system.anima.max, 'lunarFormEnabled': this.actor.system.lunarform?.enabled, 'showExigentType': (this.actor.system.details.exalt === 'exigent' || this.actor.system.details.exalt === 'customExigent'), selects: CONFIG.exaltedthird.selects });
 
@@ -1962,6 +1991,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   static _onSquareCounterChange(event, target) {
+    if (!this.isEditable) {
+      return;
+    }
     const index = Number(target.dataset.index);
     const parent = target.parentNode;
     const data = parent.dataset;
@@ -2056,7 +2088,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         this.collapseStates[itemType][li.getAttribute('id')] = (li.offsetWidth || li.offsetHeight || li.getClientRects().length);
       }
     }
-    if (collapseType === 'anima') {
+    if (collapseType === 'anima' && this.isEditable) {
       const animaType = target.dataset.type;
       const li = target.nextElementSibling;
       this.actor.update({ [`system.collapse.${animaType}`]: (li.offsetWidth || li.offsetHeight || li.getClientRects().length) });
@@ -2082,6 +2114,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   static _onDotCounterChange(event, target) {
+    if (!this.isEditable) {
+      return;
+    }
     const color = this.actor.system.details.color;
     const index = Number(target.dataset.index);
     const itemID = target.dataset.id;
@@ -2247,6 +2282,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   static async importItem(event, target) {
+    if (!this.isEditable) {
+      return;
+    }
     let itemType = target.dataset.type;
 
     let items = game.items.filter(item => item.type === itemType && this.actor.canAquireItem(item));

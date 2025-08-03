@@ -1,6 +1,8 @@
 <header class="sheet-header">
     <div class="profile-img-wrapper">
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" data-action="onEditImage" title="{{actor.name}}" height="100" width="100" />
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" data-action="onEditImage" title="{{actor.name}}"
+            height="100" width="100" />
+        {{#unless limited}}
         <div class="flex-center">
             <label class="resource-label">{{localize "Ex3.Essence"}}</label>
             <input type="number" name="system.essence.value" value="{{system.essence.value}}" data-dtype="Number" />
@@ -22,7 +24,9 @@
             </div>
             {{/if}}
         </div>
+        {{/unless}}
     </div>
+    {{#unless limited}}
     <div class="header-fields">
         <div>
             <h1 class="charname"><input name="name" type="text" value="{{actor.name}}"
@@ -89,7 +93,8 @@
             {{#if gloryOverwhelming}}
             <div class="flex-center">
                 <div>
-                    <label class="resource-label"> {{localize "Ex3.MoteCap"}} <a data-action="calculateMotes" data-functiontype="spend" data-pool="glorymotecap"><i
+                    <label class="resource-label"> {{localize "Ex3.MoteCap"}} <a data-action="calculateMotes"
+                            data-functiontype="spend" data-pool="glorymotecap"><i
                                 class="fas fa-plus-square cursor-pointer" title="Reset Cap"></i></a>
                     </label>
                     <div class="resource-content flexrow flex-center flex-between">
@@ -101,16 +106,17 @@
                     </div>
                 </div>
                 <div>
-                    <label class="resource-label">{{localize "Ex3.Committed"}} {{#if system.settings.editmode}} <a data-action="calculateMotes" data-functiontype="commit" data-pool="glorymotecap"><i
-                                class="fas fa-calculator cursor-pointer"
-                                title="Auto Set Motes"></i></a>{{/if}}</label>
+                    <label class="resource-label">{{localize "Ex3.Committed"}} {{#if system.settings.editmode}} <a
+                            data-action="calculateMotes" data-functiontype="commit" data-pool="glorymotecap"><i
+                                class="fas fa-calculator cursor-pointer" title="Auto Set Motes"></i></a>{{/if}}</label>
                     <input type="number" name="system.motes.glorymotecap.committed"
                         value="{{system.motes.glorymotecap.committed}}" data-dtype="Number" />
                 </div>
             </div>
             <div class="flex-center">
                 <div>
-                    <label class="resource-label roll-ability" data-action="makeActionRoll" data-ability="fever" data-rolltype="ability">{{localize "Ex3.Fever"}}</label>
+                    <label class="resource-label roll-ability" data-action="makeActionRoll" data-ability="fever"
+                        data-rolltype="ability">{{localize "Ex3.Fever"}}</label>
                     <input type="number" name="system.fever.value" value="{{system.fever.value}}" data-dtype="Number" />
                 </div>
                 <div>
@@ -125,7 +131,8 @@
                     <a data-action="setSpendPool" data-pool="personal"><i
                             class="fas fa-bolt set-pool-personal cursor-pointer"
                             title="Spend motes from this pool"></i></a>
-                    <label class="resource-label"> {{localize "Ex3.Personal"}} <a data-action="calculateMotes" data-functiontype="spend" data-pool="personal"><i
+                    <label class="resource-label"> {{localize "Ex3.Personal"}} <a data-action="calculateMotes"
+                            data-functiontype="spend" data-pool="personal"><i
                                 class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} cursor-pointer"
                                 title="{{#if system.settings.editmode}} Auto Set Motes {{else}} Restore Motes {{/if}}"></i></a>
                     </label>
@@ -148,10 +155,12 @@
             {{#if isExalt}}
             <div class="flex-center">
                 <div>
-                    <a data-action="setSpendPool" data-pool="peripheral"><i class="fas fa-bolt set-pool-peripheral cursor-pointer"
+                    <a data-action="setSpendPool" data-pool="peripheral"><i
+                            class="fas fa-bolt set-pool-peripheral cursor-pointer"
                             title="Spend motes from this pool"></i></a><label class="resource-label"> {{localize
                         "Ex3.Peripheral"}}
-                        <a data-action="calculateMotes" data-functiontype="spend" data-pool="peripheral"><i class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} cursor-pointer"
+                        <a data-action="calculateMotes" data-functiontype="spend" data-pool="peripheral"><i
+                                class="fas {{#if system.settings.editmode}} fa-calculator {{else}} fa-plus-square {{/if}} cursor-pointer"
                                 title="{{#if system.settings.editmode}} Auto Set Motes {{else}} Restore Motes {{/if}}"></i></a></label>
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="number" name="system.motes.peripheral.value"
@@ -172,7 +181,8 @@
             {{/if}}
             {{/if}}
             <div class="flex-center">
-                <label class="resource-label" data-action="makeActionRoll" data-rolltype="ability" data-ability="willpower">{{localize "Ex3.Willpower"}}</label>
+                <label class="resource-label" data-action="makeActionRoll" data-rolltype="ability"
+                    data-ability="willpower">{{localize "Ex3.Willpower"}}</label>
                 {{#if system.settings.usedotsvalues}}
                 <div class="resource-value" data-value="{{system.willpower.max}}" data-name="system.willpower.max">
                     {{#numLoop 10}}
@@ -182,8 +192,8 @@
                 <div class="resource-counter" data-states="x:value" data-value="{{system.willpower.value}}"
                     data-name="system.willpower">
                     {{#numLoop 10}}
-                    <span data-action="squareCounterChange" class="resource-counter-step non-health-boxes" data-type="willpower" data-index="{{this}}"
-                        data-state=""></span>
+                    <span data-action="squareCounterChange" class="resource-counter-step non-health-boxes"
+                        data-type="willpower" data-index="{{this}}" data-state=""></span>
                     {{/numLoop}}
                 </div>
                 {{else}}
@@ -240,4 +250,10 @@
             </div>
         </div>
     </div>
+    {{else}}
+    <div class="header-fields" style="align-content:center">
+        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}"
+                placeholder="{{localize 'Ex3.NameTitle'}}" /></h1>
+    </div>
+    {{/unless}}
 </header>
