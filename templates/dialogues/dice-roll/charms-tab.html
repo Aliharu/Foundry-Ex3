@@ -112,7 +112,7 @@
         <div class="roller-item-list">
             <div>
                 {{#each data.addedCharms as |item id|}}
-                <div class="item large-item collapsable"  data-document-class="Item">
+                <div class="item large-item collapsable" data-item-id="{{item.id}}" data-document-class="Item" >
                     <div class="item-text gap">
                         <span class="item-name">{{item.name}}</span>
                         <span class="text-summary">{{item.system.summary}}</span>

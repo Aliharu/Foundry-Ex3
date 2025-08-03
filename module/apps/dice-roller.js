@@ -1083,6 +1083,49 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             } else {
                 this.object.totalDice = await this._assembleDicePool(true);
             }
+            this.object.charmDiceAdded = this._getDiceCap(true);
+
+            if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
+                this.object.charmDiceAdded = Math.max(0, this.actor.system.attributes[this.object.attribute].value + this.actor.system.attributes[this.object.attribute].upgrade - 5);
+            }
+
+            for (const charm of this.object.addedCharms) {
+                if (charm.system.diceroller) {
+                    if (!charm.system.diceroller.settings.noncharmdice) {
+                        this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice);
+                    }
+                    if (!charm.system.diceroller.settings.noncharmsuccesses) {
+                        if (this.actor.system.details.exalt === 'sidereal') {
+                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses);
+                        } else {
+                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2;
+                        }
+                    }
+                }
+                for (const trigger of Object.values(charm.system.triggers.dicerollertriggers)) {
+                    try {
+                        for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
+                            if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true, false, this.actor)) {
+                                for (const bonus of Object.values(trigger.bonuses)) {
+                                    let cleanedValue = bonus.value.toLowerCase().trim();
+                                    switch (bonus.effect) {
+                                        case 'diceModifier':
+                                            this.object.charmDiceAdded += this._getFormulaValue(cleanedValue, null);
+                                            break;
+                                        case 'diceToSuccesses':
+                                            this.object.charmDiceAdded += (this._getFormulaValue(cleanedValue, null));
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        ui.notifications.error(`<p>Error in Trigger:</p><pre>${trigger?.name || 'No Name Trigger'}</pre><p>See the console (F12) for details</p>`);
+                        console.error(e);
+                    }
+                }
+            }
+
         }
 
         return {
@@ -1173,26 +1216,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.rollType !== "base") {
             this.object.diceCap = this._getDiceCap();
             this.object.TNCap = this._getTNCap();
-            this.object.charmDiceAdded = this._getDiceCap(true);
-
-            if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
-                this.object.charmDiceAdded = Math.max(0, this.actor.system.attributes[this.object.attribute].value + this.actor.system.attributes[this.object.attribute].upgrade - 5);
-            }
-
-            for (const charm of this.object.addedCharms) {
-                if (charm.system.diceroller) {
-                    if (!charm.system.diceroller.settings.noncharmdice) {
-                        this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice);
-                    }
-                    if (!charm.system.diceroller.settings.noncharmsuccesses) {
-                        if (this.actor.system.details.exalt === 'sidereal') {
-                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses);
-                        } else {
-                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2;
-                        }
-                    }
-                }
-            }
 
             this._calculateAnimaGain();
             this._updateSpecialtyList();
@@ -1847,8 +1870,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     static triggerRemoveCharm(event, target) {
         event.stopPropagation();
-        let li = $(target).parents(".item");
-        let item = this.actor.items.get(li.data("item-id"));
+        let li = target.closest(".item");
+        let item = this.actor.items.get(li.dataset.itemId);
         const index = this.object.addedCharms.findIndex(addedItem => item.id === addedItem.id);
         const addedCharm = this.object.addedCharms.find(addedItem => item.id === addedItem.id);
         if (index > -1) {
@@ -1919,16 +1942,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 this.object.successModifier -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
                 this.object.ignorePenalties -= this._getFormulaValue(item.system.diceroller.ignorepenalties);
 
-                if (!item.system.diceroller.settings.noncharmdice) {
-                    this.object.charmDiceAdded -= this._getFormulaValue(item.system.diceroller.bonusdice);
-                }
-                if (!item.system.diceroller.settings.noncharmsuccesses) {
-                    if (this.actor.system.details.exalt === 'sidereal') {
-                        this.object.charmDiceAdded -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
-                    } else {
-                        this.object.charmDiceAdded -= (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
-                    }
-                }
+                // if (!item.system.diceroller.settings.noncharmdice) {
+                //     this.object.charmDiceAdded -= this._getFormulaValue(item.system.diceroller.bonusdice);
+                // }
+                // if (!item.system.diceroller.settings.noncharmsuccesses) {
+                //     if (this.actor.system.details.exalt === 'sidereal') {
+                //         this.object.charmDiceAdded -= this._getFormulaValue(item.system.diceroller.bonussuccesses);
+                //     } else {
+                //         this.object.charmDiceAdded -= (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+                //     }
+                // }
 
                 this.object.triggerSelfDefensePenalty -= item.system.diceroller.selfdefensepenalty;
                 this.object.triggerTargetDefensePenalty -= item.system.diceroller.targetdefensepenalty;
@@ -2058,16 +2081,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     static triggerAddCharm(event, target) {
         event.stopPropagation();
-        let li = $(target).parents(".item");
-        let item = this.actor.items.get(li.data("item-id"));
+        let li = target.closest(".item");
+        let item = this.actor.items.get(li.dataset.itemId);
         this.addCharm(item);
     }
 
     static addSpecialAttack(event, target) {
         event.stopPropagation();
-        let li = $(target).parents(".item");
-        let id = li.data("item-id");
-        this._enableSpecialAttack(id);
+        let li = target.closest(".item");
+        this._enableSpecialAttack(li.dataset.itemId);
         this.render();
     }
 
@@ -2142,8 +2164,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     static removeSpecialAttack(event, target) {
         event.stopPropagation();
-        let li = $(target).parents(".item");
-        let id = li.data("item-id");
+        let li = target.closest(".item");
+        let id = li.dataset.itemId;
         for (var specialAttack of this.object.specialAttacksList) {
             if (specialAttack.id === id) {
                 specialAttack.added = false;
@@ -2203,8 +2225,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     static removeOpposingCharm(event, target) {
         event.stopPropagation();
-        let li = $(target).parents(".item");
-        let id = li.data("item-id");
+        let li = target.closest(".item");
+        let id = target.dataset.itemId;
         const charm = this.object.opposingCharms.find(opposedCharm => id === opposedCharm._id);
         const index = this.object.opposingCharms.findIndex(opposedCharm => id === opposedCharm._id);
         if (charm) {
@@ -2450,16 +2472,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.ignorePenalties += this._getFormulaValue(item.system.diceroller.ignorepenalties);
             this.object.triggerSelfDefensePenalty += item.system.diceroller.selfdefensepenalty;
             this.object.triggerTargetDefensePenalty += item.system.diceroller.targetdefensepenalty;
-            if (!item.system.diceroller.settings.noncharmdice) {
-                this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
-            }
-            if (!item.system.diceroller.settings.noncharmsuccesses) {
-                if (this.actor.system.details.exalt === 'sidereal') {
-                    this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonussuccesses);
-                } else {
-                    this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
-                }
-            }
+            // if (!item.system.diceroller.settings.noncharmdice) {
+            //     this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonusdice);
+            // }
+            // if (!item.system.diceroller.settings.noncharmsuccesses) {
+            //     if (this.actor.system.details.exalt === 'sidereal') {
+            //         this.object.charmDiceAdded += this._getFormulaValue(item.system.diceroller.bonussuccesses);
+            //     } else {
+            //         this.object.charmDiceAdded += (this._getFormulaValue(item.system.diceroller.bonussuccesses) * 2);
+            //     }
+            // }
             if (item.system.diceroller.doublesuccess < this.object.doubleSuccess) {
                 this.object.doubleSuccess = item.system.diceroller.doublesuccess;
             }
@@ -4949,10 +4971,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 }
                                 switch (bonus.effect) {
                                     case 'diceModifier':
+                                    case 'nonCharmDiceModifier':
                                         if (this.object.rollType === 'useOpposingCharms') {
                                             this.object.addOppose.addedBonus.dice += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         } else {
-                                            this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                            this.object.diceModifier += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         }
                                         break;
                                     case 'penaltyModifier':
@@ -4970,10 +4993,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'successModifier':
+                                    case 'nonCharmSuccessModifier':
                                         if (this.object.diceRollTotal) {
                                             this.object.diceRollTotal += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         }
-                                        this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        this.object.successModifier += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'attackClash':
                                         this.object.isClash = (typeof cleanedValue === "boolean" ? cleanedValue : true);
@@ -5050,7 +5074,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         let excellencyResults = triggerActor.type === 'character' ? triggerActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : triggerActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
                                         if (excellencyResults) {
                                             this.object.diceModifier += (excellencyResults.dice - this.object.charmDiceAdded);
-                                            this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
+                                            // this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
                                             this.object.targetNumber = Math.max(4, this.object.targetNumber - excellencyResults.targetNumber);
                                             if (cleanedValue !== 'free') {
                                                 this.object.cost.motes += excellencyResults.cost || excellencyResults.dice;
