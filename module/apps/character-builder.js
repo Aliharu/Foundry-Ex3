@@ -1673,8 +1673,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         dialog.element.querySelectorAll('.add-item').forEach(element => {
           element.addEventListener('click', async (ev) => {
             ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let item = items.find((item) => item._id === li.data("item-id"));
+            let li = ev.currentTarget.closest(".item");
+            let item = items.find((item) => item._id === li.dataset.itemId);
             if (!item.flags?.core?.sourceId) {
               item.updateSource({ "flags.core.sourceId": item.uuid });
             }

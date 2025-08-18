@@ -2382,8 +2382,8 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         dialog.element.querySelectorAll('.add-item').forEach(element => {
           element.addEventListener('click', (ev) => {
             ev.stopPropagation();
-            let li = $(ev.currentTarget).parents(".item");
-            let item = items.find((item) => item._id === li.data("item-id"));
+            let li = ev.currentTarget.closest(".item");
+            let item = items.find((item) => item._id === li.dataset.itemId);
             if (!item.flags?.core?.sourceId) {
               item.updateSource({ "flags.core.sourceId": item.uuid });
             }
@@ -2400,12 +2400,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
         dialog.element.querySelectorAll('.collapsable').forEach(element => {
           element.addEventListener('click', (ev) => {
-            const li = ev.currentTarget.nextElementSibling;
-            if (li.style.display == 'none') {
-              li.style.display = '';
-            } else {
-              li.style.display = 'none';
-            }
+            toggleDisplay(ev.currentTarget);
           });
         });
       },
