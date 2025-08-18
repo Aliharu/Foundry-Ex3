@@ -26,6 +26,17 @@ export class ItemData extends CommonItemData {
             autoaddtorolls: new fields.StringField({ initial: "" }),
             itemtype: new fields.StringField({ initial: "item" }),
             quantity: new fields.NumberField({ initial: 1 }),
+            warstrider: new fields.SchemaField({
+                soak: new fields.NumberField({ initial: 0 }),
+                hardness: new fields.NumberField({ initial: 0 }),
+                speedbonus: new fields.NumberField({ initial: 0 }),
+                health: new fields.SchemaField({
+                    zero: new fields.NumberField({ initial: 0 }),
+                    one: new fields.NumberField({ initial: 0 }),
+                    two: new fields.NumberField({ initial: 0 }),
+                    four: new fields.NumberField({ initial: 0 }),
+                }),
+            }),
         }
     }
     static migrateData(source) {

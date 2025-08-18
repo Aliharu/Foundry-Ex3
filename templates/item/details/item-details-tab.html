@@ -10,6 +10,15 @@
                 <input type="checkbox" name="system.exceptional" {{checked system.exceptional}}>
             </div>
         </div>
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.Hearthstones"}}</label>
+            <div class="resource-content flexrow flex-center flex-between">
+                <input type="text" name="system.hearthstones.value" value="{{system.hearthstones.value}}"
+                    data-dtype="Number" />/
+                <input type="text" name="system.hearthstones.max" value="{{system.hearthstones.max}}"
+                    data-dtype="Number" />
+            </div>
+        </div>
         <div>
             <label class="resource-label">{{localize "Ex3.HasEvocations"}} </label>
             <div>
@@ -43,5 +52,50 @@
             </select>
         </div>
     </div>
-    {{> systems/exaltedthird/templates/actor/active-effects.html}}
+    {{#ifEquals system.itemtype 'warstrider'}}
+    <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.Warstrider"}}</div>
+    </div>
+    <div class="grid grid-3col flex-group-center">
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.Soak"}}</label>
+            <input type="text" name="system.warstrider.soak" value="{{system.warstrider.soak}}" data-dtype="Number" />
+        </div>
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.Hardness"}}</label>
+            <input type="text" name="system.warstrider.hardness" value="{{system.warstrider.hardness}}"
+                data-dtype="Number" />
+        </div>
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.SpeedBonus"}}</label>
+            <input type="text" name="system.warstrider.speedbonus" value="{{system.warstrider.speedbonus}}"
+                data-dtype="Number" />
+        </div>
+    </div>
+    <div class="flex-center">
+        <div class="resource-label">{{localize "Ex3.Warstrider"}} {{localize "Ex3.Health"}}</div>
+    </div>
+    <div class="grid grid-4col flex-group-center">
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.Zero"}}</label>
+            <input type="text" name="system.warstrider.health.zero" value="{{system.warstrider.health.zero}}"
+                data-dtype="Number" />
+        </div>
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.One"}}</label>
+            <input type="text" name="system.warstrider.health.one" value="{{system.warstrider.health.one}}"
+                data-dtype="Number" />
+        </div>
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.Two"}}</label>
+            <input type="text" name="system.warstrider.health.two" value="{{system.warstrider.health.two}}"
+                data-dtype="Number" />
+        </div>
+        <div class="resource">
+            <label class="resource-label">{{localize "Ex3.Four"}}</label>
+            <input type="text" name="system.warstrider.health.four" value="{{system.warstrider.health.four}}"
+                data-dtype="Number" />
+        </div>
+    </div>
+    {{/ifEquals}}
 </div>

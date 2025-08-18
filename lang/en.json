@@ -1168,9 +1168,11 @@
 
     "Ex3.AlternatePrerequisites": "Alternate Prerequisites",
 
+    "Ex3.Zero": "Zero",
     "Ex3.One": "One",
     "Ex3.Two": "Two",
     "Ex3.Three": "Three",
+    "Ex3.Four": "Four",
     "Ex3.Bank": "Bank",
 
     "Ex3.Resume": "Resume",

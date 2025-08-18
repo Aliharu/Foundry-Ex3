@@ -165,8 +165,22 @@ export class ExaltedThirdItem extends Item {
 
   static async _onCreateOperation(items, operation, user) {
     for (const item of items) {
-      if (item.isEmbedded && item.system.custommodifier?.key) {
-        item._createModifiers();
+      if (item.isEmbedded) {
+        if (item.system.custommodifier?.key) {
+          item._createModifiers();
+        }
+        if (item.type === 'item' && item.system.itemtype === 'warstrider') {
+          await item.parent.update({
+            [`system.settings.showwarstrider`]: true,
+            [`system.warstrider.soak.value`]: item.system.warstrider.soak,
+            [`system.warstrider.hardness.value`]: item.system.warstrider.hardness,
+            [`system.warstrider.speed.value`]: item.system.warstrider.speedbonus,
+            [`system.warstrider.health.levels.zero.value`]: item.system.warstrider.health.zero,
+            [`system.warstrider.health.levels.one.value`]: item.system.warstrider.health.one,
+            [`system.warstrider.health.levels.two.value`]: item.system.warstrider.health.two,
+            [`system.warstrider.health.levels.four.value`]: item.system.warstrider.health.four,
+          });
+        }
       }
     }
     await super._onCreateOperation(items, operation, user);

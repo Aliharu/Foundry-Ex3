@@ -893,6 +893,7 @@ exaltedthird.itemTypes = {
   item: "Ex3.Item",
   artifact: "Ex3.Artifact",
   hearthstone: "Ex3.Hearthstone",
+  warstrider: "Ex3.Warstrider",
 };
 
 exaltedthird.martialArtsArmorAllowances = {
@@ -2666,6 +2667,7 @@ exaltedthird.selects = {
     'item': "Ex3.Item",
     'artifact': "Ex3.Artifact",
     'hearthstone': "Ex3.Hearthstone",
+    'warstrider': "Ex3.Warstrider",
   },
   weaponTypes: {
     'melee': "Ex3.MeleeWeapon",
@@ -2730,6 +2732,7 @@ exaltedthird.selects = {
     'merit': "Ex3.Merit",
     'ritual': "Ex3.ShapingRitual",
     'weapon': "Ex3.Weapon",
+    'warstrider': "Ex3.Warstrider",
   },
   //Prophecies
   ambitionLevels: {

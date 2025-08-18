@@ -526,6 +526,12 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         itemData.type = 'item';
         itemData.img = 'systems/exaltedthird/assets/icons/emerald.svg';
       }
+      if (this.data.itemType === 'warstrider') {
+        itemData.system.itemtype = 'warstrider';
+        itemData.type = 'item';
+        itemData.img = 'systems/exaltedthird/assets/icons/battle-mech.svg';
+        itemData.system.hasevocations = true;
+      }
       var weightType = '';
       itemData.name = textArray[index];
       index++;
