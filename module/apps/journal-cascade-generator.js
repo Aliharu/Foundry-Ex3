@@ -142,7 +142,7 @@ export default class JournalCascadeGenerator extends HandlebarsApplicationMixin(
       }
       const fullCharacter = game.actors.get(this.object.character);
       const itemIds = fullCharacter.items.map(item => {
-        const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
+        const sourceId = item.flags?.core?.sourceId || item._source?._stats?.compendiumSource || ''; // Handle cases where sourceId is undefined
         const sections = sourceId.split('.'); // Split the sourceId by periods
         return sections.length > 1 ? sections.pop() : '';
       }).filter(section => section.trim() !== '');
@@ -151,7 +151,7 @@ export default class JournalCascadeGenerator extends HandlebarsApplicationMixin(
         if (charm.system.charmtype === 'martialarts') {
           if (charm.system.parentitemid) {
             return Object.values(fullCharacter.items.filter(item => item.type === 'customability' || item.system.abilitytype === 'martialart')).some(martialArt => {
-              const sourceId = martialArt.flags?.core?.sourceId || '';
+              const sourceId = martialArt.flags?.core?.sourceId || martialArt._source?._stats?.compendiumSource || '';
               const sections = sourceId.split('.');
               return sections.includes(charm.system.parentitemid) && charm.system.requirement <= martialArt.system.points
             });

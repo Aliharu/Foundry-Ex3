@@ -178,7 +178,7 @@ export class ExaltedThirdActor extends Actor {
 
   canAquireItem(item) {
     const itemIds = this.items.map(item => {
-      const sourceId = item.flags?.core?.sourceId || ''; // Handle cases where sourceId is undefined
+      const sourceId = item.flags?.core?.sourceId || item._source?._stats?.compendiumSource || ''; // Handle cases where sourceId is undefined
       const sections = sourceId.split('.'); // Split the sourceId by periods
       return sections.length > 1 ? sections.pop() : '';
     }).filter(section => section.trim() !== '');
@@ -202,7 +202,7 @@ export class ExaltedThirdActor extends Actor {
       if (item.system.charmtype === 'martialarts') {
         if (item.system.parentitemid) {
           const hasMartialArt = this.items.some(martialArt => {
-            if (martialArt.type !== 'customability' && martialArt.system.abilitytype !== 'martialart') return false;
+            if (martialArt.type !== 'customability' || martialArt.system.abilitytype !== 'martialart') return false;
             const sourceId = martialArt._source?._stats?.compendiumSource || '';
             const sections = sourceId.split('.');
             return sections.includes(item.system.parentitemid) && item.system.requirement <= martialArt.system.points;
