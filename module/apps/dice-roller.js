@@ -1092,13 +1092,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             for (const charm of this.object.addedCharms) {
                 if (charm.system.diceroller) {
                     if (!charm.system.diceroller.settings.noncharmdice) {
-                        this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice);
+                        this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice) * (charm.timesAdded || 1);
                     }
                     if (!charm.system.diceroller.settings.noncharmsuccesses) {
                         if (this.actor.system.details.exalt === 'sidereal') {
-                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses);
+                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses) * (charm.timesAdded || 1);
                         } else {
-                            this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2;
+                            this.object.charmDiceAdded += (this._getFormulaValue(charm.system.diceroller.bonussuccesses) * 2) * (charm.timesAdded || 1);
                         }
                     }
                 }
