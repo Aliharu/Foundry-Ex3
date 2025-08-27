@@ -7533,6 +7533,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.characterInitiative -= 5;
                 }
             }
+            if (this.object.crashed) {
+                if (!this.object.targetCombatant?.flags?.crashRecovery) {
+                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
+                }
+            }
             if (this._isAttackRoll()) {
                 const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
                 if (triggerMissedAttack) {
@@ -7574,11 +7579,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.characterInitiative -= 5;
                     }
                     this.object.characterInitiative -= finalGambitCost;
-                }
-            }
-            if (this.object.crashed) {
-                if (!this.object.targetCombatant?.flags?.crashRecovery) {
-                    this.object.gainedInitiative += (this.object.damage.crashBonus ?? 5);
                 }
             }
             if (this.object.restore.initiative !== 0) {
