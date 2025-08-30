@@ -59,8 +59,7 @@
     <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item"  data-drag="true">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
-      <div class="item-name item-header"><span class="capitalize">{{item.system.strength}}:
-        </span>{{item.name}}</div>
+      <div class="item-name item-header">{{item.name}} (<span class="capitalize">{{item.system.strength}})</span></div>
       <div class="item-controls">
         {{#if item.system.visible}}
         <a class="item-control" data-action="itemAction" data-actiontype="toggleItemValue" data-key="visible" title="Visible"><i class="fas fa-eye"></i></a>
