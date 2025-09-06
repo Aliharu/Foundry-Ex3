@@ -1467,7 +1467,7 @@ exaltedthird.siderealSigns = {
     signs: {
       captain: "Ex3.Captain",
       gull: "Ex3.Gull",
-      mast: "Ex3.Captain",
+      mast: "Ex3.Mast",
       messenger: "Ex3.Messenger",
       shipswheel: "Ex3.ShipsWheel",
     },
