@@ -7,17 +7,17 @@
         </div>
         {{#each actor.intimacies as |item id|}}
         <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
-            data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+            data-item-id="{{item._id}}" data-document-class="Item">
             <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
                     height="24" /></div>
-            <div class="item-name item-header"><span class="capitalize">{{item.system.strength}}:
-                </span>{{item.name}}</div>
+            <div class="item-name item-header">{{item.name}} (<span class="capitalize">{{item.system.strength}})</span>
+            </div>
         </li>
         <li class="item-description">
             <div class="d-flex flex-between">
                 <div>
                     <div class="resource-label">
-                        Type
+                        {{localize "Ex3.Type"}}
                     </div>
                     <div class="resource-table-value">
                         {{item.system.intimacytype}}

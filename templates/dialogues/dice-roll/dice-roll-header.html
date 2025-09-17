@@ -35,6 +35,16 @@
         {{/if}}
         {{/ifEquals}}
     </div>
+    {{#ifEquals data.rollType 'social'}}
+    <div class="dice-header-row">
+        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}}</label>
+        <select name="object.socialType" value="{{data.socialType}}" data-type="String">
+            {{selectOptions selects.socialTypes selected=data.socialType localize=true}}
+        </select>
+        <label class="resource-label capitalize">{{localize "Ex3.SocialAction"}}</label>
+        <!-- <a class="fas fa-info-circle cursor-pointer" data-action="showDialog" data-dialogtype="socialActions"><i></i></a> -->
+    </div>
+    {{/ifEquals}}
     {{#if isAttackRoll}}
     <div class="dice-header-row">
         {{#ifNotEquals data.attackType 'gambit'}}

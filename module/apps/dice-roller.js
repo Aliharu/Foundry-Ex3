@@ -43,6 +43,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.successes = data.successModifier || 0;
             this.object.successModifier = data.successModifier || 0;
             this.object.craftType = data.craftType || 'basic';
+            this.object.socialType = 'persuade';
             this.object.craftRating = data.craftRating || 0;
             this.object.rollType = data.rollType;
             this.object.targetStat = 'defense';
@@ -736,7 +737,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             editSettings: RollForm.editSettings,
             enableAddCharms: RollForm.enableAddCharms,
             triggerRemoveCharm: RollForm.triggerRemoveCharm,
-            showGambitDialog: RollForm.showGambitDialog,
+            showDialog: RollForm.showDialog,
             triggerAddCharm: RollForm.triggerAddCharm,
             addSpecialAttack: RollForm.addSpecialAttack,
             removeSpecialAttack: RollForm.removeSpecialAttack,
@@ -1092,7 +1093,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             for (const charm of this.object.addedCharms) {
                 if (charm.system.diceroller) {
                     if (!charm.system.diceroller.settings.noncharmdice) {
-                        this.object.charmDiceAdded = this._getFormulaValue(charm.system.diceroller.bonusdice) * (charm.timesAdded || 1);
+                        this.object.charmDiceAdded += this._getFormulaValue(charm.system.diceroller.bonusdice) * (charm.timesAdded || 1);
                     }
                     if (!charm.system.diceroller.settings.noncharmsuccesses) {
                         if (this.actor.system.details.exalt === 'sidereal') {
@@ -1363,6 +1364,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
             this._setupTargetDefense(target);
             target.rollData.shieldInitiative = target.actor.system.shieldinitiative.value;
+            if (this.object.rollType === 'social') {
+                target.rollData.knownIntimacies = target.actor.intimacies.filter(intimacy => intimacy.system.visible);
+            }
             let combatant = game.combat?.combatants?.find(c => c.tokenId === target.id) || null;
             if (combatant && combatant.initiative && combatant.initiative <= 0) {
                 target.rollData.hardness = 0;
@@ -1853,8 +1857,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }).render({ force: true });
     }
 
-    static async showGambitDialog(event, target) {
-        const html = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/dialogues/gambits.html", { 'useEssenceGambit': this.object.useEssenceGambit });
+    static async showDialog(event, target) {
+        const dialogType = target.dataset.dialogtype;
+        let template = "systems/exaltedthird/templates/dialogues/gambits.html";
+        if (dialogType === 'socialActions') {
+            template = "systems/exaltedthird/templates/dialogues/social-actions.html";
+        }
+        const html = await foundry.applications.handlebars.renderTemplate(template, { 'useEssenceGambit': this.object.useEssenceGambit });
 
         new foundry.applications.api.DialogV2({
             window: { title: game.i18n.localize("Ex3.Gambits"), resizable: true },
@@ -4093,6 +4102,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let theContent = `
             <div class="dice-roll">
                 <div class="dice-result">
+                    ${this.object.rollType === 'social' ? `<h4 class="dice-total">${this.object.socialType.capitalize()} Social Action</h4>` : ''}
                     <h4 class="dice-total">${this.object.dice} Dice + ${this.object.successes} ${this.object.successes === 1 ? `success` : 'successes'}</h4>
                     <div class="dice-tooltip">
                         ${this._getDiceRollDisplay()}
@@ -7226,6 +7236,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.damage.decisiveDamageCalculation = 'evenSplit';
             this.object.gambit = 'none';
         }
+        if (this.object.socialType === undefined) {
+            this.object.socialType = 'persuade';
+        }
+
         if (this.object.addStatuses === undefined) {
             this.object.addStatuses = [];
         }
@@ -7541,7 +7555,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             if (this._isAttackRoll()) {
                 const triggerMissedAttack = this.object.missedAttacks > 0 && (this.object.missedAttacks >= this.object.showTargets);
                 if (triggerMissedAttack) {
-                    if (this.object.attackType === 'decisive' && !game.settings.get("exaltedthird", "forgivingDecisives")) {
+                    if ((this.object.attackType === 'decisive' || this.object.attackType === 'gambit') && !game.settings.get("exaltedthird", "forgivingDecisives")) {
                         if (this.object.characterInitiative < 11) {
                             this.object.characterInitiative -= 2;
                         }
@@ -7572,13 +7586,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             this.object.characterInitiative = (this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier);
                         }
                     }
-                }
-                if (this.object.attackType === 'gambit') {
-                    const finalGambitCost = Math.max(0, (this.object.gambitDifficulty + 1 - this.object.reduceGambitCost));
-                    if (this.object.characterInitiative > 0 && (this.object.characterInitiative - finalGambitCost <= 0)) {
-                        this.object.characterInitiative -= 5;
+                    if (this.object.attackType === 'gambit') {
+                        const finalGambitCost = Math.max(0, (this.object.gambitDifficulty + 1 - this.object.reduceGambitCost));
+                        if (this.object.characterInitiative > 0 && (this.object.characterInitiative - finalGambitCost <= 0)) {
+                            this.object.characterInitiative -= 5;
+                        }
+                        this.object.characterInitiative -= finalGambitCost;
                     }
-                    this.object.characterInitiative -= finalGambitCost;
                 }
             }
             if (this.object.restore.initiative !== 0) {

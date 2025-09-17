@@ -125,7 +125,7 @@
                     {{#ifEquals data.attackType 'gambit'}}
                     <div class="resource grid grid-2col flex-center">
                         <div>
-                            <div class="resource-label">{{localize "Ex3.Gambit"}} <a class="fas fa-info-circle cursor-pointer" data-action="showGambitDialog" style="margin-right:3px;"><i></i></a></div>
+                            <div class="resource-label">{{localize "Ex3.Gambit"}} <a class="fas fa-info-circle cursor-pointer" data-action="showDialog" data-dialogtype="gambits" style="margin-right:3px;"><i></i></a></div>
                             <select id="gambit" name="object.gambit" data-type="String">
                                 {{#each selects.gambits as |gambitCategory gambitCategoryType|}}
                                 <optgroup label="{{gambitCategory.label}}">
