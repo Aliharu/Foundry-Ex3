@@ -1972,7 +1972,8 @@ export class ExaltedThirdActor extends Actor {
   alterDefensePenalty(direction = "increase", statusId = "defensePenalty") {
     let icon = 'systems/exaltedthird/assets/icons/slashed-shield.svg';
     let label = "Defense Penalty";
-    if (label === 'onslaught') {
+    if (statusId === 'onslaught') {
+      label = "Onslaught";
       icon = 'systems/exaltedthird/assets/icons/surrounded-shield.svg';
     }
     const existingPenalty = this.effects.find(i => i.flags.exaltedthird?.statusId === statusId);
