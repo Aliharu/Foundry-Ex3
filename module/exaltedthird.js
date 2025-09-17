@@ -869,6 +869,12 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
 Hooks.on("deleteCombat", (entity, deleted) => {
   for (const combatant of entity.combatants) {
     if (combatant?.actor) {
+      const onslaught = combatant.actor.effects.find(i => i.flags.exaltedthird?.statusId == "onslaught");
+      if (onslaught) {
+        if (!combatant.actor.system.dontresetonslaught) {
+          onslaught.delete();
+        }
+      }
       const previousActorData = foundry.utils.duplicate(combatant.actor);
       const endSceneItems = previousActorData.items.filter((item) => item.system.active && item.system.endtrigger === 'endscene' || (item.type === 'modifier' && item.system.resettrigger === 'endscene'));
       if (endSceneItems?.length) {
