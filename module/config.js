@@ -3026,7 +3026,8 @@ exaltedthird.selects = {
     bargain: "Ex3.Bargain",
     threaten: "Ex3.Threaten",
     inspire: "Ex3.Inspire",
-    instill: "Ex3.Instill"
+    instill: "Ex3.Instill",
+    other: "Ex3.Other",
   },
   charmFunctionTypes: {
     "benefit": "Ex3.Benefit",
