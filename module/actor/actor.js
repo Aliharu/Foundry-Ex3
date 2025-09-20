@@ -163,7 +163,7 @@ export class ExaltedThirdActor extends Actor {
         }
         else {
           updateData.system.settings = {
-            hasaura: CONFIG.exaltedthird.exigentTiers[caste]
+            exigenttype: CONFIG.exaltedthird.exigentTiers[caste]
           }
         }
         updateData.system.traits = {
@@ -784,6 +784,11 @@ export class ExaltedThirdActor extends Actor {
       "knives": [],
       "wounds": ['soulsteel', 'redjade'],
       "marchlord": [],
+      "bleakWarden": ['soulsteel', 'whitejade'],
+      "mysteries": ['orichalcum'],
+      "masks": [],
+      "reaver": ['blackjade'],
+      "dice": ['starmetal'],
     }
 
     if (exaltType === 'exigent' || exaltType === 'marchlord') {
@@ -793,6 +798,15 @@ export class ExaltedThirdActor extends Actor {
       }
       if (caste === 'knives') {
         resonance.custom = 'Artifact Knives';
+      }
+      if (caste === 'godAdmiral') {
+        resonance.custom = 'Artifact Ships';
+      }
+      if (caste === 'masks') {
+        resonance.custom = 'Artifact Masks';
+      }
+      if (caste === 'reaver') {
+        resonance.custom = 'Trophies of the Dead';
       }
     }
     else if (exaltType === 'alchemical') {
@@ -840,6 +854,15 @@ export class ExaltedThirdActor extends Actor {
       'south': ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'starmetal'],
       'east': ['adamant', 'orichalcum', 'soulsteel', 'blackjade', 'bluejade', 'redjade', 'starmetal'],
       'west': ['adamant', 'orichalcum', 'soulsteel', 'bluejade', 'greenjade', 'redjade', 'starmetal'],
+      "foxbinder": ['adamant', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade', 'starmetal'],
+      "godAdmiral": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'starmetal', 'greenjade', 'redjade', 'whitejade'],
+      "venoms": ['adamant', 'orichalcum', 'moonsilver', 'starmetal', 'blackjade', 'bluejade', 'redjade', 'whitejade'],
+      "torchbearer": ['adamant', 'moonsilver', 'soulsteel', 'starmetal', 'blackjade', 'bluejade', 'greenjade', 'whitejade'],
+      "bleakWarden": ['adamant', 'orichalcum', 'moonsilver', 'blackjade', 'bluejade', 'greenjade', 'redjade'],
+      "mysteries": ['moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade'],
+      "masks": ['adamant', 'orichalcum', 'moonsilver', 'soulsteel', 'blackjade', 'bluejade', 'greenjade', 'redjade', 'whitejade', 'starmetal'],
+      "reaver": [],
+      "dice": []
     }
 
     if (exaltType === 'exigent' || exaltType === 'marchlord') {

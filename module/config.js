@@ -442,29 +442,48 @@ exaltedthird.exaltcharmtypes = {
   abyssal: "Ex3.Abyssal",
   alchemical: "Ex3.Alchemical",
   architect: "Ex3.Architect",
+  bleakWarden: "Ex3.BleakWarden",
+  dice: "Ex3.ChosenOfDice",
   dragonblooded: "Ex3.Dragonblooded",
   dreamsouled: "Ex3.DreamSouled",
   eclipse: "Ex3.Eclipse",
   evocation: "Ex3.Evocation",
   exigent: "Ex3.Exigent",
+  foxbinder: "Ex3.Foxbinder",
   getimian: "Ex3.Getimian",
+  godAdmiral: "Ex3.GodAdmiral",
   hearteater: "Ex3.Hearteater",
   knives: "Ex3.ChosenOfKnives",
   infernal: "Ex3.Infernal",
   liminal: "Ex3.Liminal",
   lunar: "Ex3.Lunar",
+  masks: "Ex3.ChosenOfMasks",
   marchlord: "Ex3.MarchLord",
   martialarts: "Ex3.MartialArts",
+  mysteries: "Ex3.ChosenOfMysteries",
   puppeteer: "Ex3.Puppeteer",
+  reaver: "Ex3.Reaver",
   sidereal: "Ex3.Sidereal",
   solar: "Ex3.Solar",
   sovereign: "Ex3.Sovereign",
   strawmaiden: "Ex3.Strawmaiden",
+  torchbearer: "Ex3.Torchbearer",
+  venoms: "Ex3.ThousandVenomsMistress",
   umbral: "Ex3.Umbral",
   universal: "Ex3.Universal",
   wounds: "Ex3.ChosenOfWounds",
   other: "Ex3.Other"
 };
+
+// mysteries: "Ex3.ChosenOfMysteries",
+// bleakWarden: "Ex3.BleakWarden",
+// dice: "Ex3.ChosenOfDice",
+// godAdmiral: "Ex3.GodAdmiral",
+// torchbearer: "Ex3.Torchbearer",
+// venoms: "Ex3.ThousandVenomsMistress",
+// masks: "Ex3.ChosenOfMasks",
+// reaver: "Ex3.Reaver"
+// foxbinder: "Ex3.FoxBinder"
 
 exaltedthird.rolltypes = {
   attacks: "Ex3.Attacks",
@@ -715,6 +734,15 @@ exaltedthird.exigentTiers = {
   'puppeteer': 'terrestrial',
   'architect': 'terrestrial',
   'wounds': 'celestial',
+  'foxbinder': 'terrestrial',
+  'venoms': 'terrestrial',
+  'dice': 'celestial',
+  'godAdmiral': 'terrestrial',
+  'torchbearer': 'terrestrial',
+  'reaver': 'celestial',
+  'masks': 'celestial',
+  'mysteries': 'celestial',
+  'bleakWarden': 'celestial',
 }
 
 exaltedthird.abilityExalts = [
@@ -1299,6 +1327,20 @@ exaltedthird.casteabilitiesmap = {
   'adamant': [
     'appearance', 'perception', 'strength'
   ],
+  'foxbinder': [
+    'dodge', 'integrity', 'investigation'
+  ],
+  'godAdmiral': [
+    'appearance', 'charisma', 'perception', 'strength'
+  ],
+  'venoms': ['intelligence', 'stamina', 'manipulation', 'perception'],
+  'torchbearer': [
+    'awareness', 'integrity', 'linguistics', 'lore', 'resistance'
+  ],
+  'bleakWarden': ['occult', 'presence', 'stealth'],
+  'mysteries': ['investigation', 'lore', 'occult', 'socialize', 'stealth'],
+  'reaver': ['athletics', 'sail', 'war'],
+  'dice': ['dodge', 'larceny', 'socialize']
 };
 
 exaltedthird.maidenabilities = {
@@ -2325,9 +2367,18 @@ exaltedthird.selects = {
   },
   exigentNames: {
     "architect": "Ex3.Architect",
+    "bleakWarden": "Ex3.BleakWarden",
+    "dice": "Ex3.ChosenOfDice",
+    "foxbinder": "Ex3.Foxbinder",
+    "godAdmiral": "Ex3.GodAdmiral",
     "knives": "Ex3.ChosenOfKnives",
-    "strawmaiden": "Ex3.Strawmaiden",
+    "masks": "Ex3.ChosenOfMasks",
+    "mysteries": "Ex3.ChosenOfMysteries",
     "puppeteer": "Ex3.Puppeteer",
+    "reaver": "Ex3.Reaver",
+    "strawmaiden": "Ex3.Strawmaiden",
+    "venoms": "Ex3.ThousandVenomsMistress",
+    "torchbearer": "Ex3.Torchbearer",
     "wounds": "Ex3.ChosenOfWounds",
   },
   attributePriority: {
@@ -2969,6 +3020,13 @@ exaltedthird.selects = {
     steady: "Ex3.Steady",
     working: "Ex3.SorcerousWorking",
     useOpposingCharms: "Ex3.UseOpposingCharms",
+  },
+  socialTypes: {
+    persuade: "Ex3.Persuade",
+    bargain: "Ex3.Bargain",
+    threaten: "Ex3.Threaten",
+    inspire: "Ex3.Inspire",
+    instill: "Ex3.Instill"
   },
   charmFunctionTypes: {
     "benefit": "Ex3.Benefit",
