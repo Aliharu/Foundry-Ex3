@@ -697,7 +697,7 @@ exaltedthird.attributeExalts = [
   'wounds',
 ]
 
-exaltedthird.exigentStuntAbilities = {
+exaltedthird.secondaryStuntKeywords = {
   janest: {
     athletics: "Ex3.Athletics",
     awareness: "Ex3.Awareness",
@@ -726,6 +726,37 @@ exaltedthird.exigentStuntAbilities = {
     survival: "Ex3.Survival",
     thrown: "Ex3.Thrown",
   },
+  foxbinder: {
+    dexterity: "Ex3.DexterityPhysical",
+    charisma: "Ex3.CharismaSocial",
+    wits: "Ex3.WitsMental",
+  },
+  godAdmiral: {
+    strength: "Ex3.StrengthPhysical",
+    appearance: "Ex3.AppearanceSocial",
+    charisma: "Ex3.CharismaSocial",
+    Perception: "Ex3.PerceptionMental",
+  },
+  venoms: {
+    stamina: "Ex3.StaminaPhysical",
+    manipulation: "Ex3.ManipulationSocial",
+    intelligence: "Ex3.IntelligenceMental",
+    perception: "Ex3.PerceptionMental",
+  },
+  mysteries: {
+    investigation: "Ex3.Investigation",
+    lore: "Ex3.Lore",
+    occult: "Ex3.Occult",
+    socialize: "Ex3.Socialize",
+    stealth: "Ex3.Stealth",
+  },
+  reaver: {
+    otherCharacter: "Ex3.OtherCharacter",
+    intimacy: "Ex3.OtherCharacterIntimacy"
+  },
+  architect: {
+    inCity: "Ex3.InCity",
+  }
 }
 
 exaltedthird.exigentTiers = {
@@ -751,6 +782,20 @@ exaltedthird.abilityExalts = [
   'abyssal',
   'infernal'
 ];
+
+exaltedthird.abilityExigents = [
+  'janest',
+  'knives',
+  'bleakWarden',
+  'mysteries'
+];
+
+exaltedthird.allExcellencyExigents = [
+  'dice',
+  'reaver',
+  'masks',
+  'bleakWarden',
+]
 
 exaltedthird.npcpools = {
   command: 'Ex3.Command',

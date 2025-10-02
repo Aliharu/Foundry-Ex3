@@ -16,9 +16,9 @@
         <select class="update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
             {{selectOptions rollableAbilities selected=data.ability localize=true}}
         </select>
-        {{#if stuntAbilityList}}
-        <select name="object.stuntAbility" value="{{data.stuntAbility}}" data-type="String">
-            {{selectOptions stuntAbilityList selected=data.stuntAbility localize=true blank='Ex3.NoStuntAbility'}}
+        {{#if secondaryStuntKeywords}}
+        <select name="object.excellencyBonus" value="{{data.excellencyBonus}}" data-type="String">
+            {{selectOptions secondaryStuntKeywords selected=data.excellencyBonus localize=true blank='Ex3.ExcellencyBonus'}}
         </select>
         {{/if}}
         {{else}}

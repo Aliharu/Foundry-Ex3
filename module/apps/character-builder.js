@@ -893,8 +893,12 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         this.object.creationData.available.bonusPoints = 18;
       }
     }
-    if (this.object.character.exigent === 'architect') {
-      this.object.creationData.available.favoredAttributes = 1;
+    if (this.object.character.exalt === 'exigent') {
+      switch (this.object.character.exigent) {
+        case "architect":
+          this.object.creationData.available.favoredAttributes = 1;
+          break;
+      }
     }
     if (this.object.character.exalt === 'mortal') {
       this.object.creationData.available = {
@@ -2082,7 +2086,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           return true;
         }
         if (this.object.character.ritual?.system?.archetypename || this.object.character.necromancyRitual?.system?.archetypename) {
-          if (!merit.system.archetypename || (merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase() || merit.system.archetypename.toLowerCase() === this.object.character.necromancyRitual?.system?.archetypename.toLowerCase() )) {
+          if (!merit.system.archetypename || (merit.system.archetypename.toLowerCase() === this.object.character.ritual?.system?.archetypename.toLowerCase() || merit.system.archetypename.toLowerCase() === this.object.character.necromancyRitual?.system?.archetypename.toLowerCase())) {
             return true;
           }
         }
@@ -2514,6 +2518,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           actorData.system.attributes[key].excellency = true;
         }
       }
+      if (attribute.value >= 5 && this.object.character.exigent === 'reaver') {
+        actorData.system.attributes[key].excellency = true;
+      }
       if (this.object.character.exalt === 'alchemical') {
         if ((attribute.favored && attribute.value >= 3) || ((Object.entries(attribute.charms).length > 0) || attribute.upgrade > 0)) {
           actorData.system.attributes[key].excellency = true;
@@ -2524,7 +2531,16 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       actorData.system.abilities[key].value = ability.value;
       actorData.system.abilities[key].favored = ability.favored;
-      if (((Object.entries(ability.charms).length > 0) || (ability.favored && ability.value > 0)) && (CONFIG.exaltedthird.abilityExalts.includes(this.object.character.exalt) || this.object.character.exigent === 'strawmaiden' || this.object.character.exigent === 'knives')) {
+      if (((Object.entries(ability.charms).length > 0) || (ability.favored && ability.value > 0)) && (CONFIG.exaltedthird.abilityExalts.includes(this.object.character.exalt))) {
+        actorData.system.abilities[key].excellency = true;
+      }
+      if ((ability.favored && ability.value > 0) && CONFIG.exaltedthird.abilityExigents.includes(this.object.character.exigent)) {
+        actorData.system.abilities[key].excellency = true;
+      }
+      if ((ability.value > 2) && (this.object.character.exigent === 'reaver' || this.object.character.exigent === 'dice')) {
+        actorData.system.abilities[key].excellency = true;
+      }
+      if(this.object.character.exigent === 'masks') {
         actorData.system.abilities[key].excellency = true;
       }
       if (Object.values(ability.charms).some(charm => charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) {

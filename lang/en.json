@@ -219,7 +219,8 @@
     "Ex3.MentalAttribute": "Mental Attributes",
     "Ex3.SocialAttribute": "Social Attribute",
     "Ex3.NoStuntAttribute": "No Stunt Attribute",
-    "Ex3.NoStuntAbility": "No Stunt Ability",
+    "Ex3.ExcellencyBonus": "Excellency Bonus",
+    "Ex3.InCity": "In City",
 
     "Ex3.Defense": "Defense",
     "Ex3.SelfDefensePenalty": "Self Defense Penalty",
@@ -1463,6 +1464,21 @@
 
     "Ex3.Physical": "Physical",
     "Ex3.Mental": "Mental",
+
+    "Ex3.StrengthPhysical": "Strength (Physical)",
+    "Ex3.DexterityPhysical": "Dexterity (Physical)",
+    "Ex3.StaminaPhysical": "Stamina (Physical)",
+
+    "Ex3.AppearanceSocial": "Appearance (Social)",
+    "Ex3.CharismaSocial": "Charisma (Social)",
+    "Ex3.ManipulationSocial": "Manipulation (Social)",
+
+    "Ex3.PerceptionMental": "Perception (Mental)",
+    "Ex3.IntelligenceMental": "Intelligence (Mental)",
+    "Ex3.WitsMental": "Wits (Mental)",
+
+    "Ex3.OtherCharacter": "Other Character",
+    "Ex3.OtherCharacterIntimacy": "Other Character (Intimacy)",
 
     "Ex3.ReadMe": "Read Me",
 

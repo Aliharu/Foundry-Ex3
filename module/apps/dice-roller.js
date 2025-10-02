@@ -349,7 +349,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.spell = "";
             this.object.shipTrait = "maneuverability";
             this.object.stuntAttribute = "";
-            this.object.stuntAbility = "";
+            this.object.excellencyBonus = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
 
@@ -1132,7 +1132,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return {
             actor: this.actor,
             enableStuntAttribute: (this.actor?.type === 'character' && this.actor?.system.details.exalt === "lunar") || this.actor?.system.lunarform?.enabled,
-            stuntAbilityList: CONFIG.exaltedthird.exigentStuntAbilities[this.actor?.system.details.caste.toLowerCase() || ""] || null,
+            secondaryStuntKeywords: CONFIG.exaltedthird.secondaryStuntKeywords[this.actor?.system.details.caste.toLowerCase() || ""] || null,
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
@@ -2938,7 +2938,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return this.actor.system.baseinitiative.value + this.object.baseInitiativeModifier;
         }
         if (formula?.toLowerCase() === 'dicecap') {
-            let diceCapReturnValue = forumlaActor.type === 'character' ? forumlaActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : forumlaActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
+            let diceCapReturnValue = forumlaActor.type === 'character' ? forumlaActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty, this.object.excellencyBonus) : forumlaActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
             return diceCapReturnValue?.dice || 0;
         }
         if (formula?.toLowerCase() === 'weaponaccuracy') {
@@ -5081,7 +5081,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this._getRerollFormulaCap(cleanedValue, false, triggerActor);
                                         break;
                                     case 'fullExcellency':
-                                        let excellencyResults = triggerActor.type === 'character' ? triggerActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty) : triggerActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
+                                        let excellencyResults = triggerActor.type === 'character' ? triggerActor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty, this.object.excellencyBonus) : triggerActor.getNpcDiceCapValue(this.object.baseAccuracy || this.object.pool);
                                         if (excellencyResults) {
                                             this.object.diceModifier += (excellencyResults.dice - this.object.charmDiceAdded);
                                             // this.object.charmDiceAdded += (excellencyResults.dice - this.object.charmDiceAdded);
@@ -6673,70 +6673,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
-                if (this.actor.system.settings.dicecap.iscustom) {
-                    let returnValue = 0;
-                    if (this.actor.system.settings.dicecap.useattribute && this.actor.system.attributes[this.object.attribute]?.excellency) {
-                        returnValue += this.actor.system.attributes[this.object.attribute].value;
-                    }
-                    if (this.actor.system.settings.dicecap.useability && (this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency))) {
-                        returnValue += this.actor.getCharacterAbilityValue(this.object.ability);
-                    }
-                    if (this.actor.system.settings.dicecap.usespecialty && this.object.specialty) {
-                        returnValue += 1;
-                    }
-                    if (this.actor.system.settings.dicecap.other) {
-                        returnValue += this._getFormulaValue(this.actor.system.settings.dicecap.other);
-                    }
-                    return `${returnValue} ${this.actor.system.settings.dicecap.extratext}`;
-                }
-                if (this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
-                    let abilityValue = 0;
-                    let attributeValue = this.actor.system.attributes[this.object.attribute].value;
-                    abilityValue = this.actor.getCharacterAbilityValue(this.object.ability);
-                    if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt) || this.actor.system.details.caste === "wounds") {
-                        return abilityValue + this.actor.system.attributes[this.object.attribute].value;
-                    }
-                    if (this.actor.system.details.exalt === "dragonblooded" || this.actor.system.details.exalt === "marchlord") {
-                        return abilityValue + (this.object.specialty ? 1 : 0);
-                    }
-                    if (this.actor.system.details.exalt === "alchemical") {
-                        return Math.min(10, this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value);
-                    }
-                    if (this.actor.system.details.exalt === "lunar") {
-                        return this.actor.system.attributes[this.object.attribute].value + (this.actor.system.attributes[this.object.stuntAttribute]?.value || 0);
-                    }
-                    if (this.actor.system.details.exalt === "sidereal") {
-                        return `${Math.min(5, Math.max(3, this.actor.system.essence.value))}`;
-                    }
-                    if (this.actor.system.details.exalt === "dreamsouled") {
-                        return `${abilityValue} or ${Math.min(10, abilityValue + this.actor.system.essence.value)} when upholding ideal`;
-                    }
-                    if (this.actor.system.details.exalt === "umbral") {
-                        return `${Math.min(10, abilityValue + this.actor.system.penumbra.value)}`;
-                    }
-                    if (this.actor.system.details.exalt === "hearteater") {
-                        return `${this.actor.system.attributes[this.object.attribute].value + 1} + Intimacy`;
-                    }
-                    if (this.actor.system.details.exalt === "liminal") {
-                        if (this.actor.system.anima.value >= 1) {
-                            return `${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value}`;
-                        }
-                        else {
-                            return `${this.actor.system.attributes[this.object.attribute].value}`;
-                        }
-                    }
-                    if (this.actor.system.details.caste.toLowerCase() === "architect") {
-                        return `${this.actor.system.attributes[this.object.attribute].value} or ${this.actor.system.attributes[this.object.attribute].value + this.actor.system.essence.value} in cities`;
-                    }
-                    if (this.actor.system.details.caste.toLowerCase() === 'strawmaiden') {
-                        return this.actor.system.attributes[this.object.attribute].value + (this.actor.system.abilities[this.object.stuntAbility]?.value || 0);
-                    }
-                    if (this.actor.system.details.caste.toLowerCase() === "knives") {
-                        return 3 + (this.actor.system.abilities[this.object.stuntAbility]?.value || 0);
-                    }
-                    if (this.actor.system.details.exalt === "sovereign") {
-                        return Math.min(Math.max(this.actor.system.essence.value, 3) + this.actor.system.anima.value, 10);
-                    }
+                if (CONFIG.exaltedthird.allExcellencyExigents.includes(this.actor.system.details.caste) || this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
+                    return this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty, this.object.excellencyBonus)?.dice || 0;
                 }
             }
             else if (this.actor.system.lunarform?.enabled) {
@@ -6831,99 +6769,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return diceCap;
             }
             else if (this.actor.type === "npc" && this.actor.system.creaturetype === 'exalt') {
-                var dicePool = 0;
-                if (this.object.actions && this.object.actions.some(action => action._id === this.object.pool)) {
-                    dicePool = this.actor.actions.find(x => x._id === this.object.pool).system.value;
-                }
-                else if (this.actor.system.pools[this.object.pool]) {
-                    if (this.object.baseAccuracy) {
-                        dicePool = this.object.baseAccuracy;
-                    } else {
-                        dicePool = this.actor.system.pools[this.object.pool].value;
-                    }
-                }
-                var diceTier = "zero";
-                var diceMap = {
-                    'zero': 0,
-                    'two': 2,
-                    'three': 3,
-                    'seven': 7,
-                    'eleven': 11,
-                };
-                if (dicePool <= 2) {
-                    diceTier = "two";
-                }
-                else if (dicePool <= 6) {
-                    diceTier = "three";
-                }
-                else if (dicePool <= 10) {
-                    diceTier = "seven";
-                }
-                else {
-                    diceTier = "eleven";
-                }
-                if (this.actor.system.details.exalt === "sidereal") {
-                    return this.actor.system.essence.value;
-                }
-                if (['abyssal', 'solar', 'infernal'].includes(this.actor.system.details.exalt)) {
-                    diceMap = {
-                        'zero': 0,
-                        'two': 2,
-                        'three': 5,
-                        'seven': 7,
-                        'eleven': 10,
-                    };
-                }
-                if (this.actor.system.details.exalt === 'alchemical') {
-                    diceMap = {
-                        'zero': 0,
-                        'two': this.actor.system.essence.value + 1,
-                        'three': this.actor.system.essence.value + 2,
-                        'seven': this.actor.system.essence.value + 4,
-                        'eleven': this.actor.system.essence.value + 5,
-                    };
-                }
-                if (this.actor.system.details.exalt === 'getimian') {
-                    diceMap = {
-                        'zero': 0,
-                        'two': 2,
-                        'three': 5,
-                        'seven': 6,
-                        'eleven': 10,
-                    };
-                }
-                if (this.actor.system.details.exalt === "dragonblooded") {
-                    diceMap = {
-                        'zero': 0,
-                        'two': 0,
-                        'three': 2,
-                        'seven': 4,
-                        'eleven': 6,
-                    };
-                }
-                if (this.actor.system.details.exalt === "lunar") {
-                    diceMap = {
-                        'zero': 0,
-                        'two': 1,
-                        'three': 2,
-                        'seven': 4,
-                        'eleven': 5,
-                    };
-                    if (diceTier === 'two') {
-                        return 1;
-                    }
-                    return `${diceMap[diceTier]}, ${diceTier === 'seven' ? (diceMap[diceTier] * 2) - 1 : diceMap[diceTier] * 2}`;
-                }
-                if (this.actor.system.details.exalt === "liminal") {
-                    diceMap = {
-                        'zero': 0,
-                        'two': 1,
-                        'three': 2,
-                        'seven': 4,
-                        'eleven': 5,
-                    };
-                }
-                return diceMap[diceTier];
+                return this.actor.getQcDiceCap(this.object.pool, this.object.baseAccuracy);
             }
         }
         return "";

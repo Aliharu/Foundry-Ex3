@@ -1373,20 +1373,21 @@ export class ExaltedThirdActor extends Actor {
     actorData.shapes = shapes;
   }
 
-  getCharacterDiceCapValue(ability, attribute, hasSpecialty) {
+  getCharacterDiceCapValue(ability, attribute, hasSpecialty, excellencyBonus) {
     let diceCap = 0;
-    let abilityValue = 0;
+    let abilityValue = this.getCharacterAbilityValue(ability);
     let targetNumber = 0;
+    let secondaryEffectValue = 0;
     let attributeValue = this.system.attributes[attribute]?.value || 0;
     if (this.system.settings.dicecap.iscustom) {
       let returnValue = 0;
-      if (this.system.settings.dicecap.useattribute && this.system.attributes[attribute]?.excellency) {
-        returnValue += this.system.attributes[attribute].value;
+      if (this.system.settings.dicecap.useattribute) {
+        returnValue += attributeValue;
       }
-      if (this.system.settings.dicecap.useability && (this.system.abilities[ability]?.excellency || this.object.customabilities.some(ma => ma._id === ability && ma.system.excellency))) {
-        returnValue += this.getCharacterAbilityValue(ability);
+      if (this.system.settings.dicecap.useability) {
+        returnValue += abilityValue;
       }
-      if (this.system.settings.dicecap.usespecialty && this.object.specialty) {
+      if (this.system.settings.dicecap.usespecialty && hasSpecialty) {
         returnValue += 1;
       }
       if (this.system.settings.dicecap.other) {
@@ -1407,59 +1408,206 @@ export class ExaltedThirdActor extends Actor {
     if (this.system.abilities[ability]) {
       abilityValue = this.system.abilities[ability]?.value || 0;
     }
+    if (excellencyBonus) {
+      if (this.system.abilities[excellencyBonus]?.value) {
+        secondaryEffectValue = this.system.abilities[excellencyBonus]?.value;
+      }
+      if (this.system.attributes[excellencyBonus]?.value) {
+        secondaryEffectValue = this.system.attributes[excellencyBonus]?.value;
+      }
+      if (excellencyBonus === 'otherCharacter') {
+        secondaryEffectValue += 2;
+      }
+      if (excellencyBonus === 'intimacy') {
+        secondaryEffectValue += 4;
+      }
+      if (excellencyBonus === 'inCity') {
+        secondaryEffectValue += this.system.essence.value;
+      }
+    }
 
-    switch (this.system.details.exalt) {
-      case 'abyssal':
-      case 'solar':
-      case 'infernal':
-        diceCap = abilityValue + attributeValue;
-        break;
-      case 'alchemical':
-        diceCap = Math.min(10, attributeValue + this.system.essence.value);
-        break;
-      case 'dragonblooded':
-        diceCap = abilityValue + (hasSpecialty ? 1 : 0);
-        break;
-      case 'lunar':
-        diceCap = attributeValue + this._getHighestAttributeNumber(attribute, this.system.attributes, true);
-        break;
-      case 'sidereal':
-        diceCap = Math.min(5, Math.max(3, this.system.essence.value));
-        if (abilityValue === 5) {
-          if (this.system.essence.value >= 3) {
-            targetNumber = 3;
+    if (this.system.details.exalt !== 'exigent') {
+      switch (this.system.details.exalt) {
+        case 'abyssal':
+        case 'solar':
+        case 'infernal':
+          diceCap = abilityValue + attributeValue;
+          break;
+        case 'alchemical':
+          diceCap = Math.min(10, attributeValue + this.system.essence.value);
+          break;
+        case 'dragonblooded':
+        case 'marchlord':
+          diceCap = abilityValue + (hasSpecialty ? 1 : 0);
+          break;
+        case 'lunar':
+          diceCap = attributeValue + this._getHighestAttributeNumber(attribute, this.system.attributes, true);
+          break;
+        case 'sidereal':
+          diceCap = Math.min(5, Math.max(3, this.system.essence.value));
+          if (abilityValue === 5) {
+            if (this.system.essence.value >= 3) {
+              targetNumber = 3;
+            }
+            else {
+              targetNumber = 2;
+            }
+          }
+          else if (abilityValue >= 3) {
+            targetNumber = 1;
+          }
+          break;
+        case 'umbral':
+          diceCap = Math.min(10, abilityValue + this.system.penumbra.value);
+          break;
+        case 'liminal':
+          if (this.system.anima.value >= 1) {
+            diceCap = attributeValue + this.system.essence.value;
           }
           else {
-            targetNumber = 2;
+            diceCap = attributeValue;
           }
-        }
-        else if (abilityValue >= 3) {
-          targetNumber = 1;
-        }
-        break;
-      case 'umbral':
-        diceCap = Math.min(10, abilityValue + this.system.penumbra.value);
-        break;
-      case 'liminal':
-        if (this.system.anima.value >= 1) {
-          diceCap = attributeValue + this.system.essence.value;
-        }
-        else {
-          diceCap = attributeValue;
-        }
-        break;
-      case 'sovereign':
-        diceCap = Math.min(Math.max(this.system.essence.value, 3) + this.system.anima.value, 10);
-        break;
-      default:
-        return null;
+          break;
+        case 'sovereign':
+          diceCap = Math.min(Math.max(this.system.essence.value, 3) + this.system.anima.value, 10);
+          break;
+        default:
+          diceCap = 0;
+      }
+    } else {
+      switch (this.system.details.caste) {
+        case 'architect':
+        case 'strawmaiden':
+        case 'mysteries':
+          diceCap = attributeValue + secondaryEffectValue;
+          break;
+        case 'knives':
+          diceCap = 3 + secondaryEffectValue;
+          break;
+        case 'sovereign':
+          diceCap = Math.min(Math.max(this.system.essence.value, 3) + this.system.anima.value, 10);
+          break;
+        case 'foxbinder':
+        case 'godAdmiral':
+        case 'venoms':
+          diceCap = secondaryEffectValue;
+          break;
+        case 'torchbearer':
+          diceCap = abilityValue + this.system.anima.value;
+          break;
+        case 'reaver':
+          diceCap = attributeValue + 1 + secondaryEffectValue;
+          break;
+        case 'dice':
+          diceCap = abilityValue + attributeValue;
+          break;
+        default:
+          diceCap = 0;
+      }
     }
+
 
     return {
       dice: diceCap,
       targetNumber: targetNumber,
       cost: diceCap,
     };
+  }
+
+  getQcDiceCap(pool, baseAccuracy = 0) {
+    let dicePool = 0;
+    if (this.actions && this.actions.some(action => action._id === pool)) {
+      dicePool = this.actions.find(x => x._id === pool).system.value;
+    }
+    else if (this.system.pools[pool]) {
+      if (baseAccuracy) {
+        dicePool = baseAccuracy;
+      } else {
+        dicePool = this.system.pools[pool].value;
+      }
+    }
+    let diceTier = "zero";
+    let diceMap = {
+      'zero': 0,
+      'two': 2,
+      'three': 3,
+      'seven': 7,
+      'eleven': 11,
+    };
+    if (dicePool <= 2) {
+      diceTier = "two";
+    }
+    else if (dicePool <= 6) {
+      diceTier = "three";
+    }
+    else if (dicePool <= 10) {
+      diceTier = "seven";
+    }
+    else {
+      diceTier = "eleven";
+    }
+    if (this.system.details.exalt === "sidereal") {
+      return this.system.essence.value;
+    }
+    if (['abyssal', 'solar', 'infernal'].includes(this.system.details.exalt)) {
+      diceMap = {
+        'zero': 0,
+        'two': 2,
+        'three': 5,
+        'seven': 7,
+        'eleven': 10,
+      };
+    }
+    if (this.system.details.exalt === 'alchemical') {
+      diceMap = {
+        'zero': 0,
+        'two': this.system.essence.value + 1,
+        'three': this.system.essence.value + 2,
+        'seven': this.system.essence.value + 4,
+        'eleven': this.system.essence.value + 5,
+      };
+    }
+    if (this.system.details.exalt === 'getimian') {
+      diceMap = {
+        'zero': 0,
+        'two': 2,
+        'three': 5,
+        'seven': 6,
+        'eleven': 10,
+      };
+    }
+    if (this.system.details.exalt === "dragonblooded") {
+      diceMap = {
+        'zero': 0,
+        'two': 0,
+        'three': 2,
+        'seven': 4,
+        'eleven': 6,
+      };
+    }
+    if (this.system.details.exalt === "lunar") {
+      diceMap = {
+        'zero': 0,
+        'two': 1,
+        'three': 2,
+        'seven': 4,
+        'eleven': 5,
+      };
+      if (diceTier === 'two') {
+        return 1;
+      }
+      return `${diceMap[diceTier]}, ${diceTier === 'seven' ? (diceMap[diceTier] * 2) - 1 : diceMap[diceTier] * 2}`;
+    }
+    if (this.system.details.exalt === "liminal") {
+      diceMap = {
+        'zero': 0,
+        'two': 1,
+        'three': 2,
+        'seven': 4,
+        'eleven': 5,
+      };
+    }
+    return diceMap[diceTier];
   }
 
   async restoreHealth(amount, healAggravated = false) {
