@@ -396,6 +396,7 @@ export class ItemSpellData extends CommonItemData {
             duration: new fields.StringField({ initial: "" }),
             shaping: new fields.BooleanField({ initial: false }),
             controlspell: new fields.BooleanField({ initial: false }),
+            hasevocations: new fields.BooleanField({ initial: false }),
         }
     }
 

@@ -106,8 +106,8 @@
                 {{/each}}
                 {{else}}
                 {{#each system.archetype.charmprerequisites as |item id|}}
-                <li class="embeded-item-pill" data-action="showEmbeddedItem" data-item-name="{{../name}}" data-item-index="{{id}}"
-                    data-type="archetype">
+                <li class="embeded-item-pill" data-action="showEmbeddedItem" data-item-name="{{../name}}"
+                    data-item-index="{{id}}" data-type="archetype">
                     {{item.name}}
                 </li>
                 {{/each}}
@@ -124,6 +124,14 @@
         {{#ifEquals system.charmtype 'evocation'}}
         <div class="flex-center">
             <div class="resource-label">{{localize "Ex3.Artifact"}}</div>
+        </div>
+        {{else ifEquals system.charmtype 'sorcery'}}
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Spell"}}</div>
+        </div>
+        {{else ifEquals system.charmtype 'necromancy'}}
+        <div class="flex-center">
+            <div class="resource-label">{{localize "Ex3.Spell"}}</div>
         </div>
         {{else}}
         <div class="flex-center">

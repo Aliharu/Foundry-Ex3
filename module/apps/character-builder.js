@@ -438,6 +438,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           crafts: {},
           evocations: {},
           otherCharms: {},
+          spellCharms: {},
           martialArts: {},
           martialArtsCharms: {},
           weapons: {},
@@ -1119,6 +1120,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
 
     for (const [key, charm] of Object.entries(this.object.character.otherCharms)) {
+      favoredCharms += charm.itemCount;
+    }
+
+    for (const [key, charm] of Object.entries(this.object.character.spellCharms)) {
       nonFavoredCharms += charm.itemCount;
     }
 
@@ -1799,6 +1804,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         else if (newItem.system.charmtype === 'otherCharm') {
           this.object.character.otherCharms[Object.entries(this.object.character.otherCharms).length] = newItem;
         }
+        else if (newItem.system.charmtype === 'spellCharm') {
+          this.object.character.spellCharms[Object.entries(this.object.character.spellCharms).length] = newItem;
+        }
         else if (newItem.system.charmtype === 'martialarts') {
           this.object.character.martialArtsCharms[Object.entries(this.object.character.martialArtsCharms).length] = newItem;
         }
@@ -1954,13 +1962,13 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       items = items.filter(item => item.system.ritualtype === itemRitual);
     }
     let archetypeCharms = [];
-    if (itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
+    if (itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm' || itemType === 'spellCharm') {
       items = game.items.filter(charm => charm.type === 'charm');
     }
     if (type === 'martialArts') {
       items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart' && (!item.system.siderealmartialart || this.object.character.essence >= 3));
     }
-    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
+    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm' || itemType === 'spellCharm') {
       items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
       if (itemType === 'charm') {
         if (this.object.character.exalt === 'exigent') {
@@ -2035,6 +2043,18 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           return true;
         });
       }
+      else if (itemType === 'spellCharm') {
+        items = items.filter(charm => charm.system.charmtype === 'sorcery' || charm.system.charmtype === 'necromancy');
+        items = items.filter(charm => {
+          let returnVal = false;
+          if (charm.system.parentitemid) {
+            if (Object.values(this.object.character.spells).some(spell => spell._id === charm.system.parentitemid)) {
+              returnVal = true;
+            }
+          }
+          return returnVal;
+        });
+      }
       else if (itemType === 'otherCharm') {
         items = items.filter(charm => charm.system.charmtype === 'other' || charm.system.charmtype === 'eclipse' || charm.system.charmtype === 'universal');
       }
@@ -2099,6 +2119,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       ...Object.values(this.object.character.martialArtsCharms).map(charm => charm._id),
       ...Object.values(this.object.character.evocations).map(charm => charm._id),
       ...Object.values(this.object.character.otherCharms).map(charm => charm._id),
+      ...Object.values(this.object.character.spellCharms).map(charm => charm._id),
       ...Object.values(this.object.character.spells).map(spell => spell._id),
       ...Object.values(this.object.character.weapons).map(weapon => weapon._id),
       ...Object.values(this.object.character.armors).map(armor => armor._id),
@@ -2106,7 +2127,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       ...Object.values(this.object.character.specialAbilities).map(item => item._id),
       ...Object.values(this.object.character.merits).map(merit => merit._id),
     ];
-    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm') {
+    if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm' || itemType === 'spellCharm') {
       items = items.filter(charm => {
         if (charm.system.numberprerequisites.number > 0) {
           let existingCharms = 0;
@@ -2540,7 +2561,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       if ((ability.value > 2) && (this.object.character.exigent === 'reaver' || this.object.character.exigent === 'dice')) {
         actorData.system.abilities[key].excellency = true;
       }
-      if(this.object.character.exigent === 'masks') {
+      if (this.object.character.exigent === 'masks') {
         actorData.system.abilities[key].excellency = true;
       }
       if (Object.values(ability.charms).some(charm => charm.system.ability === key && charm.system.keywords.toLowerCase().includes('excellency'))) {
@@ -2978,6 +2999,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     for (const otherCharm of Object.values(this.object.character.otherCharms)) {
       itemData.push(foundry.utils.duplicate(otherCharm));
+    }
+
+    for (const spellCharm of Object.values(this.object.character.spellCharms)) {
+      itemData.push(foundry.utils.duplicate(spellCharm));
     }
 
     for (const martialArtsCharm of Object.values(this.object.character.martialArtsCharms)) {

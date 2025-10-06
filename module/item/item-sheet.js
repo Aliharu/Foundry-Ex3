@@ -218,6 +218,18 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         }
         context.showParentItemList = true;
       }
+      if (itemData.system.charmtype === 'sorcery') {
+        for (const spell of game.items.filter(item => item.type === 'spell' && item.system.hasevocations && ['terrestrial', 'celestial', 'solar'].includes(item.system.circle)).sort((a, b) => a.name.localeCompare(b.name))) {
+          context.parentItemList[spell.id] = spell.name;
+        }
+        context.showParentItemList = true;
+      }
+      if (itemData.system.charmtype === 'necromancy') {
+        for (const spell of game.items.filter(item => item.type === 'spell' && item.system.hasevocations && ['ivory', 'shadow', 'void'].includes(item.system.circle)).sort((a, b) => a.name.localeCompare(b.name))) {
+          context.parentItemList[spell.id] = spell.name;
+        }
+        context.showParentItemList = true;
+      }
     }
     context.childCharms = game.items.filter(charm => charm.type === 'charm' && charm.system.parentitemid === itemData._id);
 
