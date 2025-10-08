@@ -548,43 +548,8 @@ export class ExaltedThirdActor extends Actor {
   }
 
   calculateMaxExaltedMotes(moteType, exaltType, essenceLevel) {
-    var maxMotes = 0;
+    let maxMotes = 0;
     if (moteType === 'personal') {
-      // if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
-      //   maxMotes = 10 + (essenceLevel * 3);
-      // }
-      // if (exaltType === 'dragonblooded') {
-      //   maxMotes = 11 + essenceLevel;
-      // }
-      // if (exaltType === 'lunar' || exaltType === 'getimian') {
-      //   maxMotes = 15 + essenceLevel;
-      // }
-      // if (exaltType === 'sovereign') {
-      //   maxMotes = 4 + essenceLevel;
-      // }
-      // if (exaltType === 'exigent') {
-      //   if (this.system.settings?.exigenttype === 'celestial') {
-      //     maxMotes = 11 + (essenceLevel * 2);
-      //   }
-      //   else {
-      //     maxMotes = 11 + essenceLevel;
-      //   }
-      // }
-      // if (exaltType === 'sidereal') {
-      //   maxMotes = 9 + (essenceLevel * 2);
-      // }
-      // if (exaltType === 'liminal') {
-      //   maxMotes = 10 + (essenceLevel * 3);
-      // }
-      // if (exaltType === 'other') {
-      //   maxMotes = 10 * essenceLevel;
-      // }
-      // if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
-      //   maxMotes = 11 + essenceLevel;
-      // }
-      // if (exaltType === 'alchemical' || this.system.details?.caste.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
-      //   maxMotes = 11 + (essenceLevel * 2);
-      // }
       if (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden') {
         maxMotes = CONFIG.exaltedthird.exaltMotePools.personal.base['default'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.personal.essenceLevelMultiplier['celestialExigent']);
       } else {
@@ -603,38 +568,6 @@ export class ExaltedThirdActor extends Actor {
       }
     }
     else {
-      // if (exaltType === 'solar' || exaltType === 'abyssal' || exaltType === 'infernal') {
-      //   maxMotes = 26 + (essenceLevel * 7);
-      // }
-      // if (exaltType === 'dragonblooded') {
-      //   maxMotes = 23 + (essenceLevel * 4);
-      // }
-      // if (exaltType === 'lunar') {
-      //   maxMotes = 34 + (essenceLevel * 4);
-      // }
-      // if (exaltType === 'sovereign') {
-      //   maxMotes = 30 + (essenceLevel * 4);
-      // }
-      // if (exaltType === 'exigent') {
-      //   if (this.system.settings?.exigenttype === 'celestial') {
-      //     maxMotes = 27 + (essenceLevel * 6);
-      //   }
-      //   else {
-      //     maxMotes = 23 + (essenceLevel * 4);
-      //   }
-      // }
-      // if (exaltType === 'sidereal' || exaltType === 'getimian') {
-      //   maxMotes = 25 + (essenceLevel * 6);
-      // }
-      // if (exaltType === 'liminal') {
-      //   maxMotes = 23 + (essenceLevel * 4);
-      // }
-      // if (exaltType === 'dreamsouled' || this.system.details?.caste?.toLowerCase() === 'architect' || this.system.details?.caste?.toLowerCase() === 'puppeteer') {
-      //   maxMotes = 23 + (essenceLevel * 4);
-      // }
-      // if (exaltType === 'alchemical' || this.system.details?.caste?.toLowerCase() === 'strawmaiden' || exaltType === 'hearteater' || exaltType === 'umbral') {
-      //   maxMotes = 27 + (essenceLevel * 6);
-      // }
       if (this.system.settings?.exigenttype === 'celestial' || this.system.details?.caste.toLowerCase() === 'strawmaiden') {
         maxMotes = CONFIG.exaltedthird.exaltMotePools.peripheral.base['celestialExigent'] + (essenceLevel * CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier['celestialExigent']);
       } else {
@@ -1024,24 +957,23 @@ export class ExaltedThirdActor extends Actor {
     let totalShipHealth = 0;
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
-
-    let staticActorData = actorData._source;
+    let staticActor = actorData;
 
     if (actorData.system.lunarform?.enabled) {
       const lunar = game.actors.get(actorData.system.lunarform?.actorid);
       if (lunar) {
-        staticActorData = lunar._source;
+        staticActor = lunar;
         data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
         data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
       }
     }
-    if (staticActorData.type === "character" || staticActorData.system.creaturetype === 'exalt') {
-      data.parry.cap = this._getStaticCap(staticActorData, 'parry', staticActorData.system.parry.value);
+    if (staticActor.type === "character" || staticActor.system.creaturetype === 'exalt') {
+      data.parry.cap = staticActor._getStaticCap('parry', staticActor.system.parry.value);
       if (data.parry.cap !== '') {
         data.evasion.padding = true;
         data.defenseCapPadding = true;
       }
-      data.evasion.cap = this._getStaticCap(staticActorData, 'evasion', staticActorData.system.evasion.value);
+      data.evasion.cap = staticActor._getStaticCap('evasion', staticActor.system.evasion.value);
       if (data.evasion.cap !== '') {
         data.evasion.padding = false;
         if (data.parry.cap === '') {
@@ -1049,12 +981,12 @@ export class ExaltedThirdActor extends Actor {
         }
         data.defenseCapPadding = true;
       }
-      data.guile.cap = this._getStaticCap(staticActorData, 'guile', staticActorData.system.guile.value);
+      data.guile.cap = staticActor._getStaticCap('guile', staticActor.system.guile.value);
       if (data.guile.cap !== '') {
         data.resolve.padding = true;
         data.socialCapPadding = true;
       }
-      data.resolve.cap = this._getStaticCap(staticActorData, 'resolve', staticActorData.system.resolve.value);
+      data.resolve.cap = staticActor._getStaticCap('resolve', staticActor.system.resolve.value);
       if (data.resolve.cap !== '') {
         if (data.guile.cap === '') {
           data.guile.padding = true;
@@ -1062,7 +994,7 @@ export class ExaltedThirdActor extends Actor {
         data.resolve.padding = false;
         data.socialCapPadding = true;
       }
-      data.soak.cap = this._getStaticCap(staticActorData, 'soak', actorData.type === "character" ? (data.attributes?.stamina?.value || 0) : staticActorData.system.soak.value);
+      data.soak.cap = staticActor._getStaticCap('soak', actorData.type === "character" ? (data.attributes?.stamina?.value || 0) : staticActor.system.soak.value);
 
 
       // if (staticActorData.type === "character" && data.attributes.stamina.excellency) {
@@ -1415,13 +1347,16 @@ export class ExaltedThirdActor extends Actor {
       if (this.system.attributes[excellencyBonus]?.value) {
         secondaryEffectValue = this.system.attributes[excellencyBonus]?.value;
       }
-      if (excellencyBonus === 'otherCharacter') {
+      if (excellencyBonus === 'otherCharacter' || excellencyBonus === 'minorIntimacy') {
         secondaryEffectValue += 2;
       }
-      if (excellencyBonus === 'intimacy') {
+      if (excellencyBonus === 'majorIntimacy') {
+        secondaryEffectValue += 3;
+      }
+      if (excellencyBonus === 'intimacy' || excellencyBonus === 'definingIntimacy') {
         secondaryEffectValue += 4;
       }
-      if (excellencyBonus === 'inCity') {
+      if (excellencyBonus === 'inCity' || excellencyBonus === 'upholdIdeal') {
         secondaryEffectValue += this.system.essence.value;
       }
     }
@@ -1436,12 +1371,18 @@ export class ExaltedThirdActor extends Actor {
         case 'alchemical':
           diceCap = Math.min(10, attributeValue + this.system.essence.value);
           break;
+        case 'dreamsouled':
+          diceCap = Math.min(10, abilityValue + secondaryEffectValue);
+          break;
+        case 'hearteater':
+          diceCap = attributeValue + 1 + secondaryEffectValue;
+          break;
         case 'dragonblooded':
         case 'marchlord':
           diceCap = abilityValue + (hasSpecialty ? 1 : 0);
           break;
         case 'lunar':
-          diceCap = attributeValue + this._getHighestAttributeNumber(attribute, this.system.attributes, true);
+          diceCap = attributeValue + secondaryEffectValue;
           break;
         case 'sidereal':
           diceCap = Math.min(5, Math.max(3, this.system.essence.value));
@@ -1749,96 +1690,51 @@ export class ExaltedThirdActor extends Actor {
     return highestAttributeNumber;
   }
 
-  _getStaticCap(actorData, type, value) {
-    if (actorData.type === "character") {
-      const attributeValue = actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0;
-      const abilityValue = actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.value || 0;
-      if (actorData.system.settings.dicecap.iscustom) {
-        let returnValue = 0;
-        if (actorData.system.settings.dicecap.useattribute && actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
-          returnValue += attributeValue;
-        }
-        if (actorData.system.settings.dicecap.useability && actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency) {
-          returnValue += abilityValue;
-        }
-        if (actorData.system.settings.dicecap.usespecialty) {
-          returnValue += (actorData.system.settings.staticcapsettings[type]?.specialty || 0);
-        }
-        if (actorData.system.settings.dicecap.other) {
-          returnValue += getNumberFormula(actorData.system.settings.dicecap.other, this);
-        }
-        returnValue = Math.floor(returnValue / 2);
-        return `+${returnValue} for ${returnValue * 2}m`;
+  _getStaticCap(type, value, excellencyBonus = null) {
+    if (this.type === "character") {
+      const diceCap = this.getCharacterDiceCapValue(this.system.settings.staticcapsettings[type].ability, this.system.settings.staticcapsettings[type].attribute, (this.system.settings.staticcapsettings[type]?.specialty || false), excellencyBonus);
+      const diceCapValue = this.system.details.exalt === 'sidereal' ? diceCap.dice : Math.floor(diceCap.dice / 2);
+      if (this.system.settings.dicecap.iscustom) {
+        return `+${diceCapValue} for ${diceCapValue * 2}m`;
       }
-      if (!actorData.system.abilities[actorData.system.settings.staticcapsettings[type].ability]?.excellency && !actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.excellency) {
+      if (!this.system.abilities[this.system.settings.staticcapsettings[type].ability]?.excellency && !this.system.attributes[this.system.settings.staticcapsettings[type].attribute]?.excellency) {
         return '';
       }
-      if (actorData.system.details.exalt === 'alchemical') {
-        value = Math.min(10, attributeValue + abilityValue);
-      }
-      value = Math.floor(((attributeValue) + (abilityValue)) / 2);
-      switch (actorData.system.details.exalt) {
-        case 'dragonblooded':
-          value = Math.floor(((abilityValue) + (actorData.system.settings.staticcapsettings[type]?.specialty || 0)) / 2);
-          return `+${value} for ${value * 2}m`
-        case 'sidereal':
-          let baseSidCap = Math.min(5, Math.max(3, actorData.system.essence.value));
-          return `+${baseSidCap} for ${baseSidCap * 2}m`
-        case 'solar':
-        case 'abyssal':
-        case 'infernal':
-          return `+${value} for ${value * 2}m`;
-        case 'alchemical':
-          let baseAlchCap = Math.floor(Math.min(10, attributeValue + actorData.system.essence.value) / 2);
-          if (type === 'soak') {
-            return `+${baseAlchCap} for ${baseAlchCap}m`;
+      if (this.system.details.exalt === 'lunar') {
+        let highestAttributeNumber = 0;
+        for (let [name, attribute] of Object.entries(this.system.attributes)) {
+          if (attribute.value > highestAttributeNumber) {
+            highestAttributeNumber = attribute.value;
           }
-          return `+${baseAlchCap} for ${baseAlchCap * 2}m`;
-        case 'lunar':
-          let highestAttributeNumber = 0;
-          for (let [name, attribute] of Object.entries(actorData.system.attributes)) {
-            if (attribute.value > highestAttributeNumber) {
-              highestAttributeNumber = attribute.value;
-            }
-          }
-          let newValueLow = Math.floor(attributeValue / 2);
-          let newValueHigh = Math.floor((attributeValue + highestAttributeNumber) / 2);
-          if (type === 'soak') {
-            return `+${newValueLow} for ${newValueLow}m`
-          }
-          return `+${newValueLow}-${newValueHigh} for ${newValueLow * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m`
-        case 'liminal':
-          value = Math.floor(((actorData.system.attributes[actorData.system.settings.staticcapsettings[type].attribute]?.value || 0) + (actorData.system.anima.value > 0 ? actorData.system.essence.value : 0)) / 2);
-          return `+${value} for ${value * 2}m`
-        case 'hearteater':
-          value = Math.floor((abilityValue + 1) / 2);
-          return `+${value} for ${value * 2}m`;
-        case 'dreamsouled':
-          value = Math.floor(abilityValue / 2);
-          return `+${value} for ${value * 2}m`;
-        case 'umbral':
-          value = Math.floor(Math.min(10, abilityValue + actorData.system.penumbra.value) / 2);
-          return `+${value} for ${value * 2}m`
-        default:
-          return ''
+        }
+        if(excellencyBonus && type !== 'soak') {
+          return `+${diceCapValue} for ${diceCapValue * 2}m`;
+        }
+        let newValueHigh = Math.floor((diceCap.dice + highestAttributeNumber) / 2);
+        return `+${diceCapValue}-${newValueHigh} for ${diceCapValue * (type === 'soak' ? 1 : 2)}-${newValueHigh * (type === 'soak' ? 1 : 2)}m`
+      } else {
+        if (type === 'soak') {
+          return `+${diceCapValue} for ${diceCapValue}m`;
+        }
+        return `+${diceCapValue} for ${diceCapValue * 2}m`;
       }
     }
-    else if (actorData.system.creaturetype === 'exalt') {
+    else if (this.system.creaturetype === 'exalt') {
       let caps
       let bonus = 0
-      if (actorData.system.details.exalt === 'lunar') {
+      if (this.system.details.exalt === 'lunar') {
         if (value <= 1) return `+0 for 0m; +1 for ${type === 'soak' ? 1 : 2}m`
         else if (value <= 3) return `+1 for ${type === 'soak' ? 1 : 2}m; +2 for ${type === 'soak' ? 2 : 4}m`
         else if (value <= 5) return `+2 for ${type === 'soak' ? 2 : 4}m; +4 for ${type === 'soak' ? 4 : 8}m`
         else return `+2 for ${type === 'soak' ? 2 : 4}m; +5 for ${type === 'soak' ? 5 : 10}m`
       }
       else {
-        switch (actorData.system.details.exalt) {
+        switch (this.system.details.exalt) {
           case 'dragonblooded':
             caps = [0, 1, 2, 3]
             break
           case 'sidereal':
-            return `(+${actorData.system.essence.value} for ${actorData.system.essence.value * 2}m)`
+            return `(+${this.system.essence.value} for ${this.system.essence.value * 2}m)`
           case 'solar':
             caps = [0, 1, 3, 5]
             break
@@ -1852,11 +1748,11 @@ export class ExaltedThirdActor extends Actor {
             caps = [0, 1, 3, 5]
             break
           case 'alchemical':
-            const baseAlchBonus = Math.ceil(actorData.system.essence.value / 2);
+            const baseAlchBonus = Math.ceil(this.system.essence.value / 2);
             caps = [0, baseAlchBonus, baseAlchBonus + 1, baseAlchBonus + 2]
             break
           case 'liminal':
-            if (actorData.system.anima.value > 1) bonus = Math.floor(actorData.system.essence.value / 2)
+            if (this.system.anima.value > 1) bonus = Math.floor(this.system.essence.value / 2)
             caps = [0 + bonus, 1 + bonus, 2 + bonus, 2 + bonus]
             break
           default:

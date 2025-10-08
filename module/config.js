@@ -758,6 +758,25 @@ exaltedthird.secondaryStuntKeywords = {
   },
   architect: {
     inCity: "Ex3.InCity",
+  },
+  hearteater: {
+    minorIntimacy: "Ex3.MinorIntimacy",
+    majorIntimacy: "Ex3.MajorIntimacy",
+    definingIntimacy: "Ex3.DefiningIntimacy",
+  },
+  dreamsouled: {
+    upholdIdeal: "Ex3.UpholdIdeal"
+  },
+  lunar: {
+    strength: 'Ex3.Strength',
+    dexterity: 'Ex3.Dexterity',
+    stamina: 'Ex3.Stamina',
+    charisma: 'Ex3.Charisma',
+    manipulation: 'Ex3.Manipulation',
+    appearance: 'Ex3.Appearance',
+    perception: 'Ex3.Perception',
+    intelligence: 'Ex3.Intelligence',
+    wits: 'Ex3.Wits',
   }
 }
 

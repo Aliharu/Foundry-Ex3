@@ -1,35 +1,35 @@
-<section class="tab flex-center dice-roller-header {{tab.cssClass}} {{hideElement}}">
+<section
+    class="tab flex-center {{#ifNotEquals data.rollType 'useOpposingCharms'}} dice-roller-header {{/ifNotEquals}} {{tab.cssClass}} {{hideElement}}">
     <div class="dice-header-row">
         {{#ifEquals data.characterType 'character'}}
+        {{#ifNotEquals data.rollType 'useOpposingCharms'}}
         <label class="resource-label">{{localize "Ex3.Attribute"}}</label>
         <select name="object.attribute" value="{{data.attribute}}" data-type="String">
             {{selectOptions selects.attributes selected=data.attribute localize=true blank='Ex3.None'}}
         </select>
-
-        {{#if enableStuntAttribute}}
-        <select name="object.stuntAttribute" value="{{data.stuntAttribute}}" data-type="String">
-            {{selectOptions selects.attributes selected=data.stuntAttribute localize=true blank='Ex3.NoStuntAttribute'}}
-        </select>
-        {{/if}}
-
         <label class="resource-label">{{localize "Ex3.Ability"}}</label>
         <select class="update-specialties" name="object.ability" value="{{data.ability}}" data-type="String">
             {{selectOptions rollableAbilities selected=data.ability localize=true}}
         </select>
-        {{#if secondaryStuntKeywords}}
+        {{/ifNotEquals}}
+        {{#if enableSecondaryStuntBonus}}
         <select name="object.excellencyBonus" value="{{data.excellencyBonus}}" data-type="String">
-            {{selectOptions secondaryStuntKeywords selected=data.excellencyBonus localize=true blank='Ex3.ExcellencyBonus'}}
+            {{selectOptions secondaryStuntKeywords selected=data.excellencyBonus localize=true
+            blank='Ex3.ExcellencyBonus'}}
         </select>
         {{/if}}
         {{else}}
         {{#if data.showPool}}
+        {{#ifNotEquals data.rollType 'useOpposingCharms'}}
         <label class="resource-label">{{localize "Ex3.Pool"}}</label>
         <select name="object.pool" value="{{data.pool}}" data-type="String">
             {{selectOptions rollablePools selected=data.pool localize=true}}
         </select>
-        {{#if enableStuntAttribute}}
-        <select name="object.stuntAttribute" value="{{data.stuntAttribute}}" data-type="String">
-            {{selectOptions selects.attributes selected=data.stuntAttribute localize=true blank='Ex3.NoStuntAttribute'}}
+        {{/ifNotEquals}}
+        {{#if enableSecondaryStuntBonus}}
+        <select name="object.excellencyBonus" value="{{data.excellencyBonus}}" data-type="String">
+            {{selectOptions secondaryStuntKeywords selected=data.excellencyBonus localize=true
+            blank='Ex3.ExcellencyBonus'}}
         </select>
         {{/if}}
         {{/if}}
@@ -48,9 +48,11 @@
     {{#if isAttackRoll}}
     <div class="dice-header-row">
         {{#ifNotEquals data.attackType 'gambit'}}
-        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}} {{data.attackType}} {{localize "Ex3.AttackAt"}}</label>
+        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}} {{data.attackType}} {{localize
+            "Ex3.AttackAt"}}</label>
         {{else}}
-        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}} {{data.attackType}} {{localize "Ex3.at"}}</label>
+        <label class="resource-label capitalize">{{localize "Ex3.RollingA"}} {{data.attackType}} {{localize
+            "Ex3.at"}}</label>
         {{/ifNotEquals}}
         <select name="object.range" value="{{data.range}}" data-type="String">
             {{selectOptions selects.ranges selected=data.range localize=true}}

@@ -14,12 +14,12 @@
                         <input class="locked-input" type="number" name="object.addOppose.addedBonus.dice"
                             value="{{data.addOppose.addedBonus.dice}}" disabled>
                     </div>
-                    <div class="opposed-bonus-field mb-1">
+                    <div class="opposed-bonus-field-labeled mb-1">
                         <label class="resource-label">{{localize "Ex3.Manual"}}</label>
                         <input type="number" name="object.addOppose.manualBonus.dice"
                             value="{{data.addOppose.manualBonus.dice}}">
                     </div>
-                    <div class="opposed-bonus-field">
+                    <div class="opposed-bonus-field-labeled">
                         <label class="resource-label">{{localize "Ex3.Total"}}</label>
                         <input class="total-input" type="number" value="{{totalOpposedBonuses.dice}}" disabled>
                     </div>
@@ -60,13 +60,13 @@
                     <div>
                         <input class="total-input" type="number" value="{{totalOpposedBonuses.resolve}}" disabled>
                     </div>
-                    {{#if actor.system.resolve.cap}}
+                    {{#if staticCaps.resolve}}
                     <div class="opposed-bonus-cap-label">
                         <div>
                             {{localize "Ex3.Resolve"}}
                         </div>
                         <div>
-                            {{localize "Ex3.Max"}}. {{actor.system.resolve.cap}}
+                            {{localize "Ex3.Max"}}. {{staticCaps.resolve}}
                         </div>
                     </div>
                     {{/if}}
@@ -85,13 +85,13 @@
                     <div>
                         <input class="total-input" type="number" value="{{totalOpposedBonuses.guile}}" disabled>
                     </div>
-                    {{#if actor.system.guile.cap}}
+                    {{#if staticCaps.guile}}
                     <div class="opposed-bonus-cap-label">
                         <div>
                             {{localize "Ex3.Guile"}}
                         </div>
                         <div>
-                            {{localize "Ex3.Max"}}. {{actor.system.guile.cap}}
+                            {{localize "Ex3.Max"}}. {{staticCaps.guile}}
                         </div>
                     </div>
                     {{/if}}
@@ -113,12 +113,12 @@
                         <input class="locked-input" type="number" name="object.addOppose.addedBonus.damage"
                             value="{{data.addOppose.addedBonus.damage}}" disabled>
                     </div>
-                    <div class="opposed-bonus-field mb-1">
+                    <div class="opposed-bonus-field-labeled mb-1">
                         <label class="resource-label">{{localize "Ex3.Manual"}}</label>
                         <input type="number" name="object.addOppose.manualBonus.damage"
                             value="{{data.addOppose.manualBonus.damage}}">
                     </div>
-                    <div class="opposed-bonus-field">
+                    <div class="opposed-bonus-field-labeled">
                         <label class="resource-label">{{localize "Ex3.Total"}}</label>
                         <input class="total-input" type="number" value="{{totalOpposedBonuses.damage}}" disabled>
                     </div>
@@ -157,23 +157,23 @@
                         </div>
                     </div>
                     {{/if}}
-                    {{#if actor.system.parry.cap}}
+                    {{#if staticCaps.parry}}
                     <div class="opposed-bonus-cap-label">
                         <div>
                             {{localize "Ex3.Parry"}}
                         </div>
                         <div>
-                            {{localize "Ex3.Max"}}. {{actor.system.parry.cap}}
+                            {{localize "Ex3.Max"}}. {{staticCaps.parry}}
                         </div>
                     </div>
                     {{/if}}
-                    {{#if actor.system.evasion.cap}}
+                    {{#if staticCaps.evasion}}
                     <div class="opposed-bonus-cap-label">
                         <div>
                             {{localize "Ex3.Evasion"}}
                         </div>
                         <div>
-                            {{localize "Ex3.Max"}}. {{actor.system.evasion.cap}}
+                            {{localize "Ex3.Max"}}. {{staticCaps.evasion}}
                         </div>
                     </div>
                     {{/if}}
@@ -196,13 +196,13 @@
                     <div>
                         <input class="total-input" type="number" value="{{totalOpposedBonuses.soak}}" disabled>
                     </div>
-                    {{#if actor.system.soak.cap}}
+                    {{#if staticCaps.soak}}
                     <div class="opposed-bonus-cap-label">
                         <div>
                             {{localize "Ex3.Soak"}}
                         </div>
                         <div>
-                            {{localize "Ex3.Max"}}. {{actor.system.soak.cap}}
+                            {{localize "Ex3.Max"}}. {{staticCaps.soak}}
                         </div>
                     </div>
                     {{/if}}

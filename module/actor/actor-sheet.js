@@ -363,10 +363,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       setting.name = CONFIG.exaltedthird.statictypes[key];
     }
 
-    var currentParryPenalty = 0;
-    var currentEvasionPenalty = 0;
-    var currentOnslaughtPenalty = 0;
-    var currentDefensePenalty = 0;
+    let currentParryPenalty = 0;
+    let currentEvasionPenalty = 0;
+    let currentOnslaughtPenalty = 0;
+    let currentDefensePenalty = 0;
 
     for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
       for (const change of effect.changes) {
@@ -404,12 +404,12 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     sheetData.system.currentDefensePenalty = currentDefensePenalty;
 
     if (actorData.type === "character" || sheetData.system.creaturetype === 'exalt') {
-      sheetData.system.parry.cap = this.actor._getStaticCap(actorData, 'parry', sheetData.system.parry.value);
+      sheetData.system.parry.cap = this.actor._getStaticCap('parry', sheetData.system.parry.value);
       if (sheetData.system.parry.cap !== '') {
         sheetData.system.evasion.padding = true;
         sheetData.system.defenseCapPadding = true;
       }
-      sheetData.system.evasion.cap = this.actor._getStaticCap(actorData, 'evasion', sheetData.system.evasion.value);
+      sheetData.system.evasion.cap = this.actor._getStaticCap('evasion', sheetData.system.evasion.value);
       if (sheetData.system.evasion.cap !== '') {
         sheetData.system.evasion.padding = false;
         if (sheetData.system.parry.cap === '') {
@@ -417,12 +417,12 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         }
         sheetData.system.defenseCapPadding = true;
       }
-      sheetData.system.guile.cap = this.actor._getStaticCap(actorData, 'guile', sheetData.system.guile.value);
+      sheetData.system.guile.cap = this.actor._getStaticCap('guile', sheetData.system.guile.value);
       if (sheetData.system.guile.cap !== '') {
         sheetData.system.resolve.padding = true;
         sheetData.system.socialCapPadding = true;
       }
-      sheetData.system.resolve.cap = this.actor._getStaticCap(actorData, 'resolve', sheetData.system.resolve.value);
+      sheetData.system.resolve.cap = this.actor._getStaticCap('resolve', sheetData.system.resolve.value);
       if (sheetData.system.resolve.cap !== '') {
         if (sheetData.system.guile.cap === '') {
           sheetData.system.guile.padding = true;
@@ -430,7 +430,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         sheetData.system.resolve.padding = false;
         sheetData.system.socialCapPadding = true;
       }
-      sheetData.system.soak.cap = this.actor._getStaticCap(actorData, 'soak', actorData.type === "character" ? (sheetData.system.attributes?.stamina?.value || 0) : sheetData.system.soak.value);
+      sheetData.system.soak.cap = this.actor._getStaticCap('soak', actorData.type === "character" ? (sheetData.system.attributes?.stamina?.value || 0) : sheetData.system.soak.value);
     }
 
     sheetData.system.usedCharmSlots = this.actor.items.filter(item => item.type === 'charm' && item.system.equipped).length

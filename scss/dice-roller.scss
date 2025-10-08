@@ -88,7 +88,7 @@
         margin-bottom: 5px;
     }
 
-    .opposed-bonus-field {
+    .opposed-bonus-field-labeled {
         display: flex;
         align-items: center;
         justify-content: end;
@@ -96,6 +96,17 @@
 
         input {
             width: 106px;
+        }
+    }
+
+    .opposed-bonus-field {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 5px;
+
+        input {
+            width: 95px;
         }
     }
 

@@ -348,7 +348,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.modifierUpdates = [];
             this.object.spell = "";
             this.object.shipTrait = "maneuverability";
-            this.object.stuntAttribute = "";
             this.object.excellencyBonus = "";
             if (this.object.rollType !== 'base') {
                 this.object.characterType = this.actor.type;
@@ -782,11 +781,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             options.parts = ['dice', 'footer'];
         }
         if (this.object.rollType === 'useOpposingCharms') {
-            options.parts = ['tabs', 'dice', 'cost', 'charms', 'footer'];
+            options.parts = ['header', 'tabs', 'dice', 'cost', 'charms', 'footer'];
+            if(options.position) {
+                options.position.height = 670;
+            }
         }
-        // if(options.position?.height === 'auto') {
-        //     options.position.height = 550;
-        // }
+
     }
 
     resolve = function (value) { return value };
@@ -1059,6 +1059,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             damage: 0,
         }
 
+        const staticCaps = {
+            soak: 0,
+            resolve: 0,
+            guile: 0,
+            evasion: 0,
+            parry: 0,
+        };
+
         if (this.object.rollType === 'useOpposingCharms') {
             if (this.actor) {
                 baseOpposedBonuses.defense = Math.max(this.actor.system.parry.value, this.actor.system.evasion.value);
@@ -1075,6 +1083,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             totalOpposedBonuses.damage = baseOpposedBonuses.damage + this.object.addOppose.manualBonus.damage + this.object.addOppose.addedBonus.damage;
             totalOpposedBonuses.resolve = baseOpposedBonuses.resolve + this.object.addOppose.manualBonus.resolve + this.object.addOppose.addedBonus.resolve;
             totalOpposedBonuses.guile = baseOpposedBonuses.guile + this.object.addOppose.manualBonus.guile + this.object.addOppose.addedBonus.guile;
+            let staticActor = this.actor;
+            if (this.actor.system.lunarform?.enabled) {
+                staticActor = game.actors.get(this.actor.system.lunarform.actorid);
+            }
+            if (staticActor) {
+                staticCaps.parry = staticActor._getStaticCap('parry', staticActor.system.parry.value, this.object.excellencyBonus);
+                staticCaps.evasion = staticActor._getStaticCap('evasion', staticActor.system.evasion.value, this.object.excellencyBonus);
+                staticCaps.guile = staticActor._getStaticCap('guile', staticActor.system.guile.value, this.object.excellencyBonus);
+                staticCaps.resolve = staticActor._getStaticCap('resolve', staticActor.system.resolve.value, this.object.excellencyBonus);
+                staticCaps.soak = staticActor._getStaticCap('soak', staticActor.system.soak.value, this.object.excellencyBonus);
+            }
         } else if (this.object.rollType !== 'base') {
             if (this.object.rollType === 'damageResult') {
                 this.object.totalDice = 0;
@@ -1126,13 +1145,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                 }
             }
-
         }
 
         return {
             actor: this.actor,
-            enableStuntAttribute: (this.actor?.type === 'character' && this.actor?.system.details.exalt === "lunar") || this.actor?.system.lunarform?.enabled,
-            secondaryStuntKeywords: CONFIG.exaltedthird.secondaryStuntKeywords[this.actor?.system.details.caste.toLowerCase() || ""] || null,
+            enableSecondaryStuntBonus: (this.actor?.type === 'character' && (CONFIG.exaltedthird.secondaryStuntKeywords[this.actor?.system.details.exalt] || CONFIG.exaltedthird.secondaryStuntKeywords[this.actor?.system.details.caste])) || this.actor?.system.lunarform?.enabled,
+            secondaryStuntKeywords: this.actor?.system.lunarform?.enabled ? CONFIG.exaltedthird.secondaryStuntKeywords['lunar'] : (CONFIG.exaltedthird.secondaryStuntKeywords[this.actor?.system.details.exalt] || CONFIG.exaltedthird.secondaryStuntKeywords[this.actor?.system.details.caste] || null),
             selects: this.selects,
             rollableAbilities: this.rollableAbilities,
             rollablePools: this.rollablePools,
@@ -1146,6 +1164,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             baseOpposedBonuses: baseOpposedBonuses,
             staticValuePenalties: staticValuePenalties,
             totalOpposedBonuses: totalOpposedBonuses,
+            staticCaps: staticCaps,
             buttons: [
                 { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
                 { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
@@ -6760,7 +6779,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
 
                     if (lunarHasExcellency) {
-                        diceCap = lunarAttributeValue + (lunar.system.attributes[this.object.stuntAttribute]?.value || 0);
+                        diceCap = lunarAttributeValue + (lunar.system.attributes[this.object.excellencyBonus]?.value || 0);
                     }
                     else {
                         diceCap = '';

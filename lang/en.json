@@ -516,6 +516,12 @@
     "Ex3.Minor": "Minor",
     "Ex3.Major": "Major",
     "Ex3.Defining": "Defining",
+
+    "Ex3.DefiningIntimacy": "Defining Intimacy",
+    "Ex3.MajorIntimacy": "Major Intimacy",
+    "Ex3.MinorIntimacy": "Minor Intimacy",
+    "Ex3.UpholdIdeal": "Uphold Ideal",
+    
     "Ex3.Type": "Type",
     "Ex3.Tie": "Tie",
     "Ex3.Principle": "Principle",
