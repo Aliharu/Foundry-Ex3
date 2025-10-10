@@ -984,12 +984,13 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   /** @override */
-  _onRender(context, options) {
+  async _onRender(context, options) {
     this.#dragDrop.forEach((d) => d.bind(this.element));
     this.#filters.forEach((f) => f.bind(this.element));
     this._setupDotCounters(this.element);
     this._setupSquareCounters(this.element);
     this._setupButtons(this.element);
+    this.#disableOverrides();
 
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
@@ -1031,7 +1032,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         }
       });
     });
-
+    
+    await super._onRender(context, options);
+    this.#disableOverrides();
     // // Add Inventory Item
 
     // html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
@@ -1051,6 +1054,19 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     //     }
     //   });
     // }
+  }
+
+    /**
+   * Disables inputs subject to active effects.
+   */
+  #disableOverrides() {
+    const flatOverrides = foundry.utils.flattenObject(this.actor.overrides);
+    for (const override of Object.keys(flatOverrides)) {
+      const input = this.element.querySelector(`[name="${override}"]`);
+      if (input) {
+        input.disabled = true;
+      }
+    }
   }
 
   _onSearchFilter(_event, _query, _rgx, html) {
