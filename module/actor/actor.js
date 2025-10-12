@@ -1335,7 +1335,7 @@ export class ExaltedThirdActor extends Actor {
       return null;
     }
     if (this.items.filter(item => item.type === 'customability').some(ca => ca._id === ability)) {
-      abilityValue = this.customabilities.find(x => x._id === ability).system?.points || 0;
+      abilityValue = this.items.filter(item => item.type === 'customability').find(x => x._id === ability).system?.points || 0;
     }
     if (this.system.abilities[ability]) {
       abilityValue = this.system.abilities[ability]?.value || 0;
@@ -1707,7 +1707,7 @@ export class ExaltedThirdActor extends Actor {
             highestAttributeNumber = attribute.value;
           }
         }
-        if(excellencyBonus && type !== 'soak') {
+        if (excellencyBonus && type !== 'soak') {
           return `+${diceCapValue} for ${diceCapValue * 2}m`;
         }
         let newValueHigh = Math.floor((diceCap.dice + highestAttributeNumber) / 2);
