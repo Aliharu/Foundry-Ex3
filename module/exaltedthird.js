@@ -1170,38 +1170,34 @@ Hooks.on("renderChatInput", (app, html, data) => {
   if (html instanceof jQuery) {
     html = $(html)[0];
   }
-  if (html["#chat-controls"].querySelector(".control-buttons") && !html["#chat-controls"].querySelector(".base-roll-button")) {
+  if (html["#chat-controls"]) {
     let container = html["#chat-controls"].querySelector(".control-buttons");
     if (!container) {
       // Create the control-buttons container
       container = document.createElement("div");
       container.className = "control-buttons";
 
-      // Find the .chat-controls container
-      const chatControls = html.querySelector(".chat-controls");
-      if (chatControls) {
-        chatControls.appendChild(container);
-      } else {
-        // Fallback: prepend to html root if .chat-controls isn't found
-        html.prepend(container);
-      }
+      html["#chat-controls"].appendChild(container);
     }
-    // Create the new button element
-    const newButton = document.createElement("button");
-    newButton.type = "button";
-    newButton.className = "base-roll-button ui-control icon fa-solid fa-dice-d10"; // Use same classes, with fa-dice-d10
-    newButton.dataset.tooltip = "Base Roll"; // Optional tooltip text
-    newButton.setAttribute("aria-label", "Base Roll"); // Accessibility
+    if (!html["#chat-controls"].querySelector(".base-roll-button")) {
+      // Create the new button element
+      const newButton = document.createElement("button");
+      newButton.type = "button";
+      newButton.className = "base-roll-button ui-control icon fa-solid fa-dice-d10"; // Use same classes, with fa-dice-d10
+      newButton.dataset.tooltip = "Base Roll"; // Optional tooltip text
+      newButton.setAttribute("aria-label", "Base Roll"); // Accessibility
 
-    // Add event listener
-    newButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      noActorBaseRoll();
-    });
+      // Add event listener
+      newButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        noActorBaseRoll();
+      });
 
-    // Insert button at the beginning
-    container.prepend(newButton);
+      // Insert button at the beginning
+      container.prepend(newButton);
+    }
   }
+
 });
 
 //Martialart, craft, and initiation are deprecated but i don't want to delete them because it will break characters
@@ -1244,7 +1240,6 @@ Hooks.on("renderGamePause", function () {
 Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 
-  // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => {
     if (["Item", "savedRoll"].includes(data.type)) {
       createItemMacro(data, slot);

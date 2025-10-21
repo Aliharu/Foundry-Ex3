@@ -990,7 +990,6 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     this._setupDotCounters(this.element);
     this._setupSquareCounters(this.element);
     this._setupButtons(this.element);
-    this.#disableOverrides();
 
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;

@@ -275,9 +275,9 @@ export async function setItemIcons() {
 
 export function listCharms() {
   const listingCharms = game.items.filter(item => {
-    if(item.type !== 'charm') return false;
+    if (item.type !== 'charm') return false;
 
-    return Object.values(item.system.triggers.dicerollertriggers).some(trigger => 
+    return Object.values(item.system.triggers.dicerollertriggers).some(trigger =>
       (trigger.bonuses && Object.values(trigger.bonuses).some(bonus => bonus.value?.includes('target-'))) ||
       (trigger.requirements && Object.values(trigger.requirements).some(req => req.value?.includes('target-')))
     );
@@ -457,5 +457,52 @@ export async function fixMainModes() {
       }
     };
     await item.update(formData);
+  }
+}
+
+export async function addBaseFolders() {
+  const abilityFolders = {
+    archery: 'Ex3.Archery',
+    athletics: 'Ex3.Athletics',
+    awareness: 'Ex3.Awareness',
+    brawl: 'Ex3.Brawl',
+    bureaucracy: 'Ex3.Bureaucracy',
+    craft: 'Ex3.Craft',
+    dodge: 'Ex3.Dodge',
+    integrity: 'Ex3.Integrity',
+    investigation: 'Ex3.Investigation',
+    larceny: 'Ex3.Larceny',
+    linguistics: 'Ex3.Linguistics',
+    lore: 'Ex3.Lore',
+    martialarts: 'Ex3.MartialArts',
+    medicine: 'Ex3.Medicine',
+    melee: 'Ex3.Melee',
+    occult: 'Ex3.Occult',
+    performance: 'Ex3.Performance',
+    presence: 'Ex3.Presence',
+    resistance: 'Ex3.Resistance',
+    ride: 'Ex3.Ride',
+    sail: 'Ex3.Sail',
+    socialize: 'Ex3.Socialize',
+    stealth: 'Ex3.Stealth',
+    survival: 'Ex3.Survival',
+    thrown: 'Ex3.Thrown',
+    war: 'Ex3.War',
+  };
+
+  const attributeFolder = {
+    strength: 'Ex3.Strength',
+    dexterity: 'Ex3.Dexterity',
+    stamina: 'Ex3.Stamina',
+    charisma: 'Ex3.Charisma',
+    manipulation: 'Ex3.Manipulation',
+    appearance: 'Ex3.Appearance',
+    perception: 'Ex3.Perception',
+    intelligence: 'Ex3.Intelligence',
+    wits: 'Ex3.Wits',
+  };
+  const parentFolder = await Folder.create({ name: 'Book Name', type: 'Item' });
+  for (let [key, value] of Object.entries(abilityFolders)) {
+    await Folder.create({ name: game.i18n.localize(value), type: 'Item', folder: parentFolder._id });
   }
 }
