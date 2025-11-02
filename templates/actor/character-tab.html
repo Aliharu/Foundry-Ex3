@@ -61,23 +61,23 @@
       {{else}}
       <div class="grid grid-4col flex-group-center">
         <div>
-          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
-            data-crafttype="basic"><i class="fas fa-hammer"></i>{{localize
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft" data-crafttype="basic"><i
+              class="fas fa-hammer"></i>{{localize
             "Ex3.Basic"}}</button>
         </div>
         <div>
-          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
-            data-crafttype="major"><i class="fas fa-hammer"></i>{{localize
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft" data-crafttype="major"><i
+              class="fas fa-hammer"></i>{{localize
             "Ex3.Major"}}</button>
         </div>
         <div>
-          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
-            data-crafttype="superior"><i class="fas fa-hammer"></i>{{localize
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft" data-crafttype="superior"><i
+              class="fas fa-hammer"></i>{{localize
             "Ex3.Superior"}}</button>
         </div>
         <div>
-          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft"
-            data-crafttype="legendary"><i class="fas fa-hammer"></i>{{localize
+          <button class="roll-button" data-action="makeActionRoll" data-rolltype="craft" data-crafttype="legendary"><i
+              class="fas fa-hammer"></i>{{localize
             "Ex3.Legendary"}}</button>
         </div>
       </div>
@@ -138,7 +138,8 @@
           class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
     </div>
     {{#each actor.projects as |item id|}}
-    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+      data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
       <div class="item-name item-header">{{item.name}}</div>
@@ -185,6 +186,16 @@
         <label class="resource-label">{{localize "Ex3.Apocalyptic"}}</label>
         <select name="system.details.apocalyptic" value="{{system.details.apocalyptic}}" data-type="String">
           {{selectOptions abilitySelectList selected=system.details.apocalyptic localize=true}}
+        </select>
+      </div>
+    </div>
+    {{/ifEquals}}
+    {{#ifEquals system.details.exalt 'infernal'}}
+    <div class="grid grid-2col flexrow">
+      <div>
+        <label class="resource-label">{{localize "Ex3.Primordial"}}</label>
+        <select name="system.details.primordial" value="{{system.details.primordial}}" data-type="String">
+          {{selectOptions abilitySelectList selected=system.details.primordial localize=true}}
         </select>
       </div>
     </div>
@@ -318,7 +329,8 @@
         "Ex3.Add"}}</a>
     </div>
     {{#each actor.shapes as |item id|}}
-    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+      data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
       <div class="item-name item-header">{{item.name}}</div>
@@ -351,7 +363,8 @@
           class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
     </div>
     {{#each actor.destinies as |item id|}}
-    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription" data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
+    <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription"
+      data-item-id="{{item._id}}" data-document-class="Item" data-drag="true">
       <div class="item-image"><img class="list-item-image" src="{{item.img}}" title="{{item.name}}" width="24"
           height="24" /></div>
       <div class="item-name item-header">{{item.name}}</div>

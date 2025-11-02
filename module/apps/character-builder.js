@@ -570,6 +570,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       data: this.object,
       selects: CONFIG.exaltedthird.selects,
       tab: this.tabGroups['primary'],
+      showSupernal: this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal' || this.object.character.exalt === 'infernal',
       tabs: [
         {
           id: "overview",
@@ -2330,6 +2331,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (this.object.character.supernal) {
       actorData.system.details.supernal = this.object.character.supernal;
       actorData.system.details.apocalyptic = this.object.character.supernal;
+      actorData.system.details.primordial = this.object.character.supernal;
     }
     actorData.system.details.tell = this.object.character.tell;
     actorData.system.details.spiritshape = this.object.character.spiritShape;

@@ -60,22 +60,20 @@
       <label class="resource-label">{{localize "Ex3.Willpower"}}</label>
       <input name="object.character.willpower" value="{{data.character.willpower}}" type="number">
     </div>
-    {{#ifEquals data.character.exalt 'solar'}}
+    {{#if showSupernal}}
     <div>
+      {{#ifEquals data.character.exalt 'solar'}}
       <div class="resource-label">{{localize "Ex3.Supernal"}}</div>
-      <select name="object.character.supernal" data-type="String">
-        {{selectOptions selects.abilities selected=data.character.supernal localize=true}}
-      </select>
-    </div>
-    {{/ifEquals}}
-    {{#ifEquals data.character.exalt 'abyssal'}}
-    <div>
+      {{else ifEquals data.character.exalt 'abyssal'}}
       <div class="resource-label">{{localize "Ex3.Apocalyptic"}}</div>
+      {{else}}
+      <div class="resource-label">{{localize "Ex3.Primordial"}}</div>
+      {{/ifEquals}}
       <select name="object.character.supernal" data-type="String">
         {{selectOptions selects.abilities selected=data.character.supernal localize=true}}
       </select>
     </div>
-    {{/ifEquals}}
+    {{/if}}
     {{#ifEquals data.character.exalt 'lunar'}}
     <div>
       <div class="resource-label">{{localize "Ex3.SpiritShape"}}</div>
