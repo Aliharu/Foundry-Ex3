@@ -23,6 +23,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         ideal: new fields.StringField({ initial: "" }),
         supernal: new fields.StringField({ initial: "" }),
         apocalyptic: new fields.StringField({ initial: "" }),
+        primordial: new fields.StringField({ initial: "" }),
       }),
       ...healthLevels(),
       motes: new fields.SchemaField({

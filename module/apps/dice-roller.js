@@ -20,6 +20,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.messageId = data.preMessageId;
         this.search = "";
         this.object.totalDice = 0;
+        this.object.rollButtonTooltip = "";
         this.object.attacker = data.attacker;
         this.object.actorCombatant = data.actorCombatant ?? this._getActorCombatant();
 
@@ -143,6 +144,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.attackEffectPreset = data.attackEffectPreset || 'none';
             this.object.attackEffect = data.attackEffect || '';
             this.object.weaponAccuracy = 0;
+            this.object.weaponDamage = 0;
+            this.object.weapon = null;
             this.object.charmDiceAdded = 0;
             this.object.triggerSelfDefensePenalty = 0;
             this.object.triggerTargetDefensePenalty = 0;
@@ -415,6 +418,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     this.object.rollAccuracyOnce = data.weapon.rollaccuracyonce;
                     this.object.poison = data.weapon.poison;
                     this.object.targetStat = data.weapon.targetstat;
+                    this.object.weapon = data.weapon;
                     if (this.actor.type === 'character') {
                         this.object.attribute = data.weapon.attribute;
                         this.object.ability = data.weapon.ability;
@@ -423,16 +427,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.diceModifier += data.weapon.witheringaccuracy || 0;
                         this.object.baseAccuracy = data.weapon.witheringaccuracy || 0;
                         this.object.weaponAccuracy = data.weapon.witheringaccuracy || 0;
+                        this.object.weaponDamage = data.weapon.witheringdamage || 0;
                         if (this.object.attackType === 'withering') {
                             this.object.damage.damageDice += data.weapon.witheringdamage || 0;
-                            if (this.actor.type === 'character') {
-                                if (this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
-                                    this.object.damage.damageDice += 4;
-                                }
-                                else {
-                                    this.object.damage.damageDice += (this.actor.system.attributes[data.weapon.damageattribute]?.value || 0) + (this.actor.system.attributes[data.weapon.damageattribute]?.upgrade || 0);
-                                }
-                            }
                         }
                     }
                     if (!this.object.showWithering && data.weapon.decisivedamagetype === 'static') {
@@ -782,7 +779,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this.object.rollType === 'useOpposingCharms') {
             options.parts = ['header', 'tabs', 'dice', 'cost', 'charms', 'footer'];
-            if(options.position) {
+            if (options.position) {
                 options.position.height = 670;
             }
         }
@@ -1095,7 +1092,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 staticCaps.soak = staticActor._getStaticCap('soak', staticActor.system.soak.value, this.object.excellencyBonus);
             }
         } else if (this.object.rollType !== 'base') {
-            if (this.object.rollType === 'damageResult') {
+            this.object.rollButtonTooltip = "";
+            if (this.object.rollType === 'damageResults') {
                 this.object.totalDice = 0;
             }
             else if (this.object.rollType === 'damage') {
@@ -1165,6 +1163,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             staticValuePenalties: staticValuePenalties,
             totalOpposedBonuses: totalOpposedBonuses,
             staticCaps: staticCaps,
+            rollButtonTooltip: "Test",
             buttons: [
                 { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
                 { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
@@ -3755,14 +3754,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 successes += 2;
             }
             await this.actor.update(actorData);
-        }
-
-        if (this._isAttackRoll()) {
-            if (this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.attackType === 'withering')) {
-                if (this.object.range !== 'short') {
-                    dice += this._getRangedAccuracy();
-                }
-            }
         }
 
         if (dice < 0) {
@@ -6448,88 +6439,88 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _assembleDicePool(display) {
         let dicePool = 0;
+        let rollButtonTooltip = "<h5>Dice</h5>";
         let totalPenalties = this.object.penaltyModifier;
         let totalIgnorePenalties = this.object.ignorePenalties;
         let targetAppearanceBonus = this.object.appearanceBonus;
+        let rangeModifier = 0;
 
         if (display && this.object.showTargets && !this.object.target) {
             targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
         }
 
-        if (display && this.object.showTargets === 1) {
-            dicePool = Object.values(this.object.targets)[0]?.rollData.diceModifier || 0;
+        if (this._isAttackRoll()) {
+            if (this.object.weaponType !== 'melee' && (this.actor.type === 'npc' || this.object.attackType === 'withering')) {
+                if (this.object.range !== 'short') {
+                    rangeModifier = this._getRangedAccuracy();
+                }
+            }
         }
 
         if (this.actor.type === 'character') {
             if (this.actor.system.attributes[this.object.attribute]) {
                 dicePool += (this.actor.system.attributes[this.object.attribute]?.value || 0) + (this.actor.system.attributes[this.object.attribute]?.upgrade || 0);
+                rollButtonTooltip += `<p>Attribute: ${(this.actor.system.attributes[this.object.attribute]?.value || 0) + (this.actor.system.attributes[this.object.attribute]?.upgrade || 0)}</p>`;
             }
             dicePool += this.actor.getCharacterAbilityValue(this.object.ability);
+            rollButtonTooltip += `<p>Ability: ${this.actor.getCharacterAbilityValue(this.object.ability)}</p>`;
         }
         else if (this.actor.type === 'npc' && !this._isAttackRoll()) {
             if (this.object.actions.some(action => action._id === this.object.pool)) {
                 dicePool += this.actor.actions.find(x => x._id === this.object.pool).system.value;
+                rollButtonTooltip += `<p>Pool: ${this.actor.actions.find(x => x._id === this.object.pool).system.value}</p>`;
             }
             else if (this.object.pool === 'fever') {
                 dicePool += this.actor.system.fever.value;
+                rollButtonTooltip += `<p>Fever: ${this.actor.system.fever.value}</p>`;
             }
             else if (this.object.pool === 'willpower') {
                 dicePool += this.actor.system.willpower.max;
+                rollButtonTooltip += `<p>Willpower: ${this.actor.system.willpower.max}</p>`;
             } else {
                 dicePool += this.actor.system.pools[this.object.pool].value;
+                rollButtonTooltip += `<p>Pool: ${this.actor.system.pools[this.object.pool].value}</p>`;
             }
         }
 
-        if (this.object.target && this.object.weaponTags) {
-            if (this.object.weaponTags["bombard"]) {
-                if (!this.object.target.actor.system.battlegroup && this.object.target.actor.system.sizecategory !== 'legendary' && !this.object.target.actor.system.warstrider.equipped) {
-                    totalPenalties += 4;
-                }
-            }
+        if (this.object.specialty) {
+            dicePool++;
+            rollButtonTooltip += `<p>Specialty: 1</p>`;
         }
-        if (this.object.armorPenalty) {
-            for (let armor of this.actor.armor) {
-                if (armor.system.equipped) {
-                    totalPenalties += Math.abs(armor.system.penalty);
-                }
-            }
-        }
+
         if (this.actor.system.mount.mounted && (this.object.rollType === 'rush' || this.object.rollType === 'disengage')) {
             dicePool += this.actor.system.mount.speedbonus.value;
+            rollButtonTooltip += `<p>Mount Speed: ${this.actor.system.mount.speedbonus.value}</p>`;
         }
-        if (this.object.woundPenalty) {
-            if (this.actor.system.warstrider.equipped) {
-                totalPenalties += this.actor.system.warstrider.health.penalty;
-            }
-            else {
-                totalPenalties += this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty;
-                totalIgnorePenalties += Math.min(this.actor.system.health.penaltymod, this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty);
-            }
-        }
+
         if (this.actor.system.battlegroup) {
             dicePool += this.actor.system.commandbonus.value;
+            rollButtonTooltip += `<p>Command Bonus: ${this.actor.system.commandbonus.value}</p>`;
             if (this._isAttackRoll()) {
                 dicePool += (this.actor.system.size.value + this.actor.system.might.value);
+                rollButtonTooltip += `<p>Size: ${this.actor.system.size.value}</p>`;
+                rollButtonTooltip += `<p>Might: ${this.actor.system.might.value}</p>`;
             }
         }
         if (this.object.stunt !== 'none' && this.object.stunt !== 'bank') {
             dicePool += 2;
+            rollButtonTooltip += `<p>Stunt: 2</p>`;
         }
-        if (this.object.isFlurry) {
-            totalPenalties += 3;
-        }
+
+        let miscDiceValues = this.object.diceModifier;
+
         if (this.object.diceModifier) {
             dicePool += this.object.diceModifier;
         }
-        if (totalPenalties) {
-            dicePool -= Math.max(0, totalPenalties - totalIgnorePenalties);
+
+        if (this.object.weaponAccuracy) {
+            rollButtonTooltip += `<p>Weapon Accuracy: ${this.object.weaponAccuracy}</p>`;
+            miscDiceValues -= this.object.weaponAccuracy;
         }
 
         if (this.object.targetSpecificDiceMod) {
             dicePool += this.object.targetSpecificDiceMod;
-        }
-        if (this.object.specialty) {
-            dicePool++;
+            rollButtonTooltip += `<p>Target Specific: ${this.object.targetSpecificDiceMod}</p>`;
         }
 
         if (this.object.diceToSuccesses > 0) {
@@ -6538,21 +6529,44 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.object.rollType === 'social') {
             if (this.object.applyAppearance) {
-                dicePool += this.object.appearanceBonus;
+                dicePool += targetAppearanceBonus;
+                rollButtonTooltip += `<p>Appearance: ${targetAppearanceBonus}</p>`;
             }
         }
 
         if (this.object.rollType === 'sailStratagem' && this.object.shipTrait) {
             if (this.object.shipTrait === 'speedAndManeuverability') {
                 dicePool += (this.actor.system.ship.speed.value + this.actor.system.ship.maneuverability.value);
+                rollButtonTooltip += `<p>Ship Speed: ${this.actor.system.ship.speed.value}</p>`;
+                rollButtonTooltip += `<p>Ship Maneuverability: ${this.actor.system.ship.maneuverability.value}</p>`;
             }
             else {
                 dicePool += this.actor.system.ship[this.object.shipTrait].value;
+                rollButtonTooltip += `<p>Ship Bonus: ${this.actor.system.ship[this.object.shipTrait].value}</p>`;
             }
         }
 
+        if (rangeModifier) {
+            dicePool += rangeModifier;
+        }
+        if (rangeModifier > 0) {
+            rollButtonTooltip += `<p>Range: ${rangeModifier}</p>`;
+        }
+        if (display && this.object.showTargets === 1) {
+            dicePool += Object.values(this.object.targets)[0]?.rollData.diceModifier || 0;
+            if (Object.values(this.object.targets)[0]?.rollData.diceModifier || 0) {
+                rollButtonTooltip += `<p>Other Modifiers: ${Object.values(this.object.targets)[0]?.rollData.diceModifier || 0}</p>`;
+            }
+        }
         if (display) {
             for (const charm of this.object.addedCharms) {
+                let diceAddedFromCharm = 0;
+                if (charm.system.diceroller.bonusdice) {
+                    diceAddedFromCharm += this._getFormulaValue(charm.system.diceroller.bonusdice, null) * (charm.timesAdded || 1);
+                }
+                if (charm.system.diceroller.diceToSuccesses) {
+                    diceAddedFromCharm -= this._getFormulaValue(charm.system.diceroller.diceToSuccesses, null) * (charm.timesAdded || 1);
+                }
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
                     try {
                         for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
@@ -6561,9 +6575,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     let cleanedValue = bonus.value.toLowerCase().trim();
                                     switch (bonus.effect) {
                                         case 'diceModifier':
+                                            diceAddedFromCharm += this._getFormulaValue(cleanedValue, null);
                                             dicePool += this._getFormulaValue(cleanedValue, null);
                                             break;
                                         case 'diceToSuccesses':
+                                            diceAddedFromCharm -= this._getFormulaValue(cleanedValue, null);
                                             dicePool -= this._getFormulaValue(cleanedValue, null);
                                             break;
                                     }
@@ -6575,7 +6591,66 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         console.error(e);
                     }
                 }
+                if (diceAddedFromCharm) {
+                    rollButtonTooltip += `<p>${charm.name}: ${diceAddedFromCharm}</p>`;
+                    miscDiceValues -= diceAddedFromCharm;
+                }
             }
+        }
+        if (miscDiceValues > 0) {
+            rollButtonTooltip += `<p>Misc Dice: ${miscDiceValues}</p>`;
+        }
+        rollButtonTooltip += '<h5>Penalties</h5>';
+        if (this.object.target && this.object.weaponTags) {
+            if (this.object.weaponTags["bombard"]) {
+                if (!this.object.target.actor.system.battlegroup && this.object.target.actor.system.sizecategory !== 'legendary' && !this.object.target.actor.system.warstrider.equipped) {
+                    totalPenalties += 4;
+                    rollButtonTooltip += `<p>Bomard Penalty: 4</p>`;
+                }
+            }
+        }
+        if (this.object.armorPenalty) {
+            for (let armor of this.actor.armor) {
+                if (armor.system.equipped && armor.system.penalty) {
+                    totalPenalties += Math.abs(armor.system.penalty);
+                    rollButtonTooltip += `<p>${armor.name}: ${Math.abs(armor.system.penalty)}</p>`;
+                }
+            }
+        }
+        if (this.object.woundPenalty) {
+            if (this.actor.system.warstrider.equipped) {
+                totalPenalties += this.actor.system.warstrider.health.penalty;
+                rollButtonTooltip += `<p>Warstrider Wounds: ${this.actor.system.warstrider.health.penalty}</p>`;
+            }
+            else {
+                totalPenalties += this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty;
+                totalIgnorePenalties += Math.min(this.actor.system.health.penaltymod, this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty);
+                if (this.actor.system.health.penalty) {
+                    rollButtonTooltip += `<p>Wounds: ${this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty}</p>`;
+                }
+            }
+        }
+        if (this.object.isFlurry) {
+            totalPenalties += 3;
+            rollButtonTooltip += `<p>Flurry: 3</p>`;
+        }
+        if (rangeModifier < 0) {
+            rollButtonTooltip += `<p>Range: ${rangeModifier}</p>`;
+        }
+        if (this.object.penaltyModifier) {
+            rollButtonTooltip += `<p>Other Penalties: ${this.object.penaltyModifier}</p>`;
+        }
+        if (totalIgnorePenalties) {
+            rollButtonTooltip += `<p>Penalties Negated: ${totalIgnorePenalties}</p>`;
+        }
+        if (totalPenalties) {
+            dicePool -= Math.max(0, totalPenalties - totalIgnorePenalties);
+        }
+        else {
+            rollButtonTooltip += `<p>None</p>`;
+        }
+        if (display) {
+            this.object.rollButtonTooltip = rollButtonTooltip;
         }
 
         return dicePool;
@@ -6587,6 +6662,23 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let soak = this.object.soak;
         let attackSuccesses = this.object.attackSuccesses;
         let targetSpecificDamageMod = this.object.targetSpecificDamageMod;
+        let rollButtonTooltip = "<h5>Damage</h5>";
+        if (this.object.attackType === 'withering' && this.actor.type === 'character') {
+            if (this.object.weaponTags["flame"] || this.object.weaponTags["crossbow"]) {
+                rollButtonTooltip += `<p>Flame/Crossbow: 4</p>`;
+                damageDicePool += 4;
+            }
+            else {
+                rollButtonTooltip += `<p>Attribute: ${(this.actor.system.attributes[this.object.weapon.damageattribute]?.value || 0) + (this.actor.system.attributes[this.object.weapon.damageattribute]?.upgrade || 0)}</p>`;
+                damageDicePool += (this.actor.system.attributes[this.object.weapon.damageattribute]?.value || 0) + (this.actor.system.attributes[this.object.weapon.damageattribute]?.upgrade || 0);
+            }
+        }
+        if (this.object.weaponDamage && this.object.attackType === 'withering') {
+            rollButtonTooltip += `<p>Weapon Damage ${this.object.weaponDamage}</p>`;
+        }
+        if (this.object.attackType !== 'withering') {
+            rollButtonTooltip += `<p>Base Damage ${this.object.damage.damageDice}</p>`;
+        }
 
         if (display && this.object.showTargets === 1) {
             defense = Object.values(this.object.targets)[0].rollData.defense;
@@ -6601,65 +6693,106 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
         if (this.object.damage.stuntToDamage) {
             if (this.object.stunt !== 'none') {
+                rollButtonTooltip += `<p>Stunt: 2</p>`;
                 damageDicePool += 2;
             }
         }
 
         if (this.actor.system.battlegroup && this.object.attackType === 'withering') {
+            rollButtonTooltip += `<p>Size: ${this.actor.system.size.value}</p>`;
+            rollButtonTooltip += `<p>Might: ${this.actor.system.might.value}</p>`;
             damageDicePool += (this.actor.system.size.value + this.actor.system.might.value);
         }
 
         if (this.object.attackType === 'decisive' && this.object.damage.decisiveDamageType === 'initiative') {
-            damageDicePool -= this.object.cost.initiative;
+            if (this.object.cost.initiative) {
+                damageDicePool -= this.object.cost.initiative;
+                rollButtonTooltip += `<p>Initiative Cost: ${this.object.cost.initiative}</p>`;
+            }
             if (this.object.showTargets) {
                 if (this.object.damage.decisiveDamageCalculation === 'evenSplit') {
+                    if (this.object.showTargets > 1) {
+                        rollButtonTooltip += `<p>Initiative Divided Between Targets</p>`;
+                    }
                     damageDicePool = Math.ceil(damageDicePool / this.object.showTargets);
                 }
                 else if (this.object.damage.decisiveDamageCalculation === 'half') {
+                    if (this.object.showTargets > 1) {
+                        rollButtonTooltip += `<p>Initiative / 2 for each target</p>`;
+                    }
                     damageDicePool = Math.ceil(damageDicePool / 2);
                 }
                 else if (this.object.damage.decisiveDamageCalculation === 'thirds') {
+                    if (this.object.showTargets > 1) {
+                        rollButtonTooltip += `<p>Initiative / 3 for each target</p>`;
+                    }
                     damageDicePool = Math.ceil(damageDicePool / 3);
                 }
             }
         }
 
         if (this.object.rollType === 'damage' && (this.object.attackType === 'withering' || this.object.damage.threshholdToDamage)) {
+            rollButtonTooltip += `<p>Threshold Successes: ${Math.max(0, attackSuccesses - defense)}</p>`;
             damageDicePool += Math.max(0, attackSuccesses - defense);
         }
         else if (this.object.attackType === 'withering' || this.object.damage.threshholdToDamage) {
+            rollButtonTooltip += `<p>Threshold Successes: ${this.object.thresholdSuccesses}</p>`;
             damageDicePool += this.object.thresholdSuccesses;
         }
         if (this.object.damage.cappedThreshholdToDamage && defense < attackSuccesses) {
+            rollButtonTooltip += `<p>Capped Threshold Successes: ${Math.min(this.object.damage.cappedThreshholdToDamage, attackSuccesses - defense)}</p>`;
             damageDicePool += Math.min(this.object.damage.cappedThreshholdToDamage, attackSuccesses - defense);
         }
         if (targetSpecificDamageMod) {
+            rollButtonTooltip += `<p>Target Specific Mod: ${targetSpecificDamageMod}</p>`;
             damageDicePool += targetSpecificDamageMod;
         }
         this.object.baseDamage = damageDicePool;
         if (this.object.attackType === 'withering') {
+            if (soak) {
+                rollButtonTooltip += `<p>Soak: -${soak}</p>`;
+            }
+            if (this.object.damage.ignoreSoak) {
+                rollButtonTooltip += `<p>Ignore Soak: ${this.object.damage.ignoreSoak}</p>`;
+            }
             damageDicePool -= Math.max(0, soak - this.object.damage.ignoreSoak);
             if (damageDicePool < this.object.overwhelming) {
+                if (this.object.overwhelming) {
+                    rollButtonTooltip += `<p>Overwhelming Minimum: ${this.object.overwhelming}</p>`;
+                }
                 damageDicePool = Math.max(damageDicePool, this.object.overwhelming);
             }
             damageDicePool += this.object.damage.postSoakDamage;
+            if (this.object.damage.postSoakDamage) {
+                rollButtonTooltip += `<p>Post Soak Damage: ${this.object.damage.postSoakDamage}</p>`;
+            }
         }
         if (this.object.damage.doublePreRolledDamage) {
+            rollButtonTooltip += `<p>Double Pre Rolled Soak</p>`;
             damageDicePool *= 2;
         }
         if (this.object.damage.halfPostSoakDamage) {
+            rollButtonTooltip += `<p>Half Post Soak Damage</p>`;
             damageDicePool = Math.ceil(damageDicePool / 2);
         }
         if (damageDicePool < 0) {
             damageDicePool = 0;
         }
         if (this.object.damage.diceToSuccesses > 0) {
+            rollButtonTooltip += `<p>Dice to Successes: -${this.object.damage.diceToSuccesses}</p>`;
             damageDicePool = Math.max(0, damageDicePool - this.object.damage.diceToSuccesses);
         }
 
         if (display) {
             for (const charm of this.object.addedCharms) {
+                let damageAddedFromCharm = 0;
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeDamage' || trigger.triggerTime === 'beforeDamage')) {
+                    if (charm.system.diceroller.damage.bonusdice) {
+                        diceAddedFromCharm += this._getFormulaValue(charm.system.diceroller.damage.bonusdice, null) * (charm.timesAdded || 1);
+                    }
+                    if (charm.system.diceroller.damage.dicetosuccesses) {
+                        diceAddedFromCharm -= this._getFormulaValue(charm.system.diceroller.damage.dicetosuccesses, null) * (charm.timesAdded || 1);
+                    }
                     try {
                         for (let triggerAmountIndex = 1; triggerAmountIndex < (charm.timesAdded || 1) + 1; triggerAmountIndex++) {
                             if (await this._triggerRequirementsMet(charm, trigger, "benefit", triggerAmountIndex, true, false, this.actor)) {
@@ -6668,9 +6801,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     switch (bonus.effect) {
                                         case 'damageDice':
                                             dicePool += this._getFormulaValue(cleanedValue, null);
+                                            damageAddedFromCharm += this._getFormulaValue(cleanedValue, null);
                                             break;
                                         case 'diceToSuccesses-damage':
                                             dicePool -= this._getFormulaValue(cleanedValue, null);
+                                            damageAddedFromCharm -= this._getFormulaValue(cleanedValue, null);
                                             break;
                                     }
                                 }
@@ -6681,7 +6816,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         console.error(e);
                     }
                 }
+                if (damageAddedFromCharm) {
+                    rollButtonTooltip += `<p>${charm.name}: ${damageAddedFromCharm}</p>`;
+                }
             }
+            this.object.rollButtonTooltip = rollButtonTooltip;
         }
         return damageDicePool;
     }
