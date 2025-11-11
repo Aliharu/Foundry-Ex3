@@ -6561,10 +6561,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (display) {
             for (const charm of this.object.addedCharms) {
                 let diceAddedFromCharm = 0;
-                if (charm.system.diceroller.bonusdice) {
+                if (charm.system.diceroller?.bonusdice) {
                     diceAddedFromCharm += this._getFormulaValue(charm.system.diceroller.bonusdice, null) * (charm.timesAdded || 1);
                 }
-                if (charm.system.diceroller.diceToSuccesses) {
+                if (charm.system.diceroller?.diceToSuccesses) {
                     diceAddedFromCharm -= this._getFormulaValue(charm.system.diceroller.diceToSuccesses, null) * (charm.timesAdded || 1);
                 }
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeRoll')) {
@@ -6787,10 +6787,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             for (const charm of this.object.addedCharms) {
                 let damageAddedFromCharm = 0;
                 for (const trigger of Object.values(charm.system.triggers.dicerollertriggers).filter(trigger => trigger.triggerTime === 'beforeDamage' || trigger.triggerTime === 'beforeDamage')) {
-                    if (charm.system.diceroller.damage.bonusdice) {
+                    if (charm.system.diceroller?.damage.bonusdice) {
                         diceAddedFromCharm += this._getFormulaValue(charm.system.diceroller.damage.bonusdice, null) * (charm.timesAdded || 1);
                     }
-                    if (charm.system.diceroller.damage.dicetosuccesses) {
+                    if (charm.system.diceroller?.damage.dicetosuccesses) {
                         diceAddedFromCharm -= this._getFormulaValue(charm.system.diceroller.damage.dicetosuccesses, null) * (charm.timesAdded || 1);
                     }
                     try {
