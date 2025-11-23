@@ -1496,6 +1496,9 @@
     "Ex3.AdvanceTime": "Advance Time",
 
     "Ex3.GiveExperience": "Give Experience",
+    "Ex3.ExperienceChanges": "Experience Changes",
+    "Ex3.ExperienceChange": "Experience Change",
+    "Ex3.Amount": "Amount",
 
     "Ex3.ItemTypes": "Item Types",
     "Ex3.MeritType": "Merit Type",
