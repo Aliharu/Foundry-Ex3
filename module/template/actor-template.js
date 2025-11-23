@@ -267,6 +267,13 @@ export class CharacterData extends CommonActorData {
           total: new fields.NumberField({ initial: 0 }),
         }),
         trigger: new fields.StringField({ initial: "" }),
+        log: new fields.ArrayField(
+          new fields.SchemaField({
+            id: new fields.StringField({ initial: "" }),
+            name: new fields.StringField({ initial: "" }),
+            amount: new fields.StringField({ initial: "" }),
+          }),
+        ),
       }),
       craft: new fields.SchemaField({
         experience: new fields.SchemaField({

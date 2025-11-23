@@ -326,6 +326,19 @@ export class ExaltedThirdActor extends Actor {
     return false;
   }
 
+  async createExperienceChange(name, amount) {
+    let changes = this.system.experience.log;
+    const changeData = {
+      id: foundry.utils.randomID(16),
+      name: name,
+      amount: amount,
+    }
+    if (!changes) {
+      changes = [];
+    }
+    changes.push(changeData);
+  }
+
   _determineMartialArtsMastery(styleId) {
     if (this.system.details.exalt === 'sidereal') {
       const style = game.items.find(item => item.id === styleId);

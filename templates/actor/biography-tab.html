@@ -1,5 +1,64 @@
 <div class="tab biography {{tab.cssClass}}" data-group="primary" data-tab="biography">
     {{#unless isNPC}}
+    <div class="resource-content flexrow flex-center flex-between">
+        <label class="resource-label">{{localize "Ex3.Advancement"}} <a data-action="showDialog"
+                data-dialogtype="advancement"><i class="fas fa-info-circle cursor-pointer"></i></a> </label>
+    </div>
+    <div class="grid grid-2col flex-group-center">
+        <div class="resource-content flexrow flex-center flex-between">
+            <div>
+                <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.remaining}}
+                    {{localize "Ex3.Remaining"}})</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input name="system.experience.standard.value" value="{{system.experience.standard.value}}"
+                        type="text" placeholder="Spent" />
+                    /
+                    <input name="system.experience.standard.total" value="{{system.experience.standard.total}}"
+                        type="text" placeholder="Earned" />
+                </div>
+            </div>
+        </div>
+        <div class="resource-content flexrow flex-center flex-between">
+            <div>
+                <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize
+                    "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
+                    {{localize "Ex3.Remaining"}})
+                    <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}"
+                            type="text" placeholder="Spent" />
+                        /
+                        <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}"
+                            type="text" placeholder="Earned" />
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <textarea type="text" name="system.experience.trigger" rows="6">{{system.experience.trigger}}</textarea>
+    </div>
+    <div class="resource-label list-section-header d-flex flex-between">
+        <div>
+            {{localize "Ex3.ExperienceChanges"}}
+        </div>
+        <a class="item-control" data-action="experienceAction" data-function="add" title="Create change"><i
+                class="fas fa-plus"></i>{{localize "Ex3.Add"}}</a>
+    </div>
+    <ol class="items-list" style="max-height:220px;">
+        {{#each actor.system.experience.log as |change index|}}
+        <li class="item flexrow item-row">
+            <div class="item-name item-header">{{change.name}}
+                ({{change.amount}})
+            </div>
+            <div class="item-controls">
+                <a class="item-control" data-action="experienceAction" data-function="edit" title="Edit Change"
+                    data-index="{{index}}"><i class="fas fa-edit"></i></a>
+                <a class="item-control" data-action="experienceAction" data-function="delete" title="Delete Change"
+                    data-index="{{index}}"><i class="fas fa-trash"></i></a>
+            </div>
+        </li>
+        {{/each}}
+    </ol>
     {{#if system.settings.showescort}}
     <div>
         <label class="resource-label">{{localize "Ex3.Escort"}}</label>

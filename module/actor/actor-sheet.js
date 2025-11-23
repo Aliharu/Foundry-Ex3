@@ -64,6 +64,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       baseRoll: this.baseRoll,
       toggleStatus: this.toggleStatus,
       createItem: this.createItem,
+      experienceAction: this.experienceAction,
       itemAction: this.itemAction,
       savedRollAction: this.savedRollAction,
       lastRoll: this.lastRoll,
@@ -850,7 +851,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         activeItems.push(i);
       }
     }
-    if(this.document.limited) {
+    if (this.document.limited) {
       intimacies = intimacies.filter(intimacy => intimacy.system.visible);
     }
     let actorSpells = actorData.items.filter((item) => item.type === 'spell');
@@ -1031,7 +1032,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         }
       });
     });
-    
+
     await super._onRender(context, options);
     this.#disableOverrides();
     // // Add Inventory Item
@@ -1055,9 +1056,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     // }
   }
 
-    /**
-   * Disables inputs subject to active effects.
-   */
+  /**
+ * Disables inputs subject to active effects.
+ */
   #disableOverrides() {
     const flatOverrides = foundry.utils.flattenObject(this.actor.overrides);
     for (const override of Object.keys(flatOverrides)) {
@@ -2296,6 +2297,77 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     return this.actor.createEmbeddedDocuments("Item", [itemData]);
   }
 
+  static async experienceAction(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+    const functionType = target.dataset.function;
+    const index = target.dataset.index;
+
+    let currentChangeData = null;
+
+    if (functionType === 'add' || functionType === 'edit') {
+      if (functionType === 'edit') {
+        currentChangeData = this.actor.system.experience.log[index];
+      }
+
+      const template = "systems/exaltedthird/templates/dialogues/edit-experience-expenditure.html";
+      const html = await foundry.applications.handlebars.renderTemplate(template, { name: currentChangeData ? currentChangeData.name : "New Experience Change", amount: currentChangeData ? currentChangeData.amount : "0", selects: CONFIG.exaltedthird.selects });
+
+      new foundry.applications.api.DialogV2({
+        window: { title: game.i18n.localize("Ex3.ExperienceChange"), resizable: true },
+        content: html,
+        classes: [this.actor.getSheetBackground()],
+        buttons: [{
+          action: "choice",
+          label: game.i18n.localize("Ex3.Save"),
+          default: true,
+          callback: (event, button, dialog) => button.form.elements
+        }, {
+          action: "cancel",
+          label: game.i18n.localize("Ex3.Cancel"),
+          callback: (event, button, dialog) => false
+        }],
+        submit: result => {
+          if (result) {
+            const changeData = {
+              id: currentChangeData?.id || foundry.utils.randomID(16),
+              name: result.name.value,
+              amount: result.amount.value,
+            };
+            if (!changeData.name) {
+              ui.notifications.error(`New change requires name.`)
+              return;
+            }
+
+            let formData = {};
+
+            let changes = this.actor.system.experience.log;
+            if (!changes) {
+              changes = [];
+            }
+
+            if (index) {
+              changes[index] = changeData;
+            } else {
+              changes.push(changeData);
+            }
+
+            foundry.utils.setProperty(formData, `system.experience.log`, changes);
+
+            this.actor.update(formData);
+          }
+        }
+      }).render({ force: true });
+    }
+    if (functionType === 'delete') {
+      let formData = {};
+      const items = this.actor.system.experience.log;
+      items.splice(index, 1);
+      foundry.utils.setProperty(formData, `system.experience.log`, items);
+      this.actor.update(formData);
+    }
+  }
+
   static async importItem(event, target) {
     if (!this.isEditable) {
       return;
@@ -2406,6 +2478,16 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
               item.updateSource({ "_stats.compendiumSource": item.uuid });
             }
             this.actor.createEmbeddedDocuments("Item", [item]);
+            // if(item.type !== 'merit') {
+            //   if(item.type === 'charm') {
+
+            //   }
+            //   if(item.type === 'spell') {
+            //     if(this.actor.system.attributes.intelligence.favored || this.actor.system.abilities.occult.favored) {
+
+            //     }
+            //   }
+            // }
             const closeImportItem = document.querySelector('.closeImportItem');
             if (closeImportItem) {
               closeImportItem.click();

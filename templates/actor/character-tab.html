@@ -1,43 +1,6 @@
 <div class="tab character {{tab.cssClass}}" data-group="primary" data-tab="character">
   <ol class="items-list">
     {{#unless isNPC}}
-    <div class="resource-content flexrow flex-center flex-between">
-      <label class="resource-label">{{localize "Ex3.Advancement"}} <a data-action="showDialog"
-          data-dialogtype="advancement"><i class="fas fa-info-circle cursor-pointer"></i></a> </label>
-    </div>
-    <div class="grid grid-2col flex-group-center">
-      <div class="resource-content flexrow flex-center flex-between">
-        <div>
-          <label class="resource-label">{{localize "Ex3.Personal"}} XP ({{system.experience.standard.remaining}}
-            {{localize "Ex3.Remaining"}})</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input name="system.experience.standard.value" value="{{system.experience.standard.value}}" type="text"
-              placeholder="Spent" />
-            /
-            <input name="system.experience.standard.total" value="{{system.experience.standard.total}}" type="text"
-              placeholder="Earned" />
-          </div>
-        </div>
-      </div>
-      <div class="resource-content flexrow flex-center flex-between">
-        <div>
-          <label class="resource-label">{{#if unifiedCharacterAdvancement}}{{localize
-            "Ex3.Heroic"}}{{else}}{{localize "Ex3.Exalt"}}{{/if}} XP ({{system.experience.exalt.remaining}}
-            {{localize "Ex3.Remaining"}})
-            <!-- <a><i class="fas fa-info-circle exalt-xp cursor-pointer"></i></a></label> -->
-            <div class="resource-content flexrow flex-center flex-between">
-              <input name="system.experience.exalt.value" value="{{system.experience.exalt.value}}" type="text"
-                placeholder="Spent" />
-              /
-              <input name="system.experience.exalt.total" value="{{system.experience.exalt.total}}" type="text"
-                placeholder="Earned" />
-            </div>
-        </div>
-      </div>
-    </div>
-    <li>
-      <textarea type="text" name="system.experience.trigger" rows="6">{{system.experience.trigger}}</textarea>
-    </li>
     {{#if system.settings.iscrafter}}
     <div class="flex-center">
       <label class="resource-label">{{localize "Ex3.Craft"}} {{#if simplifiedCrafting}}{{else}}
