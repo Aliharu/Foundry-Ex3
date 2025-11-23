@@ -1137,7 +1137,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       }
     }
 
-    if (this.object.character.abilities.occult.favored) {
+    if (this.object.character.abilities.occult.favored || this.object.character.attributes.intelligence.favored) {
       favoredCharms += Math.max(0, Object.entries(this.object.character.spells).length - 1);
     }
     else {
