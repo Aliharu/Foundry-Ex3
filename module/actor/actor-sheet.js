@@ -440,12 +440,12 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   _prepareCharacterData(sheetData) {
     const actorData = sheetData.actor;
 
-    var pointsAvailableMap = {
+    let pointsAvailableMap = {
       primary: 8,
       secondary: 6,
       tertiary: 4,
     }
-    var attributesSpent = {
+    let attributesSpent = {
       physical: {
         favored: 0,
         unFavored: 0,
@@ -604,16 +604,16 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         }
       }
     }
-    var favoredCharms = 0;
-    var nonFavoredCharms = 0;
-    var favoredAttributesSpent = 0;
-    var unFavoredAttributesSpent = 0;
-    var tertiaryAttributes = 0;
-    var nonTertiaryAttributes = 0;
-    var threeOrBelowFavored = 0;
-    var threeOrBelowNonFavored = 0;
-    var aboveThreeFavored = 0;
-    var aboveThreeUnFavored = 0;
+    let favoredCharms = 0;
+    let nonFavoredCharms = 0;
+    let favoredAttributesSpent = 0;
+    let unFavoredAttributesSpent = 0;
+    let tertiaryAttributes = 0;
+    let nonTertiaryAttributes = 0;
+    let threeOrBelowFavored = 0;
+    let threeOrBelowNonFavored = 0;
+    let aboveThreeFavored = 0;
+    let aboveThreeUnFavored = 0;
 
     for (let [key, attribute] of Object.entries(sheetData.system.charcreation.spent.attributes)) {
       if (sheetData.system.charcreation[key] === 'tertiary') {
@@ -652,8 +652,8 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       }
     }
     sheetData.system.charcreation.spent.abilities = threeOrBelowFavored + threeOrBelowNonFavored;
-    var nonfavoredBPBelowThree = Math.max(0, (threeOrBelowNonFavored - 28));
-    var favoredBPBelowThree = Math.max(0, (threeOrBelowFavored - Math.max(0, 28 - threeOrBelowNonFavored)));
+    let nonfavoredBPBelowThree = Math.max(0, (threeOrBelowNonFavored - 28));
+    let favoredBPBelowThree = Math.max(0, (threeOrBelowFavored - Math.max(0, 28 - threeOrBelowNonFavored)));
     if (sheetData.system.details.exalt === 'lunar') {
       sheetData.system.charcreation.spent.bonuspoints += (favoredAttributesSpent * 3) + (unFavoredAttributesSpent * 4);
     } else {
@@ -664,30 +664,29 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     for (const charm of actorData.items.filter((item) => item.type === 'charm')) {
-      if (actorData.system.attributes[charm.system.ability] && actorData.system.attributes[charm.system.ability].favored) {
+      if (this.actor.isCharmOrSpellFavored(charm)) {
         favoredCharms++;
-      } else if (actorData.system.abilities[charm.system.ability] && actorData.system.abilities[charm.system.ability].favored) {
-        favoredCharms++;
-      }
-      else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === actorData.system.details.caste) {
-        favoredCharms++;
-      }
-      else {
+      } else {
         nonFavoredCharms++;
       }
     }
 
-    if (actorData.system.abilities.occult.favored) {
-      favoredCharms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
-    }
-    else {
-      nonFavoredCharms += Math.max(0, actorData.items.filter((item) => item.type === 'spell').length - 1);
+    let firstSpellFree = true;
+    for (const charm of actorData.items.filter((item) => item.type === 'spell')) {
+      if (!firstSpellFree) {
+        if (this.actor.isCharmOrSpellFavored(charm)) {
+          favoredCharms++;
+        } else {
+          nonFavoredCharms++;
+        }
+      }
+      firstSpellFree = false;
     }
 
     sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
 
-    var totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - sheetData.system.charcreation.available.charms));
-    var totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, sheetData.system.charcreation.available.charms - nonFavoredCharms)));
+    let totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - sheetData.system.charcreation.available.charms));
+    let totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, sheetData.system.charcreation.available.charms - nonFavoredCharms)));
 
     sheetData.system.charcreation.spent.charms = nonFavoredCharms + favoredCharms;
     sheetData.system.charcreation.spent.bonuspoints += favoredBPBelowThree + (nonfavoredBPBelowThree * 2);
@@ -2165,6 +2164,31 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         newVal = 0;
       }
       if (item) {
+        let spentExperienceLabel = `Raised ${item.name} from ${item.system.points} to ${newVal}`;
+        let spentExperienceValue = 0;
+        let valueChange = newVal - item.system.points;
+        if (newVal > item.system.points && game.settings.get("exaltedthird", "automaticExperienceChanges")) {
+          if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+            spentExperienceValue = 5;
+            if (item.system.favored) {
+              spentExperienceValue = 4;
+            }
+            spentExperienceValue *= valueChange;
+          } else {
+            for (let i = 0; i < valueChange; i++) {
+              spentExperienceValue += (item.system.points + i) * 2;
+            }
+            if (item.system.favored) {
+              spentExperienceValue -= (1 * valueChange);
+            }
+            if (item.system.points === 0) {
+              spentExperienceValue += 3;
+            }
+          }
+          if (spentExperienceValue > 0) {
+            this.actor.createExperienceChange(spentExperienceLabel, spentExperienceValue);
+          }
+        }
         this.actor.updateEmbeddedDocuments('Item', [
           {
             _id: target.dataset.id,
@@ -2180,26 +2204,82 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
   }
 
-  _assignToActorField(fields, value) {
-    const actorData = foundry.utils.duplicate(this.actor)
+  _assignToActorField(fields, newValue) {
+    const actorData = foundry.utils.duplicate(this.actor);
+    let spentExperienceLabel = "";
+    let spentExperienceValue = 0;
     // update actor owned items
     if (fields.length === 2 && fields[0] === 'items') {
       for (const i of actorData.items) {
         if (fields[1] === i._id) {
-          i.data.points = value
+          i.data.points = newValue;
           break
         }
       }
     } else {
-      const lastField = fields.pop()
-      if (fields.reduce((data, field) => data[field], actorData)[lastField] === 1 && value === 1) {
+      const lastField = fields.pop();
+      const currentValue = fields.reduce((data, field) => data[field], actorData)[lastField];
+      if (currentValue === 1 && newValue === 1) {
         fields.reduce((data, field) => data[field], actorData)[lastField] = 0;
       }
       else {
-        fields.reduce((data, field) => data[field], actorData)[lastField] = value
+        if (currentValue < newValue) {
+          let valueChange = newValue - currentValue;
+          let isFavored = fields.reduce((data, field) => data[field], actorData).favored;
+          if (fields[1] === 'abilities') {
+            spentExperienceLabel = `Raised ${game.i18n.localize(CONFIG.exaltedthird.abilities[fields[2]])} from ${currentValue} to ${newValue}`;
+            if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+              spentExperienceValue = 5;
+              if (isFavored) {
+                spentExperienceValue = 4;
+              }
+              spentExperienceValue *= valueChange;
+            } else {
+              for (let i = 0; i < valueChange; i++) {
+                spentExperienceValue += (currentValue + i) * 2;
+              }
+              if (isFavored) {
+                spentExperienceValue -= (1 * valueChange);
+              }
+              if (currentValue === 0) {
+                spentExperienceValue += 3;
+              }
+            }
+          }
+          if (fields[1] === 'attributes') {
+            spentExperienceLabel = `Raised ${game.i18n.localize(CONFIG.exaltedthird.attributes[fields[2]])} from ${currentValue} to ${newValue}`;
+            if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+              spentExperienceValue = 10;
+              if (isFavored) {
+                spentExperienceValue = 8;
+              }
+              spentExperienceValue *= valueChange;
+            } else {
+              for (let i = 0; i < valueChange; i++) {
+                spentExperienceValue += (currentValue + i) * (isFavored ? 3 : 4);
+              }
+              if (!isFavored && this.actor.system.details.caste === 'casteless') {
+                spentExperienceValue = -(1 * valueChange);
+              }
+            }
+          }
+          if (fields[1] === 'willpower') {
+            spentExperienceLabel = `Raised Willpower from ${currentValue} to ${newValue}`;
+
+            if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
+              spentExperienceValue = 6 * valueChange;
+            } else {
+              spentExperienceValue = 8 * valueChange;
+            }
+          }
+        }
+        fields.reduce((data, field) => data[field], actorData)[lastField] = newValue;
       }
     }
-    this.actor.update(actorData)
+    this.actor.update(actorData);
+    if (spentExperienceValue > 0 && game.settings.get("exaltedthird", "automaticExperienceChanges")) {
+      this.actor.createExperienceChange(spentExperienceLabel, spentExperienceValue);
+    }
   }
 
   _setupButtons(element) {
@@ -2289,6 +2369,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       if (Object.keys(CONFIG.exaltedthird.exaltcharmtypes).includes(this.actor.system.details.exalt)) {
         itemData.system.charmtype = this.actor.system.details.exalt;
       }
+    }
+    if (type === 'specialty' && game.settings.get("exaltedthird", "automaticExperienceChanges")) {
+      this.actor.createExperienceChange(`New Specialty`, game.settings.get("exaltedthird", "unifiedCharacterAdvancement") ? 2 : 3);
     }
     // Remove the type from the dataset since it's in the itemData.type prop.
     delete itemData.system["type"];
@@ -2478,16 +2561,25 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
               item.updateSource({ "_stats.compendiumSource": item.uuid });
             }
             this.actor.createEmbeddedDocuments("Item", [item]);
-            // if(item.type !== 'merit') {
-            //   if(item.type === 'charm') {
-
-            //   }
-            //   if(item.type === 'spell') {
-            //     if(this.actor.system.attributes.intelligence.favored || this.actor.system.abilities.occult.favored) {
-
-            //     }
-            //   }
-            // }
+            if (item.type !== 'merit' && game.settings.get("exaltedthird", "automaticExperienceChanges")) {
+              let favoredCost = false;
+              let experienceSpent = game.settings.get("exaltedthird", "unifiedCharacterAdvancement") ? 12 : 10;
+              if (this.actor.isCharmOrSpellFavored(item)) {
+                experienceSpent -= 2;
+              }
+              if (item.system.charmtype === 'martialarts' && item.system.parentitemid) {
+                const parentMartialArt = game.items.find(gameItems => gameItems.id === item.system.parentitemid);
+                if (parentMartialArt?.system.siderealmartialart) {
+                  experienceSpent += 2;
+                }
+              }
+              if (!game.settings.get("exaltedthird", "unifiedCharacterAdvancement") && this.actor.system.details.exalt === 'dragonblooded') {
+                if (item.system.charmtype === 'evocation' || item.type === 'spell') {
+                  experienceSpent += 2;
+                }
+              }
+              this.actor.createExperienceChange(`New ${item.type.capitalize()}: ${item.name}`, experienceSpent);
+            }
             const closeImportItem = document.querySelector('.closeImportItem');
             if (closeImportItem) {
               closeImportItem.click();

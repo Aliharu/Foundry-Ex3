@@ -326,8 +326,34 @@ export class ExaltedThirdActor extends Actor {
     return false;
   }
 
+  isCharmOrSpellFavored(item) {
+    if (item.type === 'spell') {
+      if (this.system.abilities.occult.favored || this.system.attributes.intelligence.favored) {
+        return true;
+      }
+    }
+    else {
+      if (item.system.charmtype === 'universal' || item.system.ability === 'universal') {
+        return true;
+      }
+      if (item.system.charmtype === 'martialarts') {
+        return this.system.abilities.martialarts.favored;
+      }
+      if (this.system.attributes[item.system.ability] && this.system.attributes[item.system.ability].favored) {
+        return true;
+      } else if (this.system.abilities[item.system.ability] && this.system.abilities[item.system.ability].favored) {
+        return true;
+      }
+      else if (CONFIG.exaltedthird.maidens.includes(item.system.ability) && item.system.ability === this.system.details.caste) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   async createExperienceChange(name, amount) {
     let changes = this.system.experience.log;
+    let formData = {};
     const changeData = {
       id: foundry.utils.randomID(16),
       name: name,
@@ -337,6 +363,9 @@ export class ExaltedThirdActor extends Actor {
       changes = [];
     }
     changes.push(changeData);
+    foundry.utils.setProperty(formData, `system.experience.log`, changes);
+
+    this.update(formData);
   }
 
   _determineMartialArtsMastery(styleId) {
@@ -1692,12 +1721,10 @@ export class ExaltedThirdActor extends Actor {
   }
 
   _getHighestAttributeNumber(usedAttribute, attributes, syncedLunar = false) {
-    var highestAttributeNumber = 0;
-    var highestAttribute = "strength";
+    let highestAttributeNumber = 0;
     for (let [name, attribute] of Object.entries(attributes)) {
       if (attribute.value > highestAttributeNumber && (!syncedLunar || name !== usedAttribute)) {
         highestAttributeNumber = attribute.value;
-        highestAttribute = name;
       }
     }
     return highestAttributeNumber;

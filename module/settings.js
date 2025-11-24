@@ -61,6 +61,15 @@ export function registerSettings() {
         },
     });
 
+    game.settings.register("exaltedthird", "automaticExperienceChanges", {
+        name: game.i18n.localize('Ex3.AutomaticExperienceChanges'),
+        hint: game.i18n.localize('Ex3.AutomaticExperienceChangesDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+
     game.settings.register('exaltedthird', 'useActiveEffectsDropdown', {
         name: game.i18n.localize('Ex3.UseActiveEffectsDropdown'),
         hint: game.i18n.localize('Ex3.UseActiveEffectsDropdownDescription'),

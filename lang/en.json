@@ -1261,7 +1261,10 @@
     "Ex3.UnifiedCharacterCreationDescription": "Use the unified character creation rules from Crucible of Legend",
 
     "Ex3.UnifiedAdvancement": "Unified Advancement",
-    "Ex3.UnifiedAdvancementDescription": "Use the unified advancement creation rules from Crucible of Legend",
+    "Ex3.UnifiedAdvancementDescription": "Use the unified advancement rules from Crucible of Legend",
+
+    "Ex3.AutomaticExperienceChanges": "Automatic Experience Changes",
+    "Ex3.AutomaticExperienceChangesDescription": "When charms are imported and dots are changed on attribute/abilities.  Automatically create an experience change item and update the experience spent field.",
 
     "Ex3.ForgivingDecisives": "Forgiving Decisives",
     "Ex3.ForgivingDecisivesDescription": "Missing decisives doesn't lose initiative",
