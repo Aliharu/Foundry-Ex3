@@ -59,6 +59,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           bonusPoints: 0,
           willpower: 0,
           charmSlots: 3,
+          devilBodyPowers: 5,
         },
         spent: {
           attributes: {
@@ -76,6 +77,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           charms: 0,
           intimacies: 0,
           charmSlots: 0,
+          devilBodyPowers: 0,
           bonusPoints: {
             cost: {
               attributes: "4 per dot, 3 per teriary dot",
@@ -435,6 +437,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           specialties: {},
           merits: {},
           specialAbilities: {},
+          devilBodyPowers: {},
           crafts: {},
           evocations: {},
           otherCharms: {},
@@ -838,6 +841,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       willpower: 5,
       experience: 55,
       charmSlots: 5,
+      devilBodyPowers: 5,
     }
     if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal') {
       this.object.creationData.available.casteAbilities = 5;
@@ -937,6 +941,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       charms: 0,
       excellencies: 0,
       abovethree: 0,
+      devilBodyPowers: 0,
       bonusPoints: {
         cost: {
           attributes: "4 per dot, 3 per teriary dot",
@@ -1091,6 +1096,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     this.object.creationData.spent.specialties = Object.entries(this.object.character.specialties).length;
     for (let merit of Object.values(this.object.character.merits)) {
       this.object.creationData.spent.merits += merit.system.points;
+    }
+
+    for (let devilBodyPower of Object.values(this.object.character.devilBodyPowers)) {
+      this.object.creationData.spent.devilBodyPowers += devilBodyPower.system.points;
     }
 
     let alchemicalCharmBonusPointDiscount = 0;
@@ -1636,6 +1645,12 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         list: items
       }
     }
+    else if (itemType === 'devilBodyPower') {
+      sectionList['devilBodyPowers'] = {
+        name: game.i18n.localize("Ex3.DevilBodyPowers"),
+        list: items
+      }
+    }
     else {
       for (const charm of items.sort(function (a, b) {
         const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
@@ -1969,6 +1984,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     if (type === 'martialArts') {
       items = game.items.filter(item => item.type === 'customability' && item.system.abilitytype === 'martialart' && (!item.system.siderealmartialart || this.object.character.essence >= 3));
     }
+    if (itemType === 'devilBodyPower') {
+      items = game.items.filter(item => item.type === 'specialability' && item.system.powertype === 'devilBodyPower');
+    }
     if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm' || itemType === 'spellCharm') {
       items = items.filter(charm => charm.system.essence <= this.object.character.essence || charm.system.ability === this.object.character.supernal);
       if (itemType === 'charm') {
@@ -2126,6 +2144,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       ...Object.values(this.object.character.armors).map(armor => armor._id),
       ...Object.values(this.object.character.items).map(item => item._id),
       ...Object.values(this.object.character.specialAbilities).map(item => item._id),
+      ...Object.values(this.object.character.devilBodyPowers).map(item => item._id),
       ...Object.values(this.object.character.merits).map(merit => merit._id),
     ];
     if (itemType === 'charm' || itemType === 'evocation' || itemType === 'martialArtCharm' || itemType === 'otherCharm' || itemType === 'spellCharm') {
@@ -2498,6 +2517,9 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
     for (const specialAbility of Object.values(this.object.character.specialAbilities)) {
       itemData.push(foundry.utils.duplicate(specialAbility));
+    }
+    for (const devilBodyPower of Object.values(this.object.character.devilBodyPowers)) {
+      itemData.push(foundry.utils.duplicate(devilBodyPower));
     }
     if (this.object.characterType === 'character') {
       for (let [key, specialty] of Object.entries(this.object.character.specialties)) {

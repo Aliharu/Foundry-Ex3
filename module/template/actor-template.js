@@ -1,4 +1,4 @@
-import { abilityField, attributeField, healthLevels, resourceField, rollSettingField, shipData, statField, staticSettingField, traitField, warstriderData } from "./common-template.js";
+import { abilityField, attributeField, devilBodyData, healthLevels, resourceField, rollSettingField, shipData, statField, staticSettingField, traitField, warstriderData } from "./common-template.js";
 
 const fields = foundry.data.fields;
 
@@ -188,6 +188,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
       }),
       ship: shipData(),
       warstrider: warstriderData(),
+      devilbody: devilBodyData(),
       mount: new fields.SchemaField({
         mounted: new fields.BooleanField({ initial: false }),
         speedbonus: new fields.SchemaField({

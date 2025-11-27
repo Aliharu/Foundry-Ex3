@@ -518,6 +518,13 @@
     "Ex3.Major": "Major",
     "Ex3.Defining": "Defining",
 
+    "Ex3.PersonalMax": "Personal Max",
+    "Ex3.PeripheralMax": "Peripheral Max",
+    "Ex3.PersonalCommitted": "Personal Committed",
+    "Ex3.PeripheralCommitted": "Peripheral Committed",
+
+    "Ex3.EssencePools": "Essence Pools",
+
     "Ex3.DefiningIntimacy": "Defining Intimacy",
     "Ex3.MajorIntimacy": "Major Intimacy",
     "Ex3.MinorIntimacy": "Minor Intimacy",
@@ -1239,6 +1246,13 @@
     "Ex3.HomebrewHint": "homebrew Changes",
     "Ex3.Rules": "Rules",
     "Ex3.Steady": "Steady",
+
+    "Ex3.DevilBody": "Devil Body",
+
+    "Ex3.DevilBodyPower": "Devil Body Power",
+    "Ex3.DevilBodyPowers": "Devil Body Powers",
+
+    "Ex3.DevilBodyActive": "Devil Body Active",
 
     "Ex3.NextDot": "Next Dot",
     "Ex3.MaxedOut": "Maxed Out",

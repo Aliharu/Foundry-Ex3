@@ -12,5 +12,16 @@
                 {{selectOptions selects.autoAddToRollOptions selected=system.autoaddtorolls localize=true}}
             </select>
         </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Points"}}</div>
+            <input type="number" name="system.points"
+                value="{{system.points}}" data-dtype="Number" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.Type"}}</div>
+            <select name="system.powertype" data-type="String">
+                {{selectOptions selects.specialAbilityTypes selected=system.powertype localize=true blank="Ex3.None"}}
+            </select>
+        </div>
     </div>
 </div>

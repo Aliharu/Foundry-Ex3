@@ -126,6 +126,15 @@ exaltedthird.activeEffectChanges = {
       "system.health.penaltymod": 'Ex3.HealthPenaltyModifier',
     },
   },
+  // essencePools: {
+  //   label: "Ex3.EssencePools",
+  //   effectList: {
+  //     'system.motes.personal.max': 'Ex3.PersonalMax',
+  //     'system.motes.peripheral.max': 'Ex3.PeripheralMax',
+  //     'system.motes.personal.committed': 'Ex3.PersonalCommitted',
+  //     'system.motes.peripheral.committed': 'Ex3.PeripheralCommitted',
+  //   }
+  // },
   npcAbilities: {
     label: "Ex3.NPCAbilities",
     effectList: {
@@ -1406,7 +1415,12 @@ exaltedthird.casteabilitiesmap = {
   'bleakWarden': ['occult', 'presence', 'stealth'],
   'mysteries': ['investigation', 'lore', 'occult', 'socialize', 'stealth'],
   'reaver': ['athletics', 'sail', 'war'],
-  'dice': ['dodge', 'larceny', 'socialize']
+  'dice': ['dodge', 'larceny', 'socialize'],
+  'azimuth': ['archery', 'athletics', 'awareness', 'brawl', 'melee', 'resistance', 'thrown', 'war'],
+  'ascendant': ['integrity', 'lore', 'medicine', 'occult', 'performance', 'presence', 'resistance', 'survival'],
+  'horizon': ['bureaucracy', 'craft', 'investigation', 'linguistics', 'lore', 'medicine', 'occult', 'war'],
+  'nadir': ['athletics', 'awareness', 'dodge', 'integrity', 'larceny', 'ride', 'sail', 'stealth'],
+  'penumbra': ['bureaucracy', 'investigation', 'larceny', 'linguistics', 'performance', 'presence', 'stealth', 'socialize']
 };
 
 exaltedthird.maidenabilities = {
@@ -1971,7 +1985,8 @@ exaltedthird.booleanTriggers = [
   'attackUndodgeable',
   'attackClash',
   'targetIsBattlegroup',
-  'isControlSpell'
+  'isControlSpell',
+  'devilBodyActive',
 ];
 
 exaltedthird.bonusTypes = {
@@ -2363,7 +2378,8 @@ exaltedthird.requirementTypes = {
       missingStatus: "Ex3.MissingStatus",
       hasItemName: "Ex3.HasItemName",
       hasActiveItemName: "Ex3.HasActiveItemName",
-      hasActiveEffectName: "Ex3.HasActiveEffectName"
+      hasActiveEffectName: "Ex3.HasActiveEffectName",
+      devilBodyActive: "Ex3.DevilBodyActive",
     },
   },
   target: {
@@ -2695,6 +2711,9 @@ exaltedthird.selects = {
     'subtractInitiative': "Ex3.SubtractEnemyInitiative",
     'subtractSuccesses': "Ex3.SubtractEnemySuccesses",
     'reduceDamage': "Ex3.ReduceDamage"
+  },
+  specialAbilityTypes: {
+    'devilBodyPower': "Ex3.DevilBodyPower",
   },
   autoAddToRollOptions: {
     '': "Ex3.None",

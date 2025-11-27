@@ -95,6 +95,13 @@ export function warstriderData() {
     });
 }
 
+export function devilBodyData() {
+    return new fields.SchemaField({
+        ...healthLevels('devilbody'),
+        active: new fields.BooleanField({ initial: false }),
+    });
+}
+
 export function healthLevels(entityType = 'person') {
     const defaultValues = {
         person: {
@@ -114,6 +121,12 @@ export function healthLevels(entityType = 'person') {
             "one": 1,
             "two": 1,
             "four": 1,
+        },
+        devilbody: {
+            "zero": 8,
+            "one": 0,
+            "two": 0,
+            "four": 0,
         }
     }
     return {
@@ -144,7 +157,7 @@ export function healthLevels(entityType = 'person') {
                     penalty: new fields.NumberField({ initial: 4 }),
                 }),
                 inc: new fields.SchemaField({
-                    value: new fields.NumberField({ initial: 1 }),
+                    value: new fields.NumberField({ initial: entityType === 'devilbody' ? 0 : 1 }),
                     penalty: new fields.StringField({ initial: "inc" }),
                 }),
             }),

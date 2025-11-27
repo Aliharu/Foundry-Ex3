@@ -246,7 +246,7 @@ export class ExaltedThirdActor extends Actor {
             validAbilityRequirement = false;
           }
         }
-        else if (CONFIG.exaltedthird.maidens.includes(item.system.ability)) {
+        else if (CONFIG.exaltedthird.maidens.includes(item.system.numberprerequisites.ability)) {
           if (item.system.numberprerequisites.number > this._getMaidenCharmsNumber(item.system.numberprerequisites.ability)) {
             validAbilityRequirement = false;
           }
@@ -996,6 +996,7 @@ export class ExaltedThirdActor extends Actor {
     let totalHealth = 0;
     let currentPenalty = 0;
     let totalWarstriderHealth = 0;
+    let totalDevilBodyHealth = 0;
     let totalShipHealth = 0;
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
@@ -1085,22 +1086,39 @@ export class ExaltedThirdActor extends Actor {
     }
 
 
-    for (let [key, healthLevel] of Object.entries(data.warstrider.health.levels)) {
-      if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > totalWarstriderHealth) {
+    for (let [key, healthLevel] of Object.entries(data.devilbody.health.levels)) {
+      if ((data.devilbody.health.bashing + data.devilbody.health.lethal + data.devilbody.health.aggravated) > totalWarstriderHealth) {
+        currentWarstriderPenalty = healthLevel.penalty;
+      }
+      totalDevilBodyHealth += healthLevel.value;
+    }
+    data.devilbody.health.max = totalDevilBodyHealth;
+    if ((data.devilbody.health.bashing + data.devilbody.health.lethal + data.devilbody.health.aggravated) > data.devilbody.health.max) {
+      data.devilbody.health.aggravated = data.devilbody.health.max - data.devilbody.health.lethal;
+      if (data.devilbody.health.aggravated <= 0) {
+        data.devilbody.health.aggravated = 0;
+        data.devilbody.health.lethal = data.health.max;
+      }
+    }
+    data.devilbody.health.value = data.devilbody.health.max - data.devilbody.health.aggravated - data.devilbody.health.lethal - data.devilbody.health.bashing;
+    data.devilbody.health.penalty = currentWarstriderPenalty;
+
+    for (let [key, healthLevel] of Object.entries(data.devilbody.health.levels)) {
+      if ((data.devilbody.health.bashing + data.devilbody.health.lethal + data.devilbody.health.aggravated) > totalWarstriderHealth) {
         currentWarstriderPenalty = healthLevel.penalty;
       }
       totalWarstriderHealth += healthLevel.value;
     }
-    data.warstrider.health.max = totalWarstriderHealth;
-    if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > data.warstrider.health.max) {
-      data.warstrider.health.aggravated = data.warstrider.health.max - data.warstrider.health.lethal;
-      if (data.warstrider.health.aggravated <= 0) {
-        data.warstrider.health.aggravated = 0;
-        data.warstrider.health.lethal = data.health.max;
+    data.devilbody.health.max = totalWarstriderHealth;
+    if ((data.devilbody.health.bashing + data.devilbody.health.lethal + data.devilbody.health.aggravated) > data.devilbody.health.max) {
+      data.devilbody.health.aggravated = data.devilbody.health.max - data.devilbody.health.lethal;
+      if (data.devilbody.health.aggravated <= 0) {
+        data.devilbody.health.aggravated = 0;
+        data.devilbody.health.lethal = data.health.max;
       }
     }
-    data.warstrider.health.value = data.warstrider.health.max - data.warstrider.health.aggravated - data.warstrider.health.lethal - data.warstrider.health.bashing;
-    data.warstrider.health.penalty = currentWarstriderPenalty;
+    data.devilbody.health.value = data.devilbody.health.max - data.devilbody.health.aggravated - data.devilbody.health.lethal - data.devilbody.health.bashing;
+    data.devilbody.health.penalty = currentWarstriderPenalty;
 
 
     for (let [key, healthLevel] of Object.entries(data.ship.health.levels)) {
@@ -1822,7 +1840,7 @@ export class ExaltedThirdActor extends Actor {
     let currentPenalty = 0;
     let coverBonus = 0;
 
-    if (this.system.battlegroup) {
+    if (this.system.battlegroup && this.system.devilbody?.active) {
       currentPenalty = 0;
     }
     else {

@@ -487,6 +487,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       merits: 10,
       intimacies: 4,
       willpower: 5,
+      devilBodyPowers: 5,
     }
     if (sheetData.system.details.exalt === 'solar' || sheetData.system.details.exalt === 'lunar') {
       if (sheetData.system.essence.value >= 2) {
@@ -564,6 +565,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       merits: 0,
       abovethree: 0,
       intimacies: 0,
+      devilBodyPowers: 0,
     }
     for (let [key, attr] of Object.entries(sheetData.system.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
@@ -684,6 +686,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     sheetData.system.charcreation.spent.specialties = actorData.specialties.length;
+
+    sheetData.system.charcreation.spent.devilBodyPowers = actorData.items
+      .filter(item => item.type === 'specialability' && item.system.powertype === 'devilBodyPower')
+      .reduce((sum, item) => sum + (item.system.points ?? 0), 0);
 
     let totalNonFavoredCharms = Math.max(0, (nonFavoredCharms - sheetData.system.charcreation.available.charms));
     let totalFavoredCharms = Math.max(0, (favoredCharms - Math.max(0, sheetData.system.charcreation.available.charms - nonFavoredCharms)));
@@ -1685,23 +1691,14 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       'healthType': healthType,
       'hasOxBody': false,
     }
-    if (healthType === 'warstrider') {
-      templateData.temp = this.actor.system.warstrider.health.levels.temp.value;
-      templateData.zero = this.actor.system.warstrider.health.levels.zero.value;
-      templateData.one = this.actor.system.warstrider.health.levels.one.value;
-      templateData.two = this.actor.system.warstrider.health.levels.two.value;
-      templateData.three = this.actor.system.warstrider.health.levels.three.value;
-      templateData.four = this.actor.system.warstrider.health.levels.four.value;
-    }
-    else if (healthType === 'ship') {
-      templateData.temp = this.actor.system.ship.health.levels.temp.value;
-      templateData.zero = this.actor.system.ship.health.levels.zero.value;
-      templateData.one = this.actor.system.ship.health.levels.one.value;
-      templateData.two = this.actor.system.ship.health.levels.two.value;
-      templateData.three = this.actor.system.ship.health.levels.three.value;
-      templateData.four = this.actor.system.ship.health.levels.four.value;
-    }
-    else {
+    if (healthType !== 'person') {
+      templateData.temp = this.actor.system[healthType].health.levels.temp.value;
+      templateData.zero = this.actor.system[healthType].health.levels.zero.value;
+      templateData.one = this.actor.system[healthType].health.levels.one.value;
+      templateData.two = this.actor.system[healthType].health.levels.two.value;
+      templateData.three = this.actor.system[healthType].health.levels.three.value;
+      templateData.four = this.actor.system[healthType].health.levels.four.value;
+    } else {
       templateData.temp = this.actor.system.health.levels.temp.value;
       templateData.zero = this.actor.system.health.levels.zero.value;
       templateData.one = this.actor.system.health.levels.one.value;

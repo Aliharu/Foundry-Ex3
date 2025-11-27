@@ -44,6 +44,13 @@
         <td>{{data.creationData.available.merits}}</td>
         <td>{{data.creationData.spent.merits}}</td>
       </tr>
+      {{#ifEquals data.character.exalt 'infernal' }}
+      <tr>
+        <td>{{localize "Ex3.DevilBodyPowers"}}</td>
+        <td>{{data.creationData.available.devilBodyPowers}}</td>
+        <td>{{data.creationData.spent.devilBodyPowers}}</td>
+      </tr>
+      {{/ifEquals}}
       <tr>
         <td>{{localize "Ex3.Charms"}}/{{localize "Ex3.Spells"}}</td>
         <td>{{data.creationData.available.charms}}</td>

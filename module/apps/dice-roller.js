@@ -5766,6 +5766,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         fufillsRequirements = false;
                     }
                     break;
+                case 'devilBodyActive':
+                    if(!triggerActor.system.devilbody?.active) {
+                        fufillsRequirements = false;
+                    }
+                    break;
                 case 'currentModeActive':
                     if (charm.system.modes?.currentmodeid !== requirementObject.value) {
                         fufillsRequirements = false;
@@ -5990,6 +5995,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     dealHealthDamage(characterDamage, targetBattlegroup = false) {
         let sizeDamaged = 0;
+        let healthType = 'system';
+        let targetedHealth = this.object.newTargetData.system.health;
+        if (this.object.newTargetData.system.warstrider?.equipped) {
+            targetedHealth = this.object.newTargetData.system.warstrider.health;
+        } else if (this.object.newTargetData.system.devilbody?.active) {
+            targetedHealth = this.object.newTargetData.system.devilbody.health;
+        }
         if (this.object.target && game.combat && characterDamage > 0) {
             this.object.updateTargetActorData = true;
             let totalHealth = 0;
@@ -5997,7 +6009,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 totalHealth = this.object.newTargetData.system.health.levels.zero.value + this.object.newTargetData.system.size.value;
             }
             else {
-                for (let [key, healthLevel] of Object.entries(this.object.newTargetData.system.health.levels)) {
+                for (let [key, healthLevel] of Object.entries(targetedHealth.levels)) {
                     totalHealth += healthLevel.value;
                 }
             }
@@ -6014,13 +6026,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 }
             }
             if (this.object.damage.type === 'bashing') {
-                this.object.newTargetData.system.health.bashing = Math.min(totalHealth - this.object.newTargetData.system.health.aggravated - this.object.newTargetData.system.health.lethal, this.object.newTargetData.system.health.bashing + characterDamage);
+                targetedHealth.bashing = Math.min(totalHealth - targetedHealth.aggravated - targetedHealth.lethal, targetedHealth.bashing + characterDamage);
             }
             if (this.object.damage.type === 'lethal') {
-                this.object.newTargetData.system.health.lethal = Math.min(totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.aggravated, this.object.newTargetData.system.health.lethal + characterDamage);
+                targetedHealth.lethal = Math.min(totalHealth - targetedHealth.bashing - targetedHealth.aggravated, targetedHealth.lethal + characterDamage);
             }
             if (this.object.damage.type === 'aggravated') {
-                this.object.newTargetData.system.health.aggravated = Math.min(totalHealth - this.object.newTargetData.system.health.bashing - this.object.newTargetData.system.health.lethal, this.object.newTargetData.system.health.aggravated + characterDamage);
+                targetedHealth.aggravated = Math.min(totalHealth - targetedHealth.bashing - targetedHealth.lethal, targetedHealth.aggravated + characterDamage);
             }
             if (targetBattlegroup && sizeDamaged) {
                 return sizeDamaged;
@@ -6622,7 +6634,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 totalPenalties += this.actor.system.warstrider.health.penalty;
                 rollButtonTooltip += `<p>Warstrider Wounds: ${this.actor.system.warstrider.health.penalty}</p>`;
             }
-            else {
+            else if (!this.actor.system.devilbody.active) {
                 totalPenalties += this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty;
                 totalIgnorePenalties += Math.min(this.actor.system.health.penaltymod, this.actor.system.health.penalty === 'inc' ? 4 : this.actor.system.health.penalty);
                 if (this.actor.system.health.penalty) {

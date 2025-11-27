@@ -291,6 +291,8 @@ export class ItemSpecialAbilityData extends CommonItemData {
             ...triggerData(),
             ...customModifier(),
             autoaddtorolls: new fields.StringField({ initial: "" }),
+            points: new fields.NumberField({ initial: 0 }),
+            powertype: new fields.StringField({ initial: "" }),
         }
     }
 }

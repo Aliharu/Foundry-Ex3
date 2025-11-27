@@ -204,11 +204,8 @@ Hooks.once('init', async function () {
 
   Handlebars.registerHelper('healthCheck', function (health, type, options) {
     let healthLevels = options.data.root.system.health.levels;
-    if (type === 'warstrider') {
-      healthLevels = options.data.root.system.warstrider.health.levels;
-    }
-    else if (type === 'ship') {
-      healthLevels = options.data.root.system.ship.health.levels;
+    if (type !== 'character') {
+      healthLevels = options.data.root.system[type].health.levels;
     }
     let zeroPenalty = healthLevels.zero.value + healthLevels.temp.value;
     if (health < zeroPenalty) {
@@ -1965,35 +1962,43 @@ async function dealHealthDamage(actor, damageValue, damageType) {
   const actorData = foundry.utils.duplicate(actor);
   let totalHealth = 0;
   let sizeDamaged = 0;
+  let healthType = 'system';
+
+  let targetedHealth = actorData.system.health;
+  if (actorData.system.warstrider?.equipped) {
+    targetedHealth = actorData.system.warstrider.health;
+  } else if (actorData.system.devilbody?.active) {
+    targetedHealth = actorData.system.devilbody.health;
+  }
 
   if (actor.system.battlegroup) {
-    totalHealth = actorData.system.health.levels.zero.value + actorData.system.size.value;
+    totalHealth = targetedHealth.levels.zero.value + actorData.system.size.value;
   }
   else {
-    for (let [key, healthLevel] of Object.entries(actorData.system.health.levels)) {
+    for (let [key, healthLevel] of Object.entries(targetedHealth.levels)) {
       totalHealth += healthLevel.value;
     }
   }
   if (actor.system.battlegroup) {
-    var remainingHealth = totalHealth - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+    let remainingHealth = totalHealth - targetedHealth.bashing - targetedHealth.lethal - targetedHealth.aggravated;
     while (remainingHealth <= damageValue && actorData.system.size.value > 0) {
-      actorData.system.health.bashing = 0;
-      actorData.system.health.lethal = 0;
-      actorData.system.health.aggravated = 0;
+      targetedHealth.bashing = 0;
+      targetedHealth.lethal = 0;
+      targetedHealth.aggravated = 0;
       damageValue -= remainingHealth;
-      remainingHealth = Math.max(0, totalHealth - 1) - actorData.system.health.bashing - actorData.system.health.lethal - actorData.system.health.aggravated;
+      remainingHealth = Math.max(0, totalHealth - 1) - targetedHealth.bashing - targetedHealth.lethal - targetedHealth.aggravated;
       actorData.system.size.value -= 1;
       sizeDamaged++;
     }
   }
   if (damageType === 'bashing') {
-    actorData.system.health.bashing = Math.min(totalHealth - actorData.system.health.aggravated - actorData.system.health.lethal, actorData.system.health.bashing + damageValue);
+    targetedHealth.bashing = Math.min(totalHealth - targetedHealth.aggravated - targetedHealth.lethal, targetedHealth.bashing + damageValue);
   }
   if (damageType === 'lethal') {
-    actorData.system.health.lethal = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.aggravated, actorData.system.health.lethal + damageValue);
+    targetedHealth.lethal = Math.min(totalHealth - targetedHealth.bashing - targetedHealth.aggravated, targetedHealth.lethal + damageValue);
   }
   if (damageType === 'aggravated') {
-    actorData.system.health.aggravated = Math.min(totalHealth - actorData.system.health.bashing - actorData.system.health.lethal, actorData.system.health.aggravated + damageValue);
+    targetedHealth.aggravated = Math.min(totalHealth - targetedHealth.bashing - targetedHealth.lethal, targetedHealth.aggravated + damageValue);
   }
   actor.update(actorData);
 }
