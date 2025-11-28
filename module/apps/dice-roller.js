@@ -2981,7 +2981,19 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
         }
-        if (formula.includes('rollfaces-')) {
+        if (formula.includes('rerollfaces-')) {
+            formula = formula.replace('rerollfaces-', '');
+            let countRerolledDice = false;
+            if (!parseInt(formula)) {
+                return 0;
+            }
+            if (this.object.diceRoll) {
+                return this.object.diceRoll.filter(die => die.rerolled && die.result === parseInt(formula)).length;
+            } else {
+                return 0;
+            }
+        }
+        else if (formula.includes('rollfaces-')) {
             formula = formula.replace('rollfaces-', '');
             let countRerolledDice = false;
             if (formula.includes('-precedence')) {
@@ -2997,6 +3009,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
         }
+
         // TODO
         // if (formula.includes('opposedrollfaces-')) {
         //     formula = formula.replace('opposedrollfaces-', '');
@@ -5767,7 +5780,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'devilBodyActive':
-                    if(!triggerActor.system.devilbody?.active) {
+                    if (!triggerActor.system.devilbody?.active) {
                         fufillsRequirements = false;
                     }
                     break;
