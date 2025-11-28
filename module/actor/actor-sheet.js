@@ -83,6 +83,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       setDiceCap: this.setDiceCap,
       setSpendPool: this.setSpendPool,
       calculateMotes: this.calculateMotes,
+      restoreMotes: this.restoreMotes,
       createProphecy: this.createProphecy,
       editTraits: this.editTraits,
       dotCounterChange: this._onDotCounterChange,
@@ -1549,7 +1550,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       }
       this.actor.update({ [`system.motes`]: system.motes });
     }
+  }
 
+  static async restoreMotes(event, target) {
+    this.actor.update({ [`system.motes.${target.dataset.pool}.value`]: this.actor.system.motes[target.dataset.pool].max - this.actor.system.motes[target.dataset.pool].committed });
   }
 
   static createProphecy(event, target) {
