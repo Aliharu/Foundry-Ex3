@@ -647,7 +647,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
   static async myFormHandler(event, form, formData) {
     const formObject = foundry.utils.expandObject(formData.object);
-    const resetFavored = this.object.character.caste !== formObject.object.character.caste || (formObject.object.character.exigent && this.object.character.exigent !== formObject.object.character.exigent);
+    const resetFavored = (formObject.object.character.caste !== undefined && this.object.character.caste !== formObject.object.character.caste) || (formObject.object.character.exigent !== undefined && this.object.character.exigent !== formObject.object.character.exigent);
     foundry.utils.mergeObject(this, formData.object);
 
     if (resetFavored) {
