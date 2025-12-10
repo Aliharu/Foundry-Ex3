@@ -1982,6 +1982,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
             iscrafter: result.isCrafter.checked,
             hasmount: result.hasMount.checked,
             showmaidens: result.showMaidens.checked,
+            istemplate: result.isTemplate?.checked ?? false,
           }
           if (result.exigentType) {
             newSettings.exigenttype = result.exigentType.value;

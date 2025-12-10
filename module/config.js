@@ -2557,6 +2557,7 @@ exaltedthird.selects = {
     exalt: 'Ex3.Exalt',
     fae: 'Ex3.Fae',
     god: 'Ex3.God',
+    machineSpirit: 'Ex3.MachineSpirit',
     magiccreature: 'Ex3.MagicCreature',
     mortal: 'Ex3.Mortal',
     undead: 'Ex3.Undead',
@@ -3130,8 +3131,8 @@ exaltedthird.selects = {
     flurry: "Flurry",
     fulldefense: "Ex3.FlurryFullDefense",
     piercing: "Ex3.Piercing",
-    knockdown: "Ex3.Knockdown",
-    knockback: "Ex3.Knockback",
+    knockdown: "Ex3.SmashingKnockdown",
+    knockback: "Ex3.SmashingKnockback",
     impale: "Ex3.Impale",
     unexpectedattack: "Ex3.UnexpectedAttack"
   }
@@ -3153,4 +3154,16 @@ exaltedthird.tripleActionStatblocks = {
     secondary: 7,
     tertiary: 4,
   },
+}
+
+exaltedthird.printedTemplateNames = {
+  // Machine Spirits
+  "Goleiok, the Fix Beetles": 'firstCircleMachineSpirit',
+  "Golgin, the Singing Dreams": 'firstCircleMachineSpirit',
+  "Mandilom, the Crawling Iron": 'firstCircleMachineSpirit',
+  "Zio, the Crystal Flies": 'firstCircleMachineSpirit',
+  "Jovan Kash, Prophet of the Reaches" : 'drone',
+  "Auvua, Keeper of the Eternal Tabernacle" : 'secondCircleMachineSpirit',
+  "Vex Seretika, Perpetual Overseer of the Meres" : 'secondCircleMachineSpirit',
+  // Demons
 }

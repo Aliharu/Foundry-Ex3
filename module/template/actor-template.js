@@ -136,6 +136,7 @@ class CommonActorData extends foundry.abstract.TypeDataModel {
         showanima: new fields.BooleanField({ initial: true }),
         hasaura: new fields.BooleanField({ initial: false }),
         showmaidens: new fields.BooleanField({ initial: false }),
+        istemplate: new fields.BooleanField({ initial: false }),
         rollsettings: new fields.SchemaField({
           attacks: rollSettingField("dexterity", "melee"),
           command: rollSettingField("charisma", "war"),

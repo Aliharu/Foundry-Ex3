@@ -42,6 +42,11 @@
                     {{selectOptions selects.demons selected=system.details.creaturesubtype localize=true}}
                 </select></h1>
             {{/ifEquals}}
+            {{#ifEquals system.creaturetype 'machineSpirit'}}
+            <h1 class="charname"> <select name="system.details.creaturesubtype" data-type="String">
+                    {{selectOptions selects.demons selected=system.details.creaturesubtype localize=true}}
+                </select></h1>
+            {{/ifEquals}}
             {{#ifEquals system.creaturetype 'exalt'}}
             <h1 class="charname"> <select name="system.details.exalt" data-type="String">
                     {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
@@ -164,11 +169,10 @@
                         "Ex3.Peripheral"}}
                         {{#if system.settings.editmode}}
                         <a data-action="calculateMotes" data-functiontype="spend" data-pool="peripheral"><i
-                                class="fas fa-calculator cursor-pointer"
-                                title="Auto Set Motes"></i></a>
+                                class="fas fa-calculator cursor-pointer" title="Auto Set Motes"></i></a>
                         {{else}}
-                        <a data-action="restoreMotes" data-pool="peripheral"><i class="fas fa-plus-square cursor-pointer"
-                                title="Restore Motes"></i></a>
+                        <a data-action="restoreMotes" data-pool="peripheral"><i
+                                class="fas fa-plus-square cursor-pointer" title="Restore Motes"></i></a>
                         {{/if}}
                     </label>
                     <div class="resource-content flexrow flex-center flex-between">

@@ -9,6 +9,8 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       type: type,
       charmType: 'other',
       templateType: '',
+      template: '',
+      templates: [],
       listingName: '',
       spellCircle: 'terrestrial',
       itemType: 'armor',
@@ -34,6 +36,13 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         return acc;
       }, {}) ?? {};
     this.data.folders[''] = "Ex3.None";
+
+    this.data.templates = game.actors.filter(actor => actor.system.settings.istemplate)
+      .reduce((acc, template) => {
+        acc[template.id] = template.name;
+        return acc;
+      }, {}) ?? {};
+    this.data.templates[''] = "Ex3.None";
   }
 
   static DEFAULT_OPTIONS = {
@@ -91,6 +100,12 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         }, {}) ?? {};
       this.data.folders[''] = "Ex3.None";
       // this.data.type = formObject.type;
+      this.data.templates = game.actors.filter(actor => actor.system.settings.istemplate)
+        .reduce((acc, template) => {
+          acc[template.id] = template.name;
+          return acc;
+        }, {}) ?? {};
+      this.data.templates[''] = "Ex3.None";
     }
     for (let key in formObject) {
       if (formObject.hasOwnProperty(key) && this.data.hasOwnProperty(key)) {
@@ -215,7 +230,9 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         charmData.system.activatable = true;
         charmData.system.cost.motes = 0;
       }
-      var description = '';
+      let description = '';
+      let upgradeLines = [];
+      let triggerUpgrades = false;
       while (textArray[index] && index !== textArray.length) {
         description += textArray[index];
         description += " ";
@@ -232,6 +249,15 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
           index--;
           break;
         }
+        if (triggerUpgrades) {
+          upgradeLines.push((textArray[index] || "").trim());
+        }
+        if (textArray[index] === 'Keys' || textArray[index] === 'Submodules') {
+          triggerUpgrades = true;
+        }
+      }
+      if (upgradeLines) {
+        charmData.system.upgrades = this.charmUpgrades(upgradeLines);
       }
       charmData.system.description = description.replace('- ', '');
       if (folder) {
@@ -308,7 +334,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     typeAndRequirement = typeAndRequirement.split(' ');
     charmData.system.type = typeAndRequirement[0];
     if (typeAndRequirement[0] === 'Permanent') {
-      charmData.system.duration = 'Permanent'
+      charmData.system.duration = 'Permanent';
     }
     charmData.system.ability = typeAndRequirement[1].toLowerCase();
     charmData.system.requirement = typeAndRequirement[2].replace(/[^0-9]/g, '');
@@ -427,6 +453,70 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       let essenceRequirement = requirementArray[requirementArray.length === 2 ? 1 : 2].trim().split(' ');
       charmData.system.essence = essenceRequirement[1].replace(/[^0-9]/g, '');
     }
+  }
+
+  charmUpgrades(lines) {
+    const upgrades = {};
+
+    // A header is defined as:
+    // NAME (number xp;
+    const headerRegex = /^([A-Za-z0-9' \-]+)\s*\(\d+xp;/;
+
+    const entries = [];
+    let buffer = [];
+
+    for (let line of lines) {
+      if (line.toLowerCase() === "submodules") continue;
+
+      if (headerRegex.test(line)) {
+        // Start of a new submodule
+        if (buffer.length) {
+          entries.push(buffer.join(" "));
+          buffer = [];
+        }
+        buffer.push(line);
+      } else {
+        // Continuation line — description or wrapped requirement line
+        buffer.push(line);
+      }
+    }
+
+    // Final buffered entry
+    if (buffer.length) entries.push(buffer.join(" "));
+
+    // Now parse each combined entry
+    for (const entry of entries) {
+      // Extract name (before first paren)
+      const nameMatch = entry.match(/^([^()]+?)\s*\(/);
+      const name = nameMatch ? nameMatch[1].trim() : "Unknown";
+
+      // // Find all (...) groups
+      // const parenGroups = [...entry.matchAll(/\(([^)]*)\)/g)].map(m => m[1]);
+
+      // // First (...) = XP + requirements
+      // const costReq = parenGroups[0] || "";
+      // const costParts = costReq.split(";").map(s => s.trim());
+      // const xp = parseInt(costParts[0].replace(/xp/i, "").trim());
+      // const requirements = costParts[1] ? costParts[1].split(",").map(s => s.trim()) : [];
+
+      // // Check if there's a surcharge group (e.g., (+3m, 1wp))
+      // let surcharge = null;
+      // if (parenGroups.length > 1 && parenGroups[1].toLowerCase().match(/[mw]p|mote/)) {
+      //   surcharge = parenGroups[1];
+      // }
+
+      // // Description = after the first ':' and beyond
+      // const descIndex = entry.indexOf(":");
+      // const description = descIndex !== -1 ? entry.slice(descIndex + 1).trim() : "";
+
+      upgrades[Object.keys(upgrades).length] = {
+        id: foundry.utils.randomID(16),
+        name,
+        active: false,
+      };
+    }
+
+    return upgrades;
   }
 
   async updatePrereqs(charmsList) {
@@ -692,28 +782,41 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     ];
     let index = 1;
     var textArray = this.data.textBox.split(/\r?\n/);
+    let intimacyString = '';
+    let intimacyArray = [];
+    let templateCharacter = null;
+    if (this.data.template) {
+      templateCharacter = game.actors.get(this.data.template);
+    }
     this.errorSection = 'Initial Info';
     try {
       actorData.name = textArray[0].trim();
       actorData.prototypeToken.name = textArray[0].trim();
-      var actorDescription = '';
-      while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:') && !textArray[index].includes('Intimacies:')) {
-        actorDescription += textArray[index];
+      let actorDescription = '';
+      while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:') && !textArray[index].includes('Intimacies:') && !textArray[index].includes("Health Levels:") && !textArray[index].includes('Primary Actions:')) {
+        actorDescription += textArray[index] ?? "";
         index++;
       }
       actorData.system.biography = actorDescription;
+      if (templateCharacter) {
+        actorData.system.creaturetype = templateCharacter.system.creaturetype;
+        actorData.system.details.creaturesubtype = templateCharacter.system.details.creaturesubtype;
+        for (const item of templateCharacter.items.filter(item => item.type === 'charm' || item.type === 'merit' || item.type === 'specialability')) {
+          itemData.push(foundry.utils.duplicate(item));
+        }
+      }
       if (textArray[index].includes('Intimacies')) {
         this.errorSection = 'Intimacies';
-        var intimacyStrength = 'defining';
+        let intimacyStrength = 'defining';
         while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Essence:')) {
           intimacyString += textArray[index];
           index++;
         }
-        var intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
+        let intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
         for (const intimacy of intimaciesArray) {
           if (intimacy) {
             intimacyArray = intimacy.split(':');
-            var intimacyType = 'tie';
+            let intimacyType = 'tie';
             if (intimacyArray[0].includes('Principle')) {
               intimacyType = 'principle';
             }
@@ -766,17 +869,29 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         index++;
       }
       this.errorSection = 'Health/WP/Essence stats';
-      var statArray = textArray[index].replace(/ *\([^)]*\) */g, "").replace('Cost: ', '').split(';');
-      actorData.system.essence.value = parseInt(statArray[0].replace(/[^0-9]/g, ''));
-      actorData.system.willpower.value = parseInt(statArray[1].replace(/[^0-9]/g, ''));
-      actorData.system.willpower.max = parseInt(statArray[1].replace(/[^0-9]/g, ''));
-      actorData.system.pools.joinbattle.value = parseInt(statArray[2].replace(/[^0-9]/g, ''));
-      index++;
-      if (textArray[index].includes('Health Levels')) {
-        this._getHealthLevels(textArray, index, actorData);
+      if (textArray[index].includes('Essence')) {
+        var statArray = textArray[index].replace(/ *\([^)]*\) */g, "").replace('Cost: ', '').split(';');
+        actorData.system.essence.value = parseInt(statArray[0].replace(/[^0-9]/g, ''));
+        if (statArray[1]) {
+          actorData.system.willpower.value = parseInt(statArray[1].replace(/[^0-9]/g, ''));
+          actorData.system.willpower.max = parseInt(statArray[1].replace(/[^0-9]/g, ''));
+        } else if (templateCharacter) {
+          actorData.system.willpower.value = templateCharacter.system.willpower.value;
+          actorData.system.willpower.max = templateCharacter.system.willpower.max;
+        }
+        if (statArray[2]) {
+          actorData.system.pools.joinbattle.value = parseInt(statArray[2].replace(/[^0-9]/g, ''));
+        } else if (templateCharacter) {
+          actorData.system.pools.joinbattle.value = templateCharacter.system.pools.joinbattle.value;
+        }
         index++;
+      } else if (templateCharacter) {
+        actorData.system.essence.value = templateCharacter.system.essence.value;
+        actorData.system.pools.joinbattle.value = templateCharacter.system.pools.joinbattle.value;
+        actorData.system.willpower.value = templateCharacter.system.willpower.value;
+        actorData.system.willpower.max = templateCharacter.system.willpower.max;
       }
-      else {
+      if (textArray[index].includes('Personal')) {
         var motesArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(';');
         if (motesArray.length === 1) {
           actorData.system.motes.personal.value = parseInt(motesArray[0].replace(/[^0-9]/g, ''));
@@ -789,24 +904,29 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
           actorData.system.motes.peripheral.max = parseInt(motesArray[1].replace(/[^0-9]/g, ''));
         }
         index++;
+      } else if (templateCharacter) {
+        actorData.system.motes.personal.value = templateCharacter.system.motes.personal.max;
+        actorData.system.motes.personal.max = templateCharacter.system.motes.personal.max;
+      }
+      if (textArray[index].includes('Health Levels')) {
         this._getHealthLevels(textArray, index, actorData);
         index++;
+      } else if (templateCharacter) {
+        actorData.system.health = templateCharacter.system.health;
       }
 
-      var intimacyString = '';
-      var intimacyArray = [];
       if (textArray[index].includes('Intimacies')) {
         this.errorSection = 'Intimacies';
-        var intimacyStrength = 'defining';
+        let intimacyStrength = 'defining';
         while (!textArray[index].includes('Actions:') && !textArray[index].includes('Speed Bonus:') && !(/Actions \([^)]*\)/g).test(textArray[index]) && !textArray[index].includes('Guile:')) {
           intimacyString += textArray[index];
           index++;
         }
-        var intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
+        let intimaciesArray = intimacyString.replace('Intimacies:', '').replace('/', '').split(';');
         for (const intimacy of intimaciesArray) {
           if (intimacy) {
             intimacyArray = intimacy.split(':');
-            var intimacyType = 'tie';
+            let intimacyType = 'tie';
             if (intimacyArray[0].includes('Principle')) {
               intimacyType = 'principle';
             }
@@ -850,69 +970,134 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         actorData.system.speed.value = parseInt(textArray[index].replace(/[^0-9]/g, ''));
         index++;
       }
-      // if(textArray[index].includes('Primary Actions')) {
-      //   let primaryActionsArray = textArray[index].replace("Primary Actions: ", "").split(',');
-      //   if(!textArray[index+1].includes("Secondary Actions")) {
-      //     index++;
-      //     primaryActionsArray = [...primaryActionsArray, ...textArray[index].split(',')]
-      //   }
-      //   index++;
-      //   for(const primaryAction of primaryActionsArray) {
-      //     itemData.push(
-      //       {
-      //         type: 'action',
-      //         img: CONFIG.exaltedthird.itemIcons['action'],
-      //         name: primaryAction,
-      //         system: {
-      //           value: CONFIG.exaltedthird.tripleActionStatblocks[this.data.templateType]?.primary || 0
-      //         }
-      //       }
-      //     );
-      //   }
-      // }
-      var actionsString = '';
-      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:') {
-        actionsString += textArray[index];
-        index++;
-      }
-      var actionsArray = actionsString.replace('Actions:', '').replace('/', '').replace(/ *\([^)]*\) */g, "").split(';');
-      for (const action of actionsArray) {
-        this.errorSection = 'Actions';
-        if (!/^\s*$/.test(action)) {
-          var actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
-          var name = actionSplit[0].replace(" ", "");
-          if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
-            actorData.system.pools.social.value = parseInt(actionSplit[1].trim());
+      if (textArray[index].includes('Primary Actions')) {
+        const noParens = textArray[index].replace(/\([^)]*\)?/g, "");
+        if (/\d/.test(noParens)) {
+          itemData.push(
+            {
+              type: 'action',
+              img: CONFIG.exaltedthird.itemIcons['action'],
+              name: "Primary Actions",
+              system: {
+                value: parseInt(textArray[index].replace(/[^0-9]/g, ''))
+              }
+            }
+          );
+          index++;
+          itemData.push(
+            {
+              type: 'action',
+              img: CONFIG.exaltedthird.itemIcons['action'],
+              name: "Secondary Actions",
+              system: {
+                value: parseInt(textArray[index].replace(/[^0-9]/g, ''))
+              }
+            }
+          );
+          index++;
+          itemData.push(
+            {
+              type: 'action',
+              img: CONFIG.exaltedthird.itemIcons['action'],
+              name: "Desperate Actions",
+              system: {
+                value: parseInt(textArray[index].replace(/[^0-9]/g, ''))
+              }
+            }
+          );
+          index++;
+          actorData.system.settings.istemplate = true;
+        } else {
+          let primaryTextString = '';
+          let secondaryTextString = '';
+          while (!textArray[index].includes("Secondary Actions")) {
+            primaryTextString += textArray[index];
+            index++;
           }
-          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'commandsoldiers') {
-            actorData.system.pools.command.value = parseInt(actionSplit[1].trim());
+          while (!textArray[index].includes("Combat")) {
+            secondaryTextString += textArray[index];
+            index++;
           }
-          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
-            actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
-          }
-          else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'readmotives') {
-            actorData.system.pools.readintentions.value = parseInt(actionSplit[1].trim());
-          }
-          else if (actorData.system.pools[name.toLocaleLowerCase()]) {
-            actorData.system.pools[name.toLocaleLowerCase()].value = parseInt(actionSplit[1].trim());
-          }
-          else {
+          let primaryActionsArray = primaryTextString
+            .replace("Primary Actions: ", "")
+            .split(',')
+            .map(v => ({ value: v.trim(), type: "primary" }));
+
+          let secondaryActionsArray = secondaryTextString
+            .replace("Secondary Actions: ", "")
+            .split(',')
+            .map(v => ({ value: v.trim(), type: "secondary" }));
+
+          let allTemplateActions = [...primaryActionsArray, ...secondaryActionsArray];
+          for (let templateAction of Object.values(allTemplateActions)) {
+            let actionValue = 0;
+            if (templateCharacter) {
+              if (templateAction.type === 'primary') {
+                actionValue = templateCharacter.items.find(item => item.name === 'Primary Actions')?.system.value ?? 0
+              }
+              if (templateAction.type === 'secondary') {
+                actionValue = templateCharacter.items.find(item => item.name === 'Secondary Actions')?.system.value ?? 0
+              }
+            }
             itemData.push(
               {
                 type: 'action',
                 img: CONFIG.exaltedthird.itemIcons['action'],
-                name: name,
+                name: templateAction.value,
                 system: {
-                  value: parseInt(actionSplit[1].trim())
+                  value: actionValue
                 }
               }
             );
           }
         }
       }
+      let actionsString = '';
+      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:') {
+        actionsString += textArray[index];
+        index++;
+      }
+      if (actionsString) {
+        let actionsArray = actionsString.replace('Actions:', '').replace('/', '').replace(/ *\([^)]*\) */g, "").split(';');
+        for (const action of actionsArray) {
+          this.errorSection = 'Actions';
+          if (!/^\s*$/.test(action)) {
+            let actionSplit = action.trim().replace('dice', '').replace('.', '').split(':');
+            let name = actionSplit[0].replace(" ", "");
+            if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'socialinfluence') {
+              actorData.system.pools.social.value = parseInt(actionSplit[1].trim());
+            }
+            else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'commandsoldiers') {
+              actorData.system.pools.command.value = parseInt(actionSplit[1].trim());
+            }
+            else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'shapesorcery') {
+              actorData.system.pools.sorcery.value = parseInt(actionSplit[1].trim());
+            }
+            else if (name.replace(/\s+/g, '').toLocaleLowerCase() === 'readmotives') {
+              actorData.system.pools.readintentions.value = parseInt(actionSplit[1].trim());
+            }
+            else if (actorData.system.pools[name.toLocaleLowerCase()]) {
+              actorData.system.pools[name.toLocaleLowerCase()].value = parseInt(actionSplit[1].trim());
+            }
+            else {
+              itemData.push(
+                {
+                  type: 'action',
+                  img: CONFIG.exaltedthird.itemIcons['action'],
+                  name: name,
+                  system: {
+                    value: parseInt(actionSplit[1].trim())
+                  }
+                }
+              );
+            }
+          }
+        }
+      }
+
       if (textArray[index].toLowerCase().includes('resolve')) {
         this.errorSection = 'Social Stats';
-        var socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
+        let socialArray = textArray[index].replace(/ *\([^)]*\) */g, "").split(',');
         if (textArray[index].toLowerCase().includes('appearance')) {
           actorData.system.appearance.value = parseInt(socialArray[0].trim().split(" ")[1]);
           actorData.system.resolve.value = parseInt(socialArray[1].trim().split(" ")[1]);
@@ -923,6 +1108,10 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
           actorData.system.guile.value = parseInt(socialArray[1].trim().split(" ")[1]);
         }
         index++
+      } else if (templateCharacter) {
+        actorData.system.appearance.value = templateCharacter.system.appearance.value;
+        actorData.system.resolve.value = templateCharacter.system.resolve.value;
+        actorData.system.guile.value = templateCharacter.system.guile.value;
       }
 
       if (textArray[index].trim().toLowerCase() === 'combat' || textArray[index].trim().toLowerCase() === 'combat:') {
@@ -930,31 +1119,31 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       }
       while (textArray[index].includes('Attack')) {
         this.errorSection = 'Attacks';
-        var attackString = textArray[index];
-        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement') && !textArray[index + 1].includes('Evasion:')) {
+        let attackString = textArray[index];
+        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement') && !textArray[index + 1].includes('Evasion:') && !textArray[index + 1].includes('Soak/Hardness') && !textArray[index + 1].includes('Intimacies')) {
           attackString += textArray[index + 1];
           index++;
         }
-        var attackArray = attackString.replace('Attack ', '').split(':');
-        var attackName = attackArray[0].replace('(', '').replace(')', '');
-        var damage = 1;
-        var overwhelming = 1;
-        var accuracy = 0;
-        var weaponDescription = ''
-        var accuracySplit = attackArray[1].trim().replace(')', '').split('(');
+        let attackArray = attackString.replace('Attack ', '').split(':');
+        let attackName = attackArray[0].replace('(', '').replace(')', '');
+        let damage = 1;
+        let overwhelming = 1;
+        let accuracy = 0;
+        let weaponDescription = ''
+        let accuracySplit = attackArray[1].trim().replace(')', '').split('(');
         accuracy = parseInt(accuracySplit[0].replace(/[^0-9]/g, ''));
         if (!attackString.toLowerCase().includes('grapple')) {
-          var damageSplit = accuracySplit[1].split('Damage');
+          let damageSplit = accuracySplit[1].split('Damage');
           if (!accuracySplit[1].includes('Damage')) {
             damageSplit = accuracySplit[1].split('damage');
           }
           if (damageSplit[1].includes('/')) {
-            var damageSubSplit = damageSplit[1].split('/');
+            let damageSubSplit = damageSplit[1].split('/');
             damage = parseInt(damageSubSplit[0].replace(/[^0-9]/g, ''));
             overwhelming = parseInt(damageSubSplit[1].replace(/[^0-9]/g, ''));
           }
           else if (damageSplit[1].includes(',')) {
-            var damageSubSplit = damageSplit[1].split(',');
+            let damageSubSplit = damageSplit[1].split(',');
             damage = parseInt(damageSubSplit[0].replace(/[^0-9]/g, ''));
             if (damageSplit[1].includes('minimum')) {
               overwhelming = parseInt(damageSubSplit[1].replace(/[^0-9]/g, ''));
@@ -992,44 +1181,52 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       }
       if (textArray[index].includes('Combat Movement:')) {
         this.errorSection = 'Combat Movement';
-        var combatMovementArray = textArray[index].split(':');
+        let combatMovementArray = textArray[index].split(':');
         actorData.system.pools.movement.value = parseInt(combatMovementArray[1].replace(/ *\([^)]*\) */g, "").replace(/[^0-9]/g, ''));
         index++;
       }
 
       this.errorSection = 'Combat Defenses';
-      var defenseLine = textArray[index].replace(/ *\([^)]*\) */g, "");
-      if (defenseLine.includes(',')) {
-        var defenseArray = defenseLine.split(',');
-        actorData.system.evasion.value = parseInt(defenseArray[0].replace(/[^0-9]/g, ''));
-        actorData.system.parry.value = parseInt(defenseArray[1].replace(/[^0-9]/g, ''));
-      }
-      else if (defenseLine.includes(';')) {
-        var defenseArray = defenseLine.split(';');
-        actorData.system.evasion.value = parseInt(defenseArray[0].replace(/[^0-9]/g, ''));
-        actorData.system.parry.value = parseInt(defenseArray[1].replace(/[^0-9]/g, ''));
-      }
-      index++;
-
-      var soakArray = textArray[index].replace('Soak/Hardness:', '').replace(/ *\([^)]*\) */g, "").split('/');
-
-      actorData.system.soak.value = parseInt(soakArray[0].replace(/[^0-9]/g, ''));
-      actorData.system.hardness.value = parseInt(soakArray[1].replace(/[^0-9]/g, ''));
-
-      if (textArray[index].includes('(')) {
-        const match = textArray[index].match(/\(([^)]+)\)/);
-        if (match) {
-          itemData.push(
-            {
-              type: 'armor',
-              img: CONFIG.exaltedthird.itemIcons['armor'],
-              name: match[1],
-            }
-          );
+      if (textArray[index].includes('Parry')) {
+        let defenseLine = textArray[index].replace(/ *\([^)]*\) */g, "");
+        if (defenseLine.includes(',')) {
+          let defenseArray = defenseLine.split(',');
+          actorData.system.evasion.value = parseInt(defenseArray[0].replace(/[^0-9]/g, ''));
+          actorData.system.parry.value = parseInt(defenseArray[1].replace(/[^0-9]/g, ''));
         }
+        else if (defenseLine.includes(';')) {
+          let defenseArray = defenseLine.split(';');
+          actorData.system.evasion.value = parseInt(defenseArray[0].replace(/[^0-9]/g, ''));
+          actorData.system.parry.value = parseInt(defenseArray[1].replace(/[^0-9]/g, ''));
+        }
+        index++;
+      } else if (templateCharacter) {
+        actorData.system.evasion.value = templateCharacter.system.evasion.value;
+        actorData.system.parry.value = templateCharacter.system.parry.value;
       }
 
-      index++;
+      if (textArray[index].includes('Soak/Hardness')) {
+        let soakArray = textArray[index].replace('Soak/Hardness:', '').replace(/ *\([^)]*\) */g, "").split('/');
+        actorData.system.soak.value = parseInt(soakArray[0].replace(/[^0-9]/g, ''));
+        actorData.system.hardness.value = parseInt(soakArray[1].replace(/[^0-9]/g, ''));
+        if (textArray[index].includes('(')) {
+          const match = textArray[index].match(/\(([^)]+)\)/);
+          if (match) {
+            itemData.push(
+              {
+                type: 'armor',
+                img: CONFIG.exaltedthird.itemIcons['armor'],
+                name: match[1],
+              }
+            );
+          }
+        }
+        index++;
+      } else if (templateCharacter) {
+        actorData.system.soak.value = templateCharacter.system.soak.value;
+        actorData.system.hardness.value = templateCharacter.system.hardness.value;
+      }
+
       itemData.push(...this._getItemData(textArray, index, actorData));
       actorData.items = itemData;
       if (folder) {
@@ -1047,19 +1244,19 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
   }
 
   async createAdversary() {
-    var actorData = this._getStatBlock(true);
-    var folder = await this._getFolder();
+    let actorData = this._getStatBlock(true);
+    let folder = await this._getFolder();
     const itemData = [
     ];
     let index = 1;
-    var readingItems = false;
-    var textArray = this.data.textBox.split(/\r?\n/);
+    let readingItems = false;
+    let textArray = this.data.textBox.split(/\r?\n/);
     try {
       actorData.name = textArray[0].trim();
       actorData.prototypeToken.name = textArray[0].trim();
-      var actorDescription = '';
-      var addingIntimacies = false;
-      var intimacyString = '';
+      let actorDescription = '';
+      let addingIntimacies = false;
+      let intimacyString = '';
       this.errorSection = 'Initial Data';
       while (!textArray[index].includes('Caste:') && !textArray[index].includes('Aspect:') && !textArray[index].includes('Attributes:')) {
         if (textArray[index].includes('Intimacies:')) {
@@ -1068,8 +1265,8 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         }
         if (textArray[index].includes('Secrets:')) {
           addingIntimacies = false;
-          var intimacyArray = intimacyString.split(/,|;/);
-          var intimacyStrength = 'minor';
+          let intimacyArray = intimacyString.split(/,|;/);
+          let intimacyStrength = 'minor';
           for (let intimacy of intimacyArray) {
             if (intimacy.includes('Defining:')) {
               intimacyStrength = 'defining';

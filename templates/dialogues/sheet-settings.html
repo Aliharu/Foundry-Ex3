@@ -52,6 +52,8 @@
             {{#ifEquals actorType 'npc'}}
             <label className="resource-label">{{localize "Ex3.LunarAnimalForm"}}:</label>
             <input id="lunarFormEnabled" name="lunarFormEnabled" type="checkbox" {{checked lunarFormEnabled}}>
+            <label className="resource-label">{{localize "Ex3.IsNPCTemplate"}}:</label>
+            <input id="isTemplate" name="settings.istemplate" type="checkbox" {{checked settings.istemplate}}>
             {{/ifEquals}}
             <label className="resource-label">{{localize "Ex3.DefaultRollStunts"}}:</label>
             <input id="rollStunts" name="settings.rollStunts" type="checkbox" {{checked settings.rollStunts}}>
