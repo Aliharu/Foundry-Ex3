@@ -1289,6 +1289,13 @@ exaltedthird.castesPerExalt = {
     "day": ["athletics", "awareness", "investigation", "dodge", "larceny", "socialize", "stealth", "survival"],
     "moonshadow": ["bureaucracy", "integrity", "linguistics", "occult", "presence", "ride", "sail", "socialize"]
   },
+  "infernal": {
+    'azimuth': ['archery', 'athletics', 'awareness', 'brawl', 'melee', 'resistance', 'thrown', 'war'],
+    'ascendant': ['integrity', 'lore', 'medicine', 'occult', 'performance', 'presence', 'resistance', 'survival'],
+    'horizon': ['bureaucracy', 'craft', 'investigation', 'linguistics', 'lore', 'medicine', 'occult', 'war'],
+    'nadir': ['athletics', 'awareness', 'dodge', 'integrity', 'larceny', 'ride', 'sail', 'stealth'],
+    'penumbra': ['bureaucracy', 'investigation', 'larceny', 'linguistics', 'performance', 'presence', 'stealth', 'socialize']
+  },
   "other": {
     "janest": ["athletics", "awareness", "presence", "resistance", "survival"],
     "strawmaiden": ["athletics", "awareness", "presence", "resistance", "survival"],
@@ -3162,8 +3169,8 @@ exaltedthird.printedTemplateNames = {
   "Golgin, the Singing Dreams": 'firstCircleMachineSpirit',
   "Mandilom, the Crawling Iron": 'firstCircleMachineSpirit',
   "Zio, the Crystal Flies": 'firstCircleMachineSpirit',
-  "Jovan Kash, Prophet of the Reaches" : 'drone',
-  "Auvua, Keeper of the Eternal Tabernacle" : 'secondCircleMachineSpirit',
-  "Vex Seretika, Perpetual Overseer of the Meres" : 'secondCircleMachineSpirit',
+  "Jovan Kash, Prophet of the Reaches": 'drone',
+  "Auvua, Keeper of the Eternal Tabernacle": 'secondCircleMachineSpirit',
+  "Vex Seretika, Perpetual Overseer of the Meres": 'secondCircleMachineSpirit',
   // Demons
 }

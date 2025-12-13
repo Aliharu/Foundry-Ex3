@@ -748,7 +748,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     for (let [key, ability] of Object.entries(this.object.character.abilities)) {
       ability.casteMarks = [];
-      if (['solar', 'dragonblooded', 'abyssal', 'sidereal'].includes(this.object.character.exalt)) {
+      if (['solar', 'dragonblooded', 'abyssal', 'sidereal', 'infernal'].includes(this.object.character.exalt)) {
         for (const [caste, list] of Object.entries(CONFIG.exaltedthird.castesPerExalt[this.object.character.exalt])) {
           if (list.includes(key)) {
             ability.casteMarks.push(caste);
