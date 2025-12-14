@@ -634,6 +634,9 @@
     "Ex3.OpposedRolls": "Opposed Rolls",
     "Ex3.TurnTaken": "Turn Taken",
 
+    "Ex3.SearchCompendiums": "Search Compendiums",
+    "Ex3.SearchCompendiumsDescription": "When enabled, importing charms from a character sheet should search compendiums. WARNING: this option potentially has a steep performance cost. Use with caution.",
+
     "Ex3.Warstrider": "Warstrider",
     "Ex3.Ship": "Ship",
     "Ex3.ShipSpeed": "Ship Speed",

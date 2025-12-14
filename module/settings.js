@@ -197,6 +197,16 @@ export function registerSettings() {
         default: true
     });
 
+    game.settings.register("exaltedthird", "searchCompendiums", {
+        name: game.i18n.localize('Ex3.SearchCompendiums'),
+        hint: game.i18n.localize('Ex3.SearchCompendiumsDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        ruleChange: false,
+        default: false
+    });
+
     game.settings.register("exaltedthird", "unifiedCharacterCreation", {
         name: game.i18n.localize('Ex3.UnifiedCharacterCreation'),
         hint: game.i18n.localize('Ex3.UnifiedCharacterCreationDescription'),
