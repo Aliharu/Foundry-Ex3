@@ -1019,7 +1019,7 @@ exaltedthird.exaltMotePools = {
       sovereign: 4,
       sidereal: 9,
       liminal: 10,
-      other: 10,
+      other: 0,
     },
     essenceLevelMultiplier: {
       default: 1,

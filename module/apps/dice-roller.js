@@ -6693,9 +6693,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 rollButtonTooltip += `<p>Flame/Crossbow: 4</p>`;
                 damageDicePool += 4;
             }
-            else {
-                rollButtonTooltip += `<p>Attribute: ${(this.actor.system.attributes[this.object.weapon.damageattribute]?.value || 0) + (this.actor.system.attributes[this.object.weapon.damageattribute]?.upgrade || 0)}</p>`;
-                damageDicePool += (this.actor.system.attributes[this.object.weapon.damageattribute]?.value || 0) + (this.actor.system.attributes[this.object.weapon.damageattribute]?.upgrade || 0);
+            else if(this.object.weapon) {
+                rollButtonTooltip += `<p>Attribute: ${(this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.value || 0) + (this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.upgrade || 0)}</p>`;
+                damageDicePool += (this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.value || 0) + (this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.upgrade || 0);
             }
         }
         if (this.object.weaponDamage && this.object.attackType === 'withering') {

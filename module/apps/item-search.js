@@ -19,6 +19,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       attribute: {
         name: "",
         description: "",
+        characterId: "",
         compendiumItems: true,
         worldItems: false,
         ability: "",
@@ -76,6 +77,11 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       itemSections: this.getListSections(),
       charmAbilities: CONFIG.exaltedthird.charmabilities,
       charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
+      characters: game.actors.filter(actor => actor.type === 'character')
+        .reduce((acc, template) => {
+          acc[template.id] = template.name;
+          return acc;
+        }, {}) ?? {},
     };
   }
 
@@ -169,6 +175,12 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
           case "description":
             filteredItems = filteredItems.filter(i => i.system.description.value && i.system.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
             break;
+          case "characterId":
+            if (this.filters.attribute.characterId) {
+              const actor = game.actors.find(actor => actor.id === this.filters.attribute.characterId);
+              filteredItems = filteredItems.filter(i => actor.canAquireItem(i, true));
+            }
+            break;
           case "essence":
             filteredItems = filteredItems.filter((i) => i.type !== 'charm' || (i.system.essence >= parseInt(this.filters.attribute.essence.min) && i.system.essence <= parseInt(this.filters.attribute.essence.max)))
             break;
@@ -252,7 +264,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       valA.name.localeCompare(valB.name)
     );
 
-    return Object.fromEntries(sortedEntries);;
+    return Object.fromEntries(sortedEntries);
   }
 
   static toggleCollapse(event, target) {

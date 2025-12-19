@@ -176,7 +176,7 @@ export class ExaltedThirdActor extends Actor {
     }
   }
 
-  canAquireItem(item) {
+  canAquireItem(item, listMode=false) {
     const itemIds = this.items.map(item => {
       const sourceId = item.flags?.core?.sourceId || item._source?._stats?.compendiumSource || ''; // Handle cases where sourceId is undefined
       const sections = sourceId.split('.'); // Split the sourceId by periods
@@ -189,6 +189,14 @@ export class ExaltedThirdActor extends Actor {
     }
 
     const itemType = item.type;
+
+    if(listMode && ['ritual', 'merit', 'weapon', 'armor', 'item'].includes(item.type)) {
+      return true;
+    }
+
+    if(itemType === 'specialability' && item.system.powertype === 'devilBodyPower' && this.system.details.exalt === 'infernal') {
+      return true;
+    }
 
     if (itemType !== 'charm' && itemType !== 'spell') {
       return false;
@@ -616,7 +624,7 @@ export class ExaltedThirdActor extends Actor {
         maxMotes = (CONFIG.exaltedthird.exaltMotePools.peripheral.base[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.peripheral.base['default']) + (essenceLevel * (CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier[exaltType] ?? CONFIG.exaltedthird.exaltMotePools.peripheral.essenceLevelMultiplier['default']));
       }
     }
-    return maxMotes
+    return maxMotes;
   }
 
   async calculateCommitMotes(type) {

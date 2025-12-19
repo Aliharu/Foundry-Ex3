@@ -7,8 +7,8 @@
     </div>
     <div class="check-button">
       <label class="resource-label">{{localize "Ex3.IncludeCompendiumItems"}}: </label>
-      <input class="world-filter" name="filters.attribute.compendiumItems" type="checkbox" data-filter="compendiumItems" {{checked
-        filters.attribute.compendiumItems}} />
+      <input class="world-filter" name="filters.attribute.compendiumItems" type="checkbox" data-filter="compendiumItems"
+        {{checked filters.attribute.compendiumItems}} />
     </div>
     <!-- <div class="check-button">
       <label class="resource-label">{{localize "Ex3.UseLessThen"}}: </label>
@@ -24,6 +24,12 @@
       <label class="resource-label">{{localize "Description"}}</label>
       <input class="description-filter" name="filters.attribute.description" type="text" data-filter="description"
         value="{{filters.attribute.description}}" />
+    </div>
+        <div>
+      <label class="resource-label">{{localize "Ex3.Character"}} (Can Aquire)</label>
+      <select class="charm-filter" name="filters.attribute.characterId" data-type="String" data-filter="characterId">
+        {{selectOptions characters selected=filters.attribute.characterId localize=true blank=""}}
+      </select>
     </div>
     <h2 class="mb-1">{{localize "Ex3.ItemTypes"}}</h2>
     {{#each filters.type as |value filter|}}

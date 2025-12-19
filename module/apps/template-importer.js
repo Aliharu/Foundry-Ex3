@@ -1014,7 +1014,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
             primaryTextString += textArray[index];
             index++;
           }
-          while (!textArray[index].includes("Combat")) {
+          while (!textArray[index].includes("Combat") && !textArray[index].includes("Merits") && !textArray[index].includes("Resolve")) {
             secondaryTextString += textArray[index];
             index++;
           }
@@ -1053,7 +1053,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         }
       }
       let actionsString = '';
-      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:') {
+      while (!textArray[index].includes('Guile') && textArray[index].toLowerCase() !== 'combat' && textArray[index].toLowerCase() !== 'combat:' && textArray[index].toLowerCase() !== 'merits') {
         actionsString += textArray[index];
         index++;
       }
@@ -1120,10 +1120,14 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       while (textArray[index].includes('Attack')) {
         this.errorSection = 'Attacks';
         let attackString = textArray[index];
-        if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement') && !textArray[index + 1].includes('Evasion:') && !textArray[index + 1].includes('Soak/Hardness') && !textArray[index + 1].includes('Intimacies')) {
+        if (!['Attack', 'Combat Movement', 'Evasion', 'Soak/Hardness', 'Intimacies', 'Offensive Charms'].includes(textArray[index + 1])) {
           attackString += textArray[index + 1];
           index++;
         }
+        // if (!textArray[index + 1].includes('Attack') && !textArray[index + 1].includes('Combat Movement') && !textArray[index + 1].includes('Evasion:') && !textArray[index + 1].includes('Soak/Hardness') && !textArray[index + 1].includes('Intimacies')) {
+        //   attackString += textArray[index + 1];
+        //   index++;
+        // }
         let attackArray = attackString.replace('Attack ', '').split(':');
         let attackName = attackArray[0].replace('(', '').replace(')', '');
         let damage = 1;
@@ -1178,6 +1182,9 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
             }
           }
         );
+      }
+      if (actorData.name === 'Munaxes, the Ravine of Whispers') {
+        index++;
       }
       if (textArray[index].includes('Combat Movement:')) {
         this.errorSection = 'Combat Movement';
@@ -1876,6 +1883,12 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
               index++;
               newItem = true;
             }
+            else if (['The Ravine of Whispers', 'Living Vital Network', 'Sanguine Tsunami'].includes(textArray[index].trim())) {
+              itemType = 'specialability';
+              itemName = textArray[index].trim();
+              index++;
+              newItem = false;
+            }
           }
           if (index > textArray.length - 1) {
             break;
@@ -1911,7 +1924,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
             }
             //First line
             else if (itemType === 'specialability' || itemType === 'merit') {
-              var titleArray = textArray[index].split(':');
+              let titleArray = textArray[index].split(':');
               itemName = titleArray[0].trim();
               if (titleArray[0].toLowerCase().includes('new merit')) {
                 itemName = titleArray[1].trim();
