@@ -6007,6 +6007,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     dealHealthDamage(characterDamage, targetBattlegroup = false) {
+        if (!this.object.newTargetData) {
+            return 0;
+        }
         let sizeDamaged = 0;
         let healthType = 'system';
         let targetedHealth = this.object.newTargetData.system.health;
@@ -6693,7 +6696,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 rollButtonTooltip += `<p>Flame/Crossbow: 4</p>`;
                 damageDicePool += 4;
             }
-            else if(this.object.weapon) {
+            else if (this.object.weapon) {
                 rollButtonTooltip += `<p>Attribute: ${(this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.value || 0) + (this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.upgrade || 0)}</p>`;
                 damageDicePool += (this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.value || 0) + (this.actor.system.attributes[this.object.weapon?.damageattribute ?? 'strength']?.upgrade || 0);
             }
