@@ -4,7 +4,7 @@
   "description": "Unofficial Exalted third edition system module for FoundryVTT!  Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.",
   "url": "https://github.com/Aliharu/Foundry-Ex3",
   "license": "LICENSE.txt",
-  "version": "4.2.4",
+  "version": "4.3.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13",
@@ -50,7 +50,7 @@
   ],
   "relationships": [],
   "manifest": "https://raw.githubusercontent.com/Aliharu/Foundry-Ex3/master/system.json",
-  "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v4.2.4/release4.2.4.zip",
+  "download": "https://github.com/Aliharu/Foundry-Ex3/releases/download/v4.3.0/release4.3.0.zip",
   "bugs": "https://github.com/Aliharu/Foundry-Ex3/issues",
   "gridDistance": 5,
   "gridUnits": "ft",
