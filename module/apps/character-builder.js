@@ -665,7 +665,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       }
       for (let [key, ability] of Object.entries(this.object.character.abilities)) {
         if (CONFIG.exaltedthird.casteabilitiesmap[this.object.character.caste.toLowerCase()]?.includes(key)) {
-          if (this.object.character.exalt !== 'solar' && this.object.character.exalt !== 'abyssal') {
+          if (this.object.character.exalt !== 'solar' && this.object.character.exalt !== 'abyssal' && this.object.character.exalt !== 'infernal') {
             ability.favored = true;
           }
           ability.caste = true;
@@ -843,10 +843,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
       charmSlots: 5,
       devilBodyPowers: 5,
     }
-    if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal') {
+    if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal' || this.object.character.exalt === 'infernal') {
       this.object.creationData.available.casteAbilities = 5;
     }
-    if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'lunar' || this.object.character.exalt === 'abyssal') {
+    if (this.object.character.exalt === 'solar' || this.object.character.exalt === 'lunar' || this.object.character.exalt === 'abyssal' || this.object.character.exalt === 'infernal') {
       if (this.object.character.essence >= 2) {
         this.object.creationData.available.charms = 20;
         this.object.creationData.available.merits = 13;
