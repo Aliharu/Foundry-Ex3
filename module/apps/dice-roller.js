@@ -2904,6 +2904,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (parseInt(formula)) {
             return parseInt(formula);
         }
+        if (formula?.toLowerCase() === 'itemadded' && item) {
+            return item.timesAdded || 0;
+        }
         if (formula?.toLowerCase() === 'thresholdsuccesses' || formula?.toLowerCase() === 'extrasuccesses') {
             return this.object.thresholdSuccesses || 0;
         }
@@ -2964,9 +2967,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             return this.object.weaponAccuracy || 0;
-        }
-        if (formula?.toLowerCase() === 'itemadded' && item) {
-            return item.timesAdded || 0;
         }
         if (formula.includes('target-')) {
             formula = formula.replace('target-', '');
