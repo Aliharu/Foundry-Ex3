@@ -460,8 +460,8 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
 
     // A header is defined as:
     // NAME (number xp;
-    const headerRegex = /^([A-Za-z0-9' \-]+)\s*\(\d+xp;/;
-
+    const headerRegex = /^([A-Z][A-Za-z' \-]+)(?:\s*\((?!\d+xp)[^)]+\))?(?:\s*\([^)]+\))?:/;
+    const keyNameRegex = /^([A-Z][A-Za-z' \-]+)(?=\s*(?:\(|:))/;
     const entries = [];
     let buffer = [];
 
@@ -487,7 +487,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
     // Now parse each combined entry
     for (const entry of entries) {
       // Extract name (before first paren)
-      const nameMatch = entry.match(/^([^()]+?)\s*\(/);
+      const nameMatch = entry.match(keyNameRegex);
       const name = nameMatch ? nameMatch[1].trim() : "Unknown";
 
       // // Find all (...) groups
