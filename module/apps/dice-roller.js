@@ -5819,6 +5819,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         fufillsRequirements = false;
                     }
                     break;
+                case 'rollBotch':
+                    if (typeof cleanedValue === "boolean" ? cleanedValue : true) {
+                        if(this.object.roll && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
+                            console.log("Botch");
+                        }
+                        if (this.object.diceRollTotal === null || !this.object.roll || this.object.diceRollTotal > 0 || this.object.roll.dice[0].results.every(die => die.result !== 1)) {
+                            fufillsRequirements = false;
+                        }
+                    } else {
+                        if (!this.object.diceRollTotal || !this.object.roll || (this.object.diceRollTotal === 0 && this.object.roll.dice[0].results.some((die) => die.result === 1))) {
+                            fufillsRequirements = false;
+                        }
+                    }
+                    break;
             }
             if ((trigger.requirementMode || 'and') === 'or' && fufillsRequirements) {
                 return true;

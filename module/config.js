@@ -1994,6 +1994,7 @@ exaltedthird.booleanTriggers = [
   'targetIsBattlegroup',
   'isControlSpell',
   'devilBodyActive',
+  'rollBotch',
 ];
 
 exaltedthird.bonusTypes = {
@@ -2411,6 +2412,7 @@ exaltedthird.requirementTypes = {
       damageLevelsDealt: "Ex3.DamageLevelsDealt",
       crashedTheTarget: "Ex3.CrashedTheTarget",
       incapacitatedTarget: "Ex3.IncapacitatedTarget",
+      rollBotch: "Ex3.IsRollBotch",
     },
   },
   other: {
