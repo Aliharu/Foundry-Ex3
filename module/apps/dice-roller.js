@@ -4012,9 +4012,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             </div>
         </div>`;
 
-
-        messageContent = await this._createChatMessageContent(messageContent, 'Dice Roll');
-        ChatMessage.create({ user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, style: CONST.CHAT_MESSAGE_STYLES.OTHER, rolls: [this.object.roll] });
+        await this._createChatMessageContent(messageContent, 'Dice Roll', [this.object.roll]);
     }
 
     async _abilityRoll() {
@@ -4142,20 +4140,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.rollType === 'readIntentions') {
             chatCardTitle = `Read intentions action ${this.object.target ? ` on ${this.object.target.name}` : ''}`;
         }
-        theContent = await this._createChatMessageContent(theContent, chatCardTitle)
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: theContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            rolls: [this.object.roll],
-            flags: {
-                "exaltedthird": {
-                    dice: this.object.dice,
-                    successes: this.object.successes,
-                    successModifier: this.object.successModifier,
-                    total: this.object.diceRollTotal
-                }
+        await this._createChatMessageContent(theContent, chatCardTitle, [this.object.roll], {
+            "exaltedthird": {
+                dice: this.object.dice,
+                successes: this.object.successes,
+                successModifier: this.object.successModifier,
+                total: this.object.diceRollTotal
             }
         });
     }
@@ -4181,7 +4171,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async _accuracyRoll() {
         await this._baseOrAbilityDieRoll();
-        var messageContent = `
+        let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
                 <h4 class="dice-total dice-total-middle">Accuracy Roll</h4>
@@ -4193,26 +4183,17 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 ${this.object.target ? `<div><button class="add-oppose-charms"><i class="fas fa-shield-plus"></i> ${game.i18n.localize('Ex3.AddOpposingCharms')}</button></div>` : ''}
             </div>
         </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, `Accuracy Roll ${this.object.target ? ` vs ${this.object.target.name}` : ''}`);
-
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            rolls: [this.object.roll],
-            flags: {
-                "exaltedthird": {
-                    roller: this.actor._id,
-                    dice: this.object.dice,
-                    successes: this.object.successes,
-                    successModifier: this.object.successModifier,
-                    total: this.object.diceRollTotal,
-                    defense: this.object.defense,
-                    thresholdSuccesses: this.object.thresholdSuccesses,
-                    targetActorId: this.object.target?.actor?._id,
-                    targetTokenId: this.object.target?.id,
-                }
+        await this._createChatMessageContent(messageContent, `Accuracy Roll ${this.object.target ? ` vs ${this.object.target.name}` : ''}`, [this.object.roll], {
+            "exaltedthird": {
+                roller: this.actor._id,
+                dice: this.object.dice,
+                successes: this.object.successes,
+                successModifier: this.object.successModifier,
+                total: this.object.diceRollTotal,
+                defense: this.object.defense,
+                thresholdSuccesses: this.object.thresholdSuccesses,
+                targetActorId: this.object.target?.actor?._id,
+                targetTokenId: this.object.target?.id,
             }
         });
     }
@@ -4221,20 +4202,14 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.thresholdSuccesses = 0;
         await this._addTriggerBonuses('attackMissed');
         this.object.missedAttacks++;
-        var messageContent = `
+        let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
                 <h4 class="dice-total">${this.object.attackSuccesses} Successes vs ${this.object.defense} Defense</h4>
                 <h4 class="dice-total">Attack Missed!</h4>
             </div>
         </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        });
+        await this._createChatMessageContent(messageContent, 'Attack Roll');
         if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
             this.object.rollType = 'damageResults';
         }
@@ -4436,35 +4411,27 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 </div>
           `;
 
-        messageContent = await this._createChatMessageContent(messageContent, `${this.object.attackType === 'gambit' ? 'Initiative' : 'Damage'} Roll`);
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            rolls: [this.object.damageDiceRollResults.roll],
-            flags: {
-                "exaltedthird": {
-                    dice: this.object.dice,
-                    successes: this.object.successes,
-                    successModifier: this.object.successModifier,
-                    total: this.object.diceRollTotal,
-                    defense: this.object.defense,
-                    thresholdSuccesses: this.object.thresholdSuccesses,
-                    attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
-                    attackerCombatantId: this.object.actorCombatant?._id || null,
-                    targetId: this.object.target?.id || null,
-                    targetActorId: this.object.target?.actor?._id,
-                    targetTokenId: this.object.target?.id,
-                    damage: {
-                        dice: this.object.baseDamage,
-                        successModifier: this.object.damage.damageSuccessModifier,
-                        soak: this.object.soak,
-                        total: this.object.damageSuccesses,
-                        type: this.object.damage.type,
-                        crashed: this.object.crashed,
-                        targetHit: this.object.targetHit,
-                    }
+        await this._createChatMessageContent(messageContent, `${this.object.attackType === 'gambit' ? 'Initiative' : 'Damage'} Roll`, [this.object.damageDiceRollResults.roll], {
+            "exaltedthird": {
+                dice: this.object.dice,
+                successes: this.object.successes,
+                successModifier: this.object.successModifier,
+                total: this.object.diceRollTotal,
+                defense: this.object.defense,
+                thresholdSuccesses: this.object.thresholdSuccesses,
+                attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
+                attackerCombatantId: this.object.actorCombatant?._id || null,
+                targetId: this.object.target?.id || null,
+                targetActorId: this.object.target?.actor?._id,
+                targetTokenId: this.object.target?.id,
+                damage: {
+                    dice: this.object.baseDamage,
+                    successModifier: this.object.damage.damageSuccessModifier,
+                    soak: this.object.soak,
+                    total: this.object.damageSuccesses,
+                    type: this.object.damage.type,
+                    crashed: this.object.crashed,
+                    targetHit: this.object.targetHit,
                 }
             }
         });
@@ -4625,7 +4592,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         } else {
             typeSpecificResults = '<h4 class="dice-total">No Damage Attack</h4>'
         }
-        var messageContent = `
+        let messageContent = `
                 <div class="dice-roll">
                     <div class="dice-result">
                         <h4 class="dice-total dice-total-middle">${this.object.attackType === 'gambit' ? 'Gambit' : 'Damage'} Results</h4>${typeSpecificResults}
@@ -4633,33 +4600,26 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 </div>
           `;
 
-        messageContent = await this._createChatMessageContent(messageContent, 'Damage Roll');
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            flags: {
-                "exaltedthird": {
-                    dice: this.object.dice,
-                    successes: this.object.successes,
-                    successModifier: this.object.successModifier,
-                    total: this.object.diceRollTotal,
-                    defense: this.object.defense,
-                    thresholdSuccesses: this.object.thresholdSuccesses,
-                    attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
-                    attackerCombatantId: this.object.actorCombatant?._id || null,
-                    targetId: this.object.target?.id || null,
-                    damage: {
-                        dice: this.object.baseDamage,
-                        successModifier: this.object.damage.damageSuccessModifier,
-                        soak: this.object.soak,
-                        total: this.object.damageSuccesses,
-                        type: this.object.damage.type,
-                        crashed: this.object.crashed,
-                        targetHit: this.object.targetHit,
-                        gainedInitiative: fullInitiative,
-                    }
+        await this._createChatMessageContent(messageContent, 'Damage Roll', [], {
+            "exaltedthird": {
+                dice: this.object.dice,
+                successes: this.object.successes,
+                successModifier: this.object.successModifier,
+                total: this.object.diceRollTotal,
+                defense: this.object.defense,
+                thresholdSuccesses: this.object.thresholdSuccesses,
+                attackerTokenId: this.actor.token?.id || this.actor.getActiveTokens()[0]?.id,
+                attackerCombatantId: this.object.actorCombatant?._id || null,
+                targetId: this.object.target?.id || null,
+                damage: {
+                    dice: this.object.baseDamage,
+                    successModifier: this.object.damage.damageSuccessModifier,
+                    soak: this.object.soak,
+                    total: this.object.damageSuccesses,
+                    type: this.object.damage.type,
+                    crashed: this.object.crashed,
+                    targetHit: this.object.targetHit,
+                    gainedInitiative: fullInitiative,
                 }
             }
         });
@@ -4692,7 +4652,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <h4 class="dice-total">${this.object.thresholdSuccesses} Threshhold Successes</h4>
             `
         }
-        var messageContent = `
+        let messageContent = `
         <div class="dice-roll">
             <div class="dice-result">
                 ${accuracyContent}
@@ -4700,13 +4660,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 <h4 class="dice-total">Hardness Stopped Decisive!</h4>
             </div>
         </div>`;
-        messageContent = await this._createChatMessageContent(messageContent, 'Attack Roll');
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        });
+        await this._createChatMessageContent(messageContent, 'Attack Roll');
         if (!game.settings.get("exaltedthird", "confirmDamageRolls")) {
             this.object.rollType = 'damageResults';
         }
@@ -5821,7 +5775,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     break;
                 case 'rollBotch':
                     if (typeof cleanedValue === "boolean" ? cleanedValue : true) {
-                        if(this.object.roll && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
+                        if (this.object.roll && this.object.roll.dice[0].results.some((die) => die.result === 1)) {
                             console.log("Botch");
                         }
                         if (this.object.diceRollTotal === null || !this.object.roll || this.object.diceRollTotal > 0 || this.object.roll.dice[0].results.every(die => die.result !== 1)) {
@@ -6266,20 +6220,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         `
 
         this.object.finished = craftFailed || craftSuccess;
-        messageContent = await this._createChatMessageContent(messageContent, `${this.object.rollType.capitalize()} Roll`);
-        ChatMessage.create({
-            user: game.user.id,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            content: messageContent,
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            rolls: [this.object.roll],
-            flags: {
-                "exaltedthird": {
-                    dice: this.object.dice,
-                    successes: this.object.successes,
-                    successModifier: this.object.successModifier,
-                    total: this.object.diceRollTotal
-                }
+        await this._createChatMessageContent(messageContent, `${this.object.rollType.capitalize()} Roll`, [this.object.roll], {
+            "exaltedthird": {
+                dice: this.object.dice,
+                successes: this.object.successes,
+                successModifier: this.object.successModifier,
+                total: this.object.diceRollTotal
             }
         });
         this.object.goalNumber = goalNumberLeft;
@@ -6388,7 +6334,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return false;
     }
 
-    async _createChatMessageContent(content, cardName = 'Roll') {
+    async _createChatMessageContent(content, cardName = 'Roll', rollArray = [], flags = null) {
         let actionName = '';
         let martialArtName = '';
         let craftRollName = '';
@@ -6440,6 +6386,12 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             rollingActor: this.actor,
             combatStats: combatStats,
         }
+        const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
+        const chatMessage = ChatMessage.applyRollMode(
+            { user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, style: CONST.CHAT_MESSAGE_STYLES.OTHER, rolls: rollArray, flags: flags },
+            game.settings.get('core', 'rollMode')
+        );
+        ChatMessage.create(chatMessage);
         return await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
     }
 
