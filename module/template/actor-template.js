@@ -274,6 +274,8 @@ export class CharacterData extends CommonActorData {
             id: new fields.StringField({ initial: "" }),
             name: new fields.StringField({ initial: "" }),
             amount: new fields.StringField({ initial: "" }),
+            type: new fields.StringField({ initial: "standard" }),
+            description: new fields.StringField({ initial: "" }),
           }),
         ),
       }),

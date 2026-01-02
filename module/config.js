@@ -3144,7 +3144,11 @@ exaltedthird.selects = {
     knockback: "Ex3.SmashingKnockback",
     impale: "Ex3.Impale",
     unexpectedattack: "Ex3.UnexpectedAttack"
-  }
+  },
+  experienceTypes: {
+    standard: "Ex3.Standard",
+    exalt: "Ex3.Exalt",
+  },
 };
 
 exaltedthird.tripleActionStatblocks = {

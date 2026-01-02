@@ -366,6 +366,8 @@ export class ExaltedThirdActor extends Actor {
       id: foundry.utils.randomID(16),
       name: name,
       amount: amount,
+      type: "standard",
+      description: "",
     }
     if (!changes) {
       changes = [];

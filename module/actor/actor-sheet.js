@@ -2396,7 +2396,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       }
 
       const template = "systems/exaltedthird/templates/dialogues/edit-experience-expenditure.html";
-      const html = await foundry.applications.handlebars.renderTemplate(template, { name: currentChangeData ? currentChangeData.name : "New Experience Change", amount: currentChangeData ? currentChangeData.amount : "0", selects: CONFIG.exaltedthird.selects });
+      const html = await foundry.applications.handlebars.renderTemplate(template, { name: currentChangeData ? currentChangeData.name : "New Experience Change", amount: currentChangeData ? currentChangeData.amount : "0", type: currentChangeData ? currentChangeData.type : "standard", description: currentChangeData ? currentChangeData.description : "", selects: CONFIG.exaltedthird.selects });
 
       new foundry.applications.api.DialogV2({
         window: { title: game.i18n.localize("Ex3.ExperienceChange"), resizable: true },
@@ -2418,6 +2418,8 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
               id: currentChangeData?.id || foundry.utils.randomID(16),
               name: result.name.value,
               amount: result.amount.value,
+              type: result.type.value,
+              description: result.description.value,
             };
             if (!changeData.name) {
               ui.notifications.error(`New change requires name.`)

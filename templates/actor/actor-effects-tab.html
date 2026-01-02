@@ -174,20 +174,6 @@
         {{/if}}
         {{/unless}}
     </div>
-    <div>
-        <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
-            data-defensetype="onslaught" data-direction="decrease"><i class="fas fa-minus"></i></a>
-        {{system.currentOnslaughtPenalty}} <a class="item-control" data-action="alterDefensePenalty"
-            data-defensetype="onslaught" data-direction="increase"><i class="fas fa-plus"></i></a>,
-        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
-            data-defensetype="defensePenalty" data-direction="decrease"><i class="fas fa-minus"></i></a>
-        {{system.currentDefensePenalty}} <a data-action="alterDefensePenalty" data-defensetype="defensePenalty"
-            data-direction="increase" class="item-control"><i class="fas fa-plus"></i></a>,
-    </div>
-    <div>
-        <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
-            "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
-    </div>
     {{#if system.settings.editmode}}
     <div class="resource-label list-section-header d-flex flex-between">
         <div>
@@ -378,7 +364,7 @@
     </div>
     {{/if}}
     {{/if}}
-        <div class="resource-label list-section-header d-flex flex-between">
+    <div class="resource-label list-section-header d-flex flex-between">
         <div>
             {{localize "Ex3.StatusEffects"}}
         </div>
@@ -393,6 +379,20 @@
             </button>
             {{/each}}
         </div>
+    </div>
+    <div>
+        <b>{{localize "Ex3.Onslaught"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
+            data-defensetype="onslaught" data-direction="decrease"><i class="fas fa-minus"></i></a>
+        {{system.currentOnslaughtPenalty}} <a class="item-control" data-action="alterDefensePenalty"
+            data-defensetype="onslaught" data-direction="increase"><i class="fas fa-plus"></i></a>,
+        <b>{{localize "Ex3.DefensePenalty"}}:</b> <a class="item-control" data-action="alterDefensePenalty"
+            data-defensetype="defensePenalty" data-direction="decrease"><i class="fas fa-minus"></i></a>
+        {{system.currentDefensePenalty}} <a data-action="alterDefensePenalty" data-defensetype="defensePenalty"
+            data-direction="increase" class="item-control"><i class="fas fa-plus"></i></a>,
+    </div>
+    <div>
+        <b>{{localize "Ex3.CurrentEvasionPenalty"}}:</b> {{system.currentEvasionPenalty}}, <b>{{localize
+            "Ex3.CurrentParryPenalty"}}:</b> {{system.currentParryPenalty}}
     </div>
     {{> systems/exaltedthird/templates/actor/active-effects.html}}
 </div>

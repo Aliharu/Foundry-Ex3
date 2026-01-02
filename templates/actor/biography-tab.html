@@ -46,9 +46,12 @@
     </div>
     <ol class="items-list" style="max-height:220px;">
         {{#each actor.system.experience.log as |change index|}}
-        <li class="item flexrow item-row">
+        <li class="item flexrow item-row" data-action="toggleCollapse" data-collapsetype="itemDescription">
             <div class="item-name item-header">{{change.name}}
                 ({{change.amount}})
+            </div>
+            <div class="capitalize item-header">
+                {{change.type}} XP
             </div>
             <div class="item-controls">
                 <a class="item-control" data-action="experienceAction" data-function="edit" title="Edit Change"
@@ -56,6 +59,9 @@
                 <a class="item-control" data-action="experienceAction" data-function="delete" title="Delete Change"
                     data-index="{{index}}"><i class="fas fa-trash"></i></a>
             </div>
+        </li>
+        <li class="item-description">
+            {{change.description}}
         </li>
         {{/each}}
     </ol>
