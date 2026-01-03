@@ -1234,6 +1234,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         foundry.utils.mergeObject(this, formData.object);
         if (this.object.rollType !== "base") {
             this.object.diceCap = this._getDiceCap();
+            if (this.actor.system.settings.dicecap.iscustom && this.actor.system.settings.dicecap.extratext) {
+                this.object.diceCap += ` + ${this.actor.system.settings.dicecap.extratext}`;
+            }
             this.object.TNCap = this._getTNCap();
 
             this._calculateAnimaGain();
@@ -6825,7 +6828,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
-                if (CONFIG.exaltedthird.allExcellencyExigents.includes(this.actor.system.details.caste) || this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
+                if (this.actor.system.settings.dicecap.iscustom || CONFIG.exaltedthird.allExcellencyExigents.includes(this.actor.system.details.caste) || this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
                     return this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty, this.object.excellencyBonus)?.dice || 0;
                 }
             }
@@ -7331,6 +7334,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (this.object.diceCap === undefined) {
             this.object.diceCap = this._getDiceCap();
+            if (this.actor?.system.settings.dicecap.iscustom && this.actor?.system.settings.dicecap.extratext) {
+                this.object.diceCap += ` + ${this.actor.system.settings.dicecap.extratext}`;
+            }
         }
         if (this.object.TNCap === undefined) {
             this.object.TNCap = this._getTNCap();
