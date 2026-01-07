@@ -176,7 +176,7 @@ export class ExaltedThirdActor extends Actor {
     }
   }
 
-  canAquireItem(item, listMode=false) {
+  canAquireItem(item, listMode = false) {
     const itemIds = this.items.map(item => {
       const sourceId = item.flags?.core?.sourceId || item._source?._stats?.compendiumSource || ''; // Handle cases where sourceId is undefined
       const sections = sourceId.split('.'); // Split the sourceId by periods
@@ -190,11 +190,11 @@ export class ExaltedThirdActor extends Actor {
 
     const itemType = item.type;
 
-    if(listMode && ['ritual', 'merit', 'weapon', 'armor', 'item'].includes(item.type)) {
+    if (listMode && ['ritual', 'merit', 'weapon', 'armor', 'item'].includes(item.type)) {
       return true;
     }
 
-    if(itemType === 'specialability' && item.system.powertype === 'devilBodyPower' && this.system.details.exalt === 'infernal') {
+    if (itemType === 'specialability' && item.system.powertype === 'devilBodyPower' && this.system.details.exalt === 'infernal') {
       return true;
     }
 
@@ -1762,11 +1762,11 @@ export class ExaltedThirdActor extends Actor {
     if (this.type === "character") {
       const diceCap = this.getCharacterDiceCapValue(this.system.settings.staticcapsettings[type].ability, this.system.settings.staticcapsettings[type].attribute, (this.system.settings.staticcapsettings[type]?.specialty || false), excellencyBonus);
       const diceCapValue = this.system.details.exalt === 'sidereal' ? diceCap.dice : Math.floor(diceCap.dice / 2);
+      if (type === 'soak' && !this.system.attributes[this.system.settings.staticcapsettings[type].attribute].excellency) {
+        return '';
+      }
       if (this.system.settings.dicecap.iscustom) {
         return `+${diceCapValue} for ${diceCapValue * 2}m`;
-      }
-      if (!this.system.abilities[this.system.settings.staticcapsettings[type].ability]?.excellency && !this.system.attributes[this.system.settings.staticcapsettings[type].attribute]?.excellency) {
-        return '';
       }
       if (this.system.details.exalt === 'lunar') {
         let highestAttributeNumber = 0;
@@ -1797,6 +1797,9 @@ export class ExaltedThirdActor extends Actor {
         else return `+2 for ${type === 'soak' ? 2 : 4}m; +5 for ${type === 'soak' ? 5 : 10}m`
       }
       else {
+        if (type === 'soak') {
+          return '';
+        }
         switch (this.system.details.exalt) {
           case 'dragonblooded':
             caps = [0, 1, 2, 3]

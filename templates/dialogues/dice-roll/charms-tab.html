@@ -1,5 +1,7 @@
 <section class="tab flex-center {{tab.cssClass}} {{hideElement}}" data-group="primary" data-tab="charms">
-    <div class="button-header">
+    <div class="button-header items-center">
+        <b>{{#if data.diceCap}} ({{localize
+                "Ex3.CharmDice"}}: {{data.charmDiceAdded}}/{{data.diceCap}}) {{/if}}</b>
         <!-- <input class="search-box" name="data.search" value="{{data.search}}" type="text" placeholder='{{localize "Ex3.Search"}}' autocomplete='off'> -->
         <button data-tooltip="Add Charm" aria-label="Add Charm" type="button" data-action="enableAddCharms"><i
                 class="fas fa-square-plus"></i>{{#if data.addingCharms}}{{localize "Ex3.Done"}}{{else}}{{localize

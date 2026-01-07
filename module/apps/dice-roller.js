@@ -6828,9 +6828,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             if (this.actor.type === "character" && this.actor.system.attributes[this.object.attribute]) {
-                if (this.actor.system.settings.dicecap.iscustom || CONFIG.exaltedthird.allExcellencyExigents.includes(this.actor.system.details.caste) || this.actor.system.attributes[this.object.attribute].excellency || this.actor.system.abilities[this.object.ability]?.excellency || this.object.customabilities.some(ma => ma._id === this.object.ability && ma.system.excellency)) {
-                    return this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty, this.object.excellencyBonus)?.dice || 0;
-                }
+                return this.actor.getCharacterDiceCapValue(this.object.ability, this.object.attribute, this.object.specialty, this.object.excellencyBonus)?.dice || 0;
             }
             else if (this.actor.system.lunarform?.enabled) {
                 const lunar = game.actors.get(this.actor.system.lunarform.actorid);
@@ -6839,7 +6837,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     let lunarPool = 0;
                     let animalPool = 0;
                     let lunarAttributeValue = 0;
-                    let lunarHasExcellency = false;
                     const action = this.object.actions.find(action => action._id === this.object.pool);
                     if (lunar.type === 'npc') {
                         if (action) {
@@ -6859,32 +6856,26 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         if (action) {
                             lunarPool = (lunar.system.attributes[action.system.lunarstats.attribute]?.value || 0) + this.actor.getCharacterAbilityValue(action.system.lunarstats.ability);
                             lunarAttributeValue = lunar.system.attributes[action.system.lunarstats.attribute]?.value;
-                            lunarHasExcellency = lunar.system.attributes[action.system.lunarstats.attribute]?.excellency;
                         }
                         else if (this._isAttackRoll()) {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value + this.actor.getCharacterAbilityValue('brawl');
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.value;
-                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.attacks.attribute]?.excellency;
                         }
                         else if (this.object.pool === 'grapple') {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.grapplecontrol.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.value;
-                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.grapplecontrol.attribute]?.excellency;
                         }
                         else if (this.object.rollType === 'disengage') {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.disengage.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.value;
-                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.disengage.attribute]?.excellency;
                         }
                         else if (this.object.pool === 'movement') {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings.rush.ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.value;
-                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings.rush.attribute]?.excellency;
                         }
                         else {
                             lunarPool = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value + this.actor.getCharacterAbilityValue(lunar.system.settings.rollsettings[this.object.pool].ability);
                             lunarAttributeValue = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.value;
-                            lunarHasExcellency = lunar.system.attributes[lunar.system.settings.rollsettings[this.object.pool].attribute]?.excellency;
                         }
                         if (this.object.specialty) {
                             lunarPool++;
@@ -6913,13 +6904,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     if (getLunarFormCharmDice) {
                         return Math.max(currentCharmDice, currentCharmDice + (animalPool - lunarPool));
                     }
-
-                    if (lunarHasExcellency) {
-                        diceCap = lunarAttributeValue + (lunar.system.attributes[this.object.excellencyBonus]?.value || 0);
-                    }
-                    else {
-                        diceCap = '';
-                    }
+                    diceCap = lunarAttributeValue + (lunar.system.attributes[this.object.excellencyBonus]?.value || 0);
                 }
                 return diceCap;
             }
