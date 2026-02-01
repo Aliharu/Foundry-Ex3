@@ -2006,9 +2006,9 @@ export class ExaltedThirdActor extends Actor {
       });
       data.actorCombatant = combatant;
     }
-    let message = data.rollType !== 'useOpposingCharms' ? await this.sendTargetingChatMessage(data) : null;
-    if (message) {
-      data.preMessageId = message.id;
+    let messageArray = data.rollType !== 'useOpposingCharms' ? await this.sendTargetingChatMessage(data) : null;
+    if (messageArray.length > 0) {
+      data.preMessageIds = messageArray.map(o => o.id);
     }
     if (data.rollType === 'useOpposingCharms') {
       game.opposingCharmForm = await new RollForm(this, { classes: [" exaltedthird exaltedthird-dialog dice-roller", this.getSheetBackground()], position: { width: 846, height: 642 } }, {}, data).render(true);
@@ -2027,6 +2027,7 @@ export class ExaltedThirdActor extends Actor {
   async sendTargetingChatMessage(data) {
     const imageUrl = CONFIG.exaltedthird.rollTypeTargetImages[data.attackType] || CONFIG.exaltedthird.rollTypeTargetImages[data.rollType] || CONFIG.exaltedthird.rollTypeTargetImages[data.ability] || "systems/exaltedthird/assets/icons/d10.svg";
     const rollTypeLabel = CONFIG.exaltedthird.rollTypeTargetLabels[data.attackType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.rollType] || CONFIG.exaltedthird.rollTypeTargetLabels[data.ability] || "Ex3.Roll";
+    const messageArray = [];
     if (game.user.targets && game.user.targets.size > 0) {
       for (const target of Array.from(game.user.targets)) {
         const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
@@ -2035,18 +2036,32 @@ export class ExaltedThirdActor extends Actor {
           imgUrl: imageUrl,
           rollType: rollTypeLabel,
         });
-        return await ChatMessage.create({
-          user: game.user.id,
-          content: messageContent,
-          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-          flags: {
-            "exaltedthird": {
-              rollerUuid: this.uuid,
-              targetActorId: target.actor.id,
-              targetTokenId: target.id,
-            }
-          },
-        });
+        messageArray.push(
+          await ChatMessage.create({
+            user: game.user.id,
+            content: messageContent,
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+            flags: {
+              "exaltedthird": {
+                rollerUuid: this.uuid,
+                targetActorId: target.actor.id,
+                targetTokenId: target.id,
+              }
+            },
+          })
+        );
+        // return await ChatMessage.create({
+        //   user: game.user.id,
+        //   content: messageContent,
+        //   style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        //   flags: {
+        //     "exaltedthird": {
+        //       rollerUuid: this.uuid,
+        //       targetActorId: target.actor.id,
+        //       targetTokenId: target.id,
+        //     }
+        //   },
+        // });
       }
     } else if (CONFIG.exaltedthird.targetableRollTypes.includes(data.rollType)) {
       const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/targeting-card.html", {
@@ -2055,37 +2070,66 @@ export class ExaltedThirdActor extends Actor {
         imgUrl: imageUrl,
         rollType: rollTypeLabel,
       });
-      return await ChatMessage.create({
-        user: game.user.id,
-        content: messageContent,
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        flags: {
-          "exaltedthird": {
-            rollerUuid: this.uuid,
-            targetActorId: null,
-            targetTokenId: null,
-          }
-        },
-      });
+      messageArray.push(
+        await ChatMessage.create({
+          user: game.user.id,
+          content: messageContent,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          flags: {
+            "exaltedthird": {
+              rollerUuid: this.uuid,
+              targetActorId: null,
+              targetTokenId: null,
+            }
+          },
+        })
+      );
+      // return await ChatMessage.create({
+      //   user: game.user.id,
+      //   content: messageContent,
+      //   style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      //   flags: {
+      //     "exaltedthird": {
+      //       rollerUuid: this.uuid,
+      //       targetActorId: null,
+      //       targetTokenId: null,
+      //     }
+      //   },
+      // });
     } else if (game.settings.get("exaltedthird", "nonTargetRollCards")) {
       const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/pre-roll-card.html", {
         actor: this,
         imgUrl: imageUrl,
         rollType: rollTypeLabel,
       });
-      return await ChatMessage.create({
-        user: game.user.id,
-        content: messageContent,
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        flags: {
-          "exaltedthird": {
-            rollerUuid: this.uuid,
-            targetActorId: null,
-            targetTokenId: null,
-          }
-        },
-      });
+      messageArray.push(
+        await ChatMessage.create({
+          user: game.user.id,
+          content: messageContent,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          flags: {
+            "exaltedthird": {
+              rollerUuid: this.uuid,
+              targetActorId: null,
+              targetTokenId: null,
+            }
+          },
+        })
+      );
+      // return await ChatMessage.create({
+      //   user: game.user.id,
+      //   content: messageContent,
+      //   style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      //   flags: {
+      //     "exaltedthird": {
+      //       rollerUuid: this.uuid,
+      //       targetActorId: null,
+      //       targetTokenId: null,
+      //     }
+      //   },
+      // });
     }
+    return messageArray;
   }
 
   getCharacterAbilityValue(ability) {

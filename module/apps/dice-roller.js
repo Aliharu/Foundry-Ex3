@@ -17,7 +17,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.rollableAbilities['fever'] = "Ex3.Fever";
             this.rollablePools['fever'] = "Ex3.Fever";
         }
-        this.messageId = data.preMessageId;
+        this.preMessageIds = data.preMessageIds;
         this.search = "";
         this.object.totalDice = 0;
         this.object.rollButtonTooltip = "";
@@ -1353,6 +1353,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 supportedIntimacy: '0',
                 opposedIntimacy: '0',
                 appearanceBonus: 0,
+                applyAppearance: false,
                 armoredSoak: 0,
                 naturalSoak: 0,
                 defenseType: 'none',
@@ -1673,6 +1674,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         this.object.opposedIntimacy = target.rollData.opposedIntimacy;
                         this.object.supportedIntimacy = target.rollData.supportedIntimacy;
                         this.object.appearanceBonus = target.rollData.appearanceBonus;
+                        this.object.applyAppearance = target.rollData.applyAppearance;
                     }
                     else if (this.object.rollType === 'readIntentions') {
                         this.object.difficulty = target.rollData.guile;
@@ -1714,8 +1716,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
     async close(deleteMessage = true, options = {}) {
         this.resolve(false);
-        if (this.messageId && deleteMessage) {
-            game.messages.get(this.messageId)?.delete();
+        if (this.preMessageIds && deleteMessage) {
+            for(const messageId of this.preMessageIds) {
+                game.messages.get(messageId)?.delete();
+            }
         }
         super.close();
     }
@@ -6443,7 +6447,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let rangeModifier = 0;
 
         if (display && this.object.showTargets && !this.object.target) {
-            targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
+            if(Object.values(this.object.targets)[0].rollData.applyAppearance) {
+                targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
+            }
         }
 
         if (this._isAttackRoll()) {
