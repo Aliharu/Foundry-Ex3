@@ -69,6 +69,10 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
   async _prepareContext(_options) {
     await this.loadItems();
 
+    let charmTypes = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltCharmTypes));
+    if (game.settings.get("exaltedthird", "enableHomebrewTypes")) {
+      charmTypes = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltCharmTypesWithHomebrew));
+    }
     return {
       filters: this.filters,
       selects: CONFIG.exaltedthird.selects,
@@ -76,7 +80,7 @@ export default class ItemSearch extends HandlebarsApplicationMixin(ApplicationV2
       filteredItems: this.applyFilter(),
       itemSections: this.getListSections(),
       charmAbilities: CONFIG.exaltedthird.charmabilities,
-      charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
+      charmExaltType: charmTypes,
       characters: game.actors.filter(actor => actor.type === 'character')
         .reduce((acc, template) => {
           acc[template.id] = template.name;

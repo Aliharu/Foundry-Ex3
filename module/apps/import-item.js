@@ -23,7 +23,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
             // filteredItems: this.applyFilter(),
             // itemSections: this.getListSections(),
             // charmAbilities: CONFIG.exaltedthird.charmabilities,
-            // charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
+            // charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltCharmTypes)),
         };
     }
 

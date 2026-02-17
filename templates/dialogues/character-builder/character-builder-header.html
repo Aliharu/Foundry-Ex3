@@ -32,7 +32,7 @@
     <div>
       <div class="resource-label">{{localize "Ex3.Exalt"}}</div>
       <select id="exalt" name="object.character.exalt" data-type="String">
-        {{selectOptions selects.exaltTypes selected=data.character.exalt localize=true}}
+        {{selectOptions exaltTypes selected=data.character.exalt localize=true}}
       </select>
     </div>
     {{#if data.availableCastes}}

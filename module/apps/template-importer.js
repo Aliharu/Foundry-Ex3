@@ -134,7 +134,7 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
   };
 
   async _prepareContext(_options) {
-    this.data.charmTypes = CONFIG.exaltedthird.exaltcharmtypes;
+    this.data.charmTypes = CONFIG.exaltedthird.exaltCharmTypes;
     this.data.selects = CONFIG.exaltedthird.selects;
     const hintMap = { 'charm': 'CharmImportHint', 'spell': 'SpellImportHint', 'adversary': 'AdversaryImportHint', 'qc': 'QCImportHint', 'other': 'OtherImportHint' }
     this.data.templateHint = game.i18n.localize(`Ex3.${hintMap[this.data.type]}`);

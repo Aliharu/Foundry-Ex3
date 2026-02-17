@@ -1482,6 +1482,9 @@ export class ExaltedThirdActor extends Actor {
         case 'sovereign':
           diceCap = Math.min(Math.max(this.system.essence.value, 3) + this.system.anima.value, 10);
           break;
+        case 'unbound':
+          diceCap = Math.max(3, this.system.essence.value);
+          break;
         default:
           diceCap = 0;
       }
