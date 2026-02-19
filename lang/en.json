@@ -111,6 +111,7 @@
     "Ex3.Infernal": "Infernal",
     "Ex3.Liminal": "Liminal",
     "Ex3.Lunar": "Lunar",
+    "Ex3.Unbound": "Unbound",
     "Ex3.Janest": "Janest",
     "Ex3.Strawmaiden": "Strawmaiden",
     "Ex3.Knives": "Knives",
@@ -848,6 +849,8 @@
     "Ex3.RollButtonTarget": "Roll Button Target",
     "Ex3.RollButtonTargetDescription": "If enabled roll buttons will on the tokens that are currently targetted by the user and if there are no targets will default to the proper character (Attacker for gain withering, Target for Damage).  If disabled it will always use the Attacker/Defender.",
 
+    "Ex3.EnableHomebrewTypes": "Enable Homebrew Types",
+    "Ex3.EnableHomebrewTypesDescription": "Enables certain homebrew and STV character options.  Current options includes are: Unbound from the STV Ghost supplement",
 
     "Ex3.BankableStuntsDescription": "Changes stunts to work like how they do in Exalted Essence.  Stunts are limited to 1 level and can now be banked.",
 
@@ -1089,6 +1092,12 @@
     "Ex3.Flesh": "Flesh",
     "Ex3.Marrow": "Marrow",
     "Ex3.Soil": "Soil",
+    "Ex3.Banshee": "Banshee",
+    "Ex3.Ghoul": "Ghoul",
+    "Ex3.Lich": "Lich",
+    "Ex3.Wight": "Wight",
+    "Ex3.Wraith": "Wraith",
+
     "Ex3.God/Demon": "God/Demon",
     "Ex3.Tree": "Tree",
     "Ex3.Mountain": "Mountain",

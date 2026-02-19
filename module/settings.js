@@ -187,6 +187,15 @@ export function registerSettings() {
         default: true
     });
 
+    game.settings.register("exaltedthird", "enableHomebrewTypes", {
+        name: game.i18n.localize('Ex3.EnableHomebrewTypes'),
+        hint: game.i18n.localize('Ex3.EnableHomebrewTypesDescription'),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+
     game.settings.register("exaltedthird", "sortDice", {
         name: game.i18n.localize('Ex3.sortDice'),
         hint: game.i18n.localize('Ex3.sortDiceDescription'),

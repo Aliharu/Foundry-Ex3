@@ -49,6 +49,49 @@ exaltedthird.excellencyIcons = {
   lunar: "systems/exaltedthird/assets/icons/lunar-excellency.webp",
 }
 
+exaltedthird.exaltTypes = {
+  abyssal: "Ex3.Abyssal",
+  alchemical: "Ex3.Alchemical",
+  dragonblooded: "Ex3.Dragonblooded",
+  dreamsouled: "Ex3.DreamSouled",
+  exigent: "Ex3.Exigent",
+  customExigent: "Ex3.CustomExigent",
+  getimian: "Ex3.Getimian",
+  hearteater: "Ex3.Hearteater",
+  infernal: "Ex3.Infernal",
+  liminal: "Ex3.Liminal",
+  lunar: "Ex3.Lunar",
+  marchlord: "Ex3.MarchLord",
+  mortal: "Ex3.Mortal",
+  sidereal: "Ex3.Sidereal",
+  solar: "Ex3.Solar",
+  sovereign: "Ex3.Sovereign",
+  umbral: "Ex3.Umbral",
+  other: "Ex3.Other"
+};
+
+exaltedthird.exaltTypesWithHomebrew = {
+  abyssal: "Ex3.Abyssal",
+  alchemical: "Ex3.Alchemical",
+  dragonblooded: "Ex3.Dragonblooded",
+  dreamsouled: "Ex3.DreamSouled",
+  exigent: "Ex3.Exigent",
+  customExigent: "Ex3.CustomExigent",
+  getimian: "Ex3.Getimian",
+  hearteater: "Ex3.Hearteater",
+  infernal: "Ex3.Infernal",
+  liminal: "Ex3.Liminal",
+  lunar: "Ex3.Lunar",
+  marchlord: "Ex3.MarchLord",
+  mortal: "Ex3.Mortal",
+  sidereal: "Ex3.Sidereal",
+  solar: "Ex3.Solar",
+  sovereign: "Ex3.Sovereign",
+  umbral: "Ex3.Umbral",
+  unbound: "Ex3.Unbound",
+  other: "Ex3.Other"
+};
+
 exaltedthird.activeEffectChanges = {
   none: {
     label: "Ex3.None",
@@ -447,7 +490,7 @@ exaltedthird.rollTypeTargetImages = {
   'wits': 'systems/exaltedthird/assets/icons/sundial.svg',
 }
 
-exaltedthird.exaltcharmtypes = {
+exaltedthird.exaltCharmTypes = {
   abyssal: "Ex3.Abyssal",
   alchemical: "Ex3.Alchemical",
   architect: "Ex3.Architect",
@@ -481,6 +524,46 @@ exaltedthird.exaltcharmtypes = {
   torchbearer: "Ex3.Torchbearer",
   venoms: "Ex3.ThousandVenomsMistress",
   umbral: "Ex3.Umbral",
+  universal: "Ex3.Universal",
+  wounds: "Ex3.ChosenOfWounds",
+  other: "Ex3.Other"
+};
+
+exaltedthird.exaltCharmTypesWithHomebrew = {
+  abyssal: "Ex3.Abyssal",
+  alchemical: "Ex3.Alchemical",
+  architect: "Ex3.Architect",
+  bleakWarden: "Ex3.BleakWarden",
+  dice: "Ex3.ChosenOfDice",
+  dragonblooded: "Ex3.Dragonblooded",
+  dreamsouled: "Ex3.DreamSouled",
+  eclipse: "Ex3.Eclipse",
+  evocation: "Ex3.Evocation",
+  exigent: "Ex3.Exigent",
+  foxbinder: "Ex3.Foxbinder",
+  getimian: "Ex3.Getimian",
+  godAdmiral: "Ex3.GodAdmiral",
+  hearteater: "Ex3.Hearteater",
+  knives: "Ex3.ChosenOfKnives",
+  infernal: "Ex3.Infernal",
+  liminal: "Ex3.Liminal",
+  lunar: "Ex3.Lunar",
+  masks: "Ex3.ChosenOfMasks",
+  marchlord: "Ex3.MarchLord",
+  martialarts: "Ex3.MartialArts",
+  mysteries: "Ex3.ChosenOfMysteries",
+  necromancy: "Ex3.Necromancy",
+  puppeteer: "Ex3.Puppeteer",
+  reaver: "Ex3.Reaver",
+  sidereal: "Ex3.Sidereal",
+  solar: "Ex3.Solar",
+  sorcery: "Ex3.Sorcery",
+  sovereign: "Ex3.Sovereign",
+  strawmaiden: "Ex3.Strawmaiden",
+  torchbearer: "Ex3.Torchbearer",
+  venoms: "Ex3.ThousandVenomsMistress",
+  umbral: "Ex3.Umbral",
+  unbound: "Ex3.Unbound",
   universal: "Ex3.Universal",
   wounds: "Ex3.ChosenOfWounds",
   other: "Ex3.Other"
@@ -601,6 +684,13 @@ exaltedthird.castes = {
     east: 'Ex3.East',
     west: 'Ex3.West',
   },
+  unbound: {
+    banshee: "Ex3.Banshee",
+    ghoul: "Ex3.Ghoul",
+    lich: "Ex3.Lich",
+    wight: "Ex3.Wight",
+    wraith: "Ex3.Wraith",
+  }
 };
 
 exaltedthird.attributes = {
@@ -1019,6 +1109,7 @@ exaltedthird.exaltMotePools = {
       sovereign: 4,
       sidereal: 9,
       liminal: 10,
+      unbound: 50,
       other: 0,
     },
     essenceLevelMultiplier: {
@@ -1030,6 +1121,7 @@ exaltedthird.exaltMotePools = {
       alchemical: 2,
       liminal: 3,
       sidereal: 2,
+      unbound: 10,
       other: 0,
     }
   },
@@ -1048,6 +1140,7 @@ exaltedthird.exaltMotePools = {
       sovereign: 30,
       sidereal: 25,
       other: 0,
+      unbound: 0,
       mortal: 0,
     },
     // Base 4
@@ -1063,6 +1156,7 @@ exaltedthird.exaltMotePools = {
       getimian: 6,
       sidereal: 6,
       other: 0,
+      unbound: 0,
       mortal: 0,
     }
   }
@@ -1427,7 +1521,12 @@ exaltedthird.casteabilitiesmap = {
   'ascendant': ['integrity', 'lore', 'medicine', 'occult', 'performance', 'presence', 'resistance', 'survival'],
   'horizon': ['bureaucracy', 'craft', 'investigation', 'linguistics', 'lore', 'medicine', 'occult', 'war'],
   'nadir': ['athletics', 'awareness', 'dodge', 'integrity', 'larceny', 'ride', 'sail', 'stealth'],
-  'penumbra': ['bureaucracy', 'investigation', 'larceny', 'linguistics', 'performance', 'presence', 'stealth', 'socialize']
+  'penumbra': ['bureaucracy', 'investigation', 'larceny', 'linguistics', 'performance', 'presence', 'stealth', 'socialize'],
+  'banshee': ['archery', 'athletics', 'dodge', 'investigation', 'larceny', 'performance', 'stealth', 'thrown'],
+  'ghoul': ['brawl', 'craft', 'melee', 'resistance', 'ride', 'sail', 'survival', 'war'],
+  'lich': ['bureaucracy', 'craft', 'integrity', 'investigation', 'linguistics', 'lore', 'medicine', 'occult'],
+  'wight': ['bureaucracy', 'integrity', 'linguistics', 'lore', 'performance', 'presence', 'socialize', 'war'],
+  'wraith': ['awareness', 'brawl', 'larceny', 'melee', 'occult', 'sail', 'stealth', 'survival'],
 };
 
 exaltedthird.maidenabilities = {

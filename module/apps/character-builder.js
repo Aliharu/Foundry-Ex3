@@ -568,12 +568,14 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
   async _prepareContext(_options) {
     if (!this.tabGroups['primary']) this.tabGroups['primary'] = 'overview';
+    let exaltTypes = CONFIG.exaltedthird.exaltTypes;
 
     return {
       data: this.object,
       selects: CONFIG.exaltedthird.selects,
       tab: this.tabGroups['primary'],
       showSupernal: this.object.character.exalt === 'solar' || this.object.character.exalt === 'abyssal' || this.object.character.exalt === 'infernal',
+      exaltTypes: exaltTypes,
       tabs: [
         {
           id: "overview",
@@ -923,6 +925,10 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
         intimacies: 4,
         willpower: 3,
       }
+    }
+    if (this.object.character.exalt === 'unbound') {
+      this.object.creationData.available.charms = 10;
+      this.object.creationData.available.merits = 7;
     }
     this.object.creationData.available.merits += this.object.character.bonusMerits.value;
     this.object.creationData.spent = {

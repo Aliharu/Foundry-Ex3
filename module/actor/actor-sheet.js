@@ -168,10 +168,14 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
   _onChangeForm(formConfig, event) {
     if (event.target.name === "search") return; // or whatever conditional to exclude your filter input
-    return super._onChangeForm(formConfig, event)
+    return super._onChangeForm(formConfig, event);
   }
 
   async _prepareContext(_options) {
+    let exaltTypes = CONFIG.exaltedthird.exaltTypes;
+    if (game.settings.get("exaltedthird", "enableHomebrewTypes")) {
+      exaltTypes = CONFIG.exaltedthird.exaltTypesWithHomebrew;
+    }
     const context = {
       // Validates both permissions and compendium status
       editable: this.isEditable,
@@ -187,6 +191,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       statuses: await this._prepareStatusEffects(),
       characterEditMode: (this.actor.type === 'character' && this.actor.system.settings.editmode),
       collapseStates: this.collapseStates,
+      exaltTypes: exaltTypes,
     };
 
     if (this.document.limited) {
@@ -550,6 +555,10 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         intimacies: 4,
         willpower: 3,
       }
+    }
+    if (sheetData.system.details.exalt === 'unbound') {
+      sheetData.system.charcreation.available.charms = 15;
+      sheetData.system.charcreation.available.merits = 7;
     }
     sheetData.system.charcreation.spent = {
       attributes: {
@@ -2368,7 +2377,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       system: data
     };
     if (type === 'charm') {
-      if (Object.keys(CONFIG.exaltedthird.exaltcharmtypes).includes(this.actor.system.details.exalt)) {
+      if (Object.keys(CONFIG.exaltedthird.exaltCharmTypes).includes(this.actor.system.details.exalt)) {
         itemData.system.charmtype = this.actor.system.details.exalt;
       }
     }

@@ -49,7 +49,7 @@
             {{/ifEquals}}
             {{#ifEquals system.creaturetype 'exalt'}}
             <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                    {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
+                    {{selectOptions exaltTypes selected=system.details.exalt localize=true}}
                 </select></h1>
             {{#if availableCastes}}
             <h1 class="charname"> <select name="system.details.caste" data-type="String">
@@ -78,7 +78,7 @@
         {{else}}
         <div class="grid grid-2col flexrow">
             <h1 class="charname"> <select name="system.details.exalt" data-type="String">
-                    {{selectOptions selects.exaltTypes selected=system.details.exalt localize=true}}
+                    {{selectOptions exaltTypes selected=system.details.exalt localize=true}}
                 </select></h1>
             {{#if availableCastes}}
             <h1 class="charname"> <select name="system.details.caste" data-type="String">

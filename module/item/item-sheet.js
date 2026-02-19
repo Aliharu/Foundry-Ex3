@@ -157,6 +157,11 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
   async _prepareContext(options) {
     const itemData = this.item.toObject(false);
 
+    let charmTypes = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltCharmTypes));
+    if (game.settings.get("exaltedthird", "enableHomebrewTypes")) {
+      charmTypes = JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltCharmTypesWithHomebrew));
+    }
+
     const context = {
       // Validates both permissions and compendium status
       editable: this.isEditable,
@@ -184,7 +189,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
         list[''] = "Ex3.None";
         return list;
       })(),
-      charmExaltType: JSON.parse(JSON.stringify(CONFIG.exaltedthird.exaltcharmtypes)),
+      charmExaltType: charmTypes,
       parentItemList: {
         '': 'Ex3.None'
       },
