@@ -1717,7 +1717,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
     async close(deleteMessage = true, options = {}) {
         this.resolve(false);
         if (this.preMessageIds && deleteMessage) {
-            for(const messageId of this.preMessageIds) {
+            for (const messageId of this.preMessageIds) {
                 game.messages.get(messageId)?.delete();
             }
         }
@@ -2865,6 +2865,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             cap: effectSplit[2] ? Math.max(0, this._getFormulaValue(effectSplit[2], overrideActor)) : 0,
             triggerOnRerolledDice: effectSplit[3] ? true : false,
             diceRollType: diceRollType,
+            diceCurrentlyUsed: 0,
         }
         if (diceRollType === 'diceRoll') {
             if (this.object.diceRoll) {
@@ -3448,6 +3449,10 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             }
         }
 
+        for (const dieFaceTrigger of this.object.effectsOnSpecificDice.filter(faceTrigger => faceTrigger.diceRollType === 'diceRoll' && faceTrigger.effect.toLowerCase() === 'rerollsuccesses')) {
+            this._specificDieFaceEffect(results, dieFaceTrigger, diceModifiers);
+        }
+
         let rollResult = {
             roll: roll,
             results: results,
@@ -3557,11 +3562,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 diceResult.rerolled = true;
             }
         }
-        var descendingDiceToReroll = Math.min(possibleRerolls, diceModifiers.rerollNumberDescending);
+        let descendingDiceToReroll = Math.min(possibleRerolls, diceModifiers.rerollNumberDescending);
         let rerolledDescendingDice = 0;
         while (descendingDiceToReroll > 0 && (rerolledDescendingDice < diceModifiers.rerollNumberDescending)) {
             rerolledDescendingDice += possibleRerolls;
-            var rerollNumDiceResults = await this._rollTheDice(descendingDiceToReroll, diceModifiers, doublesRolled, numbersRerolled);
+            let rerollNumDiceResults = await this._rollTheDice(descendingDiceToReroll, diceModifiers, doublesRolled, numbersRerolled);
             descendingDiceToReroll = 0
             for (const diceResult of sortDice(rerollNumDiceResults.results, true)) {
                 if (diceModifiers.rerollNumberDescending > possibleRerolls && !diceResult.rerolled && diceResult.result < this.object.targetNumber && (!diceModifiers.settings.excludeOnesFromRerolls || diceResult.result !== 1)) {
@@ -3573,11 +3578,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             diceRoll = diceRoll.concat(rerollNumDiceResults.results);
             total += rerollNumDiceResults.total;
         }
-        var successesToReroll = Math.min(possibleSuccessRerolls, diceModifiers.rerollSuccesses);
+        let successesToReroll = Math.min(possibleSuccessRerolls, diceModifiers.rerollSuccesses);
         let successRerolledDice = 0;
         while (successesToReroll > 0 && (successRerolledDice < diceModifiers.rerollSuccesses)) {
             successRerolledDice += possibleSuccessRerolls;
-            var rerollNumDiceResults = await this._rollTheDice(successesToReroll, diceModifiers, doublesRolled, numbersRerolled);
+            let rerollNumDiceResults = await this._rollTheDice(successesToReroll, diceModifiers, doublesRolled, numbersRerolled);
             successesToReroll = 0
             for (const diceResult of rerollNumDiceResults.results.sort((a, b) => a.result - b.result)) {
                 if (diceModifiers.rerollSuccesses > possibleSuccessRerolls && !diceResult.rerolled && diceResult.result >= this.object.targetNumber) {
@@ -3599,8 +3604,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             let newCraftDice = Math.floor(total / 3);
             let remainder = total % 3;
             while (newCraftDice > 0) {
-                var rollSuccessTotal = 0;
-                var craftDiceRollResults = await this._rollTheDice(newCraftDice, diceModifiers, doublesRolled, numbersRerolled);
+                let rollSuccessTotal = 0;
+                let craftDiceRollResults = await this._rollTheDice(newCraftDice, diceModifiers, doublesRolled, numbersRerolled);
                 diceRoll = diceRoll.concat(craftDiceRollResults.results);
                 rollSuccessTotal += craftDiceRollResults.total;
                 total += craftDiceRollResults.total;
@@ -4984,6 +4989,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'baseInitiativeModifier':
                                     case 'intervals':
                                     case 'goalNumber':
+                                    case 'rerollSuccesses':
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
                                     case 'successModifier':
@@ -5802,7 +5808,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         return fufillsRequirements;
     }
 
-    _specificDieFaceEffect(diceRoll, dieFaceTrigger) {
+    _specificDieFaceEffect(diceRoll, dieFaceTrigger, diceModifiers = null) {
         // let dieFaceAmount = diceRoll.filter(die => (dieFaceTrigger.triggerOnRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === dieFaceTrigger.face).length;
         let dieFaceAmount = diceRoll.filter(die => {
             // Parse the face string to check for a "+" or "-" and determine the range
@@ -5828,74 +5834,88 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }).length;
 
         if (dieFaceTrigger.cap) {
-            dieFaceAmount = Math.min(dieFaceTrigger.cap, dieFaceAmount);
+            dieFaceAmount = Math.min((dieFaceTrigger.cap - (dieFaceTrigger.diceCurrentlyUsed ?? 0)), dieFaceAmount);
         }
-        switch (dieFaceTrigger.effect.toLowerCase()) {
-            case 'damage':
-                this.object.damage.damageDice += dieFaceAmount;
-                break;
-            case 'postsoakdamage':
-                this.object.damage.postSoakDamage += dieFaceAmount;
-                break;
-            case 'extrasuccess':
-                if (this.object.diceRollTotal) {
-                    this.object.diceRollTotal += dieFaceAmount;
-                } else {
-                    this.object.successModifier += dieFaceAmount;
-                }
-                break;
-            case 'ignorehardness':
-                this.object.damage.ignoreHardness += dieFaceAmount;
-                break;
-            case 'restoremote':
-                this.object.restore.motes += dieFaceAmount;
-                break;
-            case 'gaininitiative':
-                this.object.restore.initiative += dieFaceAmount;
-                break;
-            case 'soak':
-                this.object.soak += dieFaceAmount;
-                break;
-            case 'defense':
-                this.object.defense += dieFaceAmount;
-                break;
-            case 'subtractinitiative':
-                if (this.object.characterInitiative) {
-                    this.object.characterInitiative -= dieFaceAmount;
-                }
-                break;
-            case 'subtractsuccesses':
-                if (this.object.diceRollTotal) {
-                    this.object.diceRollTotal -= dieFaceAmount;
-                } else {
-                    this.object.successModifier -= dieFaceAmount;
-                }
-                break;
-            case 'reducedamage':
-                this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - dieFaceAmount);
-                break;
-            case 'subtracttargetinitiative':
-                this._subtractTargetInitiative(dieFaceAmount);
-                break;
-            case 'subtractdamagesuccesses':
-                if (this.object.rollType === 'damageResults') {
-                    this.object.damageSuccesses = Math.max(0, this.object.damageSuccesses - dieFaceAmount);
-                } else {
-                    this.object.damage.damageSuccessModifier -= dieFaceAmount;
-                }
-                break;
-            case 'gainsilverxp':
-                this.object.restore.silverxp += dieFaceAmount;
-                break;
-            case 'restoregoldxp':
-                this.object.restore.goldxp += dieFaceAmount;
-                break;
-            case 'restorewhitexp':
-                this.object.restore.whitexp += dieFaceAmount;
-                break;
-            case 'restoretargetinitiative':
-                this.object.restoreOnTarget.initiative += dieFaceAmount;
-                break;
+        if(dieFaceAmount < 0) {
+            dieFaceAmount = 0;
+        }
+        // Existance of DiceModifiers in the parameters means its happening in the middle of the roll
+        // Otherwise this happens after the roll
+        if (diceModifiers) {
+            switch (dieFaceTrigger.effect.toLowerCase()) {
+                case 'rerollsuccesses':
+                    diceModifiers.rerollSuccesses += dieFaceAmount;
+                    dieFaceTrigger.diceCurrentlyUsed += dieFaceAmount;
+                    break;
+            }
+        } else {
+            switch (dieFaceTrigger.effect.toLowerCase()) {
+                case 'damage':
+                    this.object.damage.damageDice += dieFaceAmount;
+                    break;
+                case 'postsoakdamage':
+                    this.object.damage.postSoakDamage += dieFaceAmount;
+                    break;
+                case 'extrasuccess':
+                    if (this.object.diceRollTotal) {
+                        this.object.diceRollTotal += dieFaceAmount;
+                    } else {
+                        this.object.successModifier += dieFaceAmount;
+                    }
+                    break;
+                case 'ignorehardness':
+                    this.object.damage.ignoreHardness += dieFaceAmount;
+                    break;
+                case 'restoremote':
+                    this.object.restore.motes += dieFaceAmount;
+                    break;
+                case 'gaininitiative':
+                    this.object.restore.initiative += dieFaceAmount;
+                    break;
+                case 'soak':
+                    this.object.soak += dieFaceAmount;
+                    break;
+                case 'defense':
+                    this.object.defense += dieFaceAmount;
+                    break;
+                case 'subtractinitiative':
+                    if (this.object.characterInitiative) {
+                        this.object.characterInitiative -= dieFaceAmount;
+                    }
+                    break;
+                case 'subtractsuccesses':
+                    if (this.object.diceRollTotal) {
+                        this.object.diceRollTotal -= dieFaceAmount;
+                    } else {
+                        this.object.successModifier -= dieFaceAmount;
+                    }
+                    break;
+                case 'reducedamage':
+                    this.object.damage.damageDice = Math.max(0, this.object.damage.damageDice - dieFaceAmount);
+                    break;
+                case 'subtracttargetinitiative':
+                    this._subtractTargetInitiative(dieFaceAmount);
+                    break;
+                case 'subtractdamagesuccesses':
+                    if (this.object.rollType === 'damageResults') {
+                        this.object.damageSuccesses = Math.max(0, this.object.damageSuccesses - dieFaceAmount);
+                    } else {
+                        this.object.damage.damageSuccessModifier -= dieFaceAmount;
+                    }
+                    break;
+                case 'gainsilverxp':
+                    this.object.restore.silverxp += dieFaceAmount;
+                    break;
+                case 'restoregoldxp':
+                    this.object.restore.goldxp += dieFaceAmount;
+                    break;
+                case 'restorewhitexp':
+                    this.object.restore.whitexp += dieFaceAmount;
+                    break;
+                case 'restoretargetinitiative':
+                    this.object.restoreOnTarget.initiative += dieFaceAmount;
+                    break;
+            }
         }
     }
 
@@ -6447,7 +6467,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         let rangeModifier = 0;
 
         if (display && this.object.showTargets && !this.object.target) {
-            if(Object.values(this.object.targets)[0].rollData.applyAppearance) {
+            if (Object.values(this.object.targets)[0].rollData.applyAppearance) {
                 targetAppearanceBonus = Object.values(this.object.targets)[0].rollData.appearanceBonus;
             }
         }

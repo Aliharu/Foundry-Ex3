@@ -193,7 +193,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
       itemModes: {},
       upgradeSelects: {},
       activeEffectIds: {},
-      bonusTypes: CONFIG.exaltedthird.bonusTypes,
+      triggerBonusTypes: CONFIG.exaltedthird.triggerBonusTypes,
       triggerBonusDropdowns: CONFIG.exaltedthird.triggerBonusDropdowns,
       requirementTypes: CONFIG.exaltedthird.requirementTypes,
       formulaKeyPlaceholder: this.item.name.replace(/\s/g, '').toLowerCase(),

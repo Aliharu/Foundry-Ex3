@@ -63,7 +63,7 @@
             <div class="resource-label">{{localize "Ex3.Effect"}}</div>
             <select name="system.triggers.dicerollertriggers.{{index}}.bonuses.{{bonusIndex}}.effect"
                 data-type="String">
-                {{#each ../../bonusTypes as |bonusesCategory bonusesCategoryType|}}
+                {{#each ../../triggerBonusTypes as |bonusesCategory bonusesCategoryType|}}
                 <optgroup label="{{localize bonusesCategory.label}}">
                     {{selectOptions bonusesCategory.bonuses selected=bonus.effect localize=true}}
                 </optgroup>

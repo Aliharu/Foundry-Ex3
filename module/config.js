@@ -1997,7 +1997,7 @@ exaltedthird.booleanTriggers = [
   'rollBotch',
 ];
 
-exaltedthird.bonusTypes = {
+exaltedthird.triggerBonusTypes = {
   none: {
     label: "Ex3.None",
     bonuses: {
@@ -2194,12 +2194,13 @@ exaltedthird.bonusTypes = {
       hardness: "Ex3.Hardness",
       resolve: "Ex3.Resolve",
       guile: "Ex3.Guile",
+      rerollSuccesses: "Ex3.RerollSuccesses",
     }
   }
 };
 
 exaltedthird.numberBonusTypeLabels = {
-  'diceModifier': "Ex3.DiceModifier",
+  diceModifier: "Ex3.DiceModifier",
   successModifier: "Ex3.SuccessModifier",
   penaltyModifier: "Ex3.PenaltyModifier",
   ignorePenalties: "Ex3.IgnorePenalties",
