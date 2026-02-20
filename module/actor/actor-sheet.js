@@ -2469,8 +2469,35 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       return;
     }
     let itemType = target.dataset.type;
+    let searchCompendiums = game.settings.get('exaltedthird', 'searchCompendiums');
 
-    let items = game.items.filter(item => item.type === itemType && this.actor.canAquireItem(item));
+    let filterFun = item => item.type === itemType && this.actor.canAquireItem(item);
+    // Loading from compendiums can take a little while, especially if you have
+    //  Compendiums for all charms from all exalt types
+    var packItems = [];
+
+    if (searchCompendiums) {
+      let packPromises = game.packs
+        .filter(p => p.metadata.type == "Item" && (game.user.isGM || !p.private))
+        .map(async p => {
+          // If we already loaded the compendium into memory, use them.
+          //  This decreases load time with thousands of items in
+          //  compendium from ~2 seconds down to effectively instantaneous.
+          //  We still have to wait the first time, but not afterwards.
+          //  Foundry *does* unload compendiums if they are unused for some time,
+          //  so we have to check every time.
+          let contents = p.contents;
+          if (contents.length == p.index.size) {
+            return contents;
+          } else {
+            return await p.getDocuments();
+          }
+        });
+      packItems = await Promise.all(packPromises);
+    }
+    // This ends the potentially slow part.
+
+    let items = game.items.filter(filterFun).concat(packItems.flatMap(p => p.filter(filterFun)));
 
     for (let item of items) {
       item.enritchedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, { async: true, secrets: true, relativeTo: item });
