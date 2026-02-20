@@ -2010,7 +2010,7 @@ export class ExaltedThirdActor extends Actor {
       data.actorCombatant = combatant;
     }
     let messageArray = data.rollType !== 'useOpposingCharms' ? await this.sendTargetingChatMessage(data) : null;
-    if (messageArray.length > 0) {
+    if (messageArray && messageArray.length > 0) {
       data.preMessageIds = messageArray.map(o => o.id);
     }
     if (data.rollType === 'useOpposingCharms') {
