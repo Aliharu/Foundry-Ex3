@@ -1113,13 +1113,14 @@ export class ExaltedThirdActor extends Actor {
     data.devilbody.health.value = data.devilbody.health.max - data.devilbody.health.aggravated - data.devilbody.health.lethal - data.devilbody.health.bashing;
     data.devilbody.health.penalty = currentWarstriderPenalty;
 
-    for (let [key, healthLevel] of Object.entries(data.devilbody.health.levels)) {
-      if ((data.devilbody.health.bashing + data.devilbody.health.lethal + data.devilbody.health.aggravated) > totalWarstriderHealth) {
+    for (let [key, healthLevel] of Object.entries(data.warstrider.health.levels)) {
+      if ((data.warstrider.health.bashing + data.warstrider.health.lethal + data.warstrider.health.aggravated) > totalWarstriderHealth) {
         currentWarstriderPenalty = healthLevel.penalty;
       }
       totalWarstriderHealth += healthLevel.value;
     }
-    data.devilbody.health.max = totalWarstriderHealth;
+    data.warstrider.health.max = totalWarstriderHealth;
+
     if ((data.devilbody.health.bashing + data.devilbody.health.lethal + data.devilbody.health.aggravated) > data.devilbody.health.max) {
       data.devilbody.health.aggravated = data.devilbody.health.max - data.devilbody.health.lethal;
       if (data.devilbody.health.aggravated <= 0) {
