@@ -11,8 +11,7 @@
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Initiative"}}</div>
-            <input type="number" name="system.cost.initiative" value="{{system.cost.initiative}}"
-                data-dtype="Number" />
+            <input type="number" name="system.cost.initiative" value="{{system.cost.initiative}}" data-dtype="Number" />
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Anima"}}</div>
@@ -20,8 +19,7 @@
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Willpower"}}</div>
-            <input type="number" name="system.cost.willpower" value="{{system.cost.willpower}}"
-                data-dtype="Number" />
+            <input type="number" name="system.cost.willpower" value="{{system.cost.willpower}}" data-dtype="Number" />
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.GrappleControl"}}</div>
@@ -52,13 +50,11 @@
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Penumbra"}}</div>
-            <input type="number" name="system.cost.penumbra" value="{{system.cost.penumbra}}"
-                data-dtype="Number" />
+            <input type="number" name="system.cost.penumbra" value="{{system.cost.penumbra}}" data-dtype="Number" />
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Limit"}}</div>
-            <input type="number" name="system.cost.limit" value="{{system.cost.limit}}"
-                data-dtype="Number" />
+            <input type="number" name="system.cost.limit" value="{{system.cost.limit}}" data-dtype="Number" />
         </div>
     </div>
     <div class="flex-center">
@@ -67,8 +63,7 @@
     <div class="grid grid-3col flex-group-center">
         <div>
             <div class="resource-label">{{localize "Ex3.Silver"}}</div>
-            <input type="number" name="system.cost.silverxp" value="{{system.cost.silverxp}}"
-                data-dtype="Number" />
+            <input type="number" name="system.cost.silverxp" value="{{system.cost.silverxp}}" data-dtype="Number" />
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.Gold"}}</div>
@@ -76,8 +71,7 @@
         </div>
         <div>
             <div class="resource-label">{{localize "Ex3.White"}}</div>
-            <input type="number" name="system.cost.whitexp" value="{{system.cost.whitexp}}"
-                data-dtype="Number" />
+            <input type="number" name="system.cost.whitexp" value="{{system.cost.whitexp}}" data-dtype="Number" />
         </div>
     </div>
     <div class="flex-center">
@@ -86,12 +80,12 @@
     <div class="grid grid-3col flex-group-center">
         <div>
             <div class="resource-label">{{localize "Ex3.Motes"}}*</div>
-            <input type="text" name="system.restore.motes" value="{{system.restore.motes}}"
-                 />
+            <input type="text" name="system.restore.motes" value="{{system.restore.motes}}" />
         </div>
         <div>
             <div class="resource-label"><a data-action="toggleField" data-name="capBreakingWP"><i
-                class="fa-solid fa-circle-check cap-breaking-willpower" title="Toggle Cap-Breaking"></i></a> {{localize "Ex3.Willpower"}}*</div>
+                        class="fa-solid fa-circle-check cap-breaking-willpower" title="Toggle Cap-Breaking"></i></a>
+                {{localize "Ex3.Willpower"}}*</div>
             <input type="text" name="system.restore.willpower" value="{{system.restore.willpower}}" />
         </div>
         <div>
@@ -113,6 +107,12 @@
         <div>
             <div class="resource-label">{{localize "Ex3.Limit"}}*</div>
             <input type="text" name="system.restore.limit" value="{{system.restore.limit}}" />
+        </div>
+        <div>
+            <div class="resource-label">{{localize "Ex3.ActivateAura"}}</div>
+            <select name="system.diceroller.activateAura" data-type="String">
+                {{selectOptions selects.elements selected=system.diceroller.activateAura localize=true}}
+            </select>
         </div>
     </div>
 </div>
