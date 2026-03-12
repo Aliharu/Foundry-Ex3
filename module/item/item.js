@@ -159,7 +159,17 @@ export class ExaltedThirdItem extends Item {
           updateData.system.modes.mainmode.restore[key] = value;
         }
       }
+    }
+    if (updateData.system.diceroller?.opposedbonuses) {
+      const a = this.system.diceroller?.opposedbonuses ?? {};
+      const b = updateData.system.diceroller?.opposedbonuses ?? {};
 
+      const hasDifference = [...new Set([...Object.keys(a), ...Object.keys(b)])]
+        .some(key => a[key] !== b[key] && (key !== 'shieldinitiative' && key !== 'enabled'));
+
+      if (hasDifference) {
+        updateData.system.diceroller.opposedbonuses.enabled = true;
+      }
     }
   }
 
