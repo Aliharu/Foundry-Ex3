@@ -160,7 +160,7 @@ export class ExaltedThirdItem extends Item {
         }
       }
     }
-    if (updateData.system.diceroller?.opposedbonuses) {
+    if (updateData?.system?.diceroller?.opposedbonuses) {
       const a = this.system.diceroller?.opposedbonuses ?? {};
       const b = updateData.system.diceroller?.opposedbonuses ?? {};
 
