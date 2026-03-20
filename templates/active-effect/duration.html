@@ -1,7 +1,7 @@
 <section class="tab{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
     <fieldset>
-        {{formGroup fields.duration.fields.seconds value=source.duration.seconds rootId=rootId}}
-        {{formGroup fields.duration.fields.startTime value=source.duration.startTime rootId=rootId}}
+        {{formGroup fields.duration.fields.seconds.value value=source.duration.seconds.value rootId=rootId}}
+        {{formGroup fields.start.fields.time value=source.start.time rootId=rootId}}
     </fieldset>
 
     <fieldset>
@@ -14,25 +14,25 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{{localize "EFFECT.DurationTurns"}}</label>
+            <label>{{localize "Ex3.DurationTurns"}}</label>
             <div class="form-fields">
-                <label for="{{rootId}}-duration.rounds">{{localize "EFFECT.FIELDS.duration.rounds.label"}}</label>
-                {{formInput fields.duration.fields.rounds value=source.duration.rounds
-                    id=(concat rootId "-duration.rounds")}}
-                <label for="{{rootId}}-duration.turns">{{localize "EFFECT.FIELDS.duration.turns.label"}}</label>
-                {{formInput fields.duration.fields.turns value=source.duration.turns
-                    id=(concat rootId "-duration.turns")}}
+                <label for="{{rootId}}-duration.rounds.value">{{localize "EFFECT.FIELDS.duration.rounds.value.label"}}</label>
+                {{formInput fields.duration.fields.rounds.value value=source.duration.rounds.value
+                    id=(concat rootId "-duration.rounds.value")}}
+                <label for="{{rootId}}-duration.turns.value">{{localize "EFFECT.FIELDS.duration.turns.value.label"}}</label>
+                {{formInput fields.duration.fields.turns value=source.duration.turns.value
+                    id=(concat rootId "-duration.turns.value")}}
             </div>
         </div>
         <div class="form-group">
             <label>{{localize "EFFECT.StartTurns"}}</label>
             <div class="form-fields">
-                <label for="{{rootId}}-duration.startRound">{{localize "EFFECT.FIELDS.duration.startRound.label"}}</label>
-                {{formInput fields.duration.fields.startRound value=source.duration.startRound
-                    id=(concat rootId "-duration.startRound")}}
-                <label for="{{rootId}}-duration.startTurn">{{localize "EFFECT.FIELDS.duration.startTurn.label"}}</label>
-                {{formInput fields.duration.fields.startTurn value=source.duration.startTurn
-                    id=(concat rootId "-duration.startTurn")}}
+                <label for="{{rootId}}-start.round">{{localize "EFFECT.FIELDS.start.round.label"}}</label>
+                {{formInput fields.duratiostart.round value=source.start.round
+                    id=(concat rootId "-start.round")}}
+                <label for="{{rootId}}-start.turn">{{localize "EFFECT.FIELDS.start.turn.label"}}</label>
+                {{formInput fields.start.fields.turn value=source.start.turn
+                    id=(concat rootId "-start.turn")}}
             </div>
         </div>
     </fieldset>

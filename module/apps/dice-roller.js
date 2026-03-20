@@ -4694,7 +4694,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (this.object.triggerSelfDefensePenalty > 0) {
             const existingPenalty = this.actor.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
             if (existingPenalty) {
-                let changes = foundry.utils.duplicate(existingPenalty.changes);
+                let changes = foundry.utils.duplicate(existingPenalty.system.changes);
                 changes[0].value = changes[0].value - this.object.triggerSelfDefensePenalty;
                 changes[1].value = changes[1].value - this.object.triggerSelfDefensePenalty;
                 existingPenalty.update({ changes });
@@ -4707,25 +4707,26 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     disabled: false,
                     duration: {
                         rounds: 20,
-                        // startRound: game.combat?.round || 0,
                     },
                     flags: {
                         "exaltedthird": {
                             statusId: 'defensePenalty',
                         }
                     },
-                    changes: [
-                        {
-                            "key": "system.evasion.value",
-                            "value": (this.object.triggerSelfDefensePenalty * -1),
-                            "mode": 2
-                        },
-                        {
-                            "key": "system.parry.value",
-                            "value": (this.object.triggerSelfDefensePenalty * -1),
-                            "mode": 2
-                        }
-                    ]
+                    system: {
+                        changes: [
+                            {
+                                "key": "system.evasion.value",
+                                "value": (this.object.triggerSelfDefensePenalty * -1),
+                                "mode": 2
+                            },
+                            {
+                                "key": "system.parry.value",
+                                "value": (this.object.triggerSelfDefensePenalty * -1),
+                                "mode": 2
+                            }
+                        ]
+                    }
                 }]);
             }
         }
@@ -4747,8 +4748,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     origin: this.actor.uuid,
                     disabled: false,
                     duration: {
-                        rounds: this.object.poison.duration,
-                        startRound: game.combat?.round || 0,
+                        units: "rounds",
+                        value: this.object.poison.duration,
+                    },
+                    start: {
+                        round: game.combat?.round || 0,
                     },
                     flags: {
                         "exaltedthird": {
@@ -4756,18 +4760,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                             weaponInflictedPosion: true,
                         }
                     },
-                    changes: [
-                        {
-                            "key": `system.damage.round.${this.object.poison.damagetype}`,
-                            "value": this.object.poison.damage,
-                            "mode": 0
-                        },
-                        {
-                            "key": `system.penaltymodifier.value`,
-                            "value": this.object.poison.penalty,
-                            "mode": 2
-                        },
-                    ]
+                    system: {
+                        changes: [
+                            {
+                                "key": `system.damage.round.${this.object.poison.damagetype}`,
+                                "value": this.object.poison.damage,
+                                "mode": 0
+                            },
+                            {
+                                "key": `system.penaltymodifier.value`,
+                                "value": this.object.poison.penalty,
+                                "mode": 2
+                            },
+                        ]
+                    }
                 });
             }
             if (this.object.triggerKnockdown && this.object.thresholdSuccesses >= 0) {
@@ -4805,13 +4811,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                 statusId: 'revealWeakness',
                             }
                         },
-                        changes: [
-                            {
-                                "key": "system.soak.value",
-                                "value": (Math.ceil(this.object.target.actor.system.soak.value / 2)) * -1,
-                                "mode": 2
-                            }
-                        ]
+                        system: {
+                            changes: [
+                                {
+                                    "key": "system.soak.value",
+                                    "value": (Math.ceil(this.object.target.actor.system.soak.value / 2)) * -1,
+                                    "mode": 2
+                                }
+                            ]
+                        }
                     });
                 }
                 if (this.object.gambit === 'pull') {
@@ -5836,7 +5844,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (dieFaceTrigger.cap) {
             dieFaceAmount = Math.min((dieFaceTrigger.cap - (dieFaceTrigger.diceCurrentlyUsed ?? 0)), dieFaceAmount);
         }
-        if(dieFaceAmount < 0) {
+        if (dieFaceAmount < 0) {
             dieFaceAmount = 0;
         }
         // Existance of DiceModifiers in the parameters means its happening in the middle of the roll
@@ -5927,9 +5935,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.updateTargetActorData = true;
             const onslaught = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId === "onslaught");
             if (onslaught) {
-                onslaught.changes[0].value = onslaught.changes[0].value - number;
-                onslaught.changes[1].value = onslaught.changes[1].value - number;
-                onslaught.name = `${game.i18n.localize("Ex3.Onslaught")} (${onslaught.changes[0].value - number})`;
+                onslaught.system.changes[0].value = onslaught.system.changes[0].value - number;
+                onslaught.system.changes[1].value = onslaught.system.changes[1].value - number;
+                onslaught.name = `${game.i18n.localize("Ex3.Onslaught")} (${onslaught.system.changes[0].value - number})`;
             }
             else {
                 this.object.newTargetData.effects.push({
@@ -5939,25 +5947,26 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     disabled: false,
                     duration: {
                         rounds: 5,
-                        // startRound: game.combat?.round || 0,
                     },
                     flags: {
                         "exaltedthird": {
                             statusId: 'onslaught',
                         }
                     },
-                    changes: [
-                        {
-                            "key": "system.evasion.value",
-                            "value": number * -1,
-                            "mode": 2
-                        },
-                        {
-                            "key": "system.parry.value",
-                            "value": number * -1,
-                            "mode": 2
-                        }
-                    ]
+                    system: {
+                        changes: [
+                            {
+                                "key": "system.evasion.value",
+                                "value": number * -1,
+                                "mode": 2
+                            },
+                            {
+                                "key": "system.parry.value",
+                                "value": number * -1,
+                                "mode": 2
+                            }
+                        ]
+                    }
                 });
             }
         }
@@ -5967,9 +5976,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         this.object.updateTargetActorData = true;
         const existingPenalty = this.object.newTargetData.effects.find(i => i.flags.exaltedthird?.statusId == "defensePenalty");
         if (existingPenalty) {
-            existingPenalty.changes[0].value = existingPenalty.changes[0].value - number;
-            existingPenalty.changes[1].value = existingPenalty.changes[1].value - number;
-            existingPenalty.name = `${game.i18n.localize("Ex3.DefensePenalty")} (${existingPenalty.changes[0].value - number})`;
+            existingPenalty.system.changes[0].value = existingPenalty.system.changes[0].value - number;
+            existingPenalty.system.changes[1].value = existingPenalty.system.changes[1].value - number;
+            existingPenalty.name = `${game.i18n.localize("Ex3.DefensePenalty")} (${existingPenalty.system.changes[0].value - number})`;
         }
         else {
             this.object.newTargetData.effects.push({
@@ -5985,18 +5994,20 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         statusId: 'defensePenalty',
                     }
                 },
-                changes: [
-                    {
-                        "key": "system.evasion.value",
-                        "value": number * -1,
-                        "mode": 2
-                    },
-                    {
-                        "key": "system.parry.value",
-                        "value": number * -1,
-                        "mode": 2
-                    }
-                ]
+                system: {
+                    changes: [
+                        {
+                            "key": "system.evasion.value",
+                            "value": number * -1,
+                            "mode": 2
+                        },
+                        {
+                            "key": "system.parry.value",
+                            "value": number * -1,
+                            "mode": 2
+                        }
+                    ]
+                }
             });
         }
     }

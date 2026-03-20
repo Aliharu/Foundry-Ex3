@@ -1637,6 +1637,12 @@
     "Ex3.Divergence": "Divergence",
 
     "Ex3.GainLimit": "Gain Limit",
-    "Ex3.SpendLimit": "Spend Limit"
+    "Ex3.SpendLimit": "Spend Limit",
+
+    "Ex3.ChangeKey": "Change Key",
+    "Ex3.ChangeMode": "Change Mode",
+    "Ex3.ChangeValue": "Change Value",
+    "Ex3.ChangePriority": "Change Priority",
+    "Ex3.DurationTurns": "Duration Turns"
 
 }

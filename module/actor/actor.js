@@ -1160,19 +1160,19 @@ export class ExaltedThirdActor extends Actor {
     let currentDefensePenalty = 0;
 
     for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
-      for (const change of effect.changes) {
-        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
+      for (const change of effect.system.changes) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.type === 'add') {
           currentEvasionPenalty += (change.value * -1);
         }
-        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
+        if (change.key === 'system.parry.value' && change.value < 0 && change.type === 'add') {
           currentParryPenalty += (change.value * -1);
         }
       }
       if (effect.flags.exaltedthird?.statusId === 'onslaught') {
-        currentOnslaughtPenalty += (effect.changes[0].value * -1);
+        currentOnslaughtPenalty += (effect.system.changes[0].value * -1);
       }
       if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
-        currentDefensePenalty += (effect.changes[0].value * -1);
+        currentDefensePenalty += (effect.system.changes[0].value * -1);
       }
     }
     if (actorData.effects.some(e => e.statuses.has('prone'))) {
@@ -1871,10 +1871,10 @@ export class ExaltedThirdActor extends Actor {
 
     for (const effect of this.effects.filter((effect) => !effect.disabled)) {
       for (const change of effect.changes) {
-        if (change.key === 'system.evasion.value' && change.value < 0 && change.mode === 2) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.type === 'add') {
           currentEvasionPenalty += (change.value * -1);
         }
-        if (change.key === 'system.parry.value' && change.value < 0 && change.mode === 2) {
+        if (change.key === 'system.parry.value' && change.value < 0 && change.type === 'add') {
           currentParryPenalty += (change.value * -1);
         }
       }

@@ -6,9 +6,9 @@
   "license": "LICENSE.txt",
   "version": "4.4.3",
   "compatibility": {
-    "minimum": "13",
-    "verified": "13",
-    "maximum": "13"
+    "minimum": "14",
+    "verified": "14",
+    "maximum": "14"
   },
   "authors": [
     {

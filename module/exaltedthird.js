@@ -593,7 +593,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
       }
       for (const activeEffect of combatant.actor.allApplicableEffects()) {
         if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
-          for (const change of activeEffect.changes) {
+          for (const change of activeEffect.system.changes) {
             let rolledChangeValue = 0;
             if (CONFIG.exaltedthird.diceRollActiveEffects.includes(change.key)) {
               const double10s = (change.key === 'system.damage.round.initiative.lethal' || change.key === 'system.damage.round.initiative.bashing') && ((currentCombatantInitiative || 0) > 0)
@@ -633,13 +633,13 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
               moteGain += parseInt(change.value);
             }
           }
-          for (const change of activeEffect.changes) {
+          for (const change of activeEffect.system.changes) {
             if (change.key === 'system.initiative.cost.round' && (currentCombatantInitiative || 0) > 0) {
               initiativeDamage += parseInt(change.value);
               currentCombatantInitiative -= parseInt(change.value);
             }
           }
-          for (const change of activeEffect.changes) {
+          for (const change of activeEffect.system.changes) {
             if (change.key === 'system.initiative.gain.round') {
               initiativeDamage -= parseInt(change.value);
               currentCombatantInitiative += parseInt(change.value);
@@ -762,7 +762,7 @@ Hooks.on('updateCombat', (async (combat, update, diff, userId) => {
 
         for (const activeEffect of currentCombatant.actor.allApplicableEffects()) {
           if (activeEffect.duration.remaining >= 0 && !activeEffect.disabled) {
-            for (const change of activeEffect.changes) {
+            for (const change of activeEffect.system.changes) {
               if (change.key === 'system.motes.cost.turn') {
                 moteCost += parseInt(change.value);
               }
@@ -1247,7 +1247,7 @@ Hooks.once("ready", async function () {
   Hooks.on('updateActiveEffect', (effect, update) => {
     let tempHPRemoved = 0;
     if (update.disabled && effect.target) {
-      for (const change of effect.changes) {
+      for (const change of effect.system.changes) {
         if (change.key === "system.health.levels.temp.value") {
           tempHPRemoved += getNumberFormula(change.value, effect.target, change);
         }
@@ -1261,7 +1261,7 @@ Hooks.once("ready", async function () {
   Hooks.on('deleteActiveEffect', (effect) => {
     let tempHPRemoved = 0;
     if (!effect.disabled && effect.target) {
-      for (const change of effect.changes) {
+      for (const change of effect.system.changes) {
         if (change.key === "system.health.levels.temp.value") {
           tempHPRemoved += getNumberFormula(change.value, effect.target, change);
         }
