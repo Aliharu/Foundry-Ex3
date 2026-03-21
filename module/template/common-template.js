@@ -78,6 +78,7 @@ export function shipData() {
 
 export function warstriderData() {
     return new fields.SchemaField({
+        equipped: new fields.BooleanField({ initial: false }),
         ...healthLevels('warstrider'),
         soak: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
