@@ -622,8 +622,17 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         itemData.img = 'systems/exaltedthird/assets/icons/battle-mech.svg';
         itemData.system.hasevocations = true;
       }
+      if (this.data.itemType === 'devilbodypower') {
+        itemData.system.powertype = 'devilBodyPower';
+        itemData.type = 'specialability';
+      }
       var weightType = '';
       itemData.name = textArray[index];
+      if (this.data.itemType === 'devilbodypower' || this.data.itemType === 'merit') {
+        if (textArray[index].includes('•') && textArray[index].match(/\(\s*•+\s*\)/)) {
+          itemData.system.points = (textArray[index].split("•").length - 1);
+        }
+      }
       index++;
       var description = '';
       if (this.data.itemType === 'armor' || this.data.itemType === 'weapon') {
@@ -643,12 +652,12 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       }
       while (textArray[index] && index !== textArray.length) {
         if (textArray[index].includes('Tags:')) {
-          var tagString = textArray[index].toLowerCase().replace('tags:', '');
-          var tagSplit = tagString.split(/,|;/);
-          var itemTags = [];
+          let tagString = textArray[index].toLowerCase().replace('tags:', '');
+          let tagSplit = tagString.split(/,|;/);
+          let itemTags = [];
           for (let tag of tagSplit) {
             if (tag.includes('(') && tag.match(/\(([^)]+)\)/)) {
-              var rangeTag = tag.match(/\(([^)]+)\)/)[1].replace(/\s+/g, '').replace('-', '').trim();
+              let rangeTag = tag.match(/\(([^)]+)\)/)[1].replace(/\s+/g, '').replace('-', '').trim();
               if (weaponTags[rangeTag] && this.data.itemType === 'weapon') {
                 itemTags.push(rangeTag);
               }
@@ -1447,15 +1456,15 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       }
       this.errorSection = 'Merits';
       if (!textArray[index].includes("Attack")) {
-        var meritString = textArray[index].replace('Merits:', '');
+        let meritString = textArray[index].replace('Merits:', '');
         index++;
         while (!textArray[index].includes("Attack") && !textArray[index].includes("Specialties")) {
           meritString += textArray[index];
           index++;
         }
         meritString = meritString.replace(/,(?=[^()]*\))/g, '');
-        var meritArray = meritString.split(',');
-        var languages = [
+        let meritArray = meritString.split(',');
+        let languages = [
           "low realm",
           "high realm",
           "old realm",
@@ -1470,11 +1479,11 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
         ]
         for (let merit of meritArray) {
           if (merit) {
-            var meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
-            var meritName = merit.match(/[^0-9+]+/g)[0];
-            var lowerCaseMerit = merit.toLowerCase();
+            let meritValue = parseInt(merit.replace(/[^0-9]/g, ''));
+            let meritName = merit.match(/[^0-9+]+/g)[0];
+            let lowerCaseMerit = merit.toLowerCase();
             if (lowerCaseMerit.includes('language')) {
-              var newLanguageArray = [];
+              let newLanguageArray = [];
               for (let language of languages) {
                 if (lowerCaseMerit.includes(language)) {
                   newLanguageArray.push(language.replace(/ /g, ''));

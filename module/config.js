@@ -2972,6 +2972,7 @@ exaltedthird.selects = {
   //Template Importer
   templateItemTypes: {
     'armor': "Ex3.Armor",
+    'devilbodypower': "Ex3.DevilBodyPower",
     'hearthstone': "Ex3.Hearthstone",
     'item': "Ex3.Item",
     'martialArt': "Ex3.MartialArt",
