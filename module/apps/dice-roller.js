@@ -3012,7 +3012,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             if (this.object.diceRoll) {
-                return this.object.diceRoll.filter(die => (countRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === parseInt(formula)).length;
+                return this.object.diceRoll.filter(die => (countRerolledDice || ((!die.rerolled || die.result >= this.object.targetNumber) && !die.successCanceled)) && die.result === parseInt(formula)).length;
             } else {
                 return 0;
             }
@@ -5836,7 +5836,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         if (dieFaceTrigger.cap) {
             dieFaceAmount = Math.min((dieFaceTrigger.cap - (dieFaceTrigger.diceCurrentlyUsed ?? 0)), dieFaceAmount);
         }
-        if(dieFaceAmount < 0) {
+        if (dieFaceAmount < 0) {
             dieFaceAmount = 0;
         }
         // Existance of DiceModifiers in the parameters means its happening in the middle of the roll

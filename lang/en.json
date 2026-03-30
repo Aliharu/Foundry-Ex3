@@ -333,6 +333,7 @@
     "Ex3.IncreaseDamageTN": "Increase Damage TN",
     "Ex3.IncreaseGambitDifficulty": "Increase Gambit Difficulty",
     "Ex3.Reroll": "Reroll",
+    "Ex3.RerollNote": "If the die face being rerolled is a success it will instead roll an extra die",
     "Ex3.Rerolls": "Rerolls",
     "Ex3.RerollFailed": "Reroll Failed",
     "Ex3.RerollAllFailedOnce": "Reroll All Failed Once",
@@ -1544,6 +1545,7 @@
     "Ex3.Flexible": "Flexible",
     "Ex3.AttackRoll": "Attack Roll",
     "Ex3.SocialAction": "Social Action",
+    "Ex3.Influence": "Influence",
     "Ex3.Charms&Cost": "Charms & Cost",
 
     "Ex3.MeleeWeapon": "Melee Weapon",
