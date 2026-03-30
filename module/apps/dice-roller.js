@@ -3012,7 +3012,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
             if (this.object.diceRoll) {
-                return this.object.diceRoll.filter(die => (countRerolledDice || (!die.rerolled && !die.successCanceled)) && die.result === parseInt(formula)).length;
+                return this.object.diceRoll.filter(die => (countRerolledDice || ((!die.rerolled || die.result >= this.object.targetNumber) && !die.successCanceled)) && die.result === parseInt(formula)).length;
             } else {
                 return 0;
             }
