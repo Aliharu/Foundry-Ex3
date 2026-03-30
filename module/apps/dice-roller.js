@@ -5385,7 +5385,15 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                         this.object.damage.type = cleanedValue;
                                         break;
                                     case 'displayMessage':
-                                        const result = bonus.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] || `\${${key}}`);
+                                        const getValue = (obj, path) => {
+                                            return path.split('.').reduce((o, k) => o?.[k], obj);
+                                        };
+
+                                        const result = bonus.value.replace(/\${(.*?)}/g, (_, key) => {
+                                            const value = getValue(this.object, key.trim());
+                                            return value ?? `\${${key}}`;
+                                        });
+                                        // const result = bonus.value.replace(/\${(.*?)}/g, (_, key) => this.object[key.trim()] ?? `\${${key}}`);
                                         (this.object.triggerMessages || []).push(result);
                                         break;
                                     case 'specificCharm':
