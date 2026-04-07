@@ -1,10 +1,45 @@
 <section class="tab{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
-    <fieldset>
-        {{formGroup fields.duration.fields.seconds.value value=source.duration.seconds.value rootId=rootId}}
-        {{formGroup fields.start.fields.time value=source.start.time rootId=rootId}}
+    {{#if start}}
+    <fieldset class="start-data">
+        <legend>{{localize "EFFECT.START.Header"}}</legend>
+        <div class="form-group">
+            <span class="label">{{localize "EFFECT.FIELDS.start.time.label"}}</span>
+            <div class="form-fields">{{start.time}}</div>
+        </div>
+        {{#if start.combat}}
+        <div class="form-group">
+            <span class="label">{{localize "DOCUMENT.Combat"}}</span>
+            <div class="form-fields">
+                {{localize "EFFECT.START.Combat" round=start.round turn=start.turn}}
+            </div>
+        </div>
+        {{#if start.combatant}}
+        <div class="form-group">
+            <span class="label">{{localize "DOCUMENT.Combatant"}}</span>
+            <div class="form-fields">
+                {{localize "EFFECT.START.Combatant" combatant=start.combatantName initiative=start.combatantInitiative}}
+            </div>
+        </div>
+        {{/if}}
+        {{/if}}
     </fieldset>
-
+    {{/if}}
     <fieldset>
+        <legend>{{localize "EFFECT.DURATION.Header"}}</legend>
+        <div class="form-group slim duration" data-duration>
+            <label class="flexrow" for="{{rootId}}-duration.value">
+                <span>{{localize "EFFECT.DURATION.Label"}}</span>
+                <span class="warning" hidden><i class="fa-duotone fa-triangle-exclamation"></i></span>
+            </label>
+            <div class="form-fields">
+                {{formInput fields.duration.fields.value value=source.duration.value id=(concat rootId
+                "-duration.value")
+                aria=(object label=(localize "EFFECT.FIELDS.duration.value.label"))}}
+                {{formInput fields.duration.fields.units value=source.duration.units id=(concat rootId
+                "-duration.units")
+                options=durationUnits aria=(object label=(localize "EFFECT.FIELDS.duration.units.label"))}}
+            </div>
+        </div>
         <div class="form-group">
             <label>{{ localize "Ex3.EndTrigger" }}</label>
             <div class="form-fields">
@@ -13,27 +48,6 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
-            <label>{{localize "Ex3.DurationTurns"}}</label>
-            <div class="form-fields">
-                <label for="{{rootId}}-duration.rounds.value">{{localize "EFFECT.FIELDS.duration.rounds.value.label"}}</label>
-                {{formInput fields.duration.fields.rounds.value value=source.duration.rounds.value
-                    id=(concat rootId "-duration.rounds.value")}}
-                <label for="{{rootId}}-duration.turns.value">{{localize "EFFECT.FIELDS.duration.turns.value.label"}}</label>
-                {{formInput fields.duration.fields.turns value=source.duration.turns.value
-                    id=(concat rootId "-duration.turns.value")}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label>{{localize "EFFECT.StartTurns"}}</label>
-            <div class="form-fields">
-                <label for="{{rootId}}-start.round">{{localize "EFFECT.FIELDS.start.round.label"}}</label>
-                {{formInput fields.duratiostart.round value=source.start.round
-                    id=(concat rootId "-start.round")}}
-                <label for="{{rootId}}-start.turn">{{localize "EFFECT.FIELDS.start.turn.label"}}</label>
-                {{formInput fields.start.fields.turn value=source.start.turn
-                    id=(concat rootId "-start.turn")}}
-            </div>
-        </div>
+        {{formGroup fields.duration.fields.expiry choices=expiryEvents value=source.duration.expiry rootId=rootId}}
     </fieldset>
 </section>

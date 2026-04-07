@@ -1,42 +1,16 @@
 <section class="tab changes{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
     <header>
-        <div class="key">{{localize "Ex3.ChangeKey"}}</div>
-        <div class="mode">{{localize "Ex3.ChangeMode"}}</div>
-        <div class="value">{{localize "Ex3.ChangeValue"}}</div>
-        <div class="priority">{{localize "Ex3.ChangePriority"}}</div>
-        <div class="controls"><a data-action="addChange"><i class="fa-regular fa-square-plus"></i></a></div>
+        <div class="key">{{localize "EFFECT.FIELDS.changes.element.key.label"}}</div>
+        <div class="type">{{localize "EFFECT.FIELDS.changes.element.type.label"}}</div>
+        <div class="value">{{localize "EFFECT.FIELDS.changes.element.value.label"}}</div>
+        <div class="priority">{{localize "EFFECT.FIELDS.changes.element.priority.label"}}</div>
+        <div class="controls">
+            <button type="button" class="inline-control icon fa-regular fa-square-plus icon-button" data-action="addChange"></button>
+        </div>
     </header>
     <ol class="scrollable" data-changes>
-        {{#each source.system.changes as |change i|}}
-        {{#with ../fields.system.changes.element.fields as |changeFields|}}
-        <li data-index="{{i}}">
-            <div class="key">
-                {{#if ../../useDropdown}}
-                <select name="system.changes.{{i}}.key" value="{{change.key}}">
-                    {{#each ../../activeEffectChanges as |changesCategory changesCategoryType|}}
-                    <optgroup label="{{localize changesCategory.label}}">
-                        {{selectOptions changesCategory.effectList selected=change.key
-                        localize=true}}
-                    </optgroup>
-                    {{/each}}
-                </select>
-                {{else}}
-                {{formInput changeFields.key name=(concat "system.changes." i ".key") value=change.key}}
-                {{/if}}
-            </div>
-            <div class="mode">
-                {{formInput changeFields.mode name=(concat "system.changes." i ".mode") value=change.mode choices=@root.modes}}
-            </div>
-            <div class="value">
-                {{formInput changeFields.value name=(concat "system.changes." i ".value") value=change.value}}
-            </div>
-            <div class="priority">
-                {{formInput changeFields.priority name=(concat "system.changes." i ".priority") value=change.priority
-                    placeholder=(lookup ../../priorities change.mode)}}
-            </div>
-            <div class="controls"><a data-action="deleteChange"><i class="fa-solid fa-trash"></i></a></div>
-        </li>
-        {{/with}}
+        {{#each changes as |change|}}
+        {{{change}}}
         {{/each}}
     </ol>
 </section>

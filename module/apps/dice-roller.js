@@ -6433,9 +6433,9 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             combatStats: combatStats,
         }
         const messageContent = await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
-        const chatMessage = ChatMessage.applyRollMode(
+        const chatMessage = ChatMessage.applyMode(
             { user: game.user.id, speaker: this.actor !== null ? ChatMessage.getSpeaker({ actor: this.actor }) : null, content: messageContent, style: CONST.CHAT_MESSAGE_STYLES.OTHER, rolls: rollArray, flags: flags },
-            game.settings.get('core', 'rollMode')
+            game.settings.get('core', 'messageMode')
         );
         ChatMessage.create(chatMessage);
         return await foundry.applications.handlebars.renderTemplate("systems/exaltedthird/templates/chat/roll-card.html", messageData);
