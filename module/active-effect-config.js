@@ -27,7 +27,6 @@ export default class ExaltedActiveEffectConfig extends foundry.applications.shee
 
         context.selects = CONFIG.exaltedthird.selects;
 
-
         return context;
     }
 
