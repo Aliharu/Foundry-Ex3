@@ -1129,7 +1129,9 @@ export default class TemplateImporter extends HandlebarsApplicationMixin(Applica
       while (textArray[index].includes('Attack')) {
         this.errorSection = 'Attacks';
         let attackString = textArray[index];
-        if (!['Attack', 'Combat Movement', 'Evasion', 'Soak/Hardness', 'Intimacies', 'Offensive Charms'].includes(textArray[index + 1])) {
+        if (!['Attack', 'Combat Movement', 'Evasion', 'Soak/Hardness', 'Intimacies', 'Offensive Charms'].some(t =>
+          textArray[index + 1]?.includes(t)
+        )) {
           attackString += textArray[index + 1];
           index++;
         }
