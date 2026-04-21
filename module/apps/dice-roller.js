@@ -4997,6 +4997,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'baseInitiativeModifier':
                                     case 'intervals':
                                     case 'goalNumber':
+                                    case 'overwhelming':
                                     case 'rerollSuccesses':
                                         this.object[bonus.effect] += this._getFormulaValue(cleanedValue, triggerActor, charm);
                                         break;
