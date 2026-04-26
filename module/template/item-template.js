@@ -118,7 +118,6 @@ export class ItemWeaponData extends CommonItemData {
             defense: new fields.NumberField({ initial: 0 }),
             overwhelming: new fields.NumberField({ initial: 1 }),
             tags: new fields.StringField({ initial: "" }),
-            equipped: new fields.BooleanField({ initial: true }),
             weapontype: new fields.StringField({ initial: "melee" }),
             ability: new fields.StringField({ initial: "melee" }),
             attribute: new fields.StringField({ initial: "dexterity" }),
@@ -181,7 +180,6 @@ export class ItemArmorData extends CommonItemData {
             penalty: new fields.NumberField({ initial: 0 }),
             hardness: new fields.NumberField({ initial: 0 }),
             tags: new fields.StringField({ initial: "" }),
-            equipped: new fields.BooleanField({ initial: true }),
             traits: new fields.SchemaField({
                 armortags: traitField(),
             }),

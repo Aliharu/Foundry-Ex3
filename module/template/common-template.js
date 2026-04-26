@@ -178,6 +178,7 @@ export function equipmentData() {
     return {
         cost: new fields.NumberField({ initial: 0 }),
         exceptional: new fields.BooleanField({ initial: false }),
+        equipped: new fields.BooleanField({ initial: false }),
     };
 }
 

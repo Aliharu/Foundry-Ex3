@@ -296,7 +296,8 @@
             {{/if}}
             <div class="resource-label list-section-header d-flex flex-between">
                 <div>
-                    {{localize "Ex3.SpecialAbilities"}}{{#ifEquals system.details.exalt 'infernal'}}/{{localize "Ex3.DevilBodyPowers"}}{{/ifEquals}}
+                    {{localize "Ex3.SpecialAbilities"}}{{#ifEquals system.details.exalt 'infernal'}}/{{localize
+                    "Ex3.DevilBodyPowers"}}{{/ifEquals}}
                 </div>
                 <a class="item-control" data-action="createItem" title="Create specialability"
                     data-type="specialability"><i class="fas fa-plus"></i>Add</a>
@@ -333,7 +334,8 @@
             {{#ifEquals system.details.exalt 'infernal'}}
             {{#if characterEditMode}}
             <div class="flex-center mb-1">
-                {{localize "Ex3.DevilBodyPowers"}}: {{system.charcreation.spent.devilBodyPowers}}/{{system.charcreation.available.devilBodyPowers}}
+                {{localize "Ex3.DevilBodyPowers"}}:
+                {{system.charcreation.spent.devilBodyPowers}}/{{system.charcreation.available.devilBodyPowers}}
             </div>
             {{/if}}
             {{/ifEquals}}
@@ -440,6 +442,14 @@
                         height="24" /></div>
                 <div class="item-name item-header">{{item.name}}</div>
                 <div class="item-controls">
+                    {{#if item.system.equipped}}
+                    <a class="item-control" data-actiontype="toggleItemValue" data-action="itemAction"
+                        data-key="equipped" title="Unequip" style="color:#F9B516;"><i
+                            class="fas fa-helmet-battle"></i></a>
+                    {{else}}
+                    <a class="item-control" data-actiontype="toggleItemValue" data-action="itemAction"
+                        data-key="equipped" title="Equip"><i class="fas fa-helmet-battle"></i></a>
+                    {{/if}}
                     {{#if item.system.activatable}}
                     {{#if item.system.active}}
                     <a class="item-control" data-action="itemAction" data-actiontype="spendItem" title="Deactivate"><i

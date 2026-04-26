@@ -1504,7 +1504,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
   }
 
   async calculateCommitMotes(type) {
-    var commitMotes = 0;
+    let commitMotes = 0;
     for (const item of this.actor.items.filter((i) => i.type === 'weapon' || i.type === 'armor' || i.type === 'item')) {
       if (item.type === 'item' || item.system.equipped) {
         commitMotes += item.system.attunement;
@@ -2697,6 +2697,18 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         await doc.update({
           [`system.${key}`]: !doc.system[key],
         });
+        if (key === 'equipped') {
+          if ((doc.system.attunement ?? 0) > 0) {
+            let charmMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : this.actor.system.settings.charmmotepool;
+            let poolBeingUsed = doc.flags?.exaltedthird?.poolCommitted ?? charmMotePool;
+            await this.actor.update({
+              [`system.motes.${poolBeingUsed}.committed`]: Math.max(0, this.actor.system.motes[poolBeingUsed].committed += (doc.system[key] ? doc.system.attunement : (doc.system.attunement * -1))),
+            });
+            await doc.update({
+              [`flags.exaltedthird.poolCommitted`]: doc.system[key] ? charmMotePool : null,
+            });
+          }
+        }
         break;
       case 'shapeSpell':
         this.actor.actionRoll(
