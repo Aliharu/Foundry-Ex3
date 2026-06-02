@@ -336,7 +336,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     hardness: 0,
                     damage: 0,
                 }
-            }
+            };
             this.object.craft = {
                 divineInsperationTechnique: false,
                 holisticMiracleUnderstanding: false,
@@ -783,7 +783,6 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 options.position.height = 670;
             }
         }
-
     }
 
     resolve = function (value) { return value };
@@ -1163,7 +1162,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             staticValuePenalties: staticValuePenalties,
             totalOpposedBonuses: totalOpposedBonuses,
             staticCaps: staticCaps,
-            rollButtonTooltip: "Test",
+            rollButtonTooltip: this.object.rollButtonTooltip,
             buttons: [
                 { type: "submit", icon: "fa-solid fa-dice-d10", label: this.object.rollType === 'useOpposingCharms' ? "Ex3.Add" : "Ex3.Roll" },
                 { action: "close", type: "button", icon: "fa-solid fa-xmark", label: "Ex3.Cancel" },
@@ -2953,6 +2952,16 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         if (formula?.toLowerCase() === 'postsoakdamage') {
             return this.object.damage.postSoakDamage || 0;
+        }
+        if (formula?.toLowerCase() === 'stunt') {
+            return {
+                '': 0,
+                'none': 0,
+                'bank': 1,
+                'one': 1,
+                'two': 2,
+                'three': 3,
+            }[this.object.stunt] || 0;
         }
         if (formula?.toLowerCase() === 'rangebands') {
             return {

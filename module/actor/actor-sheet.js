@@ -319,6 +319,31 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
     context.effects = prepareActiveEffectCategories(this.document.effects);
     context.tab = this.tabGroups['primary'];
+    let personalCommittedTooltip = '';
+    let peripheralCommittedTooltip = '';
+    let activeMotePool = game.settings.get("exaltedthird", "gloryOverwhelming") ? 'glorymotecap' : this.actor.system.settings.charmmotepool;
+    for (const charm of this.actor.items.filter(item => item.type === 'charm' && item.system.active && item.system.cost?.commitmotes)) {
+      let poolBeingUsed = charm.flags?.exaltedthird?.poolCommitted ?? activeMotePool;
+      if (poolBeingUsed === 'personal') {
+        personalCommittedTooltip += `<p><b>${charm.name}: </b>${charm.system.cost.commitmotes}</p>`;
+      } else {
+        peripheralCommittedTooltip += `<p><b>${charm.name}: </b>${charm.system.cost.commitmotes}</p>`;
+      }
+    }
+    for (const item of this.actor.items.filter(item => ['item', 'weapon', 'armor'].includes(item.type) && item.system.equipped && item.system.attunement)) {
+      let poolBeingUsed = item.flags?.exaltedthird?.poolCommitted ?? activeMotePool;
+      if (poolBeingUsed === 'personal') {
+        personalCommittedTooltip += `<p><b>${item.name}: </b>${item.system.attunement}</p>`;
+      } else {
+        peripheralCommittedTooltip += `<p><b>${item.name}: </b>${item.system.attunement}</p>`;
+      }
+    }
+    context.tooltips = {
+      motes: {
+        personalCommitted: personalCommittedTooltip,
+        peripheralCommitted: peripheralCommittedTooltip,
+      }
+    };
     return context;
   }
 
