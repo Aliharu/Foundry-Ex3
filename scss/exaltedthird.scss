@@ -45,6 +45,14 @@
 //   background-size: cover;
 // }
 
+.alchemical-background {
+  .window-content {
+    background: url('../assets/backgrounds/alchemical-background.jpg');
+    background-size: cover;
+    color: #222;
+  }
+}
+
 .solar-background {
   .window-content {
     background: url('../assets/backgrounds/solar-background.jpg');

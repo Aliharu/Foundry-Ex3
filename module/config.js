@@ -218,15 +218,15 @@ exaltedthird.activeEffectChangesList = [
   { value: "system.damage.round.lethal", label: "Ex3.LethalDamageRound", group: "Ex3.DamageDice" },
   { value: "system.damage.round.aggravated", label: "Ex3.AggravatedDamageRound", group: "Ex3.DamageDice" },
 ];
-  // essencePools: {
-  //   label: "Ex3.EssencePools",
-  //   effectList: {
-  //     'system.motes.personal.max': 'Ex3.PersonalMax',
-  //     'system.motes.peripheral.max': 'Ex3.PeripheralMax',
-  //     'system.motes.personal.committed': 'Ex3.PersonalCommitted',
-  //     'system.motes.peripheral.committed': 'Ex3.PeripheralCommitted',
-  //   }
-  // },
+// essencePools: {
+//   label: "Ex3.EssencePools",
+//   effectList: {
+//     'system.motes.personal.max': 'Ex3.PersonalMax',
+//     'system.motes.peripheral.max': 'Ex3.PeripheralMax',
+//     'system.motes.personal.committed': 'Ex3.PersonalCommitted',
+//     'system.motes.peripheral.committed': 'Ex3.PeripheralCommitted',
+//   }
+// },
 
 exaltedthird.equipmentStats = {
   light: {
@@ -2656,6 +2656,7 @@ exaltedthird.selects = {
   sheetBackgrounds: {
     default: "Ex3.Default",
     abyssal: "Ex3.Abyssal",
+    alchemical: "Ex3.Alchemical",
     db: "Ex3.Dragonblooded",
     exigent: "Ex3.Exigent",
     janest: "Ex3.Janest",
