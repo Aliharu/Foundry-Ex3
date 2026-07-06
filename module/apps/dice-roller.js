@@ -3010,21 +3010,13 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                 return 0;
             }
         }
+        else if (formula.includes('damagerollfaces-')) {
+            formula = formula.replace('damagerollfaces-', '');
+            return this._getDieFaceFormula(formula, this.object.damageDiceRollResults.diceRoll);
+        }
         else if (formula.includes('rollfaces-')) {
             formula = formula.replace('rollfaces-', '');
-            let countRerolledDice = false;
-            if (formula.includes('-precedence')) {
-                formula = formula.replace('-precedence', '');
-                countRerolledDice = true;
-            }
-            if (!parseInt(formula)) {
-                return 0;
-            }
-            if (this.object.diceRoll) {
-                return this.object.diceRoll.filter(die => (countRerolledDice || ((!die.rerolled || die.result >= this.object.targetNumber) && !die.successCanceled)) && die.result === parseInt(formula)).length;
-            } else {
-                return 0;
-            }
+            return this._getDieFaceFormula(formula, this.object.diceRoll);
         }
 
         // TODO
@@ -3071,6 +3063,29 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             formulaVal = Math.max(0, formulaVal - this.object.cost[formula]);
         }
         return formulaVal;
+    }
+
+    _getDieFaceFormula(formula, diceRoll) {
+        let countRerolledDice = false;
+        if (formula.includes('-precedence')) {
+            formula = formula.replace('-precedence', '');
+            countRerolledDice = true;
+        }
+        if (diceRoll) {
+            if (formula.includes('success')) {
+                return diceRoll.filter(die => (die.result >= this.object.targetNumber) && !die.successCanceled).length;
+            } else if (formula.includes('failure')) {
+                return diceRoll.filter(die => (((!die.rerolled || countRerolledDice) && die.result < this.object.targetNumber))).length;
+            } else {
+                if (!parseInt(formula)) {
+                    return 0;
+                }
+                return diceRoll.filter(die => (countRerolledDice || ((!die.rerolled || die.result >= this.object.targetNumber) && !die.successCanceled)) && die.result === parseInt(formula)).length;
+            }
+        } else {
+            return 0;
+        }
+
     }
 
     async addMultiOpposedBonuses(data) {
@@ -5735,6 +5750,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                         } else if (this.object.diceRollTotal >= this.object.difficulty && cleanedValue === false) {
                             fufillsRequirements = false;
                         }
+                    }
+                    break;
+                case 'decisiveAttackSucceeded':
+                    if(this.object.failedDecisives) {
+                        fufillsRequirements = false;
                     }
                     break;
                 case 'gambitSucceeded':
