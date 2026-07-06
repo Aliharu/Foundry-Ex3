@@ -1279,7 +1279,6 @@ Hooks.once("ready", async function () {
       try {
         let updateData = foundry.utils.deepClone(item.toObject());
         if (updateData.type === 'weapon') {
-          console.log(`Migrating Item document ${item.name}`);
           if (updateData.system.defence && updateData.system.defence > 0) {
             updateData.system.defense = updateData.system.defence;
             updateData.system.defence = 0;
@@ -1332,7 +1331,6 @@ Hooks.once("ready", async function () {
         if (item.type === 'charm') {
           let updateData = foundry.utils.deepClone(item.toObject());
           if (updateData.system.ability === 'martial' || updateData.system.ability === 'essence' || (updateData.system.martialart && !updateData.system.listingname)) {
-            console.log(`Migrating Item document ${item.name}`);
             if (updateData.system.martialart && !updateData.system.listingname) {
               updateData.system.listingname = updateData.system.martialart;
               updateData.system.martialart = "";
@@ -1532,7 +1530,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("2.0.3", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 2.0.3, please wait`);
     for (let actor of game.actors) {
       try {
         if (actor.system.details.exalt === 'dragonblooded') {
@@ -1550,7 +1547,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("2.4.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 2.4.0, please wait`);
     for (let actor of game.actors) {
       try {
         if (actor.system.details.exalt === 'abyssal') {
@@ -1564,7 +1560,6 @@ Hooks.once("ready", async function () {
     ui.notifications.notify(`Migration Complete`);
   }
   if (foundry.utils.isNewerVersion("2.5.2", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 2.5.2, please wait`);
     for (let actor of game.actors) {
       try {
         if (actor.system.legendarysize) {
@@ -1579,7 +1574,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("2.7.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 2.7.0, please wait`);
     for (let actor of game.actors.filter(actor => actor.type === "character")) {
       try {
         await actor.update({ [`system.experience.standard.value`]: actor.system.experience.standard.total - actor.system.experience.standard.value });
@@ -1593,7 +1587,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("2.7.4", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 2.7.4, please wait`);
     for (let actor of game.actors) {
       try {
         if (actor.system.sorcery.motes.value === undefined) {
@@ -1624,7 +1617,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("2.7.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 2.7.5, please wait`);
     for (let actor of game.actors) {
       try {
         for (let item of actor.items.filter(item => item.type === 'spell')) {
@@ -1645,7 +1637,6 @@ Hooks.once("ready", async function () {
   }
 
   if (foundry.utils.isNewerVersion("3.7.8", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
-    ui.notifications.notify(`Migrating data to 3.7.8, please wait`);
     for (let actor of game.actors) {
       try {
         if (actor.system.details.exalt === 'exigent') {

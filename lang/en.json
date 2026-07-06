@@ -1357,6 +1357,7 @@
     "Ex3.IncapacitatedTarget": "Incapacitated Target",
     "Ex3.DamageLevelsDealt": "Damage Levels Dealt",
     "Ex3.RollSucceeded": "Roll Succeeded",
+    "Ex3.DecisiveAttackSucceeded": "Decisive Attack Succeeded",
     "Ex3.GambitSucceeded": "Gambit Succeeded",
     "Ex3.TriggerBonusPrompt": "Trigger Bonus Prompt",
     "Ex3.YesOrNoPrompt": "Yes Or No Prompt",

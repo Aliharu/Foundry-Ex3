@@ -2004,7 +2004,6 @@ exaltedthird.booleanTriggers = [
   'triggerOnesAndTwos',
   'doubleThresholdSuccesses',
   'rollTwice-damage',
-  'rollTwice',
   'rollTwiceLowest-damage',
   'triggerNinesAndTens-damage',
   'triggerOnesAndTwos-damage',
@@ -2024,6 +2023,7 @@ exaltedthird.booleanTriggers = [
   'targetIsCrashed',
   'targetTakenTurn',
   'rollSucceeded',
+  'decisiveAttackSucceeded',
   'gambitSucceeded',
   'crashedTheTarget',
   'incapacitatedTarget',
@@ -2449,6 +2449,7 @@ exaltedthird.requirementTypes = {
     label: "Ex3.RollResults",
     requirements: {
       rollSucceeded: "Ex3.RollSucceeded",
+      decisiveAttackSucceeded: "Ex3.DecisiveAttackSucceeded",
       gambitSucceeded: "Ex3.GambitSucceeded",
       thresholdSuccesses: "Ex3.ThresholdSuccesses",
       initiativeDamageDealt: "Ex3.InitiativeDamageDealt",
