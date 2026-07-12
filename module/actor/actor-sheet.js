@@ -1258,7 +1258,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     // Perform the sort
-    const sortUpdates = foundry.utils.SortingHelpers.performIntegerSort(effect, {
+    const sortUpdates = foundry.utils.performIntegerSort(effect, {
       target,
       siblings,
     });
@@ -1381,7 +1381,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
 
     // Perform the sort
-    const sortUpdates = foundry.utils.SortingHelpers.performIntegerSort(item, {
+    const sortUpdates = foundry.utils.performIntegerSort(item, {
       target,
       siblings,
     });

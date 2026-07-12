@@ -544,7 +544,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     if (actionType === 'delete') {
       let index = target.dataset.index;
       this.item.update({
-        [`system.triggers.${triggerType}.-=${index}`]: null,
+        [`system.triggers.${triggerType}.${index}`]: foundry.data.operators.ForcedDeletion.create(),
       });
     }
   }
@@ -584,7 +584,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     }
     if (functionType === 'delete') {
       this.item.update({
-        [`system.triggers.${triggerType}.${index}.${subType}.-=${subindex}`]: null,
+        [`system.triggers.${triggerType}.${index}.${subType}.${subindex}`]: foundry.data.operators.ForcedDeletion.create(),
       });
     }
   }
@@ -603,7 +603,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
     if (actionType === 'delete') {
       let index = target.dataset.index;
       this.item.update({
-        [`system.upgrades.-=${index}`]: null,
+        [`system.upgrades.${index}`]: foundry.data.operators.ForcedDeletion.create(),
       });
     }
   }
