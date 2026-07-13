@@ -439,7 +439,7 @@ export class ExaltedThirdActor extends Actor {
     return (this.items.filter(numberCharm => numberCharm.type === 'charm' && CONFIG.exaltedthird.maidenabilities[maiden].includes(numberCharm.system.ability)).length || 0)
   }
 
-  spendMotes(moteCost, actorData, motePool = '', muteMotes = 0) {
+  spendMotes(moteCost, actorData, motePool = '', muteMotes = 0, personalMotes = 0, peripheralMotes = 0) {
     let newLevel = actorData.system.anima.level;
     let newValue = actorData.system.anima.value;
     let newPeripheralMotes = actorData.system.motes.peripheral.value;
@@ -448,6 +448,7 @@ export class ExaltedThirdActor extends Actor {
     let feverGain = 0;
 
     if (game.settings.get("exaltedthird", "gloryOverwhelming")) {
+      moteCost += (personalMotes + peripheralMotes);
       let animaLevels = ["Dim", "Glowing", "Burning", "Bonfire"];
 
       if (actorData.system.anima.max === 4) {
@@ -490,25 +491,23 @@ export class ExaltedThirdActor extends Actor {
       }
       let spentPersonal = 0;
       let spentPeripheral = 0;
-      if (motePool === 'personal') {
-        let remainingPersonal = actorData.system.motes.personal.value - moteCost;
-        if (remainingPersonal < 0) {
-          spentPersonal = moteCost + remainingPersonal;
-          spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
-        }
-        else {
-          spentPersonal = moteCost;
-        }
+      let spendingPeripheral = peripheralMotes + (motePool === 'peripheral' ? moteCost : 0);
+      let spendingPersonal = personalMotes + (motePool === 'personal' ? moteCost : 0);
+      let remainingPersonal = actorData.system.motes.personal.value - spendingPersonal;
+      if (remainingPersonal < 0) {
+        spentPersonal = spendingPersonal + remainingPersonal;
+        spentPeripheral = Math.min(actorData.system.motes.peripheral.value, Math.abs(remainingPersonal));
       }
       else {
-        let remainingPeripheral = actorData.system.motes.peripheral.value - moteCost;
-        if (remainingPeripheral < 0) {
-          spentPeripheral = moteCost + remainingPeripheral;
-          spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
-        }
-        else {
-          spentPeripheral = moteCost;
-        }
+        spentPersonal = spendingPersonal;
+      }
+      let remainingPeripheral = actorData.system.motes.peripheral.value - spendingPeripheral;
+      if (remainingPeripheral < 0) {
+        spentPeripheral = spendingPeripheral + remainingPeripheral;
+        spentPersonal = Math.min(actorData.system.motes.personal.value, Math.abs(remainingPeripheral));
+      }
+      else {
+        spentPeripheral = spendingPeripheral;
       }
       newPeripheralMotes = Math.max(0, actorData.system.motes.peripheral.value - spentPeripheral);
       newPersonalMotes = Math.max(0, actorData.system.motes.personal.value - spentPersonal);

@@ -57,6 +57,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
             this.object.cost = {
                 motes: 0,
+                peripheralMotes: 0,
+                personalMotes: 0,
                 penumbra: 0,
                 muteMotes: 0,
                 willpower: 0,
@@ -5344,6 +5346,29 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                                     case 'aura-spend':
                                         this.object.cost.aura = cleanedValue;
                                         break;
+                                    case 'motesDialog-spend':
+                                        let motePool = await foundry.applications.api.DialogV2.wait({
+                                            window: { title: game.i18n.localize("Ex3.MotePool"), resizable: true },
+                                            content: `Select Mote Pool for ${charm.name}`,
+                                            classes: [this.actor.getSheetBackground(), 'button-select-dialog'],
+                                            modal: true,
+                                            buttons: [
+                                                {
+                                                    action: 'minor',
+                                                    label: `${game.i18n.localize("Ex3.Personal")}`,
+                                                    callback: (event, button, dialog) => `personalMotes`
+                                                },
+                                                {
+                                                    action: 'none',
+                                                    label: `${game.i18n.localize("Ex3.Peripheral")}`,
+                                                    callback: (event, button, dialog) => `peripheralMotes`
+                                                },
+                                            ]
+                                        });
+                                        if (motePool) {
+                                            this.object.cost[motePool] += this._getFormulaValue(cleanedValue, triggerActor, charm);
+                                        }
+                                        break;
                                     case 'motes-restore':
                                     case 'initiative-restore':
                                     case 'health-restore':
@@ -5753,7 +5778,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
                     }
                     break;
                 case 'decisiveAttackSucceeded':
-                    if(this.object.failedDecisives) {
+                    if (this.object.failedDecisives) {
                         fufillsRequirements = false;
                     }
                     break;
@@ -7142,6 +7167,8 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.object.cost = {
                 motes: 0,
                 muteMotes: 0,
+                peripheralMotes: 0,
+                personalMotes: 0,
                 willpower: 0,
                 initiative: 0,
                 anima: 0,
@@ -7531,7 +7558,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         actorData.system.anima.value = newValue;
 
         let totalMoteCost = this.object.cost.motes + this.object.cost.muteMotes;
-        let moteResults = this.actor.spendMotes(totalMoteCost, actorData, this.object.motePool, this.object.cost.muteMotes);
+        let moteResults = this.actor.spendMotes(totalMoteCost, actorData, this.object.motePool, this.object.cost.muteMotes, this.object.cost.personalMotes, this.object.cost.peripheralMotes);
         actorData.system.motes.personal.value = moteResults.newPersonalMotes;
         actorData.system.motes.peripheral.value = moteResults.newPeripheralMotes;
         actorData.system.motes.glorymotecap.value = moteResults.newGloryMotes;

@@ -2154,6 +2154,7 @@ exaltedthird.triggerBonusTypes = {
     bonuses: {
       'motes-spend': "Ex3.SpendMotes",
       'muteMotes-spend': "Ex3.SpendMuteMotes",
+      'motesDialog-spend': "Ex3.SpendMotesDialog",
       'initiative-spend': "Ex3.SpendInitiative",
       'anima-spend': "Ex3.SpendAnima",
       'willpower-spend': "Ex3.SpendWillpower",
