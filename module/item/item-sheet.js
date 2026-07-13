@@ -164,6 +164,7 @@ export class ExaltedThirdItemSheet extends HandlebarsApplicationMixin(ItemSheetV
 
     const context = {
       // Validates both permissions and compendium status
+      actor: this.actor,
       editable: this.isEditable,
       owner: this.document.isOwner,
       limited: this.document.limited,

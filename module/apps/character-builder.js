@@ -1112,43 +1112,43 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
 
     for (const [key, charm] of Object.entries(this.object.character.charms)) {
       if (this.object.character.attributes[charm.system.ability] && this.object.character.attributes[charm.system.ability].favored) {
-        favoredCharms += charm.itemCount;
+        favoredCharms += charm.system.purchased;
       } else if (this.object.character.abilities[charm.system.ability] && this.object.character.abilities[charm.system.ability].favored) {
-        favoredCharms += charm.itemCount;
+        favoredCharms += charm.system.purchased;
       }
       else if (CONFIG.exaltedthird.maidens.includes(charm.system.ability) && charm.system.ability === this.object.character.caste) {
-        favoredCharms += charm.itemCount
+        favoredCharms += charm.system.purchased
       }
       else if (charm.system.ability === 'universal') {
-        favoredCharms += charm.itemCount
+        favoredCharms += charm.system.purchased
       }
       else if (this.object.character.caste === 'casteless') {
-        favoredCharms += charm.itemCount
+        favoredCharms += charm.system.purchased;
       }
       else {
-        nonFavoredCharms += charm.itemCount;
+        nonFavoredCharms += charm.system.purchased;
       }
       alchemicalCharmBonusPointDiscount += 3;
     }
 
     for (const [key, charm] of Object.entries(this.object.character.evocations)) {
-      favoredCharms += charm.itemCount;
+      favoredCharms += charm.system.purchased;
     }
 
     for (const [key, charm] of Object.entries(this.object.character.otherCharms)) {
-      favoredCharms += charm.itemCount;
+      favoredCharms += charm.system.purchased;
     }
 
     for (const [key, charm] of Object.entries(this.object.character.spellCharms)) {
-      nonFavoredCharms += charm.itemCount;
+      nonFavoredCharms += charm.system.purchased;
     }
 
     for (const [key, charm] of Object.entries(this.object.character.martialArtsCharms)) {
       if (this.object.character.abilities.martialarts.favored) {
-        favoredCharms += charm.itemCount;
+        favoredCharms += charm.system.purchased;
       }
       else {
-        nonFavoredCharms += charm.itemCount;
+        nonFavoredCharms += charm.system.purchased;
       }
     }
 
@@ -1713,7 +1713,6 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
               item.updateSource({ "_stats.compendiumSource": item.uuid });
             }
             const newItem = foundry.utils.duplicate(item);
-            newItem.itemCount = 1;
             await getEnritchedHTML(newItem);
             if (item.type === 'ritual') {
               if (ritualType === 'sorcery') {
@@ -1814,9 +1813,6 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
     }
 
     const newItem = foundry.utils.duplicate(itemObject);
-    if (newItem.type === 'charm') {
-      newItem.itemCount = 0;
-    }
 
     switch (newItem.type) {
       case 'charm':
@@ -1905,8 +1901,8 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
   static async lowerCharmCount(event, target) {
     const type = target.dataset.type;
     const index = target.dataset.index;
-    if (this.object.character[type][index].itemCount > 0) {
-      this.object.character[type][index].itemCount--;
+    if (this.object.character[type][index].system.purchased > 0) {
+      this.object.character[type][index].system.purchased--;
     }
     this.onChange();
   }
@@ -1914,7 +1910,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
   static async addCharmCount(event, target) {
     const type = target.dataset.type;
     const index = target.dataset.index;
-    this.object.character[type][index].itemCount++;
+    this.object.character[type][index].system.purchased++;
     this.onChange();
   }
 
@@ -1946,7 +1942,6 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           item.updateSource({ "flags.core.sourceId": item.uuid });
         }
         const newItem = foundry.utils.duplicate(item);
-        newItem.itemCount = 1;
         await getEnritchedHTML(newItem);
 
         if (item.type === 'ritual') {
@@ -2875,6 +2870,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           listingname: 'Excellency',
           essence: 1,
           requirement: 1,
+          purchased: 0,
           cost: {
             motes: 1
           },
@@ -2893,6 +2889,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           listingname: 'Excellency',
           requirement: 1,
           essence: 1,
+          purchased: 0,
           cost: {
             motes: 2
           },
@@ -2920,6 +2917,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           listingname: 'Excellency',
           requirement: 1,
           essence: 1,
+          purchased: 0,
           cost: {
             motes: 1
           },
@@ -2941,6 +2939,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           listingname: 'Excellency',
           requirement: 1,
           essence: 1,
+          purchased: 0,
           cost: {
             motes: 1
           },
@@ -2962,6 +2961,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           description: 'Add 1 success to a roll for 2 motes.',
           ability: 'universal',
           listingname: 'Excellency',
+          purchased: 0,
           essence: 1,
           requirement: 1,
           cost: {
@@ -2985,6 +2985,7 @@ export default class CharacterBuilder extends HandlebarsApplicationMixin(Applica
           listingname: 'Excellency',
           requirement: 1,
           essence: 1,
+          purchased: 0,
           cost: {
             motes: 1
           },

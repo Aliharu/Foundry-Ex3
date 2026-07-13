@@ -463,6 +463,7 @@ export class ItemCharmData extends CommonItemData {
                 ability: new fields.StringField({ initial: "" }),
                 number: new fields.NumberField({ initial: 0 }),
             }),
+            purchased: new fields.NumberField({ initial: 1 }),
             equipped: new fields.BooleanField({ initial: false }),
             diceroller: new fields.SchemaField({
                 enabled: new fields.BooleanField({ initial: true }),

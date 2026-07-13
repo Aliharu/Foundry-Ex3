@@ -54,6 +54,14 @@
             <input name="system.diceroller.opposedbonuses.enabled" type="checkbox" {{checked
                 system.diceroller.opposedbonuses.enabled}}>
         </div>
+        {{#if actor}}
+        <div>
+            <div class="flex-center">
+                <div class="resource-label">{{localize "Ex3.Purchased"}}</div>
+            </div>
+            <input type="text" name="system.purchased" value="{{system.purchased}}" />
+        </div>
+        {{/if}}
     </div>
     <div class="d-flex flex-center resource-label">
         <div class="resource-label">{{localize "Ex3.PreviousCharmsPrerequisites"}}</div>

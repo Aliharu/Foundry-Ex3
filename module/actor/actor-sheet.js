@@ -702,9 +702,9 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
     for (const charm of actorData.items.filter((item) => item.type === 'charm')) {
       if (this.actor.isCharmOrSpellFavored(charm)) {
-        favoredCharms++;
+        favoredCharms += charm.system.purchased ?? 1;
       } else {
-        nonFavoredCharms++;
+        nonFavoredCharms += charm.system.purchased ?? 1;
       }
     }
 
