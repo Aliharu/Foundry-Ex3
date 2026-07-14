@@ -3014,7 +3014,11 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
         }
         else if (formula.includes('damagerollfaces-')) {
             formula = formula.replace('damagerollfaces-', '');
-            return this._getDieFaceFormula(formula, this.object.damageDiceRollResults.diceRoll);
+            if (this.object.damageDiceRollResults) {
+                return this._getDieFaceFormula(formula, this.object.damageDiceRollResults.diceRoll);
+            } else {
+                return 0;
+            }
         }
         else if (formula.includes('rollfaces-')) {
             formula = formula.replace('rollfaces-', '');
