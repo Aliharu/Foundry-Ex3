@@ -1543,7 +1543,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    ui.notifications.notify(`Migration Complete`);
   }
 
   if (foundry.utils.isNewerVersion("2.4.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -1557,7 +1556,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    ui.notifications.notify(`Migration Complete`);
   }
   if (foundry.utils.isNewerVersion("2.5.2", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
     for (let actor of game.actors) {
@@ -1570,7 +1568,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    ui.notifications.notify(`Migration Complete`);
   }
 
   if (foundry.utils.isNewerVersion("2.7.0", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -1583,7 +1580,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    ui.notifications.notify(`Migration Complete`);
   }
 
   if (foundry.utils.isNewerVersion("2.7.4", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -1613,7 +1609,6 @@ Hooks.once("ready", async function () {
         console.error(error);
       }
     }
-    ui.notifications.notify(`Migration Complete`);
   }
 
   if (foundry.utils.isNewerVersion("2.7.5", game.settings.get("exaltedthird", "systemMigrationVersion"))) {
@@ -1715,7 +1710,6 @@ Hooks.once("ready", async function () {
   //     }
   //   }
 
-  //   ui.notifications.notify(`Migration Complete`);
   //   await game.settings.set("exaltedthird", "systemMigrationVersion", game.system.version);
   // }
 
