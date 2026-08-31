@@ -1,6 +1,6 @@
 import RollForm from "../apps/dice-roller.js";
 import { prepareItemTraits } from "../item/item.js";
-import { getNumberFormula } from "../utils/utils.js";
+import { getNumberFormula, setupActorItemLists } from "../utils/utils.js";
 
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
@@ -18,6 +18,62 @@ export class ExaltedThirdActor extends Actor {
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
     this._prepareCharacterData(actorData);
+  }
+
+  prepareDerivedData() {
+    const actorData = this;
+    let currentParryPenalty = 0;
+    let currentEvasionPenalty = 0;
+    let currentOnslaughtPenalty = 0;
+    let currentDefensePenalty = 0;
+
+    for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
+      for (const change of effect.system.changes) {
+        if (change.key === 'system.evasion.value' && change.value < 0 && change.type === 'add') {
+          currentEvasionPenalty += (change.value * -1);
+        }
+        if (change.key === 'system.parry.value' && change.value < 0 && change.type === 'add') {
+          currentParryPenalty += (change.value * -1);
+        }
+      }
+      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
+        currentOnslaughtPenalty += (effect.system.changes[0].value * -1);
+      }
+      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
+        currentDefensePenalty += (effect.system.changes[0].value * -1);
+      }
+    }
+    if (actorData.effects.some(e => e.statuses.has('prone'))) {
+      currentParryPenalty += 1;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.effects.some(e => e.statuses.has('surprised'))) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    if (actorData.effects.some(e => e.statuses.has('grappled')) || actorData.effects.some(e => e.statuses.has('grappling'))) {
+      currentParryPenalty += 2;
+      currentEvasionPenalty += 2;
+    }
+    currentParryPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : actorData.system.health.penalty) - actorData.system.health.penaltymod);
+    currentEvasionPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : actorData.system.health.penalty) - actorData.system.health.penaltymod);
+    actorData.system.currentParryPenalty = currentParryPenalty;
+    actorData.system.currentEvasionPenalty = currentEvasionPenalty;
+    actorData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
+    actorData.system.currentDefensePenalty = currentDefensePenalty;
+
+    if (actorData.type === 'character') {
+      for (let [key, attr] of Object.entries(actorData.system.attributes)) {
+        attr.name = CONFIG.exaltedthird.attributes[key];
+      }
+      for (let [key, ability] of Object.entries(actorData.system.abilities)) {
+        ability.name = CONFIG.exaltedthird.abilities[key];
+      }
+    } else {
+      for (let [key, pool] of Object.entries(actorData.system.pools)) {
+        pool.name = CONFIG.exaltedthird.npcpools[key];
+      }
+    }
   }
 
   async _preUpdate(updateData, options, user) {
@@ -1009,58 +1065,6 @@ export class ExaltedThirdActor extends Actor {
     let totalShipHealth = 0;
     let currentWarstriderPenalty = 0;
     let currentShipPenalty = 0;
-    let staticActor = actorData;
-
-    if (actorData.system.lunarform?.enabled) {
-      const lunar = game.actors.get(actorData.system.lunarform?.actorid);
-      if (lunar) {
-        staticActor = lunar;
-        data.aboveParryCap = Math.max(0, data.parry.value - lunar.system.parry.value);
-        data.aboveEvasionCap = Math.max(0, data.evasion.value - lunar.system.evasion.value);
-      }
-    }
-    if (staticActor.type === "character" || staticActor.system.creaturetype === 'exalt') {
-      data.parry.cap = staticActor._getStaticCap('parry', staticActor.system.parry.value);
-      if (data.parry.cap !== '') {
-        data.evasion.padding = true;
-        data.defenseCapPadding = true;
-      }
-      data.evasion.cap = staticActor._getStaticCap('evasion', staticActor.system.evasion.value);
-      if (data.evasion.cap !== '') {
-        data.evasion.padding = false;
-        if (data.parry.cap === '') {
-          data.parry.padding = true;
-        }
-        data.defenseCapPadding = true;
-      }
-      data.guile.cap = staticActor._getStaticCap('guile', staticActor.system.guile.value);
-      if (data.guile.cap !== '') {
-        data.resolve.padding = true;
-        data.socialCapPadding = true;
-      }
-      data.resolve.cap = staticActor._getStaticCap('resolve', staticActor.system.resolve.value);
-      if (data.resolve.cap !== '') {
-        if (data.guile.cap === '') {
-          data.guile.padding = true;
-        }
-        data.resolve.padding = false;
-        data.socialCapPadding = true;
-      }
-      data.soak.cap = staticActor._getStaticCap('soak', actorData.type === "character" ? (data.attributes?.stamina?.value || 0) : staticActor.system.soak.value);
-
-
-      // if (staticActorData.type === "character" && data.attributes.stamina.excellency) {
-      // var newValueLow = Math.floor(data.attributes.stamina.value / 2);
-      // var highestAttributeNumber = 1;
-      // for (let [name, attribute] of Object.entries(staticActorData.system.attributes)) {
-      //   if (attribute.value > highestAttributeNumber) {
-      //     highestAttributeNumber = attribute.value;
-      //   }
-      // }
-      // var newValueHigh = Math.floor((data.attributes.stamina.value + highestAttributeNumber) / 2);
-      // data.soak.cap = `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
-      // }
-    }
 
     if (data.battlegroup) {
       totalHealth = data.health.levels.zero.value + data.size.value;
@@ -1148,51 +1152,6 @@ export class ExaltedThirdActor extends Actor {
     data.ship.health.value = data.ship.health.max - data.ship.health.aggravated - data.ship.health.lethal - data.ship.health.bashing;
     data.ship.health.penalty = currentShipPenalty;
 
-    if (actorData.type !== "npc") {
-      data.experience.standard.remaining = data.experience.standard.total - data.experience.standard.value;
-      data.experience.exalt.remaining = data.experience.exalt.total - data.experience.exalt.value;
-    }
-
-    let currentParryPenalty = 0;
-    let currentEvasionPenalty = 0;
-    let currentOnslaughtPenalty = 0;
-    let currentDefensePenalty = 0;
-
-    for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
-      for (const change of effect.system.changes) {
-        if (change.key === 'system.evasion.value' && change.value < 0 && change.type === 'add') {
-          currentEvasionPenalty += (change.value * -1);
-        }
-        if (change.key === 'system.parry.value' && change.value < 0 && change.type === 'add') {
-          currentParryPenalty += (change.value * -1);
-        }
-      }
-      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
-        currentOnslaughtPenalty += (effect.system.changes[0].value * -1);
-      }
-      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
-        currentDefensePenalty += (effect.system.changes[0].value * -1);
-      }
-    }
-    if (actorData.effects.some(e => e.statuses.has('prone'))) {
-      currentParryPenalty += 1;
-      currentEvasionPenalty += 2;
-    }
-    if (actorData.effects.some(e => e.statuses.has('surprised'))) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
-    if (actorData.effects.some(e => e.statuses.has('grappled')) || actorData.effects.some(e => e.statuses.has('grappling'))) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
-    currentParryPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : data.health.penalty) - data.health.penaltymod);
-    currentEvasionPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : data.health.penalty) - data.health.penaltymod);
-    data.currentParryPenalty = currentParryPenalty;
-    data.currentEvasionPenalty = currentEvasionPenalty;
-    data.currentOnslaughtPenalty = currentOnslaughtPenalty;
-    data.currentDefensePenalty = currentDefensePenalty;
-
     if (actorData.type === 'character') {
       for (let [key, attr] of Object.entries(actorData.system.attributes)) {
         attr.name = CONFIG.exaltedthird.attributes[key];
@@ -1206,173 +1165,7 @@ export class ExaltedThirdActor extends Actor {
         pool.name = CONFIG.exaltedthird.npcpools[key];
       }
     }
-
-    // Initialize containers.
-    const customAbilities = [];
-    const gear = [];
-    const weapons = [];
-    const armor = [];
-    const merits = [];
-    const intimacies = [];
-    const rituals = [];
-    const specialties = [];
-    const specialAbilities = [];
-    const craftProjects = [];
-    const modifiers = [];
-    const actions = [];
-    const destinies = [];
-    const shapes = [];
-    const activeItems = [];
-    const charms = {};
-    const rollCharms = {};
-    const defenseCharms = {};
-
-    const spells = {
-      terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [], collapse: true },
-      celestial: { name: 'Ex3.Celestial', visible: false, list: [], collapse: true },
-      solar: { name: 'Ex3.Solar', visible: false, list: [], collapse: true },
-      ivory: { name: 'Ex3.Ivory', visible: false, list: [], collapse: true },
-      shadow: { name: 'Ex3.Shadow', visible: false, list: [], collapse: true },
-      void: { name: 'Ex3.Void', visible: false, list: [], collapse: true },
-    }
-
-    // Iterate through items, allocating to containers
-    for (let i of actorData.items) {
-      i.img = i.img || DEFAULT_TOKEN;
-      if (i.type === 'item') {
-        gear.push(i);
-      }
-      else if (i.type === 'customability') {
-        prepareItemTraits('customability', i);
-        customAbilities.push(i);
-      }
-      else if (i.type === 'weapon') {
-        prepareItemTraits('weapon', i);
-        weapons.push(i);
-      }
-      else if (i.type === 'armor') {
-        prepareItemTraits('armor', i);
-        armor.push(i);
-      }
-      else if (i.type === 'merit') {
-        merits.push(i);
-      }
-      else if (i.type === 'intimacy') {
-        intimacies.push(i);
-      }
-      else if (i.type === 'ritual') {
-        rituals.push(i);
-      }
-      else if (i.type === 'specialty') {
-        specialties.push(i);
-      }
-      else if (i.type === 'specialability') {
-        specialAbilities.push(i);
-      }
-      else if (i.type === 'craftproject') {
-        craftProjects.push(i);
-      }
-      else if (i.type === 'modifier') {
-        modifiers.push(i);
-      }
-      else if (i.type === 'destiny') {
-        destinies.push(i);
-      }
-      else if (i.type === 'shape') {
-        shapes.push(i);
-      }
-      else if (i.type === 'spell') {
-        if (i.system.circle !== undefined) {
-          spells[i.system.circle].list.push(i);
-          spells[i.system.circle].visible = true;
-          spells[i.system.circle].collapse = this.spells ? this.spells[i.system.circle].collapse : true;
-        }
-      }
-      else if (i.type === 'action') {
-        actions.push(i);
-      }
-      if (i.system.active) {
-        activeItems.push(i);
-      }
-    }
-
-    let actorCharms = actorData.items.filter((item) => item.type === 'charm');
-    actorCharms = actorCharms.sort(function (a, b) {
-      const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
-      const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-      if (sortValueA === sortValueB) {
-        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-      }
-      return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-    });
-
-    for (let i of actorCharms) {
-      if (i.system.diceroller.enabled) {
-        if (i.system.listingname) {
-          if (!rollCharms[i.system.listingname]) {
-            rollCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
-          }
-          rollCharms[i.system.listingname].list.push(i);
-        }
-        else {
-          if (!rollCharms[i.system.ability]) {
-            rollCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
-          }
-          rollCharms[i.system.ability].list.push(i);
-        }
-      }
-      if (i.system.diceroller.opposedbonuses.enabled) {
-        if (i.system.listingname) {
-          if (!defenseCharms[i.system.listingname]) {
-            defenseCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
-          }
-          defenseCharms[i.system.listingname].list.push(i);
-        }
-        else {
-          if (!defenseCharms[i.system.ability]) {
-            defenseCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
-          }
-          defenseCharms[i.system.ability].list.push(i);
-        }
-      }
-      if (i.system.listingname) {
-        if (charms[i.system.listingname]) {
-        }
-        else {
-          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: this.charms ? this.charms[i.system.listingname]?.collapse : true };
-        }
-        charms[i.system.listingname].list.push(i);
-      }
-      else {
-        if (charms[i.system.ability]) {
-        }
-        else {
-          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: this.charms ? this.charms[i.system.ability]?.collapse : true };
-        }
-        charms[i.system.ability].list.push(i);
-      }
-    }
-
-    // Assign and return
-    actorData.gear = gear;
-    actorData.customabilities = customAbilities;
-    actorData.activeitems = activeItems;
-    actorData.weapons = weapons;
-    actorData.armor = armor;
-    actorData.merits = merits;
-    actorData.rituals = rituals;
-    actorData.intimacies = intimacies;
-    actorData.specialties = specialties;
-    actorData.charms = charms;
-    actorData.rollcharms = rollCharms;
-    actorData.defensecharms = defenseCharms;
-    actorData.spells = spells;
-    actorData.specialabilities = specialAbilities;
-    actorData.projects = craftProjects;
-    actorData.modifiers = modifiers;
-    actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
-    actorData.destinies = destinies;
-    actorData.shapes = shapes;
+    setupActorItemLists(null, actorData, actorData.items);
   }
 
   getCharacterDiceCapValue(ability, attribute, hasSpecialty, excellencyBonus) {

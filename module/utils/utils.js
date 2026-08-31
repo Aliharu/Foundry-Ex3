@@ -1,4 +1,188 @@
 import RollForm from "../apps/dice-roller.js";
+import { prepareItemTraits } from "../item/item.js";
+
+export function setupActorItemLists(sheetData, actorData, items, collapseStates = null, sheetMode = false) {
+    const gear = [];
+    const customAbilities = [];
+    const weapons = [];
+    const armor = [];
+    const merits = [];
+    const rituals = [];
+    const martialarts = [];
+    const crafts = [];
+    const specialties = [];
+    const specialAbilities = [];
+    const craftProjects = [];
+    const actions = [];
+    const destinies = [];
+    const shapes = [];
+    const activeItems = [];
+    let intimacies = [];
+
+    const charms = {};
+    const rollCharms = {};
+    const defenseCharms = {};
+
+    const spells = {
+        terrestrial: { name: 'Ex3.Terrestrial', visible:  false, list: [] },
+        celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
+        solar: { name: 'Ex3.Solar', visible: false, list: [] },
+        ivory: { name: 'Ex3.Ivory', visible: false, list: [] },
+        shadow: { name: 'Ex3.Shadow', visible: false, list: [] },
+        void: { name: 'Ex3.Void', visible: false, list: [] },
+    }
+
+    // Iterate through items, allocating to containers
+    for (let i of items) {
+        i.img = i.img || DEFAULT_TOKEN;
+        if (i.type === 'item') {
+            gear.push(i);
+        }
+        else if (i.type === 'customability') {
+            prepareItemTraits('customability', i);
+            customAbilities.push(i);
+        }
+        else if (i.type === 'weapon') {
+            prepareItemTraits('weapon', i);
+            weapons.push(i);
+        }
+        else if (i.type === 'armor') {
+            prepareItemTraits('armor', i);
+            armor.push(i);
+        }
+        else if (i.type === 'merit') {
+            merits.push(i);
+        }
+        else if (i.type === 'intimacy') {
+            if (!sheetMode || (game.user.isGM || actorData.isOwner || i.system.visible)) {
+                intimacies.push(i);
+            }
+        }
+        else if (i.type === 'martialart') {
+            martialarts.push(i);
+        }
+        else if (i.type === 'craft') {
+            crafts.push(i);
+        }
+        else if (i.type === 'ritual') {
+            rituals.push(i);
+        }
+        else if (i.type === 'specialty') {
+            specialties.push(i);
+        }
+        else if (i.type === 'specialability') {
+            specialAbilities.push(i);
+        }
+        else if (i.type === 'craftproject') {
+            craftProjects.push(i);
+        }
+        else if (i.type === 'destiny') {
+            destinies.push(i);
+        }
+        else if (i.type === 'shape') {
+            shapes.push(i);
+        }
+        else if (i.type === 'action') {
+            actions.push(i);
+        }
+        if (i.system.active) {
+            activeItems.push(i);
+        }
+    }
+
+    let actorSpells = actorData.items.filter((item) => item.type === 'spell');
+    actorSpells = actorSpells.sort(function (a, b) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+    for (let i of actorSpells) {
+        if (i.system.circle !== undefined) {
+            spells[i.system.circle].list.push(i);
+            spells[i.system.circle].visible = true;
+            spells[i.system.circle].collapse = collapseStates?.spell[i.system.circle] ?? true;
+        }
+    }
+
+    let actorCharms = actorData.items.filter((item) => item.type === 'charm');
+    actorCharms = actorCharms.sort(function (a, b) {
+        const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
+        const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
+        if (sortValueA === sortValueB) {
+            return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+        }
+        return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
+    });
+
+    for (let i of actorCharms) {
+        if (i.system.diceroller.enabled) {
+            if (i.system.listingname) {
+                if (!rollCharms[i.system.listingname]) {
+                    rollCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+                }
+                rollCharms[i.system.listingname].list.push(i);
+            }
+            else {
+                if (!rollCharms[i.system.ability]) {
+                    rollCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+                }
+                rollCharms[i.system.ability].list.push(i);
+            }
+        }
+        if (i.system.diceroller.opposedbonuses.enabled) {
+            if (i.system.listingname) {
+                if (!defenseCharms[i.system.listingname]) {
+                    defenseCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
+                }
+                defenseCharms[i.system.listingname].list.push(i);
+            }
+            else {
+                if (!defenseCharms[i.system.ability]) {
+                    defenseCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
+                }
+                defenseCharms[i.system.ability].list.push(i);
+            }
+        }
+        if (i.system.listingname) {
+            if (!charms[i.system.listingname]) {
+                charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: collapseStates?.charm[i.system.listingname] ?? true };
+            }
+            charms[i.system.listingname].list.push(i);
+        }
+        else {
+            if (!charms[i.system.ability]) {
+                charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: collapseStates?.charm[i.system.ability] ?? true };
+            }
+            charms[i.system.ability].list.push(i);
+        }
+    }
+
+    for (const s of Object.values(spells)) {
+        s.list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    }
+
+    for (const c of Object.values(charms)) {
+        c.list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    }
+
+    // Assign and return
+    actorData.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.customabilities = customAbilities;
+    actorData.activeitems = activeItems;
+    actorData.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.merits = merits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.rituals = rituals.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.intimacies = intimacies.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.specialties = specialties.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.charms = charms;
+    actorData.rollcharms = rollCharms;
+    actorData.defensecharms = defenseCharms;
+    actorData.spells = spells;
+    actorData.specialabilities = specialAbilities.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.projects = craftProjects.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
+    actorData.destinies = destinies.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    actorData.shapes = shapes.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+}
 
 export function getNumberFormula(formulaString, actor, item = null) {
     let negativeValue = false;

@@ -921,6 +921,39 @@ exaltedthird.charmabilities = {
   universal: 'Ex3.Universal',
 };
 
+exaltedthird.siderealMaidenCharms = {
+  archery: 'battles',
+  athletics: 'endings',
+  awareness: 'endings',
+  brawl: 'battles',
+  bureaucracy: 'endings',
+  craft: 'serenity',
+  dodge: 'serenity',
+  integrity: 'endings',
+  investigation: 'secrets',
+  larceny: 'secrets',
+  linguistics: 'serenity',
+  lore: 'secrets',
+  medicine: 'endings',
+  melee: 'battles',
+  occult: 'secrets',
+  performance: 'serenity',
+  presence: 'battles',
+  resistance: 'journeys',
+  ride: 'journeys',
+  sail: 'journeys',
+  socialize: 'serenity',
+  stealth: 'secrets',
+  survival: 'journeys',
+  thrown: 'journeys',
+  war: 'battles',
+  battles: 'battles',
+  journeys: 'journeys',
+  secrets: 'secrets',
+  serenity: 'serenity',
+  endings: 'endings',
+}
+
 exaltedthird.charmAbilitiesSectioned = {
   abilities: {
     label: "Ex3.Abilities",

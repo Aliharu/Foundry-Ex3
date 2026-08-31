@@ -5,7 +5,7 @@ import Importer from "../apps/importer.js";
 import Prophecy from "../apps/prophecy.js";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../effects.js";
 import { prepareItemTraits } from "../item/item.js";
-import { constructHTMLButton, isColor, parseCounterStates, toggleDisplay } from "../utils/utils.js";
+import { constructHTMLButton, isColor, parseCounterStates, setupActorItemLists, toggleDisplay } from "../utils/utils.js";
 import TraitSelector from "../apps/trait-selector.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -252,9 +252,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     context.tabs = tabs;
     context.dtypes = ["String", "Number", "Boolean"];
 
-    const actorData = this.actor.toObject(false);
-    context.system = actorData.system;
-    context.flags = actorData.flags;
+    // const actorData = this.actor.toObject(false);
     context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       this.actor.system.biography,
       {
@@ -395,45 +393,13 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       setting.name = CONFIG.exaltedthird.statictypes[key];
     }
 
-    let currentParryPenalty = 0;
-    let currentEvasionPenalty = 0;
-    let currentOnslaughtPenalty = 0;
-    let currentDefensePenalty = 0;
-
-    for (const effect of actorData.effects.filter((effect) => !effect.disabled)) {
-      for (const change of effect.system.changes) {
-        if (change.key === 'system.evasion.value' && change.value < 0 && change.type === 'add') {
-          currentEvasionPenalty += (change.value * -1);
-        }
-        if (change.key === 'system.parry.value' && change.value < 0 && change.type === 'add') {
-          currentParryPenalty += (change.value * -1);
-        }
-      }
-      if (effect.flags.exaltedthird?.statusId === 'onslaught') {
-        currentOnslaughtPenalty += (effect.system.changes[0].value * -1);
-      }
-      if (effect.flags.exaltedthird?.statusId === 'defensePenalty') {
-        currentDefensePenalty += (effect.system.changes[0].value * -1);
+    if (actorData.system.lunarform?.enabled) {
+      const lunar = game.actors.get(actorData.system.lunarform?.actorid);
+      if (lunar) {
+        sheetData.system.aboveParryCap = Math.max(0, sheetData.system.parry.value - lunar.system.parry.value);
+        sheetData.system.aboveEvasionCap = Math.max(0, sheetData.system.evasion.value - lunar.system.evasion.value);
       }
     }
-    if (actorData.effects.some(e => e.statuses.has('prone'))) {
-      currentParryPenalty += 1;
-      currentEvasionPenalty += 2;
-    }
-    if (actorData.effects.some(e => e.statuses.has('surprised'))) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
-    if (actorData.effects.some(e => e.statuses.has('grappled')) || actorData.effects.some(e => e.statuses.has('grappling'))) {
-      currentParryPenalty += 2;
-      currentEvasionPenalty += 2;
-    }
-    currentParryPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : sheetData.system.health.penalty) - sheetData.system.health.penaltymod);
-    currentEvasionPenalty += Math.max(0, (actorData.system.health.penalty === 'inc' ? 4 : sheetData.system.health.penalty) - sheetData.system.health.penaltymod);
-    sheetData.system.currentParryPenalty = currentParryPenalty;
-    sheetData.system.currentEvasionPenalty = currentEvasionPenalty;
-    sheetData.system.currentOnslaughtPenalty = currentOnslaughtPenalty;
-    sheetData.system.currentDefensePenalty = currentDefensePenalty;
 
     if (actorData.type === "character" || sheetData.system.creaturetype === 'exalt') {
       sheetData.system.parry.cap = this.actor._getStaticCap('parry', sheetData.system.parry.value);
@@ -463,6 +429,18 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
         sheetData.system.socialCapPadding = true;
       }
       sheetData.system.soak.cap = this.actor._getStaticCap('soak', actorData.type === "character" ? (sheetData.system.attributes?.stamina?.value || 0) : sheetData.system.soak.value);
+
+      // if (staticActorData.type === "character" && sheetData.system.attributes.stamina.excellency) {
+      // var newValueLow = Math.floor(sheetData.system.attributes.stamina.value / 2);
+      // var highestAttributeNumber = 1;
+      // for (let [name, attribute] of Object.entries(staticActorData.system.attributes)) {
+      //   if (attribute.value > highestAttributeNumber) {
+      //     highestAttributeNumber = attribute.value;
+      //   }
+      // }
+      // var newValueHigh = Math.floor((sheetData.system.attributes.stamina.value + highestAttributeNumber) / 2);
+      // sheetData.system.soak.cap = `(+${newValueLow}-${newValueHigh} for ${newValueLow}-${newValueHigh}m)`;
+      // }
     }
 
     sheetData.system.usedCharmSlots = this.actor.items.filter(item => item.type === 'charm' && item.system.equipped).length
@@ -604,7 +582,6 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
     }
     for (let [key, attr] of Object.entries(sheetData.system.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
-      attr.name = CONFIG.exaltedthird.attributes[key];
       sheetData.system.charcreation.spent.attributes[attr.type] += (attr.value - 1);
       attr.nextDotCost = 0;
       if (attr.value < 5) {
@@ -626,7 +603,6 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       }
     }
     for (let [key, ability] of Object.entries(sheetData.system.abilities)) {
-      ability.name = CONFIG.exaltedthird.abilities[key];
 
       if (ability.value < 5) {
         if (game.settings.get("exaltedthird", "unifiedCharacterAdvancement")) {
@@ -754,77 +730,14 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 
   _prepareNPCData(sheetData) {
     sheetData.system.settings.usedotsvalues = !game.settings.get("exaltedthird", "compactSheetsNPC");
-
-    for (let [key, pool] of Object.entries(sheetData.system.pools)) {
-      pool.name = CONFIG.exaltedthird.npcpools[key];
-    }
   }
 
   _prepareCharacterItems(sheetData) {
     const actorData = this.actor;
 
-    // Initialize containers.
-    const gear = [];
-    const customAbilities = [];
-    const weapons = [];
-    const armor = [];
-    const merits = [];
-    const rituals = [];
-    const martialarts = [];
-    const crafts = [];
-    const specialties = [];
-    const specialAbilities = [];
-    const craftProjects = [];
-    const actions = [];
-    const destinies = [];
-    const shapes = [];
-    const activeItems = [];
-    let intimacies = [];
-
-    const charms = {};
-    const rollCharms = {};
-    const defenseCharms = {};
-
-    const siderealMaidenCharms = {
-      archery: 'battles',
-      athletics: 'endings',
-      awareness: 'endings',
-      brawl: 'battles',
-      bureaucracy: 'endings',
-      craft: 'serenity',
-      dodge: 'serenity',
-      integrity: 'endings',
-      investigation: 'secrets',
-      larceny: 'secrets',
-      linguistics: 'serenity',
-      lore: 'secrets',
-      medicine: 'endings',
-      melee: 'battles',
-      occult: 'secrets',
-      performance: 'serenity',
-      presence: 'battles',
-      resistance: 'journeys',
-      ride: 'journeys',
-      sail: 'journeys',
-      socialize: 'serenity',
-      stealth: 'secrets',
-      survival: 'journeys',
-      thrown: 'journeys',
-      war: 'battles',
-      battles: 'battles',
-      journeys: 'journeys',
-      secrets: 'secrets',
-      serenity: 'serenity',
-      endings: 'endings',
-    }
-
-    const spells = {
-      terrestrial: { name: 'Ex3.Terrestrial', visible: false, list: [] },
-      celestial: { name: 'Ex3.Celestial', visible: false, list: [] },
-      solar: { name: 'Ex3.Solar', visible: false, list: [] },
-      ivory: { name: 'Ex3.Ivory', visible: false, list: [] },
-      shadow: { name: 'Ex3.Shadow', visible: false, list: [] },
-      void: { name: 'Ex3.Void', visible: false, list: [] },
+    setupActorItemLists(sheetData, actorData, this.document.items, this.collapseStates, true);
+    if (this.document.limited) {
+      actorData.intimacies = actorData.intimacies.filter(intimacy => intimacy.system.visible);
     }
 
     sheetData.system.maidencharms = {
@@ -834,162 +747,11 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
       secrets: 0,
       endings: 0,
     }
-    // Iterate through items, allocating to containers
-    for (let i of this.document.items) {
-      i.img = i.img || DEFAULT_TOKEN;
-      if (i.type === 'item') {
-        gear.push(i);
-      }
-      else if (i.type === 'customability') {
-        prepareItemTraits('customability', i);
-        customAbilities.push(i);
-      }
-      else if (i.type === 'weapon') {
-        prepareItemTraits('weapon', i);
-        weapons.push(i);
-      }
-      else if (i.type === 'armor') {
-        prepareItemTraits('armor', i);
-        armor.push(i);
-      }
-      else if (i.type === 'merit') {
-        merits.push(i);
-      }
-      else if (i.type === 'intimacy') {
-        if (game.user.isGM || this.actor.isOwner || i.system.visible) {
-          intimacies.push(i);
-        }
-      }
-      else if (i.type === 'martialart') {
-        martialarts.push(i);
-      }
-      else if (i.type === 'craft') {
-        crafts.push(i);
-      }
-      else if (i.type === 'ritual') {
-        rituals.push(i);
-      }
-      else if (i.type === 'specialty') {
-        specialties.push(i);
-      }
-      else if (i.type === 'specialability') {
-        specialAbilities.push(i);
-      }
-      else if (i.type === 'craftproject') {
-        craftProjects.push(i);
-      }
-      else if (i.type === 'destiny') {
-        destinies.push(i);
-      }
-      else if (i.type === 'shape') {
-        shapes.push(i);
-      }
-      else if (i.type === 'action') {
-        actions.push(i);
-      }
-      if (i.system.active) {
-        activeItems.push(i);
+    for (const charm of actorData.items.filter((item) => item.type === 'charm')) {
+      if (CONFIG.exaltedthird.siderealMaidenCharms[charm.system.ability]) {
+        sheetData.system.maidencharms[CONFIG.exaltedthird.siderealMaidenCharms[charm.system.ability]]++;
       }
     }
-    if (this.document.limited) {
-      intimacies = intimacies.filter(intimacy => intimacy.system.visible);
-    }
-    let actorSpells = actorData.items.filter((item) => item.type === 'spell');
-    actorSpells = actorSpells.sort(function (a, b) {
-      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-    });
-    for (let i of actorSpells) {
-      if (i.system.circle !== undefined) {
-        spells[i.system.circle].list.push(i);
-        spells[i.system.circle].visible = true;
-        // spells[i.system.circle].collapse = this.actor.spells ? this.actor.spells[i.system.circle].collapse : true;
-        spells[i.system.circle].collapse = this.collapseStates.spell[i.system.circle] ?? true;
-      }
-    }
-
-    let actorCharms = actorData.items.filter((item) => item.type === 'charm');
-    actorCharms = actorCharms.sort(function (a, b) {
-      const sortValueA = a.system.listingname.toLowerCase() || a.system.ability;
-      const sortValueB = b.system.listingname.toLowerCase() || b.system.ability;
-      if (sortValueA === sortValueB) {
-        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-      }
-      return sortValueA < sortValueB ? -1 : sortValueA > sortValueB ? 1 : 0
-    });
-
-    for (let i of actorCharms) {
-      if (siderealMaidenCharms[i.system.ability]) {
-        sheetData.system.maidencharms[siderealMaidenCharms[i.system.ability]]++;
-      }
-      if (i.system.diceroller.enabled) {
-        if (i.system.listingname) {
-          if (!rollCharms[i.system.listingname]) {
-            rollCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
-          }
-          rollCharms[i.system.listingname].list.push(i);
-        }
-        else {
-          if (!rollCharms[i.system.ability]) {
-            rollCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
-          }
-          rollCharms[i.system.ability].list.push(i);
-        }
-      }
-      if (i.system.diceroller.opposedbonuses.enabled) {
-        if (i.system.listingname) {
-          if (!defenseCharms[i.system.listingname]) {
-            defenseCharms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [] };
-          }
-          defenseCharms[i.system.listingname].list.push(i);
-        }
-        else {
-          if (!defenseCharms[i.system.ability]) {
-            defenseCharms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [] };
-          }
-          defenseCharms[i.system.ability].list.push(i);
-        }
-      }
-      if (i.system.listingname) {
-        if (!charms[i.system.listingname]) {
-          charms[i.system.listingname] = { name: i.system.listingname, visible: true, list: [], collapse: this.collapseStates.charm[i.system.listingname] ?? true };
-        }
-        charms[i.system.listingname].list.push(i);
-      }
-      else {
-        if (!charms[i.system.ability]) {
-          charms[i.system.ability] = { name: CONFIG.exaltedthird.charmabilities[i.system.ability] || 'Ex3.Other', visible: true, list: [], collapse: this.collapseStates.charm[i.system.ability] ?? true };
-        }
-        charms[i.system.ability].list.push(i);
-      }
-    }
-
-    for (const s of Object.values(spells)) {
-      s.list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    }
-
-    for (const c of Object.values(charms)) {
-      c.list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    }
-
-    // Assign and return
-    actorData.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.customabilities = customAbilities;
-    actorData.activeitems = activeItems;
-    actorData.weapons = weapons.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.armor = armor.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.merits = merits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.rituals = rituals.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.intimacies = intimacies.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.specialties = specialties.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.charms = charms;
-    actorData.rollcharms = rollCharms;
-    actorData.defensecharms = defenseCharms;
-    actorData.spells = spells;
-    actorData.specialabilities = specialAbilities.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.projects = craftProjects.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.actions = actions.sort((actionA, actionB) => actionA.name < actionB.name ? -1 : actionA.name > actionB.name ? 1 : 0);
-    actorData.destinies = destinies.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    actorData.shapes = shapes.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
   /**
@@ -3095,7 +2857,7 @@ export class ExaltedThirdActorSheet extends HandlebarsApplicationMixin(ActorShee
 */
   async _displayCard(item, cardType = "") {
     const token = this.actor.token;
-    if (cardType === 'Spent' && (item.system.cost?.commitmotes || 0) > 0 || item.system.activatable) {
+    if (cardType === 'Spent' && ((item.system.cost?.commitmotes || 0) > 0 || item.system.activatable)) {
       if (item.system.active) {
         cardType = "Deactivate";
       }
