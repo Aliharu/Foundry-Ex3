@@ -2941,7 +2941,7 @@ export default class RollForm extends HandlebarsApplicationMixin(ApplicationV2) 
             return this.object.unusedDiceRollTotal || 0;
         }
         if (formula?.toLowerCase() === 'gambitdifficulty') {
-            return this.object.diceRollTotal || 0;
+            return this.object.gambitDifficulty || 0;
         }
         if (formula?.toLowerCase() === 'craftobjectives') {
             return this.object.objectivesCompleted || 0;

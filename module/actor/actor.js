@@ -277,8 +277,14 @@ export class ExaltedThirdActor extends Actor {
         }
       }
       else if (item.system.charmtype === 'evocation') {
-        if (!item.system.parentitemid || !itemIds.includes(item.system.parentitemid)) {
-          return false;
+        if (item.system.parentitemid) {
+          const hasItem = this.items.some(item => {
+            if (item.type !== 'customability' || item.system.abilitytype !== 'item') return false;
+            const sourceId = item._source?._stats?.compendiumSource || '';
+            const sections = sourceId.split('.');
+            return sections.includes(item.system.parentitemid);
+          });
+          if (!hasItem) return false;
         }
       } else {
         if (this.system.details.exalt === 'exigent' && item.system.charmtype !== this.system.details.caste.toLowerCase()) {
